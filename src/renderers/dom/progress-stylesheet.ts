@@ -11,17 +11,13 @@ const stylesheet = `
   --weave-flex-grow: 0;
   --weave-flex-shrink: 0;
   --weave-progress-duration: var(--weave-motion-duration-normal);
-  --weave-progress-track: transparent;
-
-  place-items: center;
-}
-
-:where(.weave-progress--tracked) {
-  --weave-progress-track: color-mix(
+  --weave-progress-track-color: color-mix(
     in srgb,
     currentColor 16%,
     transparent
   );
+
+  place-items: center;
 }
 
 :where(.weave-progress--spin.weave-progress--small) {
@@ -96,14 +92,25 @@ const stylesheet = `
     calc(var(--weave-motion-duration-fast) * 6);
 }
 
-:where(.weave-progress__visual) {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
+:where(.weave-progress__track),
+:where(.weave-progress__value) {
+  position: absolute;
+  inset: 0;
 }
 
-:where(.weave-progress--spin) > :where(.weave-progress__visual) {
+:where(.weave-progress__track) {
+  display: none;
+  background: var(--weave-progress-track-color);
+}
+
+:where(.weave-progress--tracked) > :where(.weave-progress__track) {
+  display: block;
+}
+
+/* spin */
+
+:where(.weave-progress--spin) > :where(.weave-progress__track),
+:where(.weave-progress--spin) > :where(.weave-progress__value) {
   border-radius: 50%;
   mask:
     radial-gradient(
@@ -114,7 +121,7 @@ const stylesheet = `
 }
 
 :where(.weave-progress--spin.weave-progress--dotted)
-  > :where(.weave-progress__visual) {
+  > :where(.weave-progress__value) {
   mask-image:
     radial-gradient(
       farthest-side,
@@ -134,12 +141,12 @@ const stylesheet = `
 }
 
 :where(.weave-progress--spin.weave-progress--determined)
-  > :where(.weave-progress__visual) {
+  > :where(.weave-progress__value) {
   background:
     conic-gradient(
       from -90deg,
       currentColor var(--weave-progress-value),
-      var(--weave-progress-track) 0
+      transparent 0
     );
 
   transition:
@@ -149,15 +156,15 @@ const stylesheet = `
 }
 
 :where(.weave-progress--spin.weave-progress--undetermined)
-  > :where(.weave-progress__visual) {
+  > :where(.weave-progress__value) {
   background:
     conic-gradient(
       from -90deg,
-      var(--weave-progress-track) 0deg,
+      transparent 0deg,
       color-mix(in srgb, currentColor 18%, transparent) 72deg,
       currentColor 248deg,
       currentColor 330deg,
-      var(--weave-progress-track) 360deg
+      transparent 360deg
     );
 
   animation:
@@ -167,55 +174,54 @@ const stylesheet = `
     infinite;
 }
 
-:where(.weave-progress--linear) > :where(.weave-progress__visual) {
+/* linear */
+
+:where(.weave-progress--linear) {
+  overflow: hidden;
   border-radius: var(--weave-radius-full);
 }
 
-:where(.weave-progress--linear.weave-progress--dotted)
-  > :where(.weave-progress__visual) {
-  mask:
-    repeating-linear-gradient(
-      90deg,
-      #000 0 var(--weave-progress-dot-size),
-      transparent var(--weave-progress-dot-size)
-        calc(
-          var(--weave-progress-dot-size) +
-          var(--weave-progress-dot-gap)
-        )
-    );
+:where(.weave-progress--linear) > :where(.weave-progress__track),
+:where(.weave-progress--linear) > :where(.weave-progress__value) {
+  border-radius: inherit;
 }
 
 :where(.weave-progress--linear.weave-progress--determined)
-  > :where(.weave-progress__visual) {
-  background:
-    linear-gradient(
-      90deg,
-      currentColor var(--weave-progress-value),
-      var(--weave-progress-track) 0
-    );
+  > :where(.weave-progress__value) {
+  right: auto;
+  width: var(--weave-progress-value);
+  background: currentColor;
 
   transition:
-    --weave-progress-value
+    width
     var(--weave-progress-duration)
     var(--weave-motion-curve-standard);
 }
 
-:where(.weave-progress--linear.weave-progress--undetermined)
-  > :where(.weave-progress__visual) {
-  background: var(--weave-progress-track);
+:where(.weave-progress--linear.weave-progress--dotted)
+  > :where(.weave-progress__value) {
+  mask:
+    radial-gradient(
+      circle at center,
+      #000 50%,
+      transparent 52%
+    )
+    left center /
+    calc(
+      var(--weave-progress-dot-size) +
+      var(--weave-progress-dot-gap)
+    )
+    100%
+    repeat-x;
 }
 
 :where(.weave-progress--linear.weave-progress--undetermined)
-  > :where(.weave-progress__visual)::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
+  > :where(.weave-progress__value) {
+  right: auto;
   width: 36%;
-  border-radius: inherit;
   background: currentColor;
   transform: translateX(-120%);
+
   animation:
     weave-progress-linear-undetermined
     var(--weave-progress-duration)
@@ -244,15 +250,18 @@ const stylesheet = `
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :where(.weave-progress--determined)
-    > :where(.weave-progress__visual) {
+  :where(.weave-progress--spin.weave-progress--determined)
+    > :where(.weave-progress__value) {
+    transition: none;
+  }
+
+  :where(.weave-progress--linear.weave-progress--determined)
+    > :where(.weave-progress__value) {
     transition: none;
   }
 
   :where(.weave-progress--undetermined)
-    > :where(.weave-progress__visual),
-  :where(.weave-progress--undetermined)
-    > :where(.weave-progress__visual)::after {
+    > :where(.weave-progress__value) {
     animation: none;
   }
 }
