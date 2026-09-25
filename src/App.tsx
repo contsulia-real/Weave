@@ -1,26 +1,98 @@
 import { View } from './index'
 
+function DemoBox({ label }: { label: string }) {
+  return (
+    <View
+      padding={1}
+      radius="medium"
+      background="#f4f4f5"
+    >
+      <strong>{label}</strong>
+    </View>
+  )
+}
+
 function App() {
   return (
     <View
       layout="grid"
       minHeight="100vh"
       align="center"
+      padding={2}
     >
       <View
-        width="fit"
+        width="fill"
+        maxWidth={64}
         justifySelf="center"
         padding={2}
-        gap={1}
+        gap={2}
         layout="flex"
         direction="column"
         radius="large"
         background="surface"
         shadow="medium"
       >
-        <p className="eyebrow">Weave playground</p>
-        <h1>Weave</h1>
-        <p>React UI framework development surface.</p>
+        <View layout="flex" direction="column" gap={0.5}>
+          <p className="eyebrow">Weave playground</p>
+          <h1>Weave</h1>
+          <p>React UI framework development surface.</p>
+        </View>
+
+        <View layout="flex" direction="column" gap={0.75}>
+          <h2>Viewport breakpoint</h2>
+          <p className="hint">
+            窄窗口为纵向；达到 md（48rem）后变为横向并改变背景。
+          </p>
+
+          <View
+            layout="flex"
+            direction="column"
+            gap={0.75}
+            padding={1}
+            radius="medium"
+            background="#fef2f2"
+            md={{
+              direction: 'row',
+              background: '#eff6ff',
+              padding: 1.5,
+            }}
+          >
+            <DemoBox label="A" />
+            <DemoBox label="B" />
+            <DemoBox label="C" />
+          </View>
+        </View>
+
+        <View layout="flex" direction="column" gap={0.75}>
+          <h2>Container breakpoint</h2>
+          <p className="hint">
+            下面只看自身容器宽度；外层 viewport 不直接决定内部布局。
+          </p>
+
+          <View
+            container="demo"
+            width="fill"
+            maxWidth={40}
+            padding={1}
+            radius="medium"
+            border={0.0625}
+            borderColor="outline"
+          >
+            <View
+              layout="flex"
+              direction="column"
+              gap={0.75}
+              containerMd={{
+                direction: 'row',
+                gap: 1.5,
+              }}
+            >
+              <DemoBox label="1" />
+              <DemoBox label="2" />
+              <DemoBox label="3" />
+            </View>
+          </View>
+        </View>
       </View>
     </View>
   )
