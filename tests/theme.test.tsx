@@ -49,6 +49,23 @@ describe('Theme', () => {
       radius: {
         card: 1,
       },
+      typography: {
+        family: {
+          body: 'Inter, sans-serif',
+        },
+        size: {
+          medium: 1,
+        },
+        weight: {
+          regular: 400,
+        },
+        lineHeight: {
+          body: 1.5,
+        },
+        letterSpacing: {
+          normal: '0.01em',
+        },
+      },
       feedback: {
         restDepth: 0.1875,
         hoverScale: 1.03,
@@ -62,6 +79,15 @@ describe('Theme', () => {
       },
     })
 
+    expect(variables['--weave-typography-family-body']).toBe(
+      'Inter, sans-serif',
+    )
+    expect(variables['--weave-typography-size-medium']).toBe('1rem')
+    expect(variables['--weave-typography-weight-regular']).toBe(400)
+    expect(variables['--weave-typography-line-height-body']).toBe(1.5)
+    expect(variables['--weave-typography-letter-spacing-normal']).toBe(
+      '0.01em',
+    )
     expect(variables['--weave-spacing-compact']).toBe('0.5rem')
     expect(variables['--weave-radius-card']).toBe('1rem')
     expect(variables['--weave-feedback-rest-depth']).toBe('0.1875rem')
@@ -69,6 +95,35 @@ describe('Theme', () => {
     expect(variables['--weave-feedback-press-offset']).toBe('0.125rem')
     expect(variables['--weave-feedback-press-scale']).toBe(0.985)
     expect(variables['--weave-motion-duration-fast']).toBe('120ms')
+  })
+
+  it('applies the typography baseline through ThemeProvider', () => {
+    const { getByTestId } = render(
+      <ThemeProvider>
+        <View data={{ testid: 'typography-child' }} />
+      </ThemeProvider>,
+    )
+
+    const scope = getByTestId(
+      'typography-child',
+    ).parentElement as HTMLElement
+    const rule = runtimeRule(scope, 'weave-theme-')
+
+    expect(rule).toContain(
+      'font-family:var(--weave-typography-family-body);',
+    )
+    expect(rule).toContain(
+      'font-size:var(--weave-typography-size-medium);',
+    )
+    expect(rule).toContain(
+      'font-weight:var(--weave-typography-weight-regular);',
+    )
+    expect(rule).toContain(
+      'line-height:var(--weave-typography-line-height-body);',
+    )
+    expect(rule).toContain(
+      'letter-spacing:var(--weave-typography-letter-spacing-normal);',
+    )
   })
 
   it('applies local token overrides through theme classes', () => {
