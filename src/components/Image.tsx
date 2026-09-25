@@ -29,7 +29,7 @@ export function Image({
     className,
     mergedStyle,
     resolved,
-  } = useViewHost(hostProps, componentStyle)
+  } = useViewHost(hostProps, componentStyle, 'image')
 
   useInsertionEffect(ensureImageStylesheet, [])
 
