@@ -54,6 +54,8 @@ describe('Image', () => {
     const viewRule = runtimeRule(element, 'weave-props-')
 
     expect(element.tagName).toBe('IMG')
+    expect(element.className).toContain('weave-view')
+    expect(element.className).toContain('weave-image')
     expect(element.getAttribute('src')).toBe('/cover.webp')
     expect(element.getAttribute('alt')).toBe('Album cover')
     expect(element.getAttribute('loading')).toBe('lazy')
@@ -94,8 +96,10 @@ describe('Image', () => {
     const element = getByTestId('priority-image') as HTMLImageElement
     const imageRule = runtimeRule(element, 'weave-image-props-')
 
+    expect(element.className).toContain('weave-image')
     expect(element.className).toContain('custom-image')
     expect(element.style.objectFit).toBe('contain')
+    expect(element.getAttribute('style')).toContain('object-fit: contain')
     expect(imageRule).toContain('--weave-image-fit:cover;')
 
     const stylesheet = document.querySelector(
