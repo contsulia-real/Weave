@@ -190,6 +190,88 @@ component
 
 具体 HTML / DOM 语义由框架内部决定。
 
+### 2.7 默认设计语言：动效、反馈、开箱即用
+
+Weave 的设计完成度不能只体现在静态截图上。
+
+默认组件必须同时满足：
+
+```text
+视觉完成度
++ 即时反馈
++ 连续状态变化
++ 直接操作
++ 开箱即用
+```
+
+动效不是装饰层，而是组件状态语义的一部分。
+
+设计规则：
+
+- 用户产生输入后，应尽快看到可感知反馈；不要等待完整业务状态变化后才反馈。
+- 连续输入优先采用连续反馈。拖动、滚动、进度等不能退化为离散跳变。
+- 组件应尽量让视觉变化与用户动作形成直接因果关系。
+- 默认组件必须已经具有完整视觉和交互设计，不要求应用再额外补 hover / active / focus / drag 动效才能“看起来像成品”。
+- 动效必须服务于状态、方向、层级、直接操作或确认感；不为“热闹”而增加无意义运动。
+- 不同组件应采用最符合自身语义的反馈方式，不允许把一种动画机械复制到所有组件。
+
+典型映射：
+
+```text
+Button
+→ hover 轻微抬起
+→ press 下沉、厚度收缩
+→ release 回弹
+
+Switch
+→ thumb 可直接拖动
+→ 拖动时 thumb 跟随指针并产生抓取反馈
+→ 松手后按最终状态连续归位
+
+Scrollbar
+→ thumb 必须紧跟真实 scrollTop / scrollLeft
+→ 高频滚动路径不得用昂贵布局测量拖慢反馈
+
+Input
+→ focus / invalid / disabled / editing 状态必须明确且连续
+→ multiline scrollbar 与其他可滚动组件使用同一反馈体系
+
+Progress
+→ 确定进度变化有一次连续过渡
+→ 不确定进度保持连续运动，不允许循环边界卡顿
+```
+
+全局交互动力学由：
+
+```text
+theme.tokens.feedback
+theme.tokens.motion
+```
+
+提供基础参数。
+
+当前 feedback token：
+
+```text
+restDepth
+hoverDepth
+hoverLift
+pressDepth
+pressOffset
+pressScale
+dragScale
+```
+
+这些 token 描述全框架共同的“反馈物理量”，但组件可以按自己的语义选择其中一部分使用。
+
+例如：
+
+- Button 使用 depth / lift / press 系列构造实体按压反馈。
+- Switch 使用 `dragScale` 表达 thumb 被抓取的状态，但不会照搬 Button 的下压阴影。
+- Scrollbar 不需要使用 pressDepth；它的核心反馈是位置跟手和低延迟。
+
+`prefers-reduced-motion: reduce` 下仍必须保留状态可辨识性和直接操作结果，但应移除非必要的自动位移动画、弹性过渡和持续运动。
+
 ---
 
 ## 3. DOM-in-Canvas 与 DOM + CSS
@@ -2272,11 +2354,11 @@ size
 
 - 点击 track / thumb 切换
 - Space / Enter 键盘切换
-- 直接水平拖动 thumb；释放时以轨道中点决定最终开关状态
+- 直接水平拖动 thumb；拖动期间位置连续跟随指针，thumb 使用全局 `feedback.dragScale` 表达被抓取状态；释放时以轨道中点决定最终开关状态
 - 拖动完成后产生的兼容 click 不得再次反向切换
 - disabled 状态下点击、键盘与拖动都不能改变状态
 
-拖动中的 thumb 位置属于组件内部交互几何，可由渲染后端直接同步；它不是用户显式 `style`，也不改变公开样式优先级。
+拖动中的 thumb 位置属于组件内部交互几何，可由渲染后端直接同步；它不是用户显式 `style`，也不改变公开样式优先级。拖动期间不对 pointer movement 做缓动，保证直接跟手；松手后的归位才允许使用主题 motion curve。
 
 ### size
 
@@ -2787,7 +2869,44 @@ loading 规则：
 - loading spinner 为 `aria-hidden` 的装饰层
 - `prefers-reduced-motion: reduce` 下停止旋转
 
-## 18.7 ThemeProvider
+## 18.7 默认交互反馈
+
+Button 是 Weave “反馈优先”设计语言的典型组件之一。
+
+默认状态序列：
+
+```text
+rest
+→ 有实体厚度
+
+hover
+→ 轻微抬起并增加深度
+
+active / pointer press
+→ 向下位移
+→ 深度明显收缩
+→ 轻微缩放
+
+release
+→ 使用 spring curve 回到 rest / hover 状态
+```
+
+这套反馈模拟“可按下实体”，与 Button 的行为语义一致。
+
+具体动力学不写死在 Button 私有常量中，而读取：
+
+```text
+theme.tokens.feedback
+theme.tokens.motion
+```
+
+因此 Button 只解释全局 feedback token，不拥有另一套孤立的物理系统。
+
+实例 `viewProps.active` 等用户状态样式仍然高于组件默认 active 表现。
+
+`prefers-reduced-motion: reduce` 下保留颜色、阴影等可辨识状态变化，但移除自动位移 / 缩放动画。
+
+## 18.8 ThemeProvider
 
 Button 的默认视觉属于组件主题：
 
@@ -2813,7 +2932,7 @@ createTheme({
 
 实例 `viewProps` 的通用 View 能力仍按统一优先级覆盖组件主题。
 
-## 18.8 响应式高层语义
+## 18.9 响应式高层语义
 
 `size` 与 `variant` 支持当前 ThemeProvider 的动态 viewport breakpoint：
 
@@ -2843,7 +2962,7 @@ createTheme({
 
 响应式 Button 语义读取当前 ThemeProvider 的有效 breakpoint，不写死 `sm / md / lg / xl` 数值。
 
-## 18.9 viewProps
+## 18.10 viewProps
 
 Button 的通用布局、视觉、状态、事件、响应式 View 能力继续通过 `viewProps` 使用：
 
