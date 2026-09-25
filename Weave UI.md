@@ -2086,17 +2086,26 @@ large
 
 它可以由一个或多个 `View` 构建。
 
-最重要的语义：
+公开状态只有两类：
 
-- 支持确定进度
-- 支持不确定进度
-- 不用“有没有传 progress”来隐式猜模式
+```text
+undetermined
+progress
+```
+
+两者互斥。
 
 ## 16.1 不确定进度
 
 ```tsx
 <LoadingIndicator undetermined />
 ```
+
+不确定进度没有数值进度。
+
+它必须持续运动；该运动属于组件对“不确定加载”状态的内建行为，不通过组件级 `animation` 属性选择。
+
+`speed` 控制持续运动速度。
 
 ## 16.2 确定进度
 
@@ -2110,86 +2119,37 @@ large
 0 ~ 1
 ```
 
+确定进度显示真实数值进度。
+
+当 `progress` 从一个值变化到另一个值时，组件自动进行一次进度过渡；值稳定后不持续运动。
+
+`speed` 控制这次过渡的时长。
+
 ## 16.3 当前公开能力
-
-共同属性：
-
-```text
-size
-color
-speed
-```
-
-不确定进度额外支持：
 
 ```text
 undetermined
-animation
-  spin
-  pulse
-  dots
-```
-
-确定进度使用：
-
-```text
 progress
+size
+color
+speed
+viewProps
 ```
 
-示例：
-
-```tsx
-<LoadingIndicator
-  undetermined
-  size="medium"
-  color="primary"
-  speed="normal"
-  animation="spin"
-/>
-```
-
-确定进度：
-
-```tsx
-<LoadingIndicator
-  progress={0.68}
-  size="large"
-  color="primary"
-  speed="normal"
-/>
-```
-
-### 状态约束
-
-`undetermined` 与 `progress` 互斥。
-
-`animation` 只属于 `undetermined`。
-
-确定进度不接受：
+当前不提供组件级：
 
 ```text
+animation
 spin
 pulse
 dots
 ```
 
-因为这些描述的是持续的不确定加载动画，不用于表达数值进度。
+这些不能混成一个 LoadingIndicator 公共语义维度。
 
-确定进度的动画行为不通过 `animation` 选择：
+如果未来增加不同 LoadingIndicator 视觉形态，应单独设计其视觉语义，不与 determined / undetermined 状态或通用动画能力混用。
 
-> 当 `progress` 从一个数值变化到另一个数值时，组件自动对进度几何进行一次过渡；值稳定后停止运动。
-
-`speed` 在两种状态下含义保持一致但作用对象不同：
-
-```text
-undetermined
-→ 控制持续加载动画的循环速度
-
-progress
-→ 控制 progress 变化时单次过渡的时长
-```
-
-类型层必须表达该约束：
+类型层表达：
 
 ```ts
 type LoadingIndicatorProps =
@@ -2203,21 +2163,15 @@ type LoadingIndicatorProps =
     | {
         undetermined: true
         progress?: never
-        animation?: "spin" | "pulse" | "dots"
       }
     | {
         undetermined?: false
         progress: number
-        animation?: never
       }
   )
 ```
 
-这里的关键原则：
-
-> `undetermined` 决定持续加载动画；`progress` 决定真实数值进度。两者的运动语义不能由 `animation` 混在一起决定。
-
-底层复用和公开 API 不冲突。
+`viewProps` 继续承载 View 的通用能力。
 
 ---
 
