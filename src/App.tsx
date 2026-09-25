@@ -6,7 +6,6 @@ function App() {
       layout="grid"
       minHeight="100vh"
       align="center"
-      viewProps={undefined}
     >
       <View
         width="fit"
