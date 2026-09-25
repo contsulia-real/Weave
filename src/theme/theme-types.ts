@@ -61,6 +61,52 @@ export interface SwitchTheme {
   }
 }
 
+export interface ButtonThemeBase {
+  radius?: ThemeScaleValue
+  borderWidth?: ThemeScaleValue
+  cursor?: string
+  fontWeight?: number | string
+  focusOutlineWidth?: ThemeScaleValue
+  focusOutlineColor?: string
+  focusOutlineStyle?: string
+  focusOutlineOffset?: ThemeScaleValue
+}
+
+export interface ButtonThemeSize {
+  minHeight?: ThemeScaleValue
+  paddingX?: ThemeScaleValue
+  paddingY?: ThemeScaleValue
+  gap?: ThemeScaleValue
+  fontSize?: ThemeScaleValue
+}
+
+export interface ButtonThemeVariant {
+  background?: string
+  color?: string
+  borderColor?: string
+  hoverBackground?: string
+  activeBackground?: string
+}
+
+export interface ButtonTheme {
+  base?: ButtonThemeBase
+  sizes?: Partial<
+    Record<'small' | 'medium' | 'large', ButtonThemeSize>
+  >
+  variants?: Partial<
+    Record<
+      'primary' | 'secondary' | 'tertiary' | 'ghost' | 'danger',
+      ButtonThemeVariant
+    >
+  >
+  states?: {
+    disabled?: {
+      opacity?: number
+      cursor?: string
+    }
+  }
+}
+
 export interface ProgressThemeBase {
   trackColor?: string
   linearRadius?: ThemeScaleValue
@@ -100,6 +146,7 @@ export interface ScrollbarTheme {
 }
 
 export interface ThemeComponents {
+  Button?: ButtonTheme
   Switch?: SwitchTheme
   Progress?: ProgressTheme
   Scrollbar?: ScrollbarTheme
