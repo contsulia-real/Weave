@@ -1514,9 +1514,31 @@ containerMd / containerLg / ...
 style
 > className
 > 属性体系
+> 组件默认样式
 ```
 
-其中属性体系内部继续按照主题、组件变体、状态、实例属性与响应式覆盖规则解析。
+组件默认视觉样式必须由框架内部 class 提供，并使用低 specificity 的 `:where(...)` 选择器，不允许通过内联 `style` 注入默认视觉。
+
+例如：
+
+```text
+weave-switch
+weave-switch--medium
+weave-switch__thumb
+```
+
+这样用户自己的 `className` 天然高于组件默认 class，`style` 仍然保持最高优先级。
+
+只有无法静态枚举、必须在运行时连续变化的值，才允许通过最小化的 CSS 自定义属性传递，例如：
+
+```text
+LoadingIndicator progress={0.68}
+LoadingIndicator speed={800}
+```
+
+这类运行时值不承担组件默认视觉，只传递该实例的动态数据。
+
+属性体系内部继续按照主题、组件变体、状态、实例属性与响应式覆盖规则解析。
 
 `style` 的规则：
 
