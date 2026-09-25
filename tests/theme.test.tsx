@@ -26,6 +26,20 @@ function runtimeRule(
   ).replace(/\s+/g, '')
 }
 
+function breakpointStyles(element: Element): string {
+  const className = [...element.classList].find((name) =>
+    name.startsWith('weave-breakpoints-'),
+  )
+
+  expect(className).toBeDefined()
+
+  return (
+    document.querySelector<HTMLStyleElement>(
+      `style[data-weave-breakpoint-styles="${className}"]`,
+    )?.textContent ?? ''
+  ).replace(/\s+/g, '')
+}
+
 describe('Theme', () => {
   it('normalizes scale and time tokens to framework units', () => {
     const variables = themeTokenVariables({
@@ -82,6 +96,53 @@ describe('Theme', () => {
     expect(rule).toContain('--weave-color-primary:#ff4f87;')
     expect(rule).toContain('--weave-color-surface:#18181b;')
     expect(rule).toContain('display:contents;')
+  })
+
+  it('isolates breakpoint styles between nested providers', () => {
+    const outer = createTheme({
+      breakpoints: {
+        md: 52,
+      },
+    })
+    const inner = createTheme({
+      breakpoints: {
+        md: 60,
+      },
+    })
+
+    const { getByTestId } = render(
+      <ThemeProvider theme={outer} mode="light">
+        <View
+          md={{ width: 20 }}
+          data={{ testid: 'outer-breakpoint' }}
+        />
+        <ThemeProvider theme={inner}>
+          <View
+            md={{ width: 30 }}
+            data={{ testid: 'inner-breakpoint' }}
+          />
+        </ThemeProvider>
+      </ThemeProvider>,
+    )
+
+    const outerView = getByTestId('outer-breakpoint')
+    const innerView = getByTestId('inner-breakpoint')
+    const outerClass = [...outerView.classList].find((name) =>
+      name.startsWith('weave-breakpoints-'),
+    )
+    const innerClass = [...innerView.classList].find((name) =>
+      name.startsWith('weave-breakpoints-'),
+    )
+
+    expect(outerClass).toBeDefined()
+    expect(innerClass).toBeDefined()
+    expect(outerClass).not.toBe(innerClass)
+    expect(breakpointStyles(outerView)).toContain(
+      '@media(min-width:52rem)',
+    )
+    expect(breakpointStyles(innerView)).toContain(
+      '@media(min-width:60rem)',
+    )
   })
 
   it('inherits the parent mode when a nested provider omits mode', () => {
