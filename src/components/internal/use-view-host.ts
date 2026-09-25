@@ -13,6 +13,7 @@ import {
   resolveDOMView,
   type ResolvedDOMView,
 } from '../../renderers/dom/resolve-view'
+import { useRuntimeStyleClass } from '../../renderers/dom/runtime-class'
 import { ensureViewStylesheet } from '../../renderers/dom/view-stylesheet'
 
 export interface ViewHostResult<TElement extends HTMLElement> {
@@ -43,16 +44,27 @@ export function useViewHost<TElement extends HTMLElement>(
   }, [autoFocus])
 
   const resolved = resolveDOMView(props)
-  const mergedStyle: CSSProperties = {
-    ...resolved.attributeStyle,
-    ...componentStyle,
-    ...style,
-  }
+  const componentClassName = useRuntimeStyleClass(
+    'component-props',
+    componentStyle,
+  )
+  const attributeClassName = useRuntimeStyleClass(
+    'view-props',
+    resolved.attributeStyle,
+  )
+
+  const resolvedClassName = [
+    componentClassName,
+    attributeClassName,
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ') || undefined
 
   return {
     elementRef,
-    className,
-    mergedStyle,
+    className: resolvedClassName,
+    mergedStyle: style ?? {},
     resolved,
   }
 }
