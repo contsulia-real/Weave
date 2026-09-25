@@ -2288,6 +2288,17 @@ thumbPosition
 visibilityAlgorithm
 ```
 
+### 17.5 DOM fallback 实现约束
+
+DOM fallback 下：
+
+- 原 `View` 仍然是真实原生滚动容器，不额外包裹内容，不改变 flex / grid 子项结构。
+- 滚轮、触摸板、键盘滚动、`scrollTop` / `scrollLeft` 继续使用浏览器原生滚动机制。
+- 原生滚动条轨道通过标准 CSS 能力隐藏，不使用 `::-webkit-scrollbar` 作为视觉实现。
+- 框架自动挂载由 `View` 语义节点构成的 track / thumb，并与真实滚动位置同步。
+- track / thumb 的默认视觉遵循统一 class 优先级规则；几何位置、thumb 长度、滚动进度等连续运行时值允许通过最小化的 inline CSS / CSS 变量同步。
+- 自动挂载不能改变用户拿到的 `View` ref 所指向的真实滚动元素。
+
 ---
 
 # 18. `Button`
