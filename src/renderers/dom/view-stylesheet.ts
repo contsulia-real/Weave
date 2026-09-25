@@ -151,6 +151,11 @@ ${propertyRegistrationBlock()}
 
 :where([data-weave-view]) {
   box-sizing: border-box;
+  font-family: var(--weave-typography-family-body);
+  font-size: var(--weave-typography-size-medium);
+  font-weight: var(--weave-typography-weight-regular);
+  line-height: var(--weave-typography-line-height-body);
+  letter-spacing: var(--weave-typography-letter-spacing-normal);
   ${declarationBlock()}
 }
 
