@@ -1,7 +1,7 @@
 import type { ResolvedTheme } from './theme-types'
 
 const controlBaseline = {
-  radius: 0.5,
+  radius: 0.75,
   borderWidth: 0.0625,
   focusOutlineWidth: 0.125,
   focusOutlineColor: 'focus',
@@ -10,8 +10,8 @@ const controlBaseline = {
 } as const
 
 const controlMedium = {
-  minHeight: 2.25,
-  fontSize: 0.9375,
+  minHeight: 2.5,
+  fontSize: 1,
 } as const
 
 export const defaultBreakpoints = {
@@ -30,15 +30,15 @@ export const defaultTheme: ResolvedTheme = {
       onPrimary: '#ffffff',
       primaryHover: '#5f50e8',
       primaryActive: '#5144d4',
-      secondary: '#8b8b96',
-      tertiary: '#71717a',
-      disabled: '#a1a1aa',
-      surface: '#ffffff',
-      surfaceHover: '#f5f5f7',
+      secondary: '#8f8881',
+      tertiary: '#625c56',
+      disabled: '#aaa39d',
+      surface: '#fffdfa',
+      surfaceHover: '#f7f2ec',
       success: '#20a464',
       warning: '#d78b00',
       danger: '#d94040',
-      outline: '#d8d8df',
+      outline: '#d8cec4',
       focus: '#6d5dfc',
     },
     typography: {
@@ -110,24 +110,24 @@ export const defaultTheme: ResolvedTheme = {
       },
       sizes: {
         small: {
-          minHeight: 1.875,
-          paddingX: 0.625,
-          paddingY: 0.375,
+          minHeight: 2.125,
+          paddingX: 0.75,
+          paddingY: 0.4375,
           gap: 0.375,
-          fontSize: 0.8125,
+          fontSize: 0.875,
         },
         medium: {
           ...controlMedium,
-          paddingX: 0.875,
-          paddingY: 0.5,
-          gap: 0.5,
-        },
-        large: {
-          minHeight: 2.625,
           paddingX: 1,
           paddingY: 0.625,
           gap: 0.5,
-          fontSize: 1,
+        },
+        large: {
+          minHeight: 3,
+          paddingX: 1.25,
+          paddingY: 0.75,
+          gap: 0.625,
+          fontSize: 1.0625,
         },
       },
       variants: {
@@ -199,8 +199,8 @@ export const defaultTheme: ResolvedTheme = {
         color: 'inherit',
         placeholderColor: 'secondary',
         borderColor: 'outline',
-        paddingX: 0.75,
-        paddingY: 0.5,
+        paddingX: 0.875,
+        paddingY: 0.625,
         lineHeight: 1.375,
       },
       states: {
