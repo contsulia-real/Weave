@@ -4,8 +4,10 @@ import type {
   TextProps,
   TextResponsiveProps,
 } from '../core/text-types'
+import { breakpointEntries } from '../renderers/dom/breakpoint-utils'
 import { resolveTextResponsiveStyle } from '../renderers/dom/resolve-text'
 import { ensureTextStylesheet } from '../renderers/dom/text-stylesheet'
+import { useTheme } from '../theme/theme-context'
 import { useViewHost } from './internal/use-view-host'
 
 function colorStyle(
@@ -39,31 +41,63 @@ function responsiveData(
   return output
 }
 
-export function Text({
-  children,
-  viewProps,
-  size,
-  weight,
-  color,
-  align,
-  lineHeight,
-  letterSpacing,
-  wrap,
-  overflow,
-  maxLines,
-  case: textCase,
-  sm,
-  md,
-  lg,
-  xl,
-}: TextProps) {
-  const hostProps: ViewProps<HTMLSpanElement> = {
+export function Text<const TBreakpoint extends string = never>(
+  props: TextProps<TBreakpoint>,
+) {
+  const {
+    children,
+    viewProps = {},
+    size,
+    weight,
+    color,
+    align,
+    lineHeight,
+    letterSpacing,
+    wrap,
+    overflow,
+    maxLines,
+    case: textCase,
+  } = props
+
+  const { theme } = useTheme()
+  const breakpoints = breakpointEntries(theme.breakpoints)
+  const propsRecord = props as Record<string, unknown>
+  const viewPropsRecord = viewProps as Record<string, unknown>
+  const responsiveText: Record<
+    string,
+    TextResponsiveProps | undefined
+  > = {}
+  const responsiveAttributes: Record<string, string> = {}
+
+  const hostProps: ViewProps<HTMLSpanElement, TBreakpoint> = {
     ...viewProps,
     color,
-    sm: mergeResponsive(viewProps?.sm, colorStyle(sm)),
-    md: mergeResponsive(viewProps?.md, colorStyle(md)),
-    lg: mergeResponsive(viewProps?.lg, colorStyle(lg)),
-    xl: mergeResponsive(viewProps?.xl, colorStyle(xl)),
+  }
+  const writableHostProps = hostProps as Record<string, unknown>
+
+  for (const breakpoint of breakpoints) {
+    const textResponsive = propsRecord[
+      breakpoint.name
+    ] as TextResponsiveProps | undefined
+    const viewResponsive = viewPropsRecord[
+      breakpoint.name
+    ] as ViewResponsiveStyle | undefined
+
+    responsiveText[breakpoint.cssName] = textResponsive
+
+    const merged = mergeResponsive(
+      viewResponsive,
+      colorStyle(textResponsive),
+    )
+
+    if (merged !== undefined) {
+      writableHostProps[breakpoint.name] = merged
+    }
+
+    Object.assign(
+      responsiveAttributes,
+      responsiveData(breakpoint.cssName, textResponsive),
+    )
   }
 
   const componentStyle = resolveTextResponsiveStyle({
@@ -78,10 +112,7 @@ export function Text({
       maxLines,
       case: textCase,
     },
-    sm,
-    md,
-    lg,
-    xl,
+    responsive: responsiveText,
   })
 
   const {
@@ -96,10 +127,7 @@ export function Text({
   return (
     <span
       {...resolved.domProps}
-      {...responsiveData('sm', sm)}
-      {...responsiveData('md', md)}
-      {...responsiveData('lg', lg)}
-      {...responsiveData('xl', xl)}
+      {...responsiveAttributes}
       ref={elementRef}
       data-weave-view=""
       data-weave-text=""
