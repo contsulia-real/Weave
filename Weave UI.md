@@ -1846,6 +1846,33 @@ import {
 
 Weave 对传入的图标组件只负责统一应用自身的 `size`、`stroke`、颜色继承、布局与可访问性规则。
 
+### Outline / Filled
+
+Tabler 的 outline 与 filled 是不同的 React 组件导出，不由 Weave 的 `Icon` 在运行时切换。
+
+命名规则：
+
+```text
+outline → Icon{Name}
+filled  → Icon{Name}Filled
+```
+
+例如：
+
+```tsx
+import {
+  IconSearch,
+  IconSearchFilled,
+} from "@tabler/icons-react"
+
+<Icon icon={IconSearch} />
+<Icon icon={IconSearchFilled} />
+```
+
+因此 Weave 不额外提供 `variant="outline" | "filled"`。这样可以继续保持直接静态导入和 tree-shaking，也不会要求 Weave 建立 outline / filled 配对 registry。
+
+`stroke` 主要影响 outline 图标的线条粗细；filled 图标的实体形状由图标本身决定。两种风格都继承当前颜色。
+
 ## 12.2 SVG
 
 支持直接传 SVG：
