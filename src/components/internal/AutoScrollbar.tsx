@@ -485,6 +485,8 @@ export function AutoScrollbar({
         className={[
           'weave-scrollbar',
           `weave-scrollbar--${size}`,
+          themeTokenClassName,
+          scrollbarThemeClassName,
           'weave-scrollbar--horizontal',
           tracked ? 'weave-scrollbar--tracked' : undefined,
         ].filter(Boolean).join(' ')}
