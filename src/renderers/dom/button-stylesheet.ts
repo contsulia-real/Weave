@@ -79,11 +79,17 @@ const stylesheet = `
   --weave-component-align-items: center;
   --weave-component-justify-content: center;
   --weave-component-position: relative;
+  --weave-component-background: var(--weave-button-background);
+  --weave-component-color: var(--weave-button-color);
   --weave-component-border-top-width: var(--weave-button-theme-border-width);
   --weave-component-border-right-width: var(--weave-button-theme-border-width);
   --weave-component-border-bottom-width: var(--weave-button-theme-border-width);
   --weave-component-border-left-width: var(--weave-button-theme-border-width);
   --weave-component-border-style: solid;
+  --weave-component-border-top-color: var(--weave-button-border-color);
+  --weave-component-border-right-color: var(--weave-button-border-color);
+  --weave-component-border-bottom-color: var(--weave-button-border-color);
+  --weave-component-border-left-color: var(--weave-button-border-color);
   --weave-component-border-top-left-radius: var(--weave-button-theme-radius);
   --weave-component-border-top-right-radius: var(--weave-button-theme-radius);
   --weave-component-border-bottom-right-radius: var(--weave-button-theme-radius);
@@ -91,12 +97,7 @@ const stylesheet = `
   --weave-component-cursor: var(--weave-button-theme-cursor);
   --weave-component-user-select: none;
 
-  --weave-focus-visible-outline-width: var(--weave-button-theme-focus-outline-width);
-  --weave-focus-visible-outline-color: var(--weave-button-theme-focus-outline-color);
-  --weave-focus-visible-outline-style: var(--weave-button-theme-focus-outline-style);
-  --weave-focus-visible-outline-offset: var(--weave-button-theme-focus-outline-offset);
-  --weave-disabled-opacity: var(--weave-button-theme-disabled-opacity);
-  --weave-disabled-cursor: var(--weave-button-theme-disabled-cursor);
+  --weave-component-outline-width: 0;
 
   appearance: none;
   font: inherit;
@@ -104,6 +105,34 @@ const stylesheet = `
   font-weight: var(--weave-button-theme-font-weight);
   line-height: 1;
   text-decoration: none;
+}
+
+:where(.weave-button:hover) {
+  --weave-component-background: var(--weave-button-hover-background);
+}
+
+:where(.weave-button:active) {
+  --weave-component-background: var(--weave-button-active-background);
+}
+
+:where(.weave-button:focus-visible) {
+  --weave-component-outline-width: var(
+    --weave-button-theme-focus-outline-width
+  );
+  --weave-component-outline-color: var(
+    --weave-button-theme-focus-outline-color
+  );
+  --weave-component-outline-style: var(
+    --weave-button-theme-focus-outline-style
+  );
+  --weave-component-outline-offset: var(
+    --weave-button-theme-focus-outline-offset
+  );
+}
+
+:where(.weave-button[aria-disabled="true"]) {
+  --weave-component-opacity: var(--weave-button-theme-disabled-opacity);
+  --weave-component-cursor: var(--weave-button-theme-disabled-cursor);
 }
 
 :where(.weave-button--primary) {
