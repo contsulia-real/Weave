@@ -156,6 +156,31 @@ export const defaultTheme: ResolvedTheme = {
         },
       },
     },
+    Input: {
+      base: {
+        background: 'surface',
+        color: 'inherit',
+        placeholderColor: 'secondary',
+        borderColor: 'outline',
+        borderWidth: 0.0625,
+        radius: 'medium',
+        minHeight: 2.5,
+        paddingX: 0.75,
+        paddingY: 0.625,
+        fontSize: 1,
+        lineHeight: 1.5,
+        focusOutlineWidth: 0.125,
+        focusOutlineColor: 'focus',
+        focusOutlineStyle: 'solid',
+        focusOutlineOffset: 0.125,
+      },
+      states: {
+        disabled: {
+          opacity: 0.5,
+          cursor: 'default',
+        },
+      },
+    },
     Switch: {
       base: {
         background: 'outline',
