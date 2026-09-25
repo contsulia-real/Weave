@@ -97,6 +97,27 @@ describe('Theme', () => {
     expect(variables['--weave-motion-duration-fast']).toBe('120ms')
   })
 
+  it('keeps the default typography baseline without ThemeProvider', () => {
+    const { getByTestId } = render(
+      <View data={{ testid: 'default-typography' }} />,
+    )
+
+    const stylesheet = document.querySelector(
+      'style[data-weave-view-styles]',
+    )?.textContent ?? ''
+
+    expect(getByTestId('default-typography')).not.toBeNull()
+    expect(stylesheet).toContain(
+      'font-family: var(--weave-typography-family-body)',
+    )
+    expect(stylesheet).toContain(
+      'line-height: var(--weave-typography-line-height-body)',
+    )
+    expect(stylesheet).toContain(
+      'letter-spacing: var(--weave-typography-letter-spacing-normal)',
+    )
+  })
+
   it('applies the typography baseline through ThemeProvider', () => {
     const { getByTestId } = render(
       <ThemeProvider>
