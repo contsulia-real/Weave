@@ -248,7 +248,7 @@ function App() {
         <View layout="flex" direction="column" gap={0.75}>
           <h2>Progress</h2>
           <p className="hint">
-            mode 决定 spin / linear；dotted 只把当前形状改成点状分段。
+            mode 决定 spin / linear；tracked 只控制浅色连续轨道。
           </p>
 
           <View layout="flex" direction="column" gap={1}>
@@ -267,12 +267,11 @@ function App() {
                 <Progress
                   undetermined
                   mode="spin"
-                  dotted
                   tracked
                   size="medium"
                   color="primary"
                 />
-                <Text size="small">Spin dotted</Text>
+                <Text size="small">Spin tracked</Text>
               </View>
 
               <View layout="flex" direction="row" gap={0.5} align="center">
@@ -289,12 +288,11 @@ function App() {
                 <Progress
                   undetermined
                   mode="linear"
-                  dotted
                   tracked
                   size="medium"
                   color="primary"
                 />
-                <Text size="small">Linear dotted</Text>
+                <Text size="small">Linear tracked</Text>
               </View>
             </View>
 
@@ -302,14 +300,6 @@ function App() {
               <Progress
                 progress={progress}
                 mode="spin"
-                size="large"
-                color="success"
-              />
-
-              <Progress
-                progress={progress}
-                mode="spin"
-                dotted
                 tracked
                 size="large"
                 color="success"
@@ -318,14 +308,6 @@ function App() {
               <Progress
                 progress={progress}
                 mode="linear"
-                size="large"
-                color="success"
-              />
-
-              <Progress
-                progress={progress}
-                mode="linear"
-                dotted
                 tracked
                 size="large"
                 color="success"
