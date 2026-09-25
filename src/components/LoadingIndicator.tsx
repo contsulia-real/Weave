@@ -18,8 +18,6 @@ export function LoadingIndicator(props: LoadingIndicatorProps) {
   } = props
 
   const undetermined = props.undetermined === true
-  const animation = props.animation ?? 'spin'
-
   const progress = undetermined
     ? undefined
     : Math.min(1, Math.max(0, props.progress))
@@ -32,7 +30,6 @@ export function LoadingIndicator(props: LoadingIndicatorProps) {
     undetermined
       ? 'weave-loading-indicator--undetermined'
       : 'weave-loading-indicator--determined',
-    `weave-loading-indicator--${animation}`,
     typeof speed === 'string'
       ? `weave-loading-indicator--speed-${speed}`
       : undefined,
@@ -55,46 +52,23 @@ export function LoadingIndicator(props: LoadingIndicatorProps) {
         ...viewProps.data,
         'weave-loading': '',
         'weave-loading-size': size,
-        'weave-loading-animation': animation,
       }}
       style={{
         ...componentStyle,
         ...viewProps.style,
       }}
     >
-      {undetermined && animation === 'dots' ? (
-        <View
-          className="weave-loading-indicator__dots"
-          data={{
-            'weave-loading-dots': '',
-          }}
-        >
-          <View
-            className="weave-loading-indicator__dot"
-            data={{ 'weave-loading-dot': '1' }}
-          />
-          <View
-            className="weave-loading-indicator__dot"
-            data={{ 'weave-loading-dot': '2' }}
-          />
-          <View
-            className="weave-loading-indicator__dot"
-            data={{ 'weave-loading-dot': '3' }}
-          />
-        </View>
-      ) : (
-        <View
-          className="weave-loading-indicator__ring"
-          data={{
-            'weave-loading-ring': '',
-          }}
-          style={
-            progress === undefined
-              ? undefined
-              : resolveLoadingIndicatorProgressStyle(progress)
-          }
-        />
-      )}
+      <View
+        className="weave-loading-indicator__ring"
+        data={{
+          'weave-loading-ring': '',
+        }}
+        style={
+          progress === undefined
+            ? undefined
+            : resolveLoadingIndicatorProgressStyle(progress)
+        }
+      />
     </View>
   )
 }
