@@ -48,6 +48,7 @@ export { defaultTheme } from './theme/default-theme'
 export type {
   ResolvedTheme,
   ThemeDefinition,
+  ThemeFeedbackTokens,
   ThemeInput,
   ThemeMode,
   ThemeOverride,
