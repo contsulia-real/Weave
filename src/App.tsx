@@ -374,7 +374,7 @@ function App() {
         <View layout="flex" direction="column" gap={0.75}>
           <h2>Input</h2>
           <p className="hint">
-            单行和多行共用同一个 Input；布局与视觉继续通过 viewProps。
+            单行和多行共用同一个 Input；默认视觉来自 Input theme，multiline 内部滚动统一使用 Weave Scrollbar。
           </p>
 
           <View layout="flex" direction="column" gap={0.75} maxWidth={32}>
@@ -383,25 +383,23 @@ function App() {
               autoComplete="name"
               viewProps={{
                 width: 'fill',
-                padding: 0.75,
-                border: 0.0625,
-                borderColor: 'outline',
-                radius: 'medium',
-                background: 'surface',
               }}
             />
 
             <Input
               multiline
               rows={4}
+              defaultValue={[
+                'Multiline Input now uses Weave Scrollbar.',
+                'Small scroll movements update only the thumb transform.',
+                'Geometry is recalculated only on resize or layout changes.',
+                'The textarea keeps native editing and scrolling behavior.',
+                'Input and Button now share the same control height.',
+                'Border, radius and focus treatment come from the theme.',
+              ].join('\n')}
               placeholder="Notes"
               viewProps={{
                 width: 'fill',
-                padding: 0.75,
-                border: 0.0625,
-                borderColor: 'outline',
-                radius: 'medium',
-                background: 'surface',
               }}
             />
           </View>
