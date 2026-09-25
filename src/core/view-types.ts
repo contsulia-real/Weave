@@ -236,6 +236,7 @@ export interface ViewStyleProps {
 }
 
 export type ViewStateStyle = Partial<ViewStyleProps>
+export type ViewResponsiveStyle = Partial<ViewStyleProps>
 
 export interface ViewSemanticProps {
   role?: HTMLAttributes<HTMLDivElement>['role']
@@ -295,6 +296,18 @@ export interface ViewProps
   draggable?: boolean
   tabIndex?: number
   autoFocus?: boolean
+
+  container?: string
+
+  sm?: ViewResponsiveStyle
+  md?: ViewResponsiveStyle
+  lg?: ViewResponsiveStyle
+  xl?: ViewResponsiveStyle
+
+  containerSm?: ViewResponsiveStyle
+  containerMd?: ViewResponsiveStyle
+  containerLg?: ViewResponsiveStyle
+  containerXl?: ViewResponsiveStyle
 
   hover?: ViewStateStyle
   active?: ViewStateStyle
