@@ -6,7 +6,6 @@ import {
 } from 'react'
 import type {
   CSSProperties,
-  HTMLAttributes,
   RefObject,
 } from 'react'
 import type { ViewProps } from '../../core/view-types'
