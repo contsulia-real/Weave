@@ -7,7 +7,10 @@ import {
   type ReactNode,
 } from 'react'
 import { defaultTheme } from './default-theme'
-import { resolveTheme } from './theme-merge'
+import {
+  mergeThemeDefinitions,
+  resolveTheme,
+} from './theme-merge'
 import { themeVariables } from './theme-css'
 import type {
   ResolvedTheme,
@@ -16,11 +19,13 @@ import type {
 } from './theme-types'
 
 interface ThemeContextValue {
+  definition: ThemeDefinition
   theme: ResolvedTheme
   mode: Exclude<ThemeMode, 'system'>
 }
 
 const ThemeContext = createContext<ThemeContextValue>({
+  definition: {},
   theme: defaultTheme,
   mode: 'light',
 })
@@ -64,14 +69,23 @@ export function ThemeProvider({
   const parent = useContext(ThemeContext)
   const activeMode = useResolvedMode(mode)
 
+  const definition = useMemo(
+    () => mergeThemeDefinitions(parent.definition, theme),
+    [parent.definition, theme],
+  )
+
   const resolvedTheme = useMemo(
-    () => resolveTheme(parent.theme, theme, activeMode),
-    [activeMode, parent.theme, theme],
+    () => resolveTheme(definition, activeMode),
+    [activeMode, definition],
   )
 
   const contextValue = useMemo(
-    () => ({ theme: resolvedTheme, mode: activeMode }),
-    [activeMode, resolvedTheme],
+    () => ({
+      definition,
+      theme: resolvedTheme,
+      mode: activeMode,
+    }),
+    [activeMode, definition, resolvedTheme],
   )
 
   const variables = useMemo(
@@ -95,6 +109,7 @@ export function ThemeProvider({
   )
 }
 
-export function useTheme(): ThemeContextValue {
-  return useContext(ThemeContext)
+export function useTheme(): Omit<ThemeContextValue, 'definition'> {
+  const { theme, mode } = useContext(ThemeContext)
+  return { theme, mode }
 }
