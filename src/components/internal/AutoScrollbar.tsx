@@ -231,9 +231,14 @@ export function AutoScrollbar({
     syncScrollbarLayer(verticalTrack, target)
     syncScrollbarLayer(horizontalTrack, target)
 
+    const verticalOverflow =
+      computed.overflowY || computed.overflow
+    const horizontalOverflow =
+      computed.overflowX || computed.overflow
+
     const verticalVisible =
       scrollbarVisible(
-        computed.overflowY,
+        verticalOverflow,
         target.scrollHeight,
         target.clientHeight,
       ) &&
@@ -241,7 +246,7 @@ export function AutoScrollbar({
 
     const horizontalVisible =
       scrollbarVisible(
-        computed.overflowX,
+        horizontalOverflow,
         target.scrollWidth,
         target.clientWidth,
       ) &&
