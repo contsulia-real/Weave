@@ -12,6 +12,13 @@ const stylesheet = `
 :where([data-weave-image]) {
   object-fit: var(--weave-image-fit, fill);
   object-position: var(--weave-image-position, 50% 50%);
+  overflow: var(
+    --weave-container-responsive-overflow,
+    var(
+      --weave-viewport-responsive-overflow,
+      var(--weave-overflow, clip)
+    )
+  );
 }
 `
 
