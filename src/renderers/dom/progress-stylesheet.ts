@@ -94,24 +94,30 @@ const stylesheet = `
 
 :where(.weave-progress__track),
 :where(.weave-progress__value) {
-  position: absolute;
-  inset: 0;
+  --weave-position: absolute;
+  --weave-top: 0;
+  --weave-right: 0;
+  --weave-bottom: 0;
+  --weave-left: 0;
 }
 
 :where(.weave-progress__track) {
-  display: none;
-  background: var(--weave-progress-track-color);
+  --weave-display: none;
+  --weave-background: var(--weave-progress-track-color);
 }
 
 :where(.weave-progress--tracked) > :where(.weave-progress__track) {
-  display: block;
+  --weave-display: block;
 }
 
 /* spin */
 
 :where(.weave-progress--spin) > :where(.weave-progress__track),
 :where(.weave-progress--spin) > :where(.weave-progress__value) {
-  border-radius: 50%;
+  --weave-border-top-left-radius: 50%;
+  --weave-border-top-right-radius: 50%;
+  --weave-border-bottom-right-radius: 50%;
+  --weave-border-bottom-left-radius: 50%;
   mask:
     radial-gradient(
       farthest-side,
@@ -142,7 +148,7 @@ const stylesheet = `
 
 :where(.weave-progress--spin.weave-progress--determined)
   > :where(.weave-progress__value) {
-  background:
+  --weave-background:
     conic-gradient(
       from -90deg,
       currentColor var(--weave-progress-value),
@@ -157,7 +163,7 @@ const stylesheet = `
 
 :where(.weave-progress--spin.weave-progress--undetermined)
   > :where(.weave-progress__value) {
-  background:
+  --weave-background:
     conic-gradient(
       from -90deg,
       transparent 0deg,
@@ -177,20 +183,26 @@ const stylesheet = `
 /* linear */
 
 :where(.weave-progress--linear) {
-  overflow: hidden;
-  border-radius: var(--weave-radius-full);
+  --weave-overflow: hidden;
+  --weave-border-top-left-radius: var(--weave-radius-full);
+  --weave-border-top-right-radius: var(--weave-radius-full);
+  --weave-border-bottom-right-radius: var(--weave-radius-full);
+  --weave-border-bottom-left-radius: var(--weave-radius-full);
 }
 
 :where(.weave-progress--linear) > :where(.weave-progress__track),
 :where(.weave-progress--linear) > :where(.weave-progress__value) {
-  border-radius: inherit;
+  --weave-border-top-left-radius: var(--weave-radius-full);
+  --weave-border-top-right-radius: var(--weave-radius-full);
+  --weave-border-bottom-right-radius: var(--weave-radius-full);
+  --weave-border-bottom-left-radius: var(--weave-radius-full);
 }
 
 :where(.weave-progress--linear.weave-progress--determined)
   > :where(.weave-progress__value) {
-  right: auto;
-  width: var(--weave-progress-value);
-  background: currentColor;
+  --weave-right: auto;
+  --weave-width: var(--weave-progress-value);
+  --weave-background: currentColor;
 
   transition:
     width
@@ -217,9 +229,9 @@ const stylesheet = `
 
 :where(.weave-progress--linear.weave-progress--undetermined)
   > :where(.weave-progress__value) {
-  right: auto;
-  width: 36%;
-  background: currentColor;
+  --weave-right: auto;
+  --weave-width: 36%;
+  --weave-background: currentColor;
   transform: translateX(-120%);
 
   animation:
