@@ -295,11 +295,13 @@ describe('Progress', () => {
     const element = getByRole('progressbar')
     const propsRule = runtimeRule(element, 'weave-props-')
 
+    expect(element.className).toContain('weave-view')
     expect(element.className).toContain('weave-progress')
     expect(element.className).toContain('custom-progress')
     expect(element.style.getPropertyValue('--weave-width')).toBe('')
     expect(propsRule).toContain('--weave-width:4rem;')
     expect(element.style.width).toBe('18px')
+    expect(element.getAttribute('style')).toContain('width: 18px')
   })
 
   it('installs reduced-motion handling in its stylesheet', () => {
