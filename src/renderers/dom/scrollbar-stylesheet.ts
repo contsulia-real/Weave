@@ -4,116 +4,73 @@ const stylesheet = `
 }
 
 :where(.weave-scrollbar) {
-  --weave-display: none;
-  --weave-position: fixed;
-  --weave-z-index: 0;
-  --weave-background: transparent;
-  --weave-border-top-left-radius: var(
-    --weave-scrollbar-radius,
-    var(--weave-radius-full)
+  --weave-component-display: none;
+  --weave-component-position: fixed;
+  --weave-component-z-index: 0;
+  --weave-component-background: transparent;
+  --weave-component-border-top-left-radius: var(
+    --weave-scrollbar-radius
   );
-  --weave-border-top-right-radius: var(
-    --weave-scrollbar-radius,
-    var(--weave-radius-full)
+  --weave-component-border-top-right-radius: var(
+    --weave-scrollbar-radius
   );
-  --weave-border-bottom-right-radius: var(
-    --weave-scrollbar-radius,
-    var(--weave-radius-full)
+  --weave-component-border-bottom-right-radius: var(
+    --weave-scrollbar-radius
   );
-  --weave-border-bottom-left-radius: var(
-    --weave-scrollbar-radius,
-    var(--weave-radius-full)
+  --weave-component-border-bottom-left-radius: var(
+    --weave-scrollbar-radius
   );
-  --weave-opacity: var(--weave-scrollbar-opacity, 1);
-  --weave-user-select: none;
+  --weave-component-opacity: var(--weave-scrollbar-opacity);
+  --weave-component-user-select: none;
 
   touch-action: none;
 }
 
 :where(.weave-scrollbar[data-weave-scrollbar-visible="true"]) {
-  --weave-display: block;
+  --weave-component-display: block;
 }
 
 :where(.weave-scrollbar--tracked) {
-  --weave-background: var(
-    --weave-scrollbar-track-color,
-    color-mix(
-      in srgb,
-      var(
-        --weave-scrollbar-color,
-        var(--weave-color-secondary)
-      ) 16%,
-      transparent
-    )
-  );
-}
-
-:where(.weave-scrollbar--small.weave-scrollbar--vertical) {
-  --weave-width: 0.375rem;
-}
-
-:where(.weave-scrollbar--medium.weave-scrollbar--vertical) {
-  --weave-width: 0.5rem;
-}
-
-:where(.weave-scrollbar--large.weave-scrollbar--vertical) {
-  --weave-width: 0.625rem;
-}
-
-:where(.weave-scrollbar--small.weave-scrollbar--horizontal) {
-  --weave-height: 0.375rem;
-}
-
-:where(.weave-scrollbar--medium.weave-scrollbar--horizontal) {
-  --weave-height: 0.5rem;
-}
-
-:where(.weave-scrollbar--large.weave-scrollbar--horizontal) {
-  --weave-height: 0.625rem;
+  --weave-component-background: var(--weave-scrollbar-track-color);
 }
 
 :where(.weave-scrollbar--vertical) {
-  --weave-transform: translateX(-100%);
+  --weave-component-width: var(--weave-scrollbar-thickness);
+  --weave-component-transform: translateX(-100%);
 }
 
 :where(.weave-scrollbar--horizontal) {
-  --weave-transform: translateY(-100%);
+  --weave-component-height: var(--weave-scrollbar-thickness);
+  --weave-component-transform: translateY(-100%);
 }
 
 :where(.weave-scrollbar__thumb) {
-  --weave-position: absolute;
-  --weave-background: var(
-    --weave-scrollbar-color,
-    var(--weave-color-secondary)
+  --weave-component-position: absolute;
+  --weave-component-background: var(--weave-scrollbar-color);
+  --weave-component-border-top-left-radius: var(
+    --weave-scrollbar-radius
   );
-  --weave-border-top-left-radius: var(
-    --weave-scrollbar-radius,
-    var(--weave-radius-full)
+  --weave-component-border-top-right-radius: var(
+    --weave-scrollbar-radius
   );
-  --weave-border-top-right-radius: var(
-    --weave-scrollbar-radius,
-    var(--weave-radius-full)
+  --weave-component-border-bottom-right-radius: var(
+    --weave-scrollbar-radius
   );
-  --weave-border-bottom-right-radius: var(
-    --weave-scrollbar-radius,
-    var(--weave-radius-full)
+  --weave-component-border-bottom-left-radius: var(
+    --weave-scrollbar-radius
   );
-  --weave-border-bottom-left-radius: var(
-    --weave-scrollbar-radius,
-    var(--weave-radius-full)
-  );
-  --weave-cursor: pointer;
-  --weave-user-select: none;
+  --weave-component-cursor: var(--weave-scrollbar-thumb-cursor);
+  --weave-component-user-select: none;
 }
 
 :where(.weave-scrollbar--vertical) > :where(.weave-scrollbar__thumb) {
-  --weave-width: 100%;
-  --weave-left: 0;
+  --weave-component-width: 100%;
+  --weave-component-left: 0;
 }
 
 :where(.weave-scrollbar--horizontal) > :where(.weave-scrollbar__thumb) {
-  --weave-height: 100%;
-  --weave-top: 0;
+  --weave-component-height: 100%;
+  --weave-component-top: 0;
 }
 `
 
