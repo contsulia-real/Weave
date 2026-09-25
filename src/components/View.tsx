@@ -88,7 +88,7 @@ export function View(props: ViewProps<HTMLDivElement>) {
   const {
     elementRef,
     className,
-    mergedStyle,
+    inlineStyle,
     resolved,
   } = useViewHost(props)
 
@@ -112,7 +112,7 @@ export function View(props: ViewProps<HTMLDivElement>) {
         data-weave-layout={resolved.layout}
         data-weave-scroll-host={mountsScrollbar ? '' : undefined}
         className={resolvedClassName}
-        style={mergedStyle}
+        style={inlineStyle}
       >
         {children}
       </div>
