@@ -6,7 +6,7 @@ import { View } from './View'
 
 export function LoadingIndicator({
   size = 'medium',
-  color = 'primary',
+  color,
   speed = 'normal',
   animation = 'spin',
   viewProps = {},
