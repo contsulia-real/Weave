@@ -201,7 +201,6 @@ export function Switch({
       drag,
       nextOffset,
       dragShrinkMin,
-      dragStretchMax,
     )
 
     return true
@@ -283,7 +282,6 @@ export function Switch({
       drag,
       startOffset,
       dragShrinkMin,
-      dragStretchMax,
     )
     root.setPointerCapture?.(event.pointerId)
 
