@@ -6,7 +6,8 @@ const stylesheet = `
   --weave-flex-shrink: 0;
   --weave-width: 1.5rem;
   --weave-height: 1.5rem;
-  --weave-loading-duration: var(--weave-motion-duration-normal);
+  --weave-loading-duration:
+    calc(var(--weave-motion-duration-normal) * 5);
   --weave-loading-track: color-mix(
     in srgb,
     currentColor 16%,
@@ -27,26 +28,29 @@ const stylesheet = `
   --weave-width: 1.5rem;
   --weave-height: 1.5rem;
   --weave-loading-stroke: 0.15625rem;
-  --weave-loading-dot: 0.375rem;
+  --weave-loading-dot: 0.3125rem;
 }
 
 :where(.weave-loading-indicator--large) {
   --weave-width: 2rem;
   --weave-height: 2rem;
   --weave-loading-stroke: 0.1875rem;
-  --weave-loading-dot: 0.5rem;
+  --weave-loading-dot: 0.375rem;
 }
 
 :where(.weave-loading-indicator--speed-slow) {
-  --weave-loading-duration: var(--weave-motion-duration-slow);
+  --weave-loading-duration:
+    calc(var(--weave-motion-duration-slow) * 4);
 }
 
 :where(.weave-loading-indicator--speed-normal) {
-  --weave-loading-duration: var(--weave-motion-duration-normal);
+  --weave-loading-duration:
+    calc(var(--weave-motion-duration-normal) * 5);
 }
 
 :where(.weave-loading-indicator--speed-fast) {
-  --weave-loading-duration: var(--weave-motion-duration-fast);
+  --weave-loading-duration:
+    calc(var(--weave-motion-duration-fast) * 6);
 }
 
 :where(.weave-loading-indicator__ring) {
