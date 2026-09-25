@@ -53,6 +53,8 @@ describe('Text', () => {
     const viewRule = runtimeRule(element, 'weave-props-')
 
     expect(element.tagName).toBe('SPAN')
+    expect(element.className).toContain('weave-view')
+    expect(element.className).toContain('weave-text')
     expect(element.getAttribute('size')).toBeNull()
     expect(element.getAttribute('weight')).toBeNull()
 
@@ -136,8 +138,10 @@ describe('Text', () => {
     const element = getByTestId('priority-text')
     const textRule = runtimeRule(element, 'weave-text-props-')
 
+    expect(element.className).toContain('weave-text')
     expect(element.className).toContain('custom-text')
     expect(element.style.fontSize).toBe('13px')
+    expect(element.getAttribute('style')).toContain('font-size: 13px')
     expect(textRule).toContain(
       '--weave-text-font-size:var(--weave-typography-size-large);',
     )
