@@ -36,6 +36,32 @@ export function themeTokenVariables(tokens: ThemeTokens): ThemeVariableStyle {
   assignRecord(output, 'radius', tokens.radius, toRem)
   assignRecord(output, 'shadow', tokens.shadow)
 
+  if (tokens.feedback !== undefined) {
+    const feedback = tokens.feedback
+
+    if (feedback.restDepth !== undefined) {
+      output['--weave-feedback-rest-depth'] = toRem(feedback.restDepth)
+    }
+    if (feedback.hoverDepth !== undefined) {
+      output['--weave-feedback-hover-depth'] = toRem(feedback.hoverDepth)
+    }
+    if (feedback.hoverLift !== undefined) {
+      output['--weave-feedback-hover-lift'] = toRem(feedback.hoverLift)
+    }
+    if (feedback.pressDepth !== undefined) {
+      output['--weave-feedback-press-depth'] = toRem(feedback.pressDepth)
+    }
+    if (feedback.pressOffset !== undefined) {
+      output['--weave-feedback-press-offset'] = toRem(feedback.pressOffset)
+    }
+    if (feedback.pressScale !== undefined) {
+      output['--weave-feedback-press-scale'] = feedback.pressScale
+    }
+    if (feedback.dragScale !== undefined) {
+      output['--weave-feedback-drag-scale'] = feedback.dragScale
+    }
+  }
+
   assignRecord(output, 'typography-size', tokens.typography?.size, toRem)
   assignRecord(output, 'typography-weight', tokens.typography?.weight)
 
