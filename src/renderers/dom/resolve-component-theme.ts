@@ -111,6 +111,8 @@ export function resolveButtonTheme(
       color(value?.color)
     output[`--weave-button-theme-${variant}-border-color`] =
       color(value?.borderColor)
+    output[`--weave-button-theme-${variant}-depth-color`] =
+      color(value?.depthColor)
     output[`--weave-button-theme-${variant}-hover-background`] =
       color(value?.hoverBackground)
     output[`--weave-button-theme-${variant}-active-background`] =
