@@ -7,6 +7,23 @@ afterEach(() => {
   vi.restoreAllMocks()
 })
 
+function runtimeRule(
+  element: Element,
+  prefix: string,
+): string {
+  const className = [...element.classList].find((name) =>
+    name.startsWith(prefix),
+  )
+
+  expect(className).toBeDefined()
+
+  return (
+    document.querySelector<HTMLStyleElement>(
+      `style[data-weave-runtime-class="${className}"]`,
+    )?.textContent ?? ''
+  )
+}
+
 describe('Image', () => {
   it('renders a real img with image semantics and View props', () => {
     const onLoad = vi.fn()
@@ -33,6 +50,8 @@ describe('Image', () => {
     )
 
     const element = getByTestId('image') as HTMLImageElement
+    const imageRule = runtimeRule(element, 'weave-component-props-')
+    const viewRule = runtimeRule(element, 'weave-view-props-')
 
     expect(element.tagName).toBe('IMG')
     expect(element.getAttribute('src')).toBe('/cover.webp')
@@ -41,12 +60,11 @@ describe('Image', () => {
     expect(element.getAttribute('fit')).toBeNull()
     expect(element.getAttribute('position')).toBeNull()
 
-    expect(element.style.getPropertyValue('--weave-image-fit')).toBe('cover')
-    expect(element.style.getPropertyValue('--weave-image-position')).toBe(
-      'left top',
-    )
-    expect(element.style.getPropertyValue('--weave-width')).toBe('20rem')
-    expect(element.style.getPropertyValue('--weave-height')).toBe('12rem')
+    expect(imageRule).toContain('--weave-image-fit:cover;')
+    expect(imageRule).toContain('--weave-image-position:left top;')
+    expect(viewRule).toContain('--weave-width:20rem;')
+    expect(viewRule).toContain('--weave-height:12rem;')
+    expect(element.style.getPropertyValue('--weave-image-fit')).toBe('')
 
     fireEvent.load(element)
     fireEvent.error(element)
@@ -74,10 +92,11 @@ describe('Image', () => {
     )
 
     const element = getByTestId('priority-image') as HTMLImageElement
+    const imageRule = runtimeRule(element, 'weave-component-props-')
 
-    expect(element.className).toBe('custom-image')
+    expect(element.className).toContain('custom-image')
     expect(element.style.objectFit).toBe('contain')
-    expect(element.style.getPropertyValue('--weave-image-fit')).toBe('cover')
+    expect(imageRule).toContain('--weave-image-fit:cover;')
 
     const stylesheet = document.querySelector(
       'style[data-weave-image-styles]',
@@ -104,11 +123,10 @@ describe('Image', () => {
       />,
     )
 
-    expect(
-      getByTestId('position-image').style.getPropertyValue(
-        '--weave-image-position',
-      ),
-    ).toBe('25% 75%')
+    const element = getByTestId('position-image')
+    expect(runtimeRule(element, 'weave-component-props-')).toContain(
+      '--weave-image-position:25% 75%;',
+    )
   })
 
   it('revokes the previous object URL when Blob source changes', () => {
