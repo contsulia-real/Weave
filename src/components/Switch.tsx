@@ -106,7 +106,7 @@ export function Switch({
     useState(defaultChecked)
   const switchBase = theme.components.Switch?.base
   const dragShrinkMin = switchBase?.thumbDragShrink ?? 0.72
-  const dragStretchMax = switchBase?.thumbDragStretch ?? 0.7
+  const dragStretchMax = switchBase?.thumbDragStretch ?? 1
   const isControlled = checked !== undefined
   const currentChecked = checked ?? uncontrolledChecked
   const dragRef = useRef<SwitchDragState | null>(null)
