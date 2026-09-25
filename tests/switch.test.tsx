@@ -81,6 +81,29 @@ describe('Switch', () => {
     expect(onChange).not.toHaveBeenCalled()
   })
 
+  it('does not toggle while disabled through viewProps', () => {
+    const onChange = vi.fn()
+
+    const { getByRole } = render(
+      <Switch
+        onChange={onChange}
+        viewProps={{
+          disabled: true,
+        }}
+      />,
+    )
+
+    const element = getByRole('switch')
+
+    expect(element.getAttribute('aria-disabled')).toBe('true')
+
+    fireEvent.click(element)
+    fireEvent.keyDown(element, { key: ' ' })
+
+    expect(onChange).not.toHaveBeenCalled()
+    expect(element.getAttribute('aria-checked')).toBe('false')
+  })
+
   it('renders track and thumb with semantic size data', () => {
     const { getByRole } = render(
       <Switch
