@@ -306,13 +306,13 @@ describe('Button', () => {
     const rule = runtimeRule(element, 'weave-button-theme-')
 
     expect(rule).toContain(
-      '--weave-button-theme-medium-min-height:2.25rem;',
+      '--weave-button-theme-medium-min-height:2.5rem;',
     )
     expect(rule).toContain(
       '--weave-button-theme-primary-background:var(--weave-color-primary',
     )
     expect(rule).toContain(
-      '--weave-button-theme-radius:0.5rem;',
+      '--weave-button-theme-radius:0.75rem;',
     )
   })
 
@@ -393,6 +393,30 @@ describe('Button', () => {
     )
     expect(styles).toContain(
       '[data-weave-button-compact-variant="danger"]',
+    )
+  })
+
+  it('uses the global tactile feedback language for press and release', () => {
+    render(<Button text="Tactile" />)
+
+    const stylesheet = document.querySelector(
+      'style[data-weave-button-styles]',
+    )?.textContent ?? ''
+
+    expect(stylesheet).toContain(
+      'var(--weave-feedback-rest-depth)',
+    )
+    expect(stylesheet).toContain(
+      'var(--weave-feedback-hover-lift)',
+    )
+    expect(stylesheet).toContain(
+      'var(--weave-feedback-press-offset)',
+    )
+    expect(stylesheet).toContain(
+      'var(--weave-feedback-press-scale)',
+    )
+    expect(stylesheet).toContain(
+      'var(--weave-motion-curve-spring)',
     )
   })
 
