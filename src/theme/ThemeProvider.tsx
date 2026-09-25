@@ -22,12 +22,14 @@ interface ThemeContextValue {
   definition: ThemeDefinition
   theme: ResolvedTheme
   mode: Exclude<ThemeMode, 'system'>
+  requestedMode: ThemeMode
 }
 
 const ThemeContext = createContext<ThemeContextValue>({
   definition: {},
   theme: defaultTheme,
   mode: 'light',
+  requestedMode: 'system',
 })
 
 function getSystemMode(): 'light' | 'dark' {
@@ -73,11 +75,12 @@ export interface ThemeProviderProps {
 
 export function ThemeProvider({
   theme = {},
-  mode = 'system',
+  mode,
   children,
 }: ThemeProviderProps) {
   const parent = useContext(ThemeContext)
-  const activeMode = useResolvedMode(mode)
+  const requestedMode = mode ?? parent.requestedMode
+  const activeMode = useResolvedMode(requestedMode)
 
   const definition = useMemo(
     () => mergeThemeDefinitions(parent.definition, theme),
@@ -94,8 +97,9 @@ export function ThemeProvider({
       definition,
       theme: resolvedTheme,
       mode: activeMode,
+      requestedMode,
     }),
-    [activeMode, definition, resolvedTheme],
+    [activeMode, definition, requestedMode, resolvedTheme],
   )
 
   const variables = useMemo(
