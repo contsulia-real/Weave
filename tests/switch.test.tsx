@@ -147,13 +147,7 @@ describe('Switch', () => {
     )
     expect(thumb.style.transform).toContain('translateX(')
 
-    const stylesheet = document.querySelector(
-      'style[data-weave-switch-styles]',
-    )?.textContent ?? ''
-
-    expect(stylesheet).toContain(
-      'scale: var(--weave-feedback-drag-scale)',
-    )
+    expect(thumb.style.transform).toContain('scale(1.24, 0.88)')
 
     fireEvent.pointerUp(element, {
       pointerId: 7,
@@ -170,6 +164,63 @@ describe('Switch', () => {
 
     expect(onChange).toHaveBeenCalledTimes(1)
     expect(element.getAttribute('aria-checked')).toBe('true')
+  })
+
+  it('caps thumb deformation at the state threshold and restores it on release', () => {
+    const { getByRole } = render(<Switch />)
+    const element = getByRole('switch') as HTMLDivElement
+    const thumb = element.querySelector(
+      '[data-weave-switch-thumb]',
+    ) as HTMLDivElement
+
+    element.getBoundingClientRect = () => ({
+      x: 0,
+      y: 0,
+      top: 0,
+      right: 40,
+      bottom: 24,
+      left: 0,
+      width: 40,
+      height: 24,
+      toJSON: () => ({}),
+    })
+    thumb.getBoundingClientRect = () => ({
+      x: 2,
+      y: 2,
+      top: 2,
+      right: 22,
+      bottom: 22,
+      left: 2,
+      width: 20,
+      height: 20,
+      toJSON: () => ({}),
+    })
+
+    fireEvent.pointerDown(thumb, {
+      pointerId: 31,
+      button: 0,
+      clientX: 2,
+    })
+    fireEvent.pointerMove(element, {
+      pointerId: 31,
+      clientX: 7,
+    })
+
+    expect(thumb.style.transform).toContain('scale(1.12, 0.94)')
+
+    fireEvent.pointerMove(element, {
+      pointerId: 31,
+      clientX: 30,
+    })
+
+    expect(thumb.style.transform).toContain('scale(1.24, 0.88)')
+
+    fireEvent.pointerUp(element, {
+      pointerId: 31,
+      clientX: 30,
+    })
+
+    expect(thumb.style.transform).toBe('')
   })
 
   it('switches off when a checked thumb is dragged back across the midpoint', () => {
@@ -331,11 +382,15 @@ describe('Switch', () => {
       '[data-weave-switch-dragging="true"]',
     )
     expect(stylesheet).toContain(
-      'scale: var(--weave-feedback-hover-scale)',
+      '--weave-component-box-shadow: var(--weave-switch-track-shadow)',
     )
     expect(stylesheet).toContain(
-      'scale: var(--weave-feedback-drag-scale)',
+      '--weave-component-box-shadow: var(--weave-switch-thumb-shadow)',
     )
+    expect(stylesheet).toContain(
+      '--weave-switch-thumb-hover-shadow',
+    )
+    expect(stylesheet).toContain('transition: none')
     expect(stylesheet).toContain(
       '@media (prefers-reduced-motion: reduce)',
     )
@@ -351,8 +406,11 @@ describe('Switch', () => {
     expect(themeRule).toContain('--weave-switch-width:2.5rem;')
     expect(themeRule).toContain('--weave-switch-height:1.5rem;')
     expect(themeRule).toContain(
-      '--weave-switch-background:var(--weave-color-outline',
+      '--weave-switch-background:color-mix(insrgb,var(--weave-color-outline)38%,var(--weave-color-surface));',
     )
+    expect(themeRule).toContain('--weave-switch-thumb-drag-stretch:1.24;')
+    expect(themeRule).toContain('--weave-switch-thumb-drag-compress:0.88;')
+    expect(themeRule).not.toContain('--weave-switch-checked-background:')
   })
 
   it('lets a ThemeProvider override component size and appearance', () => {
