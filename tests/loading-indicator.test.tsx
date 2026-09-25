@@ -4,6 +4,12 @@ import { LoadingIndicator } from '../src'
 
 afterEach(cleanup)
 
+// @ts-expect-error determined LoadingIndicator does not accept animation
+const invalidDeterminedAnimation = (
+  <LoadingIndicator progress={0.5} animation="dots" />
+)
+void invalidDeterminedAnimation
+
 describe('LoadingIndicator', () => {
   it('exposes undetermined progress semantics without a value', () => {
     const { getByRole } = render(
@@ -51,7 +57,6 @@ describe('LoadingIndicator', () => {
       <LoadingIndicator
         progress={0.68}
         size="large"
-        animation="pulse"
         speed={800}
       />,
     )
@@ -74,46 +79,55 @@ describe('LoadingIndicator', () => {
     ).toBe('800ms')
   })
 
-  it('keeps determined progress independent from animation', () => {
-    const animations = [
-      undefined,
-      'spin',
-      'pulse',
-      'dots',
-    ] as const
+  it('transitions determined progress when the value changes', () => {
+    const { getByRole, rerender } = render(
+      <LoadingIndicator
+        progress={0.2}
+        speed="normal"
+      />,
+    )
 
-    for (const animation of animations) {
-      const { getByRole, unmount } = render(
-        <LoadingIndicator
-          progress={0.42}
-          {...(animation === undefined
-            ? {}
-            : { animation })}
-        />,
-      )
+    const element = getByRole('progressbar')
+    const ring = element.querySelector(
+      '[data-weave-loading-ring]',
+    ) as HTMLDivElement
 
-      const element = getByRole('progressbar')
+    expect(element.className).toContain(
+      'weave-loading-indicator--determined',
+    )
+    expect(element.className).not.toContain(
+      'weave-loading-indicator--spin',
+    )
+    expect(
+      element.getAttribute('data-weave-loading-animation'),
+    ).toBeNull()
+    expect(
+      ring.style.getPropertyValue('--weave-loading-progress'),
+    ).toBe('20%')
 
-      expect(element.getAttribute('aria-valuenow')).toBe('0.42')
-      expect(element.className).toContain(
-        'weave-loading-indicator--determined',
-      )
-      expect(
-        element.style.getPropertyValue('--weave-loading-progress'),
-      ).toBe('42%')
+    rerender(
+      <LoadingIndicator
+        progress={0.75}
+        speed="normal"
+      />,
+    )
 
-      unmount()
-    }
+    expect(
+      ring.style.getPropertyValue('--weave-loading-progress'),
+    ).toBe('75%')
 
     const stylesheet = document.querySelector(
       'style[data-weave-loading-styles]',
     )
 
     expect(stylesheet?.textContent).toContain(
-      '.weave-loading-indicator--determined',
+      '@property --weave-loading-progress',
     )
     expect(stylesheet?.textContent).toContain(
-      'var(--weave-loading-progress)',
+      'transition:',
+    )
+    expect(stylesheet?.textContent).toContain(
+      '--weave-loading-progress',
     )
   })
 
