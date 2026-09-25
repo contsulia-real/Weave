@@ -50,8 +50,8 @@ describe('Image', () => {
     )
 
     const element = getByTestId('image') as HTMLImageElement
-    const imageRule = runtimeRule(element, 'weave-component-props-')
-    const viewRule = runtimeRule(element, 'weave-view-props-')
+    const imageRule = runtimeRule(element, 'weave-image-props-')
+    const viewRule = runtimeRule(element, 'weave-props-')
 
     expect(element.tagName).toBe('IMG')
     expect(element.getAttribute('src')).toBe('/cover.webp')
@@ -92,7 +92,7 @@ describe('Image', () => {
     )
 
     const element = getByTestId('priority-image') as HTMLImageElement
-    const imageRule = runtimeRule(element, 'weave-component-props-')
+    const imageRule = runtimeRule(element, 'weave-image-props-')
 
     expect(element.className).toContain('custom-image')
     expect(element.style.objectFit).toBe('contain')
@@ -124,7 +124,7 @@ describe('Image', () => {
     )
 
     const element = getByTestId('position-image')
-    expect(runtimeRule(element, 'weave-component-props-')).toContain(
+    expect(runtimeRule(element, 'weave-image-props-')).toContain(
       '--weave-image-position:25% 75%;',
     )
   })
