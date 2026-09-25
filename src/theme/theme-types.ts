@@ -74,9 +74,14 @@ export interface SwitchThemeBase {
   background?: string
   radius?: ThemeScaleValue
   cursor?: string
+  trackShadow?: string
   thumbBackground?: string
   thumbRadius?: ThemeScaleValue
   thumbInset?: ThemeScaleValue
+  thumbShadow?: string
+  thumbHoverShadow?: string
+  thumbDragStretch?: number
+  thumbDragCompress?: number
   focusOutlineWidth?: ThemeScaleValue
   focusOutlineColor?: string
   focusOutlineStyle?: string
