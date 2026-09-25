@@ -79,17 +79,17 @@ const stylesheet = `
 
 :where(.weave-progress--undetermined.weave-progress--speed-slow) {
   --weave-progress-duration:
-    calc(var(--weave-motion-duration-slow) * 4);
+    calc(var(--weave-motion-duration-slow) * 6);
 }
 
 :where(.weave-progress--undetermined.weave-progress--speed-normal) {
   --weave-progress-duration:
-    calc(var(--weave-motion-duration-normal) * 5);
+    calc(var(--weave-motion-duration-normal) * 8);
 }
 
 :where(.weave-progress--undetermined.weave-progress--speed-fast) {
   --weave-progress-duration:
-    calc(var(--weave-motion-duration-fast) * 6);
+    calc(var(--weave-motion-duration-fast) * 9);
 }
 
 :where(.weave-progress__track),
@@ -200,42 +200,26 @@ const stylesheet = `
 :where(.weave-progress--linear.weave-progress--undetermined)
   > :where(.weave-progress__value) {
   --weave-background: transparent;
-  overflow: hidden;
+  --weave-overflow: hidden;
 }
 
 :where(.weave-progress--linear.weave-progress--undetermined)
-  > :where(.weave-progress__value)::before,
-:where(.weave-progress--linear.weave-progress--undetermined)
-  > :where(.weave-progress__value)::after {
+  > :where(.weave-progress__value)::before {
   content: "";
   position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
+  width: 42%;
   border-radius: inherit;
   background: currentColor;
+  transform: translate3d(-110%, 0, 0);
   will-change: transform;
-}
 
-:where(.weave-progress--linear.weave-progress--undetermined)
-  > :where(.weave-progress__value)::before {
-  width: 58%;
-  transform-origin: left center;
   animation:
-    weave-progress-linear-primary
+    weave-progress-linear-slide
     var(--weave-progress-duration)
-    cubic-bezier(0.45, 0, 0.2, 1)
-    infinite;
-}
-
-:where(.weave-progress--linear.weave-progress--undetermined)
-  > :where(.weave-progress__value)::after {
-  width: 34%;
-  transform-origin: left center;
-  animation:
-    weave-progress-linear-secondary
-    var(--weave-progress-duration)
-    cubic-bezier(0.4, 0, 0.15, 1)
+    linear
     infinite;
 }
 
@@ -262,40 +246,13 @@ const stylesheet = `
   }
 }
 
-@keyframes weave-progress-linear-primary {
-  0% {
-    transform: translateX(-110%) scaleX(0.32);
+@keyframes weave-progress-linear-slide {
+  from {
+    transform: translate3d(-110%, 0, 0);
   }
 
-  42% {
-    transform: translateX(32%) scaleX(0.92);
-  }
-
-  72% {
-    transform: translateX(112%) scaleX(0.72);
-  }
-
-  100% {
-    transform: translateX(226%) scaleX(0.34);
-  }
-}
-
-@keyframes weave-progress-linear-secondary {
-  0%,
-  18% {
-    transform: translateX(-175%) scaleX(0.28);
-  }
-
-  56% {
-    transform: translateX(72%) scaleX(0.88);
-  }
-
-  82% {
-    transform: translateX(206%) scaleX(0.64);
-  }
-
-  100% {
-    transform: translateX(382%) scaleX(0.3);
+  to {
+    transform: translate3d(350%, 0, 0);
   }
 }
 
@@ -318,21 +275,9 @@ const stylesheet = `
   }
 
   :where(.weave-progress--linear.weave-progress--undetermined)
-    > :where(.weave-progress__value)::before,
-  :where(.weave-progress--linear.weave-progress--undetermined)
-    > :where(.weave-progress__value)::after {
-    animation: none;
-  }
-
-  :where(.weave-progress--linear.weave-progress--undetermined)
     > :where(.weave-progress__value)::before {
-    width: 42%;
-    transform: translateX(70%);
-  }
-
-  :where(.weave-progress--linear.weave-progress--undetermined)
-    > :where(.weave-progress__value)::after {
-    display: none;
+    animation: none;
+    transform: translate3d(70%, 0, 0);
   }
 }
 `
