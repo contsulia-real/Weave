@@ -152,6 +152,33 @@ function syncScrollbarTheme(
   }
 }
 
+function syncScrollbarLayer(
+  track: HTMLElement,
+  target: HTMLElement,
+): void {
+  let node: HTMLElement | null = target
+  let layer: number | null = null
+
+  while (node !== null) {
+    const value = getComputedStyle(node).zIndex
+    const numeric = Number(value)
+
+    if (Number.isFinite(numeric)) {
+      layer = layer === null
+        ? numeric
+        : Math.max(layer, numeric)
+    }
+
+    node = node.parentElement
+  }
+
+  if (layer === null) {
+    track.style.removeProperty('z-index')
+  } else {
+    track.style.zIndex = String(layer + 1)
+  }
+}
+
 export function AutoScrollbar({
   targetRef,
   config,
@@ -188,6 +215,8 @@ export function AutoScrollbar({
 
     syncScrollbarTheme(verticalTrack, computed, config)
     syncScrollbarTheme(horizontalTrack, computed, config)
+    syncScrollbarLayer(verticalTrack, target)
+    syncScrollbarLayer(horizontalTrack, target)
 
     const verticalVisible =
       allowsNativeScrolling(computed.overflowY) &&
@@ -308,12 +337,25 @@ export function AutoScrollbar({
       attributes: true,
     })
 
+    const themeHost = target.closest<HTMLElement>('[data-weave-theme]')
+    const themeObserver =
+      themeHost === null ||
+      typeof MutationObserver === 'undefined'
+        ? null
+        : new MutationObserver(update)
+
+    themeObserver?.observe(themeHost, {
+      attributes: true,
+      attributeFilter: ['style'],
+    })
+
     return () => {
       target.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', onWindowChange)
       document.removeEventListener('scroll', onWindowChange, true)
       resizeObserver?.disconnect()
       mutationObserver?.disconnect()
+      themeObserver?.disconnect()
     }
   }, [targetRef, update])
 
