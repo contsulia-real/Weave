@@ -52,6 +52,9 @@ export interface InputThemeBase {
   focusOutlineColor?: string
   focusOutlineStyle?: string
   focusOutlineOffset?: ThemeScaleValue
+  shadowDepth?: ThemeScaleValue
+  pressedShadowDepth?: ThemeScaleValue
+  pressOffset?: ThemeScaleValue
 }
 
 export interface InputTheme {
@@ -126,6 +129,7 @@ export interface ButtonThemeVariant {
   depthColor?: string
   hoverBackground?: string
   activeBackground?: string
+  shadowColor?: string
 }
 
 export interface ButtonTheme {
