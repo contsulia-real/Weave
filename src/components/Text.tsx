@@ -108,7 +108,7 @@ export function Text({
       data-weave-text-max-lines={
         maxLines === undefined ? undefined : String(maxLines)
       }
-      className={className}
+      className={['weave-text', className].filter(Boolean).join(' ')}
       style={mergedStyle}
     >
       {children}
