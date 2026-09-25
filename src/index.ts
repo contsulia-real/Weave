@@ -1,6 +1,7 @@
 export { View } from './components/View'
 export { Text } from './components/Text'
 export { Image } from './components/Image'
+export { Input } from './components/Input'
 export type {
   BackgroundValue,
   BlendMode,
@@ -65,3 +66,11 @@ export type {
   ImageSource,
   ImageViewProps,
 } from './core/image-types'
+
+export type {
+  InputProps,
+  InputType,
+  InputValue,
+  MultilineInputViewProps,
+  SingleLineInputViewProps,
+} from './core/input-types'
