@@ -86,7 +86,6 @@ export type {
 } from './core/switch-types'
 
 export type {
-  LoadingIndicatorAnimation,
   LoadingIndicatorColor,
   LoadingIndicatorProps,
   LoadingIndicatorSize,
