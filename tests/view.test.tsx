@@ -77,7 +77,7 @@ describe('View DOM backend', () => {
     expect(element.getAttribute('aria-label')).toBe('Sidebar')
   })
 
-  it('resets framework property variables at every View boundary', () => {
+  it('registers View instance variables as non-inheriting', () => {
     render(
       <View minHeight="100vh" data={{ testid: 'parent' }}>
         <View data={{ testid: 'child' }} />
@@ -89,10 +89,10 @@ describe('View DOM backend', () => {
     )
 
     expect(frameworkStyles?.textContent).toContain(
-      '--weave-min-height: initial;',
+      '@property --weave-min-height { syntax: "*"; inherits: false; }',
     )
     expect(frameworkStyles?.textContent).toContain(
-      '--weave-hover-min-height: initial;',
+      '@property --weave-hover-min-height { syntax: "*"; inherits: false; }',
     )
   })
 
