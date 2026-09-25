@@ -77,6 +77,7 @@ describe('Theme', () => {
     const rule = runtimeRule(scope, 'weave-theme-')
 
     expect(scope.getAttribute('data-weave-theme')).not.toBeNull()
+    expect(scope.className).toContain('weave-theme')
     expect(scope.style.getPropertyValue('--weave-color-primary')).toBe('')
     expect(rule).toContain('--weave-color-primary:#ff4f87;')
     expect(rule).toContain('--weave-color-surface:#18181b;')
