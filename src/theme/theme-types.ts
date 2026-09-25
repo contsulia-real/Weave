@@ -174,9 +174,12 @@ export interface ProgressTheme {
 
 export interface ScrollbarThemeBase {
   color?: string
+  hoverColor?: string
+  dragColor?: string
   trackColor?: string
   radius?: ThemeScaleValue
   opacity?: number
+  hitSize?: ThemeScaleValue
   thumbCursor?: string
 }
 
