@@ -149,7 +149,6 @@ export function Switch({
       moved: false,
     }
 
-    event.preventDefault()
     root.focus()
     root.dataset.weaveSwitchDragging = 'true'
     thumb.style.transform = `translateX(${startOffset}px)`
