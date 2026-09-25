@@ -1,5 +1,8 @@
 import { cleanup, fireEvent, render } from '@testing-library/react'
-import type { MouseEvent } from 'react'
+import type {
+  MouseEvent,
+  PointerEvent as ReactPointerEvent,
+} from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { Switch, ThemeProvider, createTheme } from '../src'
 
@@ -149,8 +152,8 @@ describe('Switch', () => {
 
     expect(thumb.style.transform).toContain('scale(0.72)')
     expect(
-      thumb.style.getPropertyValue('--weave-switch-drag-extension'),
-    ).toBe('20px')
+      thumb.style.getPropertyValue('--weave-switch-drag-progress'),
+    ).toBe('1')
 
     fireEvent.pointerUp(element, {
       pointerId: 7,
@@ -163,7 +166,7 @@ describe('Switch', () => {
     expect(element.getAttribute('data-weave-switch-dragging')).toBeNull()
     expect(thumb.style.transform).toBe('')
     expect(
-      thumb.style.getPropertyValue('--weave-switch-drag-extension'),
+      thumb.style.getPropertyValue('--weave-switch-drag-progress'),
     ).toBe('')
     expect(
       thumb.getAttribute('data-weave-switch-drag-direction'),
@@ -223,21 +226,24 @@ describe('Switch', () => {
     const partialScale = Number(partialMatch?.[1])
     const partialExtension = Number.parseFloat(
       thumb.style.getPropertyValue(
-        '--weave-switch-drag-extension',
+        '--weave-switch-drag-progress',
       ),
     )
 
     expect(partialScale).toBeLessThan(0.82)
     expect(partialScale).toBeGreaterThan(0.72)
-    expect(partialExtension).toBeGreaterThan(0)
-    expect(partialExtension).toBeLessThan(20)
+    expect(partialProgress).toBeGreaterThan(0)
+    expect(partialProgress).toBeLessThan(1)
 
     fireEvent.pointerMove(element, {
       pointerId: 31,
       clientX: 30,
     })
 
-    expect(thumb.style.transform).toContain('scale(1.24, 0.88)')
+    expect(thumb.style.transform).toContain('scale(0.72)')
+    expect(
+      thumb.style.getPropertyValue('--weave-switch-drag-progress'),
+    ).toBe('1')
 
     fireEvent.pointerUp(element, {
       pointerId: 31,
@@ -245,6 +251,150 @@ describe('Switch', () => {
     })
 
     expect(thumb.style.transform).toBe('')
+  })
+
+  it('keeps the default pointer-move drag path out of React and layout reads', () => {
+    const { getByRole } = render(<Switch />)
+    const element = getByRole('switch') as HTMLDivElement
+    const thumb = element.querySelector(
+      '[data-weave-switch-thumb]',
+    ) as HTMLDivElement
+
+    const rootRect = vi.spyOn(
+      element,
+      'getBoundingClientRect',
+    ).mockReturnValue({
+      x: 0,
+      y: 0,
+      top: 0,
+      right: 40,
+      bottom: 24,
+      left: 0,
+      width: 40,
+      height: 24,
+      toJSON: () => ({}),
+    })
+    const thumbRect = vi.spyOn(
+      thumb,
+      'getBoundingClientRect',
+    ).mockReturnValue({
+      x: 2,
+      y: 2,
+      top: 2,
+      right: 22,
+      bottom: 22,
+      left: 2,
+      width: 20,
+      height: 20,
+      toJSON: () => ({}),
+    })
+
+    fireEvent.pointerDown(thumb, {
+      pointerId: 44,
+      button: 0,
+      clientX: 2,
+    })
+
+    rootRect.mockClear()
+    thumbRect.mockClear()
+
+    const querySpy = vi.spyOn(element, 'querySelector')
+    const computedSpy = vi.spyOn(window, 'getComputedStyle')
+
+    fireEvent.pointerMove(element, {
+      pointerId: 44,
+      clientX: 12,
+    })
+
+    expect(rootRect).not.toHaveBeenCalled()
+    expect(thumbRect).not.toHaveBeenCalled()
+    expect(querySpy).not.toHaveBeenCalled()
+    expect(computedSpy).not.toHaveBeenCalled()
+    expect(thumb.style.transform).toContain('translateX(')
+    expect(
+      Number(
+        thumb.style.getPropertyValue(
+          '--weave-switch-drag-progress',
+        ),
+      ),
+    ).toBeGreaterThan(0)
+
+    fireEvent.pointerUp(element, {
+      pointerId: 44,
+      clientX: 12,
+    })
+
+    querySpy.mockRestore()
+    computedSpy.mockRestore()
+    rootRect.mockRestore()
+    thumbRect.mockRestore()
+  })
+
+  it('keeps user pointerMove preventDefault semantics when explicitly supplied', () => {
+    const onPointerMove = vi.fn(
+      (event: ReactPointerEvent<HTMLDivElement>) => {
+        event.preventDefault()
+      },
+    )
+
+    const { getByRole } = render(
+      <Switch
+        viewProps={{
+          onPointerMove,
+        }}
+      />,
+    )
+
+    const element = getByRole('switch') as HTMLDivElement
+    const thumb = element.querySelector(
+      '[data-weave-switch-thumb]',
+    ) as HTMLDivElement
+
+    element.getBoundingClientRect = () => ({
+      x: 0,
+      y: 0,
+      top: 0,
+      right: 40,
+      bottom: 24,
+      left: 0,
+      width: 40,
+      height: 24,
+      toJSON: () => ({}),
+    })
+    thumb.getBoundingClientRect = () => ({
+      x: 2,
+      y: 2,
+      top: 2,
+      right: 22,
+      bottom: 22,
+      left: 2,
+      width: 20,
+      height: 20,
+      toJSON: () => ({}),
+    })
+
+    fireEvent.pointerDown(thumb, {
+      pointerId: 45,
+      button: 0,
+      clientX: 2,
+    })
+    fireEvent.pointerMove(element, {
+      pointerId: 45,
+      clientX: 18,
+    })
+
+    expect(onPointerMove).toHaveBeenCalled()
+    expect(thumb.style.transform).toContain('translateX(0px)')
+    expect(
+      thumb.style.getPropertyValue(
+        '--weave-switch-drag-progress',
+      ),
+    ).toBe('0')
+
+    fireEvent.pointerCancel(element, {
+      pointerId: 45,
+      clientX: 18,
+    })
   })
 
   it('switches off when a checked thumb is dragged back across the midpoint', () => {
@@ -415,7 +565,7 @@ describe('Switch', () => {
       '--weave-switch-thumb-hover-shadow',
     )
     expect(stylesheet).toContain(
-      '--weave-switch-drag-extension',
+      '--weave-switch-drag-progress',
     )
     expect(stylesheet).toContain(
       'data-weave-switch-drag-direction="forward"',
