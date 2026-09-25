@@ -21,6 +21,8 @@ import { useViewHost } from './use-view-host'
 
 type Orientation = 'vertical' | 'horizontal'
 
+const SCROLLBAR_INSET_PX = 4
+
 interface ScrollbarOverflowIntent {
   styleOverflow?: string
   styleOverflowX?: string
@@ -206,6 +208,17 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
 
     const computed = getComputedStyle(target)
     const rect = target.getBoundingClientRect()
+    const borderTop = parseFloat(computed.borderTopWidth) || 0
+    const borderRight = parseFloat(computed.borderRightWidth) || 0
+    const borderBottom = parseFloat(computed.borderBottomWidth) || 0
+    const borderLeft = parseFloat(computed.borderLeftWidth) || 0
+    const inset = SCROLLBAR_INSET_PX
+    const innerTop = rect.top + borderTop + inset
+    const innerRight = rect.right - borderRight - inset
+    const innerBottom = rect.bottom - borderBottom - inset
+    const innerLeft = rect.left + borderLeft + inset
+    const innerHeight = Math.max(0, innerBottom - innerTop)
+    const innerWidth = Math.max(0, innerRight - innerLeft)
 
     syncScrollbarLayer(verticalTrack, target)
     syncScrollbarLayer(horizontalTrack, target)
@@ -262,7 +275,9 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
     if (verticalVisible) {
       const trackLength = Math.max(
         0,
-        rect.height - horizontalThickness,
+        innerHeight -
+          horizontalThickness -
+          (horizontalVisible ? inset : 0),
       )
       const thumbLength = Math.min(
         trackLength,
@@ -278,8 +293,8 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
         target.scrollHeight - target.clientHeight,
       )
 
-      verticalTrack.style.top = `${rect.top}px`
-      verticalTrack.style.left = `${rect.right}px`
+      verticalTrack.style.top = `${innerTop}px`
+      verticalTrack.style.left = `${innerRight}px`
       verticalTrack.style.height = `${trackLength}px`
       verticalThumb.style.height = `${thumbLength}px`
     }
@@ -287,7 +302,9 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
     if (horizontalVisible) {
       const trackLength = Math.max(
         0,
-        rect.width - verticalThickness,
+        innerWidth -
+          verticalThickness -
+          (verticalVisible ? inset : 0),
       )
       const thumbLength = Math.min(
         trackLength,
@@ -303,8 +320,8 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
         target.scrollWidth - target.clientWidth,
       )
 
-      horizontalTrack.style.left = `${rect.left}px`
-      horizontalTrack.style.top = `${rect.bottom}px`
+      horizontalTrack.style.left = `${innerLeft}px`
+      horizontalTrack.style.top = `${innerBottom}px`
       horizontalTrack.style.width = `${trackLength}px`
       horizontalThumb.style.width = `${thumbLength}px`
     }
