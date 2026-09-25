@@ -1,5 +1,8 @@
 import { useInsertionEffect } from 'react'
-import type { ChangeEvent } from 'react'
+import type {
+  ChangeEvent,
+  CSSProperties,
+} from 'react'
 import type {
   InputProps,
   InputType,
@@ -8,7 +11,36 @@ import type {
 } from '../core/input-types'
 import type { ViewProps } from '../core/view-types'
 import { ensureInputStylesheet } from '../renderers/dom/input-stylesheet'
+import { resolveInputTheme } from '../renderers/dom/resolve-component-theme'
+import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
+import { useTheme } from '../theme/theme-context'
+import { AutoScrollbar } from './internal/AutoScrollbar'
 import { useViewHost } from './internal/use-view-host'
+
+function cssString(
+  value: CSSProperties['overflow'] | undefined,
+): string | undefined {
+  return typeof value === 'string' ? value : undefined
+}
+
+function inputOverflowIntent(
+  style: CSSProperties | undefined,
+) {
+  return {
+    styleOverflow: cssString(style?.overflow),
+    styleOverflowX: cssString(style?.overflowX),
+    styleOverflowY: cssString(style?.overflowY),
+  }
+}
+
+function useInputThemeClassName(): string | undefined {
+  const { theme } = useTheme()
+
+  return useRuntimeStyleClass(
+    'input-theme',
+    resolveInputTheme(theme),
+  )
+}
 
 interface SingleLineInputHostProps {
   value?: string | number
@@ -42,6 +74,7 @@ function SingleLineInput({
   viewProps = {},
 }: SingleLineInputHostProps) {
   const hostProps: ViewProps<HTMLInputElement> = viewProps
+  const themeClassName = useInputThemeClassName()
   const {
     elementRef,
     className,
@@ -72,7 +105,11 @@ function SingleLineInput({
       data-weave-view=""
       data-weave-input=""
       data-weave-layout={resolved.layout}
-      className={['weave-input', className].filter(Boolean).join(' ')}
+      className={[
+        'weave-input',
+        themeClassName,
+        className,
+      ].filter(Boolean).join(' ')}
       style={inlineStyle}
     />
   )
@@ -108,6 +145,7 @@ function MultilineInput({
   viewProps = {},
 }: MultilineInputHostProps) {
   const hostProps: ViewProps<HTMLTextAreaElement> = viewProps
+  const themeClassName = useInputThemeClassName()
   const {
     elementRef,
     className,
@@ -120,31 +158,42 @@ function MultilineInput({
   }
 
   return (
-    <textarea
-      {...resolved.domProps}
-      ref={elementRef}
-      value={value}
-      defaultValue={defaultValue}
-      onChange={handleChange}
-      placeholder={placeholder}
-      rows={rows}
-      readOnly={readOnly}
-      required={required}
-      name={name}
-      autoComplete={autoComplete}
-      minLength={minLength}
-      maxLength={maxLength}
-      data-weave-view=""
-      data-weave-input=""
-      data-weave-input-multiline=""
-      data-weave-layout={resolved.layout}
-      className={[
-        'weave-input',
-        'weave-input--multiline',
-        className,
-      ].filter(Boolean).join(' ')}
-      style={inlineStyle}
-    />
+    <>
+      <textarea
+        {...resolved.domProps}
+        ref={elementRef}
+        value={value}
+        defaultValue={defaultValue}
+        onChange={handleChange}
+        placeholder={placeholder}
+        rows={rows}
+        readOnly={readOnly}
+        required={required}
+        name={name}
+        autoComplete={autoComplete}
+        minLength={minLength}
+        maxLength={maxLength}
+        data-weave-view=""
+        data-weave-input=""
+        data-weave-input-multiline=""
+        data-weave-scroll-host=""
+        data-weave-layout={resolved.layout}
+        className={[
+          'weave-input',
+          'weave-input--multiline',
+          'weave-scroll-host',
+          themeClassName,
+          className,
+        ].filter(Boolean).join(' ')}
+        style={inlineStyle}
+      />
+
+      <AutoScrollbar
+        targetRef={elementRef}
+        config={viewProps.scrollbar}
+        overflowIntent={inputOverflowIntent(viewProps.style)}
+      />
+    </>
   )
 }
 
