@@ -1,37 +1,14 @@
-import {
-  useImperativeHandle,
-  useInsertionEffect,
-  useLayoutEffect,
-  useRef,
-} from 'react'
-import type { CSSProperties } from 'react'
 import type { ViewProps } from '../core/view-types'
-import { resolveDOMView } from '../renderers/dom/resolve-view'
-import { ensureViewStylesheet } from '../renderers/dom/view-stylesheet'
+import { useViewHost } from './internal/use-view-host'
 
-export function View(props: ViewProps) {
-  useInsertionEffect(ensureViewStylesheet, [])
-
+export function View(props: ViewProps<HTMLDivElement>) {
+  const { children } = props
   const {
-    autoFocus,
-    children,
-    ref,
+    elementRef,
     className,
-    style,
-  } = props
-
-  const elementRef = useRef<HTMLDivElement>(null)
-  useImperativeHandle(ref, () => elementRef.current as HTMLDivElement)
-
-  useLayoutEffect(() => {
-    if (autoFocus) elementRef.current?.focus()
-  }, [autoFocus])
-
-  const resolved = resolveDOMView(props)
-  const mergedStyle = {
-    ...resolved.attributeStyle,
-    ...style,
-  } as CSSProperties
+    mergedStyle,
+    resolved,
+  } = useViewHost(props)
 
   return (
     <div
