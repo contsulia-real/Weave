@@ -70,10 +70,12 @@ class Foo extends Bar
 组件复用和扩展统一通过组合完成。
 
 ```tsx
+import { IconDeviceFloppy } from "@tabler/icons-react"
+
 function SaveButton(props) {
   return (
     <Button {...props}>
-      <Icon name="device-floppy" />
+      <Icon icon={IconDeviceFloppy} />
       <Text>保存</Text>
     </Button>
   )
@@ -2560,13 +2562,14 @@ DOM fallback 下：
 
 ```text
 Button
-= View
+= View 宿主能力
 + Text
 + 可选 Icon
-+ 可选 Progress
 ```
 
-因此它不能被归为基础组件。
+DOM fallback 使用真实 `<button type="button">`，不使用 `div role="button"`。
+
+loading 状态的旋转指示器属于 Button 自己的装饰层，不直接把当前 `Progress` DOM 结构嵌进 `button`。原因是 Button 必须保持合法的 button 内容模型，同时 loading 只需要表达 Button 自身的 busy 状态，不应该在 Button 内再暴露一个独立 `progressbar` 语义。
 
 ## 18.1 快捷语义 API
 
@@ -2585,10 +2588,41 @@ import { IconDeviceFloppy } from "@tabler/icons-react"
 />
 ```
 
-## 18.2 完整组合能力
+快捷入口支持：
+
+```text
+text
+icon
+iconPosition
+```
+
+`icon` 接受与 `Icon` 相同的两类来源：
+
+```text
+静态导入的 React SVG 图标组件
+自定义 SVG ReactElement
+```
+
+例如：
 
 ```tsx
-<Button>
+import {
+  IconPlus,
+  IconSearchFilled,
+} from "@tabler/icons-react"
+
+<Button text="Add" icon={IconPlus} />
+<Button
+  icon={IconSearchFilled}
+  variant="ghost"
+  viewProps={{ label: "Search" }}
+/>
+```
+
+## 18.2 完整 children 组合
+
+```tsx
+<Button variant="secondary">
   <Icon icon={IconDeviceFloppy} />
   <Text>保存</Text>
 </Button>
@@ -2607,26 +2641,7 @@ import { IconDeviceFloppy } from "@tabler/icons-react"
 - 使用 `children` 时，不再同时使用 `text`、`icon`、`iconPosition`。
 - `variant`、`size`、`loading`、`viewProps` 等不属于内容入口，可用于两种模式。
 
-## 18.3 核心属性
-
-```text
-text
-icon
-iconPosition
-variant
-size
-loading
-children
-```
-
-### iconPosition
-
-```text
-start
-end
-```
-
-### variant
+## 18.3 variant
 
 当前：
 
@@ -2638,7 +2653,15 @@ ghost
 danger
 ```
 
-### size
+默认：
+
+```text
+variant = primary
+```
+
+variant 的默认视觉由 `theme.components.Button.variants` 提供。
+
+## 18.4 size
 
 ```text
 small
@@ -2646,30 +2669,28 @@ medium
 large
 ```
 
-### icon
-
-接受与 `Icon` 相同的两类来源：
+默认：
 
 ```text
-静态导入的图标组件
-SVG
+size = medium
 ```
 
-例如：
+size 的高度、水平/垂直 padding、内容 gap 和字体尺度由 `theme.components.Button.sizes` 提供。
 
-```tsx
-import { IconPlus } from "@tabler/icons-react"
+## 18.5 iconPosition
 
-<Button icon={IconPlus} />
+```text
+start
+end
 ```
 
-或：
+默认：
 
-```tsx
-<Button icon={customSvg} />
+```text
+iconPosition = start
 ```
 
-## 18.4 loading
+## 18.6 loading
 
 ```tsx
 <Button
@@ -2678,30 +2699,97 @@ import { IconPlus } from "@tabler/icons-react"
 />
 ```
 
-内部可组合 `Progress`。
+loading 规则：
 
-默认期望：
+- 真实 `button.disabled = true`
+- 同时暴露 `aria-disabled="true"`
+- Button 自身暴露 `aria-busy="true"`
+- 阻止重复点击
+- 原内容仍然保留在布局和可访问名称中，只做视觉隐藏，因此 Button 尺寸不跳变
+- loading spinner 为 `aria-hidden` 的装饰层
+- `prefers-reduced-motion: reduce` 下停止旋转
 
-- 阻止重复触发
-- 显示 Progress
-- 保留按钮尺寸
+## 18.7 ThemeProvider
 
-如果用户需要完全自定义，仍然可以 children 组合。
+Button 的默认视觉属于组件主题：
 
-## 18.5 Button 的 `viewProps`
+```ts
+createTheme({
+  components: {
+    Button: {
+      sizes: {
+        medium: {
+          minHeight: 3,
+          paddingX: 1.25,
+        },
+      },
+      variants: {
+        primary: {
+          background: "success",
+        },
+      },
+    },
+  },
+})
+```
 
-`Button` 的通用布局、视觉、状态、响应式与动画能力通过 `viewProps` 使用：
+实例 `viewProps` 的通用 View 能力仍按统一优先级覆盖组件主题。
+
+## 18.8 响应式高层语义
+
+`size` 与 `variant` 支持当前 ThemeProvider 的动态 viewport breakpoint：
 
 ```tsx
 <Button
-  viewProps={{
-    direction: "column",
-    gap: 0.25,
+  text="Continue"
+  size="small"
+  variant="secondary"
+  md={{
+    size: "large",
+    variant: "primary",
   }}
->
-  <Icon icon={IconUpload} />
-  <Text>上传</Text>
-</Button>
+/>
+```
+
+自定义 breakpoint 名称同样适用：
+
+```tsx
+<Button
+  text="Continue"
+  compact={{
+    size: "large",
+    variant: "danger",
+  }}
+/>
+```
+
+响应式 Button 语义读取当前 ThemeProvider 的有效 breakpoint，不写死 `sm / md / lg / xl` 数值。
+
+## 18.9 viewProps
+
+Button 的通用布局、视觉、状态、事件、响应式 View 能力继续通过 `viewProps` 使用：
+
+```tsx
+<Button
+  text="保存"
+  viewProps={{
+    width: "fill",
+    className: "save-button",
+    style: {
+      minWidth: "12rem",
+    },
+  }}
+/>
+```
+
+统一优先级仍然保持：
+
+```text
+style
+> user className
+> instance View props
+> Button semantic props / current ThemeProvider component theme
+> defaultTheme
 ```
 
 ---
