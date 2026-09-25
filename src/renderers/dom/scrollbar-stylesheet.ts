@@ -61,6 +61,8 @@ const stylesheet = `
   );
   --weave-component-cursor: var(--weave-scrollbar-thumb-cursor);
   --weave-component-user-select: none;
+
+  will-change: transform;
 }
 
 :where(.weave-scrollbar--vertical) > :where(.weave-scrollbar__thumb) {
