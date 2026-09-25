@@ -76,6 +76,86 @@ export const defaultTheme: ResolvedTheme = {
     },
   },
   components: {
+    Button: {
+      base: {
+        radius: 'medium',
+        borderWidth: 0.0625,
+        cursor: 'pointer',
+        fontWeight: 600,
+        focusOutlineWidth: 0.125,
+        focusOutlineColor: 'focus',
+        focusOutlineStyle: 'solid',
+        focusOutlineOffset: 0.125,
+      },
+      sizes: {
+        small: {
+          minHeight: 2,
+          paddingX: 0.75,
+          paddingY: 0.5,
+          gap: 0.375,
+          fontSize: 0.875,
+        },
+        medium: {
+          minHeight: 2.5,
+          paddingX: 1,
+          paddingY: 0.625,
+          gap: 0.5,
+          fontSize: 1,
+        },
+        large: {
+          minHeight: 3,
+          paddingX: 1.25,
+          paddingY: 0.75,
+          gap: 0.625,
+          fontSize: 1,
+        },
+      },
+      variants: {
+        primary: {
+          background: 'primary',
+          color: 'onPrimary',
+          borderColor: 'primary',
+          hoverBackground: 'primaryHover',
+          activeBackground: 'primaryActive',
+        },
+        secondary: {
+          background: 'surface',
+          color: 'primary',
+          borderColor: 'outline',
+          hoverBackground: 'surfaceHover',
+          activeBackground: 'outline',
+        },
+        tertiary: {
+          background: 'surfaceHover',
+          color: 'primary',
+          borderColor: 'surfaceHover',
+          hoverBackground: 'outline',
+          activeBackground: 'secondary',
+        },
+        ghost: {
+          background: 'transparent',
+          color: 'primary',
+          borderColor: 'transparent',
+          hoverBackground: 'surfaceHover',
+          activeBackground: 'outline',
+        },
+        danger: {
+          background: 'danger',
+          color: 'onPrimary',
+          borderColor: 'danger',
+          hoverBackground:
+            'color-mix(in srgb, var(--weave-color-danger) 88%, black)',
+          activeBackground:
+            'color-mix(in srgb, var(--weave-color-danger) 76%, black)',
+        },
+      },
+      states: {
+        disabled: {
+          opacity: 0.5,
+          cursor: 'default',
+        },
+      },
+    },
     Switch: {
       base: {
         background: 'outline',
