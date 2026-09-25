@@ -1,5 +1,6 @@
 import { useInsertionEffect } from 'react'
 import type { ImageProps } from '../core/image-types'
+import type { ViewProps } from '../core/view-types'
 import { resolveImageStyle } from '../renderers/dom/resolve-image'
 import { ensureImageStylesheet } from '../renderers/dom/image-stylesheet'
 import { useImageSource } from './internal/use-image-source'
@@ -16,6 +17,7 @@ export function Image({
   viewProps = {},
 }: ImageProps) {
   const resolvedSrc = useImageSource(src)
+  const hostProps: ViewProps<HTMLImageElement> = viewProps
   const componentStyle = resolveImageStyle({
     fit,
     position,
@@ -26,7 +28,7 @@ export function Image({
     className,
     mergedStyle,
     resolved,
-  } = useViewHost(viewProps, componentStyle)
+  } = useViewHost(hostProps, componentStyle)
 
   useInsertionEffect(ensureImageStylesheet, [])
 
