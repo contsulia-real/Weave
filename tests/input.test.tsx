@@ -99,6 +99,8 @@ describe('Input', () => {
     expect(element.tagName).toBe('TEXTAREA')
     expect(element.className).toContain('weave-input')
     expect(element.className).toContain('weave-input--multiline')
+    expect(element.className).toContain('weave-scroll-host')
+    expect(element.getAttribute('data-weave-scroll-host')).toBe('')
     expect(element.rows).toBe(4)
     expect(element.value).toBe('Line one')
     expect(element.getAttribute('type')).toBeNull()
@@ -111,6 +113,16 @@ describe('Input', () => {
     )
     expect(stylesheet?.textContent).toContain('resize: none;')
 
+    const scrollbarStylesheet = document.querySelector(
+      'style[data-weave-scrollbar-styles]',
+    )
+    expect(scrollbarStylesheet?.textContent).toContain(
+      'scrollbar-width: none',
+    )
+    expect(
+      document.querySelectorAll('[data-weave-scrollbar]').length,
+    ).toBeGreaterThanOrEqual(2)
+
     fireEvent.change(element, {
       target: {
         value: 'Line two',
@@ -118,6 +130,37 @@ describe('Input', () => {
     })
 
     expect(onChange).toHaveBeenCalledWith('Line two')
+  })
+
+  it('uses the default Input component theme', () => {
+    const { getByTestId } = render(
+      <Input
+        viewProps={{
+          data: {
+            testid: 'themed-input',
+          },
+        }}
+      />,
+    )
+
+    const element = getByTestId('themed-input')
+    const rule = runtimeRule(element, 'weave-input-theme-')
+    const stylesheet = document.querySelector(
+      'style[data-weave-input-styles]',
+    )
+
+    expect(rule).toContain(
+      '--weave-input-theme-min-height:2.5rem;',
+    )
+    expect(rule).toContain(
+      '--weave-input-theme-border-width:0.0625rem;',
+    )
+    expect(rule).toContain(
+      '--weave-input-theme-radius:var(--weave-radius-medium)',
+    )
+    expect(stylesheet?.textContent).toContain(
+      '--weave-component-border-style: solid',
+    )
   })
 
   it('keeps readOnly and required as Input-level native states', () => {
