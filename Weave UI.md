@@ -2087,6 +2087,8 @@ Input
 + 可编辑输入能力
 ```
 
+单行与多行输入共享同一套组件主题和 View 通用能力。
+
 ## 14.1 核心 API
 
 ```tsx
@@ -2143,9 +2145,77 @@ url
 
 不额外建立 `TextArea` 基础组件。
 
-## 14.3 基础 Input 不内建组合内容
+DOM fallback 下仍然使用真实 `<textarea>`，保留浏览器原生文本编辑、选择、输入法与 `scrollTop / scrollLeft` 行为。
+
+当 textarea 内容溢出时，原生滚动条视觉隐藏，并自动挂载与普通可滚动 View 相同的 Weave `Scrollbar`。因此 multiline Input 不再显示浏览器默认 scrollbar。
+
+`viewProps.scrollbar` 可以继续配置该自动 Scrollbar。
+
+## 14.3 默认视觉主题
+
+Input 的默认控件视觉来自：
+
+```text
+theme.components.Input
+```
+
+而不是要求每个使用点重复写 padding / border / radius。
+
+默认中等控件语言与 Button 对齐：
+
+```text
+minHeight   = 2.5rem
+radius      = medium
+border      = 0.0625rem solid outline
+background  = surface
+fontSize    = 1rem
+focus       = 统一 focus outline
+```
+
+单行与 multiline 使用同一套：
+
+- background
+- foreground / placeholder color
+- border
+- radius
+- padding
+- typography
+- focus
+- disabled visual state
+
+实例 `viewProps` 仍然按统一优先级覆盖组件主题。
+
+## 14.4 Input 与 `viewProps`
+
+布局、尺寸、视觉逃生口、事件和 Scrollbar 配置继续通过 `viewProps`：
+
+```tsx
+<Input
+  placeholder="Name"
+  viewProps={{
+    width: "fill",
+  }}
+/>
+```
+
+精确覆盖仍然可以：
+
+```tsx
+<Input
+  viewProps={{
+    radius: "large",
+    className: "custom-input",
+    style: {
+      minHeight: "48px",
+    },
+  }}
+/>
+```
+
+## 14.5 基础 Input 不内建组合内容
 
 以下不作为基础 Input 的固定内部结构：
+
 ```text
 label
 helperText
@@ -2546,11 +2616,15 @@ visibilityAlgorithm
 DOM fallback 下：
 
 - 原 `View` 仍然是真实原生滚动容器，不额外包裹内容，不改变 flex / grid 子项结构。
+- multiline `Input` 的真实 `textarea` 同样可以直接作为 Scrollbar target，不需要外包一层伪滚动容器。
 - 滚轮、触摸板、键盘滚动、`scrollTop` / `scrollLeft` 继续使用浏览器原生滚动机制。
 - 原生滚动条轨道通过标准 CSS 能力隐藏，不使用 `::-webkit-scrollbar` 作为视觉实现。
 - 框架自动挂载由 `View` 语义节点构成的 track / thumb，并与真实滚动位置同步。
 - track / thumb 的默认视觉遵循统一 class 优先级规则；几何位置、thumb 长度、滚动进度等连续运行时值允许通过最小化的 inline CSS / CSS 变量同步。
-- 自动挂载不能改变用户拿到的 `View` ref 所指向的真实滚动元素。
+- 高频 target `scroll` 路径只能读取 `scrollTop / scrollLeft` 并更新 thumb transform；不得在每个 scroll event 中重新执行 `getBoundingClientRect()` / `getComputedStyle()` 等布局测量。
+- track/thumb 几何只在 resize、theme/layout 改变、DOM 尺寸变化或外层滚动导致 target viewport 位置变化时重新计算。
+- document-level scroll 监听必须排除 target 自己的 scroll，避免同一次滚动同时触发位置同步与完整几何重算。
+- 自动挂载不能改变用户拿到的 `View` / `Input` ref 所指向的真实滚动元素。
 
 ---
 
