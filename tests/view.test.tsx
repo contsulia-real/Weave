@@ -77,6 +77,25 @@ describe('View DOM backend', () => {
     expect(element.getAttribute('aria-label')).toBe('Sidebar')
   })
 
+  it('resets framework property variables at every View boundary', () => {
+    render(
+      <View minHeight="100vh" data={{ testid: 'parent' }}>
+        <View data={{ testid: 'child' }} />
+      </View>,
+    )
+
+    const frameworkStyles = document.querySelector(
+      'style[data-weave-view-styles]',
+    )
+
+    expect(frameworkStyles?.textContent).toContain(
+      '--weave-min-height: initial;',
+    )
+    expect(frameworkStyles?.textContent).toContain(
+      '--weave-hover-min-height: initial;',
+    )
+  })
+
   it('encodes state styles as state-specific attribute values', () => {
     const { getByTestId } = render(
       <View
