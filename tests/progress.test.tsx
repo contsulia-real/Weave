@@ -1,8 +1,29 @@
 import { cleanup, render } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
-import { Progress } from '../src'
+import {
+  Progress,
+  ThemeProvider,
+  createTheme,
+} from '../src'
 
 afterEach(cleanup)
+
+function runtimeRule(
+  element: Element,
+  prefix: string,
+): string {
+  const className = [...element.classList].find((name) =>
+    name.startsWith(prefix),
+  )
+
+  expect(className).toBeDefined()
+
+  return (
+    document.querySelector<HTMLStyleElement>(
+      `style[data-weave-runtime-class="${className}"]`,
+    )?.textContent ?? ''
+  )
+}
 
 describe('Progress', () => {
   it('exposes undetermined semantics without a numeric value', () => {
@@ -52,12 +73,18 @@ describe('Progress', () => {
     expect(element.className).toContain(
       'weave-progress--determined',
     )
+    expect(runtimeRule(value, 'weave-progress-value-')).toContain(
+      '--weave-progress-value:68%;',
+    )
+    expect(runtimeRule(element, 'weave-progress-speed-')).toContain(
+      '--weave-progress-duration:800ms;',
+    )
     expect(
       value.style.getPropertyValue('--weave-progress-value'),
-    ).toBe('68%')
+    ).toBe('')
     expect(
       element.style.getPropertyValue('--weave-progress-duration'),
-    ).toBe('800ms')
+    ).toBe('')
   })
 
   it('shows a continuous track only when tracked', () => {
@@ -106,9 +133,9 @@ describe('Progress', () => {
       '[data-weave-progress-value]',
     ) as HTMLDivElement
 
-    expect(
-      value.style.getPropertyValue('--weave-progress-value'),
-    ).toBe('20%')
+    expect(runtimeRule(value, 'weave-progress-value-')).toContain(
+      '--weave-progress-value:20%;',
+    )
 
     rerender(
       <Progress
@@ -117,9 +144,9 @@ describe('Progress', () => {
       />,
     )
 
-    expect(
-      value.style.getPropertyValue('--weave-progress-value'),
-    ).toBe('75%')
+    expect(runtimeRule(value, 'weave-progress-value-')).toContain(
+      '--weave-progress-value:75%;',
+    )
 
     const stylesheet = document.querySelector(
       'style[data-weave-progress-styles]',
@@ -183,19 +210,19 @@ describe('Progress', () => {
     ) as HTMLDivElement
 
     expect(element.getAttribute('aria-valuenow')).toBe('1')
-    expect(
-      value.style.getPropertyValue('--weave-progress-value'),
-    ).toBe('100%')
+    expect(runtimeRule(value, 'weave-progress-value-')).toContain(
+      '--weave-progress-value:100%;',
+    )
 
     rerender(<Progress progress={-0.5} />)
 
     expect(element.getAttribute('aria-valuenow')).toBe('0')
-    expect(
-      value.style.getPropertyValue('--weave-progress-value'),
-    ).toBe('0%')
+    expect(runtimeRule(value, 'weave-progress-value-')).toContain(
+      '--weave-progress-value:0%;',
+    )
   })
 
-  it('keeps mode tracked and size defaults out of inline style', () => {
+  it('takes mode and size defaults from the component theme', () => {
     const { getByRole } = render(
       <Progress
         undetermined
@@ -207,15 +234,47 @@ describe('Progress', () => {
     )
 
     const element = getByRole('progressbar')
+    const rule = runtimeRule(element, 'weave-progress-theme-')
 
     expect(element.className).toContain('weave-progress--linear')
     expect(element.className).toContain('weave-progress--tracked')
     expect(element.className).toContain('weave-progress--large')
     expect(element.className).toContain('weave-progress--speed-slow')
     expect(element.style.getPropertyValue('--weave-width')).toBe('')
-    expect(
-      element.style.getPropertyValue('--weave-progress-duration'),
-    ).toBe('')
+    expect(rule).toContain('--weave-progress-width:10rem;')
+    expect(rule).toContain('--weave-progress-height:0.5rem;')
+  })
+
+  it('lets ThemeProvider replace Progress component defaults', () => {
+    const theme = createTheme({
+      components: {
+        Progress: {
+          sizes: {
+            medium: {
+              spinSize: 3,
+              spinThickness: 0.25,
+              linearWidth: 12,
+              linearHeight: 0.75,
+            },
+          },
+        },
+      },
+    })
+
+    const { getByRole } = render(
+      <ThemeProvider theme={theme} mode="light">
+        <Progress progress={0.5} mode="spin" />
+      </ThemeProvider>,
+    )
+
+    const rule = runtimeRule(
+      getByRole('progressbar'),
+      'weave-progress-theme-',
+    )
+
+    expect(rule).toContain('--weave-progress-width:3rem;')
+    expect(rule).toContain('--weave-progress-height:3rem;')
+    expect(rule).toContain('--weave-progress-thickness:0.25rem;')
   })
 
   it('keeps viewProps className and style above component defaults', () => {
@@ -234,10 +293,12 @@ describe('Progress', () => {
     )
 
     const element = getByRole('progressbar')
+    const propsRule = runtimeRule(element, 'weave-view-props-')
 
     expect(element.className).toContain('weave-progress')
     expect(element.className).toContain('custom-progress')
-    expect(element.style.getPropertyValue('--weave-width')).toBe('4rem')
+    expect(element.style.getPropertyValue('--weave-width')).toBe('')
+    expect(propsRule).toContain('--weave-width:4rem;')
     expect(element.style.width).toBe('18px')
   })
 
