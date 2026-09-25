@@ -80,8 +80,8 @@ export interface SwitchThemeBase {
   thumbInset?: ThemeScaleValue
   thumbShadow?: string
   thumbHoverShadow?: string
+  thumbDragShrink?: number
   thumbDragStretch?: number
-  thumbDragCompress?: number
   focusOutlineWidth?: ThemeScaleValue
   focusOutlineColor?: string
   focusOutlineStyle?: string
