@@ -90,6 +90,11 @@ export function ThemeProvider({
   const variables = useMemo(
     () => ({
       display: 'contents',
+      fontFamily: 'var(--weave-typography-family-body)',
+      fontSize: 'var(--weave-typography-size-medium)',
+      fontWeight: 'var(--weave-typography-weight-regular)',
+      lineHeight: 'var(--weave-typography-line-height-body)',
+      letterSpacing: 'var(--weave-typography-letter-spacing-normal)',
       ...themeVariables(resolvedTheme),
     }),
     [resolvedTheme],
