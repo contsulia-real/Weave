@@ -60,7 +60,7 @@ describe('Input', () => {
     expect(element.minLength).toBe(2)
     expect(element.maxLength).toBe(20)
     expect(element.pattern).toBe('[A-Za-z ]+')
-    expect(runtimeRule(element, 'weave-view-props-')).toContain(
+    expect(runtimeRule(element, 'weave-props-')).toContain(
       '--weave-width:20rem;',
     )
     expect(element.style.getPropertyValue('--weave-width')).toBe('')
@@ -157,7 +157,7 @@ describe('Input', () => {
 
     expect(element.className).toContain('custom-input')
     expect(element.style.getPropertyValue('--weave-width')).toBe('')
-    expect(runtimeRule(element, 'weave-view-props-')).toContain(
+    expect(runtimeRule(element, 'weave-props-')).toContain(
       '--weave-width:20rem;',
     )
     expect(element.style.width).toBe('120px')
