@@ -10,6 +10,7 @@ const variantDeclarations: Readonly<
     --weave-button-background: var(--weave-button-theme-primary-background);
     --weave-button-color: var(--weave-button-theme-primary-color);
     --weave-button-border-color: var(--weave-button-theme-primary-border-color);
+    --weave-button-depth-color: var(--weave-button-theme-primary-depth-color);
     --weave-button-hover-background: var(--weave-button-theme-primary-hover-background);
     --weave-button-active-background: var(--weave-button-theme-primary-active-background);
   `,
@@ -17,6 +18,7 @@ const variantDeclarations: Readonly<
     --weave-button-background: var(--weave-button-theme-secondary-background);
     --weave-button-color: var(--weave-button-theme-secondary-color);
     --weave-button-border-color: var(--weave-button-theme-secondary-border-color);
+    --weave-button-depth-color: var(--weave-button-theme-secondary-depth-color);
     --weave-button-hover-background: var(--weave-button-theme-secondary-hover-background);
     --weave-button-active-background: var(--weave-button-theme-secondary-active-background);
   `,
@@ -24,6 +26,7 @@ const variantDeclarations: Readonly<
     --weave-button-background: var(--weave-button-theme-tertiary-background);
     --weave-button-color: var(--weave-button-theme-tertiary-color);
     --weave-button-border-color: var(--weave-button-theme-tertiary-border-color);
+    --weave-button-depth-color: var(--weave-button-theme-tertiary-depth-color);
     --weave-button-hover-background: var(--weave-button-theme-tertiary-hover-background);
     --weave-button-active-background: var(--weave-button-theme-tertiary-active-background);
   `,
@@ -31,6 +34,7 @@ const variantDeclarations: Readonly<
     --weave-button-background: var(--weave-button-theme-ghost-background);
     --weave-button-color: var(--weave-button-theme-ghost-color);
     --weave-button-border-color: var(--weave-button-theme-ghost-border-color);
+    --weave-button-depth-color: var(--weave-button-theme-ghost-depth-color);
     --weave-button-hover-background: var(--weave-button-theme-ghost-hover-background);
     --weave-button-active-background: var(--weave-button-theme-ghost-active-background);
   `,
@@ -38,6 +42,7 @@ const variantDeclarations: Readonly<
     --weave-button-background: var(--weave-button-theme-danger-background);
     --weave-button-color: var(--weave-button-theme-danger-color);
     --weave-button-border-color: var(--weave-button-theme-danger-border-color);
+    --weave-button-depth-color: var(--weave-button-theme-danger-depth-color);
     --weave-button-hover-background: var(--weave-button-theme-danger-hover-background);
     --weave-button-active-background: var(--weave-button-theme-danger-active-background);
   `,
@@ -99,6 +104,9 @@ const stylesheet = `
   --weave-component-border-bottom-left-radius: var(--weave-button-theme-radius);
   --weave-component-cursor: var(--weave-button-theme-cursor);
   --weave-component-user-select: none;
+  --weave-component-transform: translateY(0) scale(1);
+  --weave-component-box-shadow:
+    0 var(--weave-feedback-rest-depth) 0 var(--weave-button-depth-color);
 
   --weave-component-outline-width: 0;
 
@@ -116,15 +124,28 @@ const stylesheet = `
     color var(--weave-motion-duration-fast)
       var(--weave-motion-curve-standard),
     opacity var(--weave-motion-duration-fast)
-      var(--weave-motion-curve-standard);
+      var(--weave-motion-curve-standard),
+    transform var(--weave-motion-duration-fast)
+      var(--weave-motion-curve-spring),
+    box-shadow var(--weave-motion-duration-fast)
+      var(--weave-motion-curve-spring);
 }
 
-:where(.weave-button:hover) {
+:where(.weave-button:hover:not([aria-disabled="true"])) {
   --weave-component-background: var(--weave-button-hover-background);
+  --weave-component-transform:
+    translateY(calc(-1 * var(--weave-feedback-hover-lift))) scale(1);
+  --weave-component-box-shadow:
+    0 var(--weave-feedback-hover-depth) 0 var(--weave-button-depth-color);
 }
 
-:where(.weave-button:active) {
+:where(.weave-button:active:not([aria-disabled="true"])) {
   --weave-component-background: var(--weave-button-active-background);
+  --weave-component-transform:
+    translateY(var(--weave-feedback-press-offset))
+    scale(var(--weave-feedback-press-scale));
+  --weave-component-box-shadow:
+    0 var(--weave-feedback-press-depth) 0 var(--weave-button-depth-color);
 }
 
 :where(.weave-button:focus-visible) {
@@ -222,6 +243,25 @@ const stylesheet = `
 }
 
 @media (prefers-reduced-motion: reduce) {
+  :where(.weave-button) {
+    transition:
+      background-color var(--weave-motion-duration-fast)
+        var(--weave-motion-curve-standard),
+      border-color var(--weave-motion-duration-fast)
+        var(--weave-motion-curve-standard),
+      color var(--weave-motion-duration-fast)
+        var(--weave-motion-curve-standard),
+      opacity var(--weave-motion-duration-fast)
+        var(--weave-motion-curve-standard),
+      box-shadow var(--weave-motion-duration-fast)
+        var(--weave-motion-curve-standard);
+  }
+
+  :where(.weave-button:hover:not([aria-disabled="true"])),
+  :where(.weave-button:active:not([aria-disabled="true"])) {
+    --weave-component-transform: none;
+  }
+
   :where(.weave-button__spinner) {
     animation: none;
   }
