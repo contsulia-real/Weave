@@ -76,7 +76,10 @@ type ViewStyleProperty = (typeof VIEW_STYLE_PROPERTIES)[number]
 const toKebab = (value: string) =>
   value.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)
 
-const variableName = (property: ViewStyleProperty, state?: string) =>
+const variableName = (
+  property: ViewStyleProperty,
+  state?: string,
+): `--weave-${string}` =>
   `--weave-${state === undefined ? '' : `${state}-`}${toKebab(property)}`
 
 const declarationBlock = (state?: string) =>
