@@ -18,9 +18,7 @@ export function LoadingIndicator(props: LoadingIndicatorProps) {
   } = props
 
   const undetermined = props.undetermined === true
-  const animation = undetermined
-    ? props.animation ?? 'spin'
-    : undefined
+  const animation = props.animation ?? 'spin'
 
   const progress = undetermined
     ? undefined
@@ -34,9 +32,7 @@ export function LoadingIndicator(props: LoadingIndicatorProps) {
     undetermined
       ? 'weave-loading-indicator--undetermined'
       : 'weave-loading-indicator--determined',
-    animation === undefined
-      ? undefined
-      : `weave-loading-indicator--${animation}`,
+    `weave-loading-indicator--${animation}`,
     typeof speed === 'string'
       ? `weave-loading-indicator--speed-${speed}`
       : undefined,
