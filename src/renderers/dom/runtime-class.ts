@@ -38,7 +38,7 @@ function entries(
     .sort(([left], [right]) => left.localeCompare(right))
 }
 
-function hash(value: string): string {
+export function hashRuntimeValue(value: string): string {
   let output = 2166136261
 
   for (let index = 0; index < value.length; index += 1) {
@@ -57,7 +57,8 @@ export function createRuntimeStyleClass(
   if (normalized.length === 0) return undefined
 
   const signature = JSON.stringify(normalized)
-  const className = 'weave-' + prefix + '-' + hash(signature)
+  const className =
+    'weave-' + prefix + '-' + hashRuntimeValue(signature)
 
   return {
     className,
