@@ -41,9 +41,7 @@ function responsiveData(
   return output
 }
 
-export function Text<const TBreakpoint extends string = never>(
-  props: TextProps<TBreakpoint>,
-) {
+export function Text(props: TextProps) {
   const {
     children,
     viewProps = {},
@@ -69,7 +67,7 @@ export function Text<const TBreakpoint extends string = never>(
   > = {}
   const responsiveAttributes: Record<string, string> = {}
 
-  const hostProps: ViewProps<HTMLSpanElement, TBreakpoint> = {
+  const hostProps: ViewProps<HTMLSpanElement> = {
     ...viewProps,
     color,
   }
