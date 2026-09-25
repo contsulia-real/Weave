@@ -48,6 +48,25 @@ function scrollOverflowClass(
   return `weave-scroll-host--overflow${axisPart}-${suffix}`
 }
 
+function cssString(
+  value: CSSProperties['overflow'] | undefined,
+): string | undefined {
+  return typeof value === 'string' ? value : undefined
+}
+
+function overflowIntent(
+  props: ViewProps<HTMLDivElement>,
+) {
+  return {
+    styleOverflow: cssString(props.style?.overflow),
+    styleOverflowX: cssString(props.style?.overflowX),
+    styleOverflowY: cssString(props.style?.overflowY),
+    propOverflow: props.overflow,
+    propOverflowX: props.overflowX,
+    propOverflowY: props.overflowY,
+  }
+}
+
 function viewMayScroll(
   props: ViewProps<HTMLDivElement>,
 ): boolean {
@@ -105,6 +124,7 @@ export function View(props: ViewProps<HTMLDivElement>) {
         <AutoScrollbar
           targetRef={elementRef}
           config={props.scrollbar}
+          overflowIntent={overflowIntent(props)}
         />
       ) : null}
     </>
