@@ -150,7 +150,7 @@ describe('Switch', () => {
     expect(thumb.style.transform).toContain('scale(0.72)')
     expect(
       thumb.style.getPropertyValue('--weave-switch-drag-extension'),
-    ).toBe('14px')
+    ).toBe('20px')
 
     fireEvent.pointerUp(element, {
       pointerId: 7,
@@ -230,7 +230,7 @@ describe('Switch', () => {
     expect(partialScale).toBeLessThan(0.82)
     expect(partialScale).toBeGreaterThan(0.72)
     expect(partialExtension).toBeGreaterThan(0)
-    expect(partialExtension).toBeLessThan(14)
+    expect(partialExtension).toBeLessThan(20)
 
     fireEvent.pointerMove(element, {
       pointerId: 31,
@@ -443,7 +443,7 @@ describe('Switch', () => {
       '--weave-switch-checked-background:var(--weave-color-primary',
     )
     expect(themeRule).toContain('--weave-switch-thumb-drag-shrink:0.72;')
-    expect(themeRule).toContain('--weave-switch-thumb-drag-stretch:0.7;')
+    expect(themeRule).toContain('--weave-switch-thumb-drag-stretch:1;')
   })
 
   it('lets a ThemeProvider override component size and appearance', () => {
