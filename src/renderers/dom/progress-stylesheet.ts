@@ -5,6 +5,18 @@ const stylesheet = `
   initial-value: 0%;
 }
 
+@property --weave-progress-spin-start {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@property --weave-progress-spin-end {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 48deg;
+}
+
 :where(.weave-progress) {
   --weave-display: inline-grid;
   --weave-position: relative;
@@ -24,45 +36,33 @@ const stylesheet = `
   --weave-width: 1.125rem;
   --weave-height: 1.125rem;
   --weave-progress-thickness: 0.125rem;
-  --weave-progress-dot-angle: 10deg;
-  --weave-progress-dot-gap: 8deg;
 }
 
 :where(.weave-progress--spin.weave-progress--medium) {
   --weave-width: 1.5rem;
   --weave-height: 1.5rem;
   --weave-progress-thickness: 0.15625rem;
-  --weave-progress-dot-angle: 9deg;
-  --weave-progress-dot-gap: 7deg;
 }
 
 :where(.weave-progress--spin.weave-progress--large) {
   --weave-width: 2rem;
   --weave-height: 2rem;
   --weave-progress-thickness: 0.1875rem;
-  --weave-progress-dot-angle: 8deg;
-  --weave-progress-dot-gap: 6deg;
 }
 
 :where(.weave-progress--linear.weave-progress--small) {
   --weave-width: 6rem;
   --weave-height: 0.25rem;
-  --weave-progress-dot-size: 0.25rem;
-  --weave-progress-dot-gap: 0.1875rem;
 }
 
 :where(.weave-progress--linear.weave-progress--medium) {
   --weave-width: 8rem;
   --weave-height: 0.375rem;
-  --weave-progress-dot-size: 0.375rem;
-  --weave-progress-dot-gap: 0.25rem;
 }
 
 :where(.weave-progress--linear.weave-progress--large) {
   --weave-width: 10rem;
   --weave-height: 0.5rem;
-  --weave-progress-dot-size: 0.5rem;
-  --weave-progress-dot-gap: 0.3125rem;
 }
 
 :where(.weave-progress--determined.weave-progress--speed-slow) {
@@ -118,32 +118,13 @@ const stylesheet = `
   --weave-border-top-right-radius: 50%;
   --weave-border-bottom-right-radius: 50%;
   --weave-border-bottom-left-radius: 50%;
+
   mask:
     radial-gradient(
       farthest-side,
       transparent calc(100% - var(--weave-progress-thickness)),
       #000 0
     );
-}
-
-:where(.weave-progress--spin.weave-progress--dotted)
-  > :where(.weave-progress__value) {
-  mask-image:
-    radial-gradient(
-      farthest-side,
-      transparent calc(100% - var(--weave-progress-thickness)),
-      #000 0
-    ),
-    repeating-conic-gradient(
-      from -90deg,
-      #000 0 var(--weave-progress-dot-angle),
-      transparent var(--weave-progress-dot-angle)
-        calc(
-          var(--weave-progress-dot-angle) +
-          var(--weave-progress-dot-gap)
-        )
-    );
-  mask-composite: intersect;
 }
 
 :where(.weave-progress--spin.weave-progress--determined)
@@ -166,18 +147,24 @@ const stylesheet = `
   --weave-background:
     conic-gradient(
       from -90deg,
-      transparent 0deg,
-      color-mix(in srgb, currentColor 18%, transparent) 72deg,
-      currentColor 248deg,
-      currentColor 330deg,
-      transparent 360deg
+      transparent 0deg var(--weave-progress-spin-start),
+      currentColor
+        var(--weave-progress-spin-start)
+        var(--weave-progress-spin-end),
+      transparent var(--weave-progress-spin-end) 360deg
     );
 
+  will-change: transform;
   animation:
-    weave-progress-spin-undetermined
-    var(--weave-progress-duration)
-    linear
-    infinite;
+    weave-progress-spin-rotate
+      var(--weave-progress-duration)
+      linear
+      infinite,
+    weave-progress-spin-sweep
+      var(--weave-progress-duration)
+      var(--weave-motion-curve-standard)
+      infinite
+      alternate;
 }
 
 /* linear */
@@ -210,54 +197,105 @@ const stylesheet = `
     var(--weave-motion-curve-standard);
 }
 
-:where(.weave-progress--linear.weave-progress--dotted)
+:where(.weave-progress--linear.weave-progress--undetermined)
   > :where(.weave-progress__value) {
-  mask:
-    radial-gradient(
-      circle at center,
-      #000 50%,
-      transparent 52%
-    )
-    left center /
-    calc(
-      var(--weave-progress-dot-size) +
-      var(--weave-progress-dot-gap)
-    )
-    100%
-    repeat-x;
+  --weave-background: transparent;
+  overflow: hidden;
 }
 
 :where(.weave-progress--linear.weave-progress--undetermined)
-  > :where(.weave-progress__value) {
-  --weave-right: auto;
-  --weave-width: 36%;
-  --weave-background: currentColor;
-  transform: translateX(-120%);
+  > :where(.weave-progress__value)::before,
+:where(.weave-progress--linear.weave-progress--undetermined)
+  > :where(.weave-progress__value)::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: inherit;
+  background: currentColor;
+  will-change: transform;
+}
 
+:where(.weave-progress--linear.weave-progress--undetermined)
+  > :where(.weave-progress__value)::before {
+  width: 58%;
+  transform-origin: left center;
   animation:
-    weave-progress-linear-undetermined
+    weave-progress-linear-primary
     var(--weave-progress-duration)
-    var(--weave-motion-curve-standard)
+    cubic-bezier(0.45, 0, 0.2, 1)
     infinite;
 }
 
-@keyframes weave-progress-spin-undetermined {
+:where(.weave-progress--linear.weave-progress--undetermined)
+  > :where(.weave-progress__value)::after {
+  width: 34%;
+  transform-origin: left center;
+  animation:
+    weave-progress-linear-secondary
+    var(--weave-progress-duration)
+    cubic-bezier(0.4, 0, 0.15, 1)
+    infinite;
+}
+
+@keyframes weave-progress-spin-rotate {
   to {
     transform: rotate(1turn);
   }
 }
 
-@keyframes weave-progress-linear-undetermined {
+@keyframes weave-progress-spin-sweep {
   0% {
-    transform: translateX(-120%);
+    --weave-progress-spin-start: 0deg;
+    --weave-progress-spin-end: 48deg;
   }
 
   50% {
-    transform: translateX(180%);
+    --weave-progress-spin-start: 18deg;
+    --weave-progress-spin-end: 300deg;
   }
 
   100% {
-    transform: translateX(320%);
+    --weave-progress-spin-start: 252deg;
+    --weave-progress-spin-end: 300deg;
+  }
+}
+
+@keyframes weave-progress-linear-primary {
+  0% {
+    transform: translateX(-110%) scaleX(0.32);
+  }
+
+  42% {
+    transform: translateX(32%) scaleX(0.92);
+  }
+
+  72% {
+    transform: translateX(112%) scaleX(0.72);
+  }
+
+  100% {
+    transform: translateX(226%) scaleX(0.34);
+  }
+}
+
+@keyframes weave-progress-linear-secondary {
+  0%,
+  18% {
+    transform: translateX(-175%) scaleX(0.28);
+  }
+
+  56% {
+    transform: translateX(72%) scaleX(0.88);
+  }
+
+  82% {
+    transform: translateX(206%) scaleX(0.64);
+  }
+
+  100% {
+    transform: translateX(382%) scaleX(0.3);
   }
 }
 
@@ -272,9 +310,29 @@ const stylesheet = `
     transition: none;
   }
 
-  :where(.weave-progress--undetermined)
+  :where(.weave-progress--spin.weave-progress--undetermined)
     > :where(.weave-progress__value) {
     animation: none;
+    --weave-progress-spin-start: 0deg;
+    --weave-progress-spin-end: 90deg;
+  }
+
+  :where(.weave-progress--linear.weave-progress--undetermined)
+    > :where(.weave-progress__value)::before,
+  :where(.weave-progress--linear.weave-progress--undetermined)
+    > :where(.weave-progress__value)::after {
+    animation: none;
+  }
+
+  :where(.weave-progress--linear.weave-progress--undetermined)
+    > :where(.weave-progress__value)::before {
+    width: 42%;
+    transform: translateX(70%);
+  }
+
+  :where(.weave-progress--linear.weave-progress--undetermined)
+    > :where(.weave-progress__value)::after {
+    display: none;
   }
 }
 `
