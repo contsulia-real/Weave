@@ -2,7 +2,8 @@ import type { ReactNode, Ref } from 'react'
 import type {
   DefaultBreakpointName,
   Length,
-  ViewProps,
+  ViewCoreProps,
+  ViewDynamicBreakpointProps,
   ViewResponsiveStyle,
 } from './view-types'
 
@@ -52,28 +53,28 @@ export interface TextStyleProps {
 
 export type TextResponsiveProps = Partial<TextStyleProps>
 
-export type TextViewProps<
-  TBreakpoint extends string = never,
-> = Omit<
-  ViewProps<HTMLSpanElement, TBreakpoint>,
+export type TextViewProps = Omit<
+  ViewCoreProps<HTMLSpanElement>,
   'children' | 'color'
-> & {
-  ref?: Ref<HTMLSpanElement>
-}
+> &
+  ViewDynamicBreakpointProps & {
+    ref?: Ref<HTMLSpanElement>
+  }
 
-export type TextBreakpointProps<TBreakpoint extends string> =
+export type TextBreakpointProps =
   Partial<
     Record<
-      DefaultBreakpointName | TBreakpoint,
+      DefaultBreakpointName,
       TextResponsiveProps
     >
   >
 
-export type TextProps<TBreakpoint extends string = never> =
+export type TextProps =
   TextStyleProps &
-  TextBreakpointProps<TBreakpoint> & {
+  TextBreakpointProps &
+  ViewDynamicBreakpointProps & {
     children?: ReactNode
-    viewProps?: TextViewProps<TBreakpoint>
+    viewProps?: TextViewProps
   }
 
 export function mergeTextColorResponsive(
