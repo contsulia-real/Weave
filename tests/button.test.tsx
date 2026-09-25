@@ -198,6 +198,46 @@ describe('Button', () => {
     expect(element.style.width).toBe('140px')
   })
 
+  it('keeps user state styles above Button component state defaults', () => {
+    const { getByRole } = render(
+      <Button
+        text="States"
+        viewProps={{
+          hover: {
+            background: 'success',
+          },
+          focusVisible: {
+            outlineColor: 'danger',
+          },
+          disabledStyle: {
+            opacity: 0.25,
+          },
+        }}
+      />,
+    )
+
+    const element = getByRole('button', { name: 'States' })
+    const propsRule = runtimeRule(element, 'weave-props-')
+    const stylesheet = document.querySelector(
+      'style[data-weave-button-styles]',
+    )?.textContent ?? ''
+
+    expect(propsRule).toContain(
+      '--weave-hover-background:var(--weave-color-success',
+    )
+    expect(propsRule).toContain(
+      '--weave-focus-visible-outline-color:var(--weave-color-danger',
+    )
+    expect(propsRule).toContain('--weave-disabled-opacity:0.25;')
+
+    expect(stylesheet).toContain(
+      '--weave-component-background: var(--weave-button-hover-background)',
+    )
+    expect(stylesheet).not.toContain(
+      '--weave-hover-background: var(--weave-button-theme-',
+    )
+  })
+
   it('takes visual defaults from the Button component theme', () => {
     const { getByRole } = render(
       <Button
