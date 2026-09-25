@@ -90,12 +90,17 @@ const stylesheet = `
   content: "";
   position: absolute;
   top: 50%;
-  width: var(--weave-switch-drag-extension, 0);
+  width: calc(
+    100% * var(--weave-switch-thumb-drag-stretch)
+  );
   height: 42%;
   pointer-events: none;
   background: var(--weave-switch-thumb-background);
   border-radius: var(--weave-switch-thumb-radius);
-  transform: translateY(-50%);
+  transform:
+    translateY(-50%)
+    scaleX(var(--weave-switch-drag-progress, 0));
+  will-change: transform;
 }
 
 :where(
