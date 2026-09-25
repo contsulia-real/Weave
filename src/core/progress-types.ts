@@ -9,8 +9,10 @@ export type ProgressSpeed =
   | number
 export type ProgressMode = 'spin' | 'linear'
 
-export type ProgressViewProps = Omit<
-  ViewProps<HTMLDivElement>,
+export type ProgressViewProps<
+  TBreakpoint extends string = never,
+> = Omit<
+  ViewProps<HTMLDivElement, TBreakpoint>,
   | 'children'
   | 'role'
   | 'busy'
@@ -21,17 +23,21 @@ export type ProgressViewProps = Omit<
   | 'color'
 >
 
-interface ProgressBaseProps {
+interface ProgressBaseProps<
+  TBreakpoint extends string = never,
+> {
   mode?: ProgressMode
   tracked?: boolean
   size?: ProgressSize
   color?: ProgressColor
   speed?: ProgressSpeed
-  viewProps?: ProgressViewProps
+  viewProps?: ProgressViewProps<TBreakpoint>
 }
 
-export type ProgressProps =
-  ProgressBaseProps &
+export type ProgressProps<
+  TBreakpoint extends string = never,
+> =
+  ProgressBaseProps<TBreakpoint> &
   (
     | {
         undetermined: true
