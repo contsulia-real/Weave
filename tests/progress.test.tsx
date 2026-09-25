@@ -41,7 +41,7 @@ describe('Progress', () => {
 
     const element = getByRole('progressbar')
     const visual = element.querySelector(
-      '[data-weave-progress-visual]',
+      '[data-weave-progress-value]',
     ) as HTMLDivElement
 
     expect(element.getAttribute('aria-busy')).toBeNull()
@@ -88,6 +88,50 @@ describe('Progress', () => {
     expect(element.className).not.toContain('weave-progress--spin')
   })
 
+  it('keeps tracked dotted track continuous while only value is dotted', () => {
+    const { getByRole } = render(
+      <Progress
+        progress={0.58}
+        mode="spin"
+        tracked
+        dotted
+      />,
+    )
+
+    const element = getByRole('progressbar')
+    const track = element.querySelector(
+      '[data-weave-progress-track]',
+    ) as HTMLDivElement
+    const value = element.querySelector(
+      '[data-weave-progress-value]',
+    ) as HTMLDivElement
+
+    expect(element.className).toContain('weave-progress--tracked')
+    expect(element.className).toContain('weave-progress--dotted')
+    expect(track).not.toBeNull()
+    expect(value).not.toBeNull()
+    expect(track.className).toContain('weave-progress__track')
+    expect(track.className).not.toContain('dotted')
+    expect(value.className).toContain('weave-progress__value')
+
+    const stylesheet = document.querySelector(
+      'style[data-weave-progress-styles]',
+    )
+
+    expect(stylesheet?.textContent).toContain(
+      '.weave-progress--tracked',
+    )
+    expect(stylesheet?.textContent).toContain(
+      '> :where(.weave-progress__track)',
+    )
+    expect(stylesheet?.textContent).toContain(
+      '.weave-progress--dotted',
+    )
+    expect(stylesheet?.textContent).toContain(
+      '> :where(.weave-progress__value)',
+    )
+  })
+
   it('transitions determined progress when the value changes', () => {
     const { getByRole, rerender } = render(
       <Progress
@@ -98,7 +142,7 @@ describe('Progress', () => {
 
     const element = getByRole('progressbar')
     const visual = element.querySelector(
-      '[data-weave-progress-visual]',
+      '[data-weave-progress-value]',
     ) as HTMLDivElement
 
     expect(
@@ -140,7 +184,7 @@ describe('Progress', () => {
 
     const element = getByRole('progressbar')
     let visual = element.querySelector(
-      '[data-weave-progress-visual]',
+      '[data-weave-progress-value]',
     ) as HTMLDivElement
 
     expect(
@@ -157,7 +201,7 @@ describe('Progress', () => {
     )
 
     visual = element.querySelector(
-      '[data-weave-progress-visual]',
+      '[data-weave-progress-value]',
     ) as HTMLDivElement
 
     expect(
@@ -174,7 +218,7 @@ describe('Progress', () => {
 
     const element = getByRole('progressbar')
     const visual = element.querySelector(
-      '[data-weave-progress-visual]',
+      '[data-weave-progress-value]',
     ) as HTMLDivElement
 
     expect(element.getAttribute('aria-valuenow')).toBe('1')
