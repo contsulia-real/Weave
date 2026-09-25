@@ -19,7 +19,7 @@ import { ensureViewStylesheet } from '../../renderers/dom/view-stylesheet'
 export interface ViewHostResult<TElement extends HTMLElement> {
   elementRef: RefObject<TElement | null>
   className: string | undefined
-  mergedStyle: CSSProperties
+  inlineStyle: CSSProperties | undefined
   resolved: ResolvedDOMView<TElement>
 }
 
@@ -68,7 +68,7 @@ export function useViewHost<TElement extends HTMLElement>(
   return {
     elementRef,
     className: resolvedClassName,
-    mergedStyle: style ?? {},
+    inlineStyle: style,
     resolved,
   }
 }
