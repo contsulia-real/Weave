@@ -324,8 +324,18 @@ function resolveStyleProps(
   setVariable(output, 'left', left, state)
 
   setVariable(output, 'overflow', props.overflow, state)
-  setVariable(output, 'overflowX', props.overflowX, state)
-  setVariable(output, 'overflowY', props.overflowY, state)
+  setVariable(
+    output,
+    'overflowX',
+    props.overflowX ?? props.overflow,
+    state,
+  )
+  setVariable(
+    output,
+    'overflowY',
+    props.overflowY ?? props.overflow,
+    state,
+  )
 
   setVariable(output, 'background', background(props.background), state)
   setVariable(output, 'color', color(props.color), state)
