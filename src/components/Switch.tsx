@@ -56,13 +56,13 @@ export function Switch({
       onKeyDown={handleKeyDown}
       data={{
         ...viewProps.data,
-        weaveSwitch: '',
-        weaveSwitchSize: size,
+        'weave-switch': '',
+        'weave-switch-size': size,
       }}
     >
       <View
         data={{
-          weaveSwitchThumb: '',
+          'weave-switch-thumb': '',
         }}
       />
     </View>
