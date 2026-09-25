@@ -2,6 +2,7 @@ export { View } from './components/View'
 export { Text } from './components/Text'
 export { Image } from './components/Image'
 export { Icon } from './components/Icon'
+export { Button } from './components/Button'
 export { Input } from './components/Input'
 export { Switch } from './components/Switch'
 export { Progress } from './components/Progress'
@@ -76,6 +77,17 @@ export type {
   IconSvg,
   IconViewProps,
 } from './core/icon-types'
+
+export type {
+  ButtonBreakpointProps,
+  ButtonIcon,
+  ButtonIconPosition,
+  ButtonProps,
+  ButtonResponsiveProps,
+  ButtonSize,
+  ButtonVariant,
+  ButtonViewProps,
+} from './core/button-types'
 
 export type {
   ImageFit,
