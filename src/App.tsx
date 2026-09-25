@@ -9,6 +9,7 @@ function App() {
     >
       <View
         width="fit"
+        justifySelf="center"
         padding={2}
         gap={1}
         layout="flex"
