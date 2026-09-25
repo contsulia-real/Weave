@@ -6,6 +6,8 @@ The current framework design specification lives in [Weave UI.md](./Weave%20UI.m
 
 ## Development
 
+Node.js: `^22.22.2 || ^24.15.0 || >=26`
+
 ```bash
 pnpm install
 pnpm dev
