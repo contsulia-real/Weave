@@ -150,7 +150,7 @@ describe('Switch', () => {
       ':where(.weave-switch--large)',
     )
     expect(stylesheet?.textContent).toContain(
-      '--weave-border-top-left-radius: 9999px',
+      '--weave-border-top-left-radius: var(--weave-radius-full)',
     )
   })
 })
