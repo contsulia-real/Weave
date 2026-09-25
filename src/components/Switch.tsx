@@ -29,7 +29,10 @@ export function Switch({
     onChange?.(nextChecked)
   }
 
-  const toggle = () => commit(!currentChecked)
+  const toggle = () => {
+    if (viewProps.disabled) return
+    commit(!currentChecked)
+  }
 
   const handleClick = (event: MouseEvent<HTMLDivElement>) => {
     viewProps.onClick?.(event)
