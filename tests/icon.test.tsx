@@ -1,5 +1,9 @@
 import { cleanup, render } from '@testing-library/react'
-import { IconSettings } from '@tabler/icons-react'
+import {
+  IconSearch,
+  IconSearchFilled,
+  IconSettings,
+} from '@tabler/icons-react'
 import { afterEach, describe, expect, it } from 'vitest'
 import { Icon, Text } from '../src'
 
@@ -35,6 +39,39 @@ describe('Icon', () => {
     expect(svg?.getAttribute('height')).toBe('100%')
     expect(svg?.getAttribute('stroke-width')).toBe('2.5')
     expect(svg?.getAttribute('aria-hidden')).toBe('true')
+  })
+
+  it('accepts both outline and filled Tabler components', () => {
+    const { getByTestId } = render(
+      <>
+        <Icon
+          icon={IconSearch}
+          viewProps={{
+            data: {
+              testid: 'outline-icon',
+            },
+          }}
+        />
+        <Icon
+          icon={IconSearchFilled}
+          viewProps={{
+            data: {
+              testid: 'filled-icon',
+            },
+          }}
+        />
+      </>,
+    )
+
+    const outline = getByTestId('outline-icon').querySelector('svg')
+    const filled = getByTestId('filled-icon').querySelector('svg')
+
+    expect(outline).not.toBeNull()
+    expect(filled).not.toBeNull()
+    expect(outline?.className.baseVal).toContain('tabler-icon-search')
+    expect(filled?.className.baseVal).toContain(
+      'tabler-icon-search-filled',
+    )
   })
 
   it('renders and normalizes a custom SVG node', () => {
