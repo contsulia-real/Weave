@@ -1,7 +1,11 @@
 import { cleanup, render } from '@testing-library/react'
 import { createRef } from 'react'
 import { afterEach, describe, expect, it } from 'vitest'
-import { Text } from '../src'
+import {
+  Text,
+  ThemeProvider,
+  createTheme,
+} from '../src'
 
 afterEach(cleanup)
 
@@ -18,6 +22,20 @@ function runtimeRule(
   return (
     document.querySelector<HTMLStyleElement>(
       `style[data-weave-runtime-class="${className}"]`,
+    )?.textContent ?? ''
+  ).replace(/\s+/g, '')
+}
+
+function breakpointStyles(element: Element): string {
+  const className = [...element.classList].find((name) =>
+    name.startsWith('weave-breakpoints-'),
+  )
+
+  expect(className).toBeDefined()
+
+  return (
+    document.querySelector<HTMLStyleElement>(
+      `style[data-weave-breakpoint-styles="${className}"]`,
     )?.textContent ?? ''
   ).replace(/\s+/g, '')
 }
@@ -100,6 +118,7 @@ describe('Text', () => {
     const stylesheet = document.querySelector(
       'style[data-weave-text-styles]',
     )
+    const responsiveStyles = breakpointStyles(element)
 
     expect(textRule).toContain(
       '--weave-text-font-size:var(--weave-typography-size-small);',
@@ -114,7 +133,61 @@ describe('Text', () => {
       'ellipsis',
     )
     expect(element.getAttribute('data-weave-text-md-max-lines')).toBe('2')
-    expect(stylesheet?.textContent).toContain('@media (min-width: 48rem)')
+    expect(stylesheet?.textContent).not.toContain('@media')
+    expect(responsiveStyles).toContain('@media(min-width:48rem)')
+  })
+
+  it('supports custom responsive Text and View props from theme breakpoints', () => {
+    const theme = createTheme({
+      breakpoints: {
+        compact: 36,
+      },
+    })
+
+    const { getByTestId } = render(
+      <ThemeProvider theme={theme} mode="light">
+        <Text
+          size="small"
+          compact={{
+            size: 'large',
+            color: 'success',
+            overflow: 'ellipsis',
+            maxLines: 2,
+          }}
+          viewProps={{
+            compact: {
+              padding: 2,
+            },
+            data: {
+              testid: 'custom-responsive-text',
+            },
+          }}
+        >
+          Responsive
+        </Text>
+      </ThemeProvider>,
+    )
+
+    const element = getByTestId('custom-responsive-text')
+    const textRule = runtimeRule(element, 'weave-text-props-')
+    const viewRule = runtimeRule(element, 'weave-props-')
+    const responsiveStyles = breakpointStyles(element)
+
+    expect(textRule).toContain(
+      '--weave-text-compact-font-size:var(--weave-typography-size-large);',
+    )
+    expect(viewRule).toContain(
+      '--weave-compact-color:var(--weave-color-success',
+    )
+    expect(viewRule).toContain('--weave-compact-padding-top:2rem;')
+    expect(element.getAttribute('compact')).toBeNull()
+    expect(
+      element.getAttribute('data-weave-text-compact-overflow'),
+    ).toBe('ellipsis')
+    expect(
+      element.getAttribute('data-weave-text-compact-max-lines'),
+    ).toBe('2')
+    expect(responsiveStyles).toContain('@media(min-width:36rem)')
   })
 
   it('keeps viewProps className and style as the escape hatches', () => {
