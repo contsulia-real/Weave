@@ -1,6 +1,7 @@
 import {
   useEffect,
   useInsertionEffect,
+  useMemo,
   useRef,
   useState,
   type KeyboardEvent,
@@ -104,9 +105,13 @@ export function Switch({
   useInsertionEffect(ensureSwitchStylesheet, [])
 
   const { theme } = useTheme()
+  const switchThemeDeclarations = useMemo(
+    () => resolveSwitchTheme(theme, size),
+    [size, theme],
+  )
   const themeClassName = useRuntimeStyleClass(
     'switch-theme',
-    resolveSwitchTheme(theme, size),
+    switchThemeDeclarations,
   )
 
   const [uncontrolledChecked, setUncontrolledChecked] =

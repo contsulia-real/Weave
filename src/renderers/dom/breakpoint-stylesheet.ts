@@ -37,6 +37,10 @@ interface BreakpointRuleEntry {
 }
 
 const breakpointRules = new Map<string, BreakpointRuleEntry>()
+const breakpointRuleCache = new WeakMap<
+  object,
+  BreakpointRule | null
+>()
 
 function sourceChain(
   entries: readonly BreakpointEntry[],
@@ -210,8 +214,17 @@ function containerBlocks(
 function createBreakpointRule(
   breakpoints: Readonly<Record<string, number>>,
 ): BreakpointRule | undefined {
+  const cacheKey = breakpoints as object
+
+  if (breakpointRuleCache.has(cacheKey)) {
+    return breakpointRuleCache.get(cacheKey) ?? undefined
+  }
+
   const entries = breakpointEntries(breakpoints)
-  if (entries.length === 0) return undefined
+  if (entries.length === 0) {
+    breakpointRuleCache.set(cacheKey, null)
+    return undefined
+  }
 
   const signature = JSON.stringify(
     entries.map(({ name, cssName, minWidth }) => [
@@ -223,7 +236,7 @@ function createBreakpointRule(
   const className =
     `weave-breakpoints-${hashRuntimeValue(signature)}`
 
-  return {
+  const rule = {
     className,
     signature,
     stylesheet: `
@@ -232,6 +245,9 @@ ${viewportBlocks(className, entries)}
 ${containerBlocks(className, entries)}
 `,
   }
+
+  breakpointRuleCache.set(cacheKey, rule)
+  return rule
 }
 
 function createStyleElement(rule: BreakpointRule): HTMLStyleElement {
