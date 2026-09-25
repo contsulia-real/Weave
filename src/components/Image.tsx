@@ -66,7 +66,7 @@ export function Image({
       data-weave-view=""
       data-weave-image=""
       data-weave-layout={resolved.layout}
-      className={className}
+      className={['weave-image', className].filter(Boolean).join(' ')}
       style={mergedStyle}
     />
   )
