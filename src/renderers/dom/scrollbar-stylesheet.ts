@@ -6,7 +6,7 @@ const stylesheet = `
 :where(.weave-scrollbar) {
   --weave-display: none;
   --weave-position: fixed;
-  --weave-z-index: var(--weave-layer-overlay);
+  --weave-z-index: 0;
   --weave-background: var(--weave-scrollbar-track-color, transparent);
   --weave-border-top-left-radius: var(
     --weave-scrollbar-radius,
