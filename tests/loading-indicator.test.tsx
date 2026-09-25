@@ -72,6 +72,26 @@ describe('LoadingIndicator', () => {
     ).toBe('800ms')
   })
 
+  it('clamps determined progress to the public 0 to 1 range', () => {
+    const { getByRole, rerender } = render(
+      <LoadingIndicator progress={1.5} />,
+    )
+
+    const element = getByRole('progressbar')
+
+    expect(element.getAttribute('aria-valuenow')).toBe('1')
+    expect(
+      element.style.getPropertyValue('--weave-loading-progress'),
+    ).toBe('100%')
+
+    rerender(<LoadingIndicator progress={-0.5} />)
+
+    expect(element.getAttribute('aria-valuenow')).toBe('0')
+    expect(
+      element.style.getPropertyValue('--weave-loading-progress'),
+    ).toBe('0%')
+  })
+
   it('renders the dots variant with three internal dots', () => {
     const { getByRole } = render(
       <LoadingIndicator
