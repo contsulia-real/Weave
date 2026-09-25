@@ -1803,7 +1803,7 @@ capitalize
 图标来源确定为：
 
 ```text
-Tabler Icons
+Tabler Icons React 组件
 +
 自定义 SVG
 ```
@@ -1812,45 +1812,37 @@ Tabler Icons
 
 ## 12.1 Tabler Icons
 
+Weave 不维护完整 Tabler 图标 registry，也不提供 `name="settings"` 这类运行时字符串查表。
+
+使用 Tabler Icons 时，由调用方按照 Tabler 官方 React 包的方式静态导入具体图标组件，再传给 Weave：
+
 ```tsx
+import { IconSettings } from "@tabler/icons-react"
+
 <Icon
-  name="settings"
+  icon={IconSettings}
   size="medium"
   stroke="regular"
 />
 ```
 
-公开名称使用简洁图标名：
+其他图标同样直接静态导入：
 
 ```tsx
-<Icon name="arrow-left" />
-<Icon name="settings" />
-<Icon name="search" />
-<Icon name="user" />
+import {
+  IconArrowLeft,
+  IconSearch,
+  IconUser,
+} from "@tabler/icons-react"
+
+<Icon icon={IconArrowLeft} />
+<Icon icon={IconSearch} />
+<Icon icon={IconUser} />
 ```
 
-不直接暴露 Tabler React 组件名：
+这样由 `@tabler/icons-react` 自身的 ES module 导出与应用 bundler 负责 tree-shaking；Weave 不复制 Tabler SVG，不生成全量图标名称联合，也不把完整图标表打进自身运行时。
 
-```text
-IconArrowLeft
-IconSettings
-...
-```
-
-图标名称应生成完整类型联合和自动补全。
-
-例如：
-
-```ts
-type IconName =
-  | "arrow-left"
-  | "arrow-right"
-  | "settings"
-  | "search"
-  | ...
-```
-
-拼写错误应在开发期暴露。
+Weave 对传入的图标组件只负责统一应用自身的 `size`、`stroke`、颜色继承、布局与可访问性规则。
 
 ## 12.2 SVG
 
@@ -1872,12 +1864,12 @@ type IconName =
 />
 ```
 
-`name` 与 `svg` 互斥。
+`icon` 与 `svg` 互斥。
 
 ## 12.3 Icon 自身核心属性
 
 ```text
-name
+icon
 svg
 size
 stroke
