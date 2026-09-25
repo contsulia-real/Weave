@@ -261,10 +261,10 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
     horizontalTrack.dataset.weaveScrollbarVisible = String(horizontalVisible)
 
     const verticalThickness = verticalVisible
-      ? parseFloat(getComputedStyle(verticalTrack).width) || 0
+      ? parseFloat(getComputedStyle(verticalThumb).width) || 0
       : 0
     const horizontalThickness = horizontalVisible
-      ? parseFloat(getComputedStyle(horizontalTrack).height) || 0
+      ? parseFloat(getComputedStyle(horizontalThumb).height) || 0
       : 0
 
     let verticalAvailable = 0
@@ -294,8 +294,12 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
       )
 
       verticalTrack.style.top = `${innerTop}px`
-      verticalTrack.style.left = `${innerRight}px`
+      verticalTrack.style.left = `${rect.right}px`
       verticalTrack.style.height = `${trackLength}px`
+      verticalTrack.style.setProperty(
+        '--weave-scrollbar-edge-inset',
+        `${borderRight + inset}px`,
+      )
       verticalThumb.style.height = `${thumbLength}px`
     }
 
@@ -321,8 +325,12 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
       )
 
       horizontalTrack.style.left = `${innerLeft}px`
-      horizontalTrack.style.top = `${innerBottom}px`
+      horizontalTrack.style.top = `${rect.bottom}px`
       horizontalTrack.style.width = `${trackLength}px`
+      horizontalTrack.style.setProperty(
+        '--weave-scrollbar-edge-inset',
+        `${borderBottom + inset}px`,
+      )
       horizontalThumb.style.width = `${thumbLength}px`
     }
 
@@ -421,7 +429,7 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
 
     event.preventDefault()
     event.stopPropagation()
-    event.currentTarget.setPointerCapture?.(event.pointerId)
+    track.setPointerCapture?.(event.pointerId)
     track.dataset.weaveScrollbarDragging = 'true'
 
     const trackRect = track.getBoundingClientRect()
@@ -488,17 +496,45 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
     const drag = dragRef.current
     if (drag === null || drag.pointerId !== event.pointerId) return
 
-    event.currentTarget.releasePointerCapture?.(event.pointerId)
-
     const track =
       drag.orientation === 'vertical'
         ? verticalTrackRef.current
         : horizontalTrackRef.current
+    track?.releasePointerCapture?.(event.pointerId)
     if (track !== null) {
       delete track.dataset.weaveScrollbarDragging
     }
 
     dragRef.current = null
+  }
+
+  const handleTrackPointerDown = (
+    orientation: Orientation,
+    event: PointerEvent<HTMLDivElement>,
+  ) => {
+    if (event.target !== event.currentTarget) return
+
+    const thumb =
+      orientation === 'vertical'
+        ? verticalThumbRef.current
+        : horizontalThumbRef.current
+
+    if (thumb === null) return
+
+    const thumbRect = thumb.getBoundingClientRect()
+    const pointer =
+      orientation === 'vertical' ? event.clientY : event.clientX
+    const start =
+      orientation === 'vertical' ? thumbRect.top : thumbRect.left
+    const end =
+      orientation === 'vertical' ? thumbRect.bottom : thumbRect.right
+
+    if (pointer >= start && pointer <= end) {
+      beginDrag(orientation, event)
+      return
+    }
+
+    pageTrack(orientation, event)
   }
 
   const pageTrack = (
@@ -548,7 +584,12 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
           'weave-scrollbar--vertical',
           tracked ? 'weave-scrollbar--tracked' : undefined,
         ].filter(Boolean).join(' ')}
-        onPointerDown={(event) => pageTrack('vertical', event)}
+        onPointerDown={(event) =>
+          handleTrackPointerDown('vertical', event)
+        }
+        onPointerMove={(event) => continueDrag('vertical', event)}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
         data={{
           'weave-scrollbar': '',
           'weave-scrollbar-orientation': 'vertical',
@@ -560,9 +601,6 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
           ref={verticalThumbRef}
           className="weave-scrollbar__thumb"
           onPointerDown={(event) => beginDrag('vertical', event)}
-          onPointerMove={(event) => continueDrag('vertical', event)}
-          onPointerUp={endDrag}
-          onPointerCancel={endDrag}
           data={{
             'weave-scrollbar-thumb': '',
           }}
@@ -580,7 +618,12 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
           'weave-scrollbar--horizontal',
           tracked ? 'weave-scrollbar--tracked' : undefined,
         ].filter(Boolean).join(' ')}
-        onPointerDown={(event) => pageTrack('horizontal', event)}
+        onPointerDown={(event) =>
+          handleTrackPointerDown('horizontal', event)
+        }
+        onPointerMove={(event) => continueDrag('horizontal', event)}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
         data={{
           'weave-scrollbar': '',
           'weave-scrollbar-orientation': 'horizontal',
@@ -592,9 +635,6 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
           ref={horizontalThumbRef}
           className="weave-scrollbar__thumb"
           onPointerDown={(event) => beginDrag('horizontal', event)}
-          onPointerMove={(event) => continueDrag('horizontal', event)}
-          onPointerUp={endDrag}
-          onPointerCancel={endDrag}
           data={{
             'weave-scrollbar-thumb': '',
           }}
