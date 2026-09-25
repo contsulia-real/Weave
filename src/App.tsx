@@ -1,4 +1,20 @@
-import { Text, ThemeProvider, View, createTheme } from './index'
+import { Image, Text, ThemeProvider, View, createTheme } from './index'
+
+const diagnosticImage =
+  'data:image/svg+xml,' +
+  encodeURIComponent(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 180">
+      <defs>
+        <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#7c3aed" />
+          <stop offset="1" stop-color="#38bdf8" />
+        </linearGradient>
+      </defs>
+      <rect width="320" height="180" rx="24" fill="url(#g)" />
+      <circle cx="248" cy="56" r="28" fill="rgba(255,255,255,.8)" />
+      <path d="M36 144 108 72l44 44 34-34 98 98H36Z" fill="rgba(255,255,255,.72)" />
+    </svg>
+  `)
 
 const diagnosticTheme = createTheme({
   tokens: {
@@ -117,6 +133,39 @@ function App() {
                 Dark primary
               </View>
             </ThemeProvider>
+          </View>
+        </View>
+
+        <View layout="flex" direction="column" gap={0.75}>
+          <h2>Image</h2>
+          <p className="hint">
+            同一图像分别使用 contain 与 cover；尺寸和圆角来自 viewProps。
+          </p>
+
+          <View layout="flex" direction="row" gap={1} wrap>
+            <Image
+              src={diagnosticImage}
+              alt="Weave gradient diagnostic"
+              fit="contain"
+              viewProps={{
+                width: 14,
+                height: 8,
+                radius: 'medium',
+                background: '#f4f4f5',
+              }}
+            />
+
+            <Image
+              src={diagnosticImage}
+              alt="Weave gradient diagnostic"
+              fit="cover"
+              position="center"
+              viewProps={{
+                width: 14,
+                height: 8,
+                radius: 'medium',
+              }}
+            />
           </View>
         </View>
 
