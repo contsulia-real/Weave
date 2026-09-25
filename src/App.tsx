@@ -65,6 +65,7 @@ function App() {
       padding={2}
       scrollbar={{
         size: 'medium',
+        tracked: true,
         color: 'secondary',
         radius: 'full',
       }}
@@ -267,6 +268,7 @@ function App() {
                   undetermined
                   mode="spin"
                   dotted
+                  tracked
                   size="medium"
                   color="primary"
                 />
@@ -288,6 +290,7 @@ function App() {
                   undetermined
                   mode="linear"
                   dotted
+                  tracked
                   size="medium"
                   color="primary"
                 />
@@ -307,6 +310,7 @@ function App() {
                 progress={progress}
                 mode="spin"
                 dotted
+                tracked
                 size="large"
                 color="success"
               />
@@ -322,6 +326,7 @@ function App() {
                 progress={progress}
                 mode="linear"
                 dotted
+                tracked
                 size="large"
                 color="success"
               />
@@ -354,6 +359,7 @@ function App() {
             radius="medium"
             scrollbar={{
               size: 'medium',
+              tracked: true,
               color: 'primary',
               trackColor: 'surfaceHover',
               radius: 'full',
