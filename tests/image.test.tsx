@@ -1,0 +1,146 @@
+import { cleanup, fireEvent, render } from '@testing-library/react'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { Image } from '../src'
+
+afterEach(() => {
+  cleanup()
+  vi.restoreAllMocks()
+})
+
+describe('Image', () => {
+  it('renders a real img with image semantics and View props', () => {
+    const onLoad = vi.fn()
+    const onError = vi.fn()
+
+    const { getByTestId } = render(
+      <Image
+        src="/cover.webp"
+        alt="Album cover"
+        fit="cover"
+        position="top-left"
+        loading="lazy"
+        onLoad={onLoad}
+        onError={onError}
+        viewProps={{
+          width: 20,
+          height: 12,
+          radius: 'medium',
+          data: {
+            testid: 'image',
+          },
+        }}
+      />,
+    )
+
+    const element = getByTestId('image') as HTMLImageElement
+
+    expect(element.tagName).toBe('IMG')
+    expect(element.getAttribute('src')).toBe('/cover.webp')
+    expect(element.getAttribute('alt')).toBe('Album cover')
+    expect(element.getAttribute('loading')).toBe('lazy')
+    expect(element.getAttribute('fit')).toBeNull()
+    expect(element.getAttribute('position')).toBeNull()
+
+    expect(element.style.getPropertyValue('--weave-image-fit')).toBe('cover')
+    expect(element.style.getPropertyValue('--weave-image-position')).toBe(
+      'left top',
+    )
+    expect(element.style.getPropertyValue('--weave-width')).toBe('20rem')
+    expect(element.style.getPropertyValue('--weave-height')).toBe('12rem')
+
+    fireEvent.load(element)
+    fireEvent.error(element)
+
+    expect(onLoad).toHaveBeenCalledTimes(1)
+    expect(onError).toHaveBeenCalledTimes(1)
+  })
+
+  it('keeps viewProps className and style above Image semantic props', () => {
+    const { getByTestId } = render(
+      <Image
+        src="/cover.webp"
+        alt=""
+        fit="cover"
+        viewProps={{
+          className: 'custom-image',
+          style: {
+            objectFit: 'contain',
+          },
+          data: {
+            testid: 'priority-image',
+          },
+        }}
+      />,
+    )
+
+    const element = getByTestId('priority-image') as HTMLImageElement
+
+    expect(element.className).toBe('custom-image')
+    expect(element.style.objectFit).toBe('contain')
+    expect(element.style.getPropertyValue('--weave-image-fit')).toBe('cover')
+
+    const stylesheet = document.querySelector(
+      'style[data-weave-image-styles]',
+    )
+    expect(stylesheet?.textContent).toContain(
+      ':where([data-weave-image])',
+    )
+  })
+
+  it('passes precise object-position values through unchanged', () => {
+    const { getByTestId } = render(
+      <Image
+        src="/cover.webp"
+        alt=""
+        position="25% 75%"
+        viewProps={{
+          data: {
+            testid: 'position-image',
+          },
+        }}
+      />,
+    )
+
+    expect(
+      getByTestId('position-image').style.getPropertyValue(
+        '--weave-image-position',
+      ),
+    ).toBe('25% 75%')
+  })
+
+  it('creates and revokes object URLs for Blob sources', () => {
+    const createObjectURL = vi.fn(() => 'blob:weave-image')
+    const revokeObjectURL = vi.fn()
+
+    Object.defineProperty(URL, 'createObjectURL', {
+      configurable: true,
+      value: createObjectURL,
+    })
+    Object.defineProperty(URL, 'revokeObjectURL', {
+      configurable: true,
+      value: revokeObjectURL,
+    })
+
+    const blob = new Blob(['image'], { type: 'image/png' })
+    const { getByTestId, unmount } = render(
+      <Image
+        src={blob}
+        alt=""
+        viewProps={{
+          data: {
+            testid: 'blob-image',
+          },
+        }}
+      />,
+    )
+
+    const element = getByTestId('blob-image') as HTMLImageElement
+
+    expect(createObjectURL).toHaveBeenCalledWith(blob)
+    expect(element.getAttribute('src')).toBe('blob:weave-image')
+
+    unmount()
+
+    expect(revokeObjectURL).toHaveBeenCalledWith('blob:weave-image')
+  })
+})
