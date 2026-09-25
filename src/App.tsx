@@ -66,13 +66,12 @@ function App() {
         <View layout="flex" direction="column" gap={0.75}>
           <h2>Container breakpoint</h2>
           <p className="hint">
-            下面只看自身容器宽度；外层 viewport 不直接决定内部布局。
+            拖动下面容器右下角改变它自己的宽度；达到 48rem 后内部切为横向。
           </p>
 
           <View
             container="demo"
-            width="fill"
-            maxWidth={40}
+            className="container-demo"
             padding={1}
             radius="medium"
             border={0.0625}
