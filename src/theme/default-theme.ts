@@ -248,7 +248,7 @@ export const defaultTheme: ResolvedTheme = {
         thumbHoverShadow:
           '0 0.125rem 0.25rem rgb(58 48 40 / 0.20), 0 0.1875rem 0.375rem rgb(58 48 40 / 0.10)',
         thumbDragShrink: 0.72,
-        thumbDragStretch: 0.7,
+        thumbDragStretch: 1,
         focusOutlineWidth: 0.125,
         focusOutlineColor: 'focus',
         focusOutlineStyle: 'solid',
