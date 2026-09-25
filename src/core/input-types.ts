@@ -1,5 +1,5 @@
 import type { Ref } from 'react'
-import type { ViewProps } from './view-types'
+import type { ViewCoreProps, ViewDynamicBreakpointProps } from './view-types'
 
 export type InputType =
   | 'text'
@@ -12,15 +12,13 @@ export type InputType =
 
 export type InputValue = string | number
 
-type InputViewProps<
-  TElement extends HTMLElement,
-  TBreakpoint extends string = never,
-> = Omit<
-  ViewProps<TElement, TBreakpoint>,
+type InputViewProps<TElement extends HTMLElement> = Omit<
+  ViewCoreProps<TElement>,
   'children' | 'onChange' | 'readOnly' | 'required'
-> & {
-  ref?: Ref<TElement>
-}
+> &
+  ViewDynamicBreakpointProps & {
+    ref?: Ref<TElement>
+  }
 
 interface InputCommonProps {
   value?: InputValue
@@ -36,26 +34,22 @@ interface InputCommonProps {
   pattern?: string
 }
 
-export type InputProps<
-  TBreakpoint extends string = never,
-> =
+export type InputProps =
   | (InputCommonProps & {
       multiline?: false
       rows?: never
       type?: InputType
-      viewProps?: InputViewProps<HTMLInputElement, TBreakpoint>
+      viewProps?: InputViewProps<HTMLInputElement>
     })
   | (InputCommonProps & {
       multiline: true
       rows?: number
       type?: never
-      viewProps?: InputViewProps<HTMLTextAreaElement, TBreakpoint>
+      viewProps?: InputViewProps<HTMLTextAreaElement>
     })
 
-export type SingleLineInputViewProps<
-  TBreakpoint extends string = never,
-> = InputViewProps<HTMLInputElement, TBreakpoint>
+export type SingleLineInputViewProps =
+  InputViewProps<HTMLInputElement>
 
-export type MultilineInputViewProps<
-  TBreakpoint extends string = never,
-> = InputViewProps<HTMLTextAreaElement, TBreakpoint>
+export type MultilineInputViewProps =
+  InputViewProps<HTMLTextAreaElement>
