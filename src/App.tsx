@@ -1,4 +1,21 @@
-import { View } from './index'
+import { ThemeProvider, View, createTheme } from './index'
+
+const diagnosticTheme = createTheme({
+  tokens: {
+    color: {
+      primary: '#7c3aed',
+    },
+  },
+  modes: {
+    dark: {
+      tokens: {
+        color: {
+          primary: '#c4b5fd',
+        },
+      },
+    },
+  },
+})
 
 function DemoBox({ label }: { label: string }) {
   return (
@@ -60,6 +77,37 @@ function App() {
             <DemoBox label="A" />
             <DemoBox label="B" />
             <DemoBox label="C" />
+          </View>
+        </View>
+
+        <View layout="flex" direction="column" gap={0.75}>
+          <h2>Theme inheritance</h2>
+          <p className="hint">
+            两块都使用 background="primary"；右侧只通过 mode="dark" 改变同一 token。
+          </p>
+
+          <View layout="flex" direction="row" gap={0.75} wrap>
+            <ThemeProvider theme={diagnosticTheme} mode="light">
+              <View
+                padding={1}
+                radius="medium"
+                background="primary"
+                color="onPrimary"
+              >
+                Light primary
+              </View>
+            </ThemeProvider>
+
+            <ThemeProvider theme={diagnosticTheme} mode="dark">
+              <View
+                padding={1}
+                radius="medium"
+                background="primary"
+                color="#18181b"
+              >
+                Dark primary
+              </View>
+            </ThemeProvider>
           </View>
         </View>
 
