@@ -4,8 +4,8 @@ import { LoadingIndicator } from '../src'
 
 afterEach(cleanup)
 
-// @ts-expect-error determined LoadingIndicator does not accept animation
 const invalidDeterminedAnimation = (
+  // @ts-expect-error determined LoadingIndicator does not accept animation
   <LoadingIndicator progress={0.5} animation="dots" />
 )
 void invalidDeterminedAnimation
@@ -71,12 +71,19 @@ describe('LoadingIndicator', () => {
       'weave-loading-indicator--determined',
     )
 
+    const ring = element.querySelector(
+      '[data-weave-loading-ring]',
+    ) as HTMLDivElement
+
     expect(
-      element.style.getPropertyValue('--weave-loading-progress'),
+      ring.style.getPropertyValue('--weave-loading-progress'),
     ).toBe('68%')
     expect(
       element.style.getPropertyValue('--weave-loading-duration'),
     ).toBe('800ms')
+    expect(
+      element.querySelector('[data-weave-loading-dots]'),
+    ).toBeNull()
   })
 
   it('transitions determined progress when the value changes', () => {
@@ -137,17 +144,20 @@ describe('LoadingIndicator', () => {
     )
 
     const element = getByRole('progressbar')
+    const ring = element.querySelector(
+      '[data-weave-loading-ring]',
+    ) as HTMLDivElement
 
     expect(element.getAttribute('aria-valuenow')).toBe('1')
     expect(
-      element.style.getPropertyValue('--weave-loading-progress'),
+      ring.style.getPropertyValue('--weave-loading-progress'),
     ).toBe('100%')
 
     rerender(<LoadingIndicator progress={-0.5} />)
 
     expect(element.getAttribute('aria-valuenow')).toBe('0')
     expect(
-      element.style.getPropertyValue('--weave-loading-progress'),
+      ring.style.getPropertyValue('--weave-loading-progress'),
     ).toBe('0%')
   })
 
