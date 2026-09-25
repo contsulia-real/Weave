@@ -20,7 +20,7 @@ function runtimeRule(
     document.querySelector<HTMLStyleElement>(
       `style[data-weave-runtime-class="${className}"]`,
     )?.textContent ?? ''
-  ).replace(/\\s+/g, '')
+  ).replace(/\s+/g, '')
 }
 
 afterEach(cleanup)
