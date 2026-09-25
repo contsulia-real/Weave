@@ -5,6 +5,7 @@ import {
   useState,
   type ReactNode,
 } from 'react'
+import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { ThemeContext } from './theme-context'
 import {
   mergeThemeDefinitions,
@@ -87,19 +88,21 @@ export function ThemeProvider({
   )
 
   const variables = useMemo(
-    () => themeVariables(resolvedTheme),
+    () => ({
+      display: 'contents',
+      ...themeVariables(resolvedTheme),
+    }),
     [resolvedTheme],
   )
+
+  const className = useRuntimeStyleClass('theme', variables)
 
   return (
     <ThemeContext.Provider value={contextValue}>
       <span
         data-weave-theme=""
         data-weave-theme-mode={activeMode}
-        style={{
-          display: 'contents',
-          ...variables,
-        }}
+        className={className}
       >
         {children}
       </span>
