@@ -3,7 +3,7 @@ export { Text } from './components/Text'
 export { Image } from './components/Image'
 export { Input } from './components/Input'
 export { Switch } from './components/Switch'
-export { LoadingIndicator } from './components/LoadingIndicator'
+export { Progress } from './components/Progress'
 export type {
   BackgroundValue,
   BlendMode,
@@ -86,9 +86,10 @@ export type {
 } from './core/switch-types'
 
 export type {
-  LoadingIndicatorColor,
-  LoadingIndicatorProps,
-  LoadingIndicatorSize,
-  LoadingIndicatorSpeed,
-  LoadingIndicatorViewProps,
-} from './core/loading-indicator-types'
+  ProgressColor,
+  ProgressMode,
+  ProgressProps,
+  ProgressSize,
+  ProgressSpeed,
+  ProgressViewProps,
+} from './core/progress-types'
