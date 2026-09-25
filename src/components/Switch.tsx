@@ -52,6 +52,11 @@ export function Switch({
   return (
     <View
       {...viewProps}
+      className={[
+        'weave-switch',
+        `weave-switch--${size}`,
+        viewProps.className,
+      ].filter(Boolean).join(' ')}
       role="switch"
       checked={currentChecked}
       focusable={viewProps.focusable ?? true}
@@ -64,6 +69,7 @@ export function Switch({
       }}
     >
       <View
+        className="weave-switch__thumb"
         data={{
           'weave-switch-thumb': '',
         }}
