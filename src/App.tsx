@@ -1,4 +1,4 @@
-import { Image, Input, Text, ThemeProvider, View, createTheme } from './index'
+import { Image, Input, Switch, Text, ThemeProvider, View, createTheme } from './index'
 
 const diagnosticImage =
   'data:image/svg+xml,' +
@@ -209,6 +209,30 @@ function App() {
                 background: 'surface',
               }}
             />
+          </View>
+        </View>
+
+        <View layout="flex" direction="column" gap={0.75}>
+          <h2>Switch</h2>
+          <p className="hint">
+            三档语义尺寸；支持鼠标与键盘切换，状态通过 role="switch" 与 aria-checked 暴露。
+          </p>
+
+          <View layout="flex" direction="row" gap={1.5} align="center" wrap>
+            <View layout="flex" direction="row" gap={0.5} align="center">
+              <Switch size="small" />
+              <Text size="small">Small</Text>
+            </View>
+
+            <View layout="flex" direction="row" gap={0.5} align="center">
+              <Switch size="medium" defaultChecked />
+              <Text size="small">Medium</Text>
+            </View>
+
+            <View layout="flex" direction="row" gap={0.5} align="center">
+              <Switch size="large" />
+              <Text size="small">Large</Text>
+            </View>
           </View>
         </View>
 
