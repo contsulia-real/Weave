@@ -1,4 +1,4 @@
-import { Image, Input, Switch, Text, ThemeProvider, View, createTheme } from './index'
+import { Image, Input, LoadingIndicator, Switch, Text, ThemeProvider, View, createTheme } from './index'
 
 const diagnosticImage =
   'data:image/svg+xml,' +
@@ -230,6 +230,46 @@ function App() {
             <View layout="flex" direction="row" gap={0.5} align="center">
               <Switch size="large" />
               <Text size="small">Large</Text>
+            </View>
+          </View>
+        </View>
+
+        <View layout="flex" direction="column" gap={0.75}>
+          <h2>LoadingIndicator</h2>
+          <p className="hint">
+            不确定进度与确定进度使用同一组件；spin、pulse、dots 都是公开动画语义。
+          </p>
+
+          <View layout="flex" direction="row" gap={1.5} align="center" wrap>
+            <View layout="flex" direction="row" gap={0.5} align="center">
+              <LoadingIndicator
+                undetermined
+                size="small"
+                animation="spin"
+                color="primary"
+              />
+              <Text size="small">Spin</Text>
+            </View>
+
+            <View layout="flex" direction="row" gap={0.5} align="center">
+              <LoadingIndicator
+                progress={0.68}
+                size="medium"
+                animation="pulse"
+                color="success"
+                speed="slow"
+              />
+              <Text size="small">68% Pulse</Text>
+            </View>
+
+            <View layout="flex" direction="row" gap={0.5} align="center">
+              <LoadingIndicator
+                undetermined
+                size="large"
+                animation="dots"
+                color="secondary"
+              />
+              <Text size="small">Dots</Text>
             </View>
           </View>
         </View>
