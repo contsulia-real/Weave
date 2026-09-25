@@ -338,16 +338,18 @@ export function AutoScrollbar({
     })
 
     const themeHost = target.closest<HTMLElement>('[data-weave-theme]')
-    const themeObserver =
-      themeHost === null ||
-      typeof MutationObserver === 'undefined'
-        ? null
-        : new MutationObserver(update)
+    let themeObserver: MutationObserver | null = null
 
-    themeObserver?.observe(themeHost, {
-      attributes: true,
-      attributeFilter: ['style'],
-    })
+    if (
+      themeHost !== null &&
+      typeof MutationObserver !== 'undefined'
+    ) {
+      themeObserver = new MutationObserver(update)
+      themeObserver.observe(themeHost, {
+        attributes: true,
+        attributeFilter: ['style'],
+      })
+    }
 
     return () => {
       target.removeEventListener('scroll', onScroll)
