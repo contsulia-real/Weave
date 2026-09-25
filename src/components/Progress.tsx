@@ -67,9 +67,16 @@ export function Progress(props: ProgressProps) {
       }}
     >
       <View
-        className="weave-progress__visual"
+        className="weave-progress__track"
         data={{
-          'weave-progress-visual': '',
+          'weave-progress-track': '',
+        }}
+      />
+
+      <View
+        className="weave-progress__value"
+        data={{
+          'weave-progress-value': '',
         }}
         style={
           progress === undefined
