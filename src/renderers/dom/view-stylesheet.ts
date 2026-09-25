@@ -144,12 +144,12 @@ const stylesheet = `
   grid-area: 1 / 1;
 }
 
-:where([data-weave-layout="absolute"]) {
-  position: relative;
-}
-
 :where([data-weave-layout="absolute"]) > :where(*) {
   position: absolute;
+}
+
+:where([data-weave-layout="absolute"]) > :where([data-weave-view]) {
+  position: var(--weave-position, absolute);
 }
 `
 
