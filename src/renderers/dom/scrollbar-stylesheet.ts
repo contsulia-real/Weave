@@ -35,35 +35,35 @@ const stylesheet = `
 }
 
 :where(.weave-scrollbar--small.weave-scrollbar--vertical) {
-  --weave-width: 0.375rem;
+  --weave-width: 0.25rem;
 }
 
 :where(.weave-scrollbar--medium.weave-scrollbar--vertical) {
-  --weave-width: 0.5rem;
+  --weave-width: 0.375rem;
 }
 
 :where(.weave-scrollbar--large.weave-scrollbar--vertical) {
-  --weave-width: 0.75rem;
+  --weave-width: 0.5rem;
 }
 
 :where(.weave-scrollbar--small.weave-scrollbar--horizontal) {
-  --weave-height: 0.375rem;
+  --weave-height: 0.25rem;
 }
 
 :where(.weave-scrollbar--medium.weave-scrollbar--horizontal) {
-  --weave-height: 0.5rem;
+  --weave-height: 0.375rem;
 }
 
 :where(.weave-scrollbar--large.weave-scrollbar--horizontal) {
-  --weave-height: 0.75rem;
+  --weave-height: 0.5rem;
 }
 
 :where(.weave-scrollbar--vertical) {
-  transform: translateX(-100%);
+  --weave-transform: translateX(-100%);
 }
 
 :where(.weave-scrollbar--horizontal) {
-  transform: translateY(-100%);
+  --weave-transform: translateY(-100%);
 }
 
 :where(.weave-scrollbar__thumb) {
