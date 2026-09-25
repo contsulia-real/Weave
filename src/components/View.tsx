@@ -8,7 +8,6 @@ import type { CSSProperties } from 'react'
 import type { ViewProps } from '../core/view-types'
 import { resolveDOMView } from '../renderers/dom/resolve-view'
 import { ensureViewStylesheet } from '../renderers/dom/view-stylesheet'
-import { useWeaveTheme } from '../theme/theme-context'
 
 export function View(props: ViewProps) {
   useInsertionEffect(ensureViewStylesheet, [])
@@ -28,10 +27,8 @@ export function View(props: ViewProps) {
     if (autoFocus) elementRef.current?.focus()
   }, [autoFocus])
 
-  const theme = useWeaveTheme()
   const resolved = resolveDOMView(props)
   const mergedStyle = {
-    ...theme.variables,
     ...resolved.attributeStyle,
     ...style,
   } as CSSProperties
