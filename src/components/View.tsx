@@ -1,6 +1,4 @@
-import type {
-  CSSProperties,
-} from 'react'
+import type { CSSProperties } from 'react'
 import type {
   ViewProps,
   ViewStyleProps,
@@ -9,7 +7,7 @@ import { AutoScrollbar } from './internal/AutoScrollbar'
 import { useViewHost } from './internal/use-view-host'
 
 function scrollableOverflow(
-  value: CSSProperties['overflow'] | undefined,
+  value: string | undefined,
 ): boolean {
   return value === 'auto' || value === 'scroll'
 }
