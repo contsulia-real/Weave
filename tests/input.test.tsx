@@ -200,7 +200,12 @@ describe('Input', () => {
     )
 
     expect(verticalTrack?.style.top).toBe('106px')
-    expect(verticalTrack?.style.left).toBe('493px')
+    expect(verticalTrack?.style.left).toBe('500px')
+    expect(
+      verticalTrack?.style.getPropertyValue(
+        '--weave-scrollbar-edge-inset',
+      ),
+    ).toBe('7px')
 
     rectSpy.mockRestore()
   })
