@@ -1,4 +1,4 @@
-import { Image, Text, ThemeProvider, View, createTheme } from './index'
+import { Image, Input, Text, ThemeProvider, View, createTheme } from './index'
 
 const diagnosticImage =
   'data:image/svg+xml,' +
@@ -174,6 +174,42 @@ function App() {
             />
           </View>
 
+        </View>
+
+        <View layout="flex" direction="column" gap={0.75}>
+          <h2>Input</h2>
+          <p className="hint">
+            单行和多行共用同一个 Input；布局与视觉继续通过 viewProps。
+          </p>
+
+          <View layout="flex" direction="column" gap={0.75} maxWidth={32}>
+            <Input
+              placeholder="Name"
+              autoComplete="name"
+              viewProps={{
+                width: 'fill',
+                padding: 0.75,
+                border: 0.0625,
+                borderColor: 'outline',
+                radius: 'medium',
+                background: 'surface',
+              }}
+            />
+
+            <Input
+              multiline
+              rows={4}
+              placeholder="Notes"
+              viewProps={{
+                width: 'fill',
+                padding: 0.75,
+                border: 0.0625,
+                borderColor: 'outline',
+                radius: 'medium',
+                background: 'surface',
+              }}
+            />
+          </View>
         </View>
 
         <View layout="flex" direction="column" gap={0.75}>
