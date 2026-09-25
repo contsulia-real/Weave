@@ -266,6 +266,33 @@ describe('Button', () => {
     )
   })
 
+  it('uses global feedback tokens for tactile press behavior', () => {
+    render(<Button text="Press me" />)
+
+    const stylesheet = document.querySelector(
+      'style[data-weave-button-styles]',
+    )?.textContent ?? ''
+
+    expect(stylesheet).toContain(
+      '--weave-feedback-rest-depth',
+    )
+    expect(stylesheet).toContain(
+      '--weave-feedback-hover-lift',
+    )
+    expect(stylesheet).toContain(
+      '--weave-feedback-press-offset',
+    )
+    expect(stylesheet).toContain(
+      '--weave-feedback-press-scale',
+    )
+    expect(stylesheet).toContain(
+      'var(--weave-motion-curve-spring)',
+    )
+    expect(stylesheet).toContain(
+      ':where(.weave-button:active:not([aria-disabled="true"]))',
+    )
+  })
+
   it('takes visual defaults from the Button component theme', () => {
     const { getByRole } = render(
       <Button
