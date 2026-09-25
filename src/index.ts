@@ -1,4 +1,5 @@
 export { View } from './components/View'
+export { Text } from './components/Text'
 export type {
   BackgroundValue,
   BlendMode,
@@ -39,3 +40,17 @@ export type {
   ThemeOverride,
   ThemeTokens,
 } from './theme/theme-types'
+
+export type {
+  TextAlign,
+  TextCase,
+  TextColor,
+  TextOverflow,
+  TextProps,
+  TextResponsiveProps,
+  TextSize,
+  TextStyleProps,
+  TextViewProps,
+  TextWeight,
+  TextWrap,
+} from './core/text-types'
