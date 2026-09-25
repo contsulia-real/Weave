@@ -1,6 +1,10 @@
 import { cleanup, fireEvent, render } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { View } from '../src'
+import {
+  ThemeProvider,
+  View,
+  createTheme,
+} from '../src'
 
 afterEach(cleanup)
 
@@ -17,6 +21,20 @@ function runtimeRule(
   return (
     document.querySelector<HTMLStyleElement>(
       `style[data-weave-runtime-class="${className}"]`,
+    )?.textContent ?? ''
+  ).replace(/\s+/g, '')
+}
+
+function breakpointStyles(element: Element): string {
+  const className = [...element.classList].find((name) =>
+    name.startsWith('weave-breakpoints-'),
+  )
+
+  expect(className).toBeDefined()
+
+  return (
+    document.querySelector<HTMLStyleElement>(
+      `style[data-weave-breakpoint-styles="${className}"]`,
     )?.textContent ?? ''
   ).replace(/\s+/g, '')
 }
@@ -138,6 +156,7 @@ describe('View DOM backend', () => {
     const frameworkStyles = document.querySelector(
       'style[data-weave-view-styles]',
     )
+    const responsiveStyles = breakpointStyles(element)
 
     expect(element.style.getPropertyValue('--weave-width')).toBe('')
     expect(rule).toContain('--weave-width:20rem;')
@@ -145,14 +164,14 @@ describe('View DOM backend', () => {
     expect(rule).toContain('--weave-md-padding-top:2rem;')
     expect(element.getAttribute('md')).toBeNull()
 
-    expect(frameworkStyles?.textContent).toContain(
-      '@media (min-width: 48rem)',
+    expect(responsiveStyles).toContain(
+      '@media(min-width:48rem)',
+    )
+    expect(responsiveStyles).toContain(
+      '@property--weave-md-width{syntax:"*";inherits:false;}',
     )
     expect(frameworkStyles?.textContent).toContain(
-      '--weave-md-width { syntax: "*"; inherits: false; }',
-    )
-    expect(frameworkStyles?.textContent).toContain(
-      '--weave-viewport-responsive-width:',
+      '--weave-viewport-responsive-width',
     )
   })
 
@@ -173,6 +192,7 @@ describe('View DOM backend', () => {
     const frameworkStyles = document.querySelector(
       'style[data-weave-view-styles]',
     )
+    const responsiveStyles = breakpointStyles(child)
 
     expect(container.style.getPropertyValue('--weave-container-type')).toBe('')
     expect(containerRule).toContain(
@@ -189,11 +209,55 @@ describe('View DOM backend', () => {
     expect(childRule).toContain('--weave-container-md-gap:1.5rem;')
     expect(child.getAttribute('containerMd')).toBeNull()
 
-    expect(frameworkStyles?.textContent).toContain(
-      '@container (min-width: 48rem)',
+    expect(responsiveStyles).toContain(
+      '@container(min-width:48rem)',
     )
     expect(frameworkStyles?.textContent).toContain(
-      '--weave-container-responsive-gap:',
+      '--weave-container-responsive-gap',
+    )
+  })
+
+  it('uses ThemeProvider breakpoint values and custom names', () => {
+    const theme = createTheme({
+      breakpoints: {
+        md: 52,
+        compact: 36,
+        wide: 72,
+      },
+    })
+
+    const { getByTestId } = render(
+      <ThemeProvider theme={theme} mode="light">
+        <View
+          compact={{ width: 22, overflow: 'auto' }}
+          containerWide={{ gap: 3 }}
+          data={{ testid: 'custom-breakpoints' }}
+        />
+      </ThemeProvider>,
+    )
+
+    const element = getByTestId('custom-breakpoints')
+    const rule = runtimeRule(element, 'weave-props-')
+    const responsiveStyles = breakpointStyles(element)
+
+    expect(rule).toContain('--weave-compact-width:22rem;')
+    expect(rule).toContain('--weave-compact-overflow:auto;')
+    expect(rule).toContain('--weave-container-wide-gap:3rem;')
+    expect(element.getAttribute('compact')).toBeNull()
+    expect(element.getAttribute('containerWide')).toBeNull()
+    expect(element.getAttribute('data-weave-scroll-host')).toBe('')
+
+    expect(responsiveStyles).toContain(
+      '@media(min-width:36rem)',
+    )
+    expect(responsiveStyles).toContain(
+      '@media(min-width:52rem)',
+    )
+    expect(responsiveStyles).not.toContain(
+      '@media(min-width:48rem)',
+    )
+    expect(responsiveStyles).toContain(
+      '@container(min-width:72rem)',
     )
   })
 
