@@ -10,9 +10,12 @@ export type RuntimeStyleDeclarations = Readonly<
   Record<string, RuntimeStyleValue>
 >
 
+type RuntimeEntry = readonly [string, string | number]
+
 interface RuntimeClassRule {
   className: string
-  cssText: string
+  signature: string
+  declarations: readonly RuntimeEntry[]
 }
 
 interface RuntimeClassEntry {
@@ -24,7 +27,7 @@ const runtimeClasses = new Map<string, RuntimeClassEntry>()
 
 function entries(
   declarations: Readonly<object> | undefined,
-): readonly (readonly [string, string | number])[] {
+): readonly RuntimeEntry[] {
   if (declarations === undefined) return []
 
   return Object.entries(declarations)
@@ -53,16 +56,35 @@ export function createRuntimeStyleClass(
   const normalized = entries(declarations)
   if (normalized.length === 0) return undefined
 
-  const body = normalized
-    .map(([name, value]) => `${name}:${String(value)};`)
-    .join('')
-
-  const className = `weave-${prefix}-${hash(body)}`
+  const signature = JSON.stringify(normalized)
+  const className = 'weave-' + prefix + '-' + hash(signature)
 
   return {
     className,
-    cssText: `:where(.${className}){${body}}`,
+    signature,
+    declarations: normalized,
   }
+}
+
+function createStyleElement(rule: RuntimeClassRule): HTMLStyleElement {
+  const element = document.createElement('style')
+  element.dataset.weaveRuntimeClass = rule.className
+  element.textContent = ':where(.' + rule.className + '){}'
+  document.head.append(element)
+
+  const cssRule = element.sheet?.cssRules.item(0) as CSSStyleRule | null
+
+  if (cssRule !== null) {
+    for (const [name, value] of rule.declarations) {
+      cssRule.style.setProperty(name, String(value))
+    }
+
+    // Serialize through CSSOM so arbitrary public string values can never
+    // escape the declaration block and become new CSS rules.
+    element.textContent = cssRule.cssText
+  }
+
+  return element
 }
 
 function retainRuntimeClass(rule: RuntimeClassRule): () => void {
@@ -74,16 +96,9 @@ function retainRuntimeClass(rule: RuntimeClassRule): () => void {
   }
 
   const existing = document.querySelector<HTMLStyleElement>(
-    `style[data-weave-runtime-class="${rule.className}"]`,
+    'style[data-weave-runtime-class="' + rule.className + '"]',
   )
-  const element = existing ?? document.createElement('style')
-
-  element.dataset.weaveRuntimeClass = rule.className
-  element.textContent = rule.cssText
-
-  if (existing === null) {
-    document.head.append(element)
-  }
+  const element = existing ?? createStyleElement(rule)
 
   runtimeClasses.set(rule.className, {
     count: 1,
@@ -115,7 +130,7 @@ export function useRuntimeStyleClass(
     if (rule === undefined || typeof document === 'undefined') return
 
     return retainRuntimeClass(rule)
-  }, [rule?.className, rule?.cssText])
+  }, [rule?.className, rule?.signature])
 
   return rule?.className
 }
