@@ -80,6 +80,7 @@ export const defaultTheme: ResolvedTheme = {
       hoverLift: 0.0625,
       pressDepth: 0.0625,
       pressOffset: 0.125,
+      hoverScale: 1.03,
       pressScale: 0.985,
       dragScale: 1.08,
     },
