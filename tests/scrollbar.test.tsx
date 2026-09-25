@@ -282,5 +282,22 @@ describe('automatic Scrollbar', () => {
     expect(track).not.toBeNull()
     expect(track.style.width).toBe('')
     expect(track.style.getPropertyValue('--weave-width')).toBe('')
+
+    const stylesheet = document.querySelector(
+      'style[data-weave-scrollbar-styles]',
+    )
+
+    expect(stylesheet?.textContent).toContain(
+      '.weave-scrollbar--small.weave-scrollbar--vertical',
+    )
+    expect(stylesheet?.textContent).toContain(
+      '--weave-width: 0.375rem',
+    )
+    expect(stylesheet?.textContent).toContain(
+      '--weave-width: 0.5rem',
+    )
+    expect(stylesheet?.textContent).toContain(
+      '--weave-width: 0.625rem',
+    )
   })
 })
