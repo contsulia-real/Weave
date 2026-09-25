@@ -54,6 +54,9 @@ export function themeTokenVariables(tokens: ThemeTokens): ThemeVariableStyle {
     if (feedback.pressOffset !== undefined) {
       output['--weave-feedback-press-offset'] = toRem(feedback.pressOffset)
     }
+    if (feedback.hoverScale !== undefined) {
+      output['--weave-feedback-hover-scale'] = feedback.hoverScale
+    }
     if (feedback.pressScale !== undefined) {
       output['--weave-feedback-press-scale'] = feedback.pressScale
     }
