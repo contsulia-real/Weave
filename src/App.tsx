@@ -338,7 +338,7 @@ function App() {
 
               <Button
                 icon={IconSearchFilled}
-                variant="ghost"
+                variant="secondary"
                 viewProps={{
                   label: 'Search',
                 }}
