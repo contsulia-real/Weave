@@ -1,6 +1,7 @@
 export { View } from './components/View'
 export { Text } from './components/Text'
 export { Image } from './components/Image'
+export { Icon } from './components/Icon'
 export { Input } from './components/Input'
 export { Switch } from './components/Switch'
 export { Progress } from './components/Progress'
@@ -66,6 +67,15 @@ export type {
   TextWeight,
   TextWrap,
 } from './core/text-types'
+
+export type {
+  IconComponent,
+  IconProps,
+  IconSize,
+  IconStroke,
+  IconSvg,
+  IconViewProps,
+} from './core/icon-types'
 
 export type {
   ImageFit,
