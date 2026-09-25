@@ -13,8 +13,10 @@ import {
   resolveDOMView,
   type ResolvedDOMView,
 } from '../../renderers/dom/resolve-view'
+import { useBreakpointStylesheet } from '../../renderers/dom/breakpoint-stylesheet'
 import { useRuntimeStyleClass } from '../../renderers/dom/runtime-class'
 import { ensureViewStylesheet } from '../../renderers/dom/view-stylesheet'
+import { useTheme } from '../../theme/theme-context'
 
 export interface ViewHostResult<TElement extends HTMLElement> {
   elementRef: RefObject<TElement | null>
@@ -23,8 +25,11 @@ export interface ViewHostResult<TElement extends HTMLElement> {
   resolved: ResolvedDOMView<TElement>
 }
 
-export function useViewHost<TElement extends HTMLElement>(
-  props: ViewProps<TElement>,
+export function useViewHost<
+  TElement extends HTMLElement,
+  TBreakpoint extends string = never,
+>(
+  props: ViewProps<TElement, TBreakpoint>,
   componentStyle?: CSSProperties,
   componentName?: string,
 ): ViewHostResult<TElement> {
@@ -44,7 +49,9 @@ export function useViewHost<TElement extends HTMLElement>(
     if (autoFocus) elementRef.current?.focus()
   }, [autoFocus])
 
-  const resolved = resolveDOMView(props)
+  const { theme } = useTheme()
+  const breakpointClassName = useBreakpointStylesheet(theme.breakpoints)
+  const resolved = resolveDOMView(props, theme.breakpoints)
   const componentClassName = useRuntimeStyleClass(
     componentName === undefined
       ? 'component-props'
@@ -58,6 +65,7 @@ export function useViewHost<TElement extends HTMLElement>(
 
   const resolvedClassName = [
     'weave-view',
+    breakpointClassName,
     componentClassName,
     attributeClassName,
     className,
