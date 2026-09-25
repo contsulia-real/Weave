@@ -1390,6 +1390,22 @@ breakpoints: {
 }
 ```
 
+breakpoint 遵循主题的正常继承与深合并规则。自定义名称会加入当前主题已有断点；同名断点覆盖上层 / defaultTheme 的值，而不是要求整组替换。
+
+例如：
+
+```ts
+createTheme({
+  breakpoints: {
+    md: 52,      // 覆盖 defaultTheme.md = 48
+    compact: 36, // 新增
+    wide: 72,    // 新增
+  },
+})
+```
+
+当前有效 breakpoint 会按数值从小到大参与响应式级联，而不是依赖对象声明顺序。
+
 然后：
 
 ```tsx
@@ -1406,6 +1422,12 @@ breakpoints: {
   }}
 />
 ```
+
+`View`、所有组件的 `viewProps`、以及支持高层响应式语义的组件（当前包括 `Text`）都读取当前 ThemeProvider 的有效 breakpoint 集合。DOM fallback 不再把 `sm / md / lg / xl` 的媒体查询写死在静态 stylesheet 中，而是根据当前主题生成对应的低 specificity breakpoint class。
+
+嵌套 ThemeProvider 可以具有不同 breakpoint 配置；生成的响应式规则只作用于带有对应 breakpoint class 的组件实例，不污染外层或相邻主题作用域。
+
+只有当前有效主题中存在的 breakpoint 名称才参与响应式解析。未激活的响应式对象属性不会透传到真实 DOM。
 
 ---
 
@@ -1439,11 +1461,25 @@ breakpoints: {
 
 ```text
 md / lg / xl
+compact / wide / ...
 → viewport breakpoint
 
 containerMd / containerLg / ...
+containerCompact / containerWide / ...
 → 最近响应式容器
 ```
+
+container breakpoint 名称由 viewport breakpoint 名称派生：
+
+```text
+compact
+→ containerCompact
+
+wide
+→ containerWide
+```
+
+它们使用同一组主题 breakpoint 数值，但 viewport 通过 `@media` 判断，container 通过 `@container` 判断。
 
 ---
 
@@ -1451,13 +1487,16 @@ containerMd / containerLg / ...
 
 响应式不是只能覆盖 CSS 属性。
 
-可以直接覆盖组件语义属性：
+可以直接覆盖组件语义属性，并使用当前主题中的自定义 breakpoint 名称：
 
 ```tsx
 <Text
   size="small"
   md={{
     size: "medium",
+  }}
+  wide={{
+    size: "large",
   }}
 />
 
