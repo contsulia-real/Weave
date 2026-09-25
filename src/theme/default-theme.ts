@@ -134,6 +134,8 @@ export const defaultTheme: ResolvedTheme = {
           background: 'primary',
           color: 'onPrimary',
           borderColor: 'primary',
+          depthColor:
+            'color-mix(in srgb, var(--weave-color-primary) 72%, black)',
           hoverBackground: 'primaryHover',
           activeBackground: 'primaryActive',
         },
@@ -141,6 +143,8 @@ export const defaultTheme: ResolvedTheme = {
           background: 'surface',
           color: 'inherit',
           borderColor: 'outline',
+          depthColor:
+            'color-mix(in srgb, var(--weave-color-outline) 76%, #8f8377)',
           hoverBackground: 'surfaceHover',
           activeBackground:
             'color-mix(in srgb, var(--weave-color-outline) 65%, var(--weave-color-surface))',
@@ -148,7 +152,9 @@ export const defaultTheme: ResolvedTheme = {
         tertiary: {
           background: 'surfaceHover',
           color: 'inherit',
-          borderColor: 'transparent',
+          borderColor: 'outline',
+          depthColor:
+            'color-mix(in srgb, var(--weave-color-outline) 70%, #8f8377)',
           hoverBackground:
             'color-mix(in srgb, var(--weave-color-outline) 42%, var(--weave-color-surface))',
           activeBackground:
@@ -158,6 +164,7 @@ export const defaultTheme: ResolvedTheme = {
           background: 'transparent',
           color: 'inherit',
           borderColor: 'transparent',
+          depthColor: 'transparent',
           hoverBackground: 'surfaceHover',
           activeBackground:
             'color-mix(in srgb, var(--weave-color-outline) 60%, transparent)',
@@ -168,6 +175,8 @@ export const defaultTheme: ResolvedTheme = {
           color: 'danger',
           borderColor:
             'color-mix(in srgb, var(--weave-color-danger) 28%, var(--weave-color-surface))',
+          depthColor:
+            'color-mix(in srgb, var(--weave-color-danger) 48%, #8f8377)',
           hoverBackground:
             'color-mix(in srgb, var(--weave-color-danger) 15%, var(--weave-color-surface))',
           activeBackground:
