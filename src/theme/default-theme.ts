@@ -17,6 +17,8 @@ export const defaultTheme: ResolvedTheme = {
       primaryHover: '#5f50e8',
       primaryActive: '#5144d4',
       secondary: '#8b8b96',
+      tertiary: '#71717a',
+      disabled: '#a1a1aa',
       surface: '#ffffff',
       surfaceHover: '#f5f5f7',
       success: '#20a464',
@@ -24,6 +26,23 @@ export const defaultTheme: ResolvedTheme = {
       danger: '#d94040',
       outline: '#d8d8df',
       focus: '#6d5dfc',
+    },
+    typography: {
+      size: {
+        xsmall: 0.75,
+        small: 0.875,
+        medium: 1,
+        large: 1.25,
+        xlarge: 1.5,
+        xxlarge: 2,
+      },
+      weight: {
+        light: 300,
+        regular: 400,
+        medium: 500,
+        semibold: 600,
+        bold: 700,
+      },
     },
     spacing: {
       small: 0.5,
