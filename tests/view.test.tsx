@@ -114,6 +114,9 @@ describe('View DOM backend', () => {
       '@property --weave-min-height { syntax: "*"; inherits: false; }',
     )
     expect(frameworkStyles?.textContent).toContain(
+      '@property --weave-component-min-height { syntax: "*"; inherits: false; }',
+    )
+    expect(frameworkStyles?.textContent).toContain(
       '@property --weave-hover-min-height { syntax: "*"; inherits: false; }',
     )
   })
