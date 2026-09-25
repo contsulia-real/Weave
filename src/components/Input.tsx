@@ -1,3 +1,4 @@
+import { useInsertionEffect } from 'react'
 import type { ChangeEvent } from 'react'
 import type {
   InputProps,
@@ -6,6 +7,7 @@ import type {
   SingleLineInputViewProps,
 } from '../core/input-types'
 import type { ViewProps } from '../core/view-types'
+import { ensureInputStylesheet } from '../renderers/dom/input-stylesheet'
 import { useViewHost } from './internal/use-view-host'
 
 interface SingleLineInputHostProps {
@@ -143,6 +145,8 @@ function MultilineInput({
 }
 
 export function Input(props: InputProps) {
+  useInsertionEffect(ensureInputStylesheet, [])
+
   if (props.multiline) {
     return (
       <MultilineInput
