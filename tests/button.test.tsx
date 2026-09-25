@@ -251,13 +251,13 @@ describe('Button', () => {
     const rule = runtimeRule(element, 'weave-button-theme-')
 
     expect(rule).toContain(
-      '--weave-button-theme-medium-min-height:2.5rem;',
+      '--weave-button-theme-medium-min-height:2.25rem;',
     )
     expect(rule).toContain(
       '--weave-button-theme-primary-background:var(--weave-color-primary',
     )
     expect(rule).toContain(
-      '--weave-button-theme-radius:var(--weave-radius-medium)',
+      '--weave-button-theme-radius:0.5rem;',
     )
   })
 
