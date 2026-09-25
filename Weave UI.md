@@ -269,8 +269,8 @@ dragScale
 例如：
 
 - Button 使用 depth / lift / press 系列构造实体按压反馈。
-- Switch 使用 `dragScale` 表达 thumb 被抓取的状态，但不会照搬 Button 的下压阴影。
-- Scrollbar 不需要使用 pressDepth；它的核心反馈是位置跟手和低延迟。
+- Switch 的拖动形变由自己的 `thumbDragStretch / thumbDragCompress` 描述；全局 motion 只负责松手后的恢复节奏，不照搬 Button 或 Scrollbar 的缩放反馈。
+- Scrollbar 可以使用 `hoverScale / dragScale` 增强 thumb 抓取反馈，但核心仍然是边缘可命中、位置跟手和低延迟。
 
 `prefers-reduced-motion: reduce` 下仍必须保留状态可辨识性和直接操作结果，但应移除非必要的自动位移动画、弹性过渡和持续运动。
 
