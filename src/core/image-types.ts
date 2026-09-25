@@ -27,14 +27,18 @@ export type ImagePosition =
 
 export type ImageLoading = 'lazy' | 'eager'
 
-export type ImageViewProps = Omit<
-  ViewProps<HTMLImageElement>,
+export type ImageViewProps<
+  TBreakpoint extends string = never,
+> = Omit<
+  ViewProps<HTMLImageElement, TBreakpoint>,
   'children' | 'onLoad' | 'onError'
 > & {
   ref?: Ref<HTMLImageElement>
 }
 
-export interface ImageProps {
+export interface ImageProps<
+  TBreakpoint extends string = never,
+> {
   src: ImageSource
   alt: string
   fit?: ImageFit
@@ -42,5 +46,5 @@ export interface ImageProps {
   loading?: ImageLoading
   onLoad?: ReactEventHandler<HTMLImageElement>
   onError?: ReactEventHandler<HTMLImageElement>
-  viewProps?: ImageViewProps
+  viewProps?: ImageViewProps<TBreakpoint>
 }
