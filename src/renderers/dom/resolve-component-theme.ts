@@ -191,9 +191,20 @@ export function resolveScrollbarTheme(
   const base = component?.base
   const sized = component?.sizes?.[size]
 
+  const resolvedColor = color(config?.color ?? base?.color)
+
   return {
     '--weave-scrollbar-thickness': length(sized?.thickness),
-    '--weave-scrollbar-color': color(config?.color ?? base?.color),
+    '--weave-scrollbar-hit-size': length(base?.hitSize),
+    '--weave-scrollbar-color': resolvedColor,
+    '--weave-scrollbar-hover-color':
+      config?.color === undefined
+        ? color(base?.hoverColor)
+        : `color-mix(in srgb, ${resolvedColor} 88%, black)`,
+    '--weave-scrollbar-drag-color':
+      config?.color === undefined
+        ? color(base?.dragColor)
+        : `color-mix(in srgb, ${resolvedColor} 76%, black)`,
     '--weave-scrollbar-track-color': color(
       config?.trackColor ?? base?.trackColor,
     ),
