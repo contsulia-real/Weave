@@ -49,27 +49,27 @@ const stylesheet = `
 }
 
 :where(.weave-scrollbar--small.weave-scrollbar--vertical) {
-  --weave-width: 0.625rem;
-}
-
-:where(.weave-scrollbar--medium.weave-scrollbar--vertical) {
   --weave-width: 0.375rem;
 }
 
-:where(.weave-scrollbar--large.weave-scrollbar--vertical) {
+:where(.weave-scrollbar--medium.weave-scrollbar--vertical) {
   --weave-width: 0.5rem;
 }
 
-:where(.weave-scrollbar--small.weave-scrollbar--horizontal) {
-  --weave-height: 0.625rem;
+:where(.weave-scrollbar--large.weave-scrollbar--vertical) {
+  --weave-width: 0.625rem;
 }
 
-:where(.weave-scrollbar--medium.weave-scrollbar--horizontal) {
+:where(.weave-scrollbar--small.weave-scrollbar--horizontal) {
   --weave-height: 0.375rem;
 }
 
-:where(.weave-scrollbar--large.weave-scrollbar--horizontal) {
+:where(.weave-scrollbar--medium.weave-scrollbar--horizontal) {
   --weave-height: 0.5rem;
+}
+
+:where(.weave-scrollbar--large.weave-scrollbar--horizontal) {
+  --weave-height: 0.625rem;
 }
 
 :where(.weave-scrollbar--vertical) {
