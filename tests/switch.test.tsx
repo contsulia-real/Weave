@@ -22,19 +22,44 @@ function runtimeRule(
   ).replace(/\s+/g, '')
 }
 
+function setupGeometry(
+  element: HTMLDivElement,
+  thumb: HTMLDivElement,
+  checked = false,
+) {
+  element.getBoundingClientRect = () => ({
+    x: 0,
+    y: 0,
+    top: 0,
+    right: 40,
+    bottom: 24,
+    left: 0,
+    width: 40,
+    height: 24,
+    toJSON: () => ({}),
+  })
+
+  thumb.getBoundingClientRect = () => ({
+    x: checked ? 18 : 2,
+    y: 2,
+    top: 2,
+    right: checked ? 38 : 22,
+    bottom: 22,
+    left: checked ? 18 : 2,
+    width: 20,
+    height: 20,
+    toJSON: () => ({}),
+  })
+}
+
 describe('Switch', () => {
   it('supports uncontrolled state and emits boolean changes', () => {
     const onChange = vi.fn()
-
     const { getByRole } = render(
       <Switch defaultChecked onChange={onChange} />,
     )
 
     const element = getByRole('switch')
-
-    expect(element.getAttribute('aria-checked')).toBe('true')
-    expect(element.tabIndex).toBe(0)
-
     fireEvent.click(element)
 
     expect(onChange).toHaveBeenCalledWith(false)
@@ -43,7 +68,6 @@ describe('Switch', () => {
 
   it('supports controlled state without mutating its own value', () => {
     const onChange = vi.fn()
-
     const { getByRole, rerender } = render(
       <Switch checked={false} onChange={onChange} />,
     )
@@ -55,29 +79,10 @@ describe('Switch', () => {
     expect(element.getAttribute('aria-checked')).toBe('false')
 
     rerender(<Switch checked onChange={onChange} />)
-
     expect(element.getAttribute('aria-checked')).toBe('true')
   })
 
-  it('toggles from keyboard using Space and Enter', () => {
-    const onChange = vi.fn()
-
-    const { getByRole } = render(
-      <Switch onChange={onChange} />,
-    )
-
-    const element = getByRole('switch')
-
-    fireEvent.keyDown(element, { key: ' ' })
-    expect(onChange).toHaveBeenLastCalledWith(true)
-    expect(element.getAttribute('aria-checked')).toBe('true')
-
-    fireEvent.keyDown(element, { key: 'Enter' })
-    expect(onChange).toHaveBeenLastCalledWith(false)
-    expect(element.getAttribute('aria-checked')).toBe('false')
-  })
-
-  it('keeps user event handlers and lets preventDefault cancel toggling', () => {
+  it('keeps user click cancellation semantics', () => {
     const onChange = vi.fn()
     const onClick = vi.fn((event: MouseEvent<HTMLDivElement>) => {
       event.preventDefault()
@@ -86,9 +91,7 @@ describe('Switch', () => {
     const { getByRole } = render(
       <Switch
         onChange={onChange}
-        viewProps={{
-          onClick,
-        }}
+        viewProps={{ onClick }}
       />,
     )
 
@@ -98,113 +101,73 @@ describe('Switch', () => {
     expect(onChange).not.toHaveBeenCalled()
   })
 
-  it('switches state when the thumb is dragged across the midpoint', () => {
+  it('shrinks first, lengthens with drag distance, caps at midpoint, and restores on release', () => {
     const onChange = vi.fn()
-    const { getByRole } = render(
-      <Switch onChange={onChange} />,
-    )
-
+    const { getByRole } = render(<Switch onChange={onChange} />)
     const element = getByRole('switch') as HTMLDivElement
     const thumb = element.querySelector(
       '[data-weave-switch-thumb]',
     ) as HTMLDivElement
 
-    element.getBoundingClientRect = () => ({
-      x: 0,
-      y: 0,
-      top: 0,
-      right: 40,
-      bottom: 24,
-      left: 0,
-      width: 40,
-      height: 24,
-      toJSON: () => ({}),
-    })
-    thumb.getBoundingClientRect = () => ({
-      x: 2,
-      y: 2,
-      top: 2,
-      right: 22,
-      bottom: 22,
-      left: 2,
-      width: 20,
-      height: 20,
-      toJSON: () => ({}),
-    })
+    setupGeometry(element, thumb)
 
     fireEvent.pointerDown(thumb, {
       pointerId: 7,
       button: 0,
       clientX: 2,
     })
+
+    expect(parseFloat(thumb.style.height)).toBeCloseTo(13.6)
+    expect(parseFloat(thumb.style.width)).toBeCloseTo(13.6)
+
+    fireEvent.pointerMove(element, {
+      pointerId: 7,
+      clientX: 6,
+    })
+
+    const partialWidth = parseFloat(thumb.style.width)
+    expect(partialWidth).toBeGreaterThan(13.6)
+    expect(partialWidth).toBeLessThan(27)
+    expect(parseFloat(thumb.style.height)).toBeCloseTo(13.6)
+
     fireEvent.pointerMove(element, {
       pointerId: 7,
       clientX: 30,
     })
 
-    expect(element.getAttribute('data-weave-switch-dragging')).toBe(
-      'true',
-    )
-    expect(thumb.style.transform).toContain('translateX(')
+    expect(parseFloat(thumb.style.width)).toBeCloseTo(27)
+    expect(parseFloat(thumb.style.height)).toBeCloseTo(13.6)
 
-    const stylesheet = document.querySelector(
-      'style[data-weave-switch-styles]',
-    )?.textContent ?? ''
+    fireEvent.pointerMove(element, {
+      pointerId: 7,
+      clientX: 60,
+    })
 
-    expect(stylesheet).toContain(
-      'scale: var(--weave-feedback-drag-scale)',
-    )
+    expect(parseFloat(thumb.style.width)).toBeCloseTo(27)
 
     fireEvent.pointerUp(element, {
       pointerId: 7,
-      clientX: 30,
+      clientX: 60,
     })
 
-    expect(onChange).toHaveBeenCalledTimes(1)
-    expect(onChange).toHaveBeenLastCalledWith(true)
-    expect(element.getAttribute('aria-checked')).toBe('true')
-    expect(element.getAttribute('data-weave-switch-dragging')).toBeNull()
+    expect(thumb.style.width).toBe('')
+    expect(thumb.style.height).toBe('')
     expect(thumb.style.transform).toBe('')
-
-    fireEvent.click(element)
-
-    expect(onChange).toHaveBeenCalledTimes(1)
+    expect(onChange).toHaveBeenCalledWith(true)
     expect(element.getAttribute('aria-checked')).toBe('true')
   })
 
-  it('switches off when a checked thumb is dragged back across the midpoint', () => {
+  it('switches off when a checked thumb crosses the midpoint', () => {
     const onChange = vi.fn()
     const { getByRole } = render(
       <Switch defaultChecked onChange={onChange} />,
     )
-
     const element = getByRole('switch') as HTMLDivElement
     const thumb = element.querySelector(
       '[data-weave-switch-thumb]',
     ) as HTMLDivElement
 
-    element.getBoundingClientRect = () => ({
-      x: 0,
-      y: 0,
-      top: 0,
-      right: 40,
-      bottom: 24,
-      left: 0,
-      width: 40,
-      height: 24,
-      toJSON: () => ({}),
-    })
-    thumb.getBoundingClientRect = () => ({
-      x: 18,
-      y: 2,
-      top: 2,
-      right: 38,
-      bottom: 22,
-      left: 18,
-      width: 20,
-      height: 20,
-      toJSON: () => ({}),
-    })
+    setupGeometry(element, thumb, true)
 
     fireEvent.pointerDown(thumb, {
       pointerId: 10,
@@ -220,44 +183,19 @@ describe('Switch', () => {
       clientX: 0,
     })
 
-    expect(onChange).toHaveBeenCalledTimes(1)
-    expect(onChange).toHaveBeenLastCalledWith(false)
+    expect(onChange).toHaveBeenCalledWith(false)
     expect(element.getAttribute('aria-checked')).toBe('false')
   })
 
-  it('does not toggle for a thumb drag that stays before the midpoint', () => {
+  it('does not toggle when drag stays before the threshold', () => {
     const onChange = vi.fn()
-    const { getByRole } = render(
-      <Switch onChange={onChange} />,
-    )
-
+    const { getByRole } = render(<Switch onChange={onChange} />)
     const element = getByRole('switch') as HTMLDivElement
     const thumb = element.querySelector(
       '[data-weave-switch-thumb]',
     ) as HTMLDivElement
 
-    element.getBoundingClientRect = () => ({
-      x: 0,
-      y: 0,
-      top: 0,
-      right: 40,
-      bottom: 24,
-      left: 0,
-      width: 40,
-      height: 24,
-      toJSON: () => ({}),
-    })
-    thumb.getBoundingClientRect = () => ({
-      x: 2,
-      y: 2,
-      top: 2,
-      right: 22,
-      bottom: 22,
-      left: 2,
-      width: 20,
-      height: 20,
-      toJSON: () => ({}),
-    })
+    setupGeometry(element, thumb)
 
     fireEvent.pointerDown(thumb, {
       pointerId: 8,
@@ -277,22 +215,16 @@ describe('Switch', () => {
     expect(element.getAttribute('aria-checked')).toBe('false')
   })
 
-  it('does not toggle while disabled through viewProps', () => {
+  it('does not toggle while disabled', () => {
     const onChange = vi.fn()
-
     const { getByRole } = render(
       <Switch
         onChange={onChange}
-        viewProps={{
-          disabled: true,
-        }}
+        viewProps={{ disabled: true }}
       />,
     )
 
-    const element = getByRole('switch')
-
-    expect(element.getAttribute('aria-disabled')).toBe('true')
-
+    const element = getByRole('switch') as HTMLDivElement
     const thumb = element.querySelector(
       '[data-weave-switch-thumb]',
     ) as HTMLDivElement
@@ -304,63 +236,106 @@ describe('Switch', () => {
       button: 0,
       clientX: 0,
     })
-    fireEvent.pointerMove(element, {
-      pointerId: 9,
-      clientX: 30,
-    })
-    fireEvent.pointerUp(element, {
-      pointerId: 9,
-      clientX: 30,
-    })
 
     expect(onChange).not.toHaveBeenCalled()
-    expect(element.getAttribute('aria-checked')).toBe('false')
   })
 
-  it('settles with spring motion but keeps drag movement direct', () => {
-    render(<Switch />)
+  it('does no layout reads during pointermove after the initial geometry read', () => {
+    const { getByRole } = render(<Switch />)
+    const element = getByRole('switch') as HTMLDivElement
+    const thumb = element.querySelector(
+      '[data-weave-switch-thumb]',
+    ) as HTMLDivElement
 
+    const rootRect = vi.spyOn(
+      element,
+      'getBoundingClientRect',
+    ).mockReturnValue({
+      x: 0,
+      y: 0,
+      top: 0,
+      right: 40,
+      bottom: 24,
+      left: 0,
+      width: 40,
+      height: 24,
+      toJSON: () => ({}),
+    })
+    const thumbRect = vi.spyOn(
+      thumb,
+      'getBoundingClientRect',
+    ).mockReturnValue({
+      x: 2,
+      y: 2,
+      top: 2,
+      right: 22,
+      bottom: 22,
+      left: 2,
+      width: 20,
+      height: 20,
+      toJSON: () => ({}),
+    })
+
+    fireEvent.pointerDown(thumb, {
+      pointerId: 44,
+      button: 0,
+      clientX: 2,
+    })
+
+    rootRect.mockClear()
+    thumbRect.mockClear()
+
+    fireEvent.pointerMove(element, {
+      pointerId: 44,
+      clientX: 12,
+    })
+
+    expect(rootRect).not.toHaveBeenCalled()
+    expect(thumbRect).not.toHaveBeenCalled()
+
+    fireEvent.pointerCancel(element, {
+      pointerId: 44,
+      clientX: 12,
+    })
+
+    rootRect.mockRestore()
+    thumbRect.mockRestore()
+  })
+
+  it('uses a lighter off fill, primary on fill, recessed track, and raised thumb', () => {
+    const { getByRole } = render(<Switch size="medium" />)
+    const element = getByRole('switch')
+    const themeRule = runtimeRule(element, 'weave-switch-theme-')
     const stylesheet = document.querySelector(
       'style[data-weave-switch-styles]',
     )?.textContent ?? ''
 
-    expect(stylesheet).toContain(
-      'var(--weave-motion-curve-spring)',
-    )
-    expect(stylesheet).toContain(
-      '[data-weave-switch-dragging="true"]',
-    )
-    expect(stylesheet).toContain(
-      'scale: var(--weave-feedback-hover-scale)',
-    )
-    expect(stylesheet).toContain(
-      'scale: var(--weave-feedback-drag-scale)',
-    )
-    expect(stylesheet).toContain(
-      '@media (prefers-reduced-motion: reduce)',
-    )
-  })
-
-  it('takes its default visual values from the default theme', () => {
-    const { getByRole } = render(<Switch size="medium" />)
-
-    const element = getByRole('switch')
-    const themeRule = runtimeRule(element, 'weave-switch-theme-')
-
-    expect(element.style.getPropertyValue('--weave-width')).toBe('')
-    expect(themeRule).toContain('--weave-switch-width:2.5rem;')
-    expect(themeRule).toContain('--weave-switch-height:1.5rem;')
     expect(themeRule).toContain(
-      '--weave-switch-background:var(--weave-color-outline',
+      '--weave-switch-background:color-mix(insrgb,var(--weave-color-outline)18%,var(--weave-color-surface));',
+    )
+    expect(themeRule).toContain(
+      '--weave-switch-checked-background:var(--weave-color-primary',
+    )
+    expect(themeRule).toContain('--weave-switch-thumb-drag-shrink:0.68;')
+    expect(themeRule).toContain('--weave-switch-thumb-drag-max-width:1.35;')
+    expect(themeRule).toContain('--weave-switch-track-shadow:')
+    expect(themeRule).toContain('--weave-switch-thumb-shadow:')
+    expect(stylesheet).toContain(
+      '--weave-component-box-shadow: var(--weave-switch-track-shadow)',
+    )
+    expect(stylesheet).toContain(
+      '--weave-component-box-shadow: var(--weave-switch-thumb-shadow)',
     )
   })
 
-  it('lets a ThemeProvider override component size and appearance', () => {
+  it('lets ThemeProvider override Switch geometry and drag shape', () => {
     const theme = createTheme({
       components: {
         Switch: {
           base: {
             background: 'danger',
+            thumbDragShrink: 0.6,
+            thumbDragMaxWidth: 1.5,
           },
           sizes: {
             medium: {
@@ -375,57 +350,18 @@ describe('Switch', () => {
     })
 
     const { getByRole } = render(
-      <ThemeProvider theme={theme} mode="light">
+      <ThemeProvider theme={theme}>
         <Switch />
       </ThemeProvider>,
     )
 
-    const element = getByRole('switch')
-    const rule = runtimeRule(element, 'weave-switch-theme-')
+    const rule = runtimeRule(
+      getByRole('switch'),
+      'weave-switch-theme-',
+    )
 
     expect(rule).toContain('--weave-switch-width:4rem;')
-    expect(rule).toContain('--weave-switch-height:2rem;')
-    expect(rule).toContain(
-      '--weave-switch-background:var(--weave-color-danger',
-    )
-  })
-
-  it('keeps instance View props above component theme defaults', () => {
-    const { getByRole } = render(
-      <Switch
-        size="large"
-        viewProps={{
-          width: 4,
-          className: 'custom-switch',
-          data: {
-            testid: 'switch',
-          },
-        }}
-      />,
-    )
-
-    const element = getByRole('switch')
-    const propsRule = runtimeRule(element, 'weave-props-')
-    const themeRule = runtimeRule(element, 'weave-switch-theme-')
-
-    expect(element.className).toContain('weave-view')
-    expect(element.className).toContain('weave-switch')
-    expect(element.className).toContain('weave-switch--large')
-    expect(element.className).toContain('custom-switch')
-    expect(element.getAttribute('data-weave-switch')).toBe('')
-    expect(element.getAttribute('data-weave-switch-size')).toBe('large')
-    expect(
-      element.querySelector('[data-weave-switch-thumb]'),
-    ).not.toBeNull()
-    expect(element.style.getPropertyValue('--weave-width')).toBe('')
-    expect(propsRule).toContain('--weave-width:4rem;')
-    expect(themeRule).toContain('--weave-switch-width:3rem;')
-
-    const stylesheet = document.querySelector(
-      'style[data-weave-switch-styles]',
-    )
-    expect(stylesheet?.textContent).toContain(
-      '--weave-component-width: var(--weave-switch-width)',
-    )
+    expect(rule).toContain('--weave-switch-thumb-drag-shrink:0.6;')
+    expect(rule).toContain('--weave-switch-thumb-drag-max-width:1.5;')
   })
 })

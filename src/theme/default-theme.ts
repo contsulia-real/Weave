@@ -232,12 +232,19 @@ export const defaultTheme: ResolvedTheme = {
     },
     Switch: {
       base: {
-        background: 'outline',
+        background:
+          'color-mix(in srgb, var(--weave-color-outline) 18%, var(--weave-color-surface))',
         radius: 'full',
         cursor: 'pointer',
+        trackShadow:
+          'inset 0 0.0625rem 0.125rem rgb(58 48 40 / 0.10), inset 0 0 0 0.0625rem rgb(58 48 40 / 0.05)',
         thumbBackground: 'surface',
         thumbRadius: 'full',
         thumbInset: 0.125,
+        thumbShadow:
+          '0 0.0625rem 0.125rem rgb(58 48 40 / 0.18), 0 0.125rem 0.25rem rgb(58 48 40 / 0.08)',
+        thumbDragShrink: 0.68,
+        thumbDragMaxWidth: 1.35,
         focusOutlineWidth: 0.125,
         focusOutlineColor: 'focus',
         focusOutlineStyle: 'solid',
