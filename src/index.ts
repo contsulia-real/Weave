@@ -52,6 +52,7 @@ export type {
 
 export type {
   TextAlign,
+  TextBreakpointProps,
   TextCase,
   TextColor,
   TextOverflow,
