@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Image, Input, LoadingIndicator, Switch, Text, ThemeProvider, View, createTheme } from './index'
 
 const diagnosticImage =
@@ -52,6 +53,9 @@ function DemoBox({ label }: { label: string }) {
 }
 
 function App() {
+  const [progressHigh, setProgressHigh] = useState(false)
+  const progress = progressHigh ? 0.82 : 0.28
+
   return (
     <View
       layout="grid"
@@ -243,7 +247,7 @@ function App() {
         <View layout="flex" direction="column" gap={0.75}>
           <h2>LoadingIndicator</h2>
           <p className="hint">
-            不确定进度与确定进度使用同一组件；spin、pulse、dots 都是公开动画语义。
+            animation 只属于 undetermined；确定进度在 progress 改变时自动过渡。
           </p>
 
           <View layout="flex" direction="row" gap={1.5} align="center" wrap>
@@ -254,47 +258,43 @@ function App() {
                 animation="spin"
                 color="primary"
               />
-              <Text size="small">Undetermined</Text>
+              <Text size="small">Spin</Text>
             </View>
 
             <View layout="flex" direction="row" gap={0.5} align="center">
               <LoadingIndicator
-                progress={0.32}
-                size="medium"
-                color="primary"
-              />
-              <Text size="small">32% Default</Text>
-            </View>
-
-            <View layout="flex" direction="row" gap={0.5} align="center">
-              <LoadingIndicator
-                progress={0.5}
-                size="medium"
-                animation="spin"
-                color="primary"
-              />
-              <Text size="small">50% Spin</Text>
-            </View>
-
-            <View layout="flex" direction="row" gap={0.5} align="center">
-              <LoadingIndicator
-                progress={0.68}
+                undetermined
                 size="medium"
                 animation="pulse"
-                color="success"
-                speed="slow"
+                color="primary"
               />
-              <Text size="small">68% Pulse</Text>
+              <Text size="small">Pulse</Text>
             </View>
 
             <View layout="flex" direction="row" gap={0.5} align="center">
               <LoadingIndicator
-                progress={0.84}
+                undetermined
                 size="large"
                 animation="dots"
                 color="primary"
               />
-              <Text size="small">84% Dots</Text>
+              <Text size="small">Dots</Text>
+            </View>
+
+            <View layout="flex" direction="row" gap={0.75} align="center">
+              <LoadingIndicator
+                progress={progress}
+                size="large"
+                color="success"
+              />
+              <Switch
+                checked={progressHigh}
+                onChange={setProgressHigh}
+                size="small"
+              />
+              <Text size="small">
+                {Math.round(progress * 100)}%
+              </Text>
             </View>
           </View>
         </View>
