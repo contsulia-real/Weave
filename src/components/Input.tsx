@@ -72,7 +72,7 @@ function SingleLineInput({
       data-weave-view=""
       data-weave-input=""
       data-weave-layout={resolved.layout}
-      className={className}
+      className={['weave-input', className].filter(Boolean).join(' ')}
       style={mergedStyle}
     />
   )
@@ -138,7 +138,11 @@ function MultilineInput({
       data-weave-input=""
       data-weave-input-multiline=""
       data-weave-layout={resolved.layout}
-      className={className}
+      className={[
+        'weave-input',
+        'weave-input--multiline',
+        className,
+      ].filter(Boolean).join(' ')}
       style={mergedStyle}
     />
   )
