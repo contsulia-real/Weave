@@ -52,6 +52,8 @@ describe('Input', () => {
     const element = getByTestId('input') as HTMLInputElement
 
     expect(element.tagName).toBe('INPUT')
+    expect(element.className).toContain('weave-view')
+    expect(element.className).toContain('weave-input')
     expect(element.value).toBe('hello')
     expect(element.placeholder).toBe('Name')
     expect(element.required).toBe(true)
@@ -95,6 +97,8 @@ describe('Input', () => {
     const element = getByTestId('textarea') as HTMLTextAreaElement
 
     expect(element.tagName).toBe('TEXTAREA')
+    expect(element.className).toContain('weave-input')
+    expect(element.className).toContain('weave-input--multiline')
     expect(element.rows).toBe(4)
     expect(element.value).toBe('Line one')
     expect(element.getAttribute('type')).toBeNull()
@@ -155,12 +159,14 @@ describe('Input', () => {
 
     const element = getByTestId('priority-input') as HTMLInputElement
 
+    expect(element.className).toContain('weave-input')
     expect(element.className).toContain('custom-input')
     expect(element.style.getPropertyValue('--weave-width')).toBe('')
     expect(runtimeRule(element, 'weave-props-')).toContain(
       '--weave-width:20rem;',
     )
     expect(element.style.width).toBe('120px')
+    expect(element.getAttribute('style')).toContain('width: 120px')
   })
 
   it('exposes the real host through viewProps.ref', () => {
