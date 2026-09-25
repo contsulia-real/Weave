@@ -1,4 +1,4 @@
-import { ThemeProvider, View, createTheme } from './index'
+import { Text, ThemeProvider, View, createTheme } from './index'
 
 const diagnosticTheme = createTheme({
   tokens: {
