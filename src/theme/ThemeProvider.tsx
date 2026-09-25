@@ -1,42 +1,15 @@
 import {
-  createContext,
-  useContext,
   useEffect,
   useMemo,
   useState,
-  type ReactNode,
 } from 'react'
-import { defaultTheme } from './default-theme'
-import {
-  mergeThemeDefinitions,
-  resolveTheme,
-} from './theme-merge'
-import { themeVariables } from './theme-css'
-import type {
-  ResolvedTheme,
-  ThemeDefinition,
-  ThemeMode,
-} from './theme-types'
-
-interface ThemeContextValue {
-  definition: ThemeDefinition
-  theme: ResolvedTheme
-  mode: Exclude<ThemeMode, 'system'>
-  requestedMode: ThemeMode
-}
-
-const ThemeContext = createContext<ThemeContextValue>({
-  definition: {},
-  theme: defaultTheme,
-  mode: 'light',
-  requestedMode: 'system',
-})
+import { ThemeContext, useWeaveTheme } from './theme-context'
+import { applyThemeMode, mergeTheme } from './theme-merge'
+import { themeVariables } from './theme-vars'
+import type { ThemeMode, ThemeProviderProps } from './theme-types'
 
 function getSystemMode(): 'light' | 'dark' {
-  if (
-    typeof window === 'undefined' ||
-    typeof window.matchMedia !== 'function'
-  ) {
+  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
     return 'light'
   }
 
@@ -49,81 +22,39 @@ function useResolvedMode(mode: ThemeMode): 'light' | 'dark' {
   const [systemMode, setSystemMode] = useState(getSystemMode)
 
   useEffect(() => {
-    if (
-      mode !== 'system' ||
-      typeof window.matchMedia !== 'function'
-    ) {
-      return
-    }
+    if (mode !== 'system' || typeof window.matchMedia !== 'function') return
 
-    const media = window.matchMedia('(prefers-color-scheme: dark)')
-    const update = () => setSystemMode(media.matches ? 'dark' : 'light')
+    const query = window.matchMedia('(prefers-color-scheme: dark)')
+    const update = () => setSystemMode(query.matches ? 'dark' : 'light')
 
     update()
-    media.addEventListener('change', update)
-    return () => media.removeEventListener('change', update)
+    query.addEventListener('change', update)
+    return () => query.removeEventListener('change', update)
   }, [mode])
 
   return mode === 'system' ? systemMode : mode
 }
 
-export interface ThemeProviderProps {
-  theme?: ThemeDefinition
-  mode?: ThemeMode
-  children?: ReactNode
-}
-
 export function ThemeProvider({
-  theme = {},
-  mode,
   children,
+  theme,
+  mode,
 }: ThemeProviderProps) {
-  const parent = useContext(ThemeContext)
-  const requestedMode = mode ?? parent.requestedMode
-  const activeMode = useResolvedMode(requestedMode)
+  const parent = useWeaveTheme()
+  const requestedMode = mode ?? parent.mode
+  const resolvedMode = useResolvedMode(requestedMode)
 
-  const definition = useMemo(
-    () => mergeThemeDefinitions(parent.definition, theme),
-    [parent.definition, theme],
-  )
+  const value = useMemo(() => {
+    const mergedTheme = mergeTheme(parent.theme, theme)
+    const resolvedTheme = applyThemeMode(mergedTheme, resolvedMode)
 
-  const resolvedTheme = useMemo(
-    () => resolveTheme(definition, activeMode),
-    [activeMode, definition],
-  )
-
-  const contextValue = useMemo(
-    () => ({
-      definition,
+    return {
       theme: resolvedTheme,
-      mode: activeMode,
-      requestedMode,
-    }),
-    [activeMode, definition, requestedMode, resolvedTheme],
-  )
+      mode: requestedMode,
+      resolvedMode,
+      variables: themeVariables(resolvedTheme),
+    }
+  }, [parent.theme, requestedMode, resolvedMode, theme])
 
-  const variables = useMemo(
-    () => themeVariables(resolvedTheme),
-    [resolvedTheme],
-  )
-
-  return (
-    <ThemeContext.Provider value={contextValue}>
-      <span
-        data-weave-theme=""
-        data-weave-theme-mode={activeMode}
-        style={{
-          display: 'contents',
-          ...variables,
-        }}
-      >
-        {children}
-      </span>
-    </ThemeContext.Provider>
-  )
-}
-
-export function useTheme(): Omit<ThemeContextValue, 'definition'> {
-  const { theme, mode } = useContext(ThemeContext)
-  return { theme, mode }
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
 }
