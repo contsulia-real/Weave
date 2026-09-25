@@ -332,11 +332,15 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
     updateGeometry()
 
     const onScroll = () => syncThumbOffsets()
-    const onWindowChange = () => updateGeometry()
+    const onWindowResize = () => updateGeometry()
+    const onDocumentScroll = (event: Event) => {
+      if (event.target === target) return
+      updateGeometry()
+    }
 
     target.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('resize', onWindowChange)
-    document.addEventListener('scroll', onWindowChange, true)
+    window.addEventListener('resize', onWindowResize)
+    document.addEventListener('scroll', onDocumentScroll, true)
 
     const resizeObserver =
       typeof ResizeObserver === 'undefined'
@@ -375,8 +379,8 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
 
     return () => {
       target.removeEventListener('scroll', onScroll)
-      window.removeEventListener('resize', onWindowChange)
-      document.removeEventListener('scroll', onWindowChange, true)
+      window.removeEventListener('resize', onWindowResize)
+      document.removeEventListener('scroll', onDocumentScroll, true)
       resizeObserver?.disconnect()
       mutationObserver?.disconnect()
     }
