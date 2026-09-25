@@ -156,10 +156,13 @@ describe('Progress', () => {
       '@property --weave-progress-spin-end',
     )
     expect(stylesheet?.textContent).toContain(
-      'weave-progress-linear-primary',
+      'weave-progress-linear-slide',
     )
     expect(stylesheet?.textContent).toContain(
-      'weave-progress-linear-secondary',
+      '--weave-overflow: hidden',
+    )
+    expect(stylesheet?.textContent).toContain(
+      'translate3d(',
     )
   })
 
