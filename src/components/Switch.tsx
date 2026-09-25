@@ -35,13 +35,13 @@ function clearDragVisual(root: HTMLDivElement): void {
   switchThumb(root)?.style.removeProperty('transform')
 }
 
-export function Switch({
+export function Switch<const TBreakpoint extends string = never>({
   checked,
   defaultChecked = false,
   onChange,
   size = 'medium',
   viewProps = {},
-}: SwitchProps) {
+}: SwitchProps<TBreakpoint>) {
   useInsertionEffect(ensureSwitchStylesheet, [])
 
   const { theme } = useTheme()
