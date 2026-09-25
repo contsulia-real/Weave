@@ -4,20 +4,22 @@ import { resolveLoadingIndicatorStyle } from '../renderers/dom/resolve-loading-i
 import { ensureLoadingIndicatorStylesheet } from '../renderers/dom/loading-indicator-stylesheet'
 import { View } from './View'
 
-export function LoadingIndicator({
-  size = 'medium',
-  color,
-  speed = 'normal',
-  animation = 'spin',
-  viewProps = {},
-  ...mode
-}: LoadingIndicatorProps) {
+export function LoadingIndicator(props: LoadingIndicatorProps) {
   useInsertionEffect(ensureLoadingIndicatorStylesheet, [])
 
-  const undetermined = mode.undetermined === true
+  const {
+    size = 'medium',
+    color = 'primary',
+    speed = 'normal',
+    animation = 'spin',
+    viewProps = {},
+  } = props
+
+  const undetermined = props.undetermined === true
   const progress = undetermined
     ? undefined
-    : Math.min(1, Math.max(0, mode.progress))
+    : Math.min(1, Math.max(0, props.progress))
+
   const componentStyle = resolveLoadingIndicatorStyle({
     speed,
     progress,
@@ -27,6 +29,9 @@ export function LoadingIndicator({
     'weave-loading-indicator',
     `weave-loading-indicator--${size}`,
     `weave-loading-indicator--${animation}`,
+    undetermined
+      ? 'weave-loading-indicator--undetermined'
+      : 'weave-loading-indicator--determined',
     typeof speed === 'string'
       ? `weave-loading-indicator--speed-${speed}`
       : undefined,
@@ -50,7 +55,6 @@ export function LoadingIndicator({
         'weave-loading': '',
         'weave-loading-size': size,
         'weave-loading-animation': animation,
-        'weave-loading-mode': undetermined ? 'undetermined' : 'determined',
       }}
       style={{
         ...componentStyle,
