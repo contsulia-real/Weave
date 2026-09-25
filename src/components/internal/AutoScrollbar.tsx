@@ -46,7 +46,7 @@ function ScrollbarView(props: ViewProps<HTMLDivElement>) {
   const {
     elementRef,
     className,
-    mergedStyle,
+    inlineStyle,
     resolved,
   } = useViewHost(props)
 
@@ -57,7 +57,7 @@ function ScrollbarView(props: ViewProps<HTMLDivElement>) {
       data-weave-view=""
       data-weave-layout={resolved.layout}
       className={className}
-      style={mergedStyle}
+      style={inlineStyle}
     >
       {children}
     </div>
