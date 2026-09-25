@@ -26,6 +26,7 @@ export interface ViewHostResult<TElement extends HTMLElement> {
 export function useViewHost<TElement extends HTMLElement>(
   props: ViewProps<TElement>,
   componentStyle?: CSSProperties,
+  componentName?: string,
 ): ViewHostResult<TElement> {
   useInsertionEffect(ensureViewStylesheet, [])
 
@@ -45,7 +46,9 @@ export function useViewHost<TElement extends HTMLElement>(
 
   const resolved = resolveDOMView(props)
   const componentClassName = useRuntimeStyleClass(
-    'component-props',
+    componentName === undefined
+      ? 'component-props'
+      : `${componentName}-props`,
     componentStyle,
   )
   const attributeClassName = useRuntimeStyleClass(
