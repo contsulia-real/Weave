@@ -27,6 +27,43 @@ const BUTTON_VARIANTS: readonly ButtonVariant[] = [
   'danger',
 ]
 
+export function resolveInputTheme(
+  theme: ResolvedTheme,
+): RuntimeStyleDeclarations {
+  const component = theme.components.Input
+  const base = component?.base
+  const disabled = component?.states?.disabled
+
+  return {
+    '--weave-input-theme-background': color(base?.background),
+    '--weave-input-theme-color': color(base?.color),
+    '--weave-input-theme-placeholder-color': color(
+      base?.placeholderColor,
+    ),
+    '--weave-input-theme-border-color': color(base?.borderColor),
+    '--weave-input-theme-border-width': length(base?.borderWidth),
+    '--weave-input-theme-radius': radius(base?.radius),
+    '--weave-input-theme-min-height': length(base?.minHeight),
+    '--weave-input-theme-padding-x': length(base?.paddingX),
+    '--weave-input-theme-padding-y': length(base?.paddingY),
+    '--weave-input-theme-font-size': length(base?.fontSize),
+    '--weave-input-theme-line-height': length(base?.lineHeight),
+    '--weave-input-theme-focus-outline-width': length(
+      base?.focusOutlineWidth,
+    ),
+    '--weave-input-theme-focus-outline-color': color(
+      base?.focusOutlineColor,
+    ),
+    '--weave-input-theme-focus-outline-style':
+      base?.focusOutlineStyle,
+    '--weave-input-theme-focus-outline-offset': length(
+      base?.focusOutlineOffset,
+    ),
+    '--weave-input-theme-disabled-opacity': disabled?.opacity,
+    '--weave-input-theme-disabled-cursor': disabled?.cursor,
+  }
+}
+
 export function resolveButtonTheme(
   theme: ResolvedTheme,
 ): RuntimeStyleDeclarations {
