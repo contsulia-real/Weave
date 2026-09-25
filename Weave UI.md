@@ -1894,6 +1894,30 @@ regular
 bold
 ```
 
+当前默认映射：
+
+```text
+size
+small   → 0.875rem
+medium  → 1rem
+large   → 1.25rem
+xlarge  → 1.5rem
+
+stroke
+thin    → 1.5
+regular → 2
+bold    → 2.5
+```
+
+默认：
+
+```text
+size = medium
+stroke = regular
+```
+
+Icon 的宿主节点使用内联 `span`，因此可以合法嵌套在 `Text` 中。内部真实 SVG 默认 `aria-hidden`，Icon 本身默认作为装饰内容；当 `viewProps.label` 存在而未显式指定 `role` 时，宿主自动使用 `role="img"` 并承载可访问名称。
+
 颜色、旋转、透明度、动画等通用 `View` 能力通过 `viewProps` 使用，不需要改变 Icon 的分层。
 
 ---
@@ -2674,7 +2698,7 @@ Text
 
 ```tsx
 <ToolTip content="保存">
-  <Button icon="device-floppy" />
+  <Button icon={IconDeviceFloppy} />
 </ToolTip>
 ```
 
