@@ -28,6 +28,7 @@ export type {
 } from './core/view-types'
 
 export { ThemeProvider, useTheme } from './theme/ThemeProvider'
+export type { ThemeProviderProps } from './theme/ThemeProvider'
 export { createTheme } from './theme/create-theme'
 export { defaultTheme } from './theme/default-theme'
 export type {
@@ -36,6 +37,5 @@ export type {
   ThemeInput,
   ThemeMode,
   ThemeOverride,
-  ThemeProviderProps,
   ThemeTokens,
 } from './theme/theme-types'
