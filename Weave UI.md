@@ -2097,10 +2097,6 @@ mode
 ├─ spin
 └─ linear
 
-dotted
-├─ false
-└─ true
-
 tracked
 ├─ false
 └─ true
@@ -2130,7 +2126,7 @@ tracked
 
 确定进度在 `progress` 数值发生变化时自动进行一次过渡；值稳定后不持续运动。
 
-不确定进度持续运动。
+不确定进度必须持续运动。
 
 ## 16.2 mode
 
@@ -2161,6 +2157,8 @@ linear
 />
 ```
 
+不确定 `spin` 的运动由旋转与弧长伸缩共同组成，不能退化为固定弧段机械匀速旋转。
+
 ### linear
 
 线形进度：
@@ -2181,59 +2179,17 @@ linear
 />
 ```
 
+不确定 `linear` 使用错峰的多段运动；不能退化为单个固定长度矩形从左到右机械平移。
+
 默认：
 
 ```text
 mode = spin
 ```
 
-## 16.3 dotted
+## 16.3 tracked
 
-`dotted` 是视觉修饰，不是第三种 mode。
-
-它不会改变：
-
-- determined / undetermined 状态语义
-- `progress` 数值
-- `spin / linear` 的基础形态
-
-而是把原本连续的形状变为由分段点状单元组成的不连续形状。
-
-例如：
-
-```tsx
-<Progress
-  progress={0.68}
-  mode="spin"
-  dotted
-/>
-
-<Progress
-  progress={0.68}
-  mode="linear"
-  dotted
-/>
-```
-
-关系：
-
-```text
-spin
-→ 连续环形
-
-spin + dotted
-→ 点状 / 分段环形
-
-linear
-→ 连续线形
-
-linear + dotted
-→ 点状 / 分段线形
-```
-
-## 16.4 tracked
-
-`tracked` 控制是否显示更浅色的轨道。
+`tracked` 控制是否显示更浅色的连续轨道。
 
 ```tsx
 <Progress
@@ -2253,21 +2209,7 @@ tracked = true
 → 显示同一基础形态的浅色连续轨道
 ```
 
-`tracked` 与 `dotted` 同时存在时：
-
-> `dotted` 只作用于前景 value；track 仍保持连续，不跟随 dotted 变成点状或分段。
-
-因此：
-
-```text
-spin + tracked + dotted
-→ 连续浅色圆环轨道 + 点状前景环
-
-linear + tracked + dotted
-→ 连续浅色直线轨道 + 点状前景线
-```
-
-## 16.5 speed
+## 16.4 speed
 
 `speed`：
 
@@ -2290,13 +2232,12 @@ progress
 → 控制 progress 改变时单次过渡时长
 ```
 
-## 16.6 当前公开能力
+## 16.5 当前公开能力
 
 ```text
 undetermined
 progress
 mode
-dotted
 tracked
 size
 color
@@ -2310,7 +2251,6 @@ viewProps
 type ProgressProps =
   {
     mode?: "spin" | "linear"
-    dotted?: boolean
     tracked?: boolean
     size?: "small" | "medium" | "large"
     color?: Color
@@ -2338,7 +2278,7 @@ style
 > 组件默认 class
 ```
 
-`mode / dotted / size / speed` 的静态默认视觉由低 specificity 的内部 class 提供。
+`mode / tracked / size / speed` 的静态默认视觉由低 specificity 的内部 class 提供。
 
 只有运行时连续值，例如确定进度的实际 `progress` 与数字型 `speed`，才允许通过最小化 CSS 自定义属性传递。
 
