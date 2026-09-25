@@ -18,51 +18,15 @@ const stylesheet = `
 }
 
 :where(.weave-progress) {
-  --weave-display: inline-grid;
-  --weave-position: relative;
-  --weave-flex-grow: 0;
-  --weave-flex-shrink: 0;
+  --weave-component-display: inline-grid;
+  --weave-component-position: relative;
+  --weave-component-flex-grow: 0;
+  --weave-component-flex-shrink: 0;
+  --weave-component-width: var(--weave-progress-width);
+  --weave-component-height: var(--weave-progress-height);
   --weave-progress-duration: var(--weave-motion-duration-normal);
-  --weave-progress-track-color: color-mix(
-    in srgb,
-    currentColor 16%,
-    transparent
-  );
 
   place-items: center;
-}
-
-:where(.weave-progress--spin.weave-progress--small) {
-  --weave-width: 1.125rem;
-  --weave-height: 1.125rem;
-  --weave-progress-thickness: 0.125rem;
-}
-
-:where(.weave-progress--spin.weave-progress--medium) {
-  --weave-width: 1.5rem;
-  --weave-height: 1.5rem;
-  --weave-progress-thickness: 0.15625rem;
-}
-
-:where(.weave-progress--spin.weave-progress--large) {
-  --weave-width: 2rem;
-  --weave-height: 2rem;
-  --weave-progress-thickness: 0.1875rem;
-}
-
-:where(.weave-progress--linear.weave-progress--small) {
-  --weave-width: 6rem;
-  --weave-height: 0.25rem;
-}
-
-:where(.weave-progress--linear.weave-progress--medium) {
-  --weave-width: 8rem;
-  --weave-height: 0.375rem;
-}
-
-:where(.weave-progress--linear.weave-progress--large) {
-  --weave-width: 10rem;
-  --weave-height: 0.5rem;
 }
 
 :where(.weave-progress--determined.weave-progress--speed-slow) {
@@ -173,18 +137,18 @@ const stylesheet = `
   --weave-overflow: hidden;
   --weave-overflow-x: hidden;
   --weave-overflow-y: hidden;
-  --weave-border-top-left-radius: var(--weave-radius-full);
-  --weave-border-top-right-radius: var(--weave-radius-full);
-  --weave-border-bottom-right-radius: var(--weave-radius-full);
-  --weave-border-bottom-left-radius: var(--weave-radius-full);
+  --weave-border-top-left-radius: var(--weave-progress-linear-radius);
+  --weave-border-top-right-radius: var(--weave-progress-linear-radius);
+  --weave-border-bottom-right-radius: var(--weave-progress-linear-radius);
+  --weave-border-bottom-left-radius: var(--weave-progress-linear-radius);
 }
 
 :where(.weave-progress--linear) > :where(.weave-progress__track),
 :where(.weave-progress--linear) > :where(.weave-progress__value) {
-  --weave-border-top-left-radius: var(--weave-radius-full);
-  --weave-border-top-right-radius: var(--weave-radius-full);
-  --weave-border-bottom-right-radius: var(--weave-radius-full);
-  --weave-border-bottom-left-radius: var(--weave-radius-full);
+  --weave-border-top-left-radius: var(--weave-progress-linear-radius);
+  --weave-border-top-right-radius: var(--weave-progress-linear-radius);
+  --weave-border-bottom-right-radius: var(--weave-progress-linear-radius);
+  --weave-border-bottom-left-radius: var(--weave-progress-linear-radius);
 }
 
 :where(.weave-progress--linear.weave-progress--determined)
