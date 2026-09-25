@@ -87,7 +87,7 @@ export function Text({
   const {
     elementRef,
     className,
-    mergedStyle,
+    inlineStyle,
     resolved,
   } = useViewHost(hostProps, componentStyle, 'text')
 
@@ -109,7 +109,7 @@ export function Text({
         maxLines === undefined ? undefined : String(maxLines)
       }
       className={['weave-text', className].filter(Boolean).join(' ')}
-      style={mergedStyle}
+      style={inlineStyle}
     >
       {children}
     </span>
