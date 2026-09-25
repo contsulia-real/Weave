@@ -1,7 +1,9 @@
 import {
   defaultBreakpoints,
+  defaultTheme,
   type DefaultBreakpointName,
 } from '../../theme/default-theme'
+import { themeVariableDeclarations } from '../../theme/theme-css'
 
 const VIEW_STYLE_PROPERTIES = [
   'display',
@@ -200,26 +202,7 @@ const stylesheet = `
 ${propertyRegistrationBlock()}
 
 :root {
-  --weave-color-primary: #6d5dfc;
-  --weave-color-onPrimary: #ffffff;
-  --weave-color-secondary: #8b8b96;
-  --weave-color-surface: #ffffff;
-  --weave-color-surfaceHover: #f5f5f7;
-  --weave-color-success: #20a464;
-  --weave-color-warning: #d78b00;
-  --weave-color-danger: #d94040;
-  --weave-color-outline: #d8d8df;
-  --weave-color-focus: #6d5dfc;
-
-  --weave-radius-none: 0;
-  --weave-radius-small: 0.375rem;
-  --weave-radius-medium: 0.75rem;
-  --weave-radius-large: 1rem;
-  --weave-radius-full: 9999px;
-
-  --weave-shadow-small: 0 0.125rem 0.375rem rgb(0 0 0 / 0.08);
-  --weave-shadow-medium: 0 0.5rem 1.5rem rgb(0 0 0 / 0.12);
-  --weave-shadow-large: 0 1rem 3rem rgb(0 0 0 / 0.16);
+  ${themeVariableDeclarations(defaultTheme)}
 }
 
 :where([data-weave-view]) {
