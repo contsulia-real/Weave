@@ -49,7 +49,7 @@ const stylesheet = `
 }
 
 :where(.weave-scrollbar--small.weave-scrollbar--vertical) {
-  --weave-width: 0.25rem;
+  --weave-width: 0.625rem;
 }
 
 :where(.weave-scrollbar--medium.weave-scrollbar--vertical) {
@@ -61,7 +61,7 @@ const stylesheet = `
 }
 
 :where(.weave-scrollbar--small.weave-scrollbar--horizontal) {
-  --weave-height: 0.25rem;
+  --weave-height: 0.625rem;
 }
 
 :where(.weave-scrollbar--medium.weave-scrollbar--horizontal) {
