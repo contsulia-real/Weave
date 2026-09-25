@@ -5,6 +5,23 @@ import { Text } from '../src'
 
 afterEach(cleanup)
 
+function runtimeRule(
+  element: Element,
+  prefix: string,
+): string {
+  const className = [...element.classList].find((name) =>
+    name.startsWith(prefix),
+  )
+
+  expect(className).toBeDefined()
+
+  return (
+    document.querySelector<HTMLStyleElement>(
+      `style[data-weave-runtime-class="${className}"]`,
+    )?.textContent ?? ''
+  )
+}
+
 describe('Text', () => {
   it('renders a span and maps text semantics without leaking props', () => {
     const { getByTestId } = render(
@@ -32,30 +49,27 @@ describe('Text', () => {
     )
 
     const element = getByTestId('text')
+    const textRule = runtimeRule(element, 'weave-component-props-')
+    const viewRule = runtimeRule(element, 'weave-view-props-')
 
     expect(element.tagName).toBe('SPAN')
     expect(element.getAttribute('size')).toBeNull()
     expect(element.getAttribute('weight')).toBeNull()
 
-    expect(element.style.getPropertyValue('--weave-text-font-size')).toBe(
-      'var(--weave-typography-size-large)',
+    expect(textRule).toContain(
+      '--weave-text-font-size:var(--weave-typography-size-large);',
     )
-    expect(element.style.getPropertyValue('--weave-text-font-weight')).toBe(
-      'var(--weave-typography-weight-bold)',
+    expect(textRule).toContain(
+      '--weave-text-font-weight:var(--weave-typography-weight-bold);',
     )
-    expect(element.style.getPropertyValue('--weave-text-line-height')).toBe(
-      '1.5rem',
+    expect(textRule).toContain('--weave-text-line-height:1.5rem;')
+    expect(textRule).toContain('--weave-text-letter-spacing:0.02rem;')
+    expect(viewRule).toContain('--weave-padding-top:1rem;')
+    expect(viewRule).toContain('--weave-color:var(--weave-color-primary')
+    expect(viewRule).toContain(
+      '--weave-hover-color:var(--weave-color-danger',
     )
-    expect(
-      element.style.getPropertyValue('--weave-text-letter-spacing'),
-    ).toBe('0.02rem')
-    expect(element.style.getPropertyValue('--weave-padding-top')).toBe('1rem')
-    expect(element.style.getPropertyValue('--weave-color')).toContain(
-      '--weave-color-primary',
-    )
-    expect(element.style.getPropertyValue('--weave-hover-color')).toContain(
-      '--weave-color-danger',
-    )
+    expect(element.style.getPropertyValue('--weave-text-font-size')).toBe('')
   })
 
   it('encodes responsive text semantics at the default breakpoints', () => {
@@ -79,18 +93,20 @@ describe('Text', () => {
     )
 
     const element = getByTestId('responsive-text')
+    const textRule = runtimeRule(element, 'weave-component-props-')
+    const viewRule = runtimeRule(element, 'weave-view-props-')
     const stylesheet = document.querySelector(
       'style[data-weave-text-styles]',
     )
 
-    expect(element.style.getPropertyValue('--weave-text-font-size')).toBe(
-      'var(--weave-typography-size-small)',
+    expect(textRule).toContain(
+      '--weave-text-font-size:var(--weave-typography-size-small);',
     )
-    expect(element.style.getPropertyValue('--weave-text-md-font-size')).toBe(
-      'var(--weave-typography-size-large)',
+    expect(textRule).toContain(
+      '--weave-text-md-font-size:var(--weave-typography-size-large);',
     )
-    expect(element.style.getPropertyValue('--weave-md-color')).toContain(
-      '--weave-color-success',
+    expect(viewRule).toContain(
+      '--weave-md-color:var(--weave-color-success',
     )
     expect(element.getAttribute('data-weave-text-md-overflow')).toBe(
       'ellipsis',
@@ -118,11 +134,12 @@ describe('Text', () => {
     )
 
     const element = getByTestId('priority-text')
+    const textRule = runtimeRule(element, 'weave-component-props-')
 
-    expect(element.className).toBe('custom-text')
+    expect(element.className).toContain('custom-text')
     expect(element.style.fontSize).toBe('13px')
-    expect(element.style.getPropertyValue('--weave-text-font-size')).toBe(
-      'var(--weave-typography-size-large)',
+    expect(textRule).toContain(
+      '--weave-text-font-size:var(--weave-typography-size-large);',
     )
   })
 
