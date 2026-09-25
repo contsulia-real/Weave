@@ -1,4 +1,4 @@
-import type { ResolvedTheme } from './theme-types'
+import type { ThemeDefinition } from './theme-types'
 
 export const defaultBreakpoints = {
   sm: 40,
@@ -9,7 +9,7 @@ export const defaultBreakpoints = {
 
 export type DefaultBreakpointName = keyof typeof defaultBreakpoints
 
-export const defaultTheme: ResolvedTheme = {
+export const defaultTheme = {
   tokens: {
     color: {
       primary: '#6d5dfc',
@@ -25,22 +25,41 @@ export const defaultTheme: ResolvedTheme = {
       outline: '#d8d8df',
       focus: '#6d5dfc',
     },
+
+    typography: {
+      size: {
+        small: 0.875,
+        medium: 1,
+        large: 1.25,
+        xlarge: 1.5,
+      },
+      weight: {
+        regular: 400,
+        medium: 500,
+        semibold: 600,
+        bold: 700,
+      },
+    },
+
     spacing: {
       small: 0.5,
       medium: 1,
       large: 1.5,
     },
+
     radius: {
       small: 0.375,
       medium: 0.75,
       large: 1,
       full: '9999px',
     },
+
     shadow: {
       small: '0 0.125rem 0.375rem rgb(0 0 0 / 0.08)',
       medium: '0 0.5rem 1.5rem rgb(0 0 0 / 0.12)',
       large: '0 1rem 3rem rgb(0 0 0 / 0.16)',
     },
+
     motion: {
       duration: {
         fast: 120,
@@ -56,8 +75,9 @@ export const defaultTheme: ResolvedTheme = {
       },
     },
   },
-  components: {},
+
   breakpoints: defaultBreakpoints,
+
   layers: {
     base: 0,
     raised: 10,
@@ -66,4 +86,7 @@ export const defaultTheme: ResolvedTheme = {
     snack: 300,
     tooltip: 400,
   },
-}
+
+  components: {},
+  modes: {},
+} satisfies ThemeDefinition
