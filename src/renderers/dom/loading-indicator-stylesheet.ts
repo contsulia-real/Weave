@@ -1,9 +1,4 @@
 const stylesheet = `
-@property --weave-loading-color {
-  syntax: "*";
-  inherits: false;
-}
-
 @property --weave-loading-duration {
   syntax: "*";
   inherits: false;
@@ -17,10 +12,9 @@ const stylesheet = `
 :where([data-weave-loading]) {
   --weave-width: 1.5rem;
   --weave-height: 1.5rem;
-  --weave-loading-color: var(--weave-color-primary);
   --weave-loading-track: color-mix(
     in srgb,
-    var(--weave-loading-color) 20%,
+    currentColor 20%,
     transparent
   );
 
@@ -63,7 +57,7 @@ const stylesheet = `
 ) {
   background:
     conic-gradient(
-      var(--weave-loading-color)
+      currentColor
         var(--weave-loading-progress, 25%),
       var(--weave-loading-track) 0
     );
@@ -86,7 +80,7 @@ const stylesheet = `
 ) {
   background:
     conic-gradient(
-      var(--weave-loading-color)
+      currentColor
         var(--weave-loading-progress, 100%),
       var(--weave-loading-track) 0
     );
@@ -129,7 +123,7 @@ const stylesheet = `
   width: var(--weave-loading-dot);
   height: var(--weave-loading-dot);
   border-radius: 9999px;
-  background: var(--weave-loading-color);
+  background: currentColor;
   animation:
     weave-loading-dot
     var(--weave-loading-duration)
