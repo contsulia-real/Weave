@@ -1,8 +1,3 @@
-import {
-  defaultBreakpoints,
-  type DefaultBreakpointName,
-} from '../../theme/default-theme'
-
 const TEXT_STYLE_PROPERTIES = [
   'font-size',
   'font-weight',
@@ -16,11 +11,7 @@ const TEXT_STYLE_PROPERTIES = [
   'max-lines',
 ] as const
 
-type TextStyleProperty = (typeof TEXT_STYLE_PROPERTIES)[number]
-
-const BREAKPOINT_NAMES = Object.keys(
-  defaultBreakpoints,
-) as DefaultBreakpointName[]
+export type TextStyleProperty = (typeof TEXT_STYLE_PROPERTIES)[number]
 
 const variableName = (
   property: TextStyleProperty,
@@ -28,10 +19,15 @@ const variableName = (
 ): `--weave-text-${string}` =>
   `--weave-text-${breakpoint === undefined ? '' : `${breakpoint}-`}${property}`
 
+const responsiveVariableName = (
+  property: TextStyleProperty,
+): `--weave-text-responsive-${string}` =>
+  `--weave-text-responsive-${property}`
+
 const propertyRegistrationBlock = () =>
   TEXT_STYLE_PROPERTIES.flatMap((property) => [
     variableName(property),
-    ...BREAKPOINT_NAMES.map((name) => variableName(property, name)),
+    responsiveVariableName(property),
   ])
     .map(
       (variable) =>
@@ -60,48 +56,13 @@ const fallbackFor = (property: TextStyleProperty) => {
 const cssProperty = (property: TextStyleProperty) =>
   property === 'max-lines' ? '-webkit-line-clamp' : property
 
-const sourceChain = (
-  property: TextStyleProperty,
-  breakpointIndex?: number,
-) => {
-  const base = `var(${variableName(property)}, ${fallbackFor(property)})`
+const sourceChain = (property: TextStyleProperty) =>
+  `var(${responsiveVariableName(property)}, var(${variableName(property)}, ${fallbackFor(property)}))`
 
-  if (breakpointIndex === undefined) return base
-
-  return BREAKPOINT_NAMES.slice(0, breakpointIndex + 1)
-    .reverse()
-    .reduce(
-      (current, name) =>
-        `var(${variableName(property, name)}, ${current})`,
-      base,
-    )
-}
-
-const declarationBlock = (breakpointIndex?: number) =>
+const declarationBlock = () =>
   TEXT_STYLE_PROPERTIES.map(
     (property) =>
-      `${cssProperty(property)}: ${sourceChain(property, breakpointIndex)};`,
-  ).join('')
-
-const responsiveBlocks = () =>
-  BREAKPOINT_NAMES.map(
-    (name, index) => `
-@media (min-width: ${defaultBreakpoints[name]}rem) {
-  :where([data-weave-text]) {
-    ${declarationBlock(index)}
-  }
-
-  :where([data-weave-text][data-weave-text-${name}-overflow]),
-  :where([data-weave-text][data-weave-text-${name}-max-lines]) {
-    overflow: hidden;
-  }
-
-  :where([data-weave-text][data-weave-text-${name}-max-lines]) {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-  }
-}
-`,
+      `${cssProperty(property)}: ${sourceChain(property)};`,
   ).join('')
 
 const stylesheet = `
@@ -120,8 +81,6 @@ ${propertyRegistrationBlock()}
   display: -webkit-box;
   -webkit-box-orient: vertical;
 }
-
-${responsiveBlocks()}
 `
 
 export function ensureTextStylesheet(): void {
@@ -142,4 +101,10 @@ export function ensureTextStylesheet(): void {
   element.dataset.weaveTextStyles = ''
   element.textContent = stylesheet
   document.head.append(element)
+}
+
+export {
+  TEXT_STYLE_PROPERTIES,
+  responsiveVariableName as textResponsiveVariableName,
+  variableName as textVariableName,
 }
