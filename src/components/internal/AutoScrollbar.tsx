@@ -27,8 +27,8 @@ interface ScrollbarOverflowIntent {
   styleOverflowY?: string
 }
 
-interface AutoScrollbarProps {
-  targetRef: RefObject<HTMLDivElement | null>
+interface AutoScrollbarProps<TTarget extends HTMLElement> {
+  targetRef: RefObject<TTarget | null>
   config?: ScrollbarConfig
   overflowIntent: ScrollbarOverflowIntent
 }
@@ -39,6 +39,13 @@ interface DragState {
   startPointer: number
   startScroll: number
   scrollPerPixel: number
+}
+
+interface ScrollMetrics {
+  verticalAvailable: number
+  verticalMaxScroll: number
+  horizontalAvailable: number
+  horizontalMaxScroll: number
 }
 
 function ScrollbarView(props: ViewProps<HTMLDivElement>) {
@@ -108,11 +115,11 @@ function syncScrollbarLayer(
   }
 }
 
-export function AutoScrollbar({
+export function AutoScrollbar<TTarget extends HTMLElement>({
   targetRef,
   config,
   overflowIntent,
-}: AutoScrollbarProps) {
+}: AutoScrollbarProps<TTarget>) {
   useInsertionEffect(ensureScrollbarStylesheet, [])
 
   const verticalTrackRef = useRef<HTMLDivElement>(null)
@@ -120,6 +127,12 @@ export function AutoScrollbar({
   const verticalThumbRef = useRef<HTMLDivElement>(null)
   const horizontalThumbRef = useRef<HTMLDivElement>(null)
   const dragRef = useRef<DragState | null>(null)
+  const metricsRef = useRef<ScrollMetrics>({
+    verticalAvailable: 0,
+    verticalMaxScroll: 0,
+    horizontalAvailable: 0,
+    horizontalMaxScroll: 0,
+  })
 
   const size: ScrollbarSize = config?.size ?? 'medium'
   const tracked = config?.tracked === true
@@ -133,10 +146,45 @@ export function AutoScrollbar({
     resolveScrollbarTheme(theme, size, config),
   )
 
-  const update = useCallback(() => {
-    // These generated classes change computed scrollbar geometry. Keep them
-    // as dependencies so a theme change immediately recomputes track/thumb
-    // sizes instead of waiting for the next scroll or resize event.
+  const syncThumbOffsets = useCallback(() => {
+    const target = targetRef.current
+    const verticalThumb = verticalThumbRef.current
+    const horizontalThumb = horizontalThumbRef.current
+
+    if (
+      target === null ||
+      verticalThumb === null ||
+      horizontalThumb === null
+    ) {
+      return
+    }
+
+    const metrics = metricsRef.current
+
+    const verticalOffset =
+      metrics.verticalMaxScroll === 0
+        ? 0
+        : (
+            target.scrollTop /
+            metrics.verticalMaxScroll
+          ) * metrics.verticalAvailable
+
+    const horizontalOffset =
+      metrics.horizontalMaxScroll === 0
+        ? 0
+        : (
+            target.scrollLeft /
+            metrics.horizontalMaxScroll
+          ) * metrics.horizontalAvailable
+
+    verticalThumb.style.transform =
+      `translateY(${verticalOffset}px)`
+    horizontalThumb.style.transform =
+      `translateX(${horizontalOffset}px)`
+  }, [targetRef])
+
+  const updateGeometry = useCallback(() => {
+    // Theme classes can change scrollbar thickness and therefore geometry.
     void themeTokenClassName
     void scrollbarThemeClassName
 
@@ -206,6 +254,11 @@ export function AutoScrollbar({
       ? parseFloat(getComputedStyle(horizontalTrack).height) || 0
       : 0
 
+    let verticalAvailable = 0
+    let verticalMaxScroll = 0
+    let horizontalAvailable = 0
+    let horizontalMaxScroll = 0
+
     if (verticalVisible) {
       const trackLength = Math.max(
         0,
@@ -218,22 +271,17 @@ export function AutoScrollbar({
           trackLength * (target.clientHeight / target.scrollHeight),
         ),
       )
-      const available = Math.max(0, trackLength - thumbLength)
-      const maxScroll = Math.max(
+
+      verticalAvailable = Math.max(0, trackLength - thumbLength)
+      verticalMaxScroll = Math.max(
         0,
         target.scrollHeight - target.clientHeight,
       )
-      const offset =
-        maxScroll === 0
-          ? 0
-          : (target.scrollTop / maxScroll) * available
 
       verticalTrack.style.top = `${rect.top}px`
       verticalTrack.style.left = `${rect.right}px`
       verticalTrack.style.height = `${trackLength}px`
-
       verticalThumb.style.height = `${thumbLength}px`
-      verticalThumb.style.transform = `translateY(${offset}px)`
     }
 
     if (horizontalVisible) {
@@ -248,26 +296,31 @@ export function AutoScrollbar({
           trackLength * (target.clientWidth / target.scrollWidth),
         ),
       )
-      const available = Math.max(0, trackLength - thumbLength)
-      const maxScroll = Math.max(
+
+      horizontalAvailable = Math.max(0, trackLength - thumbLength)
+      horizontalMaxScroll = Math.max(
         0,
         target.scrollWidth - target.clientWidth,
       )
-      const offset =
-        maxScroll === 0
-          ? 0
-          : (target.scrollLeft / maxScroll) * available
 
       horizontalTrack.style.left = `${rect.left}px`
       horizontalTrack.style.top = `${rect.bottom}px`
       horizontalTrack.style.width = `${trackLength}px`
-
       horizontalThumb.style.width = `${thumbLength}px`
-      horizontalThumb.style.transform = `translateX(${offset}px)`
     }
+
+    metricsRef.current = {
+      verticalAvailable,
+      verticalMaxScroll,
+      horizontalAvailable,
+      horizontalMaxScroll,
+    }
+
+    syncThumbOffsets()
   }, [
     overflowIntent,
     scrollbarThemeClassName,
+    syncThumbOffsets,
     targetRef,
     themeTokenClassName,
   ])
@@ -276,10 +329,10 @@ export function AutoScrollbar({
     const target = targetRef.current
     if (target === null) return
 
-    update()
+    updateGeometry()
 
-    const onScroll = () => update()
-    const onWindowChange = () => update()
+    const onScroll = () => syncThumbOffsets()
+    const onWindowChange = () => updateGeometry()
 
     target.addEventListener('scroll', onScroll, { passive: true })
     window.addEventListener('resize', onWindowChange)
@@ -288,7 +341,7 @@ export function AutoScrollbar({
     const resizeObserver =
       typeof ResizeObserver === 'undefined'
         ? null
-        : new ResizeObserver(update)
+        : new ResizeObserver(updateGeometry)
 
     resizeObserver?.observe(target)
 
@@ -311,7 +364,7 @@ export function AutoScrollbar({
               }
             }
 
-            update()
+            updateGeometry()
           })
 
     mutationObserver?.observe(target, {
@@ -327,7 +380,7 @@ export function AutoScrollbar({
       resizeObserver?.disconnect()
       mutationObserver?.disconnect()
     }
-  }, [targetRef, update])
+  }, [syncThumbOffsets, targetRef, updateGeometry])
 
   const beginDrag = (
     orientation: Orientation,
@@ -404,7 +457,7 @@ export function AutoScrollbar({
       target.scrollLeft = next
     }
 
-    update()
+    syncThumbOffsets()
   }
 
   const endDrag = (
@@ -445,7 +498,7 @@ export function AutoScrollbar({
       target.scrollLeft += direction * target.clientWidth * 0.9
     }
 
-    update()
+    syncThumbOffsets()
   }
 
   if (typeof document === 'undefined') return null
