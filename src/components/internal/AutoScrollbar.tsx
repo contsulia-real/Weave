@@ -17,9 +17,19 @@ import { useViewHost } from './use-view-host'
 
 type Orientation = 'vertical' | 'horizontal'
 
+interface ScrollbarOverflowIntent {
+  styleOverflow?: string
+  styleOverflowX?: string
+  styleOverflowY?: string
+  propOverflow?: string
+  propOverflowX?: string
+  propOverflowY?: string
+}
+
 interface AutoScrollbarProps {
   targetRef: RefObject<HTMLDivElement | null>
   config?: ScrollbarConfig
+  overflowIntent: ScrollbarOverflowIntent
 }
 
 interface DragState {
@@ -195,6 +205,7 @@ function syncScrollbarLayer(
 export function AutoScrollbar({
   targetRef,
   config,
+  overflowIntent,
 }: AutoScrollbarProps) {
   useInsertionEffect(ensureScrollbarStylesheet, [])
 
@@ -232,9 +243,22 @@ export function AutoScrollbar({
     syncScrollbarLayer(horizontalTrack, target)
 
     const verticalOverflow =
-      computed.overflowY || computed.overflow
+      overflowIntent.styleOverflowY ??
+      overflowIntent.styleOverflow ??
+      computed.overflowY ||
+      computed.overflow ||
+      overflowIntent.propOverflowY ||
+      overflowIntent.propOverflow ||
+      'visible'
+
     const horizontalOverflow =
-      computed.overflowX || computed.overflow
+      overflowIntent.styleOverflowX ??
+      overflowIntent.styleOverflow ??
+      computed.overflowX ||
+      computed.overflow ||
+      overflowIntent.propOverflowX ||
+      overflowIntent.propOverflow ||
+      'visible'
 
     const verticalVisible =
       scrollbarVisible(
@@ -323,6 +347,7 @@ export function AutoScrollbar({
     }
   }, [
     config,
+    overflowIntent,
     targetRef,
   ])
 
