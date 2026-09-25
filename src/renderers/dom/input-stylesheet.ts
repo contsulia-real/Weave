@@ -26,6 +26,15 @@ const stylesheet = `
   font: inherit;
   font-size: var(--weave-input-theme-font-size);
   line-height: var(--weave-input-theme-line-height);
+  transition:
+    background-color var(--weave-motion-duration-fast)
+      var(--weave-motion-curve-standard),
+    border-color var(--weave-motion-duration-fast)
+      var(--weave-motion-curve-standard),
+    color var(--weave-motion-duration-fast)
+      var(--weave-motion-curve-standard),
+    opacity var(--weave-motion-duration-fast)
+      var(--weave-motion-curve-standard);
 }
 
 :where(.weave-input::placeholder) {
