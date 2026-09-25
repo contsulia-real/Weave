@@ -275,6 +275,53 @@ function App() {
         </View>
 
         <View layout="flex" direction="column" gap={0.75}>
+          <h2>Scrollbar</h2>
+          <p className="hint">
+            View overflow="auto" 自动挂载框架 Scrollbar；滚动仍由浏览器原生 scrollTop / scrollLeft 驱动。
+          </p>
+
+          <View
+            width={28}
+            height={10}
+            overflow="auto"
+            border={0.0625}
+            borderColor="outline"
+            radius="medium"
+            scrollbar={{
+              size: 'medium',
+              color: 'primary',
+              trackColor: 'surfaceHover',
+              radius: 'full',
+              opacity: 0.9,
+            }}
+          >
+            <View
+              width={44}
+              layout="flex"
+              direction="column"
+              gap={0.5}
+              padding={1}
+            >
+              {Array.from({ length: 12 }, (_, index) => (
+                <View
+                  key={index}
+                  width="fill"
+                  padding={0.75}
+                  background={
+                    index % 2 === 0
+                      ? 'surfaceHover'
+                      : 'surface'
+                  }
+                  radius="small"
+                >
+                  Scroll row {index + 1} — horizontal content width 44rem
+                </View>
+              ))}
+            </View>
+          </View>
+        </View>
+
+        <View layout="flex" direction="column" gap={0.75}>
           <h2>Container breakpoint</h2>
           <p className="hint">
             拖动下面容器右下角改变它自己的宽度；达到 48rem 后内部切为横向。
