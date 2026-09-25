@@ -114,7 +114,8 @@ const stylesheet = `
   font: inherit;
   font-size: var(--weave-button-font-size);
   font-weight: var(--weave-button-theme-font-weight);
-  line-height: 1;
+  line-height: var(--weave-typography-line-height-compact);
+  letter-spacing: var(--weave-typography-letter-spacing-normal);
   text-decoration: none;
   transition:
     background-color var(--weave-motion-duration-fast)
