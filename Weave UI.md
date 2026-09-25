@@ -1788,9 +1788,11 @@ capitalize
 合法的其他子内容同样遵循对应 DOM 内容模型：
 
 ```tsx
+import { IconArrowRight } from "@tabler/icons-react"
+
 <Text>
   查看
-  <Icon name="arrow-right" />
+  <Icon icon={IconArrowRight} />
 </Text>
 ```
 
@@ -2518,9 +2520,11 @@ Button
 ## 18.1 快捷语义 API
 
 ```tsx
+import { IconDeviceFloppy } from "@tabler/icons-react"
+
 <Button
   text="保存"
-  icon="device-floppy"
+  icon={IconDeviceFloppy}
   variant="primary"
   size="medium"
   loading={false}
@@ -2534,7 +2538,7 @@ Button
 
 ```tsx
 <Button>
-  <Icon name="device-floppy" />
+  <Icon icon={IconDeviceFloppy} />
   <Text>保存</Text>
 </Button>
 ```
@@ -2593,17 +2597,19 @@ large
 
 ### icon
 
-接受 Icon 的两类来源：
+接受与 `Icon` 相同的两类来源：
 
 ```text
-Tabler name
+静态导入的图标组件
 SVG
 ```
 
 例如：
 
 ```tsx
-<Button icon="plus" />
+import { IconPlus } from "@tabler/icons-react"
+
+<Button icon={IconPlus} />
 ```
 
 或：
@@ -2642,7 +2648,7 @@ SVG
     gap: 0.25,
   }}
 >
-  <Icon name="upload" />
+  <Icon icon={IconUpload} />
   <Text>上传</Text>
 </Button>
 ```
