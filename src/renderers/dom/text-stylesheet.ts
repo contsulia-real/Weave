@@ -90,6 +90,16 @@ const responsiveBlocks = () =>
   :where([data-weave-text]) {
     ${declarationBlock(index)}
   }
+
+  :where([data-weave-text][data-weave-text-${name}-overflow]),
+  :where([data-weave-text][data-weave-text-${name}-max-lines]) {
+    overflow: hidden;
+  }
+
+  :where([data-weave-text][data-weave-text-${name}-max-lines]) {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+  }
 }
 `,
   ).join('')
