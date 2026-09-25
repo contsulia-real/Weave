@@ -15,7 +15,9 @@ export function LoadingIndicator({
   useInsertionEffect(ensureLoadingIndicatorStylesheet, [])
 
   const undetermined = mode.undetermined === true
-  const progress = undetermined ? undefined : mode.progress
+  const progress = undetermined
+    ? undefined
+    : Math.min(1, Math.max(0, mode.progress))
   const componentStyle = resolveLoadingIndicatorStyle({
     speed,
     progress,
