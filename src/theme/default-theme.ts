@@ -105,7 +105,10 @@ export const defaultTheme: ResolvedTheme = {
       base: {
         ...controlBaseline,
         cursor: 'pointer',
-        fontWeight: 500,
+        fontWeight: 600,
+        shadowDepth: 0.1875,
+        pressedShadowDepth: 0.0625,
+        pressOffset: 0.125,
       },
       sizes: {
         small: {
@@ -138,6 +141,8 @@ export const defaultTheme: ResolvedTheme = {
             'color-mix(in srgb, var(--weave-color-primary) 72%, black)',
           hoverBackground: 'primaryHover',
           activeBackground: 'primaryActive',
+          shadowColor:
+            'color-mix(in srgb, var(--weave-color-primary) 72%, #2d256d)',
         },
         secondary: {
           background: 'surface',
@@ -148,6 +153,8 @@ export const defaultTheme: ResolvedTheme = {
           hoverBackground: 'surfaceHover',
           activeBackground:
             'color-mix(in srgb, var(--weave-color-outline) 65%, var(--weave-color-surface))',
+          shadowColor:
+            'color-mix(in srgb, var(--weave-color-outline) 78%, #8f8276)',
         },
         tertiary: {
           background: 'surfaceHover',
@@ -159,6 +166,8 @@ export const defaultTheme: ResolvedTheme = {
             'color-mix(in srgb, var(--weave-color-outline) 42%, var(--weave-color-surface))',
           activeBackground:
             'color-mix(in srgb, var(--weave-color-outline) 68%, var(--weave-color-surface))',
+          shadowColor:
+            'color-mix(in srgb, var(--weave-color-outline) 72%, #9a8e83)',
         },
         ghost: {
           background: 'transparent',
@@ -168,6 +177,8 @@ export const defaultTheme: ResolvedTheme = {
           hoverBackground: 'surfaceHover',
           activeBackground:
             'color-mix(in srgb, var(--weave-color-outline) 60%, transparent)',
+          shadowColor:
+            'color-mix(in srgb, var(--weave-color-outline) 52%, transparent)',
         },
         danger: {
           background:
@@ -181,6 +192,8 @@ export const defaultTheme: ResolvedTheme = {
             'color-mix(in srgb, var(--weave-color-danger) 15%, var(--weave-color-surface))',
           activeBackground:
             'color-mix(in srgb, var(--weave-color-danger) 21%, var(--weave-color-surface))',
+          shadowColor:
+            'color-mix(in srgb, var(--weave-color-danger) 42%, #8f8276)',
         },
       },
       states: {
