@@ -304,7 +304,7 @@ function App() {
         <View layout="flex" direction="column" gap={0.75}>
           <h2>Button</h2>
           <p className="hint">
-            真实 button 语义；variant / size 可由主题和 breakpoint 覆盖，快捷 text/icon 与完整 children 两种内容入口互斥。
+            Weave 的 tactile control 基准：hover 会抬起，按住会下沉并压缩，释放使用 spring 回弹；variant / size 仍可由主题和 breakpoint 覆盖。
           </p>
 
           <View layout="flex" direction="column" gap={1}>
@@ -408,7 +408,7 @@ function App() {
         <View layout="flex" direction="column" gap={0.75}>
           <h2>Switch</h2>
           <p className="hint">
-            三档语义尺寸；支持鼠标与键盘切换，状态通过 role="switch" 与 aria-checked 暴露。
+            三档语义尺寸；hover 时 thumb 轻微增强，拖动时产生抓取反馈并直接跟手，释放后 spring 归位。
           </p>
 
           <View layout="flex" direction="row" gap={1.5} align="center" wrap>
@@ -513,7 +513,7 @@ function App() {
         <View layout="flex" direction="column" gap={0.75}>
           <h2>Scrollbar</h2>
           <p className="hint">
-            View overflow="auto" 自动挂载框架 Scrollbar；滚动仍由浏览器原生 scrollTop / scrollLeft 驱动。
+            View overflow="auto" 自动挂载框架 Scrollbar；hover / drag 有连续反馈，thumb 位置仍直接跟随浏览器原生 scrollTop / scrollLeft。
           </p>
 
           <View
