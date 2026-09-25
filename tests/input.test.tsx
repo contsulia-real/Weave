@@ -223,13 +223,13 @@ describe('Input', () => {
     )
 
     expect(rule).toContain(
-      '--weave-input-theme-min-height:2.25rem;',
+      '--weave-input-theme-min-height:2.5rem;',
     )
     expect(rule).toContain(
       '--weave-input-theme-border-width:0.0625rem;',
     )
     expect(rule).toContain(
-      '--weave-input-theme-radius:0.5rem;',
+      '--weave-input-theme-radius:0.75rem;',
     )
     expect(stylesheet?.textContent).toContain(
       '--weave-component-border-style: solid',
