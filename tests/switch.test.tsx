@@ -1,9 +1,26 @@
 import { cleanup, fireEvent, render } from '@testing-library/react'
 import type { MouseEvent } from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { Switch } from '../src'
+import { Switch, ThemeProvider, createTheme } from '../src'
 
 afterEach(cleanup)
+
+function runtimeRule(
+  element: Element,
+  prefix: string,
+): string {
+  const className = [...element.classList].find((name) =>
+    name.startsWith(prefix),
+  )
+
+  expect(className).toBeDefined()
+
+  return (
+    document.querySelector<HTMLStyleElement>(
+      `style[data-weave-runtime-class="${className}"]`,
+    )?.textContent ?? ''
+  )
+}
 
 describe('Switch', () => {
   it('supports uncontrolled state and emits boolean changes', () => {
@@ -104,27 +121,62 @@ describe('Switch', () => {
     expect(element.getAttribute('aria-checked')).toBe('false')
   })
 
-  it('keeps component defaults out of inline style', () => {
+  it('takes its default visual values from the default theme', () => {
     const { getByRole } = render(<Switch size="medium" />)
 
     const element = getByRole('switch')
-    const thumb = element.querySelector(
-      '.weave-switch__thumb',
-    ) as HTMLElement
+    const themeRule = runtimeRule(element, 'weave-switch-theme-')
 
     expect(element.style.getPropertyValue('--weave-width')).toBe('')
-    expect(
-      element.style.getPropertyValue('--weave-border-top-left-radius'),
-    ).toBe('')
-    expect(thumb.style.getPropertyValue('--weave-width')).toBe('')
+    expect(themeRule).toContain('--weave-switch-width:2.5rem;')
+    expect(themeRule).toContain('--weave-switch-height:1.5rem;')
+    expect(themeRule).toContain(
+      '--weave-switch-background:var(--weave-color-outline',
+    )
   })
 
-  it('renders track and thumb with semantic size data', () => {
+  it('lets a ThemeProvider override component size and appearance', () => {
+    const theme = createTheme({
+      components: {
+        Switch: {
+          base: {
+            background: 'danger',
+          },
+          sizes: {
+            medium: {
+              width: 4,
+              height: 2,
+              thumbSize: 1.5,
+              shift: 2,
+            },
+          },
+        },
+      },
+    })
+
+    const { getByRole } = render(
+      <ThemeProvider theme={theme} mode="light">
+        <Switch />
+      </ThemeProvider>,
+    )
+
+    const element = getByRole('switch')
+    const rule = runtimeRule(element, 'weave-switch-theme-')
+
+    expect(rule).toContain('--weave-switch-width:4rem;')
+    expect(rule).toContain('--weave-switch-height:2rem;')
+    expect(rule).toContain(
+      '--weave-switch-background:var(--weave-color-danger',
+    )
+  })
+
+  it('keeps instance View props above component theme defaults', () => {
     const { getByRole } = render(
       <Switch
         size="large"
         viewProps={{
           width: 4,
+          className: 'custom-switch',
           data: {
             testid: 'switch',
           },
@@ -133,24 +185,26 @@ describe('Switch', () => {
     )
 
     const element = getByRole('switch')
+    const propsRule = runtimeRule(element, 'weave-view-props-')
+    const themeRule = runtimeRule(element, 'weave-switch-theme-')
 
     expect(element.className).toContain('weave-switch')
     expect(element.className).toContain('weave-switch--large')
+    expect(element.className).toContain('custom-switch')
     expect(element.getAttribute('data-weave-switch')).toBe('')
     expect(element.getAttribute('data-weave-switch-size')).toBe('large')
     expect(
       element.querySelector('[data-weave-switch-thumb]'),
     ).not.toBeNull()
-    expect(element.style.getPropertyValue('--weave-width')).toBe('4rem')
+    expect(element.style.getPropertyValue('--weave-width')).toBe('')
+    expect(propsRule).toContain('--weave-width:4rem;')
+    expect(themeRule).toContain('--weave-switch-width:3rem;')
 
     const stylesheet = document.querySelector(
       'style[data-weave-switch-styles]',
     )
     expect(stylesheet?.textContent).toContain(
-      ':where(.weave-switch--large)',
-    )
-    expect(stylesheet?.textContent).toContain(
-      '--weave-border-top-left-radius: var(--weave-radius-full)',
+      '--weave-component-width: var(--weave-switch-width)',
     )
   })
 })
