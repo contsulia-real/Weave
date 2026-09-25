@@ -17,15 +17,26 @@ export function LoadingIndicator({
   const undetermined = mode.undetermined === true
   const progress = undetermined ? undefined : mode.progress
   const componentStyle = resolveLoadingIndicatorStyle({
-    size,
     speed,
-    animation,
     progress,
   })
+
+  const className = [
+    'weave-loading-indicator',
+    `weave-loading-indicator--${size}`,
+    `weave-loading-indicator--${animation}`,
+    typeof speed === 'string'
+      ? `weave-loading-indicator--speed-${speed}`
+      : undefined,
+    viewProps.className,
+  ]
+    .filter(Boolean)
+    .join(' ')
 
   return (
     <View
       {...viewProps}
+      className={className}
       role="progressbar"
       color={color}
       busy={undetermined || undefined}
@@ -45,19 +56,30 @@ export function LoadingIndicator({
       }}
     >
       <View
+        className="weave-loading-indicator__ring"
         data={{
           'weave-loading-ring': '',
         }}
       />
 
       <View
+        className="weave-loading-indicator__dots"
         data={{
           'weave-loading-dots': '',
         }}
       >
-        <View data={{ 'weave-loading-dot': '1' }} />
-        <View data={{ 'weave-loading-dot': '2' }} />
-        <View data={{ 'weave-loading-dot': '3' }} />
+        <View
+          className="weave-loading-indicator__dot"
+          data={{ 'weave-loading-dot': '1' }}
+        />
+        <View
+          className="weave-loading-indicator__dot"
+          data={{ 'weave-loading-dot': '2' }}
+        />
+        <View
+          className="weave-loading-indicator__dot"
+          data={{ 'weave-loading-dot': '3' }}
+        />
       </View>
     </View>
   )
