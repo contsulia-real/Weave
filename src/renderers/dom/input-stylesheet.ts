@@ -22,6 +22,9 @@ const stylesheet = `
   --weave-component-border-bottom-right-radius: var(--weave-input-theme-radius);
   --weave-component-border-bottom-left-radius: var(--weave-input-theme-radius);
   --weave-component-outline-width: 0;
+  --weave-component-box-shadow:
+    0 0.0625rem 0
+    color-mix(in srgb, var(--weave-input-theme-border-color) 72%, transparent);
 
   font: inherit;
   font-size: var(--weave-input-theme-font-size);
@@ -34,6 +37,8 @@ const stylesheet = `
     color var(--weave-motion-duration-fast)
       var(--weave-motion-curve-standard),
     opacity var(--weave-motion-duration-fast)
+      var(--weave-motion-curve-standard),
+    box-shadow var(--weave-motion-duration-fast)
       var(--weave-motion-curve-standard);
 }
 
@@ -42,7 +47,28 @@ const stylesheet = `
   opacity: 1;
 }
 
+:where(.weave-input:hover:not([aria-disabled="true"])) {
+  --weave-component-box-shadow:
+    0 calc(var(--weave-feedback-rest-depth) * 0.5) 0
+    color-mix(in srgb, var(--weave-input-theme-border-color) 82%, transparent);
+}
+
 :where(.weave-input:focus-visible) {
+  --weave-component-box-shadow:
+    0 var(--weave-feedback-rest-depth) 0
+    color-mix(in srgb, var(--weave-input-theme-focus-outline-color) 34%, transparent);
+  --weave-component-border-top-color: var(
+    --weave-input-theme-focus-outline-color
+  );
+  --weave-component-border-right-color: var(
+    --weave-input-theme-focus-outline-color
+  );
+  --weave-component-border-bottom-color: var(
+    --weave-input-theme-focus-outline-color
+  );
+  --weave-component-border-left-color: var(
+    --weave-input-theme-focus-outline-color
+  );
   --weave-component-outline-width: var(
     --weave-input-theme-focus-outline-width
   );
@@ -86,3 +112,4 @@ export function ensureInputStylesheet(): void {
   element.textContent = stylesheet
   document.head.append(element)
 }
+
