@@ -36,6 +36,18 @@ function rawStyleMayScroll(
   )
 }
 
+function scrollOverflowClass(
+  axis: '' | 'x' | 'y',
+  value: string | undefined,
+): string | undefined {
+  if (!scrollableOverflow(value)) return undefined
+
+  const suffix = value === 'scroll' ? 'scroll' : 'auto'
+  const axisPart = axis.length === 0 ? '' : `-${axis}`
+
+  return `weave-scroll-host--overflow${axisPart}-${suffix}`
+}
+
 function viewMayScroll(
   props: ViewProps<HTMLDivElement>,
 ): boolean {
@@ -67,6 +79,9 @@ export function View(props: ViewProps<HTMLDivElement>) {
   const mountsScrollbar = viewMayScroll(props)
   const resolvedClassName = [
     mountsScrollbar ? 'weave-scroll-host' : undefined,
+    scrollOverflowClass('', props.overflow),
+    scrollOverflowClass('x', props.overflowX),
+    scrollOverflowClass('y', props.overflowY),
     className,
   ]
     .filter(Boolean)
