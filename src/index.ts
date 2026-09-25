@@ -28,7 +28,8 @@ export type {
   ViewWrap,
 } from './core/view-types'
 
-export { ThemeProvider, useTheme } from './theme/ThemeProvider'
+export { ThemeProvider } from './theme/ThemeProvider'
+export { useTheme } from './theme/theme-context'
 export type { ThemeProviderProps } from './theme/ThemeProvider'
 export { createTheme } from './theme/create-theme'
 export { defaultTheme } from './theme/default-theme'
