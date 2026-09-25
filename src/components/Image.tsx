@@ -8,7 +8,7 @@ import { resolveImageStyle } from '../renderers/dom/resolve-image'
 import { ensureImageStylesheet } from '../renderers/dom/image-stylesheet'
 import { useViewHost } from './internal/use-view-host'
 
-export function Image({
+export function Image<const TBreakpoint extends string = never>({
   src,
   alt,
   fit,
@@ -17,8 +17,8 @@ export function Image({
   onLoad,
   onError,
   viewProps = {},
-}: ImageProps) {
-  const hostProps: ViewProps<HTMLImageElement> = viewProps
+}: ImageProps<TBreakpoint>) {
+  const hostProps: ViewProps<HTMLImageElement, TBreakpoint> = viewProps
   const componentStyle = resolveImageStyle({
     fit,
     position,
