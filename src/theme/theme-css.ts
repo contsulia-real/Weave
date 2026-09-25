@@ -65,8 +65,20 @@ export function themeTokenVariables(tokens: ThemeTokens): ThemeVariableStyle {
     }
   }
 
+  assignRecord(output, 'typography-family', tokens.typography?.family)
   assignRecord(output, 'typography-size', tokens.typography?.size, toRem)
   assignRecord(output, 'typography-weight', tokens.typography?.weight)
+  assignRecord(
+    output,
+    'typography-line-height',
+    tokens.typography?.lineHeight,
+  )
+  assignRecord(
+    output,
+    'typography-letter-spacing',
+    tokens.typography?.letterSpacing,
+    toRem,
+  )
 
   assignRecord(output, 'motion-duration', tokens.motion?.duration, toMs)
 
