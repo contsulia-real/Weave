@@ -102,15 +102,20 @@ const declarationBlock = (state?: string) =>
     return `${cssProperty}: var(${stateVariable}, var(${variableName(property)}));`
   }).join('')
 
-const resetBlock = () =>
+const propertyRegistrationBlock = () =>
   VIEW_STYLE_PROPERTIES.flatMap((property) => [
     variableName(property),
     ...VIEW_STYLE_STATES.map((state) => variableName(property, state)),
   ])
-    .map((variable) => `${variable}: initial;`)
+    .map(
+      (variable) =>
+        `@property ${variable} { syntax: "*"; inherits: false; }`,
+    )
     .join('')
 
 const stylesheet = `
+${propertyRegistrationBlock()}
+
 :root {
   --weave-color-primary: #6d5dfc;
   --weave-color-onPrimary: #ffffff;
@@ -136,7 +141,6 @@ const stylesheet = `
 
 :where([data-weave-view]) {
   box-sizing: border-box;
-  ${resetBlock()}
   ${declarationBlock()}
 }
 
