@@ -485,12 +485,13 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
   const endDrag = (
     event: PointerEvent<HTMLDivElement>,
   ) => {
-    if (dragRef.current?.pointerId !== event.pointerId) return
+    const drag = dragRef.current
+    if (drag === null || drag.pointerId !== event.pointerId) return
 
     event.currentTarget.releasePointerCapture?.(event.pointerId)
 
     const track =
-      dragRef.current.orientation === 'vertical'
+      drag.orientation === 'vertical'
         ? verticalTrackRef.current
         : horizontalTrackRef.current
     if (track !== null) {
