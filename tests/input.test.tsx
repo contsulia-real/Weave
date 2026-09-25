@@ -79,6 +79,14 @@ describe('Input', () => {
     expect(element.value).toBe('Line one')
     expect(element.getAttribute('type')).toBeNull()
 
+    const stylesheet = document.querySelector(
+      'style[data-weave-input-styles]',
+    )
+    expect(stylesheet?.textContent).toContain(
+      ':where([data-weave-input-multiline])',
+    )
+    expect(stylesheet?.textContent).toContain('resize: none;')
+
     fireEvent.change(element, {
       target: {
         value: 'Line two',
