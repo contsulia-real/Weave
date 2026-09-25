@@ -213,6 +213,7 @@ export function AutoScrollbar({
   const dragRef = useRef<DragState | null>(null)
 
   const size: ScrollbarSize = config?.size ?? 'medium'
+  const tracked = config?.tracked === true
 
   const update = useCallback(() => {
     const target = targetRef.current
@@ -546,12 +547,18 @@ export function AutoScrollbar({
       <ScrollbarView
         ref={verticalTrackRef}
         aria-hidden
-        className={`weave-scrollbar weave-scrollbar--${size} weave-scrollbar--vertical`}
+        className={[
+          'weave-scrollbar',
+          `weave-scrollbar--${size}`,
+          'weave-scrollbar--vertical',
+          tracked ? 'weave-scrollbar--tracked' : undefined,
+        ].filter(Boolean).join(' ')}
         onPointerDown={(event) => pageTrack('vertical', event)}
         data={{
           'weave-scrollbar': '',
           'weave-scrollbar-orientation': 'vertical',
           'weave-scrollbar-visible': 'false',
+          'weave-scrollbar-tracked': tracked || undefined,
         }}
       >
         <ScrollbarView
@@ -570,12 +577,18 @@ export function AutoScrollbar({
       <ScrollbarView
         ref={horizontalTrackRef}
         aria-hidden
-        className={`weave-scrollbar weave-scrollbar--${size} weave-scrollbar--horizontal`}
+        className={[
+          'weave-scrollbar',
+          `weave-scrollbar--${size}`,
+          'weave-scrollbar--horizontal',
+          tracked ? 'weave-scrollbar--tracked' : undefined,
+        ].filter(Boolean).join(' ')}
         onPointerDown={(event) => pageTrack('horizontal', event)}
         data={{
           'weave-scrollbar': '',
           'weave-scrollbar-orientation': 'horizontal',
           'weave-scrollbar-visible': 'false',
+          'weave-scrollbar-tracked': tracked || undefined,
         }}
       >
         <ScrollbarView
