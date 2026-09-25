@@ -156,15 +156,15 @@ describe('automatic Scrollbar', () => {
     ) as HTMLDivElement
 
     expect(track.dataset.weaveScrollbarVisible).toBe('true')
-    expect(track.style.top).toBe('20px')
-    expect(track.style.left).toBe('210px')
-    expect(track.style.height).toBe('100px')
-    expect(thumb.style.height).toBe('25px')
+    expect(track.style.top).toBe('24px')
+    expect(track.style.left).toBe('206px')
+    expect(track.style.height).toBe('92px')
+    expect(thumb.style.height).toBe('24px')
 
     host.scrollTop = 150
     fireEvent.scroll(host)
 
-    expect(thumb.style.transform).toBe('translateY(37.5px)')
+    expect(thumb.style.transform).toBe('translateY(34px)')
   })
 
   it('keeps tracks visible for overflow scroll semantics', () => {
@@ -304,7 +304,7 @@ describe('automatic Scrollbar', () => {
     expect(track).not.toBeNull()
     expect(track.style.width).toBe('')
     expect(track.style.getPropertyValue('--weave-width')).toBe('')
-    expect(rule).toContain('--weave-scrollbar-thickness:0.375rem;')
+    expect(rule).toContain('--weave-scrollbar-thickness:0.25rem;')
     expect(rule).toContain(
       '--weave-scrollbar-color:var(--weave-color-secondary',
     )
@@ -316,6 +316,42 @@ describe('automatic Scrollbar', () => {
     expect(stylesheet?.textContent).toContain(
       '--weave-component-width: var(--weave-scrollbar-thickness)',
     )
+  })
+
+  it('uses global hover and drag feedback without touching scroll geometry', () => {
+    render(<View overflow="scroll" />)
+
+    const track = document.body.querySelector(
+      '.weave-scrollbar--vertical',
+    ) as HTMLDivElement
+    const thumb = track.querySelector(
+      '[data-weave-scrollbar-thumb]',
+    ) as HTMLDivElement
+    const stylesheet = document.querySelector(
+      'style[data-weave-scrollbar-styles]',
+    )?.textContent ?? ''
+
+    expect(stylesheet).toContain(
+      'scale: var(--weave-feedback-hover-scale) 1',
+    )
+    expect(stylesheet).toContain(
+      'scale: var(--weave-feedback-drag-scale) 1',
+    )
+
+    fireEvent.pointerDown(thumb, {
+      pointerId: 21,
+      button: 0,
+      clientY: 0,
+    })
+
+    expect(track.dataset.weaveScrollbarDragging).toBe('true')
+
+    fireEvent.pointerUp(thumb, {
+      pointerId: 21,
+      clientY: 0,
+    })
+
+    expect(track.dataset.weaveScrollbarDragging).toBeUndefined()
   })
 
   it('lets ThemeProvider replace Scrollbar defaults', () => {
