@@ -59,8 +59,11 @@ const stylesheet = `
   --weave-component-background: var(
     --weave-switch-thumb-background
   );
-  --weave-component-pointer-events: none;
+  --weave-component-pointer-events: auto;
   --weave-component-transform: translateX(0);
+
+  touch-action: none;
+  will-change: transform;
 
   transition:
     transform var(--weave-motion-duration-fast)
@@ -69,6 +72,12 @@ const stylesheet = `
 
 :where(.weave-switch[aria-checked="true"]) > :where(.weave-switch__thumb) {
   --weave-component-transform: translateX(var(--weave-switch-shift));
+}
+
+:where(.weave-switch[data-weave-switch-dragging="true"])
+  > :where(.weave-switch__thumb) {
+  transition: none;
+  cursor: grabbing;
 }
 `
 
