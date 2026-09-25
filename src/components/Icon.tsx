@@ -16,13 +16,13 @@ const STROKE_WIDTH: Readonly<Record<IconStroke, number>> = {
   bold: 2.5,
 }
 
-export function Icon({
-  icon: IconSource,
-  svg,
-  size = 'medium',
-  stroke = 'regular',
-  viewProps = {},
-}: IconProps) {
+export function Icon(props: IconProps) {
+  const {
+    size = 'medium',
+    stroke = 'regular',
+    viewProps = {},
+  } = props
+
   const hostProps: ViewProps<HTMLSpanElement> = {
     ...viewProps,
     role:
@@ -41,8 +41,8 @@ export function Icon({
 
   const strokeWidth = STROKE_WIDTH[stroke]
   const content =
-    IconSource === undefined
-      ? cloneElement(svg, {
+    props.icon === undefined
+      ? cloneElement(props.svg, {
           width: '100%',
           height: '100%',
           strokeWidth,
@@ -50,7 +50,7 @@ export function Icon({
           focusable: false,
         })
       : (
-          <IconSource
+          <props.icon
             size="100%"
             stroke={strokeWidth}
             aria-hidden="true"
