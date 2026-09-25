@@ -58,7 +58,12 @@ function applyDragShape(
     shrink + (maxWidth - shrink) * progress
   const width = drag.thumbSize * widthScale
 
-  const x = offset + (drag.thumbSize - width) / 2
+  const centeredX = offset + (drag.thumbSize - width) / 2
+  const maxX = Math.max(
+    0,
+    drag.maxOffset + drag.thumbSize - width,
+  )
+  const x = Math.min(maxX, Math.max(0, centeredX))
   const y = (drag.thumbSize - height) / 2
 
   thumb.style.width = `${width}px`
