@@ -1,14 +1,4 @@
 const stylesheet = `
-@property --weave-loading-duration {
-  syntax: "*";
-  inherits: false;
-}
-
-@property --weave-loading-progress {
-  syntax: "*";
-  inherits: false;
-}
-
 :where([data-weave-loading]) {
   --weave-display: inline-grid;
   --weave-position: relative;
