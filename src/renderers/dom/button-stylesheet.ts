@@ -105,6 +105,15 @@ const stylesheet = `
   font-weight: var(--weave-button-theme-font-weight);
   line-height: 1;
   text-decoration: none;
+  transition:
+    background-color var(--weave-motion-duration-fast)
+      var(--weave-motion-curve-standard),
+    border-color var(--weave-motion-duration-fast)
+      var(--weave-motion-curve-standard),
+    color var(--weave-motion-duration-fast)
+      var(--weave-motion-curve-standard),
+    opacity var(--weave-motion-duration-fast)
+      var(--weave-motion-curve-standard);
 }
 
 :where(.weave-button:hover) {
