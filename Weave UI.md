@@ -2100,6 +2100,10 @@ mode
 dotted
 ├─ false
 └─ true
+
+tracked
+├─ false
+└─ true
 ```
 
 ## 16.1 状态
@@ -2227,7 +2231,43 @@ linear + dotted
 → 点状 / 分段线形
 ```
 
-## 16.4 speed
+## 16.4 tracked
+
+`tracked` 控制是否显示更浅色的轨道。
+
+```tsx
+<Progress
+  progress={0.68}
+  mode="spin"
+  tracked
+/>
+```
+
+规则：
+
+```text
+tracked = false
+→ 不显示轨道，只显示前景进度 / 不确定运动
+
+tracked = true
+→ 显示同一基础形态的浅色连续轨道
+```
+
+`tracked` 与 `dotted` 同时存在时：
+
+> `dotted` 只作用于前景 value；track 仍保持连续，不跟随 dotted 变成点状或分段。
+
+因此：
+
+```text
+spin + tracked + dotted
+→ 连续浅色圆环轨道 + 点状前景环
+
+linear + tracked + dotted
+→ 连续浅色直线轨道 + 点状前景线
+```
+
+## 16.5 speed
 
 `speed`：
 
@@ -2250,13 +2290,14 @@ progress
 → 控制 progress 改变时单次过渡时长
 ```
 
-## 16.5 当前公开能力
+## 16.6 当前公开能力
 
 ```text
 undetermined
 progress
 mode
 dotted
+tracked
 size
 color
 speed
@@ -2270,6 +2311,7 @@ type ProgressProps =
   {
     mode?: "spin" | "linear"
     dotted?: boolean
+    tracked?: boolean
     size?: "small" | "medium" | "large"
     color?: Color
     speed?: "slow" | "normal" | "fast" | number
