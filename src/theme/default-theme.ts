@@ -204,9 +204,6 @@ export const defaultTheme: ResolvedTheme = {
         },
       },
       states: {
-        checked: {
-          background: 'primary',
-        },
         disabled: {
           opacity: 0.5,
           cursor: 'default',
@@ -235,7 +232,8 @@ export const defaultTheme: ResolvedTheme = {
     },
     Switch: {
       base: {
-        background: 'transparent',
+        background:
+          'color-mix(in srgb, var(--weave-color-outline) 16%, var(--weave-color-surface))',
         radius: 'full',
         cursor: 'pointer',
         trackShadow:
@@ -275,6 +273,9 @@ export const defaultTheme: ResolvedTheme = {
         },
       },
       states: {
+        checked: {
+          background: 'primary',
+        },
         disabled: {
           opacity: 0.5,
           cursor: 'default',
