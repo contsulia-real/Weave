@@ -102,7 +102,7 @@ export function ThemeProvider({
       <span
         data-weave-theme=""
         data-weave-theme-mode={activeMode}
-        className={className}
+        className={['weave-theme', className].filter(Boolean).join(' ')}
       >
         {children}
       </span>
