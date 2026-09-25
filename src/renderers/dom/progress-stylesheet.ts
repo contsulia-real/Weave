@@ -213,7 +213,7 @@ const stylesheet = `
   width: 42%;
   border-radius: inherit;
   background: currentColor;
-  transform: translate3d(-110%, 0, 0);
+  transform: translateX(-110%);
   will-change: transform;
 
   animation:
@@ -248,11 +248,11 @@ const stylesheet = `
 
 @keyframes weave-progress-linear-slide {
   from {
-    transform: translate3d(-110%, 0, 0);
+    transform: translateX(-110%);
   }
 
   to {
-    transform: translate3d(350%, 0, 0);
+    transform: translateX(350%);
   }
 }
 
@@ -277,7 +277,7 @@ const stylesheet = `
   :where(.weave-progress--linear.weave-progress--undetermined)
     > :where(.weave-progress__value)::before {
     animation: none;
-    transform: translate3d(70%, 0, 0);
+    transform: translateX(70%);
   }
 }
 `
