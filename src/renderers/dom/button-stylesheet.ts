@@ -7,54 +7,39 @@ const variantDeclarations: Readonly<
   Record<ButtonVariant, string>
 > = {
   primary: `
-    --weave-component-background: var(--weave-button-theme-primary-background);
-    --weave-component-color: var(--weave-button-theme-primary-color);
-    --weave-component-border-top-color: var(--weave-button-theme-primary-border-color);
-    --weave-component-border-right-color: var(--weave-button-theme-primary-border-color);
-    --weave-component-border-bottom-color: var(--weave-button-theme-primary-border-color);
-    --weave-component-border-left-color: var(--weave-button-theme-primary-border-color);
-    --weave-hover-background: var(--weave-button-theme-primary-hover-background);
-    --weave-active-background: var(--weave-button-theme-primary-active-background);
+    --weave-button-background: var(--weave-button-theme-primary-background);
+    --weave-button-color: var(--weave-button-theme-primary-color);
+    --weave-button-border-color: var(--weave-button-theme-primary-border-color);
+    --weave-button-hover-background: var(--weave-button-theme-primary-hover-background);
+    --weave-button-active-background: var(--weave-button-theme-primary-active-background);
   `,
   secondary: `
-    --weave-component-background: var(--weave-button-theme-secondary-background);
-    --weave-component-color: var(--weave-button-theme-secondary-color);
-    --weave-component-border-top-color: var(--weave-button-theme-secondary-border-color);
-    --weave-component-border-right-color: var(--weave-button-theme-secondary-border-color);
-    --weave-component-border-bottom-color: var(--weave-button-theme-secondary-border-color);
-    --weave-component-border-left-color: var(--weave-button-theme-secondary-border-color);
-    --weave-hover-background: var(--weave-button-theme-secondary-hover-background);
-    --weave-active-background: var(--weave-button-theme-secondary-active-background);
+    --weave-button-background: var(--weave-button-theme-secondary-background);
+    --weave-button-color: var(--weave-button-theme-secondary-color);
+    --weave-button-border-color: var(--weave-button-theme-secondary-border-color);
+    --weave-button-hover-background: var(--weave-button-theme-secondary-hover-background);
+    --weave-button-active-background: var(--weave-button-theme-secondary-active-background);
   `,
   tertiary: `
-    --weave-component-background: var(--weave-button-theme-tertiary-background);
-    --weave-component-color: var(--weave-button-theme-tertiary-color);
-    --weave-component-border-top-color: var(--weave-button-theme-tertiary-border-color);
-    --weave-component-border-right-color: var(--weave-button-theme-tertiary-border-color);
-    --weave-component-border-bottom-color: var(--weave-button-theme-tertiary-border-color);
-    --weave-component-border-left-color: var(--weave-button-theme-tertiary-border-color);
-    --weave-hover-background: var(--weave-button-theme-tertiary-hover-background);
-    --weave-active-background: var(--weave-button-theme-tertiary-active-background);
+    --weave-button-background: var(--weave-button-theme-tertiary-background);
+    --weave-button-color: var(--weave-button-theme-tertiary-color);
+    --weave-button-border-color: var(--weave-button-theme-tertiary-border-color);
+    --weave-button-hover-background: var(--weave-button-theme-tertiary-hover-background);
+    --weave-button-active-background: var(--weave-button-theme-tertiary-active-background);
   `,
   ghost: `
-    --weave-component-background: var(--weave-button-theme-ghost-background);
-    --weave-component-color: var(--weave-button-theme-ghost-color);
-    --weave-component-border-top-color: var(--weave-button-theme-ghost-border-color);
-    --weave-component-border-right-color: var(--weave-button-theme-ghost-border-color);
-    --weave-component-border-bottom-color: var(--weave-button-theme-ghost-border-color);
-    --weave-component-border-left-color: var(--weave-button-theme-ghost-border-color);
-    --weave-hover-background: var(--weave-button-theme-ghost-hover-background);
-    --weave-active-background: var(--weave-button-theme-ghost-active-background);
+    --weave-button-background: var(--weave-button-theme-ghost-background);
+    --weave-button-color: var(--weave-button-theme-ghost-color);
+    --weave-button-border-color: var(--weave-button-theme-ghost-border-color);
+    --weave-button-hover-background: var(--weave-button-theme-ghost-hover-background);
+    --weave-button-active-background: var(--weave-button-theme-ghost-active-background);
   `,
   danger: `
-    --weave-component-background: var(--weave-button-theme-danger-background);
-    --weave-component-color: var(--weave-button-theme-danger-color);
-    --weave-component-border-top-color: var(--weave-button-theme-danger-border-color);
-    --weave-component-border-right-color: var(--weave-button-theme-danger-border-color);
-    --weave-component-border-bottom-color: var(--weave-button-theme-danger-border-color);
-    --weave-component-border-left-color: var(--weave-button-theme-danger-border-color);
-    --weave-hover-background: var(--weave-button-theme-danger-hover-background);
-    --weave-active-background: var(--weave-button-theme-danger-active-background);
+    --weave-button-background: var(--weave-button-theme-danger-background);
+    --weave-button-color: var(--weave-button-theme-danger-color);
+    --weave-button-border-color: var(--weave-button-theme-danger-border-color);
+    --weave-button-hover-background: var(--weave-button-theme-danger-hover-background);
+    --weave-button-active-background: var(--weave-button-theme-danger-active-background);
   `,
 }
 
