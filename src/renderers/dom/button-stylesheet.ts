@@ -155,7 +155,7 @@ const stylesheet = `
 
 :where(.weave-button__content) {
   --weave-component-display: flex;
-  --weave-component-direction: row;
+  --weave-component-flex-direction: row;
   --weave-component-align-items: center;
   --weave-component-justify-content: center;
   --weave-component-gap: var(--weave-button-gap);
@@ -166,12 +166,33 @@ const stylesheet = `
 }
 
 :where(.weave-button__loader) {
-  --weave-component-position: absolute;
-  --weave-component-inset: 0;
-  --weave-component-display: flex;
-  --weave-component-align-items: center;
-  --weave-component-justify-content: center;
-  --weave-component-pointer-events: none;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+:where(.weave-button__spinner) {
+  width: 1em;
+  height: 1em;
+  border: 0.125em solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: weave-button-spin 700ms linear infinite;
+}
+
+@keyframes weave-button-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(.weave-button__spinner) {
+    animation: none;
+  }
 }
 `
 
