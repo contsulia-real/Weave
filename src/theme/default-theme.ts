@@ -303,10 +303,14 @@ export const defaultTheme: ResolvedTheme = {
       base: {
         color:
           'color-mix(in srgb, var(--weave-color-secondary) 72%, transparent)',
+        hoverColor:
+          'color-mix(in srgb, var(--weave-color-secondary) 88%, transparent)',
+        dragColor: 'var(--weave-color-secondary)',
         trackColor:
           'color-mix(in srgb, var(--weave-color-secondary) 12%, transparent)',
         radius: 'full',
         opacity: 1,
+        hitSize: 1,
         thumbCursor: 'pointer',
       },
       sizes: {
