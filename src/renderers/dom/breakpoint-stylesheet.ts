@@ -1,4 +1,12 @@
 import { useInsertionEffect } from 'react'
+import type {
+  ButtonSize,
+  ButtonVariant,
+} from '../../core/button-types'
+import {
+  buttonSizeDeclarations,
+  buttonVariantDeclarations,
+} from './button-stylesheet'
 import type { ViewStyleProperty } from './view-stylesheet'
 import {
   VIEW_STYLE_PROPERTIES,
@@ -120,6 +128,44 @@ function textResponsiveBehavior(
 `
 }
 
+
+const BUTTON_VARIANTS: readonly ButtonVariant[] = [
+  'primary',
+  'secondary',
+  'tertiary',
+  'ghost',
+  'danger',
+]
+
+const BUTTON_SIZES: readonly ButtonSize[] = [
+  'small',
+  'medium',
+  'large',
+]
+
+function buttonResponsiveBehavior(
+  className: string,
+  entry: BreakpointEntry,
+): string {
+  const variants = BUTTON_VARIANTS.map(
+    (variant) => `
+  :where(.${className}[data-weave-button][data-weave-button-${entry.cssName}-variant="${variant}"]) {
+    ${buttonVariantDeclarations(variant)}
+  }
+`,
+  ).join('')
+
+  const sizes = BUTTON_SIZES.map(
+    (size) => `
+  :where(.${className}[data-weave-button][data-weave-button-${entry.cssName}-size="${size}"]) {
+    ${buttonSizeDeclarations(size)}
+  }
+`,
+  ).join('')
+
+  return variants + sizes
+}
+
 function viewportBlocks(
   className: string,
   entries: readonly BreakpointEntry[],
@@ -137,6 +183,7 @@ function viewportBlocks(
   }
 
   ${textResponsiveBehavior(className, entry)}
+  ${buttonResponsiveBehavior(className, entry)}
 }
 `,
     )
