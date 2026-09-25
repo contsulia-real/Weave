@@ -224,9 +224,10 @@ Button
 → release 回弹
 
 Switch
+→ track 使用轻微凹陷、thumb 使用轻微突起表达可操作层级
 → thumb 可直接拖动
-→ 拖动时 thumb 跟随指针并产生抓取反馈
-→ 松手后按最终状态连续归位
+→ 拖动时位置跟随指针，随拖动距离横向拉长并纵向压缩
+→ 形变到状态临界点封顶，松手后恢复原形并按最终状态连续归位
 
 Scrollbar
 → thumb 必须紧跟真实 scrollTop / scrollLeft
@@ -2355,11 +2356,13 @@ size
 
 - 点击 track / thumb 切换
 - Space / Enter 键盘切换
-- 直接水平拖动 thumb；拖动期间位置连续跟随指针，thumb 使用全局 `feedback.dragScale` 表达被抓取状态；释放时以轨道中点决定最终开关状态
+- 直接水平拖动 thumb；拖动期间位置连续跟随指针
+- thumb 的拖动形变是 Switch 专属反馈：移动距离越大，横向越长、纵向越扁；到轨道中点达到最大形变并封顶
+- 释放时以轨道中点决定最终开关状态；松手后恢复正常大小和形态
 - 拖动完成后产生的兼容 click 不得再次反向切换
 - disabled 状态下点击、键盘与拖动都不能改变状态
 
-拖动中的 thumb 位置属于组件内部交互几何，可由渲染后端直接同步；它不是用户显式 `style`，也不改变公开样式优先级。拖动期间不对 pointer movement 做缓动，保证直接跟手；松手后的归位才允许使用主题 motion curve。
+拖动中的 thumb 位置与连续形变属于组件内部交互几何，可由渲染后端直接同步；它不是用户显式 `style`，也不改变公开样式优先级。拖动期间不对 pointer movement 做缓动，保证直接跟手；松手后的归位与形态恢复才允许使用主题 motion curve。默认 Switch 不通过 primary 等强调色区分 checked；状态主要由 thumb 位置表达。track 使用轻微 inset shadow 形成凹陷，thumb 使用轻微 outer shadow 形成突起。
 
 ### size
 
@@ -2705,7 +2708,8 @@ DOM fallback 下：
 - 原生滚动条轨道通过标准 CSS 能力隐藏，不使用 `::-webkit-scrollbar` 作为视觉实现。
 - 框架自动挂载由 `View` 语义节点构成的 track / thumb，并与真实滚动位置同步。
 - track / thumb 的默认视觉遵循统一 class 优先级规则；几何位置、thumb 长度、滚动进度等连续运行时值允许通过最小化的 inline CSS / CSS 变量同步。
-- overlay Scrollbar 必须以 target 的内框为定位边界：避开 target border，并保留内部 inset；不得把 track/thumb 直接压在 Input / View 的外框或圆角上。
+- Scrollbar 必须把“视觉位置”和“交互命中区”分离：可见 rail/thumb 避开 target border 并保留内部 inset，但透明 hit target 必须延伸到 target 的真实外边缘，因此用户把指针贴在边缘时仍能抓住与拖动 thumb。
+- hover 必须提供明确的 thumb 颜色反馈；drag 状态可以进一步加深，但不得为了扩大视觉而牺牲边缘命中。
 - 高频 target `scroll` 路径只能读取 `scrollTop / scrollLeft` 并更新 thumb transform；不得在每个 scroll event 中重新执行 `getBoundingClientRect()` / `getComputedStyle()` 等布局测量。
 - track/thumb 几何只在 resize、theme/layout 改变、DOM 尺寸变化或外层滚动导致 target viewport 位置变化时重新计算。
 - document-level scroll 监听必须排除 target 自己的 scroll，避免同一次滚动同时触发位置同步与完整几何重算。
@@ -2835,6 +2839,24 @@ size = medium
 ```
 
 size 的高度、水平/垂直 padding、内容 gap 和字体尺度由 `theme.components.Button.sizes` 提供。
+
+默认三档重新按紧凑控件尺度定义：
+
+```text
+small
+minHeight = 1.75rem
+fontSize  = typography.size.compact
+
+medium
+minHeight = 2.125rem
+fontSize  = typography.size.small
+
+large
+minHeight = 2.5rem
+fontSize  = typography.size.medium
+```
+
+也就是旧的 small 视觉尺度成为新的 medium，旧的 medium 成为新的 large；small 重新设计为更紧凑的一档。
 
 ## 18.5 iconPosition
 
@@ -3485,18 +3507,40 @@ const theme = {
     },
 
     typography: {
+      family: {
+        body: "Inter, ui-sans-serif, system-ui, sans-serif",
+        mono: "ui-monospace, SFMono-Regular, Menlo, monospace",
+      },
+
       size: {
+        xsmall: 0.75,
+        compact: 0.8125,
         small: 0.875,
         medium: 1,
         large: 1.25,
         xlarge: 1.5,
+        xxlarge: 2,
       },
 
       weight: {
+        light: 300,
         regular: 400,
         medium: 500,
         semibold: 600,
         bold: 700,
+      },
+
+      lineHeight: {
+        tight: 1.15,
+        compact: 1.25,
+        body: 1.5,
+        relaxed: 1.65,
+      },
+
+      letterSpacing: {
+        tight: "-0.015em",
+        normal: "0em",
+        wide: "0.02em",
       },
     },
 
@@ -3561,6 +3605,27 @@ const theme = {
   },
 }
 ```
+
+### 全局 Typography
+
+`tokens.typography` 不是只给 `Text.size` 查表，而是整个 Weave 子树的排版基线。
+
+ThemeProvider 默认继承：
+
+```text
+font-family    = typography.family.body
+font-size      = typography.size.medium
+font-weight    = typography.weight.regular
+line-height    = typography.lineHeight.body
+letter-spacing = typography.letterSpacing.normal
+```
+
+因此：
+
+- `Text` 未显式指定 typography 属性时继承这一基线。
+- Button / Input 等控件从同一 typography token 系统选择适合自身语义的字号与行高。
+- 嵌套 ThemeProvider 可以局部替换整套排版语言。
+- `family.mono` 等附加 family token 可用于需要等宽字体的局部内容。
 
 尺度 token 中的裸数字遵守 `rem` 规则。
 
