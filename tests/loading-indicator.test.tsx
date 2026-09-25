@@ -25,8 +25,8 @@ describe('LoadingIndicator', () => {
 
     expect(element.getAttribute('data-weave-loading-size')).toBe('small')
     expect(element.getAttribute('data-weave-loading-animation')).toBe('spin')
-    expect(element.getAttribute('data-weave-loading-mode')).toBe(
-      'undetermined',
+    expect(element.className).toContain(
+      'weave-loading-indicator--undetermined',
     )
     expect(element.style.getPropertyValue('--weave-color')).toContain(
       '--weave-color-success',
@@ -62,7 +62,9 @@ describe('LoadingIndicator', () => {
     expect(element.getAttribute('aria-valuemin')).toBe('0')
     expect(element.getAttribute('aria-valuemax')).toBe('1')
     expect(element.getAttribute('aria-valuenow')).toBe('0.68')
-    expect(element.getAttribute('data-weave-loading-mode')).toBe('determined')
+    expect(element.className).toContain(
+      'weave-loading-indicator--determined',
+    )
 
     expect(
       element.style.getPropertyValue('--weave-loading-progress'),
@@ -70,6 +72,49 @@ describe('LoadingIndicator', () => {
     expect(
       element.style.getPropertyValue('--weave-loading-duration'),
     ).toBe('800ms')
+  })
+
+  it('keeps determined progress independent from animation', () => {
+    const animations = [
+      undefined,
+      'spin',
+      'pulse',
+      'dots',
+    ] as const
+
+    for (const animation of animations) {
+      const { getByRole, unmount } = render(
+        <LoadingIndicator
+          progress={0.42}
+          {...(animation === undefined
+            ? {}
+            : { animation })}
+        />,
+      )
+
+      const element = getByRole('progressbar')
+
+      expect(element.getAttribute('aria-valuenow')).toBe('0.42')
+      expect(element.className).toContain(
+        'weave-loading-indicator--determined',
+      )
+      expect(
+        element.style.getPropertyValue('--weave-loading-progress'),
+      ).toBe('42%')
+
+      unmount()
+    }
+
+    const stylesheet = document.querySelector(
+      'style[data-weave-loading-styles]',
+    )
+
+    expect(stylesheet?.textContent).toContain(
+      '.weave-loading-indicator--determined',
+    )
+    expect(stylesheet?.textContent).toContain(
+      'var(--weave-loading-progress)',
+    )
   })
 
   it('clamps determined progress to the public 0 to 1 range', () => {
