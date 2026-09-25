@@ -134,6 +134,12 @@ export function AutoScrollbar({
   )
 
   const update = useCallback(() => {
+    // These generated classes change computed scrollbar geometry. Keep them
+    // as dependencies so a theme change immediately recomputes track/thumb
+    // sizes instead of waiting for the next scroll or resize event.
+    void themeTokenClassName
+    void scrollbarThemeClassName
+
     const target = targetRef.current
     const verticalTrack = verticalTrackRef.current
     const horizontalTrack = horizontalTrackRef.current
@@ -260,7 +266,6 @@ export function AutoScrollbar({
       horizontalThumb.style.transform = `translateX(${offset}px)`
     }
   }, [
-    config,
     overflowIntent,
     scrollbarThemeClassName,
     targetRef,
