@@ -31,9 +31,19 @@ describe('LoadingIndicator', () => {
     expect(element.style.getPropertyValue('--weave-color')).toContain(
       '--weave-color-success',
     )
+    expect(element.className).toContain('weave-loading-indicator')
+    expect(element.className).toContain(
+      'weave-loading-indicator--small',
+    )
+    expect(element.className).toContain(
+      'weave-loading-indicator--spin',
+    )
+    expect(element.className).toContain(
+      'weave-loading-indicator--speed-fast',
+    )
     expect(
       element.style.getPropertyValue('--weave-loading-duration'),
-    ).toBe('var(--weave-motion-duration-fast)')
+    ).toBe('')
   })
 
   it('exposes determined progress semantics from 0 to 1', () => {
@@ -78,6 +88,33 @@ describe('LoadingIndicator', () => {
     expect(
       element.querySelector('[data-weave-loading-dots]'),
     ).not.toBeNull()
+  })
+
+  it('keeps static component visuals out of inline style', () => {
+    const { getByRole } = render(
+      <LoadingIndicator
+        undetermined
+        size="large"
+        animation="dots"
+        speed="slow"
+      />,
+    )
+
+    const element = getByRole('progressbar')
+
+    expect(element.className).toContain(
+      'weave-loading-indicator--large',
+    )
+    expect(element.className).toContain(
+      'weave-loading-indicator--dots',
+    )
+    expect(element.className).toContain(
+      'weave-loading-indicator--speed-slow',
+    )
+    expect(element.style.getPropertyValue('--weave-width')).toBe('')
+    expect(
+      element.style.getPropertyValue('--weave-loading-duration'),
+    ).toBe('')
   })
 
   it('keeps viewProps className and style above component defaults', () => {
