@@ -52,7 +52,16 @@ function App() {
         <View layout="flex" direction="column" gap={0.5}>
           <p className="eyebrow">Weave playground</p>
           <h1>Weave</h1>
-          <p>React UI framework development surface.</p>
+          <Text
+            size="small"
+            color="secondary"
+            md={{
+              size: 'large',
+              color: 'primary',
+            }}
+          >
+            React UI framework development surface.
+          </Text>
         </View>
 
         <View layout="flex" direction="column" gap={0.75}>
