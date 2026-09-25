@@ -1513,30 +1513,47 @@ containerMd / containerLg / ...
 ```text
 style
 > className
-> 属性体系
-> 组件默认样式
+> 实例属性 class
+> 当前主题组件样式
+> defaultTheme 组件样式
 ```
 
-组件默认视觉样式必须由框架内部 class 提供，并使用低 specificity 的 `:where(...)` 选择器，不允许通过内联 `style` 注入默认视觉。
+框架语义样式不通过 React 内联 `style` 注入。ThemeProvider 的主题变量、组件主题解析结果、`ViewProps`、Text / Image 等组件语义属性，以及 Progress 这类实例运行时值，都解析为框架生成的 class。
+
+组件默认视觉样式与框架生成 class 使用低 specificity 的 `:where(...)` 选择器。实例属性与组件主题使用不同变量层，基础样式固定优先读取实例属性变量，再回退到组件主题变量，因此不依赖样式表插入先后顺序。
 
 例如：
 
 ```text
 weave-switch
-weave-switch--medium
+weave-switch-theme-*
+weave-view-props-*
 weave-switch__thumb
 ```
 
-这样用户自己的 `className` 天然高于组件默认 class，`style` 仍然保持最高优先级。
+用户自己的普通 `className` 具有高于 `:where(...)` 的选择器权重，因此可以覆盖框架主题与属性 class；显式 `style` 仍然保持最高优先级。
 
-只有无法静态枚举、必须在运行时连续变化的值，才允许通过最小化的 CSS 自定义属性传递，例如：
+例如：
 
-```text
-Progress progress={0.68}
-Progress speed={800}
+```tsx
+<View
+  width={20}
+  className="custom"
+  style={{ width: "10px" }}
+/>
 ```
 
-这类运行时值不承担组件默认视觉，只传递该实例的动态数据。
+其有效覆盖关系为：
+
+```text
+defaultTheme
+→ 当前 ThemeProvider
+→ width={20} 生成的实例属性 class
+→ custom
+→ style={{ width: "10px" }}
+```
+
+渲染后端为同步真实几何而产生的内部测量值不属于公开样式级联。例如自动 Scrollbar 的位置、滚动 thumb 位移等可以由后端直接同步；它们不能承载组件默认视觉，也不能替代主题、实例属性、`className` 或用户显式 `style`。
 
 属性体系内部继续按照主题、组件变体、状态、实例属性与响应式覆盖规则解析。
 
@@ -3385,7 +3402,9 @@ variant 可以覆盖公共状态。
 当前统一顺序：
 
 ```text
-theme base
+defaultTheme
+→ 当前 ThemeProvider 的组件主题
+→ theme base
 → size
 → variant
 → shared state
@@ -3396,13 +3415,15 @@ theme base
 → style
 ```
 
+其中 defaultTheme 与应用 / 局部 ThemeProvider 先经过主题继承与深合并，再由组件解析当前有效的 `base / sizes / variants / states`。
+
 最终总原则：
 
 ```text
-style > className > 属性体系
+style > className > 实例属性体系 > 当前主题 > defaultTheme
 ```
 
-`style` 是最终原始 CSS 逃生口。
+`style` 是最终原始 CSS 逃生口。除渲染器内部必须同步的真实几何外，框架自身的主题、默认视觉、语义属性与实例动态样式都通过 class 输出，不占用用户的内联 `style` 优先级。
 
 ---
 
