@@ -61,9 +61,6 @@ function overflowIntent(
     styleOverflow: cssString(props.style?.overflow),
     styleOverflowX: cssString(props.style?.overflowX),
     styleOverflowY: cssString(props.style?.overflowY),
-    propOverflow: props.overflow,
-    propOverflowX: props.overflowX,
-    propOverflowY: props.overflowY,
   }
 }
 
