@@ -57,8 +57,6 @@ export function Text({
   lg,
   xl,
 }: TextProps) {
-  useInsertionEffect(ensureTextStylesheet, [])
-
   const hostProps: ViewProps<HTMLSpanElement> = {
     ...viewProps,
     color,
@@ -92,6 +90,8 @@ export function Text({
     mergedStyle,
     resolved,
   } = useViewHost(hostProps, componentStyle)
+
+  useInsertionEffect(ensureTextStylesheet, [])
 
   return (
     <span
