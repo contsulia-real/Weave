@@ -212,6 +212,59 @@ describe('automatic Scrollbar', () => {
     ).toBe('true')
   })
 
+  it('shows a lighter track only when tracked', () => {
+    const { rerender } = render(
+      <View
+        overflow="scroll"
+        scrollbar={{
+          tracked: true,
+          color: 'primary',
+        }}
+      />,
+    )
+
+    let tracks = document.body.querySelectorAll(
+      '[data-weave-scrollbar]',
+    )
+
+    expect(tracks).toHaveLength(2)
+
+    for (const track of tracks) {
+      expect(track.className).toContain('weave-scrollbar--tracked')
+      expect(
+        track.getAttribute('data-weave-scrollbar-tracked'),
+      ).toBe('true')
+    }
+
+    const stylesheet = document.querySelector(
+      'style[data-weave-scrollbar-styles]',
+    )
+
+    expect(stylesheet?.textContent).toContain(
+      ':where(.weave-scrollbar--tracked)',
+    )
+
+    rerender(
+      <View
+        overflow="scroll"
+        scrollbar={{
+          color: 'primary',
+        }}
+      />,
+    )
+
+    tracks = document.body.querySelectorAll(
+      '[data-weave-scrollbar]',
+    )
+
+    for (const track of tracks) {
+      expect(track.className).not.toContain('weave-scrollbar--tracked')
+      expect(
+        track.getAttribute('data-weave-scrollbar-tracked'),
+      ).toBeNull()
+    }
+  })
+
   it('keeps size defaults class-based', () => {
     render(
       <View
