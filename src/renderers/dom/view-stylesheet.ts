@@ -1,7 +1,5 @@
 import {
-  defaultBreakpoints,
   defaultTheme,
-  type DefaultBreakpointName,
 } from '../../theme/default-theme'
 import { themeVariableDeclarations } from '../../theme/theme-css'
 
@@ -80,7 +78,7 @@ const VIEW_STYLE_PROPERTIES = [
   'containerName',
 ] as const
 
-type ViewStyleProperty = (typeof VIEW_STYLE_PROPERTIES)[number]
+export type ViewStyleProperty = (typeof VIEW_STYLE_PROPERTIES)[number]
 
 const VIEW_STYLE_STATES = [
   'hover',
@@ -89,10 +87,6 @@ const VIEW_STYLE_STATES = [
   'focus-visible',
   'disabled',
 ] as const
-
-const BREAKPOINT_NAMES = Object.keys(
-  defaultBreakpoints,
-) as DefaultBreakpointName[]
 
 const toKebab = (value: string) =>
   value.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)
@@ -134,18 +128,11 @@ const declarationBlock = (state?: string) =>
     (property) => `${toKebab(property)}: ${resolvedValue(property, state)};`,
   ).join('')
 
-const responsiveSourceNames = (property: ViewStyleProperty) =>
-  BREAKPOINT_NAMES.flatMap((name) => [
-    variableName(property, name),
-    variableName(property, `container-${name}`),
-  ])
-
 const propertyRegistrationBlock = () =>
   VIEW_STYLE_PROPERTIES.flatMap((property) => [
     componentVariableName(property),
     variableName(property),
     ...VIEW_STYLE_STATES.map((state) => variableName(property, state)),
-    ...responsiveSourceNames(property),
     responsiveVariableName('viewport', property),
     responsiveVariableName('container', property),
   ])
@@ -154,59 +141,6 @@ const propertyRegistrationBlock = () =>
         `@property ${variable} { syntax: "*"; inherits: false; }`,
     )
     .join('')
-
-const sourceChain = (
-  property: ViewStyleProperty,
-  breakpointIndex: number,
-  scope: 'viewport' | 'container',
-) => {
-  const names = BREAKPOINT_NAMES.slice(0, breakpointIndex + 1).reverse()
-  const prefixes = names.map((name) =>
-    scope === 'viewport' ? name : `container-${name}`,
-  )
-
-  const fallback =
-    scope === 'viewport' ? baseValue(property) : undefined
-
-  return prefixes.reduceRight<string>(
-    (current, prefix) =>
-      current.length === 0
-        ? `var(${variableName(property, prefix)})`
-        : `var(${variableName(property, prefix)}, ${current})`,
-    fallback ?? '',
-  )
-}
-
-const responsiveAssignmentBlock = (
-  breakpointIndex: number,
-  scope: 'viewport' | 'container',
-) =>
-  VIEW_STYLE_PROPERTIES.map(
-    (property) =>
-      `${responsiveVariableName(scope, property)}: ${sourceChain(property, breakpointIndex, scope)};`,
-  ).join('')
-
-const viewportBlocks = () =>
-  BREAKPOINT_NAMES.map(
-    (name, index) => `
-@media (min-width: ${defaultBreakpoints[name]}rem) {
-  :where([data-weave-view]) {
-    ${responsiveAssignmentBlock(index, 'viewport')}
-  }
-}
-`,
-  ).join('')
-
-const containerBlocks = () =>
-  BREAKPOINT_NAMES.map(
-    (name, index) => `
-@container (min-width: ${defaultBreakpoints[name]}rem) {
-  :where([data-weave-view]) {
-    ${responsiveAssignmentBlock(index, 'container')}
-  }
-}
-`,
-  ).join('')
 
 const stylesheet = `
 ${propertyRegistrationBlock()}
@@ -264,10 +198,6 @@ ${propertyRegistrationBlock()}
   overflow-y: scroll;
 }
 
-
-${viewportBlocks()}
-${containerBlocks()}
-
 :where([data-weave-layout="stack"]) > :where(*) {
   grid-area: 1 / 1;
 }
@@ -304,5 +234,6 @@ export function ensureViewStylesheet(): void {
 export {
   VIEW_STYLE_PROPERTIES,
   componentVariableName,
+  responsiveVariableName,
   variableName,
 }
