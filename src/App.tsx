@@ -433,7 +433,7 @@ function App() {
         <View layout="flex" direction="column" gap={0.75}>
           <h2>Switch</h2>
           <p className="hint">
-            三档语义尺寸；hover 时 thumb 轻微增强，拖动时产生抓取反馈并直接跟手，释放后 spring 归位。
+            关闭态使用很浅的填色，开启态使用 primary；track 轻微凹陷、thumb 轻微突起。拖动时圆形核心明显缩小，并从运动反方向拉出拖尾，到中点封顶，松手恢复并 spring 归位。
           </p>
 
           <View layout="flex" direction="row" gap={1.5} align="center" wrap>
