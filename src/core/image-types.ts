@@ -2,7 +2,7 @@ import type {
   ReactEventHandler,
   Ref,
 } from 'react'
-import type { ViewProps } from './view-types'
+import type { ViewCoreProps, ViewDynamicBreakpointProps } from './view-types'
 
 export type ImageSource = string | Blob
 
@@ -27,18 +27,15 @@ export type ImagePosition =
 
 export type ImageLoading = 'lazy' | 'eager'
 
-export type ImageViewProps<
-  TBreakpoint extends string = never,
-> = Omit<
-  ViewProps<HTMLImageElement, TBreakpoint>,
+export type ImageViewProps = Omit<
+  ViewCoreProps<HTMLImageElement>,
   'children' | 'onLoad' | 'onError'
-> & {
-  ref?: Ref<HTMLImageElement>
-}
+> &
+  ViewDynamicBreakpointProps & {
+    ref?: Ref<HTMLImageElement>
+  }
 
-export interface ImageProps<
-  TBreakpoint extends string = never,
-> {
+export interface ImageProps {
   src: ImageSource
   alt: string
   fit?: ImageFit
@@ -46,5 +43,5 @@ export interface ImageProps<
   loading?: ImageLoading
   onLoad?: ReactEventHandler<HTMLImageElement>
   onError?: ReactEventHandler<HTMLImageElement>
-  viewProps?: ImageViewProps<TBreakpoint>
+  viewProps?: ImageViewProps
 }
