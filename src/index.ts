@@ -2,6 +2,7 @@ export { View } from './components/View'
 export { Text } from './components/Text'
 export { Image } from './components/Image'
 export { Input } from './components/Input'
+export { Switch } from './components/Switch'
 export type {
   BackgroundValue,
   BlendMode,
@@ -74,3 +75,9 @@ export type {
   MultilineInputViewProps,
   SingleLineInputViewProps,
 } from './core/input-types'
+
+export type {
+  SwitchProps,
+  SwitchSize,
+  SwitchViewProps,
+} from './core/switch-types'
