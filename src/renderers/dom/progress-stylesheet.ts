@@ -11,13 +11,17 @@ const stylesheet = `
   --weave-flex-grow: 0;
   --weave-flex-shrink: 0;
   --weave-progress-duration: var(--weave-motion-duration-normal);
+  --weave-progress-track: transparent;
+
+  place-items: center;
+}
+
+:where(.weave-progress--tracked) {
   --weave-progress-track: color-mix(
     in srgb,
     currentColor 16%,
     transparent
   );
-
-  place-items: center;
 }
 
 :where(.weave-progress--spin.weave-progress--small) {
@@ -149,11 +153,11 @@ const stylesheet = `
   background:
     conic-gradient(
       from -90deg,
-      transparent 0deg,
+      var(--weave-progress-track) 0deg,
       color-mix(in srgb, currentColor 18%, transparent) 72deg,
       currentColor 248deg,
       currentColor 330deg,
-      transparent 360deg
+      var(--weave-progress-track) 360deg
     );
 
   animation:
