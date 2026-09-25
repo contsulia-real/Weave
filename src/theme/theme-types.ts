@@ -1,48 +1,51 @@
-export type ThemeMode = 'light' | 'dark' | 'system'
+import type { ReactNode } from 'react'
 
-export type ThemeTokenScalar = string | number
-export type ThemeTokenGroup =
-  | Readonly<Record<string, ThemeTokenScalar>>
-  | Readonly<Record<string, Readonly<Record<string, ThemeTokenScalar>>>>
+export type ThemeScaleValue = string | number
+export type ThemeCurveValue =
+  | string
+  | readonly [number, number, number, number]
 
 export interface ThemeTokens {
   color?: Readonly<Record<string, string>>
   typography?: {
-    size?: Readonly<Record<string, number | string>>
-    weight?: Readonly<Record<string, number | string>>
+    size?: Readonly<Record<string, ThemeScaleValue>>
+    weight?: Readonly<Record<string, number>>
   }
-  size?: Readonly<Record<string, number | string>>
-  spacing?: Readonly<Record<string, number | string>>
-  radius?: Readonly<Record<string, number | string>>
+  size?: Readonly<Record<string, ThemeScaleValue>>
+  spacing?: Readonly<Record<string, ThemeScaleValue>>
+  radius?: Readonly<Record<string, ThemeScaleValue>>
   shadow?: Readonly<Record<string, string>>
   motion?: {
     duration?: Readonly<Record<string, number | string>>
-    curve?: Readonly<
-      Record<string, string | readonly [number, number, number, number]>
-    >
+    curve?: Readonly<Record<string, ThemeCurveValue>>
   }
 }
 
-export interface ThemeDefinition {
+export interface ThemeModeDefinition {
   tokens?: ThemeTokens
   components?: Readonly<Record<string, unknown>>
-  breakpoints?: Readonly<Record<string, number>>
-  layers?: Readonly<Record<string, number>>
-  modes?: Partial<Record<'light' | 'dark', ThemeOverride>>
-}
-
-export interface ThemeOverride {
-  tokens?: ThemeTokens
-  components?: Readonly<Record<string, unknown>>
-  breakpoints?: Readonly<Record<string, number>>
+  breakpoints?: Readonly<Record<string, ThemeScaleValue>>
   layers?: Readonly<Record<string, number>>
 }
 
-export interface ResolvedTheme extends ThemeOverride {
-  tokens: ThemeTokens
-  components: Readonly<Record<string, unknown>>
-  breakpoints: Readonly<Record<string, number>>
-  layers: Readonly<Record<string, number>>
+export interface ThemeDefinition extends ThemeModeDefinition {
+  modes?: Readonly<Record<string, ThemeModeDefinition>>
 }
 
-export type ThemeInput = ThemeDefinition
+export type DeepPartial<T> = {
+  [K in keyof T]?: T[K] extends readonly unknown[]
+    ? T[K]
+    : T[K] extends object
+      ? DeepPartial<T[K]>
+      : T[K]
+}
+
+export type ThemeInput = DeepPartial<ThemeDefinition>
+
+export type ThemeMode = 'light' | 'dark' | 'system'
+
+export interface ThemeProviderProps {
+  children?: ReactNode
+  theme?: ThemeInput
+  mode?: ThemeMode
+}
