@@ -18,6 +18,11 @@ import {
   transformOrigin,
   transformValue,
 } from '../../core/values'
+import { defaultBreakpoints } from '../../theme/default-theme'
+import {
+  breakpointEntries,
+  containerBreakpointProp,
+} from './breakpoint-utils'
 import { variableName } from './view-stylesheet'
 
 type CSSVariableStyle = CSSProperties &
@@ -470,14 +475,30 @@ export interface ResolvedDOMView<TElement extends HTMLElement> {
   layout: ViewProps<TElement>['layout']
 }
 
-export function resolveDOMView<TElement extends HTMLElement>(
-  props: ViewProps<TElement>,
+export function resolveDOMView<
+  TElement extends HTMLElement,
+  TBreakpoint extends string = never,
+>(
+  props: ViewProps<TElement, TBreakpoint>,
+  breakpoints: Readonly<Record<string, number>> = defaultBreakpoints,
 ): ResolvedDOMView<TElement> {
   const domProps: HTMLAttributes<TElement> = {}
   const writableDOMProps = domProps as Record<string, unknown>
+  const breakpointList = breakpointEntries(breakpoints)
+  const responsivePropKeys = new Set(
+    breakpointList.flatMap(({ name }) => [
+      name,
+      containerBreakpointProp(name),
+    ]),
+  )
 
   for (const [key, value] of Object.entries(props)) {
-    if (!CUSTOM_PROP_KEYS.has(key)) writableDOMProps[key] = value
+    if (
+      !CUSTOM_PROP_KEYS.has(key) &&
+      !responsivePropKeys.has(key)
+    ) {
+      writableDOMProps[key] = value
+    }
   }
 
   Object.assign(writableDOMProps, dataAttributes(props.data))
@@ -525,15 +546,22 @@ export function resolveDOMView<TElement extends HTMLElement>(
     setVariable(attributeStyle, 'containerName', props.container)
   }
 
-  responsiveStyles(attributeStyle, 'sm', props.sm)
-  responsiveStyles(attributeStyle, 'md', props.md)
-  responsiveStyles(attributeStyle, 'lg', props.lg)
-  responsiveStyles(attributeStyle, 'xl', props.xl)
+  const responsiveProps = props as Record<string, unknown>
 
-  responsiveStyles(attributeStyle, 'container-sm', props.containerSm)
-  responsiveStyles(attributeStyle, 'container-md', props.containerMd)
-  responsiveStyles(attributeStyle, 'container-lg', props.containerLg)
-  responsiveStyles(attributeStyle, 'container-xl', props.containerXl)
+  for (const breakpoint of breakpointList) {
+    responsiveStyles(
+      attributeStyle,
+      breakpoint.cssName,
+      responsiveProps[breakpoint.name] as ViewStyleProps | undefined,
+    )
+    responsiveStyles(
+      attributeStyle,
+      `container-${breakpoint.cssName}`,
+      responsiveProps[
+        containerBreakpointProp(breakpoint.name)
+      ] as ViewStyleProps | undefined,
+    )
+  }
 
   stateStyles(attributeStyle, 'hover', props.hover)
   stateStyles(attributeStyle, 'active', props.active)
