@@ -53,8 +53,21 @@ function ScrollbarView(props: ViewProps<HTMLDivElement>) {
   )
 }
 
-function allowsNativeScrolling(value: string): boolean {
-  return value === 'auto' || value === 'scroll' || value === 'overlay'
+function isAutoScrolling(value: string): boolean {
+  return value === 'auto' || value === 'overlay'
+}
+
+function scrollbarVisible(
+  overflow: string,
+  scrollSize: number,
+  clientSize: number,
+): boolean {
+  if (overflow === 'scroll') return true
+
+  return (
+    isAutoScrolling(overflow) &&
+    scrollSize > clientSize + 1
+  )
 }
 
 const TOKEN_NAME = /^[A-Za-z][A-Za-z0-9_-]*$/
@@ -219,20 +232,36 @@ export function AutoScrollbar({
     syncScrollbarLayer(horizontalTrack, target)
 
     const verticalVisible =
-      allowsNativeScrolling(computed.overflowY) &&
-      target.scrollHeight > target.clientHeight + 1 &&
+      scrollbarVisible(
+        computed.overflowY,
+        target.scrollHeight,
+        target.clientHeight,
+      ) &&
       rect.height > 0
 
     const horizontalVisible =
-      allowsNativeScrolling(computed.overflowX) &&
-      target.scrollWidth > target.clientWidth + 1 &&
+      scrollbarVisible(
+        computed.overflowX,
+        target.scrollWidth,
+        target.clientWidth,
+      ) &&
       rect.width > 0
 
     verticalTrack.dataset.weaveScrollbarVisible = String(verticalVisible)
     horizontalTrack.dataset.weaveScrollbarVisible = String(horizontalVisible)
 
+    const verticalThickness = verticalVisible
+      ? parseFloat(getComputedStyle(verticalTrack).width) || 0
+      : 0
+    const horizontalThickness = horizontalVisible
+      ? parseFloat(getComputedStyle(horizontalTrack).height) || 0
+      : 0
+
     if (verticalVisible) {
-      const trackLength = rect.height
+      const trackLength = Math.max(
+        0,
+        rect.height - horizontalThickness,
+      )
       const thumbLength = Math.min(
         trackLength,
         Math.max(
@@ -259,7 +288,10 @@ export function AutoScrollbar({
     }
 
     if (horizontalVisible) {
-      const trackLength = rect.width
+      const trackLength = Math.max(
+        0,
+        rect.width - verticalThickness,
+      )
       const thumbLength = Math.min(
         trackLength,
         Math.max(
