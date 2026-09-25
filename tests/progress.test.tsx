@@ -162,7 +162,7 @@ describe('Progress', () => {
       '--weave-overflow: hidden',
     )
     expect(stylesheet?.textContent).toContain(
-      'translate3d(',
+      'translateX(',
     )
   })
 
