@@ -19,29 +19,55 @@ interface SwitchDragState {
   startOffset: number
   maxOffset: number
   currentOffset: number
+  thumbSize: number
   moved: boolean
 }
 
 const DRAG_THRESHOLD = 3
 
-function dragThumbTransform(
+function dragProgress(
   offset: number,
   startOffset: number,
   maxOffset: number,
-  stretchMax: number,
-  compressMin: number,
-): string {
+): number {
   const thresholdDistance = maxOffset / 2
-  const travelled = Math.abs(offset - startOffset)
-  const progress =
-    thresholdDistance <= 0
-      ? 0
-      : Math.min(1, travelled / thresholdDistance)
+  if (thresholdDistance <= 0) return 0
 
-  const stretch = 1 + (stretchMax - 1) * progress
-  const compress = 1 - (1 - compressMin) * progress
+  return Math.min(
+    1,
+    Math.abs(offset - startOffset) / thresholdDistance,
+  )
+}
 
-  return `translateX(${offset}px) scale(${stretch}, ${compress})`
+function applyDragVisual(
+  thumb: HTMLElement,
+  offset: number,
+  startOffset: number,
+  maxOffset: number,
+  thumbSize: number,
+  shrinkMin: number,
+  stretchMax: number,
+): void {
+  const progress = dragProgress(offset, startOffset, maxOffset)
+  const pressScale = 0.82
+  const scale =
+    pressScale - (pressScale - shrinkMin) * progress
+  const extension = thumbSize * stretchMax * progress
+
+  thumb.style.transform =
+    `translateX(${offset}px) scale(${scale})`
+  thumb.style.setProperty(
+    '--weave-switch-drag-extension',
+    `${extension}px`,
+  )
+
+  if (offset > startOffset) {
+    thumb.dataset.weaveSwitchDragDirection = 'forward'
+  } else if (offset < startOffset) {
+    thumb.dataset.weaveSwitchDragDirection = 'backward'
+  } else {
+    delete thumb.dataset.weaveSwitchDragDirection
+  }
 }
 
 function switchThumb(root: HTMLDivElement): HTMLDivElement | null {
@@ -52,7 +78,13 @@ function switchThumb(root: HTMLDivElement): HTMLDivElement | null {
 
 function clearDragVisual(root: HTMLDivElement): void {
   delete root.dataset.weaveSwitchDragging
-  switchThumb(root)?.style.removeProperty('transform')
+
+  const thumb = switchThumb(root)
+  if (thumb === null) return
+
+  thumb.style.removeProperty('transform')
+  thumb.style.removeProperty('--weave-switch-drag-extension')
+  delete thumb.dataset.weaveSwitchDragDirection
 }
 
 export function Switch({
@@ -73,8 +105,8 @@ export function Switch({
   const [uncontrolledChecked, setUncontrolledChecked] =
     useState(defaultChecked)
   const switchBase = theme.components.Switch?.base
-  const dragStretchMax = switchBase?.thumbDragStretch ?? 1.24
-  const dragCompressMin = switchBase?.thumbDragCompress ?? 0.88
+  const dragShrinkMin = switchBase?.thumbDragShrink ?? 0.72
+  const dragStretchMax = switchBase?.thumbDragStretch ?? 0.7
   const isControlled = checked !== undefined
   const currentChecked = checked ?? uncontrolledChecked
   const dragRef = useRef<SwitchDragState | null>(null)
@@ -169,17 +201,20 @@ export function Switch({
       startOffset,
       maxOffset,
       currentOffset: startOffset,
+      thumbSize: thumbRect.width,
       moved: false,
     }
 
     root.focus()
     root.dataset.weaveSwitchDragging = 'true'
-    thumb.style.transform = dragThumbTransform(
+    applyDragVisual(
+      thumb,
       startOffset,
       startOffset,
       maxOffset,
+      thumbRect.width,
+      dragShrinkMin,
       dragStretchMax,
-      dragCompressMin,
     )
     root.setPointerCapture?.(event.pointerId)
   }
@@ -205,12 +240,14 @@ export function Switch({
 
     const thumb = switchThumb(event.currentTarget)
     if (thumb !== null) {
-      thumb.style.transform = dragThumbTransform(
+      applyDragVisual(
+        thumb,
         nextOffset,
         drag.startOffset,
         drag.maxOffset,
+        drag.thumbSize,
+        dragShrinkMin,
         dragStretchMax,
-        dragCompressMin,
       )
     }
 
