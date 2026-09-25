@@ -59,8 +59,8 @@ function cssString(
   return typeof value === 'string' ? value : undefined
 }
 
-function overflowIntent<TBreakpoint extends string>(
-  props: ViewProps<HTMLDivElement, TBreakpoint>,
+function overflowIntent(
+  props: ViewProps<HTMLDivElement>,
 ) {
   return {
     styleOverflow: cssString(props.style?.overflow),
@@ -69,8 +69,8 @@ function overflowIntent<TBreakpoint extends string>(
   }
 }
 
-function viewMayScroll<TBreakpoint extends string>(
-  props: ViewProps<HTMLDivElement, TBreakpoint>,
+function viewMayScroll(
+  props: ViewProps<HTMLDivElement>,
   breakpoints: Readonly<Record<string, number>>,
 ): boolean {
   if (props.scrollbar !== undefined) return true
@@ -96,8 +96,8 @@ function viewMayScroll<TBreakpoint extends string>(
   )
 }
 
-export function View<const TBreakpoint extends string = never>(
-  props: ViewProps<HTMLDivElement, TBreakpoint>,
+export function View(
+  props: ViewProps<HTMLDivElement>,
 ) {
   const { children } = props
   const { theme } = useTheme()
