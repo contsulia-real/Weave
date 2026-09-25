@@ -49,11 +49,12 @@ export function useViewHost<TElement extends HTMLElement>(
     componentStyle,
   )
   const attributeClassName = useRuntimeStyleClass(
-    'view-props',
+    'props',
     resolved.attributeStyle,
   )
 
   const resolvedClassName = [
+    'weave-view',
     componentClassName,
     attributeClassName,
     className,
