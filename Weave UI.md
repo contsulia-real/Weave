@@ -256,6 +256,7 @@ theme.tokens.motion
 restDepth
 hoverDepth
 hoverLift
+hoverScale
 pressDepth
 pressOffset
 pressScale
