@@ -7,6 +7,16 @@ export type ThemeTokenGroup =
 
 export type ThemeScaleValue = string | number
 
+export interface ThemeFeedbackTokens {
+  restDepth?: ThemeScaleValue
+  hoverDepth?: ThemeScaleValue
+  hoverLift?: ThemeScaleValue
+  pressDepth?: ThemeScaleValue
+  pressOffset?: ThemeScaleValue
+  pressScale?: number
+  dragScale?: number
+}
+
 export interface ThemeTokens {
   color?: Readonly<Record<string, string>>
   typography?: {
@@ -17,6 +27,7 @@ export interface ThemeTokens {
   spacing?: Readonly<Record<string, number | string>>
   radius?: Readonly<Record<string, number | string>>
   shadow?: Readonly<Record<string, string>>
+  feedback?: ThemeFeedbackTokens
   motion?: {
     duration?: Readonly<Record<string, number | string>>
     curve?: Readonly<
