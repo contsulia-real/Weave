@@ -2161,15 +2161,16 @@ theme.components.Input
 
 而不是要求每个使用点重复写 padding / border / radius。
 
-默认中等控件语言与 Button 对齐：
+默认中等控件语言与 Button 使用同一组 control baseline：
 
 ```text
-minHeight   = 2.5rem
-radius      = medium
+minHeight   = 2.25rem
+radius      = 0.5rem
 border      = 0.0625rem solid outline
 background  = surface
-fontSize    = 1rem
-focus       = 统一 focus outline
+fontSize    = 0.9375rem
+focus       = 0.125rem focus outline
+focusOffset = 0.0625rem
 ```
 
 单行与 multiline 使用同一套：
@@ -2621,6 +2622,7 @@ DOM fallback 下：
 - 原生滚动条轨道通过标准 CSS 能力隐藏，不使用 `::-webkit-scrollbar` 作为视觉实现。
 - 框架自动挂载由 `View` 语义节点构成的 track / thumb，并与真实滚动位置同步。
 - track / thumb 的默认视觉遵循统一 class 优先级规则；几何位置、thumb 长度、滚动进度等连续运行时值允许通过最小化的 inline CSS / CSS 变量同步。
+- overlay Scrollbar 必须以 target 的内框为定位边界：避开 target border，并保留内部 inset；不得把 track/thumb 直接压在 Input / View 的外框或圆角上。
 - 高频 target `scroll` 路径只能读取 `scrollTop / scrollLeft` 并更新 thumb transform；不得在每个 scroll event 中重新执行 `getBoundingClientRect()` / `getComputedStyle()` 等布局测量。
 - track/thumb 几何只在 resize、theme/layout 改变、DOM 尺寸变化或外层滚动导致 target viewport 位置变化时重新计算。
 - document-level scroll 监听必须排除 target 自己的 scroll，避免同一次滚动同时触发位置同步与完整几何重算。
@@ -2763,6 +2765,8 @@ end
 ```text
 iconPosition = start
 ```
+
+只有 `icon`、没有 `text` 的快捷入口属于 icon-only Button。icon-only Button 使用当前 size 的 control height 作为最小宽度并清除水平 padding，因此形成稳定的方形点击区域，而不是只留下一个漂浮图标。
 
 ## 18.6 loading
 
