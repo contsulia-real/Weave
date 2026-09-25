@@ -433,7 +433,7 @@ function App() {
         <View layout="flex" direction="column" gap={0.75}>
           <h2>Switch</h2>
           <p className="hint">
-            中性凹陷轨道 + 轻微突起 thumb；状态主要由位置表达。拖动时 thumb 随距离横向拉长、纵向缩小，到中点封顶，松手恢复原形并 spring 归位。
+            关闭态为透明凹槽，开启态使用 primary；thumb 轻微突起。拖动时圆形核心明显缩小，并从运动反方向拉出同色拖尾，拖尾随距离增长，到中点封顶，松手恢复原形并 spring 归位。
           </p>
 
           <View layout="flex" direction="row" gap={1.5} align="center" wrap>
