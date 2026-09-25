@@ -249,6 +249,17 @@ export interface ViewStyleProps {
 export type ViewStateStyle = Partial<ViewStyleProps>
 export type ViewResponsiveStyle = Partial<ViewStyleProps>
 
+export type DefaultBreakpointName = 'sm' | 'md' | 'lg' | 'xl'
+
+export type ViewBreakpointProps<TBreakpoint extends string> =
+  Partial<Record<TBreakpoint, ViewResponsiveStyle>> &
+  Partial<
+    Record<
+      `container${Capitalize<TBreakpoint>}`,
+      ViewResponsiveStyle
+    >
+  >
+
 export interface ViewSemanticProps {
   role?: HTMLAttributes<HTMLDivElement>['role']
   label?: string
@@ -290,10 +301,14 @@ type NativeElementProps<TElement extends HTMLElement> = Omit<
   | 'tabIndex'
 >
 
-export type ViewProps<TElement extends HTMLElement = HTMLDivElement> =
+export type ViewProps<
+  TElement extends HTMLElement = HTMLDivElement,
+  TBreakpoint extends string = never,
+> =
   NativeElementProps<TElement> &
   ViewStyleProps &
-  ViewSemanticProps & {
+  ViewSemanticProps &
+  ViewBreakpointProps<DefaultBreakpointName | TBreakpoint> & {
   children?: ReactNode
   ref?: Ref<TElement>
   className?: string
@@ -310,16 +325,6 @@ export type ViewProps<TElement extends HTMLElement = HTMLDivElement> =
 
   container?: string
   scrollbar?: ScrollbarConfig
-
-  sm?: ViewResponsiveStyle
-  md?: ViewResponsiveStyle
-  lg?: ViewResponsiveStyle
-  xl?: ViewResponsiveStyle
-
-  containerSm?: ViewResponsiveStyle
-  containerMd?: ViewResponsiveStyle
-  containerLg?: ViewResponsiveStyle
-  containerXl?: ViewResponsiveStyle
 
   hover?: ViewStateStyle
   active?: ViewStateStyle
