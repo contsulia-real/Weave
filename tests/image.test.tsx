@@ -111,6 +111,61 @@ describe('Image', () => {
     ).toBe('25% 75%')
   })
 
+  it('revokes the previous object URL when Blob source changes', () => {
+    const createObjectURL = vi
+      .fn()
+      .mockReturnValueOnce('blob:weave-image-a')
+      .mockReturnValueOnce('blob:weave-image-b')
+    const revokeObjectURL = vi.fn()
+
+    Object.defineProperty(URL, 'createObjectURL', {
+      configurable: true,
+      value: createObjectURL,
+    })
+    Object.defineProperty(URL, 'revokeObjectURL', {
+      configurable: true,
+      value: revokeObjectURL,
+    })
+
+    const first = new Blob(['first'], { type: 'image/png' })
+    const second = new Blob(['second'], { type: 'image/png' })
+
+    const { getByTestId, rerender, unmount } = render(
+      <Image
+        src={first}
+        alt=""
+        viewProps={{
+          data: {
+            testid: 'blob-swap-image',
+          },
+        }}
+      />,
+    )
+
+    const element = getByTestId('blob-swap-image') as HTMLImageElement
+
+    expect(element.getAttribute('src')).toBe('blob:weave-image-a')
+
+    rerender(
+      <Image
+        src={second}
+        alt=""
+        viewProps={{
+          data: {
+            testid: 'blob-swap-image',
+          },
+        }}
+      />,
+    )
+
+    expect(revokeObjectURL).toHaveBeenCalledWith('blob:weave-image-a')
+    expect(element.getAttribute('src')).toBe('blob:weave-image-b')
+
+    unmount()
+
+    expect(revokeObjectURL).toHaveBeenCalledWith('blob:weave-image-b')
+  })
+
   it('creates and revokes object URLs for Blob sources', () => {
     const createObjectURL = vi.fn(() => 'blob:weave-image')
     const revokeObjectURL = vi.fn()
