@@ -49,6 +49,12 @@ describe('Theme', () => {
       radius: {
         card: 1,
       },
+      feedback: {
+        restDepth: 0.1875,
+        hoverScale: 1.03,
+        pressOffset: 0.125,
+        pressScale: 0.985,
+      },
       motion: {
         duration: {
           fast: 120,
@@ -58,6 +64,10 @@ describe('Theme', () => {
 
     expect(variables['--weave-spacing-compact']).toBe('0.5rem')
     expect(variables['--weave-radius-card']).toBe('1rem')
+    expect(variables['--weave-feedback-rest-depth']).toBe('0.1875rem')
+    expect(variables['--weave-feedback-hover-scale']).toBe(1.03)
+    expect(variables['--weave-feedback-press-offset']).toBe('0.125rem')
+    expect(variables['--weave-feedback-press-scale']).toBe(0.985)
     expect(variables['--weave-motion-duration-fast']).toBe('120ms')
   })
 
