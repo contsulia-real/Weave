@@ -200,7 +200,7 @@ export const defaultTheme: ResolvedTheme = {
         focusOutlineWidth: 0.125,
         focusOutlineColor: 'focus',
         focusOutlineStyle: 'solid',
-        focusOutlineOffset: 0.125,
+        focusOutlineOffset: controlBaseline.focusOutlineOffset,
       },
       sizes: {
         small: {
