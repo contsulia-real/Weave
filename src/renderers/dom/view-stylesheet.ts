@@ -142,6 +142,7 @@ const responsiveSourceNames = (property: ViewStyleProperty) =>
 
 const propertyRegistrationBlock = () =>
   VIEW_STYLE_PROPERTIES.flatMap((property) => [
+    componentVariableName(property),
     variableName(property),
     ...VIEW_STYLE_STATES.map((state) => variableName(property, state)),
     ...responsiveSourceNames(property),
