@@ -7,9 +7,6 @@ export type LoadingIndicatorSpeed =
   | 'normal'
   | 'fast'
   | number
-export type LoadingIndicatorAnimation = 'spin' | 'pulse' | 'dots'
-export type DeterminedLoadingIndicatorAnimation =
-  Exclude<LoadingIndicatorAnimation, 'dots'>
 
 export type LoadingIndicatorViewProps = Omit<
   ViewProps<HTMLDivElement>,
@@ -36,11 +33,9 @@ export type LoadingIndicatorProps =
     | {
         undetermined: true
         progress?: never
-        animation?: LoadingIndicatorAnimation
       }
     | {
         undetermined?: false
         progress: number
-        animation?: DeterminedLoadingIndicatorAnimation
       }
   )
