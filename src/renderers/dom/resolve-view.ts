@@ -171,6 +171,18 @@ const CUSTOM_PROP_KEYS = new Set<string>([
   'cursor',
 ])
 
+const NATIVE_OBJECT_PROP_KEYS = new Set<string>([
+  'dangerouslySetInnerHTML',
+])
+
+function isBreakpointLikeValue(value: unknown): boolean {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    !Array.isArray(value)
+  )
+}
+
 function setVariable(
   output: CSSVariableStyle,
   property: Parameters<typeof variableName>[0],
@@ -493,9 +505,14 @@ export function resolveDOMView<
   )
 
   for (const [key, value] of Object.entries(props)) {
+    const inactiveBreakpointLikeProp =
+      !NATIVE_OBJECT_PROP_KEYS.has(key) &&
+      isBreakpointLikeValue(value)
+
     if (
       !CUSTOM_PROP_KEYS.has(key) &&
-      !responsivePropKeys.has(key)
+      !responsivePropKeys.has(key) &&
+      !inactiveBreakpointLikeProp
     ) {
       writableDOMProps[key] = value
     }
