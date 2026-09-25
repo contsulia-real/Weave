@@ -67,6 +67,24 @@ describe('Theme', () => {
     )
   })
 
+  it('inherits the parent mode when a nested provider omits mode', () => {
+    const { container } = render(
+      <ThemeProvider mode="dark">
+        <ThemeProvider>
+          <View />
+        </ThemeProvider>
+      </ThemeProvider>,
+    )
+
+    const scopes = container.querySelectorAll<HTMLElement>(
+      '[data-weave-theme]',
+    )
+
+    expect(scopes).toHaveLength(2)
+    expect(scopes[0]?.getAttribute('data-weave-theme-mode')).toBe('dark')
+    expect(scopes[1]?.getAttribute('data-weave-theme-mode')).toBe('dark')
+  })
+
   it('keeps inherited mode definitions available to nested providers', () => {
     const theme = createTheme({
       tokens: {
