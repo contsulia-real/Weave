@@ -45,7 +45,8 @@ const variantDeclarations: Readonly<
 
 const sizeDeclarations: Readonly<Record<ButtonSize, string>> = {
   small: `
-    --weave-component-min-height: var(--weave-button-theme-small-min-height);
+    --weave-button-min-height: var(--weave-button-theme-small-min-height);
+    --weave-component-min-height: var(--weave-button-min-height);
     --weave-component-padding-top: var(--weave-button-theme-small-padding-y);
     --weave-component-padding-bottom: var(--weave-button-theme-small-padding-y);
     --weave-component-padding-left: var(--weave-button-theme-small-padding-x);
@@ -54,7 +55,8 @@ const sizeDeclarations: Readonly<Record<ButtonSize, string>> = {
     --weave-button-font-size: var(--weave-button-theme-small-font-size);
   `,
   medium: `
-    --weave-component-min-height: var(--weave-button-theme-medium-min-height);
+    --weave-button-min-height: var(--weave-button-theme-medium-min-height);
+    --weave-component-min-height: var(--weave-button-min-height);
     --weave-component-padding-top: var(--weave-button-theme-medium-padding-y);
     --weave-component-padding-bottom: var(--weave-button-theme-medium-padding-y);
     --weave-component-padding-left: var(--weave-button-theme-medium-padding-x);
@@ -63,7 +65,8 @@ const sizeDeclarations: Readonly<Record<ButtonSize, string>> = {
     --weave-button-font-size: var(--weave-button-theme-medium-font-size);
   `,
   large: `
-    --weave-component-min-height: var(--weave-button-theme-large-min-height);
+    --weave-button-min-height: var(--weave-button-theme-large-min-height);
+    --weave-component-min-height: var(--weave-button-min-height);
     --weave-component-padding-top: var(--weave-button-theme-large-padding-y);
     --weave-component-padding-bottom: var(--weave-button-theme-large-padding-y);
     --weave-component-padding-left: var(--weave-button-theme-large-padding-x);
@@ -174,6 +177,12 @@ const stylesheet = `
 
 :where(.weave-button--large) {
   ${sizeDeclarations.large}
+}
+
+:where(.weave-button--icon-only) {
+  --weave-component-min-width: var(--weave-button-min-height);
+  --weave-component-padding-left: 0;
+  --weave-component-padding-right: 0;
 }
 
 :where(.weave-button__content) {
