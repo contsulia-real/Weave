@@ -1,4 +1,5 @@
 import { cleanup, fireEvent, render } from '@testing-library/react'
+import type { MouseEvent } from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { Switch } from '../src'
 
@@ -61,7 +62,7 @@ describe('Switch', () => {
 
   it('keeps user event handlers and lets preventDefault cancel toggling', () => {
     const onChange = vi.fn()
-    const onClick = vi.fn((event: React.MouseEvent<HTMLDivElement>) => {
+    const onClick = vi.fn((event: MouseEvent<HTMLDivElement>) => {
       event.preventDefault()
     })
 
