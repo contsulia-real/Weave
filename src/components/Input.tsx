@@ -10,9 +10,7 @@ import type { ViewProps } from '../core/view-types'
 import { ensureInputStylesheet } from '../renderers/dom/input-stylesheet'
 import { useViewHost } from './internal/use-view-host'
 
-interface SingleLineInputHostProps<
-  TBreakpoint extends string = never,
-> {
+interface SingleLineInputHostProps {
   value?: string | number
   defaultValue?: string | number
   onChange?: (value: string) => void
@@ -25,12 +23,10 @@ interface SingleLineInputHostProps<
   minLength?: number
   maxLength?: number
   pattern?: string
-  viewProps?: SingleLineInputViewProps<TBreakpoint>
+  viewProps?: SingleLineInputViewProps
 }
 
-function SingleLineInput<
-  const TBreakpoint extends string = never,
->({
+function SingleLineInput({
   value,
   defaultValue,
   onChange,
@@ -44,11 +40,8 @@ function SingleLineInput<
   maxLength,
   pattern,
   viewProps = {},
-}: SingleLineInputHostProps<TBreakpoint>) {
-  const hostProps: ViewProps<
-    HTMLInputElement,
-    TBreakpoint
-  > = viewProps
+}: SingleLineInputHostProps) {
+  const hostProps: ViewProps<HTMLInputElement> = viewProps
   const {
     elementRef,
     className,
@@ -85,9 +78,7 @@ function SingleLineInput<
   )
 }
 
-interface MultilineInputHostProps<
-  TBreakpoint extends string = never,
-> {
+interface MultilineInputHostProps {
   value?: string | number
   defaultValue?: string | number
   onChange?: (value: string) => void
@@ -99,12 +90,10 @@ interface MultilineInputHostProps<
   autoComplete?: string
   minLength?: number
   maxLength?: number
-  viewProps?: MultilineInputViewProps<TBreakpoint>
+  viewProps?: MultilineInputViewProps
 }
 
-function MultilineInput<
-  const TBreakpoint extends string = never,
->({
+function MultilineInput({
   value,
   defaultValue,
   onChange,
@@ -117,11 +106,8 @@ function MultilineInput<
   minLength,
   maxLength,
   viewProps = {},
-}: MultilineInputHostProps<TBreakpoint>) {
-  const hostProps: ViewProps<
-    HTMLTextAreaElement,
-    TBreakpoint
-  > = viewProps
+}: MultilineInputHostProps) {
+  const hostProps: ViewProps<HTMLTextAreaElement> = viewProps
   const {
     elementRef,
     className,
@@ -162,14 +148,12 @@ function MultilineInput<
   )
 }
 
-export function Input<const TBreakpoint extends string = never>(
-  props: InputProps<TBreakpoint>,
-) {
+export function Input(props: InputProps) {
   useInsertionEffect(ensureInputStylesheet, [])
 
   if (props.multiline) {
     return (
-      <MultilineInput<TBreakpoint>
+      <MultilineInput
         value={props.value}
         defaultValue={props.defaultValue}
         onChange={props.onChange}
@@ -187,7 +171,7 @@ export function Input<const TBreakpoint extends string = never>(
   }
 
   return (
-    <SingleLineInput<TBreakpoint>
+    <SingleLineInput
       value={props.value}
       defaultValue={props.defaultValue}
       onChange={props.onChange}
