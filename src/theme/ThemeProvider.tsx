@@ -1,36 +1,20 @@
 import {
-  createContext,
   useContext,
   useEffect,
   useMemo,
   useState,
   type ReactNode,
 } from 'react'
-import { defaultTheme } from './default-theme'
+import { ThemeContext } from './theme-context'
 import {
   mergeThemeDefinitions,
   resolveTheme,
 } from './theme-merge'
 import { themeVariables } from './theme-css'
 import type {
-  ResolvedTheme,
   ThemeDefinition,
   ThemeMode,
 } from './theme-types'
-
-interface ThemeContextValue {
-  definition: ThemeDefinition
-  theme: ResolvedTheme
-  mode: Exclude<ThemeMode, 'system'>
-  requestedMode: ThemeMode
-}
-
-const ThemeContext = createContext<ThemeContextValue>({
-  definition: {},
-  theme: defaultTheme,
-  mode: 'light',
-  requestedMode: 'system',
-})
 
 function getSystemMode(): 'light' | 'dark' {
   if (
@@ -121,9 +105,4 @@ export function ThemeProvider({
       </span>
     </ThemeContext.Provider>
   )
-}
-
-export function useTheme(): Omit<ThemeContextValue, 'definition'> {
-  const { theme, mode } = useContext(ThemeContext)
-  return { theme, mode }
 }
