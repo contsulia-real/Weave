@@ -140,6 +140,7 @@ describe('Input', () => {
         defaultValue={'one\ntwo\nthree\nfour\nfive\nsix'}
         viewProps={{
           style: {
+            borderStyle: 'solid',
             borderTopWidth: '2px',
             borderRightWidth: '3px',
             borderBottomWidth: '2px',
