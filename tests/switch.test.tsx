@@ -147,7 +147,10 @@ describe('Switch', () => {
     )
     expect(thumb.style.transform).toContain('translateX(')
 
-    expect(thumb.style.transform).toContain('scale(1.24, 0.88)')
+    expect(thumb.style.transform).toContain('scale(0.72)')
+    expect(
+      thumb.style.getPropertyValue('--weave-switch-drag-extension'),
+    ).toBe('14px')
 
     fireEvent.pointerUp(element, {
       pointerId: 7,
@@ -159,6 +162,12 @@ describe('Switch', () => {
     expect(element.getAttribute('aria-checked')).toBe('true')
     expect(element.getAttribute('data-weave-switch-dragging')).toBeNull()
     expect(thumb.style.transform).toBe('')
+    expect(
+      thumb.style.getPropertyValue('--weave-switch-drag-extension'),
+    ).toBe('')
+    expect(
+      thumb.getAttribute('data-weave-switch-drag-direction'),
+    ).toBeNull()
 
     fireEvent.click(element)
 
@@ -207,17 +216,21 @@ describe('Switch', () => {
     })
 
     const partialMatch = thumb.style.transform.match(
-      /scale\(([^,]+), ([^)]+)\)/,
+      /scale\(([^)]+)\)/,
     )
     expect(partialMatch).not.toBeNull()
 
-    const partialStretch = Number(partialMatch?.[1])
-    const partialCompress = Number(partialMatch?.[2])
+    const partialScale = Number(partialMatch?.[1])
+    const partialExtension = Number.parseFloat(
+      thumb.style.getPropertyValue(
+        '--weave-switch-drag-extension',
+      ),
+    )
 
-    expect(partialStretch).toBeGreaterThan(1)
-    expect(partialStretch).toBeLessThan(1.24)
-    expect(partialCompress).toBeLessThan(1)
-    expect(partialCompress).toBeGreaterThan(0.88)
+    expect(partialScale).toBeLessThan(0.82)
+    expect(partialScale).toBeGreaterThan(0.72)
+    expect(partialExtension).toBeGreaterThan(0)
+    expect(partialExtension).toBeLessThan(14)
 
     fireEvent.pointerMove(element, {
       pointerId: 31,
@@ -401,6 +414,13 @@ describe('Switch', () => {
     expect(stylesheet).toContain(
       '--weave-switch-thumb-hover-shadow',
     )
+    expect(stylesheet).toContain(
+      '--weave-switch-drag-extension',
+    )
+    expect(stylesheet).toContain(
+      'data-weave-switch-drag-direction="forward"',
+    )
+    expect(stylesheet).toContain('height: 42%')
     expect(stylesheet).toContain('transition: none')
     expect(stylesheet).toContain(
       '@media (prefers-reduced-motion: reduce)',
@@ -417,11 +437,13 @@ describe('Switch', () => {
     expect(themeRule).toContain('--weave-switch-width:2.5rem;')
     expect(themeRule).toContain('--weave-switch-height:1.5rem;')
     expect(themeRule).toContain(
-      '--weave-switch-background:color-mix(insrgb,var(--weave-color-outline)38%,var(--weave-color-surface));',
+      '--weave-switch-background:var(--weave-color-transparent,transparent);',
     )
-    expect(themeRule).toContain('--weave-switch-thumb-drag-stretch:1.24;')
-    expect(themeRule).toContain('--weave-switch-thumb-drag-compress:0.88;')
-    expect(themeRule).not.toContain('--weave-switch-checked-background:')
+    expect(themeRule).toContain(
+      '--weave-switch-checked-background:var(--weave-color-primary',
+    )
+    expect(themeRule).toContain('--weave-switch-thumb-drag-shrink:0.72;')
+    expect(themeRule).toContain('--weave-switch-thumb-drag-stretch:0.7;')
   })
 
   it('lets a ThemeProvider override component size and appearance', () => {
