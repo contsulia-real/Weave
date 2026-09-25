@@ -40,7 +40,7 @@ describe('Progress', () => {
     )
 
     const element = getByRole('progressbar')
-    const visual = element.querySelector(
+    const value = element.querySelector(
       '[data-weave-progress-value]',
     ) as HTMLDivElement
 
@@ -53,48 +53,19 @@ describe('Progress', () => {
       'weave-progress--determined',
     )
     expect(
-      visual.style.getPropertyValue('--weave-progress-value'),
+      value.style.getPropertyValue('--weave-progress-value'),
     ).toBe('68%')
     expect(
       element.style.getPropertyValue('--weave-progress-duration'),
     ).toBe('800ms')
   })
 
-  it('uses dotted only as a modifier of spin or linear', () => {
+  it('shows a continuous track only when tracked', () => {
     const { getByRole, rerender } = render(
-      <Progress
-        undetermined
-        mode="spin"
-        dotted
-      />,
-    )
-
-    const element = getByRole('progressbar')
-
-    expect(element.className).toContain('weave-progress--spin')
-    expect(element.className).toContain('weave-progress--dotted')
-    expect(element.getAttribute('data-weave-progress-dotted')).toBe('true')
-
-    rerender(
-      <Progress
-        undetermined
-        mode="linear"
-        dotted
-      />,
-    )
-
-    expect(element.className).toContain('weave-progress--linear')
-    expect(element.className).toContain('weave-progress--dotted')
-    expect(element.className).not.toContain('weave-progress--spin')
-  })
-
-  it('keeps tracked dotted track continuous while only value is dotted', () => {
-    const { getByRole } = render(
       <Progress
         progress={0.58}
         mode="spin"
         tracked
-        dotted
       />,
     )
 
@@ -102,34 +73,24 @@ describe('Progress', () => {
     const track = element.querySelector(
       '[data-weave-progress-track]',
     ) as HTMLDivElement
-    const value = element.querySelector(
-      '[data-weave-progress-value]',
-    ) as HTMLDivElement
 
     expect(element.className).toContain('weave-progress--tracked')
-    expect(element.className).toContain('weave-progress--dotted')
+    expect(
+      element.getAttribute('data-weave-progress-tracked'),
+    ).toBe('true')
     expect(track).not.toBeNull()
-    expect(value).not.toBeNull()
-    expect(track.className).toContain('weave-progress__track')
-    expect(track.className).not.toContain('dotted')
-    expect(value.className).toContain('weave-progress__value')
 
-    const stylesheet = document.querySelector(
-      'style[data-weave-progress-styles]',
+    rerender(
+      <Progress
+        progress={0.58}
+        mode="spin"
+      />,
     )
 
-    expect(stylesheet?.textContent).toContain(
-      '.weave-progress--tracked',
-    )
-    expect(stylesheet?.textContent).toContain(
-      '> :where(.weave-progress__track)',
-    )
-    expect(stylesheet?.textContent).toContain(
-      '.weave-progress--dotted',
-    )
-    expect(stylesheet?.textContent).toContain(
-      '> :where(.weave-progress__value)',
-    )
+    expect(element.className).not.toContain('weave-progress--tracked')
+    expect(
+      element.getAttribute('data-weave-progress-tracked'),
+    ).toBeNull()
   })
 
   it('transitions determined progress when the value changes', () => {
@@ -141,12 +102,12 @@ describe('Progress', () => {
     )
 
     const element = getByRole('progressbar')
-    const visual = element.querySelector(
+    const value = element.querySelector(
       '[data-weave-progress-value]',
     ) as HTMLDivElement
 
     expect(
-      visual.style.getPropertyValue('--weave-progress-value'),
+      value.style.getPropertyValue('--weave-progress-value'),
     ).toBe('20%')
 
     rerender(
@@ -157,7 +118,7 @@ describe('Progress', () => {
     )
 
     expect(
-      visual.style.getPropertyValue('--weave-progress-value'),
+      value.style.getPropertyValue('--weave-progress-value'),
     ).toBe('75%')
 
     const stylesheet = document.querySelector(
@@ -167,48 +128,39 @@ describe('Progress', () => {
     expect(stylesheet?.textContent).toContain(
       '@property --weave-progress-value',
     )
-    expect(stylesheet?.textContent).toContain(
-      '--weave-progress-value',
-    )
     expect(stylesheet?.textContent).toContain('transition:')
   })
 
-  it('supports dotted determined progress in both modes', () => {
-    const { getByRole, rerender } = render(
-      <Progress
-        progress={0.42}
-        mode="spin"
-        dotted
-      />,
+  it('uses fluid undetermined motion for both modes', () => {
+    render(
+      <>
+        <Progress undetermined mode="spin" />
+        <Progress undetermined mode="linear" />
+      </>,
     )
 
-    const element = getByRole('progressbar')
-    let visual = element.querySelector(
-      '[data-weave-progress-value]',
-    ) as HTMLDivElement
-
-    expect(
-      visual.style.getPropertyValue('--weave-progress-value'),
-    ).toBe('42%')
-    expect(element.className).toContain('weave-progress--dotted')
-
-    rerender(
-      <Progress
-        progress={0.42}
-        mode="linear"
-        dotted
-      />,
+    const stylesheet = document.querySelector(
+      'style[data-weave-progress-styles]',
     )
 
-    visual = element.querySelector(
-      '[data-weave-progress-value]',
-    ) as HTMLDivElement
-
-    expect(
-      visual.style.getPropertyValue('--weave-progress-value'),
-    ).toBe('42%')
-    expect(element.className).toContain('weave-progress--linear')
-    expect(element.className).toContain('weave-progress--dotted')
+    expect(stylesheet?.textContent).toContain(
+      'weave-progress-spin-rotate',
+    )
+    expect(stylesheet?.textContent).toContain(
+      'weave-progress-spin-sweep',
+    )
+    expect(stylesheet?.textContent).toContain(
+      '@property --weave-progress-spin-start',
+    )
+    expect(stylesheet?.textContent).toContain(
+      '@property --weave-progress-spin-end',
+    )
+    expect(stylesheet?.textContent).toContain(
+      'weave-progress-linear-primary',
+    )
+    expect(stylesheet?.textContent).toContain(
+      'weave-progress-linear-secondary',
+    )
   })
 
   it('clamps determined progress to the public 0 to 1 range', () => {
@@ -217,29 +169,29 @@ describe('Progress', () => {
     )
 
     const element = getByRole('progressbar')
-    const visual = element.querySelector(
+    const value = element.querySelector(
       '[data-weave-progress-value]',
     ) as HTMLDivElement
 
     expect(element.getAttribute('aria-valuenow')).toBe('1')
     expect(
-      visual.style.getPropertyValue('--weave-progress-value'),
+      value.style.getPropertyValue('--weave-progress-value'),
     ).toBe('100%')
 
     rerender(<Progress progress={-0.5} />)
 
     expect(element.getAttribute('aria-valuenow')).toBe('0')
     expect(
-      visual.style.getPropertyValue('--weave-progress-value'),
+      value.style.getPropertyValue('--weave-progress-value'),
     ).toBe('0%')
   })
 
-  it('keeps mode dotted and size defaults out of inline style', () => {
+  it('keeps mode tracked and size defaults out of inline style', () => {
     const { getByRole } = render(
       <Progress
         undetermined
         mode="linear"
-        dotted
+        tracked
         size="large"
         speed="slow"
       />,
@@ -248,7 +200,7 @@ describe('Progress', () => {
     const element = getByRole('progressbar')
 
     expect(element.className).toContain('weave-progress--linear')
-    expect(element.className).toContain('weave-progress--dotted')
+    expect(element.className).toContain('weave-progress--tracked')
     expect(element.className).toContain('weave-progress--large')
     expect(element.className).toContain('weave-progress--speed-slow')
     expect(element.style.getPropertyValue('--weave-width')).toBe('')
