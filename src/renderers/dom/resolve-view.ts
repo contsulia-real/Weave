@@ -487,11 +487,8 @@ export interface ResolvedDOMView<TElement extends HTMLElement> {
   layout: ViewProps<TElement>['layout']
 }
 
-export function resolveDOMView<
-  TElement extends HTMLElement,
-  TBreakpoint extends string = never,
->(
-  props: ViewProps<TElement, TBreakpoint>,
+export function resolveDOMView<TElement extends HTMLElement>(
+  props: ViewProps<TElement>,
   breakpoints: Readonly<Record<string, number>> = defaultBreakpoints,
 ): ResolvedDOMView<TElement> {
   const domProps: HTMLAttributes<TElement> = {}
