@@ -57,6 +57,7 @@ const CUSTOM_PROP_KEYS = new Set<string>([
   'focusVisible',
   'disabledStyle',
   'container',
+  'scrollbar',
   'sm',
   'md',
   'lg',
