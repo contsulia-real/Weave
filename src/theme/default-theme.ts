@@ -1,5 +1,19 @@
 import type { ResolvedTheme } from './theme-types'
 
+const controlBaseline = {
+  radius: 0.5,
+  borderWidth: 0.0625,
+  focusOutlineWidth: 0.125,
+  focusOutlineColor: 'focus',
+  focusOutlineStyle: 'solid',
+  focusOutlineOffset: 0.0625,
+} as const
+
+const controlMedium = {
+  minHeight: 2.25,
+  fontSize: 0.9375,
+} as const
+
 export const defaultBreakpoints = {
   sm: 40,
   md: 48,
@@ -78,35 +92,29 @@ export const defaultTheme: ResolvedTheme = {
   components: {
     Button: {
       base: {
-        radius: 'medium',
-        borderWidth: 0.0625,
+        ...controlBaseline,
         cursor: 'pointer',
-        fontWeight: 600,
-        focusOutlineWidth: 0.125,
-        focusOutlineColor: 'focus',
-        focusOutlineStyle: 'solid',
-        focusOutlineOffset: 0.125,
+        fontWeight: 500,
       },
       sizes: {
         small: {
-          minHeight: 2,
-          paddingX: 0.75,
-          paddingY: 0.5,
+          minHeight: 1.875,
+          paddingX: 0.625,
+          paddingY: 0.375,
           gap: 0.375,
-          fontSize: 0.875,
+          fontSize: 0.8125,
         },
         medium: {
-          minHeight: 2.5,
+          ...controlMedium,
+          paddingX: 0.875,
+          paddingY: 0.5,
+          gap: 0.5,
+        },
+        large: {
+          minHeight: 2.625,
           paddingX: 1,
           paddingY: 0.625,
           gap: 0.5,
-          fontSize: 1,
-        },
-        large: {
-          minHeight: 3,
-          paddingX: 1.25,
-          paddingY: 0.75,
-          gap: 0.625,
           fontSize: 1,
         },
       },
@@ -120,33 +128,39 @@ export const defaultTheme: ResolvedTheme = {
         },
         secondary: {
           background: 'surface',
-          color: 'primary',
+          color: 'inherit',
           borderColor: 'outline',
           hoverBackground: 'surfaceHover',
-          activeBackground: 'outline',
+          activeBackground:
+            'color-mix(in srgb, var(--weave-color-outline) 65%, var(--weave-color-surface))',
         },
         tertiary: {
           background: 'surfaceHover',
-          color: 'primary',
-          borderColor: 'surfaceHover',
-          hoverBackground: 'outline',
-          activeBackground: 'secondary',
+          color: 'inherit',
+          borderColor: 'transparent',
+          hoverBackground:
+            'color-mix(in srgb, var(--weave-color-outline) 42%, var(--weave-color-surface))',
+          activeBackground:
+            'color-mix(in srgb, var(--weave-color-outline) 68%, var(--weave-color-surface))',
         },
         ghost: {
           background: 'transparent',
-          color: 'primary',
+          color: 'inherit',
           borderColor: 'transparent',
           hoverBackground: 'surfaceHover',
-          activeBackground: 'outline',
+          activeBackground:
+            'color-mix(in srgb, var(--weave-color-outline) 60%, transparent)',
         },
         danger: {
-          background: 'danger',
-          color: 'onPrimary',
-          borderColor: 'danger',
+          background:
+            'color-mix(in srgb, var(--weave-color-danger) 10%, var(--weave-color-surface))',
+          color: 'danger',
+          borderColor:
+            'color-mix(in srgb, var(--weave-color-danger) 28%, var(--weave-color-surface))',
           hoverBackground:
-            'color-mix(in srgb, var(--weave-color-danger) 88%, black)',
+            'color-mix(in srgb, var(--weave-color-danger) 15%, var(--weave-color-surface))',
           activeBackground:
-            'color-mix(in srgb, var(--weave-color-danger) 76%, black)',
+            'color-mix(in srgb, var(--weave-color-danger) 21%, var(--weave-color-surface))',
         },
       },
       states: {
@@ -158,21 +172,15 @@ export const defaultTheme: ResolvedTheme = {
     },
     Input: {
       base: {
+        ...controlBaseline,
+        ...controlMedium,
         background: 'surface',
         color: 'inherit',
         placeholderColor: 'secondary',
         borderColor: 'outline',
-        borderWidth: 0.0625,
-        radius: 'medium',
-        minHeight: 2.5,
         paddingX: 0.75,
-        paddingY: 0.625,
-        fontSize: 1,
-        lineHeight: 1.5,
-        focusOutlineWidth: 0.125,
-        focusOutlineColor: 'focus',
-        focusOutlineStyle: 'solid',
-        focusOutlineOffset: 0.125,
+        paddingY: 0.5,
+        lineHeight: 1.375,
       },
       states: {
         disabled: {
@@ -252,22 +260,23 @@ export const defaultTheme: ResolvedTheme = {
     },
     Scrollbar: {
       base: {
-        color: 'secondary',
+        color:
+          'color-mix(in srgb, var(--weave-color-secondary) 72%, transparent)',
         trackColor:
-          'color-mix(in srgb, var(--weave-color-secondary) 16%, transparent)',
+          'color-mix(in srgb, var(--weave-color-secondary) 12%, transparent)',
         radius: 'full',
         opacity: 1,
         thumbCursor: 'pointer',
       },
       sizes: {
         small: {
-          thickness: 0.375,
+          thickness: 0.25,
         },
         medium: {
-          thickness: 0.5,
+          thickness: 0.375,
         },
         large: {
-          thickness: 0.625,
+          thickness: 0.5,
         },
       },
     },
