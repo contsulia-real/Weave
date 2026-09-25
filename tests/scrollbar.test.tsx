@@ -306,7 +306,10 @@ describe('automatic Scrollbar', () => {
     expect(track.style.getPropertyValue('--weave-width')).toBe('')
     expect(rule).toContain('--weave-scrollbar-thickness:0.25rem;')
     expect(rule).toContain(
-      '--weave-scrollbar-color:var(--weave-color-secondary',
+      '--weave-scrollbar-color:color-mix(insrgb,var(--weave-color-secondary)72%,transparent);',
+    )
+    expect(rule).toContain(
+      '--weave-scrollbar-track-color:color-mix(insrgb,var(--weave-color-secondary)12%,transparent);',
     )
 
     const stylesheet = document.querySelector(
