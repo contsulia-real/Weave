@@ -89,7 +89,7 @@ export function Text({
     className,
     mergedStyle,
     resolved,
-  } = useViewHost(hostProps, componentStyle)
+  } = useViewHost(hostProps, componentStyle, 'text')
 
   useInsertionEffect(ensureTextStylesheet, [])
 
