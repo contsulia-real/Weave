@@ -2112,13 +2112,28 @@ large
 
 ## 16.3 当前公开能力
 
+共同属性：
+
 ```text
-undetermined
-progress
 size
 color
 speed
+```
+
+不确定进度额外支持：
+
+```text
+undetermined
 animation
+  spin
+  pulse
+  dots
+```
+
+确定进度使用：
+
+```text
+progress
 ```
 
 示例：
@@ -2133,49 +2148,74 @@ animation
 />
 ```
 
-或者：
+确定进度：
 
 ```tsx
 <LoadingIndicator
   progress={0.68}
   size="large"
   color="primary"
-  speed="slow"
-  animation="pulse"
+  speed="normal"
 />
 ```
 
-### 模式约束
+### 状态约束
 
 `undetermined` 与 `progress` 互斥。
 
-类型层应能表达该约束：
+`animation` 只属于 `undetermined`。
+
+确定进度不接受：
+
+```text
+spin
+pulse
+dots
+```
+
+因为这些描述的是持续的不确定加载动画，不用于表达数值进度。
+
+确定进度的动画行为不通过 `animation` 选择：
+
+> 当 `progress` 从一个数值变化到另一个数值时，组件自动对进度几何进行一次过渡；值稳定后停止运动。
+
+`speed` 在两种状态下含义保持一致但作用对象不同：
+
+```text
+undetermined
+→ 控制持续加载动画的循环速度
+
+progress
+→ 控制 progress 变化时单次过渡的时长
+```
+
+类型层必须表达该约束：
 
 ```ts
 type LoadingIndicatorProps =
   {
+    size?: "small" | "medium" | "large"
+    color?: Color
+    speed?: "slow" | "normal" | "fast" | number
     viewProps?: ViewProps
   } &
   (
     | {
         undetermined: true
         progress?: never
+        animation?: "spin" | "pulse" | "dots"
       }
     | {
         undetermined?: false
         progress: number
+        animation?: never
       }
-  ) & {
-    size?: "small" | "medium" | "large"
-    color?: Color
-    speed?: "slow" | "normal" | "fast" | number
-    animation?: "spin" | "pulse" | "dots"
-  }
+  )
 ```
 
 这里的关键原则：
 
-> 即使 `color / speed / animation` 最终由 CSS 或 View 能力实现，也不代表组件公开 API 不能提供这些高层语义属性。
+> `undetermined` 决定持续加载动画；`progress` 决定真实数值进度。两者的运动语义不能由 `animation` 混在一起决定。
 
 底层复用和公开 API 不冲突。
 
