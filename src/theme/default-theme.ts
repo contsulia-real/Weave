@@ -42,8 +42,15 @@ export const defaultTheme: ResolvedTheme = {
       focus: '#6d5dfc',
     },
     typography: {
+      family: {
+        body:
+          'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+        mono:
+          'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace',
+      },
       size: {
         xsmall: 0.75,
+        compact: 0.8125,
         small: 0.875,
         medium: 1,
         large: 1.25,
@@ -56,6 +63,17 @@ export const defaultTheme: ResolvedTheme = {
         medium: 500,
         semibold: 600,
         bold: 700,
+      },
+      lineHeight: {
+        tight: 1.15,
+        compact: 1.25,
+        body: 1.5,
+        relaxed: 1.65,
+      },
+      letterSpacing: {
+        tight: '-0.015em',
+        normal: '0em',
+        wide: '0.02em',
       },
     },
     spacing: {
@@ -110,24 +128,25 @@ export const defaultTheme: ResolvedTheme = {
       },
       sizes: {
         small: {
+          minHeight: 1.75,
+          paddingX: 0.625,
+          paddingY: 0.3125,
+          gap: 0.3125,
+          fontSize: 'var(--weave-typography-size-compact)',
+        },
+        medium: {
           minHeight: 2.125,
           paddingX: 0.75,
           paddingY: 0.4375,
           gap: 0.375,
-          fontSize: 0.875,
+          fontSize: 'var(--weave-typography-size-small)',
         },
-        medium: {
+        large: {
           ...controlMedium,
           paddingX: 1,
           paddingY: 0.625,
           gap: 0.5,
-        },
-        large: {
-          minHeight: 3,
-          paddingX: 1.25,
-          paddingY: 0.75,
-          gap: 0.625,
-          fontSize: 1.0625,
+          fontSize: 'var(--weave-typography-size-medium)',
         },
       },
       variants: {
@@ -201,7 +220,8 @@ export const defaultTheme: ResolvedTheme = {
         borderColor: 'outline',
         paddingX: 0.875,
         paddingY: 0.625,
-        lineHeight: 1.375,
+        fontSize: 'var(--weave-typography-size-medium)',
+        lineHeight: 'var(--weave-typography-line-height-body)',
       },
       states: {
         disabled: {
