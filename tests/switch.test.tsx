@@ -146,6 +146,9 @@ describe('Switch', () => {
       'true',
     )
     expect(thumb.style.transform).toContain('translateX(')
+    expect(thumb.style.transform).toContain(
+      'var(--weave-feedback-drag-scale)',
+    )
 
     fireEvent.pointerUp(element, {
       pointerId: 7,
@@ -307,6 +310,25 @@ describe('Switch', () => {
 
     expect(onChange).not.toHaveBeenCalled()
     expect(element.getAttribute('aria-checked')).toBe('false')
+  })
+
+  it('settles with spring motion but keeps drag movement direct', () => {
+    render(<Switch />)
+
+    const stylesheet = document.querySelector(
+      'style[data-weave-switch-styles]',
+    )?.textContent ?? ''
+
+    expect(stylesheet).toContain(
+      'var(--weave-motion-curve-spring)',
+    )
+    expect(stylesheet).toContain(
+      '[data-weave-switch-dragging="true"]',
+    )
+    expect(stylesheet).toContain('transition: none')
+    expect(stylesheet).toContain(
+      '@media (prefers-reduced-motion: reduce)',
+    )
   })
 
   it('takes its default visual values from the default theme', () => {
