@@ -5,18 +5,6 @@ const stylesheet = `
   initial-value: 0%;
 }
 
-@property --weave-progress-spin-start {
-  syntax: "<angle>";
-  inherits: false;
-  initial-value: 0deg;
-}
-
-@property --weave-progress-spin-end {
-  syntax: "<angle>";
-  inherits: false;
-  initial-value: 48deg;
-}
-
 :where(.weave-progress) {
   --weave-component-display: inline-grid;
   --weave-component-position: relative;
@@ -111,24 +99,16 @@ const stylesheet = `
   --weave-background:
     conic-gradient(
       from -90deg,
-      transparent 0deg var(--weave-progress-spin-start),
-      currentColor
-        var(--weave-progress-spin-start)
-        var(--weave-progress-spin-end),
-      transparent var(--weave-progress-spin-end) 360deg
+      currentColor 0deg 96deg,
+      transparent 96deg 360deg
     );
 
   will-change: transform;
   animation:
     weave-progress-spin-rotate
-      var(--weave-progress-duration)
-      linear
-      infinite,
-    weave-progress-spin-sweep
-      var(--weave-progress-duration)
-      var(--weave-motion-curve-standard)
-      infinite
-      alternate;
+    var(--weave-progress-duration)
+    linear
+    infinite;
 }
 
 /* linear */
@@ -209,23 +189,6 @@ const stylesheet = `
   }
 }
 
-@keyframes weave-progress-spin-sweep {
-  0% {
-    --weave-progress-spin-start: 0deg;
-    --weave-progress-spin-end: 48deg;
-  }
-
-  50% {
-    --weave-progress-spin-start: 18deg;
-    --weave-progress-spin-end: 300deg;
-  }
-
-  100% {
-    --weave-progress-spin-start: 252deg;
-    --weave-progress-spin-end: 300deg;
-  }
-}
-
 @keyframes weave-progress-linear-leading {
   from {
     transform: translateX(-120%);
@@ -268,8 +231,7 @@ const stylesheet = `
   :where(.weave-progress--spin.weave-progress--undetermined)
     > :where(.weave-progress__value) {
     animation: none;
-    --weave-progress-spin-start: 0deg;
-    --weave-progress-spin-end: 90deg;
+    transform: rotate(0deg);
   }
 
   :where(.weave-progress--linear.weave-progress--undetermined)
