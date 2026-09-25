@@ -63,12 +63,6 @@ function App() {
       overflow="auto"
       align="start"
       padding={2}
-      scrollbar={{
-        size: 'medium',
-        tracked: true,
-        color: 'secondary',
-        radius: 'full',
-      }}
     >
       <View
         width="fill"
