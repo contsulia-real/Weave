@@ -4,6 +4,23 @@ import { View } from '../src'
 
 afterEach(cleanup)
 
+function runtimeRule(
+  element: Element,
+  prefix: string,
+): string {
+  const className = [...element.classList].find((name) =>
+    name.startsWith(prefix),
+  )
+
+  expect(className).toBeDefined()
+
+  return (
+    document.querySelector<HTMLStyleElement>(
+      `style[data-weave-runtime-class="${className}"]`,
+    )?.textContent ?? ''
+  )
+}
+
 describe('View DOM backend', () => {
   it('maps Weave props without leaking custom props to the DOM', () => {
     const { getByTestId } = render(
@@ -19,19 +36,19 @@ describe('View DOM backend', () => {
     )
 
     const element = getByTestId('view')
+    const rule = runtimeRule(element, 'weave-view-props-')
 
     expect(element.getAttribute('data-weave-layout')).toBe('flex')
     expect(element.getAttribute('data-state')).toBe('open')
     expect(element.getAttribute('layout')).toBeNull()
-    expect(element.style.getPropertyValue('--weave-width')).toBe('20rem')
-    expect(element.style.getPropertyValue('--weave-padding-top')).toBe('2rem')
-    expect(element.style.getPropertyValue('--weave-padding-right')).toBe('1rem')
-    expect(element.style.getPropertyValue('--weave-background')).toContain(
-      '--weave-color-primary',
-    )
+    expect(element.style.getPropertyValue('--weave-width')).toBe('')
+    expect(rule).toContain('--weave-width:20rem;')
+    expect(rule).toContain('--weave-padding-top:2rem;')
+    expect(rule).toContain('--weave-padding-right:1rem;')
+    expect(rule).toContain('--weave-background:var(--weave-color-primary')
   })
 
-  it('keeps style as the final inline override and className on the element', () => {
+  it('keeps style above className above generated property classes', () => {
     const { getByTestId } = render(
       <View
         width={20}
@@ -42,16 +59,21 @@ describe('View DOM backend', () => {
     )
 
     const element = getByTestId('priority')
+    const rule = runtimeRule(element, 'weave-view-props-')
 
-    expect(element.className).toBe('user-class')
-    expect(element.style.getPropertyValue('--weave-width')).toBe('20rem')
+    expect(element.className).toContain('user-class')
+    expect(element.style.getPropertyValue('--weave-width')).toBe('')
     expect(element.style.width).toBe('10px')
+    expect(rule).toContain('--weave-width:20rem;')
 
     const frameworkStyles = document.querySelector(
       'style[data-weave-view-styles]',
     )
     expect(frameworkStyles?.textContent).toContain(
       ':where([data-weave-view])',
+    )
+    expect(frameworkStyles?.textContent).toContain(
+      'var(--weave-width, var(--weave-component-width))',
     )
   })
 
@@ -96,7 +118,6 @@ describe('View DOM backend', () => {
     )
   })
 
-
   it('encodes viewport breakpoint overrides with default theme breakpoints', () => {
     const { getByTestId } = render(
       <View
@@ -107,13 +128,15 @@ describe('View DOM backend', () => {
     )
 
     const element = getByTestId('responsive')
+    const rule = runtimeRule(element, 'weave-view-props-')
     const frameworkStyles = document.querySelector(
       'style[data-weave-view-styles]',
     )
 
-    expect(element.style.getPropertyValue('--weave-width')).toBe('20rem')
-    expect(element.style.getPropertyValue('--weave-md-width')).toBe('30rem')
-    expect(element.style.getPropertyValue('--weave-md-padding-top')).toBe('2rem')
+    expect(element.style.getPropertyValue('--weave-width')).toBe('')
+    expect(rule).toContain('--weave-width:20rem;')
+    expect(rule).toContain('--weave-md-width:30rem;')
+    expect(rule).toContain('--weave-md-padding-top:2rem;')
     expect(element.getAttribute('md')).toBeNull()
 
     expect(frameworkStyles?.textContent).toContain(
@@ -139,24 +162,25 @@ describe('View DOM backend', () => {
 
     const container = getByTestId('container')
     const child = getByTestId('container-child')
+    const containerRule = runtimeRule(container, 'weave-view-props-')
+    const childRule = runtimeRule(child, 'weave-view-props-')
     const frameworkStyles = document.querySelector(
       'style[data-weave-view-styles]',
     )
 
-    expect(container.style.getPropertyValue('--weave-container-type')).toBe(
-      'inline-size',
+    expect(container.style.getPropertyValue('--weave-container-type')).toBe('')
+    expect(containerRule).toContain(
+      '--weave-container-type:inline-size;',
     )
-    expect(container.style.getPropertyValue('--weave-container-name')).toBe(
-      'sidebar',
+    expect(containerRule).toContain(
+      '--weave-container-name:sidebar;',
     )
     expect(container.getAttribute('container')).toBeNull()
 
-    expect(
-      child.style.getPropertyValue('--weave-container-md-flex-direction'),
-    ).toBe('row')
-    expect(child.style.getPropertyValue('--weave-container-md-gap')).toBe(
-      '1.5rem',
+    expect(childRule).toContain(
+      '--weave-container-md-flex-direction:row;',
     )
+    expect(childRule).toContain('--weave-container-md-gap:1.5rem;')
     expect(child.getAttribute('containerMd')).toBeNull()
 
     expect(frameworkStyles?.textContent).toContain(
@@ -167,7 +191,7 @@ describe('View DOM backend', () => {
     )
   })
 
-  it('encodes state styles as state-specific attribute values', () => {
+  it('encodes state styles in generated property classes', () => {
     const { getByTestId } = render(
       <View
         hover={{ scale: 1.03, opacity: 0.8 }}
@@ -177,13 +201,13 @@ describe('View DOM backend', () => {
     )
 
     const element = getByTestId('states')
+    const rule = runtimeRule(element, 'weave-view-props-')
 
-    expect(element.style.getPropertyValue('--weave-hover-transform')).toBe(
-      'scale(1.03)',
+    expect(rule).toContain('--weave-hover-transform:scale(1.03);')
+    expect(rule).toContain('--weave-hover-opacity:0.8;')
+    expect(rule).toContain(
+      '--weave-focus-visible-outline-width:0.125rem;',
     )
-    expect(element.style.getPropertyValue('--weave-hover-opacity')).toBe('0.8')
-    expect(
-      element.style.getPropertyValue('--weave-focus-visible-outline-width'),
-    ).toBe('0.125rem')
+    expect(element.style.getPropertyValue('--weave-hover-opacity')).toBe('')
   })
 })
