@@ -7,7 +7,7 @@ const stylesheet = `
   --weave-display: none;
   --weave-position: fixed;
   --weave-z-index: 0;
-  --weave-background: var(--weave-scrollbar-track-color, transparent);
+  --weave-background: transparent;
   --weave-border-top-left-radius: var(
     --weave-scrollbar-radius,
     var(--weave-radius-full)
@@ -32,6 +32,20 @@ const stylesheet = `
 
 :where(.weave-scrollbar[data-weave-scrollbar-visible="true"]) {
   --weave-display: block;
+}
+
+:where(.weave-scrollbar--tracked) {
+  --weave-background: var(
+    --weave-scrollbar-track-color,
+    color-mix(
+      in srgb,
+      var(
+        --weave-scrollbar-color,
+        var(--weave-color-secondary)
+      ) 16%,
+      transparent
+    )
+  );
 }
 
 :where(.weave-scrollbar--small.weave-scrollbar--vertical) {
