@@ -55,9 +55,15 @@ function App() {
   return (
     <View
       layout="grid"
-      minHeight="100vh"
-      align="center"
+      height="100vh"
+      overflow="auto"
+      align="start"
       padding={2}
+      scrollbar={{
+        size: 'medium',
+        color: 'secondary',
+        radius: 'full',
+      }}
     >
       <View
         width="fill"
@@ -248,7 +254,26 @@ function App() {
                 animation="spin"
                 color="primary"
               />
-              <Text size="small">Spin</Text>
+              <Text size="small">Undetermined</Text>
+            </View>
+
+            <View layout="flex" direction="row" gap={0.5} align="center">
+              <LoadingIndicator
+                progress={0.32}
+                size="medium"
+                color="primary"
+              />
+              <Text size="small">32% Default</Text>
+            </View>
+
+            <View layout="flex" direction="row" gap={0.5} align="center">
+              <LoadingIndicator
+                progress={0.5}
+                size="medium"
+                animation="spin"
+                color="primary"
+              />
+              <Text size="small">50% Spin</Text>
             </View>
 
             <View layout="flex" direction="row" gap={0.5} align="center">
@@ -264,12 +289,12 @@ function App() {
 
             <View layout="flex" direction="row" gap={0.5} align="center">
               <LoadingIndicator
-                undetermined
+                progress={0.84}
                 size="large"
                 animation="dots"
                 color="primary"
               />
-              <Text size="small">Dots</Text>
+              <Text size="small">84% Dots</Text>
             </View>
           </View>
         </View>
