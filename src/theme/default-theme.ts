@@ -75,7 +75,98 @@ export const defaultTheme: ResolvedTheme = {
       },
     },
   },
-  components: {},
+  components: {
+    Switch: {
+      base: {
+        background: 'outline',
+        radius: 'full',
+        cursor: 'pointer',
+        thumbBackground: 'surface',
+        thumbRadius: 'full',
+        thumbInset: 0.125,
+        focusOutlineWidth: 0.125,
+        focusOutlineColor: 'focus',
+        focusOutlineStyle: 'solid',
+        focusOutlineOffset: 0.125,
+      },
+      sizes: {
+        small: {
+          width: 2,
+          height: 1.125,
+          thumbSize: 0.875,
+          shift: 0.875,
+        },
+        medium: {
+          width: 2.5,
+          height: 1.5,
+          thumbSize: 1.25,
+          shift: 1,
+        },
+        large: {
+          width: 3,
+          height: 1.75,
+          thumbSize: 1.5,
+          shift: 1.25,
+        },
+      },
+      states: {
+        checked: {
+          background: 'primary',
+        },
+        disabled: {
+          opacity: 0.5,
+          cursor: 'default',
+        },
+      },
+    },
+    Progress: {
+      base: {
+        trackColor: 'color-mix(in srgb, currentColor 16%, transparent)',
+        linearRadius: 'full',
+      },
+      sizes: {
+        small: {
+          spinSize: 1.125,
+          spinThickness: 0.125,
+          linearWidth: 6,
+          linearHeight: 0.25,
+        },
+        medium: {
+          spinSize: 1.5,
+          spinThickness: 0.15625,
+          linearWidth: 8,
+          linearHeight: 0.375,
+        },
+        large: {
+          spinSize: 2,
+          spinThickness: 0.1875,
+          linearWidth: 10,
+          linearHeight: 0.5,
+        },
+      },
+    },
+    Scrollbar: {
+      base: {
+        color: 'secondary',
+        trackColor:
+          'color-mix(in srgb, var(--weave-color-secondary) 16%, transparent)',
+        radius: 'full',
+        opacity: 1,
+        thumbCursor: 'pointer',
+      },
+      sizes: {
+        small: {
+          thickness: 0.375,
+        },
+        medium: {
+          thickness: 0.5,
+        },
+        large: {
+          thickness: 0.625,
+        },
+      },
+    },
+  },
   breakpoints: defaultBreakpoints,
   layers: {
     base: 0,
