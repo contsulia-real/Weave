@@ -149,7 +149,7 @@ function buttonResponsiveBehavior(
 ): string {
   const variants = BUTTON_VARIANTS.map(
     (variant) => `
-  :where(.${className}[data-weave-button][data-weave-button-${entry.cssName}-variant="${variant}"]) {
+  .${className}[data-weave-button][data-weave-button-${entry.cssName}-variant="${variant}"] {
     ${buttonVariantDeclarations(variant)}
   }
 `,
@@ -157,7 +157,7 @@ function buttonResponsiveBehavior(
 
   const sizes = BUTTON_SIZES.map(
     (size) => `
-  :where(.${className}[data-weave-button][data-weave-button-${entry.cssName}-size="${size}"]) {
+  .${className}[data-weave-button][data-weave-button-${entry.cssName}-size="${size}"] {
     ${buttonSizeDeclarations(size)}
   }
 `,
