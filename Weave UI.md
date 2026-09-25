@@ -224,10 +224,13 @@ Button
 → release 回弹
 
 Switch
-→ track 使用轻微凹陷、thumb 使用轻微突起表达可操作层级
+→ 关闭态 track 不填充背景，只保留轻微凹槽
+→ 开启态 track 使用 primary 强调色
+→ thumb 使用轻微突起表达可操作层级
 → thumb 可直接拖动
-→ 拖动时位置跟随指针，随拖动距离横向拉长并纵向压缩
-→ 形变到状态临界点封顶，松手后恢复原形并按最终状态连续归位
+→ 拖动时圆形核心先明显缩小，并从运动反方向拉出同色拖尾
+→ 拖尾长度随拖动距离增长，到状态临界点封顶
+→ 松手后拖尾消失、圆形核心恢复，并按最终状态连续归位
 
 Scrollbar
 → thumb 必须紧跟真实 scrollTop / scrollLeft
@@ -269,7 +272,7 @@ dragScale
 例如：
 
 - Button 使用 depth / lift / press 系列构造实体按压反馈。
-- Switch 的拖动形变由自己的 `thumbDragStretch / thumbDragCompress` 描述；全局 motion 只负责松手后的恢复节奏，不照搬 Button 或 Scrollbar 的缩放反馈。
+- Switch 的拖动形变由自己的 `thumbDragShrink / thumbDragStretch` 描述；全局 motion 只负责松手后的恢复节奏，不照搬 Button 或 Scrollbar 的缩放反馈。
 - Scrollbar 可以使用 `hoverScale / dragScale` 增强 thumb 抓取反馈，但核心仍然是边缘可命中、位置跟手和低延迟。
 
 `prefers-reduced-motion: reduce` 下仍必须保留状态可辨识性和直接操作结果，但应移除非必要的自动位移动画、弹性过渡和持续运动。
@@ -2357,12 +2360,13 @@ size
 - 点击 track / thumb 切换
 - Space / Enter 键盘切换
 - 直接水平拖动 thumb；拖动期间位置连续跟随指针
-- thumb 的拖动形变是 Switch 专属反馈：移动距离越大，横向越长、纵向越扁；到轨道中点达到最大形变并封顶
-- 释放时以轨道中点决定最终开关状态；松手后恢复正常大小和形态
+- thumb 的拖动形变是 Switch 专属反馈：圆形核心在按住时先缩小，移动距离越大，运动反方向的同色拖尾越长；到轨道中点达到最大长度并封顶
+- 拖动过程中圆形核心保持圆形，不允许通过非等比 scale 把它压成椭圆
+- 释放时以轨道中点决定最终开关状态；松手后拖尾消失、核心恢复正常大小和形态
 - 拖动完成后产生的兼容 click 不得再次反向切换
 - disabled 状态下点击、键盘与拖动都不能改变状态
 
-拖动中的 thumb 位置与连续形变属于组件内部交互几何，可由渲染后端直接同步；它不是用户显式 `style`，也不改变公开样式优先级。拖动期间不对 pointer movement 做缓动，保证直接跟手；松手后的归位与形态恢复才允许使用主题 motion curve。默认 Switch 不通过 primary 等强调色区分 checked；状态主要由 thumb 位置表达。track 使用轻微 inset shadow 形成凹陷，thumb 使用轻微 outer shadow 形成突起。
+拖动中的 thumb 位置与连续形变属于组件内部交互几何，可由渲染后端直接同步；它不是用户显式 `style`，也不改变公开样式优先级。拖动期间不对 pointer movement 做缓动，保证直接跟手；松手后的归位与形态恢复才允许使用主题 motion curve。默认关闭态 track 为透明，只靠轻微 inset shadow 形成凹陷；默认开启态 track 使用 primary。thumb 使用轻微 outer shadow 形成突起。
 
 ### size
 
