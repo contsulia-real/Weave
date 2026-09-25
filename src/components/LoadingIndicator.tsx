@@ -18,7 +18,6 @@ export function LoadingIndicator({
   const progress = undetermined ? undefined : mode.progress
   const componentStyle = resolveLoadingIndicatorStyle({
     size,
-    color,
     speed,
     animation,
     progress,
@@ -28,6 +27,7 @@ export function LoadingIndicator({
     <View
       {...viewProps}
       role="progressbar"
+      color={color}
       busy={undetermined || undefined}
       valueMin={undetermined ? undefined : 0}
       valueMax={undetermined ? undefined : 1}
