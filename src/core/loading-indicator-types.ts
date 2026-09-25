@@ -25,7 +25,6 @@ interface LoadingIndicatorBaseProps {
   size?: LoadingIndicatorSize
   color?: LoadingIndicatorColor
   speed?: LoadingIndicatorSpeed
-  animation?: LoadingIndicatorAnimation
   viewProps?: LoadingIndicatorViewProps
 }
 
@@ -35,9 +34,11 @@ export type LoadingIndicatorProps =
     | {
         undetermined: true
         progress?: never
+        animation?: LoadingIndicatorAnimation
       }
     | {
         undetermined?: false
         progress: number
+        animation?: never
       }
   )
