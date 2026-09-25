@@ -49,8 +49,8 @@ describe('Text', () => {
     )
 
     const element = getByTestId('text')
-    const textRule = runtimeRule(element, 'weave-component-props-')
-    const viewRule = runtimeRule(element, 'weave-view-props-')
+    const textRule = runtimeRule(element, 'weave-text-props-')
+    const viewRule = runtimeRule(element, 'weave-props-')
 
     expect(element.tagName).toBe('SPAN')
     expect(element.getAttribute('size')).toBeNull()
@@ -93,8 +93,8 @@ describe('Text', () => {
     )
 
     const element = getByTestId('responsive-text')
-    const textRule = runtimeRule(element, 'weave-component-props-')
-    const viewRule = runtimeRule(element, 'weave-view-props-')
+    const textRule = runtimeRule(element, 'weave-text-props-')
+    const viewRule = runtimeRule(element, 'weave-props-')
     const stylesheet = document.querySelector(
       'style[data-weave-text-styles]',
     )
@@ -134,7 +134,7 @@ describe('Text', () => {
     )
 
     const element = getByTestId('priority-text')
-    const textRule = runtimeRule(element, 'weave-component-props-')
+    const textRule = runtimeRule(element, 'weave-text-props-')
 
     expect(element.className).toContain('custom-text')
     expect(element.style.fontSize).toBe('13px')
