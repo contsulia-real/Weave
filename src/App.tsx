@@ -2,6 +2,7 @@ import { useState } from 'react'
 import {
   IconBell,
   IconSearch,
+  IconSearchFilled,
   IconSettings,
   IconUser,
 } from '@tabler/icons-react'
@@ -198,10 +199,32 @@ function App() {
         <View layout="flex" direction="column" gap={0.75}>
           <h2>Icon</h2>
           <p className="hint">
-            Tabler 图标由调用方静态导入后传给 Icon；size / stroke 由 Weave 统一，颜色和其他通用视觉继续走 viewProps。
+            Outline / Filled 由调用方传入的 Tabler 图标组件决定；size / stroke 由 Weave 统一，颜色和其他通用视觉继续走 viewProps。
           </p>
 
           <View layout="flex" direction="column" gap={1}>
+            <View layout="flex" direction="row" gap={1.5} align="center" wrap>
+              <View layout="flex" direction="row" gap={0.75} align="center">
+                <Icon
+                  icon={IconSearch}
+                  size="large"
+                  stroke="regular"
+                  viewProps={{ color: 'primary' }}
+                />
+                <Text size="small">Outline</Text>
+              </View>
+
+              <View layout="flex" direction="row" gap={0.75} align="center">
+                <Icon
+                  icon={IconSearchFilled}
+                  size="large"
+                  stroke="regular"
+                  viewProps={{ color: 'primary' }}
+                />
+                <Text size="small">Filled</Text>
+              </View>
+            </View>
+
             <View layout="flex" direction="row" gap={1.5} align="center" wrap>
               <View layout="flex" direction="row" gap={0.5} align="center">
                 <Icon
