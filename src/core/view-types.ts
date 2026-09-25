@@ -16,6 +16,16 @@ export type RadiusValue =
   | 'large'
   | 'full'
 
+export type ScrollbarSize = 'small' | 'medium' | 'large'
+
+export interface ScrollbarConfig {
+  size?: ScrollbarSize
+  color?: ColorValue
+  trackColor?: ColorValue
+  radius?: RadiusValue
+  opacity?: number
+}
+
 export type ViewLayout = 'flex' | 'grid' | 'stack' | 'absolute'
 export type ViewDirection =
   | 'row'
@@ -298,6 +308,7 @@ export type ViewProps<TElement extends HTMLElement = HTMLDivElement> =
   autoFocus?: boolean
 
   container?: string
+  scrollbar?: ScrollbarConfig
 
   sm?: ViewResponsiveStyle
   md?: ViewResponsiveStyle
