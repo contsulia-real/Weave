@@ -1,5 +1,21 @@
 import { useState } from 'react'
-import { Image, Input, Progress, Switch, Text, ThemeProvider, View, createTheme } from './index'
+import {
+  IconBell,
+  IconSearch,
+  IconSettings,
+  IconUser,
+} from '@tabler/icons-react'
+import {
+  Icon,
+  Image,
+  Input,
+  Progress,
+  Switch,
+  Text,
+  ThemeProvider,
+  View,
+  createTheme,
+} from './index'
 
 const diagnosticImage =
   'data:image/svg+xml,' +
@@ -177,6 +193,86 @@ function App() {
             />
           </View>
 
+        </View>
+
+        <View layout="flex" direction="column" gap={0.75}>
+          <h2>Icon</h2>
+          <p className="hint">
+            Tabler 图标由调用方静态导入后传给 Icon；size / stroke 由 Weave 统一，颜色和其他通用视觉继续走 viewProps。
+          </p>
+
+          <View layout="flex" direction="column" gap={1}>
+            <View layout="flex" direction="row" gap={1.5} align="center" wrap>
+              <View layout="flex" direction="row" gap={0.5} align="center">
+                <Icon
+                  icon={IconSearch}
+                  size="small"
+                  stroke="thin"
+                  viewProps={{ color: 'secondary' }}
+                />
+                <Text size="small">Small / thin</Text>
+              </View>
+
+              <View layout="flex" direction="row" gap={0.5} align="center">
+                <Icon
+                  icon={IconUser}
+                  size="medium"
+                  stroke="regular"
+                  viewProps={{ color: 'primary' }}
+                />
+                <Text size="small">Medium / regular</Text>
+              </View>
+
+              <View layout="flex" direction="row" gap={0.5} align="center">
+                <Icon
+                  icon={IconBell}
+                  size="large"
+                  stroke="bold"
+                  viewProps={{ color: 'success' }}
+                />
+                <Text size="small">Large / bold</Text>
+              </View>
+
+              <View layout="flex" direction="row" gap={0.5} align="center">
+                <Icon
+                  icon={IconSettings}
+                  size="xlarge"
+                  stroke="regular"
+                  viewProps={{
+                    color: 'danger',
+                    label: 'Settings',
+                  }}
+                />
+                <Text size="small">Xlarge / labelled</Text>
+              </View>
+            </View>
+
+            <View layout="flex" direction="row" gap={0.75} align="center">
+              <Icon
+                size="large"
+                stroke="regular"
+                svg={
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="8"
+                      stroke="currentColor"
+                    />
+                    <path
+                      d="M8 12h8M12 8v8"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                }
+                viewProps={{ color: '#0f766e' }}
+              />
+              <Text size="small">
+                Custom SVG
+              </Text>
+            </View>
+          </View>
         </View>
 
         <View layout="flex" direction="column" gap={0.75}>
