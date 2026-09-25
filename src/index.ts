@@ -1,16 +1,4 @@
 export { View } from './components/View'
-export { ThemeProvider } from './theme/ThemeProvider'
-export { createTheme } from './theme/create-theme'
-export { defaultTheme } from './theme/default-theme'
-export type {
-  DeepPartial,
-  ThemeDefinition,
-  ThemeInput,
-  ThemeMode,
-  ThemeModeDefinition,
-  ThemeProviderProps,
-  ThemeTokens,
-} from './theme/theme-types'
 export type {
   BackgroundValue,
   BlendMode,
