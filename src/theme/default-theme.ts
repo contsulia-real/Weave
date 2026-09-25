@@ -74,8 +74,18 @@ export const defaultTheme: ResolvedTheme = {
       medium: '0 0.5rem 1.5rem rgb(0 0 0 / 0.12)',
       large: '0 1rem 3rem rgb(0 0 0 / 0.16)',
     },
+    feedback: {
+      restDepth: 0.1875,
+      hoverDepth: 0.25,
+      hoverLift: 0.0625,
+      pressDepth: 0.0625,
+      pressOffset: 0.125,
+      pressScale: 0.985,
+      dragScale: 1.08,
+    },
     motion: {
       duration: {
+        instant: 80,
         fast: 120,
         normal: 200,
         slow: 320,
@@ -84,6 +94,7 @@ export const defaultTheme: ResolvedTheme = {
         linear: 'linear',
         standard: [0.2, 0, 0, 1],
         emphasized: [0.2, 0, 0, 1],
+        spring: [0.16, 1.22, 0.3, 1],
         enter: [0, 0, 0, 1],
         exit: [0.3, 0, 1, 1],
       },
