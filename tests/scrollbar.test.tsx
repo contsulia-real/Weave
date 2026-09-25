@@ -1,6 +1,27 @@
 import { cleanup, fireEvent, render } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
-import { View } from '../src'
+import {
+  ThemeProvider,
+  View,
+  createTheme,
+} from '../src'
+
+function runtimeRule(
+  element: Element,
+  prefix: string,
+): string {
+  const className = [...element.classList].find((name) =>
+    name.startsWith(prefix),
+  )
+
+  expect(className).toBeDefined()
+
+  return (
+    document.querySelector<HTMLStyleElement>(
+      `style[data-weave-runtime-class="${className}"]`,
+    )?.textContent ?? ''
+  )
+}
 
 afterEach(cleanup)
 
@@ -265,7 +286,7 @@ describe('automatic Scrollbar', () => {
     }
   })
 
-  it('keeps size defaults class-based', () => {
+  it('takes size and appearance defaults from the component theme', () => {
     render(
       <View
         overflow="auto"
@@ -278,26 +299,57 @@ describe('automatic Scrollbar', () => {
     const track = document.body.querySelector(
       '.weave-scrollbar--small.weave-scrollbar--vertical',
     ) as HTMLDivElement
+    const rule = runtimeRule(track, 'weave-scrollbar-theme-')
 
     expect(track).not.toBeNull()
     expect(track.style.width).toBe('')
     expect(track.style.getPropertyValue('--weave-width')).toBe('')
+    expect(rule).toContain('--weave-scrollbar-thickness:0.375rem;')
+    expect(rule).toContain(
+      '--weave-scrollbar-color:var(--weave-color-secondary',
+    )
 
     const stylesheet = document.querySelector(
       'style[data-weave-scrollbar-styles]',
     )
 
     expect(stylesheet?.textContent).toContain(
-      '.weave-scrollbar--small.weave-scrollbar--vertical',
+      '--weave-component-width: var(--weave-scrollbar-thickness)',
     )
-    expect(stylesheet?.textContent).toContain(
-      '--weave-width: 0.375rem',
+  })
+
+  it('lets ThemeProvider replace Scrollbar defaults', () => {
+    const theme = createTheme({
+      components: {
+        Scrollbar: {
+          base: {
+            color: 'danger',
+            opacity: 0.6,
+          },
+          sizes: {
+            medium: {
+              thickness: 0.75,
+            },
+          },
+        },
+      },
+    })
+
+    render(
+      <ThemeProvider theme={theme} mode="light">
+        <View overflow="auto" />
+      </ThemeProvider>,
     )
-    expect(stylesheet?.textContent).toContain(
-      '--weave-width: 0.5rem',
+
+    const track = document.body.querySelector(
+      '.weave-scrollbar--medium.weave-scrollbar--vertical',
+    ) as HTMLDivElement
+    const rule = runtimeRule(track, 'weave-scrollbar-theme-')
+
+    expect(rule).toContain('--weave-scrollbar-thickness:0.75rem;')
+    expect(rule).toContain(
+      '--weave-scrollbar-color:var(--weave-color-danger',
     )
-    expect(stylesheet?.textContent).toContain(
-      '--weave-width: 0.625rem',
-    )
+    expect(rule).toContain('--weave-scrollbar-opacity:0.6;')
   })
 })
