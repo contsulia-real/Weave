@@ -134,7 +134,8 @@ const stylesheet = `
 :where(.weave-button:hover:not([aria-disabled="true"])) {
   --weave-component-background: var(--weave-button-hover-background);
   --weave-component-transform:
-    translateY(calc(-1 * var(--weave-feedback-hover-lift))) scale(1);
+    translateY(calc(-1 * var(--weave-feedback-hover-lift)))
+    scale(var(--weave-feedback-hover-scale));
   --weave-component-box-shadow:
     0 var(--weave-feedback-hover-depth) 0 var(--weave-button-depth-color);
 }
