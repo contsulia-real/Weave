@@ -196,7 +196,9 @@ export function Switch({
         : currentChecked
 
     clearDragVisual(root)
-    root.releasePointerCapture?.(event.pointerId)
+    if (root.hasPointerCapture?.(event.pointerId)) {
+      root.releasePointerCapture(event.pointerId)
+    }
     dragRef.current = null
 
     if (drag.moved) {
