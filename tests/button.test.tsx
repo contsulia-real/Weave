@@ -115,6 +115,34 @@ describe('Button', () => {
     )
   })
 
+  it('gives icon-only buttons square control geometry', () => {
+    const { getByRole } = render(
+      <Button
+        icon={IconPlus}
+        variant="secondary"
+        viewProps={{
+          label: 'Add',
+        }}
+      />,
+    )
+
+    const element = getByRole('button', { name: 'Add' })
+    const stylesheet = document.querySelector(
+      'style[data-weave-button-styles]',
+    )?.textContent ?? ''
+
+    expect(element.className).toContain('weave-button--icon-only')
+    expect(stylesheet).toContain(
+      '--weave-component-min-width: var(--weave-button-min-height)',
+    )
+    expect(stylesheet).toContain(
+      '--weave-component-padding-left: 0',
+    )
+    expect(stylesheet).toContain(
+      '--weave-component-padding-right: 0',
+    )
+  })
+
   it('keeps custom children as the complete content entry', () => {
     const { getByRole } = render(
       <Button>
