@@ -293,7 +293,7 @@ describe('Progress', () => {
     )
 
     const element = getByRole('progressbar')
-    const propsRule = runtimeRule(element, 'weave-view-props-')
+    const propsRule = runtimeRule(element, 'weave-props-')
 
     expect(element.className).toContain('weave-progress')
     expect(element.className).toContain('custom-progress')
