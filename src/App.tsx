@@ -156,7 +156,6 @@ function App() {
               viewProps={{
                 width: 14,
                 height: 8,
-                radius: 'medium',
                 background: '#f4f4f5',
               }}
             />
@@ -169,7 +168,6 @@ function App() {
               viewProps={{
                 width: 14,
                 height: 8,
-                radius: 'medium',
               }}
             />
           </View>
