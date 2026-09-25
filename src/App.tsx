@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Image, Input, LoadingIndicator, Switch, Text, ThemeProvider, View, createTheme } from './index'
+import { Image, Input, Progress, Switch, Text, ThemeProvider, View, createTheme } from './index'
 
 const diagnosticImage =
   'data:image/svg+xml,' +
@@ -245,32 +245,93 @@ function App() {
         </View>
 
         <View layout="flex" direction="column" gap={0.75}>
-          <h2>LoadingIndicator</h2>
+          <h2>Progress</h2>
           <p className="hint">
-            undetermined 持续运动；确定进度只在 progress 数值变化时自动过渡。
+            mode 决定 spin / linear；dotted 只把当前形状改成点状分段。
           </p>
 
-          <View layout="flex" direction="row" gap={1.5} align="center" wrap>
-            <View layout="flex" direction="row" gap={0.5} align="center">
-              <LoadingIndicator
-                undetermined
-                size="medium"
-                color="primary"
-              />
-              <Text size="small">Undetermined</Text>
+          <View layout="flex" direction="column" gap={1}>
+            <View layout="flex" direction="row" gap={1.5} align="center" wrap>
+              <View layout="flex" direction="row" gap={0.5} align="center">
+                <Progress
+                  undetermined
+                  mode="spin"
+                  size="medium"
+                  color="primary"
+                />
+                <Text size="small">Spin</Text>
+              </View>
+
+              <View layout="flex" direction="row" gap={0.5} align="center">
+                <Progress
+                  undetermined
+                  mode="spin"
+                  dotted
+                  size="medium"
+                  color="primary"
+                />
+                <Text size="small">Spin dotted</Text>
+              </View>
+
+              <View layout="flex" direction="row" gap={0.5} align="center">
+                <Progress
+                  undetermined
+                  mode="linear"
+                  size="medium"
+                  color="primary"
+                />
+                <Text size="small">Linear</Text>
+              </View>
+
+              <View layout="flex" direction="row" gap={0.5} align="center">
+                <Progress
+                  undetermined
+                  mode="linear"
+                  dotted
+                  size="medium"
+                  color="primary"
+                />
+                <Text size="small">Linear dotted</Text>
+              </View>
             </View>
 
-            <View layout="flex" direction="row" gap={0.75} align="center">
-              <LoadingIndicator
+            <View layout="flex" direction="row" gap={1.5} align="center" wrap>
+              <Progress
                 progress={progress}
+                mode="spin"
                 size="large"
                 color="success"
               />
+
+              <Progress
+                progress={progress}
+                mode="spin"
+                dotted
+                size="large"
+                color="success"
+              />
+
+              <Progress
+                progress={progress}
+                mode="linear"
+                size="large"
+                color="success"
+              />
+
+              <Progress
+                progress={progress}
+                mode="linear"
+                dotted
+                size="large"
+                color="success"
+              />
+
               <Switch
                 checked={progressHigh}
                 onChange={setProgressHigh}
                 size="small"
               />
+
               <Text size="small">
                 {Math.round(progress * 100)}%
               </Text>
