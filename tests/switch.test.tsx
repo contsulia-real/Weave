@@ -146,8 +146,13 @@ describe('Switch', () => {
       'true',
     )
     expect(thumb.style.transform).toContain('translateX(')
-    expect(thumb.style.transform).toContain(
-      'var(--weave-feedback-drag-scale)',
+
+    const stylesheet = document.querySelector(
+      'style[data-weave-switch-styles]',
+    )?.textContent ?? ''
+
+    expect(stylesheet).toContain(
+      'scale: var(--weave-feedback-drag-scale)',
     )
 
     fireEvent.pointerUp(element, {
@@ -325,7 +330,12 @@ describe('Switch', () => {
     expect(stylesheet).toContain(
       '[data-weave-switch-dragging="true"]',
     )
-    expect(stylesheet).toContain('transition: none')
+    expect(stylesheet).toContain(
+      'scale: var(--weave-feedback-hover-scale)',
+    )
+    expect(stylesheet).toContain(
+      'scale: var(--weave-feedback-drag-scale)',
+    )
     expect(stylesheet).toContain(
       '@media (prefers-reduced-motion: reduce)',
     )
