@@ -91,18 +91,19 @@ export function resolveTextStyle(
 
 export function resolveTextResponsiveStyle(input: {
   base: TextStyleProps
-  sm?: TextResponsiveProps
-  md?: TextResponsiveProps
-  lg?: TextResponsiveProps
-  xl?: TextResponsiveProps
+  responsive?: Readonly<
+    Record<string, TextResponsiveProps | undefined>
+  >
 }): TextVariableStyle {
-  return {
-    ...resolveTextStyle(input.base),
-    ...resolveTextStyle(input.sm, 'sm'),
-    ...resolveTextStyle(input.md, 'md'),
-    ...resolveTextStyle(input.lg, 'lg'),
-    ...resolveTextStyle(input.xl, 'xl'),
+  const output = resolveTextStyle(input.base)
+
+  for (const [breakpoint, value] of Object.entries(
+    input.responsive ?? {},
+  )) {
+    Object.assign(output, resolveTextStyle(value, breakpoint))
   }
+
+  return output
 }
 
 export { variable as textVariableName }
