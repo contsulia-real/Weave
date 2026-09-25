@@ -6,11 +6,10 @@ const stylesheet = `
   --weave-flex-shrink: 0;
   --weave-width: 1.5rem;
   --weave-height: 1.5rem;
-  --weave-color: var(--weave-color-primary);
   --weave-loading-duration: var(--weave-motion-duration-normal);
   --weave-loading-track: color-mix(
     in srgb,
-    currentColor 14%,
+    currentColor 16%,
     transparent
   );
 
@@ -27,33 +26,33 @@ const stylesheet = `
 :where(.weave-loading-indicator--medium) {
   --weave-width: 1.5rem;
   --weave-height: 1.5rem;
-  --weave-loading-stroke: 0.1875rem;
-  --weave-loading-dot: 0.3125rem;
+  --weave-loading-stroke: 0.15625rem;
+  --weave-loading-dot: 0.375rem;
 }
 
 :where(.weave-loading-indicator--large) {
   --weave-width: 2rem;
   --weave-height: 2rem;
-  --weave-loading-stroke: 0.25rem;
-  --weave-loading-dot: 0.4375rem;
+  --weave-loading-stroke: 0.1875rem;
+  --weave-loading-dot: 0.5rem;
 }
 
 :where(.weave-loading-indicator--speed-slow) {
-  --weave-loading-duration: 900ms;
+  --weave-loading-duration: var(--weave-motion-duration-slow);
 }
 
 :where(.weave-loading-indicator--speed-normal) {
-  --weave-loading-duration: 650ms;
+  --weave-loading-duration: var(--weave-motion-duration-normal);
 }
 
 :where(.weave-loading-indicator--speed-fast) {
-  --weave-loading-duration: 420ms;
+  --weave-loading-duration: var(--weave-motion-duration-fast);
 }
 
 :where(.weave-loading-indicator__ring) {
   width: 100%;
   height: 100%;
-  border-radius: 9999px;
+  border-radius: 50%;
 }
 
 :where(.weave-loading-indicator--spin)
@@ -62,13 +61,10 @@ const stylesheet = `
     conic-gradient(
       from -90deg,
       transparent 0deg,
-      color-mix(in srgb, currentColor 18%, transparent) 55deg,
-      color-mix(in srgb, currentColor 55%, transparent) 150deg,
-      currentColor 285deg,
-      transparent 318deg
-    ),
-    conic-gradient(
-      var(--weave-loading-track) 0deg 360deg
+      color-mix(in srgb, currentColor 20%, transparent) 72deg,
+      currentColor 250deg,
+      currentColor 330deg,
+      transparent 360deg
     );
   mask:
     radial-gradient(
@@ -98,11 +94,10 @@ const stylesheet = `
       transparent calc(100% - var(--weave-loading-stroke)),
       #000 0
     );
-  transform-origin: center;
   animation:
     weave-loading-pulse
     var(--weave-loading-duration)
-    var(--weave-motion-curve-standard)
+    ease-in-out
     infinite
     alternate;
 }
@@ -116,7 +111,7 @@ const stylesheet = `
   display: none;
   align-items: center;
   justify-content: center;
-  gap: calc(var(--weave-loading-dot) * 0.55);
+  gap: calc(var(--weave-loading-dot) * 0.65);
 }
 
 :where(.weave-loading-indicator--dots)
@@ -127,23 +122,24 @@ const stylesheet = `
 :where(.weave-loading-indicator__dot) {
   width: var(--weave-loading-dot);
   height: var(--weave-loading-dot);
-  border-radius: 9999px;
+  border-radius: 50%;
   background: currentColor;
   opacity: 0.32;
-  transform: translateY(18%) scale(0.72);
+  transform: scale(0.72);
+  transform-origin: center;
   animation:
     weave-loading-dot
-    calc(var(--weave-loading-duration) * 1.3)
-    var(--weave-motion-curve-standard)
+    var(--weave-loading-duration)
+    ease-in-out
     infinite;
 }
 
 :where([data-weave-loading-dot="2"]) {
-  animation-delay: calc(var(--weave-loading-duration) * -0.86);
+  animation-delay: calc(var(--weave-loading-duration) * -0.66);
 }
 
 :where([data-weave-loading-dot="3"]) {
-  animation-delay: calc(var(--weave-loading-duration) * -0.43);
+  animation-delay: calc(var(--weave-loading-duration) * -0.33);
 }
 
 @keyframes weave-loading-spin {
@@ -154,13 +150,11 @@ const stylesheet = `
 
 @keyframes weave-loading-pulse {
   from {
-    opacity: 0.68;
-    transform: scale(0.94);
+    opacity: 0.48;
   }
 
   to {
     opacity: 1;
-    transform: scale(1.02);
   }
 }
 
@@ -168,13 +162,13 @@ const stylesheet = `
   0%,
   60%,
   100% {
-    opacity: 0.32;
-    transform: translateY(18%) scale(0.72);
+    opacity: 0.28;
+    transform: scale(0.72);
   }
 
   30% {
     opacity: 1;
-    transform: translateY(-28%) scale(1);
+    transform: scale(1);
   }
 }
 
@@ -185,7 +179,7 @@ const stylesheet = `
   }
 
   :where(.weave-loading-indicator__dot) {
-    opacity: 1;
+    opacity: 0.72;
     transform: none;
   }
 }
