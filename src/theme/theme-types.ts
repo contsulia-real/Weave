@@ -25,6 +25,34 @@ export interface ThemeTokens {
   }
 }
 
+export interface InputThemeBase {
+  background?: string
+  color?: string
+  placeholderColor?: string
+  borderColor?: string
+  borderWidth?: ThemeScaleValue
+  radius?: ThemeScaleValue
+  minHeight?: ThemeScaleValue
+  paddingX?: ThemeScaleValue
+  paddingY?: ThemeScaleValue
+  fontSize?: ThemeScaleValue
+  lineHeight?: ThemeScaleValue
+  focusOutlineWidth?: ThemeScaleValue
+  focusOutlineColor?: string
+  focusOutlineStyle?: string
+  focusOutlineOffset?: ThemeScaleValue
+}
+
+export interface InputTheme {
+  base?: InputThemeBase
+  states?: {
+    disabled?: {
+      opacity?: number
+      cursor?: string
+    }
+  }
+}
+
 export interface SwitchThemeBase {
   background?: string
   radius?: ThemeScaleValue
@@ -147,6 +175,7 @@ export interface ScrollbarTheme {
 
 export interface ThemeComponents {
   Button?: ButtonTheme
+  Input?: InputTheme
   Switch?: SwitchTheme
   Progress?: ProgressTheme
   Scrollbar?: ScrollbarTheme
