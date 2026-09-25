@@ -13,6 +13,7 @@ export interface ThemeFeedbackTokens {
   hoverLift?: ThemeScaleValue
   pressDepth?: ThemeScaleValue
   pressOffset?: ThemeScaleValue
+  hoverScale?: number
   pressScale?: number
   dragScale?: number
 }
