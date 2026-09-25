@@ -128,6 +128,72 @@ describe('automatic Scrollbar', () => {
     expect(thumb.style.transform).toBe('translateY(37.5px)')
   })
 
+  it('keeps tracks visible for overflow scroll semantics', () => {
+    const { getByTestId } = render(
+      <View
+        style={{
+          overflow: 'scroll',
+          width: '200px',
+          height: '100px',
+        }}
+        data={{
+          testid: 'always-scroll-host',
+        }}
+      />,
+    )
+
+    const host = getByTestId('always-scroll-host') as HTMLDivElement
+
+    Object.defineProperties(host, {
+      clientHeight: {
+        configurable: true,
+        value: 100,
+      },
+      scrollHeight: {
+        configurable: true,
+        value: 100,
+      },
+      clientWidth: {
+        configurable: true,
+        value: 200,
+      },
+      scrollWidth: {
+        configurable: true,
+        value: 200,
+      },
+    })
+
+    host.getBoundingClientRect = () => ({
+      x: 0,
+      y: 0,
+      top: 0,
+      right: 200,
+      bottom: 100,
+      left: 0,
+      width: 200,
+      height: 100,
+      toJSON: () => ({}),
+    })
+
+    fireEvent(window, new Event('resize'))
+
+    expect(
+      (
+        document.body.querySelector(
+          '[data-weave-scrollbar-orientation="vertical"]',
+        ) as HTMLDivElement
+      ).dataset.weaveScrollbarVisible,
+    ).toBe('true')
+
+    expect(
+      (
+        document.body.querySelector(
+          '[data-weave-scrollbar-orientation="horizontal"]',
+        ) as HTMLDivElement
+      ).dataset.weaveScrollbarVisible,
+    ).toBe('true')
+  })
+
   it('keeps size defaults class-based', () => {
     render(
       <View
