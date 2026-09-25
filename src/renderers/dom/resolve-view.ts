@@ -30,6 +30,7 @@ const CUSTOM_PROP_KEYS = new Set<string>([
   'style',
   'data',
   'focusable',
+  'autoFocus',
   'selectable',
   'disabled',
   'required',
@@ -301,7 +302,12 @@ function resolveStyleProps(
     props.bottom,
     props.left,
   )
-  setVariable(output, 'position', props.position, state)
+  setVariable(
+    output,
+    'position',
+    props.position ?? (props.layout === 'absolute' ? 'relative' : undefined),
+    state,
+  )
   setVariable(output, 'top', top, state)
   setVariable(output, 'right', right, state)
   setVariable(output, 'bottom', bottom, state)
@@ -472,7 +478,7 @@ export function resolveDOMView(props: ViewProps): ResolvedDOMView {
   if (props.controls !== undefined) domProps['aria-controls'] = props.controls
   if (props.owns !== undefined) domProps['aria-owns'] = props.owns
 
-  if (props.focusable && props.tabIndex === undefined) {
+  if ((props.focusable || props.autoFocus) && props.tabIndex === undefined) {
     domProps.tabIndex = 0
   } else if (props.tabIndex !== undefined) {
     domProps.tabIndex = props.tabIndex
