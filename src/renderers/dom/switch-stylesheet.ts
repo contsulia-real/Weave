@@ -73,6 +73,7 @@ const stylesheet = `
 
   touch-action: none;
   will-change: transform;
+  transform-origin: center;
 
   transition:
     transform var(--weave-motion-duration-fast)
@@ -84,6 +85,31 @@ const stylesheet = `
 :where(.weave-switch[aria-checked="true"]) > :where(.weave-switch__thumb) {
   --weave-component-transform: translateX(var(--weave-switch-shift));
 }
+
+:where(.weave-switch__thumb)::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: var(--weave-switch-drag-extension, 0);
+  height: 42%;
+  pointer-events: none;
+  background: var(--weave-switch-thumb-background);
+  border-radius: var(--weave-switch-thumb-radius);
+  transform: translateY(-50%);
+}
+
+:where(
+  .weave-switch__thumb[data-weave-switch-drag-direction="forward"]
+)::before {
+  right: 50%;
+}
+
+:where(
+  .weave-switch__thumb[data-weave-switch-drag-direction="backward"]
+)::before {
+  left: 50%;
+}
+
 
 :where(.weave-switch:hover:not([aria-disabled="true"]))
   > :where(.weave-switch__thumb) {
