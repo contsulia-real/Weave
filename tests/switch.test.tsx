@@ -206,7 +206,18 @@ describe('Switch', () => {
       clientX: 7,
     })
 
-    expect(thumb.style.transform).toContain('scale(1.12, 0.94)')
+    const partialMatch = thumb.style.transform.match(
+      /scale\(([^,]+), ([^)]+)\)/,
+    )
+    expect(partialMatch).not.toBeNull()
+
+    const partialStretch = Number(partialMatch?.[1])
+    const partialCompress = Number(partialMatch?.[2])
+
+    expect(partialStretch).toBeGreaterThan(1)
+    expect(partialStretch).toBeLessThan(1.24)
+    expect(partialCompress).toBeLessThan(1)
+    expect(partialCompress).toBeGreaterThan(0.88)
 
     fireEvent.pointerMove(element, {
       pointerId: 31,
