@@ -27,6 +27,9 @@ describe('automatic Scrollbar', () => {
     const host = getByTestId('scroll-host')
 
     expect(host.className).toContain('weave-scroll-host')
+    expect(host.className).toContain(
+      'weave-scroll-host--overflow-auto',
+    )
     expect(host.getAttribute('scrollbar')).toBeNull()
 
     const tracks = document.body.querySelectorAll(
@@ -47,6 +50,21 @@ describe('automatic Scrollbar', () => {
     )
     expect(stylesheet?.textContent).toContain(
       'scrollbar-width: none',
+    )
+  })
+
+  it('guarantees native overflow clipping through a low-specificity class', () => {
+    render(<View overflow="auto">content</View>)
+
+    const stylesheet = document.querySelector(
+      'style[data-weave-view-styles]',
+    )
+
+    expect(stylesheet?.textContent).toContain(
+      ':where(.weave-scroll-host--overflow-auto)',
+    )
+    expect(stylesheet?.textContent).toContain(
+      'overflow: auto;',
     )
   })
 
