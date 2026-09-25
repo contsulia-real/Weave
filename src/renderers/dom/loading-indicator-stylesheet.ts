@@ -1,4 +1,10 @@
 const stylesheet = `
+@property --weave-loading-progress {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+
 :where(.weave-loading-indicator) {
   --weave-display: inline-grid;
   --weave-position: relative;
@@ -6,8 +12,7 @@ const stylesheet = `
   --weave-flex-shrink: 0;
   --weave-width: 1.5rem;
   --weave-height: 1.5rem;
-  --weave-loading-duration:
-    calc(var(--weave-motion-duration-normal) * 5);
+  --weave-loading-duration: var(--weave-motion-duration-normal);
   --weave-loading-track: color-mix(
     in srgb,
     currentColor 16%,
@@ -38,28 +43,46 @@ const stylesheet = `
   --weave-loading-dot: 0.375rem;
 }
 
-:where(.weave-loading-indicator--speed-slow) {
+:where(
+  .weave-loading-indicator--determined.weave-loading-indicator--speed-slow
+) {
+  --weave-loading-duration: var(--weave-motion-duration-slow);
+}
+
+:where(
+  .weave-loading-indicator--determined.weave-loading-indicator--speed-normal
+) {
+  --weave-loading-duration: var(--weave-motion-duration-normal);
+}
+
+:where(
+  .weave-loading-indicator--determined.weave-loading-indicator--speed-fast
+) {
+  --weave-loading-duration: var(--weave-motion-duration-fast);
+}
+
+:where(
+  .weave-loading-indicator--undetermined.weave-loading-indicator--speed-slow
+) {
   --weave-loading-duration:
     calc(var(--weave-motion-duration-slow) * 4);
 }
 
-:where(.weave-loading-indicator--speed-normal) {
+:where(
+  .weave-loading-indicator--undetermined.weave-loading-indicator--speed-normal
+) {
   --weave-loading-duration:
     calc(var(--weave-motion-duration-normal) * 5);
 }
 
-:where(.weave-loading-indicator--speed-fast) {
+:where(
+  .weave-loading-indicator--undetermined.weave-loading-indicator--speed-fast
+) {
   --weave-loading-duration:
     calc(var(--weave-motion-duration-fast) * 6);
 }
 
-:where(.weave-loading-indicator__ring),
-:where(.weave-loading-indicator__dots) {
-  grid-area: 1 / 1;
-}
-
 :where(.weave-loading-indicator__ring) {
-  --weave-position: relative;
   --weave-width: 100%;
   --weave-height: 100%;
   --weave-border-top-left-radius: 50%;
@@ -83,43 +106,11 @@ const stylesheet = `
       currentColor var(--weave-loading-progress),
       var(--weave-loading-track) 0
     );
-}
 
-:where(.weave-loading-indicator--determined.weave-loading-indicator--spin)
-  > :where(.weave-loading-indicator__ring)::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background:
-    conic-gradient(
-      from -90deg,
-      transparent 0deg,
-      transparent 310deg,
-      color-mix(in srgb, currentColor 24%, transparent) 338deg,
-      currentColor 360deg
-    );
-  mask:
-    radial-gradient(
-      farthest-side,
-      transparent calc(100% - var(--weave-loading-stroke)),
-      #000 0
-    );
-  animation:
-    weave-loading-spin
+  transition:
+    --weave-loading-progress
     var(--weave-loading-duration)
-    linear
-    infinite;
-}
-
-:where(.weave-loading-indicator--determined.weave-loading-indicator--pulse)
-  > :where(.weave-loading-indicator__ring) {
-  animation:
-    weave-loading-pulse
-    var(--weave-loading-duration)
-    ease-in-out
-    infinite
-    alternate;
+    var(--weave-motion-curve-standard);
 }
 
 :where(.weave-loading-indicator--undetermined.weave-loading-indicator--spin)
@@ -133,6 +124,7 @@ const stylesheet = `
       currentColor 330deg,
       transparent 360deg
     );
+
   animation:
     weave-loading-spin
     var(--weave-loading-duration)
@@ -142,12 +134,8 @@ const stylesheet = `
 
 :where(.weave-loading-indicator--undetermined.weave-loading-indicator--pulse)
   > :where(.weave-loading-indicator__ring) {
-  --weave-background:
-    conic-gradient(
-      from -90deg,
-      currentColor 100%,
-      transparent 0
-    );
+  --weave-background: currentColor;
+
   animation:
     weave-loading-pulse
     var(--weave-loading-duration)
@@ -157,25 +145,10 @@ const stylesheet = `
 }
 
 :where(.weave-loading-indicator__dots) {
-  --weave-display: none;
+  --weave-display: flex;
   --weave-align-items: center;
   --weave-justify-content: center;
   --weave-gap: calc(var(--weave-loading-dot) * 0.65);
-}
-
-:where(.weave-loading-indicator--dots)
-  > :where(.weave-loading-indicator__dots) {
-  --weave-display: flex;
-}
-
-:where(.weave-loading-indicator--undetermined.weave-loading-indicator--dots)
-  > :where(.weave-loading-indicator__ring) {
-  --weave-display: none;
-}
-
-:where(.weave-loading-indicator--determined.weave-loading-indicator--dots)
-  > :where(.weave-loading-indicator__dots) {
-  transform: scale(0.72);
 }
 
 :where(.weave-loading-indicator__dot) {
@@ -213,7 +186,7 @@ const stylesheet = `
 
 @keyframes weave-loading-pulse {
   from {
-    opacity: 0.48;
+    opacity: 0.4;
   }
 
   to {
@@ -236,8 +209,13 @@ const stylesheet = `
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :where(.weave-loading-indicator__ring),
-  :where(.weave-loading-indicator__ring)::after,
+  :where(.weave-loading-indicator--determined)
+    > :where(.weave-loading-indicator__ring) {
+    transition: none;
+  }
+
+  :where(.weave-loading-indicator--undetermined)
+    :where(.weave-loading-indicator__ring),
   :where(.weave-loading-indicator__dot) {
     animation: none !important;
   }
