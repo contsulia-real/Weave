@@ -15,9 +15,6 @@ import {
 } from '../../renderers/dom/resolve-view'
 import { ensureViewStylesheet } from '../../renderers/dom/view-stylesheet'
 
-export type HostAttributeStyle = CSSProperties &
-  Record<`--${string}`, string | number | undefined>
-
 export interface ViewHostResult<TElement extends HTMLElement> {
   elementRef: RefObject<TElement | null>
   className: string | undefined
@@ -27,7 +24,7 @@ export interface ViewHostResult<TElement extends HTMLElement> {
 
 export function useViewHost<TElement extends HTMLElement>(
   props: ViewProps<TElement>,
-  componentStyle?: HostAttributeStyle,
+  componentStyle?: CSSProperties,
 ): ViewHostResult<TElement> {
   useInsertionEffect(ensureViewStylesheet, [])
 
