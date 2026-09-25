@@ -2713,7 +2713,7 @@ Text
     </View>
   }
 >
-  <Button icon="device-floppy" />
+  <Button icon={IconDeviceFloppy} />
 </ToolTip>
 ```
 
