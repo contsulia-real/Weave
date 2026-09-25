@@ -267,8 +267,8 @@ export interface ViewSemanticProps {
 export type ViewDataValue = string | number | boolean | null | undefined
 export type ViewData = Readonly<Record<string, ViewDataValue>>
 
-type NativeDivProps = Omit<
-  HTMLAttributes<HTMLDivElement>,
+type NativeElementProps<TElement extends HTMLElement> = Omit<
+  HTMLAttributes<TElement>,
   | 'children'
   | 'className'
   | 'style'
@@ -279,12 +279,12 @@ type NativeDivProps = Omit<
   | 'tabIndex'
 >
 
-export interface ViewProps
-  extends NativeDivProps,
-    ViewStyleProps,
-    ViewSemanticProps {
+export type ViewProps<TElement extends HTMLElement = HTMLDivElement> =
+  NativeElementProps<TElement> &
+  ViewStyleProps &
+  ViewSemanticProps & {
   children?: ReactNode
-  ref?: Ref<HTMLDivElement>
+  ref?: Ref<TElement>
   className?: string
   style?: CSSProperties
 
