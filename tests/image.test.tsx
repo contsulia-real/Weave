@@ -24,6 +24,30 @@ function runtimeRule(
   ).replace(/\s+/g, '')
 }
 
+function runtimeProperty(
+  element: Element,
+  prefix: string,
+  property: string,
+): string {
+  const className = [...element.classList].find((name) =>
+    name.startsWith(prefix),
+  )
+
+  expect(className).toBeDefined()
+
+  const styleElement = document.querySelector<HTMLStyleElement>(
+    `style[data-weave-runtime-class="${className}"]`,
+  )
+  const rule = styleElement?.sheet?.cssRules.item(0) as
+    | CSSStyleRule
+    | null
+    | undefined
+
+  expect(rule).toBeDefined()
+
+  return rule?.style.getPropertyValue(property) ?? ''
+}
+
 describe('Image', () => {
   it('renders a real img with image semantics and View props', () => {
     const onLoad = vi.fn()
@@ -63,7 +87,13 @@ describe('Image', () => {
     expect(element.getAttribute('position')).toBeNull()
 
     expect(imageRule).toContain('--weave-image-fit:cover;')
-    expect(imageRule).toContain('--weave-image-position:left top;')
+    expect(
+      runtimeProperty(
+        element,
+        'weave-image-props-',
+        '--weave-image-position',
+      ),
+    ).toBe('left top')
     expect(viewRule).toContain('--weave-width:20rem;')
     expect(viewRule).toContain('--weave-height:12rem;')
     expect(element.style.getPropertyValue('--weave-image-fit')).toBe('')
@@ -128,9 +158,13 @@ describe('Image', () => {
     )
 
     const element = getByTestId('position-image')
-    expect(runtimeRule(element, 'weave-image-props-')).toContain(
-      '--weave-image-position:25% 75%;',
-    )
+    expect(
+      runtimeProperty(
+        element,
+        'weave-image-props-',
+        '--weave-image-position',
+      ),
+    ).toBe('25% 75%')
   })
 
   it('revokes the previous object URL when Blob source changes', () => {
