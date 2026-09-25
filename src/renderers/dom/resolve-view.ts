@@ -453,14 +453,16 @@ function dataAttributes(data: ViewData | undefined): Record<string, string> {
   )
 }
 
-export interface ResolvedDOMView {
-  domProps: HTMLAttributes<HTMLDivElement>
+export interface ResolvedDOMView<TElement extends HTMLElement> {
+  domProps: HTMLAttributes<TElement>
   attributeStyle: CSSVariableStyle
-  layout: ViewProps['layout']
+  layout: ViewProps<TElement>['layout']
 }
 
-export function resolveDOMView(props: ViewProps): ResolvedDOMView {
-  const domProps: HTMLAttributes<HTMLDivElement> = {}
+export function resolveDOMView<TElement extends HTMLElement>(
+  props: ViewProps<TElement>,
+): ResolvedDOMView<TElement> {
+  const domProps: HTMLAttributes<TElement> = {}
   const writableDOMProps = domProps as Record<string, unknown>
 
   for (const [key, value] of Object.entries(props)) {
