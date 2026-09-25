@@ -27,7 +27,7 @@ export function Image({
   const {
     elementRef,
     className,
-    mergedStyle,
+    inlineStyle,
     resolved,
   } = useViewHost(hostProps, componentStyle, 'image')
 
@@ -67,7 +67,7 @@ export function Image({
       data-weave-image=""
       data-weave-layout={resolved.layout}
       className={['weave-image', className].filter(Boolean).join(' ')}
-      style={mergedStyle}
+      style={inlineStyle}
     />
   )
 }
