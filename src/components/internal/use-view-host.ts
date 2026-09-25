@@ -4,18 +4,32 @@ import {
   useLayoutEffect,
   useRef,
 } from 'react'
-import type { CSSProperties } from 'react'
+import type {
+  CSSProperties,
+  HTMLAttributes,
+  RefObject,
+} from 'react'
 import type { ViewProps } from '../../core/view-types'
-import { resolveDOMView } from '../../renderers/dom/resolve-view'
+import {
+  resolveDOMView,
+  type ResolvedDOMView,
+} from '../../renderers/dom/resolve-view'
 import { ensureViewStylesheet } from '../../renderers/dom/view-stylesheet'
 
 export type HostAttributeStyle = CSSProperties &
-  Record<`--weave-${string}`, string | number | undefined>
+  Record<`--${string}`, string | number | undefined>
+
+export interface ViewHostResult<TElement extends HTMLElement> {
+  elementRef: RefObject<TElement | null>
+  className: string | undefined
+  mergedStyle: CSSProperties
+  resolved: ResolvedDOMView<TElement>
+}
 
 export function useViewHost<TElement extends HTMLElement>(
   props: ViewProps<TElement>,
   componentStyle?: HostAttributeStyle,
-) {
+): ViewHostResult<TElement> {
   useInsertionEffect(ensureViewStylesheet, [])
 
   const {
@@ -33,11 +47,11 @@ export function useViewHost<TElement extends HTMLElement>(
   }, [autoFocus])
 
   const resolved = resolveDOMView(props)
-  const mergedStyle = {
+  const mergedStyle: CSSProperties = {
     ...resolved.attributeStyle,
     ...componentStyle,
     ...style,
-  } as CSSProperties
+  }
 
   return {
     elementRef,
