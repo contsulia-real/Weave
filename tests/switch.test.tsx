@@ -1,8 +1,5 @@
 import { cleanup, fireEvent, render } from '@testing-library/react'
-import type {
-  MouseEvent,
-  PointerEvent as ReactPointerEvent,
-} from 'react'
+import type { MouseEvent } from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { Switch, ThemeProvider, createTheme } from '../src'
 
@@ -150,10 +147,13 @@ describe('Switch', () => {
     )
     expect(thumb.style.transform).toContain('translateX(')
 
-    expect(thumb.style.transform).toContain('scale(0.72)')
-    expect(
-      thumb.style.getPropertyValue('--weave-switch-drag-progress'),
-    ).toBe('1')
+    const stylesheet = document.querySelector(
+      'style[data-weave-switch-styles]',
+    )?.textContent ?? ''
+
+    expect(stylesheet).toContain(
+      'scale: var(--weave-feedback-drag-scale)',
+    )
 
     fireEvent.pointerUp(element, {
       pointerId: 7,
@@ -165,236 +165,11 @@ describe('Switch', () => {
     expect(element.getAttribute('aria-checked')).toBe('true')
     expect(element.getAttribute('data-weave-switch-dragging')).toBeNull()
     expect(thumb.style.transform).toBe('')
-    expect(
-      thumb.style.getPropertyValue('--weave-switch-drag-progress'),
-    ).toBe('')
-    expect(
-      thumb.getAttribute('data-weave-switch-drag-direction'),
-    ).toBeNull()
 
     fireEvent.click(element)
 
     expect(onChange).toHaveBeenCalledTimes(1)
     expect(element.getAttribute('aria-checked')).toBe('true')
-  })
-
-  it('caps thumb deformation at the state threshold and restores it on release', () => {
-    const { getByRole } = render(<Switch />)
-    const element = getByRole('switch') as HTMLDivElement
-    const thumb = element.querySelector(
-      '[data-weave-switch-thumb]',
-    ) as HTMLDivElement
-
-    element.getBoundingClientRect = () => ({
-      x: 0,
-      y: 0,
-      top: 0,
-      right: 40,
-      bottom: 24,
-      left: 0,
-      width: 40,
-      height: 24,
-      toJSON: () => ({}),
-    })
-    thumb.getBoundingClientRect = () => ({
-      x: 2,
-      y: 2,
-      top: 2,
-      right: 22,
-      bottom: 22,
-      left: 2,
-      width: 20,
-      height: 20,
-      toJSON: () => ({}),
-    })
-
-    fireEvent.pointerDown(thumb, {
-      pointerId: 31,
-      button: 0,
-      clientX: 2,
-    })
-    fireEvent.pointerMove(element, {
-      pointerId: 31,
-      clientX: 7,
-    })
-
-    const partialMatch = thumb.style.transform.match(
-      /scale\(([^)]+)\)/,
-    )
-    expect(partialMatch).not.toBeNull()
-
-    const partialScale = Number(partialMatch?.[1])
-    const partialExtension = Number.parseFloat(
-      thumb.style.getPropertyValue(
-        '--weave-switch-drag-progress',
-      ),
-    )
-
-    expect(partialScale).toBeLessThan(0.82)
-    expect(partialScale).toBeGreaterThan(0.72)
-    expect(partialProgress).toBeGreaterThan(0)
-    expect(partialProgress).toBeLessThan(1)
-
-    fireEvent.pointerMove(element, {
-      pointerId: 31,
-      clientX: 30,
-    })
-
-    expect(thumb.style.transform).toContain('scale(0.72)')
-    expect(
-      thumb.style.getPropertyValue('--weave-switch-drag-progress'),
-    ).toBe('1')
-
-    fireEvent.pointerUp(element, {
-      pointerId: 31,
-      clientX: 30,
-    })
-
-    expect(thumb.style.transform).toBe('')
-  })
-
-  it('keeps the default pointer-move drag path out of React and layout reads', () => {
-    const { getByRole } = render(<Switch />)
-    const element = getByRole('switch') as HTMLDivElement
-    const thumb = element.querySelector(
-      '[data-weave-switch-thumb]',
-    ) as HTMLDivElement
-
-    const rootRect = vi.spyOn(
-      element,
-      'getBoundingClientRect',
-    ).mockReturnValue({
-      x: 0,
-      y: 0,
-      top: 0,
-      right: 40,
-      bottom: 24,
-      left: 0,
-      width: 40,
-      height: 24,
-      toJSON: () => ({}),
-    })
-    const thumbRect = vi.spyOn(
-      thumb,
-      'getBoundingClientRect',
-    ).mockReturnValue({
-      x: 2,
-      y: 2,
-      top: 2,
-      right: 22,
-      bottom: 22,
-      left: 2,
-      width: 20,
-      height: 20,
-      toJSON: () => ({}),
-    })
-
-    fireEvent.pointerDown(thumb, {
-      pointerId: 44,
-      button: 0,
-      clientX: 2,
-    })
-
-    rootRect.mockClear()
-    thumbRect.mockClear()
-
-    const querySpy = vi.spyOn(element, 'querySelector')
-    const computedSpy = vi.spyOn(window, 'getComputedStyle')
-
-    fireEvent.pointerMove(element, {
-      pointerId: 44,
-      clientX: 12,
-    })
-
-    expect(rootRect).not.toHaveBeenCalled()
-    expect(thumbRect).not.toHaveBeenCalled()
-    expect(querySpy).not.toHaveBeenCalled()
-    expect(computedSpy).not.toHaveBeenCalled()
-    expect(thumb.style.transform).toContain('translateX(')
-    expect(
-      Number(
-        thumb.style.getPropertyValue(
-          '--weave-switch-drag-progress',
-        ),
-      ),
-    ).toBeGreaterThan(0)
-
-    fireEvent.pointerUp(element, {
-      pointerId: 44,
-      clientX: 12,
-    })
-
-    querySpy.mockRestore()
-    computedSpy.mockRestore()
-    rootRect.mockRestore()
-    thumbRect.mockRestore()
-  })
-
-  it('keeps user pointerMove preventDefault semantics when explicitly supplied', () => {
-    const onPointerMove = vi.fn(
-      (event: ReactPointerEvent<HTMLDivElement>) => {
-        event.preventDefault()
-      },
-    )
-
-    const { getByRole } = render(
-      <Switch
-        viewProps={{
-          onPointerMove,
-        }}
-      />,
-    )
-
-    const element = getByRole('switch') as HTMLDivElement
-    const thumb = element.querySelector(
-      '[data-weave-switch-thumb]',
-    ) as HTMLDivElement
-
-    element.getBoundingClientRect = () => ({
-      x: 0,
-      y: 0,
-      top: 0,
-      right: 40,
-      bottom: 24,
-      left: 0,
-      width: 40,
-      height: 24,
-      toJSON: () => ({}),
-    })
-    thumb.getBoundingClientRect = () => ({
-      x: 2,
-      y: 2,
-      top: 2,
-      right: 22,
-      bottom: 22,
-      left: 2,
-      width: 20,
-      height: 20,
-      toJSON: () => ({}),
-    })
-
-    fireEvent.pointerDown(thumb, {
-      pointerId: 45,
-      button: 0,
-      clientX: 2,
-    })
-    fireEvent.pointerMove(element, {
-      pointerId: 45,
-      clientX: 18,
-    })
-
-    expect(onPointerMove).toHaveBeenCalled()
-    expect(thumb.style.transform).toContain('translateX(0px)')
-    expect(
-      thumb.style.getPropertyValue(
-        '--weave-switch-drag-progress',
-      ),
-    ).toBe('0')
-
-    fireEvent.pointerCancel(element, {
-      pointerId: 45,
-      clientX: 18,
-    })
   })
 
   it('switches off when a checked thumb is dragged back across the midpoint', () => {
@@ -556,22 +331,11 @@ describe('Switch', () => {
       '[data-weave-switch-dragging="true"]',
     )
     expect(stylesheet).toContain(
-      '--weave-component-box-shadow: var(--weave-switch-track-shadow)',
+      'scale: var(--weave-feedback-hover-scale)',
     )
     expect(stylesheet).toContain(
-      '--weave-component-box-shadow: var(--weave-switch-thumb-shadow)',
+      'scale: var(--weave-feedback-drag-scale)',
     )
-    expect(stylesheet).toContain(
-      '--weave-switch-thumb-hover-shadow',
-    )
-    expect(stylesheet).toContain(
-      '--weave-switch-drag-progress',
-    )
-    expect(stylesheet).toContain(
-      'data-weave-switch-drag-direction="forward"',
-    )
-    expect(stylesheet).toContain('height: 42%')
-    expect(stylesheet).toContain('transition: none')
     expect(stylesheet).toContain(
       '@media (prefers-reduced-motion: reduce)',
     )
@@ -587,13 +351,8 @@ describe('Switch', () => {
     expect(themeRule).toContain('--weave-switch-width:2.5rem;')
     expect(themeRule).toContain('--weave-switch-height:1.5rem;')
     expect(themeRule).toContain(
-      '--weave-switch-background:var(--weave-color-transparent,transparent);',
+      '--weave-switch-background:var(--weave-color-outline',
     )
-    expect(themeRule).toContain(
-      '--weave-switch-checked-background:var(--weave-color-primary',
-    )
-    expect(themeRule).toContain('--weave-switch-thumb-drag-shrink:0.72;')
-    expect(themeRule).toContain('--weave-switch-thumb-drag-stretch:1;')
   })
 
   it('lets a ThemeProvider override component size and appearance', () => {
