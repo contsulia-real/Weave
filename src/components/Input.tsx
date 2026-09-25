@@ -1,7 +1,6 @@
 import type {
   ChangeEvent,
   InputHTMLAttributes,
-  TextareaHTMLAttributes,
 } from 'react'
 import type {
   InputProps,
