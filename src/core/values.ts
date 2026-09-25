@@ -105,6 +105,12 @@ function shadowPart(value: ShadowDefinition): string {
   return `${x} ${y} ${blur} ${spread} ${shadowColor}`
 }
 
+function isShadowArray(
+  value: ShadowDefinition | readonly ShadowDefinition[],
+): value is readonly ShadowDefinition[] {
+  return Array.isArray(value)
+}
+
 export function shadow(value: ShadowValue | undefined): string | undefined {
   if (value === undefined) return undefined
 
@@ -113,7 +119,10 @@ export function shadow(value: ShadowValue | undefined): string | undefined {
     return `var(--weave-shadow-${value})`
   }
 
-  const values = Array.isArray(value) ? value : [value]
+  const values: readonly ShadowDefinition[] = isShadowArray(value)
+    ? value
+    : [value]
+
   return values.map(shadowPart).join(', ')
 }
 
