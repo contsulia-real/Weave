@@ -3,7 +3,6 @@ import {
   useInsertionEffect,
   useLayoutEffect,
   useRef,
-  type CSSProperties,
   type PointerEvent,
   type RefObject,
 } from 'react'
@@ -13,17 +12,10 @@ import type {
   ScrollbarSize,
   ViewProps,
 } from '../../core/view-types'
-import {
-  color,
-  radius,
-} from '../../core/values'
 import { ensureScrollbarStylesheet } from '../../renderers/dom/scrollbar-stylesheet'
 import { useViewHost } from './use-view-host'
 
 type Orientation = 'vertical' | 'horizontal'
-
-type ScrollbarStyle = CSSProperties &
-  Record<`--weave-scrollbar-${string}`, string | number | undefined>
 
 interface AutoScrollbarProps {
   targetRef: RefObject<HTMLDivElement | null>
@@ -65,28 +57,99 @@ function allowsNativeScrolling(value: string): boolean {
   return value === 'auto' || value === 'scroll' || value === 'overlay'
 }
 
-function scrollbarConfigStyle(
+const TOKEN_NAME = /^[A-Za-z][A-Za-z0-9_-]*$/
+
+function copyToken(
+  track: HTMLElement,
+  computed: CSSStyleDeclaration,
+  variable: string,
+): void {
+  const value = computed.getPropertyValue(variable).trim()
+  if (value.length > 0) {
+    track.style.setProperty(variable, value)
+  }
+}
+
+function syncScrollbarTheme(
+  track: HTMLElement,
+  computed: CSSStyleDeclaration,
   config: ScrollbarConfig | undefined,
-): ScrollbarStyle {
-  const output: ScrollbarStyle = {}
+): void {
+  track.style.removeProperty('--weave-scrollbar-color')
+  track.style.removeProperty('--weave-scrollbar-track-color')
+  track.style.removeProperty('--weave-scrollbar-radius')
+  track.style.removeProperty('--weave-scrollbar-opacity')
+
+  copyToken(track, computed, '--weave-color-secondary')
+  copyToken(track, computed, '--weave-radius-full')
 
   if (config?.color !== undefined) {
-    output['--weave-scrollbar-color'] = color(config.color)
+    if (TOKEN_NAME.test(config.color)) {
+      copyToken(
+        track,
+        computed,
+        `--weave-color-${config.color}`,
+      )
+      track.style.setProperty(
+        '--weave-scrollbar-color',
+        `var(--weave-color-${config.color}, ${config.color})`,
+      )
+    } else {
+      track.style.setProperty('--weave-scrollbar-color', config.color)
+    }
   }
 
   if (config?.trackColor !== undefined) {
-    output['--weave-scrollbar-track-color'] = color(config.trackColor)
+    if (TOKEN_NAME.test(config.trackColor)) {
+      copyToken(
+        track,
+        computed,
+        `--weave-color-${config.trackColor}`,
+      )
+      track.style.setProperty(
+        '--weave-scrollbar-track-color',
+        `var(--weave-color-${config.trackColor}, ${config.trackColor})`,
+      )
+    } else {
+      track.style.setProperty(
+        '--weave-scrollbar-track-color',
+        config.trackColor,
+      )
+    }
   }
 
   if (config?.radius !== undefined) {
-    output['--weave-scrollbar-radius'] = radius(config.radius)
+    if (
+      typeof config.radius === 'string' &&
+      ['small', 'medium', 'large', 'full'].includes(config.radius)
+    ) {
+      copyToken(
+        track,
+        computed,
+        `--weave-radius-${config.radius}`,
+      )
+      track.style.setProperty(
+        '--weave-scrollbar-radius',
+        `var(--weave-radius-${config.radius})`,
+      )
+    } else if (config.radius === 'none') {
+      track.style.setProperty('--weave-scrollbar-radius', '0')
+    } else {
+      track.style.setProperty(
+        '--weave-scrollbar-radius',
+        typeof config.radius === 'number'
+          ? `${config.radius}rem`
+          : config.radius,
+      )
+    }
   }
 
   if (config?.opacity !== undefined) {
-    output['--weave-scrollbar-opacity'] = config.opacity
+    track.style.setProperty(
+      '--weave-scrollbar-opacity',
+      String(config.opacity),
+    )
   }
-
-  return output
 }
 
 export function AutoScrollbar({
@@ -102,7 +165,6 @@ export function AutoScrollbar({
   const dragRef = useRef<DragState | null>(null)
 
   const size: ScrollbarSize = config?.size ?? 'medium'
-  const configStyle = scrollbarConfigStyle(config)
 
   const update = useCallback(() => {
     const target = targetRef.current
@@ -123,6 +185,9 @@ export function AutoScrollbar({
 
     const computed = getComputedStyle(target)
     const rect = target.getBoundingClientRect()
+
+    syncScrollbarTheme(verticalTrack, computed, config)
+    syncScrollbarTheme(horizontalTrack, computed, config)
 
     const verticalVisible =
       allowsNativeScrolling(computed.overflowY) &&
@@ -190,7 +255,10 @@ export function AutoScrollbar({
       horizontalThumb.style.width = `${thumbLength}px`
       horizontalThumb.style.transform = `translateX(${offset}px)`
     }
-  }, [targetRef])
+  }, [
+    config,
+    targetRef,
+  ])
 
   useLayoutEffect(() => {
     const target = targetRef.current
@@ -376,7 +444,6 @@ export function AutoScrollbar({
         ref={verticalTrackRef}
         aria-hidden
         className={`weave-scrollbar weave-scrollbar--${size} weave-scrollbar--vertical`}
-        style={configStyle}
         onPointerDown={(event) => pageTrack('vertical', event)}
         data={{
           'weave-scrollbar': '',
@@ -401,7 +468,6 @@ export function AutoScrollbar({
         ref={horizontalTrackRef}
         aria-hidden
         className={`weave-scrollbar weave-scrollbar--${size} weave-scrollbar--horizontal`}
-        style={configStyle}
         onPointerDown={(event) => pageTrack('horizontal', event)}
         data={{
           'weave-scrollbar': '',
