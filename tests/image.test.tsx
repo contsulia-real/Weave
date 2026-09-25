@@ -85,6 +85,9 @@ describe('Image', () => {
     expect(stylesheet?.textContent).toContain(
       ':where([data-weave-image])',
     )
+    expect(stylesheet?.textContent).toContain(
+      'var(--weave-overflow, clip)',
+    )
   })
 
   it('passes precise object-position values through unchanged', () => {
