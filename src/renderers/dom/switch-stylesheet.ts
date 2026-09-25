@@ -94,9 +94,18 @@ const stylesheet = `
   border-radius: var(--weave-switch-thumb-radius);
   background: var(--weave-switch-thumb-background);
   pointer-events: none;
+  visibility: hidden;
   transform: translateY(-50%) scaleX(0);
   transform-origin: right center;
   will-change: transform;
+}
+
+:where(.weave-switch[data-weave-switch-dragging="true"])
+  > :where(
+    .weave-switch__thumb[data-weave-switch-drag-direction]
+  )
+  > :where(.weave-switch__drag-tail) {
+  visibility: visible;
 }
 
 :where(
