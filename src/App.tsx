@@ -1,12 +1,15 @@
 import { useState } from 'react'
 import {
+  IconArrowRight,
   IconBell,
+  IconPlus,
   IconSearch,
   IconSearchFilled,
   IconSettings,
   IconUser,
 } from '@tabler/icons-react'
 import {
+  Button,
   Icon,
   Image,
   Input,
@@ -295,6 +298,76 @@ function App() {
                 Custom SVG
               </Text>
             </View>
+          </View>
+        </View>
+
+        <View layout="flex" direction="column" gap={0.75}>
+          <h2>Button</h2>
+          <p className="hint">
+            真实 button 语义；variant / size 可由主题和 breakpoint 覆盖，快捷 text/icon 与完整 children 两种内容入口互斥。
+          </p>
+
+          <View layout="flex" direction="column" gap={1}>
+            <View layout="flex" direction="row" gap={0.75} align="center" wrap>
+              <Button text="Primary" variant="primary" />
+              <Button text="Secondary" variant="secondary" />
+              <Button text="Tertiary" variant="tertiary" />
+              <Button text="Ghost" variant="ghost" />
+              <Button text="Danger" variant="danger" />
+            </View>
+
+            <View layout="flex" direction="row" gap={0.75} align="center" wrap>
+              <Button text="Small" size="small" />
+              <Button text="Medium" size="medium" />
+              <Button text="Large" size="large" />
+            </View>
+
+            <View layout="flex" direction="row" gap={0.75} align="center" wrap>
+              <Button
+                text="Add item"
+                icon={IconPlus}
+                iconPosition="start"
+                variant="secondary"
+              />
+
+              <Button
+                text="Continue"
+                icon={IconArrowRight}
+                iconPosition="end"
+              />
+
+              <Button
+                icon={IconSearchFilled}
+                variant="ghost"
+                viewProps={{
+                  label: 'Search',
+                }}
+              />
+
+              <Button text="Loading" loading />
+
+              <Button variant="secondary">
+                <Icon
+                  icon={IconSettings}
+                  size="small"
+                  stroke="regular"
+                />
+                <Text weight="bold">Custom children</Text>
+              </Button>
+            </View>
+
+            <Button
+              text="Responsive button"
+              size="small"
+              variant="secondary"
+              md={{
+                size: 'large',
+                variant: 'primary',
+              }}
+              viewProps={{
+                width: 'fit',
+              }}
+            />
           </View>
         </View>
 
