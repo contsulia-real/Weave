@@ -23,7 +23,7 @@ function runtimeRule(
     document.querySelector<HTMLStyleElement>(
       `style[data-weave-runtime-class="${className}"]`,
     )?.textContent ?? ''
-  )
+  ).replace(/\\s+/g, '')
 }
 
 describe('Theme', () => {
