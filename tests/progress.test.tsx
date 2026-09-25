@@ -173,14 +173,17 @@ describe('Progress', () => {
     expect(stylesheet?.textContent).toContain(
       'weave-progress-spin-rotate',
     )
-    expect(stylesheet?.textContent).toContain(
+    expect(stylesheet?.textContent).not.toContain(
       'weave-progress-spin-sweep',
     )
-    expect(stylesheet?.textContent).toContain(
+    expect(stylesheet?.textContent).not.toContain(
       '@property --weave-progress-spin-start',
     )
-    expect(stylesheet?.textContent).toContain(
+    expect(stylesheet?.textContent).not.toContain(
       '@property --weave-progress-spin-end',
+    )
+    expect(stylesheet?.textContent).toContain(
+      'currentColor 0deg 96deg',
     )
     expect(stylesheet?.textContent).toContain(
       'weave-progress-linear-leading',
@@ -196,6 +199,11 @@ describe('Progress', () => {
     )
     expect(stylesheet?.textContent).toContain(
       'translateX(',
+    )
+
+    const compact = stylesheet?.textContent.replace(/\s+/g, '') ?? ''
+    expect(compact).toContain(
+      'weave-progress-spin-rotatevar(--weave-progress-duration)linearinfinite',
     )
   })
 
