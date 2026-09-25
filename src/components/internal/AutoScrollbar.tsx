@@ -422,6 +422,7 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
     event.preventDefault()
     event.stopPropagation()
     event.currentTarget.setPointerCapture?.(event.pointerId)
+    track.dataset.weaveScrollbarDragging = 'true'
 
     const trackRect = track.getBoundingClientRect()
     const thumbRect = thumb.getBoundingClientRect()
@@ -487,6 +488,15 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
     if (dragRef.current?.pointerId !== event.pointerId) return
 
     event.currentTarget.releasePointerCapture?.(event.pointerId)
+
+    const track =
+      dragRef.current.orientation === 'vertical'
+        ? verticalTrackRef.current
+        : horizontalTrackRef.current
+    if (track !== null) {
+      delete track.dataset.weaveScrollbarDragging
+    }
+
     dragRef.current = null
   }
 
