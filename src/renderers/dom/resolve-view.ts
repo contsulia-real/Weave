@@ -56,6 +56,15 @@ const CUSTOM_PROP_KEYS = new Set<string>([
   'focus',
   'focusVisible',
   'disabledStyle',
+  'container',
+  'sm',
+  'md',
+  'lg',
+  'xl',
+  'containerSm',
+  'containerMd',
+  'containerLg',
+  'containerXl',
   'layout',
   'direction',
   'wrap',
@@ -425,6 +434,15 @@ function stateStyles(
   Object.assign(output, resolveStyleProps(value, state))
 }
 
+function responsiveStyles(
+  output: CSSVariableStyle,
+  prefix: string,
+  value: ViewStyleProps | undefined,
+): void {
+  if (value === undefined) return
+  Object.assign(output, resolveStyleProps(value, prefix))
+}
+
 function dataAttributes(data: ViewData | undefined): Record<string, string> {
   if (data === undefined) return {}
 
@@ -488,6 +506,22 @@ export function resolveDOMView(props: ViewProps): ResolvedDOMView {
   if (props.draggable !== undefined) domProps.draggable = props.draggable
 
   const attributeStyle = resolveStyleProps(props)
+
+  if (props.container !== undefined) {
+    setVariable(attributeStyle, 'containerType', 'inline-size')
+    setVariable(attributeStyle, 'containerName', props.container)
+  }
+
+  responsiveStyles(attributeStyle, 'sm', props.sm)
+  responsiveStyles(attributeStyle, 'md', props.md)
+  responsiveStyles(attributeStyle, 'lg', props.lg)
+  responsiveStyles(attributeStyle, 'xl', props.xl)
+
+  responsiveStyles(attributeStyle, 'container-sm', props.containerSm)
+  responsiveStyles(attributeStyle, 'container-md', props.containerMd)
+  responsiveStyles(attributeStyle, 'container-lg', props.containerLg)
+  responsiveStyles(attributeStyle, 'container-xl', props.containerXl)
+
   stateStyles(attributeStyle, 'hover', props.hover)
   stateStyles(attributeStyle, 'active', props.active)
   stateStyles(attributeStyle, 'focus', props.focus)
