@@ -61,10 +61,13 @@ describe('View DOM backend', () => {
     const element = getByTestId('priority')
     const rule = runtimeRule(element, 'weave-props-')
 
+    expect(element.className).toContain('weave-view')
     expect(element.className).toContain('user-class')
     expect(element.style.getPropertyValue('--weave-width')).toBe('')
     expect(element.style.width).toBe('10px')
+    expect(element.getAttribute('style')).toContain('width: 10px')
     expect(rule).toContain('--weave-width:20rem;')
+    expect(rule).not.toContain('10px')
 
     const frameworkStyles = document.querySelector(
       'style[data-weave-view-styles]',
