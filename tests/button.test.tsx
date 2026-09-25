@@ -306,13 +306,45 @@ describe('Button', () => {
     const rule = runtimeRule(element, 'weave-button-theme-')
 
     expect(rule).toContain(
-      '--weave-button-theme-medium-min-height:2.5rem;',
+      '--weave-button-theme-medium-min-height:2.125rem;',
     )
     expect(rule).toContain(
       '--weave-button-theme-primary-background:var(--weave-color-primary',
     )
     expect(rule).toContain(
       '--weave-button-theme-radius:0.75rem;',
+    )
+  })
+
+  it('uses the redesigned three-step Button size scale', () => {
+    const { getByRole, rerender } = render(
+      <Button text="Sized" size="small" />,
+    )
+
+    let rule = runtimeRule(
+      getByRole('button', { name: 'Sized' }),
+      'weave-button-theme-',
+    )
+
+    expect(rule).toContain(
+      '--weave-button-theme-small-min-height:1.75rem;',
+    )
+    expect(rule).toContain(
+      '--weave-button-theme-small-font-size:var(--weave-typography-size-compact);',
+    )
+
+    rerender(<Button text="Sized" size="large" />)
+
+    rule = runtimeRule(
+      getByRole('button', { name: 'Sized' }),
+      'weave-button-theme-',
+    )
+
+    expect(rule).toContain(
+      '--weave-button-theme-large-min-height:2.5rem;',
+    )
+    expect(rule).toContain(
+      '--weave-button-theme-large-font-size:var(--weave-typography-size-medium);',
     )
   })
 
