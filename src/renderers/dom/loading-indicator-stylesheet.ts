@@ -10,6 +10,10 @@ const stylesheet = `
 }
 
 :where([data-weave-loading]) {
+  --weave-display: inline-grid;
+  --weave-position: relative;
+  --weave-flex-grow: 0;
+  --weave-flex-shrink: 0;
   --weave-width: 1.5rem;
   --weave-height: 1.5rem;
   --weave-loading-track: color-mix(
@@ -18,10 +22,7 @@ const stylesheet = `
     transparent
   );
 
-  position: relative;
-  display: inline-grid;
   place-items: center;
-  flex: none;
 }
 
 :where([data-weave-loading][data-weave-loading-size="small"]) {
