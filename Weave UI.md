@@ -448,7 +448,7 @@ Image
 Input
 Icon
 Switch
-LoadingIndicator
+Progress
 Scrollbar
 ```
 
@@ -1532,8 +1532,8 @@ weave-switch__thumb
 只有无法静态枚举、必须在运行时连续变化的值，才允许通过最小化的 CSS 自定义属性传递，例如：
 
 ```text
-LoadingIndicator progress={0.68}
-LoadingIndicator speed={800}
+Progress progress={0.68}
+Progress speed={800}
 ```
 
 这类运行时值不承担组件默认视觉，只传递该实例的动态数据。
@@ -2080,80 +2080,196 @@ large
 
 ---
 
-# 16. `LoadingIndicator`
+# 16. `Progress`
 
-`LoadingIndicator` 是基础组件。
+`Progress` 是基础组件。
 
-它可以由一个或多个 `View` 构建。
+它由 `View` 构建，用来表达确定进度与不确定进度。
 
-公开状态只有两类：
+状态语义与视觉形态分离：
 
 ```text
-undetermined
-progress
+状态
+├─ undetermined
+└─ progress
+
+mode
+├─ spin
+└─ linear
+
+dotted
+├─ false
+└─ true
 ```
 
-两者互斥。
+## 16.1 状态
 
-## 16.1 不确定进度
+不确定进度：
 
 ```tsx
-<LoadingIndicator undetermined />
+<Progress undetermined />
 ```
 
-不确定进度没有数值进度。
-
-它必须持续运动；该运动属于组件对“不确定加载”状态的内建行为，不通过组件级 `animation` 属性选择。
-
-`speed` 控制持续运动速度。
-
-## 16.2 确定进度
+确定进度：
 
 ```tsx
-<LoadingIndicator progress={0.68} />
+<Progress progress={0.68} />
 ```
 
-`progress`：
+`progress` 范围：
 
 ```text
 0 ~ 1
 ```
 
-确定进度显示真实数值进度。
+`undetermined` 与 `progress` 互斥。
 
-当 `progress` 从一个值变化到另一个值时，组件自动进行一次进度过渡；值稳定后不持续运动。
+确定进度在 `progress` 数值发生变化时自动进行一次过渡；值稳定后不持续运动。
 
-`speed` 控制这次过渡的时长。
+不确定进度持续运动。
 
-## 16.3 当前公开能力
+## 16.2 mode
+
+`mode` 决定 Progress 的基础视觉形态：
+
+```text
+spin
+linear
+```
+
+### spin
+
+环形进度：
+
+```tsx
+<Progress
+  progress={0.68}
+  mode="spin"
+/>
+```
+
+不确定状态：
+
+```tsx
+<Progress
+  undetermined
+  mode="spin"
+/>
+```
+
+### linear
+
+线形进度：
+
+```tsx
+<Progress
+  progress={0.68}
+  mode="linear"
+/>
+```
+
+不确定状态：
+
+```tsx
+<Progress
+  undetermined
+  mode="linear"
+/>
+```
+
+默认：
+
+```text
+mode = spin
+```
+
+## 16.3 dotted
+
+`dotted` 是视觉修饰，不是第三种 mode。
+
+它不会改变：
+
+- determined / undetermined 状态语义
+- `progress` 数值
+- `spin / linear` 的基础形态
+
+而是把原本连续的形状变为由分段点状单元组成的不连续形状。
+
+例如：
+
+```tsx
+<Progress
+  progress={0.68}
+  mode="spin"
+  dotted
+/>
+
+<Progress
+  progress={0.68}
+  mode="linear"
+  dotted
+/>
+```
+
+关系：
+
+```text
+spin
+→ 连续环形
+
+spin + dotted
+→ 点状 / 分段环形
+
+linear
+→ 连续线形
+
+linear + dotted
+→ 点状 / 分段线形
+```
+
+## 16.4 speed
+
+`speed`：
+
+```text
+slow
+normal
+fast
+number
+```
+
+裸数字按全框架时间规则解释为毫秒。
+
+语义：
+
+```text
+undetermined
+→ 控制持续运动速度
+
+progress
+→ 控制 progress 改变时单次过渡时长
+```
+
+## 16.5 当前公开能力
 
 ```text
 undetermined
 progress
+mode
+dotted
 size
 color
 speed
 viewProps
 ```
 
-当前不提供组件级：
-
-```text
-animation
-spin
-pulse
-dots
-```
-
-这些不能混成一个 LoadingIndicator 公共语义维度。
-
-如果未来增加不同 LoadingIndicator 视觉形态，应单独设计其视觉语义，不与 determined / undetermined 状态或通用动画能力混用。
-
 类型层表达：
 
 ```ts
-type LoadingIndicatorProps =
+type ProgressProps =
   {
+    mode?: "spin" | "linear"
+    dotted?: boolean
     size?: "small" | "medium" | "large"
     color?: Color
     speed?: "slow" | "normal" | "fast" | number
@@ -2171,7 +2287,18 @@ type LoadingIndicatorProps =
   )
 ```
 
-`viewProps` 继续承载 View 的通用能力。
+默认视觉样式遵循统一规则：
+
+```text
+style
+> className
+> 属性体系
+> 组件默认 class
+```
+
+`mode / dotted / size / speed` 的静态默认视觉由低 specificity 的内部 class 提供。
+
+只有运行时连续值，例如确定进度的实际 `progress` 与数字型 `speed`，才允许通过最小化 CSS 自定义属性传递。
 
 ---
 
@@ -2306,7 +2433,7 @@ Button
 = View
 + Text
 + 可选 Icon
-+ 可选 LoadingIndicator
++ 可选 Progress
 ```
 
 因此它不能被归为基础组件。
@@ -2417,12 +2544,12 @@ SVG
 />
 ```
 
-内部可组合 `LoadingIndicator`。
+内部可组合 `Progress`。
 
 默认期望：
 
 - 阻止重复触发
-- 显示 LoadingIndicator
+- 显示 Progress
 - 保留按钮尺寸
 
 如果用户需要完全自定义，仍然可以 children 组合。
@@ -2906,7 +3033,7 @@ motion
 Button
 Input
 Switch
-LoadingIndicator
+Progress
 Scrollbar
 ToolTip
 Snack
@@ -2992,7 +3119,7 @@ const theme = {
     Button: { ... },
     Input: { ... },
     Switch: { ... },
-    LoadingIndicator: { ... },
+    Progress: { ... },
     Scrollbar: { ... },
     ToolTip: { ... },
     Snack: { ... },
@@ -3524,7 +3651,7 @@ motion: {
 循环：
 
 ```tsx
-<LoadingIndicator
+<Progress
   animation="spin"
   viewProps={{
     animation: {
@@ -3704,7 +3831,7 @@ Input           → 输入语义
 List            → list 语义
 ListItem        → listitem 语义
 Image           → image 语义
-LoadingIndicator→ progress / busy 语义
+Progress→ progress / busy 语义
 ```
 
 `View` 默认是无特殊语义的通用节点。
@@ -3876,10 +4003,10 @@ Space
 
 ---
 
-## 25.6 LoadingIndicator 的语义
+## 25.6 Progress 的语义
 
 ```tsx
-<LoadingIndicator undetermined />
+<Progress undetermined />
 ```
 
 自动表达：
@@ -3890,7 +4017,7 @@ loading / busy
 ```
 
 ```tsx
-<LoadingIndicator progress={0.68} />
+<Progress progress={0.68} />
 ```
 
 自动表达：
@@ -4012,7 +4139,7 @@ View
 ├─ Input
 ├─ Icon
 ├─ Switch
-├─ LoadingIndicator
+├─ Progress
 └─ Scrollbar
     │
     ▼
@@ -4078,7 +4205,7 @@ View
 24. Scrollbar 由框架自动插入，不要求开发者显式使用。
 25. `selectable` 是 `ViewProps` 通用能力，不是 Text 专属。
 26. `Image` 不提供 `decorative`，且遵循对应 DOM 内容模型，不接受 `children`。
-27. `LoadingIndicator` 用 `undetermined` 明确表示未知进度，用 `progress` 表示确定进度。
+27. `Progress` 用 `undetermined` 明确表示未知进度，用 `progress` 表示确定进度。
 28. 主题语义值、组件变体、状态样式、响应式覆盖、`className` 和 `style` 有明确优先级。
 29. 组件默认承担正确可访问性和键盘语义，不把标准行为推给业务开发者。
 30. 浮层使用语义 layer，普通用户不需要手工管理 portal 或全局 z-index。
