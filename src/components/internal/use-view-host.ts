@@ -25,11 +25,8 @@ export interface ViewHostResult<TElement extends HTMLElement> {
   resolved: ResolvedDOMView<TElement>
 }
 
-export function useViewHost<
-  TElement extends HTMLElement,
-  TBreakpoint extends string = never,
->(
-  props: ViewProps<TElement, TBreakpoint>,
+export function useViewHost<TElement extends HTMLElement>(
+  props: ViewProps<TElement>,
   componentStyle?: CSSProperties,
   componentName?: string,
 ): ViewHostResult<TElement> {
