@@ -36,7 +36,7 @@ describe('View DOM backend', () => {
     )
 
     const element = getByTestId('view')
-    const rule = runtimeRule(element, 'weave-view-props-')
+    const rule = runtimeRule(element, 'weave-props-')
 
     expect(element.getAttribute('data-weave-layout')).toBe('flex')
     expect(element.getAttribute('data-state')).toBe('open')
@@ -59,7 +59,7 @@ describe('View DOM backend', () => {
     )
 
     const element = getByTestId('priority')
-    const rule = runtimeRule(element, 'weave-view-props-')
+    const rule = runtimeRule(element, 'weave-props-')
 
     expect(element.className).toContain('user-class')
     expect(element.style.getPropertyValue('--weave-width')).toBe('')
@@ -131,7 +131,7 @@ describe('View DOM backend', () => {
     )
 
     const element = getByTestId('responsive')
-    const rule = runtimeRule(element, 'weave-view-props-')
+    const rule = runtimeRule(element, 'weave-props-')
     const frameworkStyles = document.querySelector(
       'style[data-weave-view-styles]',
     )
@@ -165,8 +165,8 @@ describe('View DOM backend', () => {
 
     const container = getByTestId('container')
     const child = getByTestId('container-child')
-    const containerRule = runtimeRule(container, 'weave-view-props-')
-    const childRule = runtimeRule(child, 'weave-view-props-')
+    const containerRule = runtimeRule(container, 'weave-props-')
+    const childRule = runtimeRule(child, 'weave-props-')
     const frameworkStyles = document.querySelector(
       'style[data-weave-view-styles]',
     )
@@ -204,7 +204,7 @@ describe('View DOM backend', () => {
     )
 
     const element = getByTestId('states')
-    const rule = runtimeRule(element, 'weave-view-props-')
+    const rule = runtimeRule(element, 'weave-props-')
 
     expect(rule).toContain('--weave-hover-transform:scale(1.03);')
     expect(rule).toContain('--weave-hover-opacity:0.8;')
