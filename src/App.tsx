@@ -267,7 +267,7 @@ function App() {
                 undetermined
                 size="large"
                 animation="dots"
-                color="secondary"
+                color="primary"
               />
               <Text size="small">Dots</Text>
             </View>
