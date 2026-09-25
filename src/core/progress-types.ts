@@ -24,6 +24,7 @@ export type ProgressViewProps = Omit<
 interface ProgressBaseProps {
   mode?: ProgressMode
   dotted?: boolean
+  tracked?: boolean
   size?: ProgressSize
   color?: ProgressColor
   speed?: ProgressSpeed
