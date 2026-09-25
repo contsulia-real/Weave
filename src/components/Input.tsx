@@ -1,9 +1,7 @@
-import type {
-  ChangeEvent,
-  InputHTMLAttributes,
-} from 'react'
+import type { ChangeEvent } from 'react'
 import type {
   InputProps,
+  InputType,
   MultilineInputViewProps,
   SingleLineInputViewProps,
 } from '../core/input-types'
@@ -15,7 +13,7 @@ interface SingleLineInputHostProps {
   defaultValue?: string | number
   onChange?: (value: string) => void
   placeholder?: string
-  type?: InputHTMLAttributes<HTMLInputElement>['type']
+  type?: InputType
   readOnly?: boolean
   required?: boolean
   name?: string
@@ -146,20 +144,39 @@ function MultilineInput({
 
 export function Input(props: InputProps) {
   if (props.multiline) {
-    const {
-      multiline: _multiline,
-      pattern: _pattern,
-      ...rest
-    } = props
-
-    return <MultilineInput {...rest} />
+    return (
+      <MultilineInput
+        value={props.value}
+        defaultValue={props.defaultValue}
+        onChange={props.onChange}
+        placeholder={props.placeholder}
+        rows={props.rows}
+        readOnly={props.readOnly}
+        required={props.required}
+        name={props.name}
+        autoComplete={props.autoComplete}
+        minLength={props.minLength}
+        maxLength={props.maxLength}
+        viewProps={props.viewProps}
+      />
+    )
   }
 
-  const {
-    multiline: _multiline,
-    rows: _rows,
-    ...rest
-  } = props
-
-  return <SingleLineInput {...rest} />
+  return (
+    <SingleLineInput
+      value={props.value}
+      defaultValue={props.defaultValue}
+      onChange={props.onChange}
+      placeholder={props.placeholder}
+      type={props.type}
+      readOnly={props.readOnly}
+      required={props.required}
+      name={props.name}
+      autoComplete={props.autoComplete}
+      minLength={props.minLength}
+      maxLength={props.maxLength}
+      pattern={props.pattern}
+      viewProps={props.viewProps}
+    />
+  )
 }
