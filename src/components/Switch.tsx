@@ -56,7 +56,6 @@ function applyDragVisual(
   drag: SwitchDragState,
   offset: number,
   shrinkMin: number,
-  stretchMax: number,
 ): void {
   const progress = dragProgress(
     offset,
