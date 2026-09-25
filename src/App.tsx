@@ -168,6 +168,31 @@ function App() {
         </View>
 
         <View layout="flex" direction="column" gap={0.75}>
+          <h2>Global typography</h2>
+          <p className="hint">
+            ThemeProvider 提供 family / size / weight / line-height / letter-spacing 的全局继承基线；Text 和控件共享同一套 typography tokens。
+          </p>
+
+          <View layout="flex" direction="column" gap={0.5}>
+            <Text size="xsmall">XSmall — 12px</Text>
+            <Text size="small">Small — 14px</Text>
+            <Text size="medium">Medium — 16px body baseline</Text>
+            <Text size="large" weight="semibold">
+              Large / semibold
+            </Text>
+            <Text
+              viewProps={{
+                style: {
+                  fontFamily: 'var(--weave-typography-family-mono)',
+                },
+              }}
+            >
+              Mono family token — 0123456789
+            </Text>
+          </View>
+        </View>
+
+        <View layout="flex" direction="column" gap={0.75}>
           <h2>Image</h2>
           <p className="hint">
             方形源图放进横向容器：contain 应完整显示并留空，cover 应填满并裁切；尺寸和圆角来自 viewProps。
@@ -408,7 +433,7 @@ function App() {
         <View layout="flex" direction="column" gap={0.75}>
           <h2>Switch</h2>
           <p className="hint">
-            三档语义尺寸；hover 时 thumb 轻微增强，拖动时产生抓取反馈并直接跟手，释放后 spring 归位。
+            中性凹陷轨道 + 轻微突起 thumb；状态主要由位置表达。拖动时 thumb 随距离横向拉长、纵向缩小，到中点封顶，松手恢复原形并 spring 归位。
           </p>
 
           <View layout="flex" direction="row" gap={1.5} align="center" wrap>
@@ -513,7 +538,7 @@ function App() {
         <View layout="flex" direction="column" gap={0.75}>
           <h2>Scrollbar</h2>
           <p className="hint">
-            View overflow="auto" 自动挂载框架 Scrollbar；hover / drag 有连续反馈，thumb 位置仍直接跟随浏览器原生 scrollTop / scrollLeft。
+            View overflow="auto" 自动挂载框架 Scrollbar；视觉 rail/thumb 内缩，但透明命中区贴着真实边缘，边缘也能直接抓取；hover / drag 会变色，thumb 位置继续直接跟随原生 scrollTop / scrollLeft。
           </p>
 
           <View
