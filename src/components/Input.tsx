@@ -45,7 +45,7 @@ function SingleLineInput({
   const {
     elementRef,
     className,
-    mergedStyle,
+    inlineStyle,
     resolved,
   } = useViewHost(hostProps)
 
@@ -73,7 +73,7 @@ function SingleLineInput({
       data-weave-input=""
       data-weave-layout={resolved.layout}
       className={['weave-input', className].filter(Boolean).join(' ')}
-      style={mergedStyle}
+      style={inlineStyle}
     />
   )
 }
@@ -111,7 +111,7 @@ function MultilineInput({
   const {
     elementRef,
     className,
-    mergedStyle,
+    inlineStyle,
     resolved,
   } = useViewHost(hostProps)
 
@@ -143,7 +143,7 @@ function MultilineInput({
         'weave-input--multiline',
         className,
       ].filter(Boolean).join(' ')}
-      style={mergedStyle}
+      style={inlineStyle}
     />
   )
 }
