@@ -151,7 +151,8 @@ export function Switch({
 
     root.focus()
     root.dataset.weaveSwitchDragging = 'true'
-    thumb.style.transform = `translateX(${startOffset}px)`
+    thumb.style.transform =
+      `translateX(${startOffset}px) scale(var(--weave-feedback-drag-scale))`
     root.setPointerCapture?.(event.pointerId)
   }
 
@@ -176,7 +177,8 @@ export function Switch({
 
     const thumb = switchThumb(event.currentTarget)
     if (thumb !== null) {
-      thumb.style.transform = `translateX(${nextOffset}px)`
+      thumb.style.transform =
+        `translateX(${nextOffset}px) scale(var(--weave-feedback-drag-scale))`
     }
 
     event.preventDefault()
