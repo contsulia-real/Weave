@@ -5,7 +5,10 @@ import {
   type MouseEvent,
 } from 'react'
 import type { SwitchProps } from '../core/switch-types'
+import { resolveSwitchTheme } from '../renderers/dom/resolve-component-theme'
+import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { ensureSwitchStylesheet } from '../renderers/dom/switch-stylesheet'
+import { useTheme } from '../theme/theme-context'
 import { View } from './View'
 
 export function Switch({
@@ -16,6 +19,12 @@ export function Switch({
   viewProps = {},
 }: SwitchProps) {
   useInsertionEffect(ensureSwitchStylesheet, [])
+
+  const { theme } = useTheme()
+  const themeClassName = useRuntimeStyleClass(
+    'switch-theme',
+    resolveSwitchTheme(theme, size),
+  )
 
   const [uncontrolledChecked, setUncontrolledChecked] =
     useState(defaultChecked)
@@ -55,6 +64,7 @@ export function Switch({
       className={[
         'weave-switch',
         `weave-switch--${size}`,
+        themeClassName,
         viewProps.className,
       ].filter(Boolean).join(' ')}
       role="switch"
