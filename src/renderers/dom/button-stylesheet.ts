@@ -154,11 +154,11 @@ const stylesheet = `
 }
 
 :where(.weave-button__content) {
-  --weave-component-display: flex;
-  --weave-component-flex-direction: row;
-  --weave-component-align-items: center;
-  --weave-component-justify-content: center;
-  --weave-component-gap: var(--weave-button-gap);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--weave-button-gap);
 }
 
 :where(.weave-button--loading) > :where(.weave-button__content) {
