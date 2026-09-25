@@ -10,9 +10,7 @@ const stylesheet = `
   --weave-component-border-bottom-left-radius: var(--weave-switch-radius);
   --weave-component-cursor: var(--weave-switch-cursor);
   --weave-component-outline-width: 0;
-  --weave-component-box-shadow:
-    inset 0 0 0 0.0625rem
-    color-mix(in srgb, currentColor 10%, transparent);
+  --weave-component-box-shadow: var(--weave-switch-track-shadow);
 
   transition:
     background-color var(--weave-motion-duration-fast)
@@ -38,7 +36,8 @@ const stylesheet = `
 
 :where(.weave-switch[aria-checked="true"]) {
   --weave-component-background: var(
-    --weave-switch-checked-background
+    --weave-switch-checked-background,
+    var(--weave-switch-background)
   );
 }
 
@@ -68,17 +67,15 @@ const stylesheet = `
   --weave-component-background: var(
     --weave-switch-thumb-background
   );
+  --weave-component-box-shadow: var(--weave-switch-thumb-shadow);
   --weave-component-pointer-events: auto;
   --weave-component-transform: translateX(0);
 
   touch-action: none;
-  will-change: transform, scale;
-  scale: 1;
+  will-change: transform;
 
   transition:
     transform var(--weave-motion-duration-fast)
-      var(--weave-motion-curve-spring),
-    scale var(--weave-motion-duration-fast)
       var(--weave-motion-curve-spring),
     box-shadow var(--weave-motion-duration-fast)
       var(--weave-motion-curve-standard);
@@ -90,16 +87,16 @@ const stylesheet = `
 
 :where(.weave-switch:hover:not([aria-disabled="true"]))
   > :where(.weave-switch__thumb) {
-  scale: var(--weave-feedback-hover-scale);
+  --weave-component-box-shadow: var(
+    --weave-switch-thumb-hover-shadow
+  );
 }
 
 :where(.weave-switch[data-weave-switch-dragging="true"])
   > :where(.weave-switch__thumb) {
   --weave-component-cursor: grabbing;
-  scale: var(--weave-feedback-drag-scale);
-  transition:
-    scale var(--weave-motion-duration-fast)
-      var(--weave-motion-curve-spring);
+  --weave-component-box-shadow: var(--weave-switch-thumb-shadow);
+  transition: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -110,12 +107,6 @@ const stylesheet = `
     transition: none;
   }
 
-  :where(.weave-switch:hover:not([aria-disabled="true"]))
-    > :where(.weave-switch__thumb),
-  :where(.weave-switch[data-weave-switch-dragging="true"])
-    > :where(.weave-switch__thumb) {
-    scale: 1;
-  }
 }
 `
 
