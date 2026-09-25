@@ -62,7 +62,16 @@ const stylesheet = `
   --weave-component-cursor: var(--weave-scrollbar-thumb-cursor);
   --weave-component-user-select: none;
 
-  will-change: transform;
+  will-change: transform, scale;
+  scale: 1;
+  transform-origin: center;
+  transition:
+    scale var(--weave-motion-duration-fast)
+      var(--weave-motion-curve-spring),
+    background-color var(--weave-motion-duration-fast)
+      var(--weave-motion-curve-standard),
+    opacity var(--weave-motion-duration-fast)
+      var(--weave-motion-curve-standard);
 }
 
 :where(.weave-scrollbar--vertical) > :where(.weave-scrollbar__thumb) {
@@ -70,9 +79,50 @@ const stylesheet = `
   --weave-component-left: 0;
 }
 
+:where(.weave-scrollbar--vertical:hover)
+  > :where(.weave-scrollbar__thumb) {
+  scale: var(--weave-feedback-hover-scale) 1;
+}
+
+:where(.weave-scrollbar--vertical[data-weave-scrollbar-dragging="true"])
+  > :where(.weave-scrollbar__thumb) {
+  scale: var(--weave-feedback-drag-scale) 1;
+}
+
 :where(.weave-scrollbar--horizontal) > :where(.weave-scrollbar__thumb) {
   --weave-component-height: 100%;
   --weave-component-top: 0;
+}
+
+:where(.weave-scrollbar--horizontal:hover)
+  > :where(.weave-scrollbar__thumb) {
+  scale: 1 var(--weave-feedback-hover-scale);
+}
+
+:where(.weave-scrollbar--horizontal[data-weave-scrollbar-dragging="true"])
+  > :where(.weave-scrollbar__thumb) {
+  scale: 1 var(--weave-feedback-drag-scale);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(.weave-scrollbar__thumb) {
+    transition:
+      background-color var(--weave-motion-duration-fast)
+        var(--weave-motion-curve-standard),
+      opacity var(--weave-motion-duration-fast)
+        var(--weave-motion-curve-standard);
+  }
+
+  :where(.weave-scrollbar--vertical:hover)
+    > :where(.weave-scrollbar__thumb),
+  :where(.weave-scrollbar--vertical[data-weave-scrollbar-dragging="true"])
+    > :where(.weave-scrollbar__thumb),
+  :where(.weave-scrollbar--horizontal:hover)
+    > :where(.weave-scrollbar__thumb),
+  :where(.weave-scrollbar--horizontal[data-weave-scrollbar-dragging="true"])
+    > :where(.weave-scrollbar__thumb) {
+    scale: 1;
+  }
 }
 `
 
