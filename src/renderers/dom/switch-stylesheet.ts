@@ -8,12 +8,12 @@ const stylesheet = `
   --weave-radius-bottom-left: var(--weave-radius-full);
   --weave-background: var(--weave-color-outline);
   --weave-cursor: pointer;
+  --weave-position: relative;
   --weave-focus-visible-outline-width: 0.125rem;
   --weave-focus-visible-outline-color: var(--weave-color-focus);
   --weave-focus-visible-outline-style: solid;
   --weave-focus-visible-outline-offset: 0.125rem;
 
-  position: relative;
 }
 
 :where([data-weave-switch][data-weave-switch-size="small"]) {
