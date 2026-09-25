@@ -31,7 +31,12 @@ const ThemeContext = createContext<ThemeContextValue>({
 })
 
 function getSystemMode(): 'light' | 'dark' {
-  if (typeof window === 'undefined') return 'light'
+  if (
+    typeof window === 'undefined' ||
+    typeof window.matchMedia !== 'function'
+  ) {
+    return 'light'
+  }
 
   return window.matchMedia('(prefers-color-scheme: dark)').matches
     ? 'dark'
@@ -42,7 +47,12 @@ function useResolvedMode(mode: ThemeMode): 'light' | 'dark' {
   const [systemMode, setSystemMode] = useState(getSystemMode)
 
   useEffect(() => {
-    if (mode !== 'system') return
+    if (
+      mode !== 'system' ||
+      typeof window.matchMedia !== 'function'
+    ) {
+      return
+    }
 
     const media = window.matchMedia('(prefers-color-scheme: dark)')
     const update = () => setSystemMode(media.matches ? 'dark' : 'light')
