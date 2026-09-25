@@ -1520,16 +1520,37 @@ style
 
 框架语义样式不通过 React 内联 `style` 注入。ThemeProvider 的主题变量、组件主题解析结果、`ViewProps`、Text / Image 等组件语义属性，以及 Progress 这类实例运行时值，都解析为框架生成的 class。
 
-组件默认视觉样式与框架生成 class 使用低 specificity 的 `:where(...)` 选择器。实例属性与组件主题使用不同变量层，基础样式固定优先读取实例属性变量，再回退到组件主题变量，因此不依赖样式表插入先后顺序。
+但是用户显式传入的 `style` 不参与这套 class 生成流程，也不允许被哈希或转换为生成 class。它必须原样保留为宿主 DOM 元素的真实 `style=""`，作为最高优先级的原始 CSS 逃生口。
 
-例如：
+每个组件同时必须保留稳定、可读的身份 class。生成 class 只能附加样式信息，不能取代组件身份。
+
+例如 Switch 实例的 class 结构应类似：
 
 ```text
+weave-view
 weave-switch
+weave-switch--medium
 weave-switch-theme-*
-weave-view-props-*
-weave-switch__thumb
+weave-props-*
+user-class
 ```
+
+Text / Image / Input 等也分别保留：
+
+```text
+weave-view weave-text ...
+weave-view weave-image ...
+weave-view weave-input ...
+```
+
+Text / Image 自身无法静态枚举的语义值使用组件专属生成 class，例如：
+
+```text
+weave-text-props-*
+weave-image-props-*
+```
+
+组件默认视觉样式与框架生成 class 使用低 specificity 的 `:where(...)` 选择器。实例属性与组件主题使用不同变量层，基础样式固定优先读取实例属性变量，再回退到组件主题变量，因此不依赖样式表插入先后顺序。
 
 用户自己的普通 `className` 具有高于 `:where(...)` 的选择器权重，因此可以覆盖框架主题与属性 class；显式 `style` 仍然保持最高优先级。
 
@@ -1560,6 +1581,9 @@ defaultTheme
 `style` 的规则：
 
 - 遵循 React / CSS 本身
+- 用户显式传入的 `style` 必须保留在真实 DOM `style=""` 属性上
+- 不转换为 `weave-props-*`、组件 props class 或主题 class
+- 不参与框架哈希 class 的生成
 - 不应用框架裸数字 `rem` 转换
 - 是最终原始 CSS 逃生口
 - 用于框架高层 API 未覆盖的精确控制
