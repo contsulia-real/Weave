@@ -240,15 +240,19 @@ export function AutoScrollbar({
     syncScrollbarLayer(horizontalTrack, target)
 
     const verticalOverflow =
-      overflowIntent.styleOverflowY ??
-      overflowIntent.styleOverflow ??
+      (
+        overflowIntent.styleOverflowY ??
+        overflowIntent.styleOverflow
+      ) ||
       computed.overflowY ||
       computed.overflow ||
       'visible'
 
     const horizontalOverflow =
-      overflowIntent.styleOverflowX ??
-      overflowIntent.styleOverflow ??
+      (
+        overflowIntent.styleOverflowX ??
+        overflowIntent.styleOverflow
+      ) ||
       computed.overflowX ||
       computed.overflow ||
       'visible'
