@@ -23,7 +23,7 @@ interface RuntimeClassEntry {
 const runtimeClasses = new Map<string, RuntimeClassEntry>()
 
 function entries(
-  declarations: RuntimeStyleDeclarations | undefined,
+  declarations: Readonly<object> | undefined,
 ): readonly (readonly [string, string | number])[] {
   if (declarations === undefined) return []
 
@@ -48,7 +48,7 @@ function hash(value: string): string {
 
 export function createRuntimeStyleClass(
   prefix: string,
-  declarations: RuntimeStyleDeclarations | undefined,
+  declarations: Readonly<object> | undefined,
 ): RuntimeClassRule | undefined {
   const normalized = entries(declarations)
   if (normalized.length === 0) return undefined
@@ -107,7 +107,7 @@ function releaseRuntimeClass(className: string): void {
 
 export function useRuntimeStyleClass(
   prefix: string,
-  declarations: RuntimeStyleDeclarations | undefined,
+  declarations: Readonly<object> | undefined,
 ): string | undefined {
   const rule = createRuntimeStyleClass(prefix, declarations)
 
