@@ -76,8 +76,8 @@ const stylesheet = `
 
 :where(.weave-switch[data-weave-switch-dragging="true"])
   > :where(.weave-switch__thumb) {
+  --weave-component-cursor: grabbing;
   transition: none;
-  cursor: grabbing;
 }
 `
 
