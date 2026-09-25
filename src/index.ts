@@ -16,6 +16,8 @@ export type {
   RadiusValue,
   ShadowDefinition,
   ShadowValue,
+  ScrollbarConfig,
+  ScrollbarSize,
   TransformOperation,
   TransformOriginValue,
   ViewAlign,
