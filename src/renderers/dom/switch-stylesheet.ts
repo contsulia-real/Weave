@@ -2,7 +2,6 @@ const stylesheet = `
 :where([data-weave-switch]) {
   --weave-width: 2.5rem;
   --weave-height: 1.5rem;
-  --weave-padding: 0.125rem;
   --weave-radius-top-left: var(--weave-radius-full);
   --weave-radius-top-right: var(--weave-radius-full);
   --weave-radius-bottom-right: var(--weave-radius-full);
@@ -52,10 +51,6 @@ const stylesheet = `
   --weave-background: var(--weave-color-surface);
   --weave-pointer-events: none;
   --weave-transform: translateX(0);
-  --weave-transition:
-    transform var(--weave-motion-duration-fast)
-    var(--weave-motion-curve-standard);
-
   position: absolute;
   top: 0.125rem;
   left: 0.125rem;
