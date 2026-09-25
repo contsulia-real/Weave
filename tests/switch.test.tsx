@@ -185,7 +185,7 @@ describe('Switch', () => {
     )
 
     const element = getByRole('switch')
-    const propsRule = runtimeRule(element, 'weave-view-props-')
+    const propsRule = runtimeRule(element, 'weave-props-')
     const themeRule = runtimeRule(element, 'weave-switch-theme-')
 
     expect(element.className).toContain('weave-switch')
