@@ -14,7 +14,10 @@ import {
   length,
   radius,
 } from '../../core/values'
-import type { RuntimeStyleDeclarations } from './runtime-class'
+import type {
+  RuntimeStyleDeclarations,
+  RuntimeStyleValue,
+} from './runtime-class'
 
 const BUTTON_VARIANTS: readonly ButtonVariant[] = [
   'primary',
@@ -30,7 +33,7 @@ export function resolveButtonTheme(
   const component = theme.components.Button
   const base = component?.base
   const disabled = component?.states?.disabled
-  const output: RuntimeStyleDeclarations = {
+  const output: Record<string, RuntimeStyleValue> = {
     '--weave-button-theme-radius': radius(base?.radius),
     '--weave-button-theme-border-width': length(base?.borderWidth),
     '--weave-button-theme-cursor': base?.cursor,
