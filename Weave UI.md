@@ -2323,12 +2323,14 @@ suffix
 
 `Switch` 是基础组件。
 
-内部只需要 `View`：
+DOM fallback 结构：
 
 ```text
 Switch
-├─ View  // track
-└─ View  // thumb
+├─ View  // track / semantic root
+└─ internal thumb
+   ├─ core  // 始终保持圆形
+   └─ tail  // 仅拖动时拉伸
 ```
 
 ## 15.1 API
@@ -2359,13 +2361,82 @@ size
 
 - 点击 track / thumb 切换
 - Space / Enter 键盘切换
-- 直接水平拖动 thumb；拖动期间位置连续跟随指针，thumb 使用全局 `feedback.dragScale` 表达被抓取状态；释放时以轨道中点决定最终开关状态
-- 拖动完成后产生的兼容 click 不得再次反向切换
+- 直接水平拖动 thumb
+- 拖动完成后的兼容 click 不得再次反向切换
 - disabled 状态下点击、键盘与拖动都不能改变状态
 
-拖动中的 thumb 位置属于组件内部交互几何，可由渲染后端直接同步；它不是用户显式 `style`，也不改变公开样式优先级。拖动期间不对 pointer movement 做缓动，保证直接跟手；松手后的归位才允许使用主题 motion curve。
+默认视觉语义：
 
-### size
+```text
+关闭态
+→ 很浅的 track 填色
+→ 轻微 inset shadow，形成凹陷
+
+开启态
+→ primary track
+→ 保留同样的凹陷层级
+
+thumb
+→ surface
+→ 轻微 outer shadow，形成突起
+```
+
+## 15.2 拖动形变
+
+拖动时不能把圆形 thumb 压成椭圆。
+
+默认模型：
+
+```text
+pointer down
+→ 圆形 core 立即缩小到约 82%
+
+继续拖动
+→ core 等比继续缩小
+→ 到状态中点时最低约 68%
+→ 始终保持圆形
+
+tail
+→ 从运动反方向被拉出
+→ 长度随拖动距离连续增加
+→ 到状态中点达到最大长度
+→ 之后封顶，不无限增长
+
+pointer up / cancel
+→ tail 消失
+→ core 恢复正常大小
+→ thumb 使用 spring 归位
+```
+
+拖动期间不对 pointer movement 做缓动。
+
+## 15.3 拖动性能约束
+
+默认拖动属于高频直接操控：
+
+```text
+pointerdown
+→ 建立 drag session
+→ 只读取一次 root / thumb 几何
+
+pointermove
+→ native listener
+→ 不触发 React state
+→ 不 querySelector
+→ 不 getComputedStyle
+→ 不 getBoundingClientRect
+→ 只更新 thumb/core/tail transform
+
+pointerup / pointercancel
+→ 清理 native listener
+→ 必要时才提交 checked 状态
+```
+
+拖尾使用固定最大宽度 + `scaleX(progress)`，不得在每个 pointermove 中修改布局尺寸。
+
+如果用户显式提供 `viewProps.onPointerMove / onPointerUp / onPointerCancel`，则优先保留用户 handler 与 `preventDefault()` 取消框架行为的统一事件契约。
+
+## 15.4 size
 
 ```text
 small
