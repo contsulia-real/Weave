@@ -24,6 +24,26 @@ interface SwitchDragState {
 
 const DRAG_THRESHOLD = 3
 
+function dragThumbTransform(
+  offset: number,
+  startOffset: number,
+  maxOffset: number,
+  stretchMax: number,
+  compressMin: number,
+): string {
+  const thresholdDistance = maxOffset / 2
+  const travelled = Math.abs(offset - startOffset)
+  const progress =
+    thresholdDistance <= 0
+      ? 0
+      : Math.min(1, travelled / thresholdDistance)
+
+  const stretch = 1 + (stretchMax - 1) * progress
+  const compress = 1 - (1 - compressMin) * progress
+
+  return `translateX(${offset}px) scale(${stretch}, ${compress})`
+}
+
 function switchThumb(root: HTMLDivElement): HTMLDivElement | null {
   return root.querySelector<HTMLDivElement>(
     '[data-weave-switch-thumb]',
@@ -52,6 +72,9 @@ export function Switch({
 
   const [uncontrolledChecked, setUncontrolledChecked] =
     useState(defaultChecked)
+  const switchBase = theme.components.Switch?.base
+  const dragStretchMax = switchBase?.thumbDragStretch ?? 1.24
+  const dragCompressMin = switchBase?.thumbDragCompress ?? 0.88
   const isControlled = checked !== undefined
   const currentChecked = checked ?? uncontrolledChecked
   const dragRef = useRef<SwitchDragState | null>(null)
@@ -151,8 +174,13 @@ export function Switch({
 
     root.focus()
     root.dataset.weaveSwitchDragging = 'true'
-    thumb.style.transform =
-      `translateX(${startOffset}px) scale(var(--weave-feedback-drag-scale))`
+    thumb.style.transform = dragThumbTransform(
+      startOffset,
+      startOffset,
+      maxOffset,
+      dragStretchMax,
+      dragCompressMin,
+    )
     root.setPointerCapture?.(event.pointerId)
   }
 
@@ -177,8 +205,13 @@ export function Switch({
 
     const thumb = switchThumb(event.currentTarget)
     if (thumb !== null) {
-      thumb.style.transform =
-        `translateX(${nextOffset}px) scale(var(--weave-feedback-drag-scale))`
+      thumb.style.transform = dragThumbTransform(
+        nextOffset,
+        drag.startOffset,
+        drag.maxOffset,
+        dragStretchMax,
+        dragCompressMin,
+      )
     }
 
     event.preventDefault()
