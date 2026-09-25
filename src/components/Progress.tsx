@@ -12,7 +12,6 @@ export function Progress(props: ProgressProps) {
 
   const {
     mode = 'spin',
-    dotted = false,
     tracked = false,
     size = 'medium',
     color = 'primary',
@@ -31,7 +30,6 @@ export function Progress(props: ProgressProps) {
     'weave-progress',
     `weave-progress--${mode}`,
     `weave-progress--${size}`,
-    dotted ? 'weave-progress--dotted' : undefined,
     tracked ? 'weave-progress--tracked' : undefined,
     undetermined
       ? 'weave-progress--undetermined'
@@ -58,7 +56,6 @@ export function Progress(props: ProgressProps) {
         ...viewProps.data,
         'weave-progress': '',
         'weave-progress-mode': mode,
-        'weave-progress-dotted': dotted || undefined,
         'weave-progress-tracked': tracked || undefined,
       }}
       style={{
