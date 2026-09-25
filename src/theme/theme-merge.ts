@@ -1,3 +1,4 @@
+import { defaultTheme } from './default-theme'
 import type {
   ResolvedTheme,
   ThemeDefinition,
@@ -32,13 +33,19 @@ function withoutModes(theme: ThemeDefinition): ThemeOverride {
   return rest
 }
 
-export function resolveTheme(
-  parent: ResolvedTheme,
+export function mergeThemeDefinitions(
+  parent: ThemeDefinition,
   input: ThemeDefinition,
+): ThemeDefinition {
+  return mergeValue(parent, input)
+}
+
+export function resolveTheme(
+  definition: ThemeDefinition,
   activeMode: Exclude<ThemeMode, 'system'>,
 ): ResolvedTheme {
-  const base = mergeValue(parent, withoutModes(input))
-  const modeOverride = input.modes?.[activeMode]
+  const base = mergeValue(defaultTheme, withoutModes(definition))
+  const modeOverride = definition.modes?.[activeMode]
 
   return modeOverride === undefined
     ? base
