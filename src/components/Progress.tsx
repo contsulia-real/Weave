@@ -1,10 +1,13 @@
 import { useInsertionEffect } from 'react'
 import type { ProgressProps } from '../core/progress-types'
+import { resolveProgressTheme } from '../renderers/dom/resolve-component-theme'
 import {
   resolveProgressStyle,
   resolveProgressValueStyle,
 } from '../renderers/dom/resolve-progress'
+import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { ensureProgressStylesheet } from '../renderers/dom/progress-stylesheet'
+import { useTheme } from '../theme/theme-context'
 import { View } from './View'
 
 export function Progress(props: ProgressProps) {
@@ -24,7 +27,21 @@ export function Progress(props: ProgressProps) {
     ? undefined
     : Math.min(1, Math.max(0, props.progress))
 
-  const componentStyle = resolveProgressStyle(speed)
+  const { theme } = useTheme()
+  const themeClassName = useRuntimeStyleClass(
+    'progress-theme',
+    resolveProgressTheme(theme, mode, size),
+  )
+  const speedClassName = useRuntimeStyleClass(
+    'progress-speed',
+    resolveProgressStyle(speed),
+  )
+  const valueClassName = useRuntimeStyleClass(
+    'progress-value',
+    progress === undefined
+      ? undefined
+      : resolveProgressValueStyle(progress),
+  )
 
   const className = [
     'weave-progress',
@@ -37,6 +54,8 @@ export function Progress(props: ProgressProps) {
     typeof speed === 'string'
       ? `weave-progress--speed-${speed}`
       : undefined,
+    themeClassName,
+    speedClassName,
     viewProps.className,
   ]
     .filter(Boolean)
@@ -58,10 +77,7 @@ export function Progress(props: ProgressProps) {
         'weave-progress-mode': mode,
         'weave-progress-tracked': tracked || undefined,
       }}
-      style={{
-        ...componentStyle,
-        ...viewProps.style,
-      }}
+      style={viewProps.style}
     >
       <View
         className="weave-progress__track"
@@ -71,15 +87,13 @@ export function Progress(props: ProgressProps) {
       />
 
       <View
-        className="weave-progress__value"
+        className={[
+          'weave-progress__value',
+          valueClassName,
+        ].filter(Boolean).join(' ')}
         data={{
           'weave-progress-value': '',
         }}
-        style={
-          progress === undefined
-            ? undefined
-            : resolveProgressValueStyle(progress)
-        }
       />
     </View>
   )
