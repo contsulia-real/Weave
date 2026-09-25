@@ -21,9 +21,6 @@ interface ScrollbarOverflowIntent {
   styleOverflow?: string
   styleOverflowX?: string
   styleOverflowY?: string
-  propOverflow?: string
-  propOverflowX?: string
-  propOverflowY?: string
 }
 
 interface AutoScrollbarProps {
@@ -247,8 +244,6 @@ export function AutoScrollbar({
       overflowIntent.styleOverflow ??
       computed.overflowY ||
       computed.overflow ||
-      overflowIntent.propOverflowY ||
-      overflowIntent.propOverflow ||
       'visible'
 
     const horizontalOverflow =
@@ -256,8 +251,6 @@ export function AutoScrollbar({
       overflowIntent.styleOverflow ??
       computed.overflowX ||
       computed.overflow ||
-      overflowIntent.propOverflowX ||
-      overflowIntent.propOverflow ||
       'visible'
 
     const verticalVisible =
