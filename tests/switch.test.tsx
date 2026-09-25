@@ -104,6 +104,21 @@ describe('Switch', () => {
     expect(element.getAttribute('aria-checked')).toBe('false')
   })
 
+  it('keeps component defaults out of inline style', () => {
+    const { getByRole } = render(<Switch size="medium" />)
+
+    const element = getByRole('switch')
+    const thumb = element.querySelector(
+      '.weave-switch__thumb',
+    ) as HTMLElement
+
+    expect(element.style.getPropertyValue('--weave-width')).toBe('')
+    expect(
+      element.style.getPropertyValue('--weave-border-top-left-radius'),
+    ).toBe('')
+    expect(thumb.style.getPropertyValue('--weave-width')).toBe('')
+  })
+
   it('renders track and thumb with semantic size data', () => {
     const { getByRole } = render(
       <Switch
@@ -119,6 +134,8 @@ describe('Switch', () => {
 
     const element = getByRole('switch')
 
+    expect(element.className).toContain('weave-switch')
+    expect(element.className).toContain('weave-switch--large')
     expect(element.getAttribute('data-weave-switch')).toBe('')
     expect(element.getAttribute('data-weave-switch-size')).toBe('large')
     expect(
@@ -130,7 +147,10 @@ describe('Switch', () => {
       'style[data-weave-switch-styles]',
     )
     expect(stylesheet?.textContent).toContain(
-      '[data-weave-switch-size="large"]',
+      ':where(.weave-switch--large)',
+    )
+    expect(stylesheet?.textContent).toContain(
+      '--weave-border-top-left-radius: 9999px',
     )
   })
 })
