@@ -430,19 +430,20 @@ function dataAttributes(data: ViewData | undefined): Record<string, string> {
 }
 
 export interface ResolvedDOMView {
-  domProps: HTMLAttributes<HTMLDivElement> & Record<string, unknown>
+  domProps: HTMLAttributes<HTMLDivElement>
   attributeStyle: CSSVariableStyle
   layout: ViewProps['layout']
 }
 
 export function resolveDOMView(props: ViewProps): ResolvedDOMView {
-  const domProps: HTMLAttributes<HTMLDivElement> & Record<string, unknown> = {}
+  const domProps: HTMLAttributes<HTMLDivElement> = {}
+  const writableDOMProps = domProps as Record<string, unknown>
 
   for (const [key, value] of Object.entries(props)) {
-    if (!CUSTOM_PROP_KEYS.has(key)) domProps[key] = value
+    if (!CUSTOM_PROP_KEYS.has(key)) writableDOMProps[key] = value
   }
 
-  Object.assign(domProps, dataAttributes(props.data))
+  Object.assign(writableDOMProps, dataAttributes(props.data))
 
   if (props.role !== undefined) domProps.role = props.role
   if (props.label !== undefined) domProps['aria-label'] = props.label
