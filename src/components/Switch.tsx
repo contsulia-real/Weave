@@ -22,7 +22,6 @@ interface SwitchDragState {
   startOffset: number
   maxOffset: number
   currentOffset: number
-  thumbSize: number
   moved: boolean
   direction: DragDirection
 }
@@ -67,13 +66,11 @@ function applyDragVisual(
   const pressScale = 0.82
   const scale =
     pressScale - (pressScale - shrinkMin) * progress
-  const extension = drag.thumbSize * stretchMax * progress
-
   thumb.style.transform =
     `translateX(${offset}px) scale(${scale})`
   thumb.style.setProperty(
-    '--weave-switch-drag-extension',
-    `${extension}px`,
+    '--weave-switch-drag-progress',
+    String(progress),
   )
 
   const nextDirection = dragDirection(offset, drag.startOffset)
@@ -96,7 +93,7 @@ function clearDragVisual(
   if (thumb === null) return
 
   thumb.style.removeProperty('transform')
-  thumb.style.removeProperty('--weave-switch-drag-extension')
+  thumb.style.removeProperty('--weave-switch-drag-progress')
   delete thumb.dataset.weaveSwitchDragDirection
 }
 
@@ -119,7 +116,6 @@ export function Switch({
     useState(defaultChecked)
   const switchBase = theme.components.Switch?.base
   const dragShrinkMin = switchBase?.thumbDragShrink ?? 0.72
-  const dragStretchMax = switchBase?.thumbDragStretch ?? 1
   const isControlled = checked !== undefined
   const currentChecked = checked ?? uncontrolledChecked
   const dragRef = useRef<SwitchDragState | null>(null)
@@ -274,7 +270,6 @@ export function Switch({
       startOffset,
       maxOffset,
       currentOffset: startOffset,
-      thumbSize: thumbRect.width,
       moved: false,
       direction: null,
     }
