@@ -311,4 +311,28 @@ describe('View DOM backend', () => {
     )
     expect(element.style.getPropertyValue('--weave-hover-opacity')).toBe('')
   })
+
+  it('does not force layout measurement on the scrollbar scroll hot path', () => {
+    const rectSpy = vi.spyOn(
+      HTMLElement.prototype,
+      'getBoundingClientRect',
+    )
+
+    const { getByTestId } = render(
+      <View
+        height={6}
+        overflow="auto"
+        data={{ testid: 'scroll-hot-path' }}
+      >
+        <View height={20} />
+      </View>,
+    )
+
+    rectSpy.mockClear()
+    fireEvent.scroll(getByTestId('scroll-hot-path'))
+
+    expect(rectSpy).not.toHaveBeenCalled()
+
+    rectSpy.mockRestore()
+  })
 })
