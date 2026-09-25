@@ -132,6 +132,76 @@ describe('Input', () => {
     expect(onChange).toHaveBeenCalledWith('Line two')
   })
 
+  it('insets the multiline scrollbar inside the textarea border', () => {
+    const { getByTestId } = render(
+      <Input
+        multiline
+        rows={4}
+        defaultValue={'one\ntwo\nthree\nfour\nfive\nsix'}
+        viewProps={{
+          style: {
+            borderTopWidth: '2px',
+            borderRightWidth: '3px',
+            borderBottomWidth: '2px',
+            borderLeftWidth: '3px',
+          },
+          data: {
+            testid: 'inset-textarea',
+          },
+        }}
+      />,
+    )
+
+    const element = getByTestId(
+      'inset-textarea',
+    ) as HTMLTextAreaElement
+
+    Object.defineProperties(element, {
+      scrollHeight: {
+        configurable: true,
+        value: 400,
+      },
+      clientHeight: {
+        configurable: true,
+        value: 100,
+      },
+      scrollWidth: {
+        configurable: true,
+        value: 200,
+      },
+      clientWidth: {
+        configurable: true,
+        value: 200,
+      },
+    })
+
+    const rectSpy = vi.spyOn(
+      element,
+      'getBoundingClientRect',
+    ).mockReturnValue({
+      top: 100,
+      right: 500,
+      bottom: 300,
+      left: 200,
+      width: 300,
+      height: 200,
+      x: 200,
+      y: 100,
+      toJSON: () => ({}),
+    } as DOMRect)
+
+    fireEvent(window, new Event('resize'))
+
+    const verticalTrack = document.querySelector<HTMLElement>(
+      '[data-weave-scrollbar-orientation="vertical"]',
+    )
+
+    expect(verticalTrack?.style.top).toBe('106px')
+    expect(verticalTrack?.style.left).toBe('493px')
+
+    rectSpy.mockRestore()
+  })
+
   it('uses the default Input component theme', () => {
     const { getByTestId } = render(
       <Input
