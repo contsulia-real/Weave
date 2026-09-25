@@ -2368,6 +2368,35 @@ size
 
 拖动中的 thumb 位置与连续形变属于组件内部交互几何，可由渲染后端直接同步；它不是用户显式 `style`，也不改变公开样式优先级。拖动期间不对 pointer movement 做缓动，保证直接跟手；松手后的归位与形态恢复才允许使用主题 motion curve。默认关闭态 track 为透明，只靠轻微 inset shadow 形成凹陷；默认开启态 track 使用 primary。thumb 使用轻微 outer shadow 形成突起。
 
+### 15.2 拖动性能约束
+
+Switch 的拖动属于高频直接操控，DOM fallback 默认路径必须绕开 React 的逐次 `pointermove` 合成事件处理：
+
+```text
+pointerdown
+→ 建立 drag session
+→ 缓存 thumb 引用与一次性几何
+
+pointermove
+→ native listener
+→ 不触发 React state
+→ 不 querySelector
+→ 不 getComputedStyle
+→ 不 getBoundingClientRect
+→ 只更新 transform 类视觉状态
+
+pointerup / pointercancel
+→ 清理 native listener
+→ 恢复 thumb 形态
+→ 必要时才 commit checked 状态
+```
+
+允许在 pointerdown 做一次必要的几何读取；禁止把布局读取放进连续 move 热路径。
+
+拖尾不得通过每帧修改 `width / height` 实现。默认实现使用固定最大几何 + `scaleX(progress)`，避免拖动时触发 layout。
+
+如果用户显式提供 `viewProps.onPointerMove`，框架优先保留统一的“用户 handler 先执行、`preventDefault()` 可取消框架行为”契约；只有这种显式高级用法才允许回到 React pointerMove 路径。
+
 ### size
 
 ```text
