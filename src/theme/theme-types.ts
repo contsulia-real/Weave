@@ -123,6 +123,7 @@ export interface ButtonThemeVariant {
   background?: string
   color?: string
   borderColor?: string
+  depthColor?: string
   hoverBackground?: string
   activeBackground?: string
 }
