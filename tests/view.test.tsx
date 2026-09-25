@@ -96,6 +96,77 @@ describe('View DOM backend', () => {
     )
   })
 
+
+  it('encodes viewport breakpoint overrides with default theme breakpoints', () => {
+    const { getByTestId } = render(
+      <View
+        width={20}
+        md={{ width: 30, padding: 2 }}
+        data={{ testid: 'responsive' }}
+      />,
+    )
+
+    const element = getByTestId('responsive')
+    const frameworkStyles = document.querySelector(
+      'style[data-weave-view-styles]',
+    )
+
+    expect(element.style.getPropertyValue('--weave-width')).toBe('20rem')
+    expect(element.style.getPropertyValue('--weave-md-width')).toBe('30rem')
+    expect(element.style.getPropertyValue('--weave-md-padding-top')).toBe('2rem')
+    expect(element.getAttribute('md')).toBeNull()
+
+    expect(frameworkStyles?.textContent).toContain(
+      '@media (min-width: 48rem)',
+    )
+    expect(frameworkStyles?.textContent).toContain(
+      '--weave-md-width { syntax: "*"; inherits: false; }',
+    )
+    expect(frameworkStyles?.textContent).toContain(
+      '--weave-viewport-responsive-width:',
+    )
+  })
+
+  it('creates a named CSS container and container breakpoint overrides', () => {
+    const { getByTestId } = render(
+      <View container="sidebar" data={{ testid: 'container' }}>
+        <View
+          containerMd={{ direction: 'row', gap: 1.5 }}
+          data={{ testid: 'container-child' }}
+        />
+      </View>,
+    )
+
+    const container = getByTestId('container')
+    const child = getByTestId('container-child')
+    const frameworkStyles = document.querySelector(
+      'style[data-weave-view-styles]',
+    )
+
+    expect(container.style.getPropertyValue('--weave-container-type')).toBe(
+      'inline-size',
+    )
+    expect(container.style.getPropertyValue('--weave-container-name')).toBe(
+      'sidebar',
+    )
+    expect(container.getAttribute('container')).toBeNull()
+
+    expect(
+      child.style.getPropertyValue('--weave-container-md-flex-direction'),
+    ).toBe('row')
+    expect(child.style.getPropertyValue('--weave-container-md-gap')).toBe(
+      '1.5rem',
+    )
+    expect(child.getAttribute('containerMd')).toBeNull()
+
+    expect(frameworkStyles?.textContent).toContain(
+      '@container (min-width: 48rem)',
+    )
+    expect(frameworkStyles?.textContent).toContain(
+      '--weave-container-responsive-gap:',
+    )
+  })
+
   it('encodes state styles as state-specific attribute values', () => {
     const { getByTestId } = render(
       <View
