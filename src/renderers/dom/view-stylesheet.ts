@@ -82,6 +82,14 @@ const variableName = (
 ): `--weave-${string}` =>
   `--weave-${state === undefined ? '' : `${state}-`}${toKebab(property)}`
 
+const VIEW_STYLE_STATES = [
+  'hover',
+  'active',
+  'focus',
+  'focus-visible',
+  'disabled',
+] as const
+
 const declarationBlock = (state?: string) =>
   VIEW_STYLE_PROPERTIES.map((property) => {
     const cssProperty = toKebab(property)
@@ -93,6 +101,14 @@ const declarationBlock = (state?: string) =>
 
     return `${cssProperty}: var(${stateVariable}, var(${variableName(property)}));`
   }).join('')
+
+const resetBlock = () =>
+  VIEW_STYLE_PROPERTIES.flatMap((property) => [
+    variableName(property),
+    ...VIEW_STYLE_STATES.map((state) => variableName(property, state)),
+  ])
+    .map((variable) => `${variable}: initial;`)
+    .join('')
 
 const stylesheet = `
 :root {
@@ -120,6 +136,7 @@ const stylesheet = `
 
 :where([data-weave-view]) {
   box-sizing: border-box;
+  ${resetBlock()}
   ${declarationBlock()}
 }
 
