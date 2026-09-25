@@ -3,16 +3,21 @@ import { Image, Text, ThemeProvider, View, createTheme } from './index'
 const diagnosticImage =
   'data:image/svg+xml,' +
   encodeURIComponent(`
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 180">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320">
       <defs>
         <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0" stop-color="#7c3aed" />
           <stop offset="1" stop-color="#38bdf8" />
         </linearGradient>
       </defs>
-      <rect width="320" height="180" rx="24" fill="url(#g)" />
-      <circle cx="248" cy="56" r="28" fill="rgba(255,255,255,.8)" />
-      <path d="M36 144 108 72l44 44 34-34 98 98H36Z" fill="rgba(255,255,255,.72)" />
+      <rect width="320" height="320" rx="28" fill="url(#g)" />
+      <circle cx="55" cy="55" r="26" fill="#ffffff" opacity=".9" />
+      <circle cx="265" cy="55" r="26" fill="#ffffff" opacity=".55" />
+      <rect x="34" y="235" width="252" height="50" rx="14" fill="#ffffff" opacity=".78" />
+      <path d="M38 218 112 132l48 48 42-42 80 80H38Z" fill="#ffffff" opacity=".7" />
+      <text x="160" y="302" text-anchor="middle" font-family="system-ui" font-size="18" fill="#ffffff">
+        FULL IMAGE
+      </text>
     </svg>
   `)
 
@@ -139,7 +144,7 @@ function App() {
         <View layout="flex" direction="column" gap={0.75}>
           <h2>Image</h2>
           <p className="hint">
-            同一图像分别使用 contain 与 cover；尺寸和圆角来自 viewProps。
+            方形源图放进横向容器：contain 应完整显示并留空，cover 应填满并裁切；尺寸和圆角来自 viewProps。
           </p>
 
           <View layout="flex" direction="row" gap={1} wrap>
