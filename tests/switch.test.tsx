@@ -98,6 +98,124 @@ describe('Switch', () => {
     expect(onChange).not.toHaveBeenCalled()
   })
 
+  it('switches state when the thumb is dragged across the midpoint', () => {
+    const onChange = vi.fn()
+    const { getByRole } = render(
+      <Switch onChange={onChange} />,
+    )
+
+    const element = getByRole('switch') as HTMLDivElement
+    const thumb = element.querySelector(
+      '[data-weave-switch-thumb]',
+    ) as HTMLDivElement
+
+    element.getBoundingClientRect = () => ({
+      x: 0,
+      y: 0,
+      top: 0,
+      right: 40,
+      bottom: 24,
+      left: 0,
+      width: 40,
+      height: 24,
+      toJSON: () => ({}),
+    })
+    thumb.getBoundingClientRect = () => ({
+      x: 2,
+      y: 2,
+      top: 2,
+      right: 22,
+      bottom: 22,
+      left: 2,
+      width: 20,
+      height: 20,
+      toJSON: () => ({}),
+    })
+
+    fireEvent.pointerDown(thumb, {
+      pointerId: 7,
+      button: 0,
+      clientX: 2,
+    })
+    fireEvent.pointerMove(element, {
+      pointerId: 7,
+      clientX: 30,
+    })
+
+    expect(element.getAttribute('data-weave-switch-dragging')).toBe(
+      'true',
+    )
+    expect(thumb.style.transform).toContain('translateX(')
+
+    fireEvent.pointerUp(element, {
+      pointerId: 7,
+      clientX: 30,
+    })
+
+    expect(onChange).toHaveBeenCalledTimes(1)
+    expect(onChange).toHaveBeenLastCalledWith(true)
+    expect(element.getAttribute('aria-checked')).toBe('true')
+    expect(element.getAttribute('data-weave-switch-dragging')).toBeNull()
+    expect(thumb.style.transform).toBe('')
+
+    fireEvent.click(element)
+
+    expect(onChange).toHaveBeenCalledTimes(1)
+    expect(element.getAttribute('aria-checked')).toBe('true')
+  })
+
+  it('does not toggle for a thumb drag that stays before the midpoint', () => {
+    const onChange = vi.fn()
+    const { getByRole } = render(
+      <Switch onChange={onChange} />,
+    )
+
+    const element = getByRole('switch') as HTMLDivElement
+    const thumb = element.querySelector(
+      '[data-weave-switch-thumb]',
+    ) as HTMLDivElement
+
+    element.getBoundingClientRect = () => ({
+      x: 0,
+      y: 0,
+      top: 0,
+      right: 40,
+      bottom: 24,
+      left: 0,
+      width: 40,
+      height: 24,
+      toJSON: () => ({}),
+    })
+    thumb.getBoundingClientRect = () => ({
+      x: 2,
+      y: 2,
+      top: 2,
+      right: 22,
+      bottom: 22,
+      left: 2,
+      width: 20,
+      height: 20,
+      toJSON: () => ({}),
+    })
+
+    fireEvent.pointerDown(thumb, {
+      pointerId: 8,
+      button: 0,
+      clientX: 2,
+    })
+    fireEvent.pointerMove(element, {
+      pointerId: 8,
+      clientX: 6,
+    })
+    fireEvent.pointerUp(element, {
+      pointerId: 8,
+      clientX: 6,
+    })
+
+    expect(onChange).not.toHaveBeenCalled()
+    expect(element.getAttribute('aria-checked')).toBe('false')
+  })
+
   it('does not toggle while disabled through viewProps', () => {
     const onChange = vi.fn()
 
@@ -114,8 +232,25 @@ describe('Switch', () => {
 
     expect(element.getAttribute('aria-disabled')).toBe('true')
 
+    const thumb = element.querySelector(
+      '[data-weave-switch-thumb]',
+    ) as HTMLDivElement
+
     fireEvent.click(element)
     fireEvent.keyDown(element, { key: ' ' })
+    fireEvent.pointerDown(thumb, {
+      pointerId: 9,
+      button: 0,
+      clientX: 0,
+    })
+    fireEvent.pointerMove(element, {
+      pointerId: 9,
+      clientX: 30,
+    })
+    fireEvent.pointerUp(element, {
+      pointerId: 9,
+      clientX: 30,
+    })
 
     expect(onChange).not.toHaveBeenCalled()
     expect(element.getAttribute('aria-checked')).toBe('false')
