@@ -5,6 +5,23 @@ import { Input } from '../src'
 
 afterEach(cleanup)
 
+function runtimeRule(
+  element: Element,
+  prefix: string,
+): string {
+  const className = [...element.classList].find((name) =>
+    name.startsWith(prefix),
+  )
+
+  expect(className).toBeDefined()
+
+  return (
+    document.querySelector<HTMLStyleElement>(
+      `style[data-weave-runtime-class="${className}"]`,
+    )?.textContent ?? ''
+  )
+}
+
 describe('Input', () => {
   it('renders a single-line input and emits value changes', () => {
     const onChange = vi.fn()
@@ -43,7 +60,10 @@ describe('Input', () => {
     expect(element.minLength).toBe(2)
     expect(element.maxLength).toBe(20)
     expect(element.pattern).toBe('[A-Za-z ]+')
-    expect(element.style.getPropertyValue('--weave-width')).toBe('20rem')
+    expect(runtimeRule(element, 'weave-view-props-')).toContain(
+      '--weave-width:20rem;',
+    )
+    expect(element.style.getPropertyValue('--weave-width')).toBe('')
 
     fireEvent.change(element, {
       target: {
@@ -135,8 +155,11 @@ describe('Input', () => {
 
     const element = getByTestId('priority-input') as HTMLInputElement
 
-    expect(element.className).toBe('custom-input')
-    expect(element.style.getPropertyValue('--weave-width')).toBe('20rem')
+    expect(element.className).toContain('custom-input')
+    expect(element.style.getPropertyValue('--weave-width')).toBe('')
+    expect(runtimeRule(element, 'weave-view-props-')).toContain(
+      '--weave-width:20rem;',
+    )
     expect(element.style.width).toBe('120px')
   })
 
