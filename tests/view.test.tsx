@@ -261,6 +261,37 @@ describe('View DOM backend', () => {
     )
   })
 
+  it('does not leak inactive custom breakpoint props to the DOM', () => {
+    const { getByTestId } = render(
+      <View
+        compact={{ width: 22 }}
+        data={{ testid: 'inactive-breakpoint' }}
+      />,
+    )
+
+    const element = getByTestId('inactive-breakpoint')
+
+    expect(element.getAttribute('compact')).toBeNull()
+    expect(
+      [...element.classList].some((name) =>
+        name.startsWith('weave-props-'),
+      ),
+    ).toBe(false)
+  })
+
+  it('still forwards native object-valued DOM props', () => {
+    const { getByTestId } = render(
+      <View
+        dangerouslySetInnerHTML={{ __html: '<b>Native</b>' }}
+        data={{ testid: 'native-object-prop' }}
+      />,
+    )
+
+    expect(getByTestId('native-object-prop').innerHTML).toBe(
+      '<b>Native</b>',
+    )
+  })
+
   it('encodes state styles in generated property classes', () => {
     const { getByTestId } = render(
       <View
