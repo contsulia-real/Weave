@@ -157,7 +157,10 @@ describe('automatic Scrollbar', () => {
 
     expect(track.dataset.weaveScrollbarVisible).toBe('true')
     expect(track.style.top).toBe('24px')
-    expect(track.style.left).toBe('206px')
+    expect(track.style.left).toBe('210px')
+    expect(
+      track.style.getPropertyValue('--weave-scrollbar-edge-inset'),
+    ).toBe('4px')
     expect(track.style.height).toBe('92px')
     expect(thumb.style.height).toBe('24px')
 
@@ -165,6 +168,113 @@ describe('automatic Scrollbar', () => {
     fireEvent.scroll(host)
 
     expect(thumb.style.transform).toBe('translateY(34px)')
+  })
+
+  it('keeps the hit target flush to the edge while the thumb stays inset', () => {
+    const { getByTestId } = render(
+      <View
+        style={{
+          overflowY: 'auto',
+          width: '200px',
+          height: '100px',
+        }}
+        data={{
+          testid: 'edge-scroll-host',
+        }}
+      >
+        <View height={40} />
+      </View>,
+    )
+
+    const host = getByTestId('edge-scroll-host') as HTMLDivElement
+
+    Object.defineProperties(host, {
+      clientHeight: {
+        configurable: true,
+        value: 100,
+      },
+      scrollHeight: {
+        configurable: true,
+        value: 400,
+      },
+      clientWidth: {
+        configurable: true,
+        value: 200,
+      },
+      scrollWidth: {
+        configurable: true,
+        value: 200,
+      },
+    })
+
+    host.getBoundingClientRect = () => ({
+      x: 10,
+      y: 20,
+      top: 20,
+      right: 210,
+      bottom: 120,
+      left: 10,
+      width: 200,
+      height: 100,
+      toJSON: () => ({}),
+    })
+
+    fireEvent(window, new Event('resize'))
+
+    const track = document.body.querySelector(
+      '[data-weave-scrollbar-orientation="vertical"]',
+    ) as HTMLDivElement
+    const thumb = track.querySelector(
+      '[data-weave-scrollbar-thumb]',
+    ) as HTMLDivElement
+
+    track.getBoundingClientRect = () => ({
+      x: 194,
+      y: 24,
+      top: 24,
+      right: 210,
+      bottom: 116,
+      left: 194,
+      width: 16,
+      height: 92,
+      toJSON: () => ({}),
+    })
+    thumb.getBoundingClientRect = () => ({
+      x: 200,
+      y: 24,
+      top: 24,
+      right: 206,
+      bottom: 48,
+      left: 200,
+      width: 6,
+      height: 24,
+      toJSON: () => ({}),
+    })
+
+    fireEvent.pointerDown(track, {
+      pointerId: 41,
+      button: 0,
+      clientX: 209,
+      clientY: 30,
+    })
+
+    expect(track.dataset.weaveScrollbarDragging).toBe('true')
+
+    fireEvent.pointerMove(track, {
+      pointerId: 41,
+      clientX: 209,
+      clientY: 50,
+    })
+
+    expect(host.scrollTop).toBeGreaterThan(0)
+
+    fireEvent.pointerUp(track, {
+      pointerId: 41,
+      clientX: 209,
+      clientY: 50,
+    })
+
+    expect(track.dataset.weaveScrollbarDragging).toBeUndefined()
   })
 
   it('keeps tracks visible for overflow scroll semantics', () => {
@@ -305,8 +415,15 @@ describe('automatic Scrollbar', () => {
     expect(track.style.width).toBe('')
     expect(track.style.getPropertyValue('--weave-width')).toBe('')
     expect(rule).toContain('--weave-scrollbar-thickness:0.25rem;')
+    expect(rule).toContain('--weave-scrollbar-hit-size:1rem;')
     expect(rule).toContain(
       '--weave-scrollbar-color:color-mix(insrgb,var(--weave-color-secondary)72%,transparent);',
+    )
+    expect(rule).toContain(
+      '--weave-scrollbar-hover-color:color-mix(insrgb,var(--weave-color-secondary)88%,transparent);',
+    )
+    expect(rule).toContain(
+      '--weave-scrollbar-drag-color:var(--weave-color-secondary);',
     )
     expect(rule).toContain(
       '--weave-scrollbar-track-color:color-mix(insrgb,var(--weave-color-secondary)12%,transparent);',
@@ -316,6 +433,9 @@ describe('automatic Scrollbar', () => {
       'style[data-weave-scrollbar-styles]',
     )
 
+    expect(stylesheet?.textContent).toContain(
+      '--weave-component-width: var(--weave-scrollbar-hit-size)',
+    )
     expect(stylesheet?.textContent).toContain(
       '--weave-component-width: var(--weave-scrollbar-thickness)',
     )
@@ -334,6 +454,12 @@ describe('automatic Scrollbar', () => {
       'style[data-weave-scrollbar-styles]',
     )?.textContent ?? ''
 
+    expect(stylesheet).toContain(
+      '--weave-component-background: var(--weave-scrollbar-hover-color)',
+    )
+    expect(stylesheet).toContain(
+      '--weave-component-background: var(--weave-scrollbar-drag-color)',
+    )
     expect(stylesheet).toContain(
       'scale: var(--weave-feedback-hover-scale) 1',
     )
