@@ -1,3 +1,8 @@
+import {
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react'
 import { Image, Text, ThemeProvider, View, createTheme } from './index'
 
 const diagnosticImage =
@@ -38,6 +43,41 @@ const diagnosticTheme = createTheme({
   },
 })
 
+
+function useImageProbe() {
+  const ref = useRef<HTMLImageElement>(null)
+  const [info, setInfo] = useState('waiting')
+
+  useLayoutEffect(() => {
+    const element = ref.current
+    if (element === null) return
+
+    const update = () => {
+      const rect = element.getBoundingClientRect()
+      const style = getComputedStyle(element)
+
+      setInfo(
+        [
+          `box=${Math.round(rect.width)}×${Math.round(rect.height)}`,
+          `height=${style.height}`,
+          `fit=${style.objectFit}`,
+          `--weave-height=${style.getPropertyValue('--weave-height').trim() || '∅'}`,
+          `viewport-height=${style.getPropertyValue('--weave-viewport-responsive-height').trim() || '∅'}`,
+        ].join(' · '),
+      )
+    }
+
+    update()
+
+    const observer = new ResizeObserver(update)
+    observer.observe(element)
+
+    return () => observer.disconnect()
+  }, [])
+
+  return { ref, info }
+}
+
 function DemoBox({ label }: { label: string }) {
   return (
     <View
@@ -51,6 +91,9 @@ function DemoBox({ label }: { label: string }) {
 }
 
 function App() {
+  const containProbe = useImageProbe()
+  const coverProbe = useImageProbe()
+
   return (
     <View
       layout="grid"
@@ -153,6 +196,7 @@ function App() {
               alt="Weave gradient diagnostic"
               fit="contain"
               viewProps={{
+                ref: containProbe.ref,
                 width: 14,
                 height: 8,
                 radius: 'medium',
@@ -166,12 +210,20 @@ function App() {
               fit="cover"
               position="center"
               viewProps={{
+                ref: coverProbe.ref,
                 width: 14,
                 height: 8,
                 radius: 'medium',
               }}
             />
           </View>
+
+          <Text size="xsmall" color="secondary">
+            contain: {containProbe.info}
+          </Text>
+          <Text size="xsmall" color="secondary">
+            cover: {coverProbe.info}
+          </Text>
         </View>
 
         <View layout="flex" direction="column" gap={0.75}>
