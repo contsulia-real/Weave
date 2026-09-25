@@ -103,18 +103,27 @@ const variableName = (
 ): `--weave-${string}` =>
   `--weave-${prefix === undefined ? '' : `${prefix}-`}${toKebab(property)}`
 
+const componentVariableName = (
+  property: ViewStyleProperty,
+): `--weave-component-${string}` =>
+  `--weave-component-${toKebab(property)}`
+
 const responsiveVariableName = (
   scope: 'viewport' | 'container',
   property: ViewStyleProperty,
 ): `--weave-${string}` =>
   `--weave-${scope}-responsive-${toKebab(property)}`
 
-const baseValue = (property: ViewStyleProperty, state?: string) => {
-  if (state === undefined) {
-    return `var(${variableName(property)})`
-  }
+const componentFallback = (property: ViewStyleProperty) =>
+  `var(${componentVariableName(property)})`
 
-  return `var(${variableName(property, state)}, var(${variableName(property)}))`
+const baseValue = (property: ViewStyleProperty, state?: string) => {
+  const base =
+    `var(${variableName(property)}, ${componentFallback(property)})`
+
+  if (state === undefined) return base
+
+  return `var(${variableName(property, state)}, ${base})`
 }
 
 const resolvedValue = (property: ViewStyleProperty, state?: string) =>
@@ -156,7 +165,7 @@ const sourceChain = (
   )
 
   const fallback =
-    scope === 'viewport' ? `var(${variableName(property)})` : undefined
+    scope === 'viewport' ? baseValue(property) : undefined
 
   return prefixes.reduceRight<string>(
     (current, prefix) =>
@@ -267,7 +276,7 @@ ${containerBlocks()}
 }
 
 :where([data-weave-layout="absolute"]) > :where([data-weave-view]) {
-  position: var(--weave-position, absolute);
+  position: var(--weave-position, var(--weave-component-position, absolute));
 }
 `
 
@@ -291,4 +300,8 @@ export function ensureViewStylesheet(): void {
   document.head.append(element)
 }
 
-export { VIEW_STYLE_PROPERTIES, variableName }
+export {
+  VIEW_STYLE_PROPERTIES,
+  componentVariableName,
+  variableName,
+}
