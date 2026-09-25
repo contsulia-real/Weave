@@ -508,35 +508,6 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
     dragRef.current = null
   }
 
-  const handleTrackPointerDown = (
-    orientation: Orientation,
-    event: PointerEvent<HTMLDivElement>,
-  ) => {
-    if (event.target !== event.currentTarget) return
-
-    const thumb =
-      orientation === 'vertical'
-        ? verticalThumbRef.current
-        : horizontalThumbRef.current
-
-    if (thumb === null) return
-
-    const thumbRect = thumb.getBoundingClientRect()
-    const pointer =
-      orientation === 'vertical' ? event.clientY : event.clientX
-    const start =
-      orientation === 'vertical' ? thumbRect.top : thumbRect.left
-    const end =
-      orientation === 'vertical' ? thumbRect.bottom : thumbRect.right
-
-    if (pointer >= start && pointer <= end) {
-      beginDrag(orientation, event)
-      return
-    }
-
-    pageTrack(orientation, event)
-  }
-
   const pageTrack = (
     orientation: Orientation,
     event: PointerEvent<HTMLDivElement>,
@@ -568,6 +539,36 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
 
     syncThumbOffsets()
   }
+
+  const handleTrackPointerDown = (
+    orientation: Orientation,
+    event: PointerEvent<HTMLDivElement>,
+  ) => {
+    if (event.target !== event.currentTarget) return
+
+    const thumb =
+      orientation === 'vertical'
+        ? verticalThumbRef.current
+        : horizontalThumbRef.current
+
+    if (thumb === null) return
+
+    const thumbRect = thumb.getBoundingClientRect()
+    const pointer =
+      orientation === 'vertical' ? event.clientY : event.clientX
+    const start =
+      orientation === 'vertical' ? thumbRect.top : thumbRect.left
+    const end =
+      orientation === 'vertical' ? thumbRect.bottom : thumbRect.right
+
+    if (pointer >= start && pointer <= end) {
+      beginDrag(orientation, event)
+      return
+    }
+
+    pageTrack(orientation, event)
+  }
+
 
   if (typeof document === 'undefined') return null
 
