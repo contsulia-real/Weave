@@ -204,6 +204,9 @@ export const defaultTheme: ResolvedTheme = {
         },
       },
       states: {
+        checked: {
+          background: 'primary',
+        },
         disabled: {
           opacity: 0.5,
           cursor: 'default',
@@ -232,8 +235,7 @@ export const defaultTheme: ResolvedTheme = {
     },
     Switch: {
       base: {
-        background:
-          'color-mix(in srgb, var(--weave-color-outline) 38%, var(--weave-color-surface))',
+        background: 'transparent',
         radius: 'full',
         cursor: 'pointer',
         trackShadow:
@@ -245,8 +247,8 @@ export const defaultTheme: ResolvedTheme = {
           '0 0.0625rem 0.125rem rgb(58 48 40 / 0.18), 0 0.125rem 0.25rem rgb(58 48 40 / 0.08)',
         thumbHoverShadow:
           '0 0.125rem 0.25rem rgb(58 48 40 / 0.20), 0 0.1875rem 0.375rem rgb(58 48 40 / 0.10)',
-        thumbDragStretch: 1.24,
-        thumbDragCompress: 0.88,
+        thumbDragShrink: 0.72,
+        thumbDragStretch: 0.7,
         focusOutlineWidth: 0.125,
         focusOutlineColor: 'focus',
         focusOutlineStyle: 'solid',
