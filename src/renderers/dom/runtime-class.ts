@@ -24,6 +24,10 @@ interface RuntimeClassEntry {
 }
 
 const runtimeClasses = new Map<string, RuntimeClassEntry>()
+const runtimeRuleCache = new WeakMap<
+  object,
+  Map<string, RuntimeClassRule | null>
+>()
 
 function entries(
   declarations: Readonly<object> | undefined,
@@ -53,18 +57,38 @@ export function createRuntimeStyleClass(
   prefix: string,
   declarations: Readonly<object> | undefined,
 ): RuntimeClassRule | undefined {
+  if (declarations === undefined) return undefined
+
+  const cacheKey = declarations as object
+  const cachedByPrefix = runtimeRuleCache.get(cacheKey)
+
+  if (cachedByPrefix?.has(prefix)) {
+    return cachedByPrefix.get(prefix) ?? undefined
+  }
+
   const normalized = entries(declarations)
-  if (normalized.length === 0) return undefined
+  if (normalized.length === 0) {
+    const next = cachedByPrefix ?? new Map()
+    next.set(prefix, null)
+    runtimeRuleCache.set(cacheKey, next)
+    return undefined
+  }
 
   const signature = JSON.stringify(normalized)
   const className =
     'weave-' + prefix + '-' + hashRuntimeValue(signature)
 
-  return {
+  const rule = {
     className,
     signature,
     declarations: normalized,
   }
+
+  const next = cachedByPrefix ?? new Map()
+  next.set(prefix, rule)
+  runtimeRuleCache.set(cacheKey, next)
+
+  return rule
 }
 
 function createStyleElement(rule: RuntimeClassRule): HTMLStyleElement {
