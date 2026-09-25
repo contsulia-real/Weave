@@ -9,6 +9,23 @@ import { themeTokenVariables } from '../src/theme/theme-css'
 
 afterEach(cleanup)
 
+function runtimeRule(
+  element: Element,
+  prefix: string,
+): string {
+  const className = [...element.classList].find((name) =>
+    name.startsWith(prefix),
+  )
+
+  expect(className).toBeDefined()
+
+  return (
+    document.querySelector<HTMLStyleElement>(
+      `style[data-weave-runtime-class="${className}"]`,
+    )?.textContent ?? ''
+  )
+}
+
 describe('Theme', () => {
   it('normalizes scale and time tokens to framework units', () => {
     const variables = themeTokenVariables({
@@ -30,7 +47,7 @@ describe('Theme', () => {
     expect(variables['--weave-motion-duration-fast']).toBe('120ms')
   })
 
-  it('applies local token overrides without losing inherited tokens', () => {
+  it('applies local token overrides through theme classes', () => {
     const outer = createTheme({
       tokens: {
         color: {
@@ -56,15 +73,14 @@ describe('Theme', () => {
       </ThemeProvider>,
     )
 
-    const scope = getByTestId('themed').parentElement
+    const scope = getByTestId('themed').parentElement as HTMLElement
+    const rule = runtimeRule(scope, 'weave-theme-')
 
-    expect(scope?.getAttribute('data-weave-theme')).not.toBeNull()
-    expect(scope?.style.getPropertyValue('--weave-color-primary')).toBe(
-      '#ff4f87',
-    )
-    expect(scope?.style.getPropertyValue('--weave-color-surface')).toBe(
-      '#18181b',
-    )
+    expect(scope.getAttribute('data-weave-theme')).not.toBeNull()
+    expect(scope.style.getPropertyValue('--weave-color-primary')).toBe('')
+    expect(rule).toContain('--weave-color-primary:#ff4f87;')
+    expect(rule).toContain('--weave-color-surface:#18181b;')
+    expect(rule).toContain('display:contents;')
   })
 
   it('inherits the parent mode when a nested provider omits mode', () => {
@@ -116,11 +132,11 @@ describe('Theme', () => {
     )
 
     expect(scopes).toHaveLength(2)
-    expect(scopes[0]?.style.getPropertyValue('--weave-color-primary')).toBe(
-      '#6d5dfc',
+    expect(runtimeRule(scopes[0]!, 'weave-theme-')).toContain(
+      '--weave-color-primary:#6d5dfc;',
     )
-    expect(scopes[1]?.style.getPropertyValue('--weave-color-primary')).toBe(
-      '#b9adff',
+    expect(runtimeRule(scopes[1]!, 'weave-theme-')).toContain(
+      '--weave-color-primary:#b9adff;',
     )
     expect(scopes[1]?.getAttribute('data-weave-theme-mode')).toBe('dark')
   })
