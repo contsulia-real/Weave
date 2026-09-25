@@ -230,6 +230,31 @@ ${propertyRegistrationBlock()}
   ${declarationBlock('disabled')}
 }
 
+:where(.weave-scroll-host--overflow-auto) {
+  overflow: auto;
+}
+
+:where(.weave-scroll-host--overflow-scroll) {
+  overflow: scroll;
+}
+
+:where(.weave-scroll-host--overflow-x-auto) {
+  overflow-x: auto;
+}
+
+:where(.weave-scroll-host--overflow-x-scroll) {
+  overflow-x: scroll;
+}
+
+:where(.weave-scroll-host--overflow-y-auto) {
+  overflow-y: auto;
+}
+
+:where(.weave-scroll-host--overflow-y-scroll) {
+  overflow-y: scroll;
+}
+
+
 ${viewportBlocks()}
 ${containerBlocks()}
 
