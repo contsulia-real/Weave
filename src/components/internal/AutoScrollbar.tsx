@@ -12,7 +12,11 @@ import type {
   ScrollbarSize,
   ViewProps,
 } from '../../core/view-types'
+import { resolveScrollbarTheme } from '../../renderers/dom/resolve-component-theme'
+import { useRuntimeStyleClass } from '../../renderers/dom/runtime-class'
 import { ensureScrollbarStylesheet } from '../../renderers/dom/scrollbar-stylesheet'
+import { themeVariables } from '../../theme/theme-css'
+import { useTheme } from '../../theme/theme-context'
 import { useViewHost } from './use-view-host'
 
 type Orientation = 'vertical' | 'horizontal'
@@ -77,101 +81,6 @@ function scrollbarVisible(
   )
 }
 
-const TOKEN_NAME = /^[A-Za-z][A-Za-z0-9_-]*$/
-
-function copyToken(
-  track: HTMLElement,
-  computed: CSSStyleDeclaration,
-  variable: string,
-): void {
-  const value = computed.getPropertyValue(variable).trim()
-  if (value.length > 0) {
-    track.style.setProperty(variable, value)
-  }
-}
-
-function syncScrollbarTheme(
-  track: HTMLElement,
-  computed: CSSStyleDeclaration,
-  config: ScrollbarConfig | undefined,
-): void {
-  track.style.removeProperty('--weave-scrollbar-color')
-  track.style.removeProperty('--weave-scrollbar-track-color')
-  track.style.removeProperty('--weave-scrollbar-radius')
-  track.style.removeProperty('--weave-scrollbar-opacity')
-
-  copyToken(track, computed, '--weave-color-secondary')
-  copyToken(track, computed, '--weave-radius-full')
-
-  if (config?.color !== undefined) {
-    if (TOKEN_NAME.test(config.color)) {
-      copyToken(
-        track,
-        computed,
-        `--weave-color-${config.color}`,
-      )
-      track.style.setProperty(
-        '--weave-scrollbar-color',
-        `var(--weave-color-${config.color}, ${config.color})`,
-      )
-    } else {
-      track.style.setProperty('--weave-scrollbar-color', config.color)
-    }
-  }
-
-  if (config?.trackColor !== undefined) {
-    if (TOKEN_NAME.test(config.trackColor)) {
-      copyToken(
-        track,
-        computed,
-        `--weave-color-${config.trackColor}`,
-      )
-      track.style.setProperty(
-        '--weave-scrollbar-track-color',
-        `var(--weave-color-${config.trackColor}, ${config.trackColor})`,
-      )
-    } else {
-      track.style.setProperty(
-        '--weave-scrollbar-track-color',
-        config.trackColor,
-      )
-    }
-  }
-
-  if (config?.radius !== undefined) {
-    if (
-      typeof config.radius === 'string' &&
-      ['small', 'medium', 'large', 'full'].includes(config.radius)
-    ) {
-      copyToken(
-        track,
-        computed,
-        `--weave-radius-${config.radius}`,
-      )
-      track.style.setProperty(
-        '--weave-scrollbar-radius',
-        `var(--weave-radius-${config.radius})`,
-      )
-    } else if (config.radius === 'none') {
-      track.style.setProperty('--weave-scrollbar-radius', '0')
-    } else {
-      track.style.setProperty(
-        '--weave-scrollbar-radius',
-        typeof config.radius === 'number'
-          ? `${config.radius}rem`
-          : config.radius,
-      )
-    }
-  }
-
-  if (config?.opacity !== undefined) {
-    track.style.setProperty(
-      '--weave-scrollbar-opacity',
-      String(config.opacity),
-    )
-  }
-}
-
 function syncScrollbarLayer(
   track: HTMLElement,
   target: HTMLElement,
@@ -214,6 +123,15 @@ export function AutoScrollbar({
 
   const size: ScrollbarSize = config?.size ?? 'medium'
   const tracked = config?.tracked === true
+  const { theme } = useTheme()
+  const themeTokenClassName = useRuntimeStyleClass(
+    'scrollbar-tokens',
+    themeVariables(theme),
+  )
+  const scrollbarThemeClassName = useRuntimeStyleClass(
+    'scrollbar-theme',
+    resolveScrollbarTheme(theme, size, config),
+  )
 
   const update = useCallback(() => {
     const target = targetRef.current
@@ -235,8 +153,6 @@ export function AutoScrollbar({
     const computed = getComputedStyle(target)
     const rect = target.getBoundingClientRect()
 
-    syncScrollbarTheme(verticalTrack, computed, config)
-    syncScrollbarTheme(horizontalTrack, computed, config)
     syncScrollbarLayer(verticalTrack, target)
     syncScrollbarLayer(horizontalTrack, target)
 
@@ -346,7 +262,9 @@ export function AutoScrollbar({
   }, [
     config,
     overflowIntent,
+    scrollbarThemeClassName,
     targetRef,
+    themeTokenClassName,
   ])
 
   useLayoutEffect(() => {
@@ -397,27 +315,12 @@ export function AutoScrollbar({
       attributes: true,
     })
 
-    const themeHost = target.closest<HTMLElement>('[data-weave-theme]')
-    let themeObserver: MutationObserver | null = null
-
-    if (
-      themeHost !== null &&
-      typeof MutationObserver !== 'undefined'
-    ) {
-      themeObserver = new MutationObserver(update)
-      themeObserver.observe(themeHost, {
-        attributes: true,
-        attributeFilter: ['style'],
-      })
-    }
-
     return () => {
       target.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', onWindowChange)
       document.removeEventListener('scroll', onWindowChange, true)
       resizeObserver?.disconnect()
       mutationObserver?.disconnect()
-      themeObserver?.disconnect()
     }
   }, [targetRef, update])
 
@@ -550,6 +453,8 @@ export function AutoScrollbar({
         className={[
           'weave-scrollbar',
           `weave-scrollbar--${size}`,
+          themeTokenClassName,
+          scrollbarThemeClassName,
           'weave-scrollbar--vertical',
           tracked ? 'weave-scrollbar--tracked' : undefined,
         ].filter(Boolean).join(' ')}
