@@ -247,38 +247,17 @@ function App() {
         <View layout="flex" direction="column" gap={0.75}>
           <h2>LoadingIndicator</h2>
           <p className="hint">
-            animation 只属于 undetermined；确定进度在 progress 改变时自动过渡。
+            undetermined 持续运动；确定进度只在 progress 数值变化时自动过渡。
           </p>
 
           <View layout="flex" direction="row" gap={1.5} align="center" wrap>
             <View layout="flex" direction="row" gap={0.5} align="center">
               <LoadingIndicator
                 undetermined
-                size="small"
-                animation="spin"
-                color="primary"
-              />
-              <Text size="small">Spin</Text>
-            </View>
-
-            <View layout="flex" direction="row" gap={0.5} align="center">
-              <LoadingIndicator
-                undetermined
                 size="medium"
-                animation="pulse"
                 color="primary"
               />
-              <Text size="small">Pulse</Text>
-            </View>
-
-            <View layout="flex" direction="row" gap={0.5} align="center">
-              <LoadingIndicator
-                undetermined
-                size="large"
-                animation="dots"
-                color="primary"
-              />
-              <Text size="small">Dots</Text>
+              <Text size="small">Undetermined</Text>
             </View>
 
             <View layout="flex" direction="row" gap={0.75} align="center">
