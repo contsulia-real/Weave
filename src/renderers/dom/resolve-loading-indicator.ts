@@ -6,19 +6,20 @@ import type {
 export type LoadingIndicatorVariableStyle = CSSProperties &
   Record<`--weave-loading-${string}`, string | number | undefined>
 
-export function resolveLoadingIndicatorStyle(input: {
-  speed?: LoadingIndicatorSpeed
-  progress?: number
-}): LoadingIndicatorVariableStyle {
-  const output: LoadingIndicatorVariableStyle = {}
+export function resolveLoadingIndicatorStyle(
+  speed: LoadingIndicatorSpeed | undefined,
+): LoadingIndicatorVariableStyle {
+  if (typeof speed !== 'number') return {}
 
-  if (typeof input.speed === 'number') {
-    output['--weave-loading-duration'] = `${input.speed}ms`
+  return {
+    '--weave-loading-duration': `${speed}ms`,
   }
+}
 
-  if (input.progress !== undefined) {
-    output['--weave-loading-progress'] = `${input.progress * 100}%`
+export function resolveLoadingIndicatorProgressStyle(
+  progress: number,
+): LoadingIndicatorVariableStyle {
+  return {
+    '--weave-loading-progress': `${progress * 100}%`,
   }
-
-  return output
 }
