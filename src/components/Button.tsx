@@ -120,6 +120,10 @@ export function Button(props: ButtonProps) {
   }
 
   const disabled = loading || viewProps.disabled === true
+  const iconOnly =
+    'icon' in props &&
+    props.icon !== undefined &&
+    props.text === undefined
 
   return (
     <button
@@ -139,6 +143,7 @@ export function Button(props: ButtonProps) {
         `weave-button--${variant}`,
         `weave-button--${size}`,
         loading ? 'weave-button--loading' : undefined,
+        iconOnly ? 'weave-button--icon-only' : undefined,
         themeClassName,
         className,
       ].filter(Boolean).join(' ')}
