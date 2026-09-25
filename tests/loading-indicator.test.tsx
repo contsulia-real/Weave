@@ -134,7 +134,9 @@ describe('LoadingIndicator', () => {
 
     const element = getByRole('progressbar')
 
-    expect(element.className).toBe('custom-loading')
+    expect(element.className).toContain('weave-loading-indicator')
+    expect(element.className).toContain('weave-loading-indicator--large')
+    expect(element.className).toContain('custom-loading')
     expect(element.style.getPropertyValue('--weave-width')).toBe('4rem')
     expect(element.style.width).toBe('18px')
   })
