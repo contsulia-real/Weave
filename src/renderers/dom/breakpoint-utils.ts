@@ -5,20 +5,26 @@ export interface BreakpointEntry {
 }
 
 export function breakpointCSSName(name: string): string {
-  return Array.from(name)
-    .map((character) =>
-      /^[a-z0-9-]$/i.test(character)
-        ? character.toLowerCase()
-        : `_${character.codePointAt(0)?.toString(16) ?? '0'}_`,
+  if (/^[a-z][a-z0-9-]*$/.test(name)) return name
+
+  return `bp-${Array.from(name)
+    .map(
+      (character) =>
+        character.codePointAt(0)?.toString(16) ?? '0',
     )
-    .join('')
+    .join('-')}`
 }
 
 export function breakpointEntries(
   breakpoints: Readonly<Record<string, number>>,
 ): readonly BreakpointEntry[] {
   return Object.entries(breakpoints)
-    .filter(([, minWidth]) => Number.isFinite(minWidth) && minWidth >= 0)
+    .filter(
+      ([name, minWidth]) =>
+        name.length > 0 &&
+        Number.isFinite(minWidth) &&
+        minWidth >= 0,
+    )
     .map(([name, minWidth]) => ({
       name,
       cssName: breakpointCSSName(name),
