@@ -1,4 +1,5 @@
 import {
+  useCallback,
   useInsertionEffect,
   useLayoutEffect,
   useRef,
@@ -103,7 +104,7 @@ export function AutoScrollbar({
   const size: ScrollbarSize = config?.size ?? 'medium'
   const configStyle = scrollbarConfigStyle(config)
 
-  const update = () => {
+  const update = useCallback(() => {
     const target = targetRef.current
     const verticalTrack = verticalTrackRef.current
     const horizontalTrack = horizontalTrackRef.current
@@ -189,7 +190,7 @@ export function AutoScrollbar({
       horizontalThumb.style.width = `${thumbLength}px`
       horizontalThumb.style.transform = `translateX(${offset}px)`
     }
-  }
+  }, [targetRef])
 
   useLayoutEffect(() => {
     const target = targetRef.current
@@ -246,7 +247,7 @@ export function AutoScrollbar({
       resizeObserver?.disconnect()
       mutationObserver?.disconnect()
     }
-  }, [targetRef])
+  }, [targetRef, update])
 
   const beginDrag = (
     orientation: Orientation,
