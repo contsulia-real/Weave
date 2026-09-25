@@ -10,7 +10,9 @@ import { ensureProgressStylesheet } from '../renderers/dom/progress-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { View } from './View'
 
-export function Progress(props: ProgressProps) {
+export function Progress<const TBreakpoint extends string = never>(
+  props: ProgressProps<TBreakpoint>,
+) {
   useInsertionEffect(ensureProgressStylesheet, [])
 
   const {
