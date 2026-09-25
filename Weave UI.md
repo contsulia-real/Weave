@@ -2247,11 +2247,11 @@ theme.components.Input
 默认中等控件语言与 Button 使用同一组 control baseline：
 
 ```text
-minHeight   = 2.25rem
-radius      = 0.5rem
+minHeight   = 2.5rem
+radius      = 0.75rem
 border      = 0.0625rem solid outline
 background  = surface
-fontSize    = 0.9375rem
+fontSize    = 1rem
 focus       = 0.125rem focus outline
 focusOffset = 0.0625rem
 ```
@@ -3442,6 +3442,7 @@ size
 spacing
 radius
 shadow
+feedback
 motion
 ```
 
@@ -3518,8 +3519,20 @@ const theme = {
       large: "...",
     },
 
+    feedback: {
+      restDepth: 0.1875,
+      hoverDepth: 0.25,
+      hoverLift: 0.0625,
+      hoverScale: 1.03,
+      pressDepth: 0.0625,
+      pressOffset: 0.125,
+      pressScale: 0.985,
+      dragScale: 1.08,
+    },
+
     motion: {
       duration: {
+        instant: 80,
         fast: 120,
         normal: 200,
         slow: 320,
@@ -3529,6 +3542,7 @@ const theme = {
         linear: "linear",
         standard: [0.2, 0, 0, 1],
         emphasized: [0.2, 0, 0, 1],
+        spring: [0.16, 1.22, 0.3, 1],
         enter: [0, 0, 0, 1],
         exit: [0.3, 0, 1, 1],
       },
