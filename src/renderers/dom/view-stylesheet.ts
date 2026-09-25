@@ -201,6 +201,10 @@ const containerBlocks = () =>
 const stylesheet = `
 ${propertyRegistrationBlock()}
 
+:root {
+  ${themeVariableDeclarations(defaultTheme)}
+}
+
 :where([data-weave-view]) {
   box-sizing: border-box;
   ${declarationBlock()}
