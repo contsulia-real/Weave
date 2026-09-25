@@ -20,6 +20,7 @@ export type {
   ViewJustify,
   ViewLayout,
   ViewProps,
+  ViewResponsiveStyle,
   ViewSemanticProps,
   ViewStateStyle,
   ViewStyleProps,
