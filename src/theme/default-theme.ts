@@ -310,7 +310,7 @@ export const defaultTheme: ResolvedTheme = {
         borderColor: 'outline',
         paddingX: 0.875,
         paddingY: 0.625,
-        typo: 'body-large',
+        typo: 'body-medium',
       },
       states: {
         disabled: {
