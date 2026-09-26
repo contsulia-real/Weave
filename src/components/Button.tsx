@@ -19,6 +19,7 @@ import { resolveButtonTheme } from '../renderers/dom/resolve-component-theme'
 import { useTheme } from '../theme/theme-context'
 import { Icon } from './Icon'
 import { Text } from './Text'
+import { ProgressVisual } from './Progress'
 import { useViewHost } from './internal/use-view-host'
 
 function iconContent(icon: ButtonIcon) {
@@ -154,11 +155,17 @@ export function Button(props: ButtonProps) {
       </span>
 
       {loading ? (
-        <span
-          className="weave-button__loader"
-          aria-hidden="true"
-        >
-          <span className="weave-button__spinner" />
+        <span className="weave-button__loader" aria-hidden="true">
+          <ProgressVisual
+            undetermined
+            mode="spin"
+            size="small"
+            color="inherit"
+            viewProps={{
+              className: 'weave-button__progress',
+              'aria-hidden': true,
+            }}
+          />
         </span>
       ) : null}
     </button>
