@@ -23,7 +23,7 @@
 - `props`
 - `state`
 - `context`
-- React 事件模型
+- React 风格事件命名；公开事件 payload 使用 Weave renderer-neutral event，不暴露 React SyntheticEvent
 - React 生命周期语义
 - React 的组合模型
 - React 生态兼容
@@ -918,35 +918,100 @@ autoFocus
 
 ## 6.9 通用事件
 
-事件沿用 React 风格，不额外发明另一套同义事件名称。
+事件名称沿用 React 风格，不额外发明另一套同义名称；事件 payload 则必须 renderer-neutral，不直接暴露 React SyntheticEvent。
 
-例如：
+当前第一批公开事件：
 
 ```tsx
 <View
   onClick={...}
-  onDoubleClick={...}
 
   onPointerDown={...}
   onPointerUp={...}
   onPointerMove={...}
   onPointerEnter={...}
   onPointerLeave={...}
+  onPointerCancel={...}
 
   onKeyDown={...}
   onKeyUp={...}
 
   onFocus={...}
   onBlur={...}
-
-  onScroll={...}
-
-  onDragStart={...}
-  onDrag={...}
-  onDragEnd={...}
-  onDrop={...}
 />
 ```
+
+公开事件类型：
+
+```text
+ViewClickEvent
+ViewPointerEvent
+ViewKeyboardEvent
+ViewFocusEvent
+```
+
+共同支持：
+
+```text
+target
+currentTarget
+defaultPrevented
+propagationStopped
+preventDefault()
+stopPropagation()
+```
+
+`target / currentTarget` 是 renderer-neutral `ViewEventTarget`，当前稳定身份字段为：
+
+```text
+id
+```
+
+Pointer event 额外提供：
+
+```text
+pointerId
+pointerType
+isPrimary
+button / buttons
+clientX / clientY
+pressure
+modifier keys
+capturePointer()
+releasePointer()
+```
+
+DOM fallback：
+
+```text
+React SyntheticEvent
+→ DOM event adapter
+→ Weave event
+→ user handler
+```
+
+DiC：
+
+```text
+Canvas native input
+→ DiC tree dispatch
+→ Weave event
+→ user handler
+```
+
+因此业务 handler 不需要、也不能依赖 `nativeEvent / React.MouseEvent / React.PointerEvent`。
+
+当前尚未公开的通用事件：
+
+```text
+onDoubleClick
+onScroll / onWheel
+onDragStart / onDrag / onDragEnd / onDrop
+onContextMenu
+animation / transition DOM events
+```
+
+这些能力必须等 DiC 有对应 backend 后再加入 `ViewEventProps`；不得因为 DOM 能原生处理就从 `HTMLAttributes` 偷漏成 DOM-only API。
 
 ---
 
@@ -4976,7 +5041,7 @@ host measure
 - destroy 必须断开 ResizeObserver / window listener，并取消未执行的 frame；
 - surface 当前仍是 renderer 内部能力，不增加新的公开组件 API。
 
-当前尚未完成的是 Input 等剩余组件级 DiC adapter、完整键盘 Tab 导航与可访问性 semantic bridge、公开 `ViewProps` React 事件 payload 的 renderer-neutral bridge、完整 grid / wrap / advanced flex、Image 的 DiC lazy-loading / load-event bridge，以及 React View 默认切换到 DiC surface。这些能力继续在同一 View tree contract 上扩展。
+当前尚未完成的是 Input 等剩余组件级 DiC adapter、完整键盘 Tab 导航与可访问性 semantic bridge、double-click / scroll / wheel / drag-drop 等后续事件 backend、完整 grid / wrap / advanced flex、Image 的 DiC lazy-loading / load-event bridge，以及 React View 默认切换到 DiC surface。这些能力继续在同一 View tree contract 上扩展。
 
 ## 27.7 DiC Text
 
@@ -5232,7 +5297,7 @@ native PointerEvent / KeyboardEvent
 
 ```text
 Input 等剩余组件的 DiC semantic interaction adapter
-公开 ViewProps React SyntheticEvent → DiC event bridge
+double-click / scroll / wheel / drag-drop event backend
 完整 Tab / Shift+Tab 虚拟焦点遍历
 ARIA / accessibility semantic mirror
 Input 文本编辑 / IME / selection bridge
@@ -5342,24 +5407,43 @@ motion interpolation / spring return
 
 这些 shadow 当前主题使用包含 `inset` 的 CSS shadow 字符串；在建立等价的结构化 shadow IR 前，不允许 Canvas 做近似替代。
 
-### React event bridge 边界
+### Renderer-neutral public event bridge
 
-当前 DiC 内部 pointer / keyboard event 已 renderer-neutral，但公开 `ViewCoreProps` 仍从 React `HTMLAttributes` 继承 `onClick / onPointerDown / onKeyDown...` 的 SyntheticEvent payload。
+`ViewCoreProps` 已不再从 React `HTMLAttributes` 继承任何 `on*` handler 类型。
 
-因此当前 Button / Switch DiC adapter 使用内部语义 callback：
+当前路径为：
+
+```text
+ViewProps
+→ ViewEventProps
+→ ResolvedView.events
+├─ DOM event adapter
+└─ DiC interaction adapter
+```
+
+DOM adapter 可以内部接收 React SyntheticEvent，但必须在调用业务 handler 前转换成 Weave event。
+
+DiC adapter 直接从 tree event 生成同一种 Weave event，不构造假的 React SyntheticEvent。
+
+公开 handler 与组件默认行为的顺序：
+
+```text
+user View handler
+→ component semantic default
+```
+
+因此用户 `preventDefault()` 可以取消 Button activation、Switch toggle / drag start 等组件默认行为；`stopPropagation()` 控制 View tree bubbling。
+
+Button / Switch 的内部高层语义 callback 仍保持：
 
 ```text
 Button → onActivate
 Switch → onChange
 ```
 
-而不是伪造 React SyntheticEvent。
+它们属于组件 adapter 内部，不替代公开 View event。
 
-在公开事件 bridge 完成前：
-
-- 不得从 Canvas 构造假的 React SyntheticEvent；
-- 不得声称 `viewProps.onClick` 等用户 handler 已在 DiC 完整等价运行；
-- React 组件默认切换到 DiC surface 必须继续等待这一层完成。
+当前 event bridge 已覆盖 click / pointer / keyboard / focus；React 组件默认切换到 DiC surface 不再被 SyntheticEvent payload 阻塞，但仍需完成 React child tree renderer、Tab / accessibility bridge 和剩余组件 adapter。
 
 ## 27.11 组件结构
 
@@ -5467,6 +5551,6 @@ View
 63. DiC Button 的组件默认视觉必须低于用户 View base / state / responsive paint；用户显式 View 语义始终拥有更高优先级。
 64. DiC Switch pointermove 热路径不得读取 DOM layout；drag geometry 必须来自已解析的组件 / theme 几何和 pointer delta。
 65. Switch drag 已经发生时，pointerup cancellation 必须阻止后续 click 合成，避免一次拖动触发第二次 toggle。
-66. DiC 不得伪造 React SyntheticEvent。公开 ViewProps 事件 payload 在 renderer-neutral bridge 完成前必须明确视为尚未完成的 React → DiC 接口层。
+66. 公开 ViewProps 事件 payload 必须使用 renderer-neutral Weave event；DOM renderer 可以内部接收 React SyntheticEvent，但必须在进入业务 handler 前转换，DiC 永远不得伪造 React SyntheticEvent。
 67. inset shadow 等尚未存在等价结构化 IR 的视觉能力不得在 Canvas 中静默近似；必须保持明确 parity gap。
 68. API 的目标是：AI 易写易读，同时人类易读。
