@@ -51,7 +51,7 @@ export function drawDiCText(
     {
       maxWidth: frame.width,
       maxHeight: frame.height,
-      rem: environment.typography?.fontSize ?? 16,
+      rem: environment.rem,
     },
     {
       ...environment,
