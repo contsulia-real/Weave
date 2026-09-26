@@ -79,4 +79,64 @@ describe('DiC View drawing', () => {
     expect(context.fillStyle).toBe('#6d5dfc')
     expect(fill).toHaveBeenCalledTimes(1)
   })
+
+  it('resolves percentage radius and translate against the View frame', () => {
+    const translate = vi.fn()
+    const roundRect = vi.fn()
+
+    const context = {
+      globalAlpha: 1,
+      fillStyle: '',
+      save: vi.fn(),
+      restore: vi.fn(),
+      translate,
+      rotate: vi.fn(),
+      scale: vi.fn(),
+      transform: vi.fn(),
+      beginPath: vi.fn(),
+      roundRect,
+      moveTo: vi.fn(),
+      lineTo: vi.fn(),
+      quadraticCurveTo: vi.fn(),
+      closePath: vi.fn(),
+      fill: vi.fn(),
+      createLinearGradient: vi.fn(),
+      createRadialGradient: vi.fn(),
+    } as unknown as CanvasRenderingContext2D
+
+    const node = compileDiCView(
+      resolveView(
+        {
+          background: 'primary',
+          radius: '50%',
+          translateX: '50%',
+        },
+        defaultBreakpoints,
+      ),
+    )
+
+    drawDiCView(
+      context,
+      node,
+      {
+        x: 0,
+        y: 0,
+        width: 200,
+        height: 100,
+      },
+      {
+        theme: defaultTheme,
+        rem: 16,
+      },
+    )
+
+    expect(translate).toHaveBeenCalledWith(100, 0)
+    expect(roundRect).toHaveBeenCalledWith(
+      0,
+      0,
+      200,
+      100,
+      [50, 50, 50, 50],
+    )
+  })
 })
