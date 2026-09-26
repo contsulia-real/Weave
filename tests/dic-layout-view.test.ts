@@ -64,5 +64,17 @@ describe('DiC View layout', () => {
         },
       ),
     ).toThrow('requires tree measurement')
+
+    expect(() =>
+      layoutDiCView(
+        {
+          width: 'calc(100% - 1rem)',
+        },
+        {
+          width: 320,
+          height: 180,
+        },
+      ),
+    ).toThrow('Unsupported DiC dimension')
   })
 })
