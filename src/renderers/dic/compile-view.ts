@@ -4,6 +4,7 @@ import type {
   Length,
   ViewSemanticProps,
   RadiusValue,
+  ShadowValue,
   TransformOperation,
   ViewAlign,
   ViewDirection,
@@ -95,11 +96,25 @@ export interface DiCViewPaint {
   paddingLeft?: Length
   background?: BackgroundValue
   color?: string
+  borderTop?: Length
+  borderRight?: Length
+  borderBottom?: Length
+  borderLeft?: Length
+  borderTopColor?: string
+  borderRightColor?: string
+  borderBottomColor?: string
+  borderLeftColor?: string
+  borderStyle?: string
   radiusTopLeft?: RadiusValue
   radiusTopRight?: RadiusValue
   radiusBottomRight?: RadiusValue
   radiusBottomLeft?: RadiusValue
+  shadow?: ShadowValue
   opacity?: number
+  outlineWidth?: Length
+  outlineColor?: string
+  outlineStyle?: string
+  outlineOffset?: Length
   transform?: readonly TransformOperation[]
   pointerEvents?: string
   cursor?: string
@@ -228,11 +243,25 @@ function paint(style: ResolvedViewStyle): DiCViewPaint {
       paddingLeft: style.paddingLeft,
       background: style.background,
       color: style.color,
+      borderTop: style.borderTop,
+      borderRight: style.borderRight,
+      borderBottom: style.borderBottom,
+      borderLeft: style.borderLeft,
+      borderTopColor: style.borderTopColor,
+      borderRightColor: style.borderRightColor,
+      borderBottomColor: style.borderBottomColor,
+      borderLeftColor: style.borderLeftColor,
+      borderStyle: style.borderStyle,
       radiusTopLeft: style.radiusTopLeft,
       radiusTopRight: style.radiusTopRight,
       radiusBottomRight: style.radiusBottomRight,
       radiusBottomLeft: style.radiusBottomLeft,
+      shadow: style.shadow,
       opacity: style.opacity,
+      outlineWidth: style.outlineWidth,
+      outlineColor: style.outlineColor,
+      outlineStyle: style.outlineStyle,
+      outlineOffset: style.outlineOffset,
       transform: style.transform,
       pointerEvents:
         typeof style.pointerEvents === 'string'
