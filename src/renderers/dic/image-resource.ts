@@ -53,6 +53,21 @@ function browserImageLoader(
       return
     }
 
+    if (
+      typeof source !== 'string' &&
+      (
+        typeof URL.createObjectURL !== 'function' ||
+        typeof URL.revokeObjectURL !== 'function'
+      )
+    ) {
+      reject(
+        new Error(
+          'DiC Blob image loading requires object URL APIs',
+        ),
+      )
+      return
+    }
+
     const image = new Image()
     const objectUrl =
       typeof source === 'string'
