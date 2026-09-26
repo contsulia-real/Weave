@@ -241,16 +241,16 @@ describe('Input', () => {
       '--weave-input-theme-radius:0.75rem;',
     )
     expect(rule).toContain(
-      '--weave-input-theme-font-size:var(--weave-typography-style-body-medium-font-size);',
+      '--weave-input-theme-font-size:var(--weave-typography-style-body-large-font-size);',
     )
     expect(rule).toContain(
-      '--weave-input-theme-font-weight:var(--weave-typography-style-body-medium-font-weight);',
+      '--weave-input-theme-font-weight:var(--weave-typography-style-body-large-font-weight);',
     )
     expect(rule).toContain(
-      '--weave-input-theme-line-height:var(--weave-typography-style-body-medium-line-height);',
+      '--weave-input-theme-line-height:var(--weave-typography-style-body-large-line-height);',
     )
     expect(rule).toContain(
-      '--weave-input-theme-letter-spacing:var(--weave-typography-style-body-medium-letter-spacing);',
+      '--weave-input-theme-letter-spacing:var(--weave-typography-style-body-large-letter-spacing);',
     )
     expect(stylesheet?.textContent).toContain(
       '--weave-component-border-style: solid',
