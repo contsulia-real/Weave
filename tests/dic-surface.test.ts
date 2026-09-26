@@ -291,8 +291,30 @@ describe('DiC surface', () => {
     })
     expect(drawImage).toHaveBeenCalledTimes(1)
 
-    surface.destroy()
+    const nextNode = compileDiCImage(
+      resolveView(
+        {
+          width: 'content',
+          height: 'content',
+        },
+        defaultBreakpoints,
+      ),
+      resolveImage({
+        src: '/next.webp',
+        alt: 'Next',
+      }),
+    )
+
+    surface.update({
+      node: nextNode,
+      theme: defaultTheme,
+    })
+
     expect(release).toHaveBeenCalledWith('/cover.webp')
+    expect(retain).toHaveBeenCalledWith('/next.webp')
+
+    surface.destroy()
+    expect(release).toHaveBeenCalledWith('/next.webp')
     expect(imageResources.destroy).not.toHaveBeenCalled()
   })
 })
