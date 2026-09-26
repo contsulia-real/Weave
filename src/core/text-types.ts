@@ -14,6 +14,14 @@ export type TextSize =
   | 'large'
   | 'xlarge'
   | 'xxlarge'
+  | 'display'
+
+export type TextTypo =
+  | 'display'
+  | 'heading'
+  | 'body'
+  | 'label'
+  | 'caption'
 
 export type TextWeight =
   | 'light'
@@ -39,6 +47,7 @@ export type TextOverflow = 'clip' | 'ellipsis'
 export type TextCase = 'none' | 'uppercase' | 'lowercase' | 'capitalize'
 
 export interface TextStyleProps {
+  typo?: TextTypo
   size?: TextSize
   weight?: TextWeight
   color?: TextColor
