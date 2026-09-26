@@ -156,6 +156,7 @@ export interface DiCFocusEvent {
 
 export interface DiCViewInteraction {
   focusable?: boolean
+  autoFocus?: boolean
   tabIndex?: number
   onPointerEnter?: (event: DiCPointerEvent) => void
   onPointerLeave?: (event: DiCPointerEvent) => void
@@ -283,7 +284,43 @@ export function compileDiCView(
     children: options.children ?? [],
     content: options.content,
     typography: options.typography,
-    interaction: options.interaction,
+    interaction: {
+      focusable:
+        options.interaction?.focusable ??
+        view.interaction.focusable ??
+        view.interaction.autoFocus ??
+        (view.interaction.tabIndex !== undefined
+          ? true
+          : undefined),
+      autoFocus:
+        options.interaction?.autoFocus ??
+        view.interaction.autoFocus,
+      tabIndex:
+        options.interaction?.tabIndex ??
+        view.interaction.tabIndex,
+      onPointerEnter:
+        options.interaction?.onPointerEnter,
+      onPointerLeave:
+        options.interaction?.onPointerLeave,
+      onPointerMove:
+        options.interaction?.onPointerMove,
+      onPointerDown:
+        options.interaction?.onPointerDown,
+      onPointerUp:
+        options.interaction?.onPointerUp,
+      onPointerCancel:
+        options.interaction?.onPointerCancel,
+      onClick:
+        options.interaction?.onClick,
+      onKeyDown:
+        options.interaction?.onKeyDown,
+      onKeyUp:
+        options.interaction?.onKeyUp,
+      onFocus:
+        options.interaction?.onFocus,
+      onBlur:
+        options.interaction?.onBlur,
+    },
     measure: options.measure,
   }
 }
