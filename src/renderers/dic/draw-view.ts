@@ -262,13 +262,14 @@ function roundedPath(
   context.closePath()
 }
 
-function paintView(
+export function drawDiCViewPaint(
   context: CanvasRenderingContext2D,
   paint: DiCViewPaint,
   frame: DiCViewFrame,
-  theme: ResolvedTheme,
-  rem: number,
+  options: DiCDrawOptions,
 ): void {
+  const theme = options.theme
+  const rem = options.rem ?? 16
   context.save()
   context.translate(frame.x, frame.y)
   context.globalAlpha *= paint.opacity ?? 1
@@ -310,11 +311,10 @@ export function drawDiCView(
   frame: DiCViewFrame,
   options: DiCDrawOptions,
 ): void {
-  paintView(
+  drawDiCViewPaint(
     context,
     node.paint,
     frame,
-    options.theme,
-    options.rem ?? 16,
+    options,
   )
 }
