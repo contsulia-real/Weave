@@ -104,6 +104,28 @@ function paddingValue(
   return finite(resolved)
 }
 
+function borderValue(
+  value: DiCViewPaint['borderTop'],
+  width: number,
+  rem: number,
+): number {
+  if (value === undefined) return 0
+
+  const resolved = resolveDiCLength(
+    value,
+    width,
+    rem,
+  )
+
+  if (resolved === undefined) {
+    throw new Error(
+      `Unsupported DiC border width "${String(value)}"`,
+    )
+  }
+
+  return finite(resolved)
+}
+
 function explicitDimension(
   value: Dimension | undefined,
   available: number,
@@ -467,6 +489,26 @@ function measureDiCViewTree(
     constraints.width,
     rem,
   )
+  const borderTop = borderValue(
+    paint.borderTop,
+    constraints.width,
+    rem,
+  )
+  const borderRight = borderValue(
+    paint.borderRight,
+    constraints.width,
+    rem,
+  )
+  const borderBottom = borderValue(
+    paint.borderBottom,
+    constraints.width,
+    rem,
+  )
+  const borderLeft = borderValue(
+    paint.borderLeft,
+    constraints.width,
+    rem,
+  )
 
   const explicitWidth = explicitDimension(
     paint.width,
@@ -482,14 +524,18 @@ function measureDiCViewTree(
   const provisionalContentWidth = Math.max(
     0,
     (explicitWidth ?? constraints.width) -
+      borderLeft -
       left -
-      right,
+      right -
+      borderRight,
   )
   const provisionalContentHeight = Math.max(
     0,
     (explicitHeight ?? constraints.height) -
+      borderTop -
       top -
-      bottom,
+      bottom -
+      borderBottom,
   )
   const nextContainerWidth = childContainerWidth(
     node,
@@ -518,7 +564,11 @@ function measureDiCViewTree(
       paint.minWidth,
       paint.maxWidth,
       constraints.width,
-      intrinsic.width + left + right,
+      intrinsic.width +
+        borderLeft +
+        left +
+        right +
+        borderRight,
       rem,
       root,
     ),
@@ -527,7 +577,11 @@ function measureDiCViewTree(
       paint.minHeight,
       paint.maxHeight,
       constraints.height,
-      intrinsic.height + top + bottom,
+      intrinsic.height +
+        borderTop +
+        top +
+        bottom +
+        borderBottom,
       rem,
       root,
     ),
@@ -861,6 +915,26 @@ function layoutDiCViewTreeInternal(
     size.width,
     rem,
   )
+  const borderTop = borderValue(
+    paint.borderTop,
+    size.width,
+    rem,
+  )
+  const borderRight = borderValue(
+    paint.borderRight,
+    size.width,
+    rem,
+  )
+  const borderBottom = borderValue(
+    paint.borderBottom,
+    size.width,
+    rem,
+  )
+  const borderLeft = borderValue(
+    paint.borderLeft,
+    size.width,
+    rem,
+  )
 
   const frame: DiCViewFrame = {
     x: constraints.x ?? 0,
@@ -869,10 +943,24 @@ function layoutDiCViewTreeInternal(
     height: size.height,
   }
   const contentFrame: DiCViewFrame = {
-    x: left,
-    y: top,
-    width: Math.max(0, size.width - left - right),
-    height: Math.max(0, size.height - top - bottom),
+    x: borderLeft + left,
+    y: borderTop + top,
+    width: Math.max(
+      0,
+      size.width -
+        borderLeft -
+        left -
+        right -
+        borderRight,
+    ),
+    height: Math.max(
+      0,
+      size.height -
+        borderTop -
+        top -
+        bottom -
+        borderBottom,
+    ),
   }
 
   return {
