@@ -110,6 +110,9 @@ export interface DiCViewBreakpoint {
   minWidth: number
   scope: 'viewport' | 'container'
   paint: DiCViewPaint
+  typography?: {
+    typo?: string
+  }
 }
 
 export interface DiCEventControl {
