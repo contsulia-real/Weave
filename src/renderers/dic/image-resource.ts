@@ -28,6 +28,8 @@ export type DiCImageLoader = (
 
 export interface DiCImageResourceManager {
   get(source: ImageSource): DiCImageResource
+  retain?(source: ImageSource): void
+  release?(source: ImageSource): void
   subscribe(listener: () => void): () => void
   destroy(): void
 }
@@ -35,6 +37,8 @@ export interface DiCImageResourceManager {
 interface Entry {
   resource: DiCImageResource
   dispose?: () => void
+  references: number
+  released: boolean
 }
 
 function browserImageLoader(
@@ -118,12 +122,14 @@ export function createDiCImageResourceManager(
       resource: {
         status: 'loading',
       },
+      references: 0,
+      released: false,
     }
     entries.set(source, entry)
 
     void loader(source).then(
       (loaded) => {
-        if (destroyed) {
+        if (destroyed || entry.released) {
           loaded.dispose?.()
           return
         }
@@ -166,6 +172,30 @@ export function createDiCImageResourceManager(
         entries.get(source) ??
         start(source)
       ).resource
+    },
+    retain(source) {
+      if (destroyed) return
+
+      const entry =
+        entries.get(source) ??
+        start(source)
+      entry.references += 1
+    },
+    release(source) {
+      if (destroyed) return
+
+      const entry = entries.get(source)
+      if (entry === undefined) return
+
+      entry.references = Math.max(
+        0,
+        entry.references - 1,
+      )
+      if (entry.references > 0) return
+
+      entry.released = true
+      entry.dispose?.()
+      entries.delete(source)
     },
     subscribe(listener) {
       if (destroyed) return () => {}
