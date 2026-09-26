@@ -2,9 +2,12 @@ import type { CSSProperties, HTMLAttributes } from 'react'
 import type {
   ViewData,
   ViewProps,
-  ViewStateStyle,
-  ViewStyleProps,
 } from '../../core/view-types'
+import {
+  resolveView,
+  type ResolvedViewStyle,
+} from '../../core/resolved-view'
+import { VIEW_INTERNAL_PROP_KEYS } from '../../core/view-prop-keys'
 import {
   background,
   backdropFilterValue,
@@ -20,6 +23,7 @@ import {
 } from '../../core/values'
 import { defaultBreakpoints } from '../../theme/default-theme'
 import {
+  breakpointCSSName,
   breakpointEntries,
   containerBreakpointProp,
 } from './breakpoint-utils'
@@ -27,150 +31,6 @@ import { variableName } from './view-stylesheet'
 
 type CSSVariableStyle = CSSProperties &
   Record<`--weave-${string}`, string | number | undefined>
-
-const CUSTOM_PROP_KEYS = new Set<string>([
-  'children',
-  'ref',
-  'className',
-  'style',
-  'data',
-  'focusable',
-  'autoFocus',
-  'selectable',
-  'disabled',
-  'required',
-  'invalid',
-  'busy',
-  'expanded',
-  'selected',
-  'checked',
-  'pressed',
-  'readOnly',
-  'label',
-  'description',
-  'level',
-  'valueMin',
-  'valueMax',
-  'valueNow',
-  'valueText',
-  'labelledBy',
-  'describedBy',
-  'controls',
-  'owns',
-  'hover',
-  'active',
-  'focus',
-  'focusVisible',
-  'disabledStyle',
-  'container',
-  'scrollbar',
-  'sm',
-  'md',
-  'lg',
-  'xl',
-  'containerSm',
-  'containerMd',
-  'containerLg',
-  'containerXl',
-  'layout',
-  'direction',
-  'wrap',
-  'gap',
-  'align',
-  'justify',
-  'grow',
-  'shrink',
-  'basis',
-  'alignSelf',
-  'justifySelf',
-  'order',
-  'columns',
-  'rows',
-  'column',
-  'columnSpan',
-  'row',
-  'rowSpan',
-  'width',
-  'height',
-  'minWidth',
-  'maxWidth',
-  'minHeight',
-  'maxHeight',
-  'aspectRatio',
-  'margin',
-  'marginX',
-  'marginY',
-  'marginTop',
-  'marginRight',
-  'marginBottom',
-  'marginLeft',
-  'padding',
-  'paddingX',
-  'paddingY',
-  'paddingTop',
-  'paddingRight',
-  'paddingBottom',
-  'paddingLeft',
-  'position',
-  'inset',
-  'insetX',
-  'insetY',
-  'top',
-  'right',
-  'bottom',
-  'left',
-  'overflow',
-  'overflowX',
-  'overflowY',
-  'background',
-  'color',
-  'border',
-  'borderTop',
-  'borderRight',
-  'borderBottom',
-  'borderLeft',
-  'borderColor',
-  'borderTopColor',
-  'borderRightColor',
-  'borderBottomColor',
-  'borderLeftColor',
-  'borderStyle',
-  'radius',
-  'radiusTopLeft',
-  'radiusTopRight',
-  'radiusBottomRight',
-  'radiusBottomLeft',
-  'shadow',
-  'opacity',
-  'blur',
-  'brightness',
-  'contrast',
-  'saturate',
-  'grayscale',
-  'sepia',
-  'hueRotate',
-  'backdropBlur',
-  'backdropSaturate',
-  'translateX',
-  'translateY',
-  'scale',
-  'scaleX',
-  'scaleY',
-  'rotate',
-  'skewX',
-  'skewY',
-  'transform',
-  'transformOrigin',
-  'clip',
-  'blend',
-  'outlineWidth',
-  'outlineColor',
-  'outlineStyle',
-  'outlineOffset',
-  'zIndex',
-  'pointerEvents',
-  'cursor',
-])
 
 const NATIVE_OBJECT_PROP_KEYS = new Set<string>([
   'dangerouslySetInnerHTML',
@@ -213,30 +73,8 @@ function gridPlacement(
   return undefined
 }
 
-function resolveSides(
-  all: ViewStyleProps['padding'],
-  x: ViewStyleProps['paddingX'],
-  y: ViewStyleProps['paddingY'],
-  top: ViewStyleProps['paddingTop'],
-  right: ViewStyleProps['paddingRight'],
-  bottom: ViewStyleProps['paddingBottom'],
-  left: ViewStyleProps['paddingLeft'],
-): readonly [
-  string | undefined,
-  string | undefined,
-  string | undefined,
-  string | undefined,
-] {
-  return [
-    length(top ?? y ?? all),
-    length(right ?? x ?? all),
-    length(bottom ?? y ?? all),
-    length(left ?? x ?? all),
-  ]
-}
-
 function resolveStyleProps(
-  props: ViewStyleProps,
+  props: ResolvedViewStyle,
   state?: string,
 ): CSSVariableStyle {
   const output: CSSVariableStyle = {}
@@ -293,53 +131,25 @@ function resolveStyleProps(
   setVariable(output, 'maxHeight', dimension(props.maxHeight), state)
   setVariable(output, 'aspectRatio', props.aspectRatio, state)
 
-  const [marginTop, marginRight, marginBottom, marginLeft] = resolveSides(
-    props.margin,
-    props.marginX,
-    props.marginY,
-    props.marginTop,
-    props.marginRight,
-    props.marginBottom,
-    props.marginLeft,
-  )
-  setVariable(output, 'marginTop', marginTop, state)
-  setVariable(output, 'marginRight', marginRight, state)
-  setVariable(output, 'marginBottom', marginBottom, state)
-  setVariable(output, 'marginLeft', marginLeft, state)
+  setVariable(output, 'marginTop', length(props.marginTop), state)
+  setVariable(output, 'marginRight', length(props.marginRight), state)
+  setVariable(output, 'marginBottom', length(props.marginBottom), state)
+  setVariable(output, 'marginLeft', length(props.marginLeft), state)
 
-  const [paddingTop, paddingRight, paddingBottom, paddingLeft] = resolveSides(
-    props.padding,
-    props.paddingX,
-    props.paddingY,
-    props.paddingTop,
-    props.paddingRight,
-    props.paddingBottom,
-    props.paddingLeft,
-  )
-  setVariable(output, 'paddingTop', paddingTop, state)
-  setVariable(output, 'paddingRight', paddingRight, state)
-  setVariable(output, 'paddingBottom', paddingBottom, state)
-  setVariable(output, 'paddingLeft', paddingLeft, state)
-
-  const [top, right, bottom, left] = resolveSides(
-    props.inset,
-    props.insetX,
-    props.insetY,
-    props.top,
-    props.right,
-    props.bottom,
-    props.left,
-  )
+  setVariable(output, 'paddingTop', length(props.paddingTop), state)
+  setVariable(output, 'paddingRight', length(props.paddingRight), state)
+  setVariable(output, 'paddingBottom', length(props.paddingBottom), state)
+  setVariable(output, 'paddingLeft', length(props.paddingLeft), state)
   setVariable(
     output,
     'position',
     props.position ?? (props.layout === 'absolute' ? 'relative' : undefined),
     state,
   )
-  setVariable(output, 'top', top, state)
-  setVariable(output, 'right', right, state)
-  setVariable(output, 'bottom', bottom, state)
-  setVariable(output, 'left', left, state)
+  setVariable(output, 'top', length(props.top), state)
+  setVariable(output, 'right', length(props.right), state)
+  setVariable(output, 'bottom', length(props.bottom), state)
+  setVariable(output, 'left', length(props.left), state)
 
   setVariable(output, 'overflow', props.overflow, state)
   setVariable(
@@ -358,10 +168,10 @@ function resolveStyleProps(
   setVariable(output, 'background', background(props.background), state)
   setVariable(output, 'color', color(props.color), state)
 
-  const borderTop = length(props.borderTop ?? props.border)
-  const borderRight = length(props.borderRight ?? props.border)
-  const borderBottom = length(props.borderBottom ?? props.border)
-  const borderLeft = length(props.borderLeft ?? props.border)
+  const borderTop = length(props.borderTop)
+  const borderRight = length(props.borderRight)
+  const borderBottom = length(props.borderBottom)
+  const borderLeft = length(props.borderLeft)
   setVariable(output, 'borderTopWidth', borderTop, state)
   setVariable(output, 'borderRightWidth', borderRight, state)
   setVariable(output, 'borderBottomWidth', borderBottom, state)
@@ -370,25 +180,25 @@ function resolveStyleProps(
   setVariable(
     output,
     'borderTopColor',
-    color(props.borderTopColor ?? props.borderColor),
+    color(props.borderTopColor),
     state,
   )
   setVariable(
     output,
     'borderRightColor',
-    color(props.borderRightColor ?? props.borderColor),
+    color(props.borderRightColor),
     state,
   )
   setVariable(
     output,
     'borderBottomColor',
-    color(props.borderBottomColor ?? props.borderColor),
+    color(props.borderBottomColor),
     state,
   )
   setVariable(
     output,
     'borderLeftColor',
-    color(props.borderLeftColor ?? props.borderColor),
+    color(props.borderLeftColor),
     state,
   )
   setVariable(output, 'borderStyle', props.borderStyle, state)
@@ -396,25 +206,25 @@ function resolveStyleProps(
   setVariable(
     output,
     'borderTopLeftRadius',
-    radius(props.radiusTopLeft ?? props.radius),
+    radius(props.radiusTopLeft),
     state,
   )
   setVariable(
     output,
     'borderTopRightRadius',
-    radius(props.radiusTopRight ?? props.radius),
+    radius(props.radiusTopRight),
     state,
   )
   setVariable(
     output,
     'borderBottomRightRadius',
-    radius(props.radiusBottomRight ?? props.radius),
+    radius(props.radiusBottomRight),
     state,
   )
   setVariable(
     output,
     'borderBottomLeftRadius',
-    radius(props.radiusBottomLeft ?? props.radius),
+    radius(props.radiusBottomLeft),
     state,
   )
 
@@ -422,7 +232,12 @@ function resolveStyleProps(
   setVariable(output, 'opacity', props.opacity, state)
   setVariable(output, 'filter', filterValue(props), state)
   setVariable(output, 'backdropFilter', backdropFilterValue(props), state)
-  setVariable(output, 'transform', transformValue(props), state)
+  setVariable(
+    output,
+    'transform',
+    transformValue({ transform: props.transform }),
+    state,
+  )
   setVariable(
     output,
     'transformOrigin',
@@ -457,7 +272,7 @@ function resolveStyleProps(
 function stateStyles(
   output: CSSVariableStyle,
   state: string,
-  value: ViewStateStyle | undefined,
+  value: ResolvedViewStyle | undefined,
 ): void {
   if (value === undefined) return
   Object.assign(output, resolveStyleProps(value, state))
@@ -466,7 +281,7 @@ function stateStyles(
 function responsiveStyles(
   output: CSSVariableStyle,
   prefix: string,
-  value: ViewStyleProps | undefined,
+  value: ResolvedViewStyle | undefined,
 ): void {
   if (value === undefined) return
   Object.assign(output, resolveStyleProps(value, prefix))
@@ -488,10 +303,14 @@ export interface ResolvedDOMView<TElement extends HTMLElement> {
   layout: ViewProps<TElement>['layout']
 }
 
-export function resolveDOMView<TElement extends HTMLElement>(
-  props: ViewProps<TElement>,
+export function resolveDOMView<
+  TElement extends HTMLElement,
+  TBreakpointName extends string = never,
+>(
+  props: ViewProps<TElement, TBreakpointName>,
   breakpoints: Readonly<Record<string, number>> = defaultBreakpoints,
 ): ResolvedDOMView<TElement> {
+  const resolvedView = resolveView(props, breakpoints)
   const domProps: HTMLAttributes<TElement> = {}
   const writableDOMProps = domProps as Record<string, unknown>
   const breakpointList = breakpointEntries(breakpoints)
@@ -508,7 +327,7 @@ export function resolveDOMView<TElement extends HTMLElement>(
       isBreakpointLikeValue(value)
 
     if (
-      !CUSTOM_PROP_KEYS.has(key) &&
+      !VIEW_INTERNAL_PROP_KEYS.has(key) &&
       !responsivePropKeys.has(key) &&
       !inactiveBreakpointLikeProp
     ) {
@@ -518,33 +337,35 @@ export function resolveDOMView<TElement extends HTMLElement>(
 
   Object.assign(writableDOMProps, dataAttributes(props.data))
 
-  if (props.role !== undefined) domProps.role = props.role
-  if (props.label !== undefined) domProps['aria-label'] = props.label
-  if (props.description !== undefined) {
-    domProps['aria-description'] = props.description
+  const semantic = resolvedView.semantics
+
+  if (semantic.role !== undefined) domProps.role = semantic.role
+  if (semantic.label !== undefined) domProps['aria-label'] = semantic.label
+  if (semantic.description !== undefined) {
+    domProps['aria-description'] = semantic.description
   }
-  if (props.level !== undefined) domProps['aria-level'] = props.level
-  if (props.disabled !== undefined) domProps['aria-disabled'] = props.disabled
-  if (props.required !== undefined) domProps['aria-required'] = props.required
-  if (props.invalid !== undefined) domProps['aria-invalid'] = props.invalid
-  if (props.busy !== undefined) domProps['aria-busy'] = props.busy
-  if (props.expanded !== undefined) domProps['aria-expanded'] = props.expanded
-  if (props.selected !== undefined) domProps['aria-selected'] = props.selected
-  if (props.checked !== undefined) domProps['aria-checked'] = props.checked
-  if (props.pressed !== undefined) domProps['aria-pressed'] = props.pressed
-  if (props.readOnly !== undefined) domProps['aria-readonly'] = props.readOnly
-  if (props.valueMin !== undefined) domProps['aria-valuemin'] = props.valueMin
-  if (props.valueMax !== undefined) domProps['aria-valuemax'] = props.valueMax
-  if (props.valueNow !== undefined) domProps['aria-valuenow'] = props.valueNow
-  if (props.valueText !== undefined) domProps['aria-valuetext'] = props.valueText
-  if (props.labelledBy !== undefined) {
-    domProps['aria-labelledby'] = props.labelledBy
+  if (semantic.level !== undefined) domProps['aria-level'] = semantic.level
+  if (semantic.disabled !== undefined) domProps['aria-disabled'] = semantic.disabled
+  if (semantic.required !== undefined) domProps['aria-required'] = semantic.required
+  if (semantic.invalid !== undefined) domProps['aria-invalid'] = semantic.invalid
+  if (semantic.busy !== undefined) domProps['aria-busy'] = semantic.busy
+  if (semantic.expanded !== undefined) domProps['aria-expanded'] = semantic.expanded
+  if (semantic.selected !== undefined) domProps['aria-selected'] = semantic.selected
+  if (semantic.checked !== undefined) domProps['aria-checked'] = semantic.checked
+  if (semantic.pressed !== undefined) domProps['aria-pressed'] = semantic.pressed
+  if (semantic.readOnly !== undefined) domProps['aria-readonly'] = semantic.readOnly
+  if (semantic.valueMin !== undefined) domProps['aria-valuemin'] = semantic.valueMin
+  if (semantic.valueMax !== undefined) domProps['aria-valuemax'] = semantic.valueMax
+  if (semantic.valueNow !== undefined) domProps['aria-valuenow'] = semantic.valueNow
+  if (semantic.valueText !== undefined) domProps['aria-valuetext'] = semantic.valueText
+  if (semantic.labelledBy !== undefined) {
+    domProps['aria-labelledby'] = semantic.labelledBy
   }
-  if (props.describedBy !== undefined) {
-    domProps['aria-describedby'] = props.describedBy
+  if (semantic.describedBy !== undefined) {
+    domProps['aria-describedby'] = semantic.describedBy
   }
-  if (props.controls !== undefined) domProps['aria-controls'] = props.controls
-  if (props.owns !== undefined) domProps['aria-owns'] = props.owns
+  if (semantic.controls !== undefined) domProps['aria-controls'] = semantic.controls
+  if (semantic.owns !== undefined) domProps['aria-owns'] = semantic.owns
 
   if ((props.focusable || props.autoFocus) && props.tabIndex === undefined) {
     domProps.tabIndex = 0
@@ -555,39 +376,37 @@ export function resolveDOMView<TElement extends HTMLElement>(
   if (props.hidden !== undefined) domProps.hidden = props.hidden
   if (props.draggable !== undefined) domProps.draggable = props.draggable
 
-  const attributeStyle = resolveStyleProps(props)
+  const attributeStyle = resolveStyleProps(resolvedView.style)
 
-  if (props.container !== undefined) {
+  if (resolvedView.container !== undefined) {
     setVariable(attributeStyle, 'containerType', 'inline-size')
-    setVariable(attributeStyle, 'containerName', props.container)
+    setVariable(attributeStyle, 'containerName', resolvedView.container)
   }
 
-  const responsiveProps = props as Record<string, unknown>
-
-  for (const breakpoint of breakpointList) {
+  for (const responsive of resolvedView.responsive) {
+    const cssName = breakpointCSSName(responsive.name)
     responsiveStyles(
       attributeStyle,
-      breakpoint.cssName,
-      responsiveProps[breakpoint.name] as ViewStyleProps | undefined,
-    )
-    responsiveStyles(
-      attributeStyle,
-      `container-${breakpoint.cssName}`,
-      responsiveProps[
-        containerBreakpointProp(breakpoint.name)
-      ] as ViewStyleProps | undefined,
+      responsive.scope === 'viewport'
+        ? cssName
+        : `container-${cssName}`,
+      responsive.style,
     )
   }
 
-  stateStyles(attributeStyle, 'hover', props.hover)
-  stateStyles(attributeStyle, 'active', props.active)
-  stateStyles(attributeStyle, 'focus', props.focus)
-  stateStyles(attributeStyle, 'focus-visible', props.focusVisible)
-  stateStyles(attributeStyle, 'disabled', props.disabledStyle)
+  stateStyles(attributeStyle, 'hover', resolvedView.states.hover)
+  stateStyles(attributeStyle, 'active', resolvedView.states.active)
+  stateStyles(attributeStyle, 'focus', resolvedView.states.focus)
+  stateStyles(
+    attributeStyle,
+    'focus-visible',
+    resolvedView.states.focusVisible,
+  )
+  stateStyles(attributeStyle, 'disabled', resolvedView.states.disabled)
 
   return {
     domProps,
     attributeStyle,
-    layout: props.layout,
+    layout: resolvedView.layout,
   }
 }
