@@ -4842,7 +4842,9 @@ viewport breakpoint branches
 container breakpoint branches
 ```
 
-这一阶段建立的是 DiC renderer 的 View node contract；后续 Canvas surface、布局执行与真正绘制继续在该 contract 上扩展，不反向解析 DOM/CSS。
+当前 vertical slice 同时提供 Canvas 2D draw primitive：给定布局阶段产生的 frame 后，可以直接绘制 solid / linear-gradient / radial-gradient background、四角 radius、opacity 与 transform。主题 color / radius token 在 DiC renderer 内解析，不经过 CSS variable。
+
+当前尚未在这一阶段解决的是完整布局执行、Canvas surface 生命周期、文本 / 图片绘制与交互命中；这些能力继续在同一 View node contract 上扩展，不反向解析 DOM/CSS。
 
 ## 27.4 组件结构
 
