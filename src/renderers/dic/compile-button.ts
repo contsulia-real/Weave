@@ -11,6 +11,7 @@ import type {
   ResolvedTheme,
   ThemeScaleValue,
 } from '../../theme/theme-types'
+import type { ShadowDefinition } from '../../core/view-types'
 import {
   compileDiCView,
   type DiCViewBreakpoint,
@@ -26,16 +27,47 @@ export interface CompileDiCButtonOptions {
 function sizePaint(
   theme: ResolvedTheme,
   size: ButtonSize,
+  iconOnly = false,
 ): DiCViewPaint {
   const sized = theme.components.Button?.sizes?.[size]
 
   return {
     minHeight: sized?.minHeight,
+    minWidth:
+      iconOnly
+        ? sized?.minHeight
+        : undefined,
     paddingTop: sized?.paddingY,
-    paddingRight: sized?.paddingX,
+    paddingRight:
+      iconOnly
+        ? 0
+        : sized?.paddingX,
     paddingBottom: sized?.paddingY,
-    paddingLeft: sized?.paddingX,
+    paddingLeft:
+      iconOnly
+        ? 0
+        : sized?.paddingX,
     gap: sized?.gap,
+  }
+}
+
+function depthShadow(
+  depth: ThemeScaleValue | undefined,
+  color: string | undefined,
+): ShadowDefinition | undefined {
+  if (
+    depth === undefined ||
+    color === undefined
+  ) {
+    return undefined
+  }
+
+  return {
+    x: 0,
+    y: depth,
+    blur: 0,
+    spread: 0,
+    color,
   }
 }
 
@@ -49,6 +81,14 @@ function variantPaint(
   return {
     background: value?.background,
     color: value?.color,
+    borderTopColor: value?.borderColor,
+    borderRightColor: value?.borderColor,
+    borderBottomColor: value?.borderColor,
+    borderLeftColor: value?.borderColor,
+    shadow: depthShadow(
+      theme.tokens.feedback?.restDepth,
+      value?.depthColor,
+    ),
   }
 }
 
@@ -109,8 +149,17 @@ function componentBasePaint(
     direction: 'row',
     align: 'center',
     justify: 'center',
-    ...sizePaint(theme, button.size),
+    ...sizePaint(
+      theme,
+      button.size,
+      button.iconOnly,
+    ),
     ...variantPaint(theme, button.variant),
+    borderTop: base?.borderWidth,
+    borderRight: base?.borderWidth,
+    borderBottom: base?.borderWidth,
+    borderLeft: base?.borderWidth,
+    borderStyle: 'solid',
     radiusTopLeft: base?.radius,
     radiusTopRight: base?.radius,
     radiusBottomRight: base?.radius,
@@ -142,6 +191,16 @@ function stateDefaults(
   return Object.keys(merged).length === 0
     ? undefined
     : merged
+}
+
+function buttonIconOnly(
+  node: DiCViewNode,
+): boolean {
+  return (
+    node.paint.minWidth !== undefined &&
+    node.paint.paddingLeft === 0 &&
+    node.paint.paddingRight === 0
+  )
 }
 
 function responsiveState(
@@ -177,7 +236,11 @@ function componentBreakpoint(
   const paint: DiCViewPaint = {
     ...(breakpoint.size === undefined
       ? {}
-      : sizePaint(theme, breakpoint.size)),
+      : sizePaint(
+          theme,
+          breakpoint.size,
+          buttonIconOnly(baseNode),
+        )),
     ...(breakpoint.variant === undefined
       ? {}
       : variantPaint(theme, breakpoint.variant)),
@@ -213,6 +276,10 @@ function componentBreakpoint(
               {
                 background:
                   variant.hoverBackground,
+                shadow: depthShadow(
+                  theme.tokens.feedback?.hoverDepth,
+                  variant.depthColor,
+                ),
               },
             ),
             active: responsiveState(
@@ -221,6 +288,10 @@ function componentBreakpoint(
               {
                 background:
                   variant.activeBackground,
+                shadow: depthShadow(
+                  theme.tokens.feedback?.pressDepth,
+                  variant.depthColor,
+                ),
               },
             ),
           },
@@ -249,9 +320,14 @@ export function compileDiCButton(
     {
       children: options.children,
       semantics: {
-        role: 'button',
+        role:
+          view.semantics.role ??
+          'button',
         disabled: button.disabled,
-        busy: button.loading || undefined,
+        busy:
+          button.loading ||
+          view.semantics.busy ||
+          undefined,
       },
       typography: {
         typo:
@@ -261,6 +337,11 @@ export function compileDiCButton(
       },
       interaction: {
         focusable: !button.disabled,
+        autoFocus:
+          button.disabled
+            ? false
+            : view.interaction.autoFocus,
+        tabIndex: view.interaction.tabIndex,
         onClick: () => {
           if (button.disabled) return
           options.onActivate?.()
@@ -321,6 +402,10 @@ export function compileDiCButton(
           node.paint.transform === undefined
             ? tactileTransform(theme, 'hover')
             : undefined,
+        shadow: depthShadow(
+          theme.tokens.feedback?.hoverDepth,
+          variant?.depthColor,
+        ),
       }
   const activeDefaults: DiCViewPaint = button.disabled
     ? {}
@@ -330,10 +415,26 @@ export function compileDiCButton(
           node.paint.transform === undefined
             ? tactileTransform(theme, 'active')
             : undefined,
+        shadow: depthShadow(
+          theme.tokens.feedback?.pressDepth,
+          variant?.depthColor,
+        ),
       }
   const disabledDefaults: DiCViewPaint = {
     opacity: disabled?.opacity,
     cursor: disabled?.cursor,
+  }
+  const base =
+    theme.components.Button?.base
+  const focusVisibleDefaults: DiCViewPaint = {
+    outlineWidth:
+      base?.focusOutlineWidth,
+    outlineColor:
+      base?.focusOutlineColor,
+    outlineStyle:
+      base?.focusOutlineStyle,
+    outlineOffset:
+      base?.focusOutlineOffset,
   }
 
   return {
@@ -353,6 +454,11 @@ export function compileDiCButton(
         node,
         activeDefaults,
         node.states.active,
+      ),
+      focusVisible: stateDefaults(
+        node,
+        focusVisibleDefaults,
+        node.states.focusVisible,
       ),
       disabled: stateDefaults(
         node,
