@@ -92,10 +92,10 @@ describe('Text', () => {
     expect(element.style.getPropertyValue('--weave-text-font-size')).toBe('')
   })
 
-  it('applies typo presets while keeping explicit text props authoritative', () => {
+  it('applies the complete typo scale while keeping explicit text props authoritative', () => {
     const { getByRole } = render(
       <Text
-        typo="display"
+        typo="display-large"
         weight="semibold"
         viewProps={{
           role: 'heading',
@@ -109,24 +109,66 @@ describe('Text', () => {
     const element = getByRole('heading', { level: 1 })
     const textRule = runtimeRule(element, 'weave-text-props-')
 
-    expect(element.getAttribute('data-weave-text-typo')).toBe('display')
-    expect(element.getAttribute('aria-level')).toBe('1')
-    expect(textRule).toContain(
-      '--weave-text-font-size:var(--weave-typography-size-display);',
+    expect(element.getAttribute('data-weave-text-typo')).toBe(
+      'display-large',
     )
+    expect(element.getAttribute('aria-level')).toBe('1')
+    expect(textRule).toContain('--weave-text-font-size:3.5rem;')
     expect(textRule).toContain(
       '--weave-text-font-weight:var(--weave-typography-weight-semibold);',
     )
-    expect(textRule).toContain('--weave-text-line-height:0.95;')
-    expect(textRule).toContain('--weave-text-letter-spacing:-0.06em;')
+    expect(textRule).toContain('--weave-text-line-height:1.05;')
+    expect(textRule).toContain('--weave-text-letter-spacing:-0.035em;')
+  })
+
+  it('lets ThemeProvider replace individual typo styles', () => {
+    const theme = createTheme({
+      tokens: {
+        typography: {
+          styles: {
+            'title-medium': {
+              fontSize: 2,
+              fontWeight: 500,
+              lineHeight: '1.4',
+              letterSpacing: '0.03em',
+            },
+          },
+        },
+      },
+    })
+
+    const { getByTestId } = render(
+      <ThemeProvider theme={theme}>
+        <Text
+          typo="title-medium"
+          viewProps={{
+            data: {
+              testid: 'themed-typo',
+            },
+          }}
+        >
+          Themed title
+        </Text>
+      </ThemeProvider>,
+    )
+
+    const rule = runtimeRule(
+      getByTestId('themed-typo'),
+      'weave-text-props-',
+    )
+
+    expect(rule).toContain('--weave-text-font-size:2rem;')
+    expect(rule).toContain('--weave-text-font-weight:500;')
+    expect(rule).toContain('--weave-text-line-height:1.4;')
+    expect(rule).toContain('--weave-text-letter-spacing:0.03em;')
   })
 
   it('encodes responsive text semantics at the default breakpoints', () => {
     const { getByTestId } = render(
       <Text
-        size="small"
+        typo="body-small"
         md={{
-          size: 'large',
+          typo: 'body-large',
           color: 'success',
           overflow: 'ellipsis',
           maxLines: 2,
@@ -149,12 +191,8 @@ describe('Text', () => {
     )
     const responsiveStyles = breakpointStyles(element)
 
-    expect(textRule).toContain(
-      '--weave-text-font-size:var(--weave-typography-size-small);',
-    )
-    expect(textRule).toContain(
-      '--weave-text-md-font-size:var(--weave-typography-size-large);',
-    )
+    expect(textRule).toContain('--weave-text-font-size:0.75rem;')
+    expect(textRule).toContain('--weave-text-md-font-size:1rem;')
     expect(viewRule).toContain(
       '--weave-md-color:var(--weave-color-success',
     )
