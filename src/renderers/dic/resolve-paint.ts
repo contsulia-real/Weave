@@ -42,7 +42,9 @@ export function resolveDiCViewPaint(
 ): DiCViewPaint {
   const rem = environment.rem ?? 16
   let paint: DiCViewPaint = { ...node.paint }
-  const activeResponsive: typeof node.responsive[number][] = []
+  const activeResponsive: Array<
+    (typeof node.responsive)[number]
+  > = []
 
   for (const responsive of node.responsive) {
     const availableWidth =
