@@ -6,7 +6,7 @@ import {
   length,
   time,
   transformValue,
-} from '../src/core/values'
+} from '../src/renderers/dom/css-values'
 
 describe('Weave value normalization', () => {
   it('converts public scale numbers to rem', () => {
