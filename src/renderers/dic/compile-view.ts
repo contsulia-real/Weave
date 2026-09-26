@@ -16,7 +16,9 @@ import type {
   ResolvedViewStyle,
 } from '../../core/resolved-view'
 import type { ResolvedText } from '../../core/resolved-text'
+import type { ResolvedImage } from '../../core/resolved-image'
 import type { ResolvedTheme } from '../../theme/theme-types'
+import type { DiCImageResourceManager } from './image-resource'
 
 export interface DiCIntrinsicConstraints {
   maxWidth: number
@@ -46,6 +48,7 @@ export interface DiCIntrinsicEnvironment {
   viewportWidth: number
   containerWidth: number
   rem: number
+  imageResources?: DiCImageResourceManager
 }
 
 export type DiCIntrinsicMeasure = (
@@ -59,7 +62,14 @@ export interface DiCTextContent {
   style: ResolvedText
 }
 
-export type DiCViewContent = DiCTextContent
+export interface DiCImageContent {
+  kind: 'image'
+  image: ResolvedImage
+}
+
+export type DiCViewContent =
+  | DiCTextContent
+  | DiCImageContent
 
 export interface DiCViewPaint {
   layout?: ViewLayout
