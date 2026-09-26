@@ -46,6 +46,9 @@ export function drawDiCText(
     'context'
   >,
 ): void {
+  context.save()
+  context.translate(frame.x, frame.y)
+
   const layout = layoutDiCText(
     content,
     {
@@ -86,4 +89,6 @@ export function drawDiCText(
       style.letterSpacing,
     )
   }
+
+  context.restore()
 }
