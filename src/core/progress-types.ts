@@ -1,4 +1,4 @@
-import type { ViewCoreProps, ViewDynamicBreakpointProps } from './view-types'
+import type { ViewCoreProps } from './view-types'
 
 export type ProgressSize = 'small' | 'medium' | 'large'
 export type ProgressColor = string
@@ -19,7 +19,7 @@ export type ProgressViewProps = Omit<
   | 'valueNow'
   | 'valueText'
   | 'color'
-> & ViewDynamicBreakpointProps
+>
 
 interface ProgressBaseProps {
   mode?: ProgressMode
