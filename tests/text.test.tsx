@@ -92,6 +92,35 @@ describe('Text', () => {
     expect(element.style.getPropertyValue('--weave-text-font-size')).toBe('')
   })
 
+  it('applies typo presets while keeping explicit text props authoritative', () => {
+    const { getByRole } = render(
+      <Text
+        typo="display"
+        weight="semibold"
+        viewProps={{
+          role: 'heading',
+          level: 1,
+        }}
+      >
+        Weave
+      </Text>,
+    )
+
+    const element = getByRole('heading', { level: 1 })
+    const textRule = runtimeRule(element, 'weave-text-props-')
+
+    expect(element.getAttribute('data-weave-text-typo')).toBe('display')
+    expect(element.getAttribute('aria-level')).toBe('1')
+    expect(textRule).toContain(
+      '--weave-text-font-size:var(--weave-typography-size-display);',
+    )
+    expect(textRule).toContain(
+      '--weave-text-font-weight:var(--weave-typography-weight-semibold);',
+    )
+    expect(textRule).toContain('--weave-text-line-height:0.95;')
+    expect(textRule).toContain('--weave-text-letter-spacing:-0.06em;')
+  })
+
   it('encodes responsive text semantics at the default breakpoints', () => {
     const { getByTestId } = render(
       <Text
