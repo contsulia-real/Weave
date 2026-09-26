@@ -341,11 +341,20 @@ export function compileDiCSwitch(
           view.interaction.autoFocus,
         tabIndex:
           view.interaction.tabIndex,
-        onClick: toggle,
+        onClick: (event) => {
+          if (!event.defaultPrevented) {
+            toggle()
+          }
+        },
         onKeyDown: (
           event: DiCKeyboardEvent,
         ) => {
-          if (value.disabled) return
+          if (
+            value.disabled ||
+            event.defaultPrevented
+          ) {
+            return
+          }
 
           if (
             event.key === ' ' ||
@@ -360,6 +369,7 @@ export function compileDiCSwitch(
         ) => {
           if (
             value.disabled ||
+            event.defaultPrevented ||
             event.button !== 0 ||
             event.target !== thumb
           ) {
