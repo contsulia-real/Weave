@@ -2312,17 +2312,19 @@ theme.components.Input
 
 而不是要求每个使用点重复写 padding / border / radius。
 
-默认中等控件语言与 Button 使用同一组 control baseline：
+默认中等控件语言与 Button 使用同一组 control baseline；文字不再单独维护 font size / line-height，而是直接选择完整 typo：
 
 ```text
 minHeight   = 2.5rem
 radius      = 0.75rem
 border      = 0.0625rem solid outline
 background  = surface
-fontSize    = 1rem
+typo        = body-large
 focus       = 0.125rem focus outline
 focusOffset = 0.0625rem
 ```
+
+input value、textarea value 与 placeholder 共享该 typo 的 `fontSize / fontWeight / lineHeight / letterSpacing`。
 
 单行与 multiline 使用同一套：
 
@@ -2911,23 +2913,25 @@ large
 size = medium
 ```
 
-size 的高度、水平/垂直 padding、内容 gap 和字体尺度由 `theme.components.Button.sizes` 提供。
+size 的高度、水平/垂直 padding、内容 gap 和 typo 由 `theme.components.Button.sizes` 提供。
 
 默认三档重新按紧凑控件尺度定义：
 
 ```text
 small
 minHeight = 1.75rem
-fontSize  = typography.size.compact
+typo      = label-small
 
 medium
 minHeight = 2.125rem
-fontSize  = typography.size.small
+typo      = label-medium
 
 large
 minHeight = 2.5rem
-fontSize  = typography.size.medium
+typo      = label-large
 ```
+
+Button 不再自己保存 `fontSize / fontWeight / lineHeight / letterSpacing`。size 只选择一个 typo，由统一 type scale 提供四项排版值；响应式 size 切换时 typo 随 size 一起切换。
 
 也就是旧的 small 视觉尺度成为新的 medium，旧的 medium 成为新的 large；small 重新设计为更紧凑的一档。
 
@@ -3705,20 +3709,22 @@ const theme = {
 
 `tokens.typography` 同时承担两层职责：提供整个 Weave 子树的全局排版基线，并通过 `styles` 定义 `Text.typo` 的完整 type scale。
 
-ThemeProvider 默认继承：
+ThemeProvider 默认建立一个 `body-large` 排版上下文：
 
 ```text
 font-family    = typography.family.body
-font-size      = typography.size.medium
-font-weight    = typography.weight.regular
-line-height    = typography.lineHeight.body
-letter-spacing = typography.letterSpacing.normal
+font-size      = typography.styles.body-large.fontSize
+font-weight    = typography.styles.body-large.fontWeight
+line-height    = typography.styles.body-large.lineHeight
+letter-spacing = typography.styles.body-large.letterSpacing
 ```
 
-因此：
+普通 View 不再重置文字排版，而是继承当前排版上下文。因此：
 
-- `Text` 未显式指定 typography 属性时继承这一基线。
-- Button / Input 等控件从同一 typography token 系统选择适合自身语义的字号与行高。
+- `Text` 显式设置 `typo` 时切换到该完整 type style；未设置时继承父级上下文。
+- Button 的每个 size 选择 `label-small / label-medium / label-large`。
+- Input 默认选择 `body-large`，value / textarea / placeholder 全部共用。
+- 以后 ToolTip / Snack / ListItem 等任何产生文字视觉的组件也必须选择或继承 typo，不能平行维护字体四项。
 - 嵌套 ThemeProvider 可以局部替换整套排版语言。
 - `family.mono` 等附加 family token 可用于需要等宽字体的局部内容。
 
@@ -3891,7 +3897,7 @@ Button: {
         paddingX: 0.75,
         gap: 0.375,
       },
-      textSize: "small",
+      typo: "label-small",
       iconSize: "small",
     },
 
@@ -3901,7 +3907,7 @@ Button: {
         paddingX: 1,
         gap: 0.5,
       },
-      textSize: "medium",
+      typo: "label-medium",
       iconSize: "medium",
     },
 
@@ -3911,7 +3917,7 @@ Button: {
         paddingX: 1.25,
         gap: 0.625,
       },
-      textSize: "large",
+      typo: "label-large",
       iconSize: "large",
     },
   },
@@ -4812,4 +4818,6 @@ View
 33. 组合组件复用基础组件的视觉内核时，可以由组合组件自己承担更高层语义；不得因此重复暴露冲突的 ARIA 角色。
 34. `Text.typo` 必须来自主题中的完整 type scale；不能退回 renderer 内部的少量硬编码 preset。
 35. Scrollbar 只绘制 thumb，不提供 tracked / trackColor；带圆角宿主必须把圆角曲线区域排除出 thumb 的运动区。
-36. API 的目标是：AI 易写易读，同时人类易读。
+36. 所有框架拥有的文字视觉必须选择或继承 `theme.tokens.typography.styles` 中的 typo；Button、Input 等组件不得平行维护 `fontSize / fontWeight / lineHeight / letterSpacing`。
+37. 普通 View 继承当前排版上下文；根节点与 ThemeProvider 默认建立 `body-large` 上下文，允许 Button 等组件建立自己的 typo 上下文后由内部 Text 继承。
+38. API 的目标是：AI 易写易读，同时人类易读。
