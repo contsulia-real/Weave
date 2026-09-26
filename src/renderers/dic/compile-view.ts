@@ -34,6 +34,7 @@ export interface DiCTypographyContext {
   fontSize: number
   fontWeight: number | string
   lineHeight: number
+  lineHeightRatio?: number
   letterSpacing: number
   color: string
 }
