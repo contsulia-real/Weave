@@ -18,6 +18,7 @@ export interface ResolvedButton {
   size: ButtonSize
   loading: boolean
   disabled: boolean
+  iconOnly: boolean
   responsive: readonly ResolvedButtonBreakpoint[]
 }
 
@@ -51,11 +52,17 @@ export function resolveButton(
     loading ||
     props.viewProps?.disabled === true
 
+  const iconOnly =
+    'icon' in props &&
+    props.icon !== undefined &&
+    props.text === undefined
+
   return {
     variant: props.variant ?? 'primary',
     size: props.size ?? 'medium',
     loading,
     disabled,
+    iconOnly,
     responsive,
   }
 }
