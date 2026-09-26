@@ -252,12 +252,29 @@ describe('Progress', () => {
     expect(element.style.getPropertyValue('--weave-width')).toBe('')
     expect(rule).toContain('--weave-progress-width:10rem;')
     expect(rule).toContain('--weave-progress-height:0.5rem;')
+    expect(rule).toContain('--weave-progress-track-shadow:')
+    expect(rule).toContain('--weave-progress-value-shadow:')
+
+    const stylesheet = document.querySelector(
+      'style[data-weave-progress-styles]',
+    )?.textContent ?? ''
+
+    expect(stylesheet).toContain(
+      '--weave-component-box-shadow: var(--weave-progress-track-shadow)',
+    )
+    expect(stylesheet).toContain(
+      '--weave-component-box-shadow: var(--weave-progress-value-shadow)',
+    )
   })
 
   it('lets ThemeProvider replace Progress component defaults', () => {
     const theme = createTheme({
       components: {
         Progress: {
+          base: {
+            trackShadow: 'inset 0 1px 2px black',
+            valueShadow: '0 1px 2px black',
+          },
           sizes: {
             medium: {
               spinSize: 3,
@@ -284,6 +301,12 @@ describe('Progress', () => {
     expect(rule).toContain('--weave-progress-width:3rem;')
     expect(rule).toContain('--weave-progress-height:3rem;')
     expect(rule).toContain('--weave-progress-thickness:0.25rem;')
+    expect(rule).toContain(
+      '--weave-progress-track-shadow:inset 0 1px 2px black;',
+    )
+    expect(rule).toContain(
+      '--weave-progress-value-shadow:0 1px 2px black;',
+    )
   })
 
   it('keeps viewProps className and style above component defaults', () => {
