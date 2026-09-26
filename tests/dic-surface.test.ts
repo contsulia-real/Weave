@@ -322,6 +322,9 @@ describe('DiC surface', () => {
       surface.getInteraction()?.stateForNode(node).hover,
     ).toBe(true)
 
+    scheduled?.(16)
+    expect(surface.getLayout()?.paint.opacity).toBe(0.8)
+
     fire('pointerdown', pointerBase)
 
     expect(preventDefault).toHaveBeenCalled()
@@ -331,6 +334,9 @@ describe('DiC surface', () => {
     expect(
       surface.getInteraction()?.stateForNode(node).active,
     ).toBe(true)
+
+    scheduled?.(32)
+    expect(surface.getLayout()?.paint.opacity).toBe(0.6)
 
     fire('pointerup', {
       ...pointerBase,
