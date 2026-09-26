@@ -48,6 +48,7 @@ const CUSTOM_PROP_KEYS = new Set<string>([
   'readOnly',
   'label',
   'description',
+  'level',
   'valueMin',
   'valueMax',
   'valueNow',
@@ -522,6 +523,7 @@ export function resolveDOMView<TElement extends HTMLElement>(
   if (props.description !== undefined) {
     domProps['aria-description'] = props.description
   }
+  if (props.level !== undefined) domProps['aria-level'] = props.level
   if (props.disabled !== undefined) domProps['aria-disabled'] = props.disabled
   if (props.required !== undefined) domProps['aria-required'] = props.required
   if (props.invalid !== undefined) domProps['aria-invalid'] = props.invalid
