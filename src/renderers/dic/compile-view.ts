@@ -4,6 +4,10 @@ import type {
   Length,
   RadiusValue,
   TransformOperation,
+  ViewAlign,
+  ViewDirection,
+  ViewJustify,
+  ViewLayout,
 } from '../../core/view-types'
 import type {
   ResolvedView,
@@ -11,7 +15,27 @@ import type {
   ResolvedViewStyle,
 } from '../../core/resolved-view'
 
+export interface DiCIntrinsicConstraints {
+  maxWidth: number
+  maxHeight: number
+  rem: number
+}
+
+export interface DiCIntrinsicSize {
+  width: number
+  height: number
+}
+
+export type DiCIntrinsicMeasure = (
+  constraints: DiCIntrinsicConstraints,
+) => DiCIntrinsicSize
+
 export interface DiCViewPaint {
+  layout?: ViewLayout
+  direction?: ViewDirection
+  gap?: Length
+  align?: ViewAlign
+  justify?: ViewJustify
   width?: Dimension
   height?: Dimension
   paddingTop?: Length
@@ -45,11 +69,19 @@ export interface DiCViewNode {
     disabled?: DiCViewPaint
   }
   responsive: readonly DiCViewBreakpoint[]
+  container?: string
+  children: readonly DiCViewNode[]
+  measure?: DiCIntrinsicMeasure
 }
 
 function paint(style: ResolvedViewStyle): DiCViewPaint {
   return Object.fromEntries(
     Object.entries({
+      layout: style.layout,
+      direction: style.direction,
+      gap: style.gap,
+      align: style.align,
+      justify: style.justify,
       width: style.width,
       height: style.height,
       paddingTop: style.paddingTop,
@@ -78,8 +110,14 @@ function breakpoint(
   }
 }
 
+export interface CompileDiCViewOptions {
+  children?: readonly DiCViewNode[]
+  measure?: DiCIntrinsicMeasure
+}
+
 export function compileDiCView(
   view: ResolvedView,
+  options: CompileDiCViewOptions = {},
 ): DiCViewNode {
   return {
     kind: 'view',
@@ -107,5 +145,8 @@ export function compileDiCView(
           : paint(view.states.disabled),
     },
     responsive: view.responsive.map(breakpoint),
+    container: view.container,
+    children: options.children ?? [],
+    measure: options.measure,
   }
 }
