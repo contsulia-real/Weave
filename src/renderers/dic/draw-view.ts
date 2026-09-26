@@ -13,6 +13,7 @@ import { drawDiCText } from './draw-text'
 import { drawDiCImage } from './draw-image'
 import type { DiCImageResourceManager } from './image-resource'
 import { applyDiCTransform } from './transform'
+import { resolveDiCColor } from './color'
 
 export interface DiCViewFrame {
   x: number
@@ -80,18 +81,11 @@ function resolveRadius(
   return numeric
 }
 
-function resolveColor(
-  value: string,
-  theme: ResolvedTheme,
-): string {
-  return theme.tokens.color?.[value] ?? value
-}
-
 function gradientColor(
   value: string,
   theme: ResolvedTheme,
 ): string {
-  return resolveColor(value, theme)
+  return resolveDiCColor(value, theme)
 }
 
 function linearGradient(
@@ -155,7 +149,7 @@ function backgroundStyle(
   theme: ResolvedTheme,
 ): string | CanvasGradient {
   if (typeof background === 'string') {
-    return resolveColor(background, theme)
+    return resolveDiCColor(background, theme)
   }
 
   return background.type === 'linear'
