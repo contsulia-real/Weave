@@ -147,15 +147,20 @@ ${propertyRegistrationBlock()}
 
 :root {
   ${themeVariableDeclarations(defaultTheme)}
-}
-
-:where([data-weave-view]) {
-  box-sizing: border-box;
   font-family: var(--weave-typography-family-body);
   font-size: var(--weave-typography-style-body-large-font-size);
   font-weight: var(--weave-typography-style-body-large-font-weight);
   line-height: var(--weave-typography-style-body-large-line-height);
   letter-spacing: var(--weave-typography-style-body-large-letter-spacing);
+}
+
+:where([data-weave-view]) {
+  box-sizing: border-box;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
   ${declarationBlock()}
 }
 
