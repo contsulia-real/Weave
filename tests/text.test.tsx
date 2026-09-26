@@ -113,12 +113,18 @@ describe('Text', () => {
       'display-large',
     )
     expect(element.getAttribute('aria-level')).toBe('1')
-    expect(textRule).toContain('--weave-text-font-size:3.5rem;')
+    expect(textRule).toContain(
+      '--weave-text-font-size:var(--weave-typography-style-display-large-font-size);',
+    )
     expect(textRule).toContain(
       '--weave-text-font-weight:var(--weave-typography-weight-semibold);',
     )
-    expect(textRule).toContain('--weave-text-line-height:1.05;')
-    expect(textRule).toContain('--weave-text-letter-spacing:-0.035em;')
+    expect(textRule).toContain(
+      '--weave-text-line-height:var(--weave-typography-style-display-large-line-height);',
+    )
+    expect(textRule).toContain(
+      '--weave-text-letter-spacing:var(--weave-typography-style-display-large-letter-spacing);',
+    )
   })
 
   it('lets ThemeProvider replace individual typo styles', () => {
@@ -152,15 +158,29 @@ describe('Text', () => {
       </ThemeProvider>,
     )
 
-    const rule = runtimeRule(
-      getByTestId('themed-typo'),
-      'weave-text-props-',
-    )
+    const element = getByTestId('themed-typo')
+    const textRule = runtimeRule(element, 'weave-text-props-')
+    const scope = element.parentElement as HTMLElement
+    const themeRule = runtimeRule(scope, 'weave-theme-')
 
-    expect(rule).toContain('--weave-text-font-size:2rem;')
-    expect(rule).toContain('--weave-text-font-weight:500;')
-    expect(rule).toContain('--weave-text-line-height:1.4;')
-    expect(rule).toContain('--weave-text-letter-spacing:0.03em;')
+    expect(textRule).toContain(
+      '--weave-text-font-size:var(--weave-typography-style-title-medium-font-size);',
+    )
+    expect(textRule).toContain(
+      '--weave-text-font-weight:var(--weave-typography-style-title-medium-font-weight);',
+    )
+    expect(themeRule).toContain(
+      '--weave-typography-style-title-medium-font-size:2rem;',
+    )
+    expect(themeRule).toContain(
+      '--weave-typography-style-title-medium-font-weight:500;',
+    )
+    expect(themeRule).toContain(
+      '--weave-typography-style-title-medium-line-height:1.4;',
+    )
+    expect(themeRule).toContain(
+      '--weave-typography-style-title-medium-letter-spacing:0.03em;',
+    )
   })
 
   it('encodes responsive text semantics at the default breakpoints', () => {
@@ -191,8 +211,12 @@ describe('Text', () => {
     )
     const responsiveStyles = breakpointStyles(element)
 
-    expect(textRule).toContain('--weave-text-font-size:0.75rem;')
-    expect(textRule).toContain('--weave-text-md-font-size:1rem;')
+    expect(textRule).toContain(
+      '--weave-text-font-size:var(--weave-typography-style-body-small-font-size);',
+    )
+    expect(textRule).toContain(
+      '--weave-text-md-font-size:var(--weave-typography-style-body-large-font-size);',
+    )
     expect(viewRule).toContain(
       '--weave-md-color:var(--weave-color-success',
     )
