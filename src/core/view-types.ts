@@ -264,7 +264,9 @@ export type ViewDynamicBreakpointProps<
 > =
   [TBreakpointName] extends [never]
     ? object
-    : Partial<Record<TBreakpointName, TResponsive>> &
+    : string extends TBreakpointName
+      ? object
+      : Partial<Record<TBreakpointName, TResponsive>> &
         Partial<
           Record<
             `container${Capitalize<TBreakpointName>}`,
