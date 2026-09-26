@@ -33,7 +33,6 @@ describe('automatic Scrollbar', () => {
         scrollbar={{
           size: 'large',
           color: 'primary',
-          trackColor: 'surfaceHover',
           radius: 'full',
           opacity: 0.8,
         }}
@@ -168,6 +167,67 @@ describe('automatic Scrollbar', () => {
     fireEvent.scroll(host)
 
     expect(thumb.style.transform).toBe('translateY(34px)')
+  })
+
+  it('keeps the thumb inside the straight edge between rounded corners', () => {
+    const { getByTestId } = render(
+      <View
+        style={{
+          overflowY: 'auto',
+          width: '200px',
+          height: '100px',
+          borderTopRightRadius: '24px',
+          borderBottomRightRadius: '18px',
+        }}
+        data={{
+          testid: 'rounded-scroll-host',
+        }}
+      >
+        <View height={40} />
+      </View>,
+    )
+
+    const host = getByTestId('rounded-scroll-host') as HTMLDivElement
+
+    Object.defineProperties(host, {
+      clientHeight: {
+        configurable: true,
+        value: 100,
+      },
+      scrollHeight: {
+        configurable: true,
+        value: 400,
+      },
+      clientWidth: {
+        configurable: true,
+        value: 200,
+      },
+      scrollWidth: {
+        configurable: true,
+        value: 200,
+      },
+    })
+
+    host.getBoundingClientRect = () => ({
+      x: 10,
+      y: 20,
+      top: 20,
+      right: 210,
+      bottom: 120,
+      left: 10,
+      width: 200,
+      height: 100,
+      toJSON: () => ({}),
+    })
+
+    fireEvent(window, new Event('resize'))
+
+    const hitRegion = document.body.querySelector(
+      '[data-weave-scrollbar-orientation="vertical"]',
+    ) as HTMLDivElement
+
+    expect(hitRegion.style.top).toBe('44px')
+    expect(hitRegion.style.height).toBe('58px')
   })
 
   it('keeps the hit target flush to the edge while the thumb stays inset', () => {
@@ -343,59 +403,6 @@ describe('automatic Scrollbar', () => {
     ).toBe('true')
   })
 
-  it('shows a lighter track only when tracked', () => {
-    const { rerender } = render(
-      <View
-        overflow="scroll"
-        scrollbar={{
-          tracked: true,
-          color: 'primary',
-        }}
-      />,
-    )
-
-    let tracks = document.body.querySelectorAll(
-      '[data-weave-scrollbar]',
-    )
-
-    expect(tracks).toHaveLength(2)
-
-    for (const track of tracks) {
-      expect(track.className).toContain('weave-scrollbar--tracked')
-      expect(
-        track.getAttribute('data-weave-scrollbar-tracked'),
-      ).toBe('true')
-    }
-
-    const stylesheet = document.querySelector(
-      'style[data-weave-scrollbar-styles]',
-    )
-
-    expect(stylesheet?.textContent).toContain(
-      ':where(.weave-scrollbar--tracked)',
-    )
-
-    rerender(
-      <View
-        overflow="scroll"
-        scrollbar={{
-          color: 'primary',
-        }}
-      />,
-    )
-
-    tracks = document.body.querySelectorAll(
-      '[data-weave-scrollbar]',
-    )
-
-    for (const track of tracks) {
-      expect(track.className).not.toContain('weave-scrollbar--tracked')
-      expect(
-        track.getAttribute('data-weave-scrollbar-tracked'),
-      ).toBeNull()
-    }
-  })
-
   it('takes size and appearance defaults from the component theme', () => {
     render(
       <View
@@ -425,28 +432,20 @@ describe('automatic Scrollbar', () => {
     expect(rule).toContain(
       '--weave-scrollbar-drag-color:var(--weave-color-secondary);',
     )
-    expect(rule).toContain(
-      '--weave-scrollbar-track-color:color-mix(insrgb,var(--weave-color-secondary)12%,transparent);',
-    )
-    expect(rule).toContain('--weave-scrollbar-track-shadow:')
-    expect(rule).toContain('--weave-scrollbar-thumb-shadow:')
 
     const stylesheet = document.querySelector(
       'style[data-weave-scrollbar-styles]',
-    )
+    )?.textContent ?? ''
 
-    expect(stylesheet?.textContent).toContain(
+    expect(stylesheet).toContain(
       '--weave-component-width: var(--weave-scrollbar-hit-size)',
     )
-    expect(stylesheet?.textContent).toContain(
+    expect(stylesheet).toContain(
       '--weave-component-width: var(--weave-scrollbar-thickness)',
     )
-    expect(stylesheet?.textContent).toContain(
-      'box-shadow: var(--weave-scrollbar-track-shadow)',
-    )
-    expect(stylesheet?.textContent).toContain(
-      '--weave-component-box-shadow: var(--weave-scrollbar-thumb-shadow)',
-    )
+    expect(stylesheet).not.toContain('weave-scrollbar--tracked')
+    expect(stylesheet).not.toContain('weave-scrollbar-track-color')
+    expect(stylesheet).not.toContain('weave-scrollbar-thumb-shadow')
   })
 
   it('uses global hover and drag feedback without touching scroll geometry', () => {
@@ -498,8 +497,6 @@ describe('automatic Scrollbar', () => {
           base: {
             color: 'danger',
             opacity: 0.6,
-            trackShadow: 'inset 0 1px 2px black',
-            thumbShadow: '0 1px 2px black',
           },
           sizes: {
             medium: {
@@ -526,11 +523,5 @@ describe('automatic Scrollbar', () => {
       '--weave-scrollbar-color:var(--weave-color-danger',
     )
     expect(rule).toContain('--weave-scrollbar-opacity:0.6;')
-    expect(rule).toContain(
-      '--weave-scrollbar-track-shadow:inset 0 1px 2px black;',
-    )
-    expect(rule).toContain(
-      '--weave-scrollbar-thumb-shadow:0 1px 2px black;',
-    )
   })
 })
