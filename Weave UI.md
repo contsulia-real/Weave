@@ -4861,24 +4861,53 @@ base paint
 
 breakpoint 的数值仍遵循 Weave 尺度语义，以 rem 为阈值单位；surface 使用逻辑 CSS pixel 宽度选择当前分支。
 
-## 27.5 DiC minimal layout
+## 27.5 DiC tree layout / intrinsic measurement
 
-当前最小布局层已经消费：
+DiC 已从单节点 frame 推进为递归 View tree layout。
 
-```text
-width
-height
-paddingTop
-paddingRight
-paddingBottom
-paddingLeft
-```
-
-输出：
+每个 View layout node 输出：
 
 ```text
 frame
 contentFrame
+children[]
+```
+
+并支持通用 intrinsic measure contract：
+
+```text
+measure({
+  maxWidth,
+  maxHeight,
+  rem,
+})
+→ { width, height }
+```
+
+因此 `content / fit` 不再依赖 DOM 测量；未来 Text 与 Image 只需要各自提供 intrinsic measurement adapter。
+
+当前 tree layout 已支持：
+
+```text
+普通 flow（纵向）
+flex row / column
+row-reverse / column-reverse
+justify
+align
+gap
+padding
+fill 主轴剩余空间分配
+stack
+content / fit intrinsic sizing
+viewport breakpoint
+nearest container breakpoint
+```
+
+flex 默认语义与 DOM 对齐：
+
+```text
+direction 默认 row
+align 默认 stretch
 ```
 
 当前支持的尺寸表达：
@@ -4889,10 +4918,30 @@ px
 rem
 %
 fill
-undefined    → surface 可用尺寸
+content
+fit
+undefined
 ```
 
-`fit / content` 需要子树 intrinsic measurement，因此当前明确报出“requires tree measurement”，而不是错误地猜成 fill。其它尚未支持的复杂尺寸表达也必须明确失败，不能静默降级。
+其中：
+
+- root 未指定 width / height 时使用 surface 可用尺寸；
+- 普通 child 未指定尺寸时使用自身 intrinsic size；
+- 主轴上的多个 `fill` child 平分剩余空间；
+- `fit` 不超过当前可用空间；
+- `content` 使用真实 intrinsic size。
+
+当前尚未实现的 tree layout 能力：
+
+```text
+grid
+absolute tree layout
+flex-wrap
+完整 grow / shrink / basis
+margin collapse / advanced placement
+```
+
+这些模式必须明确报 unsupported，不能静默按另一种布局处理。
 
 ## 27.6 DiC surface lifecycle
 
@@ -4918,7 +4967,7 @@ host measure
 - destroy 必须断开 ResizeObserver / window listener，并取消未执行的 frame；
 - surface 当前仍是 renderer 内部能力，不增加新的公开组件 API。
 
-当前尚未完成的是多节点树布局、intrinsic child measurement、Text / Image 绘制、交互命中与 React View 默认切换到 DiC surface。这些能力继续在同一 View node contract 上扩展。
+当前尚未完成的是 Text / Image intrinsic adapter 与绘制、交互命中、完整 grid / wrap / advanced flex，以及 React View 默认切换到 DiC surface。这些能力继续在同一 View tree contract 上扩展。
 
 ## 27.7 组件结构
 
@@ -5004,4 +5053,7 @@ View
 41. DiC 与 DOM fallback 必须消费同一个语义 IR；禁止让 DiC 反向解析 DOM/CSS。
 42. DiC surface 的 layout / draw 使用逻辑 CSS pixel；devicePixelRatio 只影响 canvas backing store，不改变 IR / layout 单位。
 43. DiC 当前不支持的 intrinsic / complex sizing 必须显式失败，不能静默猜测成 fill 或 0。
-44. API 的目标是：AI 易写易读，同时人类易读。
+44. DiC tree layout 的 child intrinsic size 必须来自子树测量或组件自身 measure adapter；不得借 DOM 实际布局结果反向喂给 DiC。
+45. 父 View 的 opacity / transform 必须作为子树绘制上下文继承，不能只影响父节点自己的 background。
+46. 尚未实现的 DiC layout 模式必须显式报 unsupported，不能静默降级为 flow / flex / fill。
+47. API 的目标是：AI 易写易读，同时人类易读。
