@@ -161,6 +161,9 @@ describe('Theme', () => {
 
     expect(getByTestId('default-typography')).not.toBeNull()
     expect(stylesheet).toContain(
+      'color: var(--weave-color-text);',
+    )
+    expect(stylesheet).toContain(
       'font-family: var(--weave-typography-family-body)',
     )
     expect(stylesheet).toContain(
@@ -193,6 +196,9 @@ describe('Theme', () => {
     ).parentElement as HTMLElement
     const rule = runtimeRule(scope, 'weave-theme-')
 
+    expect(rule).toContain(
+      'color:var(--weave-color-text);',
+    )
     expect(rule).toContain(
       'font-family:var(--weave-typography-family-body);',
     )
