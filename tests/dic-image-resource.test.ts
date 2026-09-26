@@ -78,4 +78,35 @@ describe('DiC image resources', () => {
       status: 'error',
     })
   })
+
+  it('disposes a resource that finishes loading after its last release', async () => {
+    let resolveLoad:
+      | ((value: DiCLoadedImage) => void)
+      | undefined
+
+    const loader = vi.fn(
+      () =>
+        new Promise<DiCLoadedImage>((resolve) => {
+          resolveLoad = resolve
+        }),
+    )
+    const dispose = vi.fn()
+    const listener = vi.fn()
+    const manager = createDiCImageResourceManager(loader)
+
+    manager.subscribe(listener)
+    manager.retain('/late.webp')
+    manager.release('/late.webp')
+
+    resolveLoad?.({
+      drawable: {} as CanvasImageSource,
+      width: 320,
+      height: 180,
+      dispose,
+    })
+    await Promise.resolve()
+
+    expect(dispose).toHaveBeenCalledTimes(1)
+    expect(listener).not.toHaveBeenCalled()
+  })
 })
