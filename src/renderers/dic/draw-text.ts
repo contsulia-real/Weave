@@ -63,6 +63,15 @@ export function drawDiCText(
   )
   const style = layout.style
 
+  if (
+    style.overflow === 'ellipsis' ||
+    style.maxLines !== undefined
+  ) {
+    context.beginPath()
+    context.rect(0, 0, frame.width, frame.height)
+    context.clip()
+  }
+
   applyDiCTextFont(context, style)
   context.fillStyle = style.color
 
