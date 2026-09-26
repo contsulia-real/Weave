@@ -136,6 +136,14 @@ function parsePosition(
   )
 }
 
+function normalizedZero(
+  value: number,
+): number {
+  return Object.is(value, -0)
+    ? 0
+    : value
+}
+
 function axisOffset(
   position: AxisPosition,
   freeSpace: number,
@@ -213,13 +221,17 @@ export function resolveDiCImagePlacement(
   }
 
   return {
-    x: axisOffset(
-      xPosition,
-      frame.width - width,
+    x: normalizedZero(
+      axisOffset(
+        xPosition,
+        frame.width - width,
+      ),
     ),
-    y: axisOffset(
-      yPosition,
-      frame.height - height,
+    y: normalizedZero(
+      axisOffset(
+        yPosition,
+        frame.height - height,
+      ),
     ),
     width,
     height,
