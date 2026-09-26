@@ -50,6 +50,7 @@ export interface DiCInteractionController {
   stateForNode(node: DiCViewNode): DiCInteractionState
   dispatchPointer(input: DiCPointerInput): DiCDispatchResult
   dispatchKeyboard(input: DiCKeyboardInput): DiCDispatchResult
+  reconcile(): void
   blur(): void
   getFocusedNode(): DiCViewNode | undefined
   getHoverHit(): DiCHitResult | undefined
@@ -110,6 +111,24 @@ function keyboardHandlerName(
   return type === 'keydown'
     ? 'onKeyDown'
     : 'onKeyUp'
+}
+
+function firstAutoFocusNode(
+  layout: DiCViewTreeLayout,
+): DiCViewNode | undefined {
+  if (
+    layout.node.interaction?.autoFocus &&
+    layout.node.interaction.focusable
+  ) {
+    return layout.node
+  }
+
+  for (const child of layout.children) {
+    const found = firstAutoFocusNode(child)
+    if (found !== undefined) return found
+  }
+
+  return undefined
 }
 
 export function createDiCInteractionController(
@@ -589,6 +608,64 @@ export function createDiCInteractionController(
       }
     },
     dispatchKeyboard,
+    reconcile() {
+      const current = layout()
+      if (current === undefined) return
+
+      const contains = (node: DiCViewNode) =>
+        findDiCNodePath(current, node) !== undefined
+
+      let changed = false
+
+      if (
+        focusedNode !== undefined &&
+        !contains(focusedNode)
+      ) {
+        setFocus(undefined, false)
+        changed = true
+      }
+
+      for (const node of [...activeNodes]) {
+        if (!contains(node)) {
+          activeNodes.delete(node)
+          changed = true
+        }
+      }
+
+      for (const [pointerId, node] of captures) {
+        if (!contains(node)) {
+          captures.delete(pointerId)
+          changed = true
+        }
+      }
+
+      for (
+        const [pointerId, node] of pointerDownTargets
+      ) {
+        if (!contains(node)) {
+          pointerDownTargets.delete(pointerId)
+          changed = true
+        }
+      }
+
+      if (
+        hoverHit !== undefined &&
+        hoverHit.path.some((node) => !contains(node))
+      ) {
+        hoverHit = undefined
+        changed = true
+      }
+
+      if (focusedNode === undefined) {
+        const autoFocus = firstAutoFocusNode(current)
+        if (autoFocus !== undefined) {
+          setFocus(autoFocus, false)
+          changed = true
+        }
+      }
+
+      invalidateIfChanged(changed)
+    },
     blur() {
       setFocus(undefined, false)
     },
