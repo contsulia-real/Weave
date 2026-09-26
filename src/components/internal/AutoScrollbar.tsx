@@ -178,7 +178,7 @@ function effectiveCornerRadii(
 }
 
 function syncScrollbarLayer(
-  track: HTMLElement,
+  hitRegion: HTMLElement,
   target: HTMLElement,
 ): void {
   let node: HTMLElement | null = target
@@ -198,9 +198,9 @@ function syncScrollbarLayer(
   }
 
   if (layer === null) {
-    track.style.removeProperty('z-index')
+    hitRegion.style.removeProperty('z-index')
   } else {
-    track.style.zIndex = String(layer + 1)
+    hitRegion.style.zIndex = String(layer + 1)
   }
 }
 
@@ -211,8 +211,8 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
 }: AutoScrollbarProps<TTarget>) {
   useInsertionEffect(ensureScrollbarStylesheet, [])
 
-  const verticalTrackRef = useRef<HTMLDivElement>(null)
-  const horizontalTrackRef = useRef<HTMLDivElement>(null)
+  const verticalHitRegionRef = useRef<HTMLDivElement>(null)
+  const horizontalHitRegionRef = useRef<HTMLDivElement>(null)
   const verticalThumbRef = useRef<HTMLDivElement>(null)
   const horizontalThumbRef = useRef<HTMLDivElement>(null)
   const dragRef = useRef<DragState | null>(null)
@@ -277,15 +277,15 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
     void scrollbarThemeClassName
 
     const target = targetRef.current
-    const verticalTrack = verticalTrackRef.current
-    const horizontalTrack = horizontalTrackRef.current
+    const verticalHitRegion = verticalHitRegionRef.current
+    const horizontalHitRegion = horizontalHitRegionRef.current
     const verticalThumb = verticalThumbRef.current
     const horizontalThumb = horizontalThumbRef.current
 
     if (
       target === null ||
-      verticalTrack === null ||
-      horizontalTrack === null ||
+      verticalHitRegion === null ||
+      horizontalHitRegion === null ||
       verticalThumb === null ||
       horizontalThumb === null
     ) {
@@ -301,8 +301,8 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
     const inset = SCROLLBAR_INSET_PX
     const radii = effectiveCornerRadii(computed, rect)
 
-    syncScrollbarLayer(verticalTrack, target)
-    syncScrollbarLayer(horizontalTrack, target)
+    syncScrollbarLayer(verticalHitRegion, target)
+    syncScrollbarLayer(horizontalHitRegion, target)
 
     const verticalOverflow =
       (
@@ -338,8 +338,8 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
       ) &&
       rect.width > 0
 
-    verticalTrack.dataset.weaveScrollbarVisible = String(verticalVisible)
-    horizontalTrack.dataset.weaveScrollbarVisible = String(horizontalVisible)
+    verticalHitRegion.dataset.weaveScrollbarVisible = String(verticalVisible)
+    horizontalHitRegion.dataset.weaveScrollbarVisible = String(horizontalVisible)
 
     const verticalThickness = verticalVisible
       ? parseFloat(getComputedStyle(verticalThumb).width) || 0
@@ -377,29 +377,29 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
     let horizontalMaxScroll = 0
 
     if (verticalVisible) {
-      const trackLength = Math.max(
+      const hitRegionLength = Math.max(
         0,
         rect.height - verticalStartInset - verticalEndInset,
       )
       const thumbLength = Math.min(
-        trackLength,
+        hitRegionLength,
         Math.max(
           24,
-          trackLength * (target.clientHeight / target.scrollHeight),
+          hitRegionLength * (target.clientHeight / target.scrollHeight),
         ),
       )
 
-      verticalAvailable = Math.max(0, trackLength - thumbLength)
+      verticalAvailable = Math.max(0, hitRegionLength - thumbLength)
       verticalMaxScroll = Math.max(
         0,
         target.scrollHeight - target.clientHeight,
       )
 
-      verticalTrack.style.top =
+      verticalHitRegion.style.top =
         `${rect.top + verticalStartInset}px`
-      verticalTrack.style.left = `${rect.right}px`
-      verticalTrack.style.height = `${trackLength}px`
-      verticalTrack.style.setProperty(
+      verticalHitRegion.style.left = `${rect.right}px`
+      verticalHitRegion.style.height = `${hitRegionLength}px`
+      verticalHitRegion.style.setProperty(
         '--weave-scrollbar-edge-inset',
         `${borderRight + inset}px`,
       )
@@ -407,29 +407,29 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
     }
 
     if (horizontalVisible) {
-      const trackLength = Math.max(
+      const hitRegionLength = Math.max(
         0,
         rect.width - horizontalStartInset - horizontalEndInset,
       )
       const thumbLength = Math.min(
-        trackLength,
+        hitRegionLength,
         Math.max(
           24,
-          trackLength * (target.clientWidth / target.scrollWidth),
+          hitRegionLength * (target.clientWidth / target.scrollWidth),
         ),
       )
 
-      horizontalAvailable = Math.max(0, trackLength - thumbLength)
+      horizontalAvailable = Math.max(0, hitRegionLength - thumbLength)
       horizontalMaxScroll = Math.max(
         0,
         target.scrollWidth - target.clientWidth,
       )
 
-      horizontalTrack.style.left =
+      horizontalHitRegion.style.left =
         `${rect.left + horizontalStartInset}px`
-      horizontalTrack.style.top = `${rect.bottom}px`
-      horizontalTrack.style.width = `${trackLength}px`
-      horizontalTrack.style.setProperty(
+      horizontalHitRegion.style.top = `${rect.bottom}px`
+      horizontalHitRegion.style.width = `${hitRegionLength}px`
+      horizontalHitRegion.style.setProperty(
         '--weave-scrollbar-edge-inset',
         `${borderBottom + inset}px`,
       )
@@ -518,29 +518,29 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
     event: PointerEvent<HTMLDivElement>,
   ) => {
     const target = targetRef.current
-    const track =
+    const hitRegion =
       orientation === 'vertical'
-        ? verticalTrackRef.current
-        : horizontalTrackRef.current
+        ? verticalHitRegionRef.current
+        : horizontalHitRegionRef.current
     const thumb =
       orientation === 'vertical'
         ? verticalThumbRef.current
         : horizontalThumbRef.current
 
-    if (target === null || track === null || thumb === null) return
+    if (target === null || hitRegion === null || thumb === null) return
 
     event.preventDefault()
     event.stopPropagation()
-    track.setPointerCapture?.(event.pointerId)
-    track.dataset.weaveScrollbarDragging = 'true'
+    hitRegion.setPointerCapture?.(event.pointerId)
+    hitRegion.dataset.weaveScrollbarDragging = 'true'
 
-    const trackRect = track.getBoundingClientRect()
+    const hitRegionRect = hitRegion.getBoundingClientRect()
     const thumbRect = thumb.getBoundingClientRect()
-    const trackLength =
-      orientation === 'vertical' ? trackRect.height : trackRect.width
+    const hitRegionLength =
+      orientation === 'vertical' ? hitRegionRect.height : hitRegionRect.width
     const thumbLength =
       orientation === 'vertical' ? thumbRect.height : thumbRect.width
-    const available = Math.max(0, trackLength - thumbLength)
+    const available = Math.max(0, hitRegionLength - thumbLength)
     const maxScroll =
       orientation === 'vertical'
         ? Math.max(0, target.scrollHeight - target.clientHeight)
@@ -598,19 +598,19 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
     const drag = dragRef.current
     if (drag === null || drag.pointerId !== event.pointerId) return
 
-    const track =
+    const hitRegion =
       drag.orientation === 'vertical'
-        ? verticalTrackRef.current
-        : horizontalTrackRef.current
-    track?.releasePointerCapture?.(event.pointerId)
-    if (track !== null) {
-      delete track.dataset.weaveScrollbarDragging
+        ? verticalHitRegionRef.current
+        : horizontalHitRegionRef.current
+    hitRegion?.releasePointerCapture?.(event.pointerId)
+    if (hitRegion !== null) {
+      delete hitRegion.dataset.weaveScrollbarDragging
     }
 
     dragRef.current = null
   }
 
-  const pageTrack = (
+  const pageHitRegion = (
     orientation: Orientation,
     event: PointerEvent<HTMLDivElement>,
   ) => {
@@ -642,7 +642,7 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
     syncThumbOffsets()
   }
 
-  const handleTrackPointerDown = (
+  const handleHitRegionPointerDown = (
     orientation: Orientation,
     event: PointerEvent<HTMLDivElement>,
   ) => {
@@ -668,7 +668,7 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
       return
     }
 
-    pageTrack(orientation, event)
+    pageHitRegion(orientation, event)
   }
 
 
@@ -677,7 +677,7 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
   return createPortal(
     <>
       <ScrollbarView
-        ref={verticalTrackRef}
+        ref={verticalHitRegionRef}
         aria-hidden
         className={[
           'weave-scrollbar',
@@ -687,7 +687,7 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
           'weave-scrollbar--vertical',
         ].filter(Boolean).join(' ')}
         onPointerDown={(event) =>
-          handleTrackPointerDown('vertical', event)
+          handleHitRegionPointerDown('vertical', event)
         }
         onPointerMove={(event) => continueDrag('vertical', event)}
         onPointerUp={endDrag}
@@ -709,7 +709,7 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
       </ScrollbarView>
 
       <ScrollbarView
-        ref={horizontalTrackRef}
+        ref={horizontalHitRegionRef}
         aria-hidden
         className={[
           'weave-scrollbar',
@@ -719,7 +719,7 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
           'weave-scrollbar--horizontal',
         ].filter(Boolean).join(' ')}
         onPointerDown={(event) =>
-          handleTrackPointerDown('horizontal', event)
+          handleHitRegionPointerDown('horizontal', event)
         }
         onPointerMove={(event) => continueDrag('horizontal', event)}
         onPointerUp={endDrag}
