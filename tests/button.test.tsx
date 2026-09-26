@@ -146,7 +146,7 @@ describe('Button', () => {
   it('keeps custom children as the complete content entry', () => {
     const { getByRole } = render(
       <Button>
-        <Text weight="bold">Custom content</Text>
+        <Text typo="label-medium" weight="bold">Custom content</Text>
       </Button>,
     )
 
@@ -333,7 +333,16 @@ describe('Button', () => {
       '--weave-button-theme-small-min-height:1.75rem;',
     )
     expect(rule).toContain(
-      '--weave-button-theme-small-font-size:var(--weave-typography-size-compact);',
+      '--weave-button-theme-small-font-size:var(--weave-typography-style-label-small-font-size);',
+    )
+    expect(rule).toContain(
+      '--weave-button-theme-small-font-weight:var(--weave-typography-style-label-small-font-weight);',
+    )
+    expect(rule).toContain(
+      '--weave-button-theme-small-line-height:var(--weave-typography-style-label-small-line-height);',
+    )
+    expect(rule).toContain(
+      '--weave-button-theme-small-letter-spacing:var(--weave-typography-style-label-small-letter-spacing);',
     )
 
     rerender(<Button text="Sized" size="large" />)
@@ -347,7 +356,10 @@ describe('Button', () => {
       '--weave-button-theme-large-min-height:2.5rem;',
     )
     expect(rule).toContain(
-      '--weave-button-theme-large-font-size:var(--weave-typography-size-medium);',
+      '--weave-button-theme-large-font-size:var(--weave-typography-style-label-large-font-size);',
+    )
+    expect(rule).toContain(
+      '--weave-button-theme-large-font-weight:var(--weave-typography-style-label-large-font-weight);',
     )
   })
 
@@ -359,6 +371,7 @@ describe('Button', () => {
             medium: {
               minHeight: 4,
               paddingX: 2,
+              typo: 'title-small',
             },
           },
           variants: {
@@ -386,6 +399,18 @@ describe('Button', () => {
     )
     expect(rule).toContain(
       '--weave-button-theme-medium-padding-x:2rem;',
+    )
+    expect(rule).toContain(
+      '--weave-button-theme-medium-font-size:var(--weave-typography-style-title-small-font-size);',
+    )
+    expect(rule).toContain(
+      '--weave-button-theme-medium-font-weight:var(--weave-typography-style-title-small-font-weight);',
+    )
+    expect(rule).toContain(
+      '--weave-button-theme-medium-line-height:var(--weave-typography-style-title-small-line-height);',
+    )
+    expect(rule).toContain(
+      '--weave-button-theme-medium-letter-spacing:var(--weave-typography-style-title-small-letter-spacing);',
     )
     expect(rule).toContain(
       '--weave-button-theme-primary-background:var(--weave-color-success',
