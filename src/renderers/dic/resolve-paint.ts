@@ -22,12 +22,18 @@ function mergePaint(
   base: DiCViewPaint,
   override: DiCViewPaint | undefined,
 ): DiCViewPaint {
-  return override === undefined
-    ? base
-    : {
-        ...base,
-        ...override,
-      }
+  if (override === undefined) return base
+
+  const definedOverride = Object.fromEntries(
+    Object.entries(override).filter(
+      ([, value]) => value !== undefined,
+    ),
+  ) as DiCViewPaint
+
+  return {
+    ...base,
+    ...definedOverride,
+  }
 }
 
 export function resolveDiCViewPaint(
