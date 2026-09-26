@@ -8,6 +8,7 @@ import type {
   DiCViewNode,
 } from './compile-view'
 import type { ResolvedTheme, ThemeScaleValue } from '../../theme/theme-types'
+import { resolveDiCColor } from './color'
 
 export interface DiCResolvedTextStyle extends DiCTypographyContext {
   align: NonNullable<TextStyleProps['align']>
@@ -162,7 +163,7 @@ function resolveColor(
   theme: ResolvedTheme,
 ): string {
   if (value === undefined || value === 'inherit') return inherited
-  return theme.tokens.color?.[value] ?? value
+  return resolveDiCColor(value, theme)
 }
 
 function applyTextStyle(
