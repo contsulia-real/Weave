@@ -2702,9 +2702,11 @@ style
 Scrollable View
 ├─ Content
 └─ Scrollbar       // 框架自动生成
-   ├─ Track : View
+   ├─ HitRegion : View   // 透明命中区，不绘制轨道
    └─ Thumb : View
 ```
+
+Scrollbar 不再提供可见 track / rail。透明 HitRegion 只负责命中、分页点击与拖动几何，视觉上只存在 thumb。
 
 ## 17.3 行为和定位沿用默认 scrollbar 语义
 
@@ -2723,7 +2725,9 @@ Scrollable View
 
 因此它可以拥有 `View` 的通用能力并接受主题。
 
-默认视觉与 Switch / Progress 使用同一触感语言：tracked track 轻微内凹，thumb 轻微抬起。轨道阴影只在 `tracked = true` 时出现；thumb 的抬起深度始终很轻，并继续保留 hover / drag 的颜色与尺度反馈。track / thumb 阴影属于 `theme.components.Scrollbar.base`，不写死在业务配置中。
+Scrollbar 的默认视觉刻意与 Switch / Progress 区分：它没有可见轨道，也没有凸起阴影，只保留平面的 thumb。hover / drag 仍可改变颜色和横截面尺度，但不会通过 shadow 模拟抬起。
+
+圆角宿主必须为角落保留安全区。右侧 Scrollbar 的运动区从 top-right 圆角结束处开始，到 bottom-right 圆角开始处结束；底部 Scrollbar 同理只占用 bottom-left 与 bottom-right 之间的直线段。DOM fallback 根据宿主最终计算得到的四角半径和边框动态求出这个直线区域；圆角越大，可用滚动条长度越短。
 
 局部定制挂在滚动容器上：
 
@@ -2733,7 +2737,6 @@ Scrollable View
   scrollbar={{
     size: "medium",
     color: "secondary",
-    trackColor: "transparent",
     radius: "full",
   }}
 >
@@ -2751,10 +2754,11 @@ size
   medium
   large
 color
-trackColor
 radius
 opacity
 ```
+
+不提供 `tracked` 或 `trackColor`；Scrollbar 没有第二套带轨道的视觉模式。
 
 不公开用于篡改默认滚动行为的：
 
