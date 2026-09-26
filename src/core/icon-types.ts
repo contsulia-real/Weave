@@ -6,7 +6,6 @@ import type {
 } from 'react'
 import type {
   ViewCoreProps,
-  ViewDynamicBreakpointProps,
 } from './view-types'
 
 export type IconSize = 'small' | 'medium' | 'large' | 'xlarge'
@@ -20,7 +19,7 @@ export type IconViewProps = Omit<
   ViewCoreProps<HTMLSpanElement>,
   'children'
 > &
-  ViewDynamicBreakpointProps & {
+  {
     ref?: Ref<HTMLSpanElement>
   }
 
