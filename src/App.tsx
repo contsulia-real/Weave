@@ -647,7 +647,7 @@ function App() {
             Scrollbar
           </Text>
           <Text typo="body-small" color="secondary">
-            View overflow="auto" 自动挂载框架 Scrollbar；视觉 rail/thumb 内缩，但透明命中区贴着真实边缘，边缘也能直接抓取；hover / drag 会变色，thumb 位置继续直接跟随原生 scrollTop / scrollLeft。
+            View overflow="auto" 自动挂载框架 Scrollbar；只绘制 thumb，透明命中区仍贴着真实边缘；圆角容器会自动预留角落安全区，让 thumb 只在直线边缘内运动。
           </Text>
 
           <View
@@ -659,9 +659,7 @@ function App() {
             radius="medium"
             scrollbar={{
               size: 'medium',
-              tracked: true,
               color: 'primary',
-              trackColor: 'surfaceHover',
               radius: 'full',
               opacity: 0.9,
             }}
