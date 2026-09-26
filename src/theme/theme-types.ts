@@ -159,6 +159,8 @@ export interface ButtonTheme {
 
 export interface ProgressThemeBase {
   trackColor?: string
+  trackShadow?: string
+  valueShadow?: string
   linearRadius?: ThemeScaleValue
 }
 
@@ -181,6 +183,8 @@ export interface ScrollbarThemeBase {
   hoverColor?: string
   dragColor?: string
   trackColor?: string
+  trackShadow?: string
+  thumbShadow?: string
   radius?: ThemeScaleValue
   opacity?: number
   hitSize?: ThemeScaleValue
