@@ -302,7 +302,7 @@ describe('Switch', () => {
     thumbRect.mockRestore()
   })
 
-  it('uses a lighter off fill, primary on fill, recessed track, and raised thumb', () => {
+  it('uses a clear off fill, primary on fill, recessed track, and raised thumb', () => {
     const { getByRole } = render(<Switch size="medium" />)
     const element = getByRole('switch')
     const themeRule = runtimeRule(element, 'weave-switch-theme-')
@@ -311,7 +311,7 @@ describe('Switch', () => {
     )?.textContent ?? ''
 
     expect(themeRule).toContain(
-      '--weave-switch-background:color-mix(insrgb,var(--weave-color-outline)18%,var(--weave-color-surface));',
+      '--weave-switch-background:color-mix(insrgb,var(--weave-color-outline)34%,var(--weave-color-surface));',
     )
     expect(themeRule).toContain(
       '--weave-switch-checked-background:var(--weave-color-primary',
