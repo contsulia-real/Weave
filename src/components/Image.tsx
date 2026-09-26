@@ -3,8 +3,9 @@ import {
   useLayoutEffect,
 } from 'react'
 import type { ImageProps } from '../core/image-types'
+import { resolveImage } from '../core/resolved-image'
 import type { ViewProps } from '../core/view-types'
-import { resolveImageStyle } from '../renderers/dom/resolve-image'
+import { compileDOMImage } from '../renderers/dom/resolve-image'
 import { ensureImageStylesheet } from '../renderers/dom/image-stylesheet'
 import { useViewHost } from './internal/use-view-host'
 
@@ -19,10 +20,14 @@ export function Image({
   viewProps = {},
 }: ImageProps) {
   const hostProps: ViewProps<HTMLImageElement> = viewProps
-  const componentStyle = resolveImageStyle({
+  const resolvedImage = resolveImage({
+    src,
+    alt,
     fit,
     position,
+    loading,
   })
+  const componentStyle = compileDOMImage(resolvedImage)
 
   const {
     elementRef,
