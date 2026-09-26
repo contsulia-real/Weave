@@ -1,20 +1,29 @@
 import type { Dimension } from '../../core/view-types'
 import type {
   DiCIntrinsicSize,
+  DiCTypographyContext,
   DiCViewNode,
   DiCViewPaint,
 } from './compile-view'
+import type { ResolvedTheme } from '../../theme/theme-types'
 import type { DiCViewFrame } from './draw-view'
 import { resolveDiCLength } from './layout-view'
 import {
   resolveDiCViewPaint,
   type DiCInteractionState,
 } from './resolve-paint'
+import {
+  createRootDiCTypography,
+  resolveDiCNodeTypography,
+} from './text-style'
 
 export interface DiCTreeLayoutEnvironment {
   viewportWidth: number
   rem?: number
   containerWidth?: number
+  context?: CanvasRenderingContext2D
+  theme?: ResolvedTheme
+  typography?: DiCTypographyContext
   stateForNode?: (
     node: DiCViewNode,
   ) => DiCInteractionState | undefined
@@ -33,6 +42,7 @@ export interface DiCTreeConstraints {
 export interface DiCViewTreeLayout {
   node: DiCViewNode
   paint: DiCViewPaint
+  typography?: DiCTypographyContext
   frame: DiCViewFrame
   contentFrame: DiCViewFrame
   children: readonly DiCViewTreeLayout[]
@@ -167,6 +177,30 @@ function childContainerWidth(
     : contentWidth
 }
 
+function typographyForNode(
+  node: DiCViewNode,
+  paint: DiCViewPaint,
+  inherited: DiCTypographyContext | undefined,
+  environment: DiCTreeLayoutEnvironment,
+): DiCTypographyContext | undefined {
+  const theme = environment.theme
+  if (theme === undefined) return inherited
+
+  const rem = environment.rem ?? 16
+  const base =
+    inherited ??
+    environment.typography ??
+    createRootDiCTypography(theme, rem)
+
+  return resolveDiCNodeTypography(
+    node,
+    base,
+    theme,
+    rem,
+    paint.color,
+  )
+}
+
 function intrinsicChildrenSize(
   node: DiCViewNode,
   paint: DiCViewPaint,
@@ -174,6 +208,7 @@ function intrinsicChildrenSize(
   maxHeight: number,
   environment: DiCTreeLayoutEnvironment,
   containerWidth: number,
+  typography: DiCTypographyContext | undefined,
 ): Size {
   const rem = environment.rem ?? 16
 
@@ -188,11 +223,21 @@ function intrinsicChildrenSize(
     )
   }
 
-  const measured = node.measure?.({
-    maxWidth,
-    maxHeight,
-    rem,
-  })
+  const measured = node.measure?.(
+    {
+      maxWidth,
+      maxHeight,
+      rem,
+    },
+    {
+      context: environment.context,
+      theme: environment.theme,
+      typography,
+      viewportWidth: environment.viewportWidth,
+      containerWidth,
+      rem,
+    },
+  )
 
   const childSizes = node.children.map((child) =>
     measureDiCViewTree(
@@ -204,6 +249,7 @@ function intrinsicChildrenSize(
       environment,
       containerWidth,
       false,
+      typography,
     ),
   )
 
@@ -280,12 +326,19 @@ function measureDiCViewTree(
   environment: DiCTreeLayoutEnvironment,
   containerWidth: number,
   root: boolean,
+  inheritedTypography?: DiCTypographyContext,
 ): Size {
   const rem = environment.rem ?? 16
   const paint = resolvedPaint(
     node,
     environment,
     containerWidth,
+  )
+  const typography = typographyForNode(
+    node,
+    paint,
+    inheritedTypography,
+    environment,
   )
 
   const top = paddingValue(
@@ -344,6 +397,7 @@ function measureDiCViewTree(
     provisionalContentHeight,
     environment,
     nextContainerWidth,
+    typography,
   )
 
   return {
@@ -445,6 +499,7 @@ function layoutChildren(
   contentFrame: DiCViewFrame,
   environment: DiCTreeLayoutEnvironment,
   containerWidth: number,
+  typography: DiCTypographyContext | undefined,
 ): readonly DiCViewTreeLayout[] {
   if (node.children.length === 0) return []
 
@@ -479,6 +534,7 @@ function layoutChildren(
         environment,
         nextContainerWidth,
         false,
+        typography,
       ),
     )
   }
@@ -521,6 +577,7 @@ function layoutChildren(
       environment,
       nextContainerWidth,
       false,
+      typography,
     ),
   )
 
@@ -622,6 +679,7 @@ function layoutChildren(
       environment,
       nextContainerWidth,
       false,
+      typography,
     )
 
     cursor += main + justify.gap
@@ -636,12 +694,19 @@ function layoutDiCViewTreeInternal(
   environment: DiCTreeLayoutEnvironment,
   containerWidth: number,
   root: boolean,
+  inheritedTypography?: DiCTypographyContext,
 ): DiCViewTreeLayout {
   const rem = environment.rem ?? 16
   const paint = resolvedPaint(
     node,
     environment,
     containerWidth,
+  )
+  const typography = typographyForNode(
+    node,
+    paint,
+    inheritedTypography,
+    environment,
   )
   const measuredSize = measureDiCViewTree(
     node,
@@ -652,6 +717,7 @@ function layoutDiCViewTreeInternal(
     environment,
     containerWidth,
     root,
+    inheritedTypography,
   )
   const size = {
     width: constraints.forceWidth ?? measuredSize.width,
@@ -695,6 +761,7 @@ function layoutDiCViewTreeInternal(
   return {
     node,
     paint,
+    typography,
     frame,
     contentFrame,
     children: layoutChildren(
@@ -707,6 +774,7 @@ function layoutDiCViewTreeInternal(
         containerWidth,
         contentFrame.width,
       ),
+      typography,
     ),
   }
 }
@@ -726,6 +794,7 @@ export function layoutDiCViewTree(
     environment,
     initialContainerWidth,
     constraints.root ?? true,
+    environment.typography,
   )
 }
 
@@ -741,5 +810,6 @@ export function measureDiCIntrinsicSize(
     environment.containerWidth ??
       environment.viewportWidth,
     false,
+    environment.typography,
   )
 }
