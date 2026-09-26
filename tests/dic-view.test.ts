@@ -51,6 +51,8 @@ describe('DiC View compiler', () => {
     expect(node.states.hover).toMatchObject({
       opacity: 1,
     })
+    expect(node.states.hover).not.toHaveProperty('width')
+    expect(node.states.hover).not.toHaveProperty('background')
 
     expect(node.responsive).toContainEqual(
       expect.objectContaining({
