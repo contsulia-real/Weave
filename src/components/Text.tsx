@@ -113,6 +113,7 @@ export function Text(props: TextProps) {
       case: textCase,
     },
     responsive: responsiveText,
+    typographyStyles: theme.tokens.typography?.styles,
   })
 
   const {
