@@ -11,6 +11,7 @@ import type {
   DefaultBreakpointName,
   ViewCoreProps,
   ViewDynamicBreakpointProps,
+  ViewResponsiveStyle,
 } from './view-types'
 
 export type ButtonVariant =
@@ -43,7 +44,7 @@ export type ButtonViewProps<
   'children' | 'busy'
 > &
   ViewDynamicBreakpointProps<
-    import('./view-types').ViewResponsiveStyle,
+    ViewResponsiveStyle,
     TBreakpointName
   > & {
     ref?: Ref<HTMLButtonElement>
