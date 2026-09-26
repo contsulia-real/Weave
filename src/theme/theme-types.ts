@@ -190,9 +190,6 @@ export interface ScrollbarThemeBase {
   color?: string
   hoverColor?: string
   dragColor?: string
-  trackColor?: string
-  trackShadow?: string
-  thumbShadow?: string
   radius?: ThemeScaleValue
   opacity?: number
   hitSize?: ThemeScaleValue
