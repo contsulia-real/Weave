@@ -213,7 +213,7 @@ function App() {
             Global typography
           </Text>
           <Text typo="body-small" color="secondary">
-            ThemeProvider 提供 family / size / weight / line-height / letter-spacing 的全局继承基线；Text 和控件共享同一套 typography tokens。
+            ThemeProvider 默认建立 body-large 排版上下文；Text、Button、Input 都从同一套 typography.styles / typo 取完整字号、字重、行高与字距。
           </Text>
 
           <View layout="flex" direction="column" gap={0.75}>
