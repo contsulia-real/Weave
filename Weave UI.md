@@ -4822,17 +4822,24 @@ CSS value compiler 位于 `renderers/dom`，不属于 core。
 
 ## 27.3 当前 DiC vertical slice
 
-当前 DiC compiler 已接入同一个 `ResolvedView`，第一批 View paint 能力为：
+当前 DiC compiler 已接入同一个 `ResolvedView`，View paint 已覆盖：
 
 ```text
-width
-height
+width / height
+min / max dimensions
 padding
+border
 background
 radius
+external shadow
+outline
 opacity
 transform
+pointerEvents
+cursor
 ```
+
+当前 border renderer 精确支持 uniform solid border；非对称 border 与非 solid border 尚未完成时必须显式失败。外部 shadow 支持结构化 `ShadowDefinition` 与当前普通 shadow token；inset shadow 不做近似。
 
 并保留：
 
@@ -4896,6 +4903,8 @@ justify
 align
 gap
 padding
+border-box content geometry
+min / max dimensions
 fill 主轴剩余空间分配
 stack
 content / fit intrinsic sizing
@@ -4967,7 +4976,7 @@ host measure
 - destroy 必须断开 ResizeObserver / window listener，并取消未执行的 frame；
 - surface 当前仍是 renderer 内部能力，不增加新的公开组件 API。
 
-当前尚未完成的是 Button / Switch / Input 等组件级 DiC interaction adapter、完整键盘 Tab 导航与可访问性 semantic bridge、完整 grid / wrap / advanced flex、Image 的 DiC lazy-loading / load-event bridge，以及 React View 默认切换到 DiC surface。这些能力继续在同一 View tree contract 上扩展。
+当前尚未完成的是 Input 等剩余组件级 DiC adapter、完整键盘 Tab 导航与可访问性 semantic bridge、公开 `ViewProps` React 事件 payload 的 renderer-neutral bridge、完整 grid / wrap / advanced flex、Image 的 DiC lazy-loading / load-event bridge，以及 React View 默认切换到 DiC surface。这些能力继续在同一 View tree contract 上扩展。
 
 ## 27.7 DiC Text
 
@@ -5222,7 +5231,8 @@ native PointerEvent / KeyboardEvent
 当前明确未完成：
 
 ```text
-Button / Switch / Input 的 DiC semantic interaction adapter
+Input 等剩余组件的 DiC semantic interaction adapter
+公开 ViewProps React SyntheticEvent → DiC event bridge
 完整 Tab / Shift+Tab 虚拟焦点遍历
 ARIA / accessibility semantic mirror
 Input 文本编辑 / IME / selection bridge
@@ -5232,7 +5242,126 @@ drag-and-drop semantic backend
 
 generic View 的 `disabled` 当前与 DOM 的 `aria-disabled` 语义一致：它激活 disabled state，但不会全局吞掉事件。真正的 Button / Switch / Input disabled 行为必须由对应组件 adapter 承担。
 
-## 27.10 组件结构
+## 27.10 DiC Button / Switch semantic adapters
+
+Button 与 Switch 已建立组件级 renderer-neutral IR：
+
+```text
+Button props
+→ ResolvedButton
+├─ DOM Button adapter
+└─ DiC Button adapter
+
+Switch current state
+→ ResolvedSwitch
+├─ DOM Switch adapter
+└─ DiC Switch adapter
+```
+
+### Button
+
+`ResolvedButton` 当前统一保存：
+
+```text
+variant
+size
+loading
+disabled
+iconOnly
+responsive size / variant branches
+```
+
+DiC Button adapter 当前支持：
+
+- theme size geometry；
+- `minHeight` 与 padding；
+- icon-only 正方形最小尺寸；
+- size 对应的 label typo，并随 viewport breakpoint 切换；
+- variant background / text color / border / depth color；
+- rest / hover / active depth；
+- hover lift / scale；
+- press offset / scale；
+- focus-visible outline；
+- disabled opacity / cursor；
+- `role="button"`、disabled、busy 语义；
+- pointer click activation；
+- Enter keydown activation；
+- Space keydown preventDefault + keyup activation；
+- loading 时禁止 activation 与 focus；
+- 用户 View base / state / responsive paint 始终高于组件默认视觉。
+
+Button depth 使用结构化零模糊 shadow 绘制为偏移后的同形色块，不依赖 CSS box-shadow，也不会在 transparent ghost Button 上泄漏 source fill。
+
+当前 Button DiC 仍未完成：
+
+```text
+loading Progress spinner 的 DiC visual
+任意 ReactNode children → DiC child tree 的 React renderer bridge
+公开 viewProps React event handler bridge
+motion interpolation / spring animation
+```
+
+### Switch
+
+`ResolvedSwitch` 当前统一保存：
+
+```text
+size
+checked
+disabled
+```
+
+DiC Switch adapter 当前支持：
+
+- track size / background / radius；
+- checked primary track；
+- thumb size / inset / checked shift；
+- focus-visible outline；
+- disabled opacity / cursor；
+- `role="switch"`、checked、disabled 语义；
+- click toggle；
+- Space / Enter keyboard toggle；
+- 直接拖动 thumb；
+- pointer capture；
+- 3 CSS-pixel drag threshold；
+- drag 中 thumb shrink / stretch；
+- midpoint 决定最终 checked 状态；
+- drag pointermove 不读取 DOM layout；
+- drag release 后恢复 resting geometry；
+- drag 已发生时通过 pointerup cancellation 阻止后续 synthetic click 二次 toggle。
+
+Switch drag geometry直接来自 theme size / inset / shift，不借 DOM `getBoundingClientRect()` 回传布局。
+
+当前 Switch DiC 仍未完成的视觉 parity：
+
+```text
+recessed track inset shadow
+raised thumb multi-layer shadow
+motion interpolation / spring return
+```
+
+这些 shadow 当前主题使用包含 `inset` 的 CSS shadow 字符串；在建立等价的结构化 shadow IR 前，不允许 Canvas 做近似替代。
+
+### React event bridge 边界
+
+当前 DiC 内部 pointer / keyboard event 已 renderer-neutral，但公开 `ViewCoreProps` 仍从 React `HTMLAttributes` 继承 `onClick / onPointerDown / onKeyDown...` 的 SyntheticEvent payload。
+
+因此当前 Button / Switch DiC adapter 使用内部语义 callback：
+
+```text
+Button → onActivate
+Switch → onChange
+```
+
+而不是伪造 React SyntheticEvent。
+
+在公开事件 bridge 完成前：
+
+- 不得从 Canvas 构造假的 React SyntheticEvent；
+- 不得声称 `viewProps.onClick` 等用户 handler 已在 DiC 完整等价运行；
+- React 组件默认切换到 DiC surface 必须继续等待这一层完成。
+
+## 27.11 组件结构
 
 ```text
 React
@@ -5334,4 +5463,10 @@ View
 59. Canvas 原生事件只能作为输入桥；事件冒泡、pointer capture、click 合成与 focus 状态必须在 DiC tree 上执行。
 60. generic View 的 `disabled` 不得被 renderer 擅自解释为“吞掉全部事件”；组件级 disabled 行为由 Button / Switch / Input 等语义 adapter 自己保证。
 61. 在 Tab 导航与 accessibility semantic bridge 完成前，不得把 DiC 的 pointer/keyboard dispatch 描述成完整可访问性交互等价。
-62. API 的目标是：AI 易写易读，同时人类易读。
+62. Button / Switch 的 DOM 与 DiC adapter 必须消费同一个 ResolvedButton / ResolvedSwitch 语义结果；不得分别重新解释 variant / size / loading / checked / disabled。
+63. DiC Button 的组件默认视觉必须低于用户 View base / state / responsive paint；用户显式 View 语义始终拥有更高优先级。
+64. DiC Switch pointermove 热路径不得读取 DOM layout；drag geometry 必须来自已解析的组件 / theme 几何和 pointer delta。
+65. Switch drag 已经发生时，pointerup cancellation 必须阻止后续 click 合成，避免一次拖动触发第二次 toggle。
+66. DiC 不得伪造 React SyntheticEvent。公开 ViewProps 事件 payload 在 renderer-neutral bridge 完成前必须明确视为尚未完成的 React → DiC 接口层。
+67. inset shadow 等尚未存在等价结构化 IR 的视觉能力不得在 Canvas 中静默近似；必须保持明确 parity gap。
+68. API 的目标是：AI 易写易读，同时人类易读。
