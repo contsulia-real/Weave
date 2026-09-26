@@ -258,12 +258,18 @@ export type ViewBreakpointProps =
     >
   >
 
+type KeysOfUnion<T> =
+  T extends unknown ? keyof T : never
+
 export type ValidateDynamicBreakpointProps<
   TProps,
   TKnownProps,
   TResponsive,
 > = {
-  [TKey in Exclude<keyof TProps, keyof TKnownProps>]:
+  [TKey in Exclude<
+    keyof TProps,
+    KeysOfUnion<TKnownProps>
+  >]:
     TKey extends string
       ? TProps[TKey] extends TResponsive | undefined
         ? TProps[TKey]
