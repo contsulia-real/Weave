@@ -1,7 +1,13 @@
 import { describe, expect, it, vi } from 'vitest'
+import { resolveImage } from '../src/core/resolved-image'
 import { resolveView } from '../src/core/resolved-view'
 import type { ViewProps } from '../src/core/view-types'
+import { compileDiCImage } from '../src/renderers/dic/compile-image'
 import { compileDiCView } from '../src/renderers/dic/compile-view'
+import type {
+  DiCImageResource,
+  DiCImageResourceManager,
+} from '../src/renderers/dic/image-resource'
 import {
   createDiCSurface,
   type DiCSurfaceScheduler,
@@ -156,5 +162,130 @@ describe('DiC surface', () => {
 
     surface.invalidate()
     expect(scheduler.request).toHaveBeenCalledTimes(1)
+  })
+
+  it('reflows and redraws when an image resource becomes ready', () => {
+    let scheduled:
+      | FrameRequestCallback
+      | undefined
+    let listener:
+      | (() => void)
+      | undefined
+    let resource: DiCImageResource = {
+      status: 'loading',
+    }
+
+    const scheduler: DiCSurfaceScheduler = {
+      request: vi.fn((callback) => {
+        scheduled = callback
+        return 31
+      }),
+      cancel: vi.fn(),
+    }
+
+    const imageResources: DiCImageResourceManager = {
+      get: vi.fn(() => resource),
+      subscribe: vi.fn((next) => {
+        listener = next
+        return () => {
+          listener = undefined
+        }
+      }),
+      destroy: vi.fn(),
+    }
+
+    const drawImage = vi.fn()
+    const context = {
+      globalAlpha: 1,
+      fillStyle: '',
+      setTransform: vi.fn(),
+      clearRect: vi.fn(),
+      save: vi.fn(),
+      restore: vi.fn(),
+      translate: vi.fn(),
+      rotate: vi.fn(),
+      scale: vi.fn(),
+      transform: vi.fn(),
+      beginPath: vi.fn(),
+      rect: vi.fn(),
+      clip: vi.fn(),
+      roundRect: vi.fn(),
+      moveTo: vi.fn(),
+      lineTo: vi.fn(),
+      quadraticCurveTo: vi.fn(),
+      closePath: vi.fn(),
+      fill: vi.fn(),
+      drawImage,
+      createLinearGradient: vi.fn(),
+      createRadialGradient: vi.fn(),
+    } as unknown as CanvasRenderingContext2D
+
+    const canvas = {
+      width: 0,
+      height: 0,
+      getContext: vi.fn(() => context),
+      getBoundingClientRect: vi.fn(),
+    } as unknown as HTMLCanvasElement
+
+    const node = compileDiCImage(
+      resolveView(
+        {
+          width: 'content',
+          height: 'content',
+        },
+        defaultBreakpoints,
+      ),
+      resolveImage({
+        src: '/cover.webp',
+        alt: 'Cover',
+      }),
+    )
+
+    const surface = createDiCSurface(
+      canvas,
+      {
+        node,
+        theme: defaultTheme,
+      },
+      {
+        autoResize: false,
+        scheduler,
+        imageResources,
+      },
+    )
+
+    surface.resize(300, 200, 1)
+    scheduled?.(0)
+
+    expect(surface.getLayout()?.frame).toEqual({
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
+    })
+    expect(drawImage).not.toHaveBeenCalled()
+
+    resource = {
+      status: 'ready',
+      drawable: {} as CanvasImageSource,
+      width: 200,
+      height: 100,
+    }
+    listener?.()
+
+    expect(scheduler.request).toHaveBeenCalledTimes(2)
+
+    scheduled?.(16)
+
+    expect(surface.getLayout()?.frame).toEqual({
+      x: 0,
+      y: 0,
+      width: 200,
+      height: 100,
+    })
+    expect(drawImage).toHaveBeenCalledTimes(1)
+
+    surface.destroy()
+    expect(imageResources.destroy).not.toHaveBeenCalled()
   })
 })
