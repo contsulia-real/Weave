@@ -220,6 +220,55 @@ describe('View DOM backend', () => {
     })
   })
 
+  it('normalizes bubbling focus targets through the DOM event bridge', () => {
+    const parentFocus = vi.fn()
+    const childFocus = vi.fn()
+
+    const { getByTestId } = render(
+      <View
+        id="focus-parent"
+        onFocus={parentFocus}
+        data={{ testid: 'focus-parent' }}
+      >
+        <View
+          id="focus-child"
+          focusable
+          onFocus={childFocus}
+          data={{ testid: 'focus-child' }}
+        />
+      </View>,
+    )
+
+    fireEvent.focus(
+      getByTestId('focus-child'),
+    )
+
+    expect(childFocus).toHaveBeenCalledTimes(1)
+    expect(parentFocus).toHaveBeenCalledTimes(1)
+    expect(
+      childFocus.mock.calls[0]?.[0],
+    ).toMatchObject({
+      type: 'focus',
+      target: {
+        id: 'focus-child',
+      },
+      currentTarget: {
+        id: 'focus-child',
+      },
+    })
+    expect(
+      parentFocus.mock.calls[0]?.[0],
+    ).toMatchObject({
+      type: 'focus',
+      target: {
+        id: 'focus-child',
+      },
+      currentTarget: {
+        id: 'focus-parent',
+      },
+    })
+  })
+
   it('maps heading levels through the semantic layer', () => {
     const { getByRole } = render(
       <View role="heading" level={2}>
