@@ -45,6 +45,7 @@ export interface DiCIntrinsicEnvironment {
   typography?: DiCTypographyContext
   viewportWidth: number
   containerWidth: number
+  rem: number
 }
 
 export type DiCIntrinsicMeasure = (
