@@ -40,7 +40,7 @@ export function resolveText(
   breakpoints: Readonly<Record<string, number>>,
 ): ResolvedText {
   const responsive: ResolvedTextBreakpoint[] = []
-  const record = props as Readonly<Record<string, unknown>>
+  const record = props as unknown as Readonly<Record<string, unknown>>
 
   for (const breakpoint of breakpointEntries(breakpoints)) {
     const value = record[breakpoint.name]
