@@ -4,6 +4,8 @@ import {
   ThemeProvider,
   View,
   createTheme,
+  type ViewClickEvent,
+  type ViewPointerEvent,
 } from '../src'
 
 afterEach(cleanup)
@@ -98,23 +100,77 @@ describe('View DOM backend', () => {
     )
   })
 
-  it('forwards React events and high-level semantics', () => {
-    const onClick = vi.fn()
+  it('bridges DOM input into renderer-neutral View events and semantics', () => {
+    const onClick = vi.fn(
+      (event: ViewClickEvent) => {
+        event.preventDefault()
+      },
+    )
+    const onPointerDown = vi.fn(
+      (_event: ViewPointerEvent) => {},
+    )
 
     const { getByTestId } = render(
       <View
+        id="sidebar"
         focusable
         disabled
         label="Sidebar"
         onClick={onClick}
+        onPointerDown={onPointerDown}
         data={{ testid: 'semantic' }}
       />,
     )
 
     const element = getByTestId('semantic')
-    fireEvent.click(element)
+    fireEvent.pointerDown(element, {
+      pointerId: 7,
+      pointerType: 'pen',
+      isPrimary: true,
+      clientX: 24,
+      clientY: 32,
+      pressure: 0.5,
+    })
+    fireEvent.click(element, {
+      clientX: 24,
+      clientY: 32,
+    })
 
+    expect(onPointerDown).toHaveBeenCalledTimes(1)
     expect(onClick).toHaveBeenCalledTimes(1)
+
+    const click = onClick.mock.calls[0]?.[0]
+    expect(click).toMatchObject({
+      type: 'click',
+      target: {
+        id: 'sidebar',
+      },
+      currentTarget: {
+        id: 'sidebar',
+      },
+      clientX: 24,
+      clientY: 32,
+      defaultPrevented: true,
+    })
+    expect(click).not.toHaveProperty('nativeEvent')
+
+    const pointer = onPointerDown.mock.calls[0]?.[0]
+    expect(pointer).toMatchObject({
+      type: 'pointerdown',
+      target: {
+        id: 'sidebar',
+      },
+      currentTarget: {
+        id: 'sidebar',
+      },
+      pointerId: 7,
+      pointerType: 'pen',
+      isPrimary: true,
+      clientX: 24,
+      clientY: 32,
+      pressure: 0.5,
+    })
+
     expect(element.tabIndex).toBe(0)
     expect(element.getAttribute('aria-disabled')).toBe('true')
     expect(element.getAttribute('aria-label')).toBe('Sidebar')
