@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { resolveSwitch } from '../src/core/resolved-switch'
 import { resolveView } from '../src/core/resolved-view'
+import type { ViewClickEvent } from '../src/core/view-types'
 import { compileDiCSwitch } from '../src/renderers/dic/compile-switch'
 import { createDiCInteractionController } from '../src/renderers/dic/interaction'
 import { layoutDiCViewTree } from '../src/renderers/dic/layout-tree'
@@ -164,7 +165,7 @@ describe('DiC Switch adapter', () => {
 
   it('lets public View events cancel Switch default toggle', () => {
     const onChange = vi.fn()
-    const onClick = vi.fn((event) => {
+    const onClick = vi.fn((event: ViewClickEvent) => {
       event.preventDefault()
     })
     const node = compileDiCSwitch(
