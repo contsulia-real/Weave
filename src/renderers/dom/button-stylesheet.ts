@@ -229,19 +229,8 @@ const stylesheet = `
   pointer-events: none;
 }
 
-:where(.weave-button__spinner) {
-  width: 1em;
-  height: 1em;
-  border: 0.125em solid currentColor;
-  border-right-color: transparent;
-  border-radius: 50%;
-  animation: weave-button-spin 700ms linear infinite;
-}
-
-@keyframes weave-button-spin {
-  to {
-    transform: rotate(360deg);
-  }
+:where(.weave-button__progress) {
+  pointer-events: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -262,10 +251,6 @@ const stylesheet = `
   :where(.weave-button:hover:not([aria-disabled="true"])),
   :where(.weave-button:active:not([aria-disabled="true"])) {
     --weave-component-transform: none;
-  }
-
-  :where(.weave-button__spinner) {
-    animation: none;
   }
 }
 `
