@@ -1,9 +1,6 @@
 import type { ResolvedTheme } from '../../theme/theme-types'
 import type { DiCViewNode } from './compile-view'
-import {
-  drawDiCViewPaint,
-  type DiCViewFrame,
-} from './draw-view'
+import { drawDiCViewPaint } from './draw-view'
 import {
   layoutDiCView,
   type DiCViewLayout,
