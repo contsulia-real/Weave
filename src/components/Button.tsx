@@ -11,7 +11,10 @@ import type {
   IconComponent,
   IconSvg,
 } from '../core/icon-types'
-import type { ViewProps } from '../core/view-types'
+import type {
+  ValidateDynamicBreakpointProps,
+  ViewProps,
+} from '../core/view-types'
 import { breakpointEntries } from '../renderers/dom/breakpoint-utils'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { ensureButtonStylesheet } from '../renderers/dom/button-stylesheet'
@@ -50,10 +53,8 @@ function iconContent(icon: ButtonIcon) {
   )
 }
 
-function semanticContent<
-  TBreakpointName extends string,
->(
-  props: ButtonProps<TBreakpointName>,
+function semanticContent(
+  props: ButtonProps,
 ) {
   if ('children' in props && props.children !== undefined) {
     return props.children
@@ -77,9 +78,14 @@ function semanticContent<
 }
 
 export function Button<
-  TBreakpointName extends string = never,
+  TProps extends ButtonProps,
 >(
-  props: ButtonProps<NoInfer<TBreakpointName>>,
+  props: TProps &
+    ValidateDynamicBreakpointProps<
+      TProps,
+      ButtonProps,
+      ButtonResponsiveProps
+    >,
 ) {
   const {
     variant = 'primary',
