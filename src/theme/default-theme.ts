@@ -216,7 +216,6 @@ export const defaultTheme: ResolvedTheme = {
       base: {
         ...controlBaseline,
         cursor: 'pointer',
-        fontWeight: 600,
       },
       sizes: {
         small: {
@@ -224,21 +223,21 @@ export const defaultTheme: ResolvedTheme = {
           paddingX: 0.625,
           paddingY: 0.3125,
           gap: 0.3125,
-          fontSize: 'var(--weave-typography-size-compact)',
+          typo: 'label-small',
         },
         medium: {
           minHeight: 2.125,
           paddingX: 0.75,
           paddingY: 0.4375,
           gap: 0.375,
-          fontSize: 'var(--weave-typography-size-small)',
+          typo: 'label-medium',
         },
         large: {
           ...controlMedium,
           paddingX: 1,
           paddingY: 0.625,
           gap: 0.5,
-          fontSize: 'var(--weave-typography-size-medium)',
+          typo: 'label-large',
         },
       },
       variants: {
@@ -312,8 +311,7 @@ export const defaultTheme: ResolvedTheme = {
         borderColor: 'outline',
         paddingX: 0.875,
         paddingY: 0.625,
-        fontSize: 'var(--weave-typography-size-medium)',
-        lineHeight: 'var(--weave-typography-line-height-body)',
+        typo: 'body-large',
       },
       states: {
         disabled: {
