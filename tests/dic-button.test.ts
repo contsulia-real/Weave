@@ -324,6 +324,54 @@ describe('DiC Button adapter', () => {
     expect(activate).toHaveBeenCalledTimes(3)
   })
 
+  it('lets public View events cancel Button default activation', () => {
+    const activate = vi.fn()
+    const onClick = vi.fn((event) => {
+      event.preventDefault()
+    })
+    const node = compileDiCButton(
+      resolveView(
+        {
+          id: 'button',
+          width: 8,
+          onClick,
+        },
+        defaultBreakpoints,
+      ),
+      resolveButton(
+        {
+          text: 'Cancel',
+        },
+        defaultBreakpoints,
+      ),
+      defaultTheme,
+      {
+        onActivate: activate,
+      },
+    )
+    const layout = layoutButton(node)
+    const controller = createDiCInteractionController({
+      getLayout: () => layout,
+      invalidate: vi.fn(),
+    })
+
+    controller.dispatchPointer(
+      pointer('pointerdown'),
+    )
+    controller.dispatchPointer(
+      pointer('pointerup'),
+    )
+
+    expect(onClick).toHaveBeenCalledTimes(1)
+    expect(activate).not.toHaveBeenCalled()
+    expect(onClick.mock.calls[0]?.[0]).toMatchObject({
+      currentTarget: {
+        id: 'button',
+      },
+      defaultPrevented: true,
+    })
+  })
+
   it('suppresses activation and focus while disabled or loading', () => {
     const activate = vi.fn()
     const button = resolveButton(
