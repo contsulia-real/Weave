@@ -20,6 +20,7 @@ describe('DiC image resources', () => {
     const listener = vi.fn()
     const manager = createDiCImageResourceManager(loader)
 
+    manager.retain?.('/cover.webp')
     expect(manager.get('/cover.webp')).toEqual({
       status: 'loading',
     })
@@ -44,6 +45,9 @@ describe('DiC image resources', () => {
       width: 200,
       height: 100,
     })
+
+    manager.release?.('/cover.webp')
+    expect(dispose).toHaveBeenCalledTimes(1)
 
     manager.destroy()
     expect(dispose).toHaveBeenCalledTimes(1)
