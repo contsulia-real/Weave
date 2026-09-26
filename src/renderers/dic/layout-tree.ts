@@ -212,8 +212,20 @@ function intrinsicChildrenSize(
     }
   }
 
-  const gap = gapValue(paint, maxWidth, rem)
-  const direction = paint.direction ?? 'column'
+  if (paint.layout === 'flex' && paint.wrap) {
+    throw new Error(
+      'DiC flex wrap tree layout is not implemented yet',
+    )
+  }
+
+  const gap =
+    paint.layout === 'flex'
+      ? gapValue(paint, maxWidth, rem)
+      : 0
+  const direction =
+    paint.layout === 'flex'
+      ? paint.direction ?? 'row'
+      : 'column'
   const row =
     direction === 'row' ||
     direction === 'row-reverse'
@@ -469,14 +481,26 @@ function layoutChildren(
     )
   }
 
-  const direction = paint.direction ?? 'column'
+  if (paint.layout === 'flex' && paint.wrap) {
+    throw new Error(
+      'DiC flex wrap tree layout is not implemented yet',
+    )
+  }
+
+  const direction =
+    paint.layout === 'flex'
+      ? paint.direction ?? 'row'
+      : 'column'
   const row =
     direction === 'row' ||
     direction === 'row-reverse'
   const reverse =
     direction === 'row-reverse' ||
     direction === 'column-reverse'
-  const gap = gapValue(paint, contentFrame.width, rem)
+  const gap =
+    paint.layout === 'flex'
+      ? gapValue(paint, contentFrame.width, rem)
+      : 0
 
   const desired = node.children.map((child) =>
     measureDiCViewTree(
