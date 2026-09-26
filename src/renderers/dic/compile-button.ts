@@ -333,12 +333,22 @@ export function compileDiCButton(
             ? false
             : view.interaction.autoFocus,
         tabIndex: view.interaction.tabIndex,
-        onClick: () => {
-          if (button.disabled) return
+        onClick: (event) => {
+          if (
+            button.disabled ||
+            event.defaultPrevented
+          ) {
+            return
+          }
           options.onActivate?.()
         },
         onKeyDown: (event) => {
-          if (button.disabled) return
+          if (
+            button.disabled ||
+            event.defaultPrevented
+          ) {
+            return
+          }
 
           if (
             event.key === 'Enter' &&
@@ -357,6 +367,7 @@ export function compileDiCButton(
         onKeyUp: (event) => {
           if (
             button.disabled ||
+            event.defaultPrevented ||
             event.key !== ' ' ||
             !spacePressed
           ) {
