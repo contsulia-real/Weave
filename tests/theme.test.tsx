@@ -135,7 +135,7 @@ describe('Theme', () => {
     expect(button?.sizes?.medium).not.toHaveProperty('fontSize')
 
     expect(input?.base).toMatchObject({
-      typo: 'body-medium',
+      typo: 'body-large',
     })
     expect(input?.base).not.toHaveProperty('fontSize')
     expect(input?.base).not.toHaveProperty('lineHeight')
@@ -155,16 +155,16 @@ describe('Theme', () => {
       'font-family: var(--weave-typography-family-body)',
     )
     expect(stylesheet).toContain(
-      'font-size: var(--weave-typography-style-body-medium-font-size)',
+      'font-size: var(--weave-typography-style-body-large-font-size)',
     )
     expect(stylesheet).toContain(
-      'font-weight: var(--weave-typography-style-body-medium-font-weight)',
+      'font-weight: var(--weave-typography-style-body-large-font-weight)',
     )
     expect(stylesheet).toContain(
-      'line-height: var(--weave-typography-style-body-medium-line-height)',
+      'line-height: var(--weave-typography-style-body-large-line-height)',
     )
     expect(stylesheet).toContain(
-      'letter-spacing: var(--weave-typography-style-body-medium-letter-spacing)',
+      'letter-spacing: var(--weave-typography-style-body-large-letter-spacing)',
     )
     expect(stylesheet).toContain('font-size: inherit;')
     expect(stylesheet).toContain('font-weight: inherit;')
@@ -188,16 +188,16 @@ describe('Theme', () => {
       'font-family:var(--weave-typography-family-body);',
     )
     expect(rule).toContain(
-      'font-size:var(--weave-typography-style-body-medium-font-size);',
+      'font-size:var(--weave-typography-style-body-large-font-size);',
     )
     expect(rule).toContain(
-      'font-weight:var(--weave-typography-style-body-medium-font-weight);',
+      'font-weight:var(--weave-typography-style-body-large-font-weight);',
     )
     expect(rule).toContain(
-      'line-height:var(--weave-typography-style-body-medium-line-height);',
+      'line-height:var(--weave-typography-style-body-large-line-height);',
     )
     expect(rule).toContain(
-      'letter-spacing:var(--weave-typography-style-body-medium-letter-spacing);',
+      'letter-spacing:var(--weave-typography-style-body-large-letter-spacing);',
     )
   })
 
