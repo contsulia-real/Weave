@@ -1,14 +1,11 @@
 import type { ResolvedTheme } from '../../theme/theme-types'
 import type { DiCViewNode } from './compile-view'
-import { drawDiCViewPaint } from './draw-view'
+import { drawDiCViewTree } from './draw-view'
 import {
-  layoutDiCView,
-  type DiCViewLayout,
-} from './layout-view'
-import {
-  resolveDiCViewPaint,
-  type DiCInteractionState,
-} from './resolve-paint'
+  layoutDiCViewTree,
+  type DiCViewTreeLayout,
+} from './layout-tree'
+import type { DiCInteractionState } from './resolve-paint'
 
 export interface DiCSurfaceScene {
   node: DiCViewNode
@@ -36,7 +33,7 @@ export interface DiCSurface {
   measure(): void
   invalidate(): void
   destroy(): void
-  getLayout(): DiCViewLayout | undefined
+  getLayout(): DiCViewTreeLayout | undefined
 }
 
 function defaultScheduler(): DiCSurfaceScheduler {
@@ -97,7 +94,7 @@ export function createDiCSurface(
   let dpr = 1
   let frameRequest: number | undefined
   let destroyed = false
-  let layout: DiCViewLayout | undefined
+  let layout: DiCViewTreeLayout | undefined
 
   const render = () => {
     frameRequest = undefined
@@ -107,29 +104,27 @@ export function createDiCSurface(
     context.clearRect(0, 0, width, height)
 
     const rem = scene.rem ?? 16
-    const paint = resolveDiCViewPaint(
+    layout = layoutDiCViewTree(
       scene.node,
-      {
-        viewportWidth: width,
-        containerWidth: scene.containerWidth ?? width,
-        rem,
-        state: scene.state,
-      },
-    )
-
-    layout = layoutDiCView(
-      paint,
       {
         width,
         height,
       },
-      { rem },
+      {
+        viewportWidth: width,
+        containerWidth:
+          scene.containerWidth ?? width,
+        rem,
+        stateForNode: (node) =>
+          node === scene.node
+            ? scene.state
+            : undefined,
+      },
     )
 
-    drawDiCViewPaint(
+    drawDiCViewTree(
       context,
-      paint,
-      layout.frame,
+      layout,
       {
         theme: scene.theme,
         rem,
