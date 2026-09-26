@@ -24,6 +24,7 @@ export interface DiCTreeLayoutEnvironment {
   context?: CanvasRenderingContext2D
   theme?: ResolvedTheme
   typography?: DiCTypographyContext
+  imageResources?: import('./image-resource').DiCImageResourceManager
   stateForNode?: (
     node: DiCViewNode,
   ) => DiCInteractionState | undefined
@@ -209,6 +210,8 @@ function intrinsicChildrenSize(
   environment: DiCTreeLayoutEnvironment,
   containerWidth: number,
   typography: DiCTypographyContext | undefined,
+  resolvedWidth?: number,
+  resolvedHeight?: number,
 ): Size {
   const rem = environment.rem ?? 16
 
@@ -228,6 +231,8 @@ function intrinsicChildrenSize(
       maxWidth,
       maxHeight,
       rem,
+      resolvedWidth,
+      resolvedHeight,
     },
     {
       context: environment.context,
@@ -236,6 +241,7 @@ function intrinsicChildrenSize(
       viewportWidth: environment.viewportWidth,
       containerWidth,
       rem,
+      imageResources: environment.imageResources,
     },
   )
 
@@ -398,6 +404,12 @@ function measureDiCViewTree(
     environment,
     nextContainerWidth,
     typography,
+    explicitWidth === undefined
+      ? undefined
+      : provisionalContentWidth,
+    explicitHeight === undefined
+      ? undefined
+      : provisionalContentHeight,
   )
 
   return {
