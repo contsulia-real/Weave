@@ -144,10 +144,35 @@ function stateDefaults(
     : merged
 }
 
+function responsiveState(
+  baseNode: DiCViewNode,
+  key: 'hover' | 'active',
+  defaults: DiCViewPaint,
+): DiCViewPaint | undefined {
+  const user = baseNode.states[key]
+  const output = Object.fromEntries(
+    Object.entries(defaults).filter(
+      ([property, value]) =>
+        value !== undefined &&
+        baseNode.paint[
+          property as keyof DiCViewPaint
+        ] === undefined &&
+        user?.[
+          property as keyof DiCViewPaint
+        ] === undefined,
+    ),
+  ) as DiCViewPaint
+
+  return Object.keys(output).length === 0
+    ? undefined
+    : output
+}
+
 function componentBreakpoint(
   theme: ResolvedTheme,
   breakpoint: ResolvedButtonBreakpoint,
   baseNode: DiCViewNode,
+  disabled: boolean,
 ): DiCViewBreakpoint {
   const paint: DiCViewPaint = {
     ...(breakpoint.size === undefined
@@ -166,11 +191,39 @@ function componentBreakpoint(
     }
   }
 
+  const variant =
+    breakpoint.variant === undefined
+      ? undefined
+      : theme.components.Button?.variants?.[
+          breakpoint.variant
+        ]
+
   return {
     name: breakpoint.name,
     minWidth: breakpoint.minWidth,
     scope: 'viewport',
     paint,
+    states:
+      disabled || variant === undefined
+        ? undefined
+        : {
+            hover: responsiveState(
+              baseNode,
+              'hover',
+              {
+                background:
+                  variant.hoverBackground,
+              },
+            ),
+            active: responsiveState(
+              baseNode,
+              'active',
+              {
+                background:
+                  variant.activeBackground,
+              },
+            ),
+          },
     typography:
       breakpoint.size === undefined
         ? undefined
@@ -208,10 +261,9 @@ export function compileDiCButton(
       },
       interaction: {
         focusable: !button.disabled,
-        onClick: (event) => {
+        onClick: () => {
           if (button.disabled) return
           options.onActivate?.()
-          event.preventDefault()
         },
         onKeyDown: (event) => {
           if (button.disabled) return
@@ -314,6 +366,7 @@ export function compileDiCButton(
           theme,
           breakpoint,
           node,
+          button.disabled,
         ),
       ),
       ...node.responsive,
