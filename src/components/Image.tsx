@@ -63,9 +63,13 @@ export function Image({
     <img
       {...resolved.domProps}
       ref={elementRef}
-      src={typeof src === 'string' ? src : undefined}
-      alt={alt}
-      loading={loading}
+      src={
+        typeof resolvedImage.src === 'string'
+          ? resolvedImage.src
+          : undefined
+      }
+      alt={resolvedImage.alt}
+      loading={resolvedImage.loading}
       onLoad={onLoad}
       onError={onError}
       data-weave-view=""
