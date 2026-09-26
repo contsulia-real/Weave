@@ -1,6 +1,9 @@
 import { describe, expect, it, vi } from 'vitest'
 import { resolveView } from '../src/core/resolved-view'
-import type { ViewProps } from '../src/core/view-types'
+import type {
+  ViewClickEvent,
+  ViewProps,
+} from '../src/core/view-types'
 import {
   compileDiCView,
   type DiCPointerEvent,
@@ -250,7 +253,7 @@ describe('DiC interaction controller', () => {
 
   it('lets public Weave events stop DiC tree bubbling', () => {
     const rootClick = vi.fn()
-    const childClick = vi.fn((event) => {
+    const childClick = vi.fn((event: ViewClickEvent) => {
       event.stopPropagation()
     })
 
