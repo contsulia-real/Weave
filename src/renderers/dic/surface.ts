@@ -28,6 +28,7 @@ export interface DiCSurfaceScheduler {
 
 export interface DiCSurfaceOptions {
   autoResize?: boolean
+  resizeTarget?: Element
   scheduler?: DiCSurfaceScheduler
   devicePixelRatio?: () => number
 }
@@ -88,6 +89,10 @@ export function createDiCSurface(
 
   const scheduler = options.scheduler ?? defaultScheduler()
   const getDpr = options.devicePixelRatio ?? defaultDpr
+  const resizeTarget =
+    options.resizeTarget ??
+    canvas.parentElement ??
+    canvas
 
   let scene = initialScene
   let width = 0
@@ -166,7 +171,7 @@ export function createDiCSurface(
 
   const measure = () => {
     if (destroyed) return
-    const rect = canvas.getBoundingClientRect()
+    const rect = resizeTarget.getBoundingClientRect()
     resize(rect.width, rect.height)
   }
 
@@ -176,7 +181,7 @@ export function createDiCSurface(
   if (options.autoResize !== false) {
     if (typeof ResizeObserver !== 'undefined') {
       resizeObserver = new ResizeObserver(() => measure())
-      resizeObserver.observe(canvas)
+      resizeObserver.observe(resizeTarget)
     } else if (typeof window !== 'undefined') {
       window.addEventListener('resize', handleWindowResize)
     }
