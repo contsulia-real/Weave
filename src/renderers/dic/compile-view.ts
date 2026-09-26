@@ -287,11 +287,13 @@ export function compileDiCView(
     interaction: {
       focusable:
         options.interaction?.focusable ??
-        view.interaction.focusable ??
-        view.interaction.autoFocus ??
-        (view.interaction.tabIndex !== undefined
-          ? true
-          : undefined),
+        (
+          view.interaction.focusable ||
+          view.interaction.autoFocus ||
+          view.interaction.tabIndex !== undefined
+            ? true
+            : undefined
+        ),
       autoFocus:
         options.interaction?.autoFocus ??
         view.interaction.autoFocus,
