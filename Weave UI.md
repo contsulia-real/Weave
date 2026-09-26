@@ -1792,6 +1792,16 @@ label-small
 
 每个 typo 同时定义 `fontSize / fontWeight / lineHeight / letterSpacing`。整套定义来自 `theme.tokens.typography.styles`，因此品牌主题可以替换任意层级，而不是把 preset 写死在 Text renderer 中。
 
+默认 label scale 用于 Button 等紧凑控件，字号刻意低于正文层级，避免控件文字在视觉上压过内容：
+
+```text
+label-small  = 0.75rem   // 12px
+label-medium = 0.8125rem // 13px
+label-large  = 0.875rem  // 14px
+```
+
+Playground 的普通说明文字使用 `body-medium`；`body-small` 仅保留给真正的 caption / meta 信息。
+
 显式传入的文本属性优先于 `typo`，因此可以只覆盖需要调整的一项：
 
 ```tsx
