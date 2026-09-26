@@ -248,6 +248,71 @@ describe('DiC interaction controller', () => {
     })
   })
 
+  it('lets public Weave events stop DiC tree bubbling', () => {
+    const rootClick = vi.fn()
+    const childClick = vi.fn((event) => {
+      event.stopPropagation()
+    })
+
+    const child = node({
+      id: 'child',
+      width: 4,
+      height: 3,
+      onClick: childClick,
+    })
+    const root = node(
+      {
+        id: 'root',
+        layout: 'stack',
+        width: 10,
+        height: 8,
+        onClick: rootClick,
+      },
+      undefined,
+      [child],
+    )
+
+    const layout = layoutDiCViewTree(
+      root,
+      {
+        width: 200,
+        height: 200,
+      },
+      {
+        viewportWidth: 200,
+        rem: 16,
+        theme: defaultTheme,
+      },
+    )
+    const controller = createDiCInteractionController({
+      getLayout: () => layout,
+      invalidate: vi.fn(),
+    })
+
+    controller.dispatchPointer({
+      ...pointer('pointerdown', 20, 20),
+      clientX: 120,
+      clientY: 80,
+    })
+    controller.dispatchPointer({
+      ...pointer('pointerup', 20, 20),
+      clientX: 120,
+      clientY: 80,
+    })
+
+    expect(childClick).toHaveBeenCalledTimes(1)
+    expect(rootClick).not.toHaveBeenCalled()
+    expect(childClick.mock.calls[0]?.[0]).toMatchObject({
+      target: {
+        id: 'child',
+      },
+      currentTarget: {
+        id: 'child',
+      },
+      propagationStopped: true,
+    })
+  })
+
   it('supports bubbling control and pointer capture', () => {
     const rootDown = vi.fn()
     const move = vi.fn()
