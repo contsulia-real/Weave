@@ -60,16 +60,9 @@ export function Text<
     children,
     viewProps = {},
     typo,
-    size,
-    weight,
     color,
-    align,
-    lineHeight,
-    letterSpacing,
-    wrap,
     overflow,
     maxLines,
-    case: textCase,
   } = props
 
   const { theme } = useTheme()
