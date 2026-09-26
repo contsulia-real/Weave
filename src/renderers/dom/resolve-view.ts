@@ -29,6 +29,7 @@ import {
   containerBreakpointProp,
 } from './breakpoint-utils'
 import { variableName } from './view-stylesheet'
+import { compileDOMViewEvents } from './events'
 
 type CSSVariableStyle = CSSProperties &
   Record<`--weave-${string}`, string | number | undefined>
@@ -333,7 +334,13 @@ export function compileDOMView<TElement extends HTMLElement>(
     }
   }
 
-  Object.assign(writableDOMProps, dataAttributes(props.data))
+  Object.assign(
+    writableDOMProps,
+    dataAttributes(props.data),
+    compileDOMViewEvents<TElement>(
+      resolvedView.events,
+    ),
+  )
 
   const semantic = resolvedView.semantics
 
