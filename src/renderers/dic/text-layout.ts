@@ -387,6 +387,7 @@ export function layoutDiCText(
           last.text,
           maxWidth,
           style.letterSpacing,
+          true,
         )
       }
     }
