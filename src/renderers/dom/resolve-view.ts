@@ -5,6 +5,7 @@ import type {
 } from '../../core/view-types'
 import {
   resolveView,
+  type ResolvedView,
   type ResolvedViewStyle,
 } from '../../core/resolved-view'
 import { VIEW_INTERNAL_PROP_KEYS } from '../../core/view-prop-keys'
@@ -303,14 +304,14 @@ export interface ResolvedDOMView<TElement extends HTMLElement> {
   layout: ViewProps<TElement>['layout']
 }
 
-export function resolveDOMView<
+export function compileDOMView<
   TElement extends HTMLElement,
   TBreakpointName extends string = never,
 >(
   props: ViewProps<TElement, TBreakpointName>,
+  resolvedView: ResolvedView,
   breakpoints: Readonly<Record<string, number>> = defaultBreakpoints,
 ): ResolvedDOMView<TElement> {
-  const resolvedView = resolveView(props, breakpoints)
   const domProps: HTMLAttributes<TElement> = {}
   const writableDOMProps = domProps as Record<string, unknown>
   const breakpointList = breakpointEntries(breakpoints)
@@ -409,4 +410,18 @@ export function resolveDOMView<
     attributeStyle,
     layout: resolvedView.layout,
   }
+}
+
+export function resolveDOMView<
+  TElement extends HTMLElement,
+  TBreakpointName extends string = never,
+>(
+  props: ViewProps<TElement, TBreakpointName>,
+  breakpoints: Readonly<Record<string, number>> = defaultBreakpoints,
+): ResolvedDOMView<TElement> {
+  return compileDOMView(
+    props,
+    resolveView(props, breakpoints),
+    breakpoints,
+  )
 }
