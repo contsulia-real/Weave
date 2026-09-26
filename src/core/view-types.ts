@@ -267,6 +267,7 @@ export interface ViewSemanticProps {
   role?: HTMLAttributes<HTMLDivElement>['role']
   label?: string
   description?: string
+  level?: number
 
   disabled?: boolean
   required?: boolean
