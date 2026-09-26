@@ -5242,13 +5242,15 @@ pointercancel
 click
 ```
 
-事件沿 target → root 冒泡，并支持：
+除 `pointerenter / pointerleave` 外，pointer 事件沿 target → root 冒泡，并支持：
 
 ```text
 preventDefault
 stopPropagation
 pointer capture / release
 ```
+
+`pointerenter / pointerleave` 是节点边界事件，不沿 View tree 冒泡；其公开事件中 `target === currentTarget`。
 
 `click` 当前由同一 primary pointer 在相同 target 上完成 down / up 后合成。pointer capture 只改变 move / up / cancel 的 dispatch path，不会把指针实际位于其它位置时错误合成为 click。
 
@@ -5362,7 +5364,6 @@ Button depth 使用结构化零模糊 shadow 绘制为偏移后的同形色块�
 ```text
 loading Progress spinner 的 DiC visual
 任意 ReactNode children → DiC child tree 的 React renderer bridge
-公开 viewProps React event handler bridge
 motion interpolation / spring animation
 ```
 
@@ -5552,5 +5553,8 @@ View
 64. DiC Switch pointermove 热路径不得读取 DOM layout；drag geometry 必须来自已解析的组件 / theme 几何和 pointer delta。
 65. Switch drag 已经发生时，pointerup cancellation 必须阻止后续 click 合成，避免一次拖动触发第二次 toggle。
 66. 公开 ViewProps 事件 payload 必须使用 renderer-neutral Weave event；DOM renderer 可以内部接收 React SyntheticEvent，但必须在进入业务 handler 前转换，DiC 永远不得伪造 React SyntheticEvent。
-67. inset shadow 等尚未存在等价结构化 IR 的视觉能力不得在 Canvas 中静默近似；必须保持明确 parity gap。
-68. API 的目标是：AI 易写易读，同时人类易读。
+67. 只有 DOM 与 DiC 都具备明确等价 backend 的事件才允许进入 ViewEventProps；DOM-only 的事件不得通过 HTMLAttributes 偷漏成公共 API。
+68. 用户公开 event handler 必须先于组件默认语义执行；`preventDefault()` 必须能够取消对应 Button / Switch 等组件默认行为。
+69. `pointerenter / pointerleave` 是节点边界事件，不沿 View tree 冒泡；DOM 与 DiC 必须归一为相同 target/currentTarget 语义。
+70. inset shadow 等尚未存在等价结构化 IR 的视觉能力不得在 Canvas 中静默近似；必须保持明确 parity gap。
+71. API 的目标是：AI 易写易读，同时人类易读。
