@@ -56,6 +56,7 @@ export const defaultTheme: ResolvedTheme = {
         large: 1.25,
         xlarge: 1.5,
         xxlarge: 2,
+        display: 'clamp(3rem, 8vw, 6rem)',
       },
       weight: {
         light: 300,
