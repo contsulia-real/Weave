@@ -193,16 +193,6 @@ function stateDefaults(
     : merged
 }
 
-function buttonIconOnly(
-  node: DiCViewNode,
-): boolean {
-  return (
-    node.paint.minWidth !== undefined &&
-    node.paint.paddingLeft === 0 &&
-    node.paint.paddingRight === 0
-  )
-}
-
 function responsiveState(
   baseNode: DiCViewNode,
   key: 'hover' | 'active',
@@ -232,6 +222,7 @@ function componentBreakpoint(
   breakpoint: ResolvedButtonBreakpoint,
   baseNode: DiCViewNode,
   disabled: boolean,
+  iconOnly: boolean,
 ): DiCViewBreakpoint {
   const paint: DiCViewPaint = {
     ...(breakpoint.size === undefined
@@ -239,7 +230,7 @@ function componentBreakpoint(
       : sizePaint(
           theme,
           breakpoint.size,
-          buttonIconOnly(baseNode),
+          iconOnly,
         )),
     ...(breakpoint.variant === undefined
       ? {}
@@ -473,6 +464,7 @@ export function compileDiCButton(
           breakpoint,
           node,
           button.disabled,
+          button.iconOnly,
         ),
       ),
       ...node.responsive,
