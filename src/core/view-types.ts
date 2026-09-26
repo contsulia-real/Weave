@@ -20,9 +20,7 @@ export type ScrollbarSize = 'small' | 'medium' | 'large'
 
 export interface ScrollbarConfig {
   size?: ScrollbarSize
-  tracked?: boolean
   color?: ColorValue
-  trackColor?: ColorValue
   radius?: RadiusValue
   opacity?: number
 }
