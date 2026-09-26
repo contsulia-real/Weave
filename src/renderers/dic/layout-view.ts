@@ -71,7 +71,14 @@ function dimension(
     )
   }
 
-  return numericLength(value, available, rem) ?? available
+  const resolved = numericLength(value, available, rem)
+  if (resolved === undefined) {
+    throw new Error(
+      `Unsupported DiC dimension "${String(value)}"`,
+    )
+  }
+
+  return resolved
 }
 
 function padding(
@@ -79,7 +86,16 @@ function padding(
   width: number,
   rem: number,
 ): number {
-  return Math.max(0, numericLength(value, width, rem) ?? 0)
+  if (value === undefined) return 0
+
+  const resolved = numericLength(value, width, rem)
+  if (resolved === undefined) {
+    throw new Error(
+      `Unsupported DiC padding "${String(value)}"`,
+    )
+  }
+
+  return Math.max(0, resolved)
 }
 
 export function layoutDiCView(
