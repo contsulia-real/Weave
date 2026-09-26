@@ -1,5 +1,5 @@
 import type { Ref } from 'react'
-import type { ViewCoreProps, ViewDynamicBreakpointProps } from './view-types'
+import type { ViewCoreProps } from './view-types'
 
 export type InputType =
   | 'text'
@@ -16,7 +16,7 @@ type InputViewProps<TElement extends HTMLElement> = Omit<
   ViewCoreProps<TElement>,
   'children' | 'onChange' | 'readOnly' | 'required'
 > &
-  ViewDynamicBreakpointProps & {
+  {
     ref?: Ref<TElement>
   }
 
