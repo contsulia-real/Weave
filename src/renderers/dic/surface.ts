@@ -121,13 +121,13 @@ export function createDiCSurface(
 
     for (const source of next) {
       if (!retainedImageSources.has(source)) {
-        imageResources.retain?.(source)
+        imageResources.retain(source)
       }
     }
 
     for (const source of retainedImageSources) {
       if (!next.has(source)) {
-        imageResources.release?.(source)
+        imageResources.release(source)
       }
     }
 
@@ -258,7 +258,7 @@ export function createDiCSurface(
       unsubscribeImages()
 
       for (const source of retainedImageSources) {
-        imageResources.release?.(source)
+        imageResources.release(source)
       }
       retainedImageSources.clear()
 
