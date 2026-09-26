@@ -2,6 +2,7 @@ import type {
   BackgroundValue,
   Dimension,
   Length,
+  ViewSemanticProps,
   RadiusValue,
   TransformOperation,
   ViewAlign,
@@ -96,6 +97,8 @@ export interface DiCViewPaint {
   radiusBottomLeft?: RadiusValue
   opacity?: number
   transform?: readonly TransformOperation[]
+  pointerEvents?: string
+  cursor?: string
 }
 
 export interface DiCViewBreakpoint {
@@ -103,6 +106,68 @@ export interface DiCViewBreakpoint {
   minWidth: number
   scope: 'viewport' | 'container'
   paint: DiCViewPaint
+}
+
+export interface DiCEventControl {
+  readonly defaultPrevented: boolean
+  readonly propagationStopped: boolean
+  preventDefault(): void
+  stopPropagation(): void
+}
+
+export interface DiCPointerEvent extends DiCEventControl {
+  readonly type:
+    | 'pointerenter'
+    | 'pointerleave'
+    | 'pointermove'
+    | 'pointerdown'
+    | 'pointerup'
+    | 'pointercancel'
+    | 'click'
+  readonly pointerId: number
+  readonly button: number
+  readonly buttons: number
+  readonly x: number
+  readonly y: number
+  readonly target: DiCViewNode
+  readonly currentTarget: DiCViewNode
+  capturePointer(): void
+  releasePointer(): void
+}
+
+export interface DiCKeyboardEvent extends DiCEventControl {
+  readonly type: 'keydown' | 'keyup'
+  readonly key: string
+  readonly code: string
+  readonly repeat: boolean
+  readonly altKey: boolean
+  readonly ctrlKey: boolean
+  readonly metaKey: boolean
+  readonly shiftKey: boolean
+  readonly target: DiCViewNode
+  readonly currentTarget: DiCViewNode
+}
+
+export interface DiCFocusEvent {
+  readonly type: 'focus' | 'blur'
+  readonly target: DiCViewNode
+  readonly currentTarget: DiCViewNode
+}
+
+export interface DiCViewInteraction {
+  focusable?: boolean
+  tabIndex?: number
+  onPointerEnter?: (event: DiCPointerEvent) => void
+  onPointerLeave?: (event: DiCPointerEvent) => void
+  onPointerMove?: (event: DiCPointerEvent) => void
+  onPointerDown?: (event: DiCPointerEvent) => void
+  onPointerUp?: (event: DiCPointerEvent) => void
+  onPointerCancel?: (event: DiCPointerEvent) => void
+  onClick?: (event: DiCPointerEvent) => void
+  onKeyDown?: (event: DiCKeyboardEvent) => void
+  onKeyUp?: (event: DiCKeyboardEvent) => void
+  onFocus?: (event: DiCFocusEvent) => void
+  onBlur?: (event: DiCFocusEvent) => void
 }
 
 export interface DiCViewNode {
@@ -116,12 +181,14 @@ export interface DiCViewNode {
     disabled?: DiCViewPaint
   }
   responsive: readonly DiCViewBreakpoint[]
+  semantics: Readonly<ViewSemanticProps>
   container?: string
   children: readonly DiCViewNode[]
   content?: DiCViewContent
   typography?: {
     typo?: string
   }
+  interaction?: DiCViewInteraction
   measure?: DiCIntrinsicMeasure
 }
 
@@ -148,6 +215,14 @@ function paint(style: ResolvedViewStyle): DiCViewPaint {
       radiusBottomLeft: style.radiusBottomLeft,
       opacity: style.opacity,
       transform: style.transform,
+      pointerEvents:
+        typeof style.pointerEvents === 'string'
+          ? style.pointerEvents
+          : undefined,
+      cursor:
+        typeof style.cursor === 'string'
+          ? style.cursor
+          : undefined,
     }).filter(([, value]) => value !== undefined),
   ) as DiCViewPaint
 }
@@ -169,6 +244,7 @@ export interface CompileDiCViewOptions {
   typography?: {
     typo?: string
   }
+  interaction?: DiCViewInteraction
   measure?: DiCIntrinsicMeasure
 }
 
@@ -202,10 +278,12 @@ export function compileDiCView(
           : paint(view.states.disabled),
     },
     responsive: view.responsive.map(breakpoint),
+    semantics: view.semantics,
     container: view.container,
     children: options.children ?? [],
     content: options.content,
     typography: options.typography,
+    interaction: options.interaction,
     measure: options.measure,
   }
 }
