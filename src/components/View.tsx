@@ -1,5 +1,9 @@
 import type { CSSProperties } from 'react'
-import type { ViewProps } from '../core/view-types'
+import type {
+  ValidateDynamicBreakpointProps,
+  ViewProps,
+  ViewResponsiveStyle,
+} from '../core/view-types'
 import type {
   ResolvedView,
   ResolvedViewStyle,
@@ -85,12 +89,14 @@ function viewMayScroll(
 }
 
 export function View<
-  TBreakpointName extends string = never,
+  TProps extends ViewProps<HTMLDivElement>,
 >(
-  props: ViewProps<
-    HTMLDivElement,
-    NoInfer<TBreakpointName>
-  >,
+  props: TProps &
+    ValidateDynamicBreakpointProps<
+      TProps,
+      ViewProps<HTMLDivElement>,
+      ViewResponsiveStyle
+    >,
 ) {
   const { children } = props
   const {
