@@ -153,7 +153,12 @@ export function createDiCSurface(
   let interactions: DiCInteractionController | undefined
 
   const updateCursor = () => {
-    if (interactions === undefined) return
+    if (
+      interactions === undefined ||
+      canvas.style === undefined
+    ) {
+      return
+    }
 
     canvas.style.cursor =
       cursorForDiCHit(
