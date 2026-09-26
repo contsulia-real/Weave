@@ -148,10 +148,10 @@ ${propertyRegistrationBlock()}
 :root {
   ${themeVariableDeclarations(defaultTheme)}
   font-family: var(--weave-typography-family-body);
-  font-size: var(--weave-typography-style-body-medium-font-size);
-  font-weight: var(--weave-typography-style-body-medium-font-weight);
-  line-height: var(--weave-typography-style-body-medium-line-height);
-  letter-spacing: var(--weave-typography-style-body-medium-letter-spacing);
+  font-size: var(--weave-typography-style-body-large-font-size);
+  font-weight: var(--weave-typography-style-body-large-font-weight);
+  line-height: var(--weave-typography-style-body-large-line-height);
+  letter-spacing: var(--weave-typography-style-body-large-letter-spacing);
 }
 
 :where([data-weave-view]) {
