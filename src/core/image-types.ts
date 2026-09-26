@@ -2,7 +2,7 @@ import type {
   ReactEventHandler,
   Ref,
 } from 'react'
-import type { ViewCoreProps, ViewDynamicBreakpointProps } from './view-types'
+import type { ViewCoreProps } from './view-types'
 
 export type ImageSource = string | Blob
 
@@ -31,7 +31,7 @@ export type ImageViewProps = Omit<
   ViewCoreProps<HTMLImageElement>,
   'children' | 'onLoad' | 'onError'
 > &
-  ViewDynamicBreakpointProps & {
+  {
     ref?: Ref<HTMLImageElement>
   }
 
