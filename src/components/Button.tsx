@@ -50,7 +50,11 @@ function iconContent(icon: ButtonIcon) {
   )
 }
 
-function semanticContent(props: ButtonProps) {
+function semanticContent<
+  TBreakpointName extends string,
+>(
+  props: ButtonProps<TBreakpointName>,
+) {
   if ('children' in props && props.children !== undefined) {
     return props.children
   }
@@ -72,7 +76,11 @@ function semanticContent(props: ButtonProps) {
   )
 }
 
-export function Button(props: ButtonProps) {
+export function Button<
+  TBreakpointName extends string = never,
+>(
+  props: ButtonProps<TBreakpointName>,
+) {
   const {
     variant = 'primary',
     size = 'medium',
