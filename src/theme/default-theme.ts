@@ -234,7 +234,7 @@ export const defaultTheme: ResolvedTheme = {
     Switch: {
       base: {
         background:
-          'color-mix(in srgb, var(--weave-color-outline) 18%, var(--weave-color-surface))',
+          'color-mix(in srgb, var(--weave-color-outline) 34%, var(--weave-color-surface))',
         radius: 'full',
         cursor: 'pointer',
         trackShadow:
