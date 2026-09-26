@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { resolveImage } from '../src/core/resolved-image'
 import { resolveView } from '../src/core/resolved-view'
 import { compileDiCImage } from '../src/renderers/dic/compile-image'
+import { drawDiCViewTree } from '../src/renderers/dic/draw-view'
 import {
   type DiCImageResourceManager,
 } from '../src/renderers/dic/image-resource'
@@ -342,5 +343,83 @@ describe('DiC Image', () => {
     )
 
     expect(drawImage).not.toHaveBeenCalled()
+  })
+
+  it('clips Image content to the rounded View shape', () => {
+    const resources = readyResources(200, 100)
+    const roundRect = vi.fn()
+    const clip = vi.fn()
+    const context = {
+      globalAlpha: 1,
+      fillStyle: '',
+      save: vi.fn(),
+      restore: vi.fn(),
+      translate: vi.fn(),
+      rotate: vi.fn(),
+      scale: vi.fn(),
+      transform: vi.fn(),
+      beginPath: vi.fn(),
+      rect: vi.fn(),
+      clip,
+      roundRect,
+      moveTo: vi.fn(),
+      lineTo: vi.fn(),
+      quadraticCurveTo: vi.fn(),
+      closePath: vi.fn(),
+      fill: vi.fn(),
+      drawImage: vi.fn(),
+      createLinearGradient: vi.fn(),
+      createRadialGradient: vi.fn(),
+    } as unknown as CanvasRenderingContext2D
+
+    const node = compileDiCImage(
+      resolveView(
+        {
+          width: 10,
+          height: 6,
+          radius: 'large',
+        },
+        defaultBreakpoints,
+      ),
+      resolveImage({
+        src: '/cover.webp',
+        alt: 'Cover',
+        fit: 'cover',
+      }),
+    )
+
+    const layout = layoutDiCViewTree(
+      node,
+      {
+        width: 300,
+        height: 200,
+      },
+      {
+        viewportWidth: 300,
+        rem: 16,
+        theme: defaultTheme,
+        imageResources: resources,
+      },
+    )
+
+    drawDiCViewTree(
+      context,
+      layout,
+      {
+        theme: defaultTheme,
+        rem: 16,
+        viewportWidth: 300,
+        imageResources: resources,
+      },
+    )
+
+    expect(roundRect).toHaveBeenCalledWith(
+      0,
+      0,
+      160,
+      96,
+      [16, 16, 16, 16],
+    )
+    expect(clip).toHaveBeenCalledTimes(2)
   })
 })
