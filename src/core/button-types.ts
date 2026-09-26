@@ -36,19 +36,26 @@ export type ButtonBreakpointProps = Partial<
   Record<DefaultBreakpointName, ButtonResponsiveProps>
 >
 
-export type ButtonViewProps = Omit<
+export type ButtonViewProps<
+  TBreakpointName extends string = never,
+> = Omit<
   ViewCoreProps<HTMLButtonElement>,
   'children' | 'busy'
 > &
-  ViewDynamicBreakpointProps & {
+  ViewDynamicBreakpointProps<
+    import('./view-types').ViewResponsiveStyle,
+    TBreakpointName
+  > & {
     ref?: Ref<HTMLButtonElement>
   }
 
-interface ButtonBaseProps {
+interface ButtonBaseProps<
+  TBreakpointName extends string = never,
+> {
   variant?: ButtonVariant
   size?: ButtonSize
   loading?: boolean
-  viewProps?: ButtonViewProps
+  viewProps?: ButtonViewProps<TBreakpointName>
 }
 
 type ButtonSemanticContent =
@@ -72,8 +79,13 @@ type ButtonCustomContent = {
   iconPosition?: never
 }
 
-export type ButtonProps =
-  ButtonBaseProps &
+export type ButtonProps<
+  TBreakpointName extends string = never,
+> =
+  ButtonBaseProps<TBreakpointName> &
   ButtonBreakpointProps &
-  ViewDynamicBreakpointProps &
+  ViewDynamicBreakpointProps<
+    ButtonResponsiveProps,
+    TBreakpointName
+  > &
   (ButtonSemanticContent | ButtonCustomContent)
