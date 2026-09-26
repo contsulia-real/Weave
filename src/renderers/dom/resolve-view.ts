@@ -21,7 +21,7 @@ import {
   shadow,
   transformOrigin,
   transformValue,
-} from '../../core/values'
+} from './css-values'
 import { defaultBreakpoints } from '../../theme/default-theme'
 import {
   breakpointCSSName,
