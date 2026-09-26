@@ -1,5 +1,7 @@
 import type {
   TransformOperation,
+  ViewEventProps,
+  ViewEventTarget,
   ViewProps,
   ViewSemanticProps,
   ViewStateStyle,
@@ -63,6 +65,8 @@ export interface ResolvedView {
   states: ResolvedViewStates
   responsive: readonly ResolvedViewBreakpoint[]
   semantics: Readonly<ViewSemanticProps>
+  events: Readonly<ViewEventProps>
+  eventTarget: Readonly<ViewEventTarget>
   interaction: Readonly<ResolvedViewInteraction>
   container?: string
   layout: ViewStyleProps['layout']
@@ -258,6 +262,24 @@ function semantics<TElement extends HTMLElement>(
   }
 }
 
+function events<TElement extends HTMLElement>(
+  props: ViewProps<TElement>,
+): Readonly<ViewEventProps> {
+  return {
+    onClick: props.onClick,
+    onPointerEnter: props.onPointerEnter,
+    onPointerLeave: props.onPointerLeave,
+    onPointerMove: props.onPointerMove,
+    onPointerDown: props.onPointerDown,
+    onPointerUp: props.onPointerUp,
+    onPointerCancel: props.onPointerCancel,
+    onKeyDown: props.onKeyDown,
+    onKeyUp: props.onKeyUp,
+    onFocus: props.onFocus,
+    onBlur: props.onBlur,
+  }
+}
+
 export function resolveView<TElement extends HTMLElement>(
   props: ViewProps<TElement>,
   breakpoints: Readonly<Record<string, number>>,
@@ -310,6 +332,10 @@ export function resolveView<TElement extends HTMLElement>(
     },
     responsive,
     semantics: semantics(props),
+    events: events(props),
+    eventTarget: {
+      id: props.id,
+    },
     interaction: {
       focusable: props.focusable,
       autoFocus: props.autoFocus,
