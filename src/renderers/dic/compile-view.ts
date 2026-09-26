@@ -8,6 +8,7 @@ import type {
   ViewDirection,
   ViewJustify,
   ViewLayout,
+  ViewWrap,
 } from '../../core/view-types'
 import type {
   ResolvedView,
@@ -33,6 +34,7 @@ export type DiCIntrinsicMeasure = (
 export interface DiCViewPaint {
   layout?: ViewLayout
   direction?: ViewDirection
+  wrap?: ViewWrap
   gap?: Length
   align?: ViewAlign
   justify?: ViewJustify
@@ -79,6 +81,7 @@ function paint(style: ResolvedViewStyle): DiCViewPaint {
     Object.entries({
       layout: style.layout,
       direction: style.direction,
+      wrap: style.wrap,
       gap: style.gap,
       align: style.align,
       justify: style.justify,
