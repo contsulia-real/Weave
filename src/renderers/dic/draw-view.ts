@@ -11,6 +11,8 @@ import type {
 } from './compile-view'
 import type { DiCViewTreeLayout } from './layout-tree'
 import { drawDiCText } from './draw-text'
+import { drawDiCImage } from './draw-image'
+import type { DiCImageResourceManager } from './image-resource'
 
 export interface DiCViewFrame {
   x: number
@@ -23,6 +25,7 @@ export interface DiCDrawOptions {
   theme: ResolvedTheme
   rem?: number
   viewportWidth?: number
+  imageResources?: DiCImageResourceManager
 }
 
 function numericLength(
@@ -434,6 +437,18 @@ export function drawDiCViewTree(
           options.viewportWidth ??
           layout.frame.width,
         containerWidth: layout.contentFrame.width,
+        rem,
+      },
+    )
+  }
+
+  if (layout.node.content?.kind === 'image') {
+    drawDiCImage(
+      context,
+      layout.node.content,
+      layout.contentFrame,
+      {
+        imageResources: options.imageResources,
         rem,
       },
     )
