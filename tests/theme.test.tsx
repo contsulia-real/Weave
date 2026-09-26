@@ -4,6 +4,7 @@ import {
   ThemeProvider,
   View,
   createTheme,
+  defaultTheme,
 } from '../src'
 import { themeTokenVariables } from '../src/theme/theme-css'
 
@@ -115,6 +116,29 @@ describe('Theme', () => {
     expect(variables['--weave-feedback-press-offset']).toBe('0.125rem')
     expect(variables['--weave-feedback-press-scale']).toBe(0.985)
     expect(variables['--weave-motion-duration-fast']).toBe('120ms')
+  })
+
+  it('keeps component typography mapped to typo instead of private font fields', () => {
+    const button = defaultTheme.components.Button
+    const input = defaultTheme.components.Input
+
+    expect(button?.base).not.toHaveProperty('fontWeight')
+    expect(button?.sizes?.small).toMatchObject({
+      typo: 'label-small',
+    })
+    expect(button?.sizes?.medium).toMatchObject({
+      typo: 'label-medium',
+    })
+    expect(button?.sizes?.large).toMatchObject({
+      typo: 'label-large',
+    })
+    expect(button?.sizes?.medium).not.toHaveProperty('fontSize')
+
+    expect(input?.base).toMatchObject({
+      typo: 'body-large',
+    })
+    expect(input?.base).not.toHaveProperty('fontSize')
+    expect(input?.base).not.toHaveProperty('lineHeight')
   })
 
   it('keeps the default typography baseline without ThemeProvider', () => {
