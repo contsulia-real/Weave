@@ -26,6 +26,8 @@ export interface DiCIntrinsicConstraints {
   rem: number
   resolvedWidth?: number
   resolvedHeight?: number
+  widthMode?: Dimension
+  heightMode?: Dimension
 }
 
 export interface DiCIntrinsicSize {
