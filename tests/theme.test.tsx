@@ -139,6 +139,15 @@ describe('Theme', () => {
     })
     expect(input?.base).not.toHaveProperty('fontSize')
     expect(input?.base).not.toHaveProperty('lineHeight')
+    expect(defaultTheme.tokens.typography?.styles?.['label-small']).toMatchObject({
+      fontSize: 0.75,
+    })
+    expect(defaultTheme.tokens.typography?.styles?.['label-medium']).toMatchObject({
+      fontSize: 0.8125,
+    })
+    expect(defaultTheme.tokens.typography?.styles?.['label-large']).toMatchObject({
+      fontSize: 0.875,
+    })
   })
 
   it('keeps the default typography baseline without ThemeProvider', () => {
