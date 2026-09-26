@@ -428,6 +428,8 @@ describe('automatic Scrollbar', () => {
     expect(rule).toContain(
       '--weave-scrollbar-track-color:color-mix(insrgb,var(--weave-color-secondary)12%,transparent);',
     )
+    expect(rule).toContain('--weave-scrollbar-track-shadow:')
+    expect(rule).toContain('--weave-scrollbar-thumb-shadow:')
 
     const stylesheet = document.querySelector(
       'style[data-weave-scrollbar-styles]',
@@ -438,6 +440,12 @@ describe('automatic Scrollbar', () => {
     )
     expect(stylesheet?.textContent).toContain(
       '--weave-component-width: var(--weave-scrollbar-thickness)',
+    )
+    expect(stylesheet?.textContent).toContain(
+      'box-shadow: var(--weave-scrollbar-track-shadow)',
+    )
+    expect(stylesheet?.textContent).toContain(
+      '--weave-component-box-shadow: var(--weave-scrollbar-thumb-shadow)',
     )
   })
 
@@ -490,6 +498,8 @@ describe('automatic Scrollbar', () => {
           base: {
             color: 'danger',
             opacity: 0.6,
+            trackShadow: 'inset 0 1px 2px black',
+            thumbShadow: '0 1px 2px black',
           },
           sizes: {
             medium: {
@@ -516,5 +526,11 @@ describe('automatic Scrollbar', () => {
       '--weave-scrollbar-color:var(--weave-color-danger',
     )
     expect(rule).toContain('--weave-scrollbar-opacity:0.6;')
+    expect(rule).toContain(
+      '--weave-scrollbar-track-shadow:inset 0 1px 2px black;',
+    )
+    expect(rule).toContain(
+      '--weave-scrollbar-thumb-shadow:0 1px 2px black;',
+    )
   })
 })
