@@ -10,7 +10,7 @@ export type ProgressSpeed =
 export type ProgressMode = 'spin' | 'linear'
 
 export type ProgressViewProps = Omit<
-  ViewCoreProps<HTMLDivElement>,
+  ViewCoreProps<HTMLSpanElement>,
   | 'children'
   | 'role'
   | 'busy'
