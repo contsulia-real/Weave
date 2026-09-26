@@ -9,6 +9,7 @@ import type {
   DiCViewNode,
   DiCViewPaint,
 } from './compile-view'
+import type { DiCViewTreeLayout } from './layout-tree'
 
 export interface DiCViewFrame {
   x: number
@@ -289,66 +290,91 @@ function roundedPath(
   context.closePath()
 }
 
+function applyViewContext(
+  context: CanvasRenderingContext2D,
+  paint: DiCViewPaint,
+  frame: DiCViewFrame,
+  rem: number,
+): void {
+  context.globalAlpha *= paint.opacity ?? 1
+
+  if (paint.transform === undefined) return
+
+  context.translate(frame.width / 2, frame.height / 2)
+  for (const operation of paint.transform) {
+    applyTransform(context, operation, rem, frame)
+  }
+  context.translate(-frame.width / 2, -frame.height / 2)
+}
+
+function drawViewBackground(
+  context: CanvasRenderingContext2D,
+  paint: DiCViewPaint,
+  frame: DiCViewFrame,
+  options: DiCDrawOptions,
+): void {
+  if (paint.background === undefined) return
+
+  const theme = options.theme
+  const rem = options.rem ?? 16
+  const localFrame: DiCViewFrame = {
+    x: 0,
+    y: 0,
+    width: frame.width,
+    height: frame.height,
+  }
+
+  roundedPath(
+    context,
+    localFrame,
+    [
+      resolveRadius(
+        paint.radiusTopLeft,
+        theme,
+        rem,
+        Math.min(frame.width, frame.height),
+      ),
+      resolveRadius(
+        paint.radiusTopRight,
+        theme,
+        rem,
+        Math.min(frame.width, frame.height),
+      ),
+      resolveRadius(
+        paint.radiusBottomRight,
+        theme,
+        rem,
+        Math.min(frame.width, frame.height),
+      ),
+      resolveRadius(
+        paint.radiusBottomLeft,
+        theme,
+        rem,
+        Math.min(frame.width, frame.height),
+      ),
+    ],
+  )
+  context.fillStyle = backgroundStyle(
+    context,
+    paint.background,
+    localFrame,
+    theme,
+  )
+  context.fill()
+}
+
 export function drawDiCViewPaint(
   context: CanvasRenderingContext2D,
   paint: DiCViewPaint,
   frame: DiCViewFrame,
   options: DiCDrawOptions,
 ): void {
-  const theme = options.theme
   const rem = options.rem ?? 16
+
   context.save()
   context.translate(frame.x, frame.y)
-  context.globalAlpha *= paint.opacity ?? 1
-
-  if (paint.transform !== undefined) {
-    context.translate(frame.width / 2, frame.height / 2)
-    for (const operation of paint.transform) {
-      applyTransform(context, operation, rem, frame)
-    }
-    context.translate(-frame.width / 2, -frame.height / 2)
-  }
-
-  if (paint.background !== undefined) {
-    roundedPath(
-      context,
-      frame,
-      [
-        resolveRadius(
-          paint.radiusTopLeft,
-          theme,
-          rem,
-          Math.min(frame.width, frame.height),
-        ),
-        resolveRadius(
-          paint.radiusTopRight,
-          theme,
-          rem,
-          Math.min(frame.width, frame.height),
-        ),
-        resolveRadius(
-          paint.radiusBottomRight,
-          theme,
-          rem,
-          Math.min(frame.width, frame.height),
-        ),
-        resolveRadius(
-          paint.radiusBottomLeft,
-          theme,
-          rem,
-          Math.min(frame.width, frame.height),
-        ),
-      ],
-    )
-    context.fillStyle = backgroundStyle(
-      context,
-      paint.background,
-      frame,
-      theme,
-    )
-    context.fill()
-  }
-
+  applyViewContext(context, paint, frame, rem)
+  drawViewBackground(context, paint, frame, options)
   context.restore()
 }
 
@@ -364,4 +390,40 @@ export function drawDiCView(
     frame,
     options,
   )
+}
+
+export function drawDiCViewTree(
+  context: CanvasRenderingContext2D,
+  layout: DiCViewTreeLayout,
+  options: DiCDrawOptions,
+): void {
+  const rem = options.rem ?? 16
+
+  context.save()
+  context.translate(
+    layout.frame.x,
+    layout.frame.y,
+  )
+  applyViewContext(
+    context,
+    layout.paint,
+    layout.frame,
+    rem,
+  )
+  drawViewBackground(
+    context,
+    layout.paint,
+    layout.frame,
+    options,
+  )
+
+  for (const child of layout.children) {
+    drawDiCViewTree(
+      context,
+      child,
+      options,
+    )
+  }
+
+  context.restore()
 }
