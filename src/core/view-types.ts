@@ -353,3 +353,16 @@ export type ViewCoreProps<
 export type ViewProps<
   TElement extends HTMLElement = HTMLDivElement,
 > = ViewCoreProps<TElement>
+
+export type ViewPropsWithBreakpoints<
+  TBreakpointName extends string,
+  TElement extends HTMLElement = HTMLDivElement,
+> =
+  ViewProps<TElement> &
+  Partial<Record<TBreakpointName, ViewResponsiveStyle>> &
+  Partial<
+    Record<
+      `container${Capitalize<TBreakpointName>}`,
+      ViewResponsiveStyle
+    >
+  >
