@@ -136,7 +136,7 @@ function App() {
           >
             Viewport breakpoint
           </Text>
-          <Text typo="body-small" color="secondary">
+          <Text typo="body-medium" color="secondary">
             窄窗口为纵向；达到 md（48rem）后变为横向并改变背景。
           </Text>
 
@@ -169,7 +169,7 @@ function App() {
           >
             Theme inheritance
           </Text>
-          <Text typo="body-small" color="secondary">
+          <Text typo="body-medium" color="secondary">
             两块都使用 background="primary"；右侧只通过 mode="dark" 改变同一 token。
           </Text>
 
@@ -212,7 +212,7 @@ function App() {
           >
             Global typography
           </Text>
-          <Text typo="body-small" color="secondary">
+          <Text typo="body-medium" color="secondary">
             ThemeProvider 默认建立 body-large 排版上下文；Text、Button、Input 都从同一套 typography.styles / typo 取完整字号、字重、行高与字距。
           </Text>
 
@@ -228,7 +228,7 @@ function App() {
             <Text typo="title-small">Title small</Text>
             <Text typo="body-large">Body large</Text>
             <Text typo="body-medium">Body medium</Text>
-            <Text typo="body-small">Body small</Text>
+            <Text typo="body-medium">Body small</Text>
             <Text typo="label-large">Label large</Text>
             <Text typo="label-medium">Label medium</Text>
             <Text typo="label-small">Label small</Text>
@@ -255,7 +255,7 @@ function App() {
           >
             Image
           </Text>
-          <Text typo="body-small" color="secondary">
+          <Text typo="body-medium" color="secondary">
             方形源图放进横向容器：contain 应完整显示并留空，cover 应填满并裁切；尺寸和圆角来自 viewProps。
           </Text>
 
@@ -295,7 +295,7 @@ function App() {
           >
             Icon
           </Text>
-          <Text typo="body-small" color="secondary">
+          <Text typo="body-medium" color="secondary">
             Outline / Filled 由调用方传入的 Tabler 图标组件决定；size / stroke 由 Weave 统一，颜色和其他通用视觉继续走 viewProps。
           </Text>
 
@@ -405,7 +405,7 @@ function App() {
           >
             Button
           </Text>
-          <Text typo="body-small" color="secondary">
+          <Text typo="body-medium" color="secondary">
             Weave 的 tactile control 基准：hover 会抬起，按住会下沉并压缩，释放使用 spring 回弹；variant / size 仍可由主题和 breakpoint 覆盖。
           </Text>
 
@@ -483,7 +483,7 @@ function App() {
           >
             Input
           </Text>
-          <Text typo="body-small" color="secondary">
+          <Text typo="body-medium" color="secondary">
             单行和多行共用同一个 Input；默认视觉来自 Input theme，multiline 内部滚动统一使用 Weave Scrollbar。
           </Text>
 
@@ -525,7 +525,7 @@ function App() {
           >
             Switch
           </Text>
-          <Text typo="body-small" color="secondary">
+          <Text typo="body-medium" color="secondary">
             三档语义尺寸；hover 时 thumb 轻微增强，拖动时产生抓取反馈并直接跟手，释放后 spring 归位。
           </Text>
 
@@ -557,7 +557,7 @@ function App() {
           >
             Progress
           </Text>
-          <Text typo="body-small" color="secondary">
+          <Text typo="body-medium" color="secondary">
             mode 决定 spin / linear；tracked 只控制浅色连续轨道。
           </Text>
 
@@ -646,7 +646,7 @@ function App() {
           >
             Scrollbar
           </Text>
-          <Text typo="body-small" color="secondary">
+          <Text typo="body-medium" color="secondary">
             View overflow="auto" 自动挂载框架 Scrollbar；只绘制 thumb，透明命中区仍贴着真实边缘；圆角容器会自动预留角落安全区，让 thumb 只在直线边缘内运动。
           </Text>
 
@@ -702,7 +702,7 @@ function App() {
           >
             Container breakpoint
           </Text>
-          <Text typo="body-small" color="secondary">
+          <Text typo="body-medium" color="secondary">
             拖动下面容器右下角改变它自己的宽度；达到 48rem 后内部切为横向。
           </Text>
 
