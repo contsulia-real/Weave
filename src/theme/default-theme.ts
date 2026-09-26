@@ -284,6 +284,10 @@ export const defaultTheme: ResolvedTheme = {
     Progress: {
       base: {
         trackColor: 'color-mix(in srgb, currentColor 16%, transparent)',
+        trackShadow:
+          'inset 0 0.0625rem 0.125rem rgb(58 48 40 / 0.10), inset 0 0 0 0.0625rem rgb(58 48 40 / 0.04)',
+        valueShadow:
+          '0 0.0625rem 0.125rem rgb(58 48 40 / 0.14), 0 0.125rem 0.1875rem rgb(58 48 40 / 0.06)',
         linearRadius: 'full',
       },
       sizes: {
@@ -316,6 +320,10 @@ export const defaultTheme: ResolvedTheme = {
         dragColor: 'var(--weave-color-secondary)',
         trackColor:
           'color-mix(in srgb, var(--weave-color-secondary) 12%, transparent)',
+        trackShadow:
+          'inset 0 0.0625rem 0.125rem rgb(58 48 40 / 0.10), inset 0 0 0 0.0625rem rgb(58 48 40 / 0.04)',
+        thumbShadow:
+          '0 0.0625rem 0.125rem rgb(58 48 40 / 0.14), 0 0.125rem 0.1875rem rgb(58 48 40 / 0.06)',
         radius: 'full',
         opacity: 1,
         hitSize: 1,
