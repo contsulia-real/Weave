@@ -2,6 +2,8 @@ import type {
   BackgroundValue,
   Length,
   RadiusValue,
+  ShadowDefinition,
+  ShadowValue,
 } from '../../core/view-types'
 import type { ResolvedTheme } from '../../theme/theme-types'
 import type {
@@ -175,8 +177,8 @@ function roundedPath(
 
   if (typeof context.roundRect === 'function') {
     context.roundRect(
-      0,
-      0,
+      frame.x,
+      frame.y,
       frame.width,
       frame.height,
       [topLeft, topRight, bottomRight, bottomLeft],
@@ -184,21 +186,405 @@ function roundedPath(
     return
   }
 
-  context.moveTo(topLeft, 0)
-  context.lineTo(frame.width - topRight, 0)
-  context.quadraticCurveTo(frame.width, 0, frame.width, topRight)
-  context.lineTo(frame.width, frame.height - bottomRight)
+  const x = frame.x
+  const y = frame.y
+  const right = x + frame.width
+  const bottom = y + frame.height
+
+  context.moveTo(x + topLeft, y)
+  context.lineTo(right - topRight, y)
   context.quadraticCurveTo(
+    right,
+    y,
+    right,
+    y + topRight,
+  )
+  context.lineTo(
+    right,
+    bottom - bottomRight,
+  )
+  context.quadraticCurveTo(
+    right,
+    bottom,
+    right - bottomRight,
+    bottom,
+  )
+  context.lineTo(x + bottomLeft, bottom)
+  context.quadraticCurveTo(
+    x,
+    bottom,
+    x,
+    bottom - bottomLeft,
+  )
+  context.lineTo(x, y + topLeft)
+  context.quadraticCurveTo(
+    x,
+    y,
+    x + topLeft,
+    y,
+  )
+  context.closePath()
+}
+
+function viewRadii(
+  paint: DiCViewPaint,
+  frame: DiCViewFrame,
+  theme: ResolvedTheme,
+  rem: number,
+): readonly [number, number, number, number] {
+  const reference = Math.min(
     frame.width,
     frame.height,
-    frame.width - bottomRight,
-    frame.height,
   )
-  context.lineTo(bottomLeft, frame.height)
-  context.quadraticCurveTo(0, frame.height, 0, frame.height - bottomLeft)
-  context.lineTo(0, topLeft)
-  context.quadraticCurveTo(0, 0, topLeft, 0)
-  context.closePath()
+
+  return [
+    resolveRadius(
+      paint.radiusTopLeft,
+      theme,
+      rem,
+      reference,
+    ),
+    resolveRadius(
+      paint.radiusTopRight,
+      theme,
+      rem,
+      reference,
+    ),
+    resolveRadius(
+      paint.radiusBottomRight,
+      theme,
+      rem,
+      reference,
+    ),
+    resolveRadius(
+      paint.radiusBottomLeft,
+      theme,
+      rem,
+      reference,
+    ),
+  ]
+}
+
+function parseShadowToken(
+  value: string,
+): ShadowDefinition {
+  if (value.includes('inset')) {
+    throw new Error(
+      `Inset DiC shadow is not implemented: "${value}"`,
+    )
+  }
+
+  const match = value.trim().match(
+    /^(-?(?:\d+(?:\.\d+)?|\.\d+)(?:rem|px)?)\s+(-?(?:\d+(?:\.\d+)?|\.\d+)(?:rem|px)?)\s+(-?(?:\d+(?:\.\d+)?|\.\d+)(?:rem|px)?)(?:\s+(-?(?:\d+(?:\.\d+)?|\.\d+)(?:rem|px)?))?\s+(.+)$/,
+  )
+
+  if (match === null) {
+    throw new Error(
+      `Unsupported DiC shadow token "${value}"`,
+    )
+  }
+
+  return {
+    x: match[1],
+    y: match[2],
+    blur: match[3],
+    spread: match[4] ?? 0,
+    color: match[5],
+  }
+}
+
+function shadowDefinitions(
+  value: ShadowValue | undefined,
+  theme: ResolvedTheme,
+): readonly ShadowDefinition[] {
+  if (value === undefined || value === 'none') {
+    return []
+  }
+
+  if (Array.isArray(value)) {
+    return value
+  }
+
+  if (typeof value === 'object') {
+    return [value]
+  }
+
+  const token = theme.tokens.shadow?.[value]
+  if (token === undefined) {
+    throw new Error(
+      `Unknown DiC shadow token "${value}"`,
+    )
+  }
+
+  return [parseShadowToken(token)]
+}
+
+function shadowLength(
+  value: Length | undefined,
+  rem: number,
+): number {
+  if (value === undefined) return 0
+
+  const resolved = numericLength(
+    value,
+    rem,
+  )
+  if (resolved === undefined) {
+    throw new Error(
+      `Unsupported DiC shadow length "${String(value)}"`,
+    )
+  }
+
+  return resolved
+}
+
+function drawViewShadow(
+  context: CanvasRenderingContext2D,
+  paint: DiCViewPaint,
+  frame: DiCViewFrame,
+  options: DiCDrawOptions,
+): void {
+  const definitions = shadowDefinitions(
+    paint.shadow,
+    options.theme,
+  )
+  if (
+    definitions.length === 0 ||
+    paint.background === undefined
+  ) {
+    return
+  }
+
+  const rem = options.rem ?? 16
+  const radii = viewRadii(
+    paint,
+    frame,
+    options.theme,
+    rem,
+  )
+
+  for (const shadow of definitions) {
+    const spread = shadowLength(
+      shadow.spread,
+      rem,
+    )
+    const shadowFrame: DiCViewFrame = {
+      x: -spread,
+      y: -spread,
+      width: frame.width + spread * 2,
+      height: frame.height + spread * 2,
+    }
+
+    context.save()
+    context.shadowOffsetX = shadowLength(
+      shadow.x,
+      rem,
+    )
+    context.shadowOffsetY = shadowLength(
+      shadow.y,
+      rem,
+    )
+    context.shadowBlur = shadowLength(
+      shadow.blur,
+      rem,
+    )
+    context.shadowColor = resolveDiCColor(
+      shadow.color ?? 'rgb(0 0 0 / 0.2)',
+      options.theme,
+    )
+    context.globalAlpha *= shadow.opacity ?? 1
+    context.fillStyle = '#000'
+
+    roundedPath(
+      context,
+      shadowFrame,
+      radii.map(
+        (radius) => Math.max(0, radius + spread),
+      ) as [number, number, number, number],
+    )
+    context.fill()
+    context.restore()
+  }
+}
+
+function uniformBorder(
+  paint: DiCViewPaint,
+  rem: number,
+): {
+  width: number
+  color?: string
+} | undefined {
+  const widths = [
+    paint.borderTop,
+    paint.borderRight,
+    paint.borderBottom,
+    paint.borderLeft,
+  ].map((value) =>
+    value === undefined
+      ? 0
+      : numericLength(value, rem),
+  )
+
+  if (widths.some((value) => value === undefined)) {
+    throw new Error(
+      'Unsupported DiC border width',
+    )
+  }
+
+  const numericWidths = widths as number[]
+  if (numericWidths.every((value) => value === 0)) {
+    return undefined
+  }
+
+  if (
+    numericWidths.some(
+      (value) => value !== numericWidths[0],
+    )
+  ) {
+    throw new Error(
+      'Asymmetric DiC borders are not implemented yet',
+    )
+  }
+
+  const colors = [
+    paint.borderTopColor,
+    paint.borderRightColor,
+    paint.borderBottomColor,
+    paint.borderLeftColor,
+  ].filter(
+    (value): value is string =>
+      value !== undefined,
+  )
+
+  if (
+    colors.some(
+      (value) => value !== colors[0],
+    )
+  ) {
+    throw new Error(
+      'Asymmetric DiC border colors are not implemented yet',
+    )
+  }
+
+  return {
+    width: numericWidths[0] ?? 0,
+    color: colors[0],
+  }
+}
+
+function drawViewBorder(
+  context: CanvasRenderingContext2D,
+  paint: DiCViewPaint,
+  frame: DiCViewFrame,
+  options: DiCDrawOptions,
+): void {
+  const rem = options.rem ?? 16
+  const border = uniformBorder(
+    paint,
+    rem,
+  )
+  if (border === undefined) return
+
+  if (
+    paint.borderStyle !== undefined &&
+    paint.borderStyle !== 'solid'
+  ) {
+    throw new Error(
+      `Unsupported DiC border style "${paint.borderStyle}"`,
+    )
+  }
+
+  const half = border.width / 2
+  const borderFrame: DiCViewFrame = {
+    x: half,
+    y: half,
+    width: Math.max(
+      0,
+      frame.width - border.width,
+    ),
+    height: Math.max(
+      0,
+      frame.height - border.width,
+    ),
+  }
+  const radii = viewRadii(
+    paint,
+    frame,
+    options.theme,
+    rem,
+  ).map(
+    (radius) => Math.max(0, radius - half),
+  ) as [number, number, number, number]
+
+  roundedPath(
+    context,
+    borderFrame,
+    radii,
+  )
+  context.lineWidth = border.width
+  context.strokeStyle = resolveDiCColor(
+    border.color ?? 'currentColor',
+    options.theme,
+  )
+  context.stroke()
+}
+
+function drawViewOutline(
+  context: CanvasRenderingContext2D,
+  paint: DiCViewPaint,
+  frame: DiCViewFrame,
+  options: DiCDrawOptions,
+): void {
+  if (paint.outlineWidth === undefined) return
+
+  const rem = options.rem ?? 16
+  const width = numericLength(
+    paint.outlineWidth,
+    rem,
+  )
+  if (width === undefined || width <= 0) return
+
+  if (
+    paint.outlineStyle !== undefined &&
+    paint.outlineStyle !== 'solid'
+  ) {
+    throw new Error(
+      `Unsupported DiC outline style "${paint.outlineStyle}"`,
+    )
+  }
+
+  const offset =
+    numericLength(
+      paint.outlineOffset,
+      rem,
+    ) ?? 0
+  const expand = offset + width / 2
+  const outlineFrame: DiCViewFrame = {
+    x: -expand,
+    y: -expand,
+    width: frame.width + expand * 2,
+    height: frame.height + expand * 2,
+  }
+  const radii = viewRadii(
+    paint,
+    frame,
+    options.theme,
+    rem,
+  ).map(
+    (radius) => Math.max(0, radius + expand),
+  ) as [number, number, number, number]
+
+  roundedPath(
+    context,
+    outlineFrame,
+    radii,
+  )
+  context.lineWidth = width
+  context.strokeStyle = resolveDiCColor(
+    paint.outlineColor ?? 'currentColor',
+    options.theme,
+  )
+  context.stroke()
 }
 
 function applyViewContext(
@@ -235,32 +621,12 @@ function clipViewBounds(
   roundedPath(
     context,
     localFrame,
-    [
-      resolveRadius(
-        paint.radiusTopLeft,
-        theme,
-        rem,
-        Math.min(frame.width, frame.height),
-      ),
-      resolveRadius(
-        paint.radiusTopRight,
-        theme,
-        rem,
-        Math.min(frame.width, frame.height),
-      ),
-      resolveRadius(
-        paint.radiusBottomRight,
-        theme,
-        rem,
-        Math.min(frame.width, frame.height),
-      ),
-      resolveRadius(
-        paint.radiusBottomLeft,
-        theme,
-        rem,
-        Math.min(frame.width, frame.height),
-      ),
-    ],
+    viewRadii(
+      paint,
+      frame,
+      theme,
+      rem,
+    ),
   )
   context.clip()
 }
@@ -332,7 +698,10 @@ export function drawDiCViewPaint(
   context.save()
   context.translate(frame.x, frame.y)
   applyViewContext(context, paint, frame, rem)
+  drawViewShadow(context, paint, frame, options)
   drawViewBackground(context, paint, frame, options)
+  drawViewBorder(context, paint, frame, options)
+  drawViewOutline(context, paint, frame, options)
   context.restore()
 }
 
@@ -368,7 +737,25 @@ export function drawDiCViewTree(
     layout.frame,
     rem,
   )
+  drawViewShadow(
+    context,
+    layout.paint,
+    layout.frame,
+    options,
+  )
   drawViewBackground(
+    context,
+    layout.paint,
+    layout.frame,
+    options,
+  )
+  drawViewBorder(
+    context,
+    layout.paint,
+    layout.frame,
+    options,
+  )
+  drawViewOutline(
     context,
     layout.paint,
     layout.frame,
