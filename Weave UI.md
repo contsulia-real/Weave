@@ -1766,29 +1766,56 @@ case
 
 ### typo
 
-`typo` 提供常用排版组合，避免标题、正文、标签等在应用层重复手写 `size / weight / lineHeight / letterSpacing`：
+`typo` 是完整的排版层级，不是少量快捷别名。默认 type scale 为：
 
 ```text
-display
-heading
-body
-label
-caption
+display-large
+display-medium
+display-small
+
+headline-large
+headline-medium
+headline-small
+
+title-large
+title-medium
+title-small
+
+body-large
+body-medium
+body-small
+
+label-large
+label-medium
+label-small
 ```
 
-显式传入的文本属性优先于 `typo` 预设，因此可以只覆盖需要调整的一项：
+每个 typo 同时定义 `fontSize / fontWeight / lineHeight / letterSpacing`。整套定义来自 `theme.tokens.typography.styles`，因此品牌主题可以替换任意层级，而不是把 preset 写死在 Text renderer 中。
+
+显式传入的文本属性优先于 `typo`，因此可以只覆盖需要调整的一项：
 
 ```tsx
-<Text typo="heading" weight="bold">
+<Text typo="title-medium" weight="bold">
   标题
 </Text>
 ```
 
-标题语义仍通过统一语义层表达，不通过公开 HTML 标签选择：
+响应式可以直接切换完整排版层级：
 
 ```tsx
 <Text
-  typo="display"
+  typo="body-small"
+  md={{ typo: "body-large" }}
+>
+  ...
+</Text>
+```
+
+标题语义与视觉排版保持分离，通过统一语义层表达：
+
+```tsx
+<Text
+  typo="display-large"
   viewProps={{
     role: "heading",
     level: 1,
@@ -1802,7 +1829,7 @@ DOM fallback 将 `level` 映射到 `aria-level`。
 
 ### size
 
-语义值：
+`size` 是对 typo 的局部覆盖入口，也可以脱离 typo 单独使用：
 
 ```text
 xsmall
@@ -1811,7 +1838,6 @@ medium
 large
 xlarge
 xxlarge
-display
 ```
 
 ### weight
