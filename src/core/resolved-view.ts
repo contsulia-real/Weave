@@ -5,6 +5,10 @@ import type {
   ViewStateStyle,
   ViewStyleProps,
 } from './view-types'
+import {
+  breakpointEntries,
+  containerBreakpointProp,
+} from './breakpoints'
 import { VIEW_STYLE_PROP_KEYS } from './view-prop-keys'
 
 type ViewStyleAlias =
@@ -55,29 +59,6 @@ export interface ResolvedView {
   semantics: Readonly<ViewSemanticProps>
   container?: string
   layout: ViewStyleProps['layout']
-}
-
-function breakpointList(
-  breakpoints: Readonly<Record<string, number>>,
-): readonly Readonly<{ name: string; minWidth: number }>[] {
-  return Object.entries(breakpoints)
-    .filter(
-      ([name, minWidth]) =>
-        name.length > 0 &&
-        Number.isFinite(minWidth) &&
-        minWidth >= 0,
-    )
-    .map(([name, minWidth]) => ({ name, minWidth }))
-    .sort(
-      (left, right) =>
-        left.minWidth - right.minWidth ||
-        left.name.localeCompare(right.name),
-    )
-}
-
-function containerBreakpointProp(name: string): string {
-  if (name.length === 0) return 'container'
-  return `container${name[0]?.toUpperCase() ?? ''}${name.slice(1)}`
 }
 
 function pickStyleProps(
@@ -283,7 +264,7 @@ export function resolveView<
   const record = props as Record<string, unknown>
   const responsive: ResolvedViewBreakpoint[] = []
 
-  for (const breakpoint of breakpointList(breakpoints)) {
+  for (const breakpoint of breakpointEntries(breakpoints)) {
     const viewportValue = record[breakpoint.name]
     if (
       typeof viewportValue === 'object' &&
