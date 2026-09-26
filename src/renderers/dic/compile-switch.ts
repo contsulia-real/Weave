@@ -68,6 +68,20 @@ function pixels(
   )
 }
 
+function pixelString(
+  value: number,
+): string {
+  const rounded =
+    Math.round(value * 1_000_000) /
+    1_000_000
+  const normalized =
+    Object.is(rounded, -0)
+      ? 0
+      : rounded
+
+  return `${normalized}px`
+}
+
 function switchPaint(
   theme: ResolvedTheme,
   value: ResolvedSwitch,
@@ -152,12 +166,14 @@ export function compileDiCSwitch(
   const restingTransform = () => [
     {
       translate: [
-        `${inset + (
-          value.checked
-            ? maxOffset
-            : 0
-        )}px`,
-        `${inset}px`,
+        pixelString(
+          inset + (
+            value.checked
+              ? maxOffset
+              : 0
+          ),
+        ),
+        pixelString(inset),
       ] as const,
     },
   ]
@@ -250,13 +266,13 @@ export function compileDiCSwitch(
     const y =
       (drag.thumbSize - height) / 2
 
-    thumb.paint.width = `${width}px`
-    thumb.paint.height = `${height}px`
+    thumb.paint.width = pixelString(width)
+    thumb.paint.height = pixelString(height)
     thumb.paint.transform = [
       {
         translate: [
-          `${inset + x}px`,
-          `${inset + y}px`,
+          pixelString(inset + x),
+          pixelString(inset + y),
         ],
       },
     ]
