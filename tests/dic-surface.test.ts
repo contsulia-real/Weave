@@ -183,8 +183,12 @@ describe('DiC surface', () => {
       cancel: vi.fn(),
     }
 
+    const retain = vi.fn()
+    const release = vi.fn()
     const imageResources: DiCImageResourceManager = {
       get: vi.fn(() => resource),
+      retain,
+      release,
       subscribe: vi.fn((next) => {
         listener = next
         return () => {
@@ -254,6 +258,8 @@ describe('DiC surface', () => {
       },
     )
 
+    expect(retain).toHaveBeenCalledWith('/cover.webp')
+
     surface.resize(300, 200, 1)
     scheduled?.(0)
 
@@ -286,6 +292,7 @@ describe('DiC surface', () => {
     expect(drawImage).toHaveBeenCalledTimes(1)
 
     surface.destroy()
+    expect(release).toHaveBeenCalledWith('/cover.webp')
     expect(imageResources.destroy).not.toHaveBeenCalled()
   })
 })
