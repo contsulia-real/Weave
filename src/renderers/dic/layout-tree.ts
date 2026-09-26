@@ -152,6 +152,64 @@ function finalDimension(
   return explicitDimension(value, available, rem) ?? intrinsic
 }
 
+function constraintDimension(
+  value: Dimension | undefined,
+  available: number,
+  intrinsic: number,
+  rem: number,
+): number | undefined {
+  if (value === undefined) return undefined
+  if (value === 'content') return intrinsic
+  if (value === 'fit') {
+    return Math.min(intrinsic, available)
+  }
+  if (value === 'fill') return available
+
+  return explicitDimension(
+    value,
+    available,
+    rem,
+  )
+}
+
+function constrainedDimension(
+  value: Dimension | undefined,
+  minValue: Dimension | undefined,
+  maxValue: Dimension | undefined,
+  available: number,
+  intrinsic: number,
+  rem: number,
+  root: boolean,
+): number {
+  const base = finalDimension(
+    value,
+    available,
+    intrinsic,
+    rem,
+    root,
+  )
+  const min = constraintDimension(
+    minValue,
+    available,
+    intrinsic,
+    rem,
+  )
+  const max = constraintDimension(
+    maxValue,
+    available,
+    intrinsic,
+    rem,
+  )
+
+  return Math.max(
+    min ?? 0,
+    Math.min(
+      base,
+      max ?? Number.POSITIVE_INFINITY,
+    ),
+  )
+}
+
 function resolvedPaint(
   node: DiCViewNode,
   environment: DiCTreeLayoutEnvironment,
@@ -415,15 +473,19 @@ function measureDiCViewTree(
   )
 
   return {
-    width: finalDimension(
+    width: constrainedDimension(
       paint.width,
+      paint.minWidth,
+      paint.maxWidth,
       constraints.width,
       intrinsic.width + left + right,
       rem,
       root,
     ),
-    height: finalDimension(
+    height: constrainedDimension(
       paint.height,
+      paint.minHeight,
+      paint.maxHeight,
       constraints.height,
       intrinsic.height + top + bottom,
       rem,
