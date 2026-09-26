@@ -58,6 +58,9 @@ const sizeDeclarations: Readonly<Record<ButtonSize, string>> = {
     --weave-component-padding-right: var(--weave-button-theme-small-padding-x);
     --weave-button-gap: var(--weave-button-theme-small-gap);
     --weave-button-font-size: var(--weave-button-theme-small-font-size);
+    --weave-button-font-weight: var(--weave-button-theme-small-font-weight);
+    --weave-button-line-height: var(--weave-button-theme-small-line-height);
+    --weave-button-letter-spacing: var(--weave-button-theme-small-letter-spacing);
   `,
   medium: `
     --weave-button-min-height: var(--weave-button-theme-medium-min-height);
@@ -68,6 +71,9 @@ const sizeDeclarations: Readonly<Record<ButtonSize, string>> = {
     --weave-component-padding-right: var(--weave-button-theme-medium-padding-x);
     --weave-button-gap: var(--weave-button-theme-medium-gap);
     --weave-button-font-size: var(--weave-button-theme-medium-font-size);
+    --weave-button-font-weight: var(--weave-button-theme-medium-font-weight);
+    --weave-button-line-height: var(--weave-button-theme-medium-line-height);
+    --weave-button-letter-spacing: var(--weave-button-theme-medium-letter-spacing);
   `,
   large: `
     --weave-button-min-height: var(--weave-button-theme-large-min-height);
@@ -78,6 +84,9 @@ const sizeDeclarations: Readonly<Record<ButtonSize, string>> = {
     --weave-component-padding-right: var(--weave-button-theme-large-padding-x);
     --weave-button-gap: var(--weave-button-theme-large-gap);
     --weave-button-font-size: var(--weave-button-theme-large-font-size);
+    --weave-button-font-weight: var(--weave-button-theme-large-font-weight);
+    --weave-button-line-height: var(--weave-button-theme-large-line-height);
+    --weave-button-letter-spacing: var(--weave-button-theme-large-letter-spacing);
   `,
 }
 
@@ -113,9 +122,9 @@ const stylesheet = `
   appearance: none;
   font: inherit;
   font-size: var(--weave-button-font-size);
-  font-weight: var(--weave-button-theme-font-weight);
-  line-height: var(--weave-typography-line-height-compact);
-  letter-spacing: var(--weave-typography-letter-spacing-normal);
+  font-weight: var(--weave-button-font-weight);
+  line-height: var(--weave-button-line-height);
+  letter-spacing: var(--weave-button-letter-spacing);
   text-decoration: none;
   transition:
     background-color var(--weave-motion-duration-fast)
