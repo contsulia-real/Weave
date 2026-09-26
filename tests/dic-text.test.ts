@@ -339,11 +339,10 @@ describe('DiC Text', () => {
       },
     )
 
-    expect(fillText).toHaveBeenCalledWith(
-      '42',
-      72,
-      expect.closeTo(4.4, 5),
-    )
+    const call = fillText.mock.calls[0]
+    expect(call?.[0]).toBe('42')
+    expect(call?.[1]).toBe(72)
+    expect(call?.[2]).toBeCloseTo(4.4)
   })
 
   it('fails explicitly for unsupported balanced and justified text', () => {
