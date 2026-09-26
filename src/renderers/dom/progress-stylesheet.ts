@@ -56,6 +56,11 @@ const stylesheet = `
 :where(.weave-progress__track) {
   --weave-display: none;
   --weave-background: var(--weave-progress-track-color);
+  --weave-component-box-shadow: var(--weave-progress-track-shadow);
+}
+
+:where(.weave-progress__value) {
+  --weave-component-box-shadow: var(--weave-progress-value-shadow);
 }
 
 :where(.weave-progress--tracked) > :where(.weave-progress__track) {
