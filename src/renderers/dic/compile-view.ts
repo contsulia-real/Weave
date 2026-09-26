@@ -2,7 +2,12 @@ import type {
   BackgroundValue,
   Dimension,
   Length,
+  ViewClickEvent,
+  ViewFocusEvent,
+  ViewKeyboardEvent,
+  ViewPointerEvent,
   ViewSemanticProps,
+  ViewEventTarget,
   RadiusValue,
   ShadowValue,
   TransformOperation,
@@ -154,10 +159,19 @@ export interface DiCPointerEvent extends DiCEventControl {
     | 'pointercancel'
     | 'click'
   readonly pointerId: number
+  readonly pointerType?: string
+  readonly isPrimary?: boolean
   readonly button: number
   readonly buttons: number
   readonly x: number
   readonly y: number
+  readonly clientX?: number
+  readonly clientY?: number
+  readonly pressure?: number
+  readonly altKey?: boolean
+  readonly ctrlKey?: boolean
+  readonly metaKey?: boolean
+  readonly shiftKey?: boolean
   readonly target: DiCViewNode
   readonly currentTarget: DiCViewNode
   capturePointer(): void
@@ -178,7 +192,7 @@ export interface DiCKeyboardEvent extends DiCEventControl {
   readonly currentTarget: DiCViewNode
 }
 
-export interface DiCFocusEvent {
+export interface DiCFocusEvent extends DiCEventControl {
   readonly type: 'focus' | 'blur'
   readonly target: DiCViewNode
   readonly currentTarget: DiCViewNode
@@ -213,6 +227,7 @@ export interface DiCViewNode {
   }
   responsive: readonly DiCViewBreakpoint[]
   semantics: Readonly<ViewSemanticProps>
+  eventTarget: Readonly<ViewEventTarget>
   container?: string
   children: readonly DiCViewNode[]
   content?: DiCViewContent
@@ -287,6 +302,261 @@ function breakpoint(
   }
 }
 
+function composeHandler<TEvent>(
+  first:
+    | ((event: TEvent) => void)
+    | undefined,
+  second:
+    | ((event: TEvent) => void)
+    | undefined,
+): ((event: TEvent) => void) | undefined {
+  if (first === undefined) return second
+  if (second === undefined) return first
+
+  return (event) => {
+    first(event)
+    second(event)
+  }
+}
+
+function publicTarget(
+  node: DiCViewNode,
+): ViewEventTarget {
+  return node.eventTarget
+}
+
+function publicClickEvent(
+  event: DiCPointerEvent,
+): ViewClickEvent {
+  return {
+    type: 'click',
+    target: publicTarget(event.target),
+    currentTarget: publicTarget(
+      event.currentTarget,
+    ),
+    button: event.button,
+    buttons: event.buttons,
+    clientX: event.clientX ?? event.x,
+    clientY: event.clientY ?? event.y,
+    altKey: event.altKey ?? false,
+    ctrlKey: event.ctrlKey ?? false,
+    metaKey: event.metaKey ?? false,
+    shiftKey: event.shiftKey ?? false,
+    get defaultPrevented() {
+      return event.defaultPrevented
+    },
+    get propagationStopped() {
+      return event.propagationStopped
+    },
+    preventDefault() {
+      event.preventDefault()
+    },
+    stopPropagation() {
+      event.stopPropagation()
+    },
+  }
+}
+
+function publicPointerEvent(
+  event: DiCPointerEvent,
+): ViewPointerEvent {
+  if (event.type === 'click') {
+    throw new Error(
+      'Click is not a public pointer event',
+    )
+  }
+
+  return {
+    type: event.type,
+    target: publicTarget(event.target),
+    currentTarget: publicTarget(
+      event.currentTarget,
+    ),
+    pointerId: event.pointerId,
+    pointerType:
+      event.pointerType ?? 'mouse',
+    isPrimary:
+      event.isPrimary ?? true,
+    button: event.button,
+    buttons: event.buttons,
+    clientX: event.clientX ?? event.x,
+    clientY: event.clientY ?? event.y,
+    pressure: event.pressure ?? 0,
+    altKey: event.altKey ?? false,
+    ctrlKey: event.ctrlKey ?? false,
+    metaKey: event.metaKey ?? false,
+    shiftKey: event.shiftKey ?? false,
+    get defaultPrevented() {
+      return event.defaultPrevented
+    },
+    get propagationStopped() {
+      return event.propagationStopped
+    },
+    preventDefault() {
+      event.preventDefault()
+    },
+    stopPropagation() {
+      event.stopPropagation()
+    },
+    capturePointer() {
+      event.capturePointer()
+    },
+    releasePointer() {
+      event.releasePointer()
+    },
+  }
+}
+
+function publicKeyboardEvent(
+  event: DiCKeyboardEvent,
+): ViewKeyboardEvent {
+  return {
+    type: event.type,
+    target: publicTarget(event.target),
+    currentTarget: publicTarget(
+      event.currentTarget,
+    ),
+    key: event.key,
+    code: event.code,
+    repeat: event.repeat,
+    altKey: event.altKey,
+    ctrlKey: event.ctrlKey,
+    metaKey: event.metaKey,
+    shiftKey: event.shiftKey,
+    get defaultPrevented() {
+      return event.defaultPrevented
+    },
+    get propagationStopped() {
+      return event.propagationStopped
+    },
+    preventDefault() {
+      event.preventDefault()
+    },
+    stopPropagation() {
+      event.stopPropagation()
+    },
+  }
+}
+
+function publicFocusEvent(
+  event: DiCFocusEvent,
+): ViewFocusEvent {
+  return {
+    type: event.type,
+    target: publicTarget(event.target),
+    currentTarget: publicTarget(
+      event.currentTarget,
+    ),
+    get defaultPrevented() {
+      return event.defaultPrevented
+    },
+    get propagationStopped() {
+      return event.propagationStopped
+    },
+    preventDefault() {
+      event.preventDefault()
+    },
+    stopPropagation() {
+      event.stopPropagation()
+    },
+  }
+}
+
+function publicInteraction(
+  view: ResolvedView,
+): DiCViewInteraction {
+  return {
+    onClick:
+      view.events.onClick === undefined
+        ? undefined
+        : (event) => {
+            view.events.onClick?.(
+              publicClickEvent(event),
+            )
+          },
+    onPointerEnter:
+      view.events.onPointerEnter === undefined
+        ? undefined
+        : (event) => {
+            view.events.onPointerEnter?.(
+              publicPointerEvent(event),
+            )
+          },
+    onPointerLeave:
+      view.events.onPointerLeave === undefined
+        ? undefined
+        : (event) => {
+            view.events.onPointerLeave?.(
+              publicPointerEvent(event),
+            )
+          },
+    onPointerMove:
+      view.events.onPointerMove === undefined
+        ? undefined
+        : (event) => {
+            view.events.onPointerMove?.(
+              publicPointerEvent(event),
+            )
+          },
+    onPointerDown:
+      view.events.onPointerDown === undefined
+        ? undefined
+        : (event) => {
+            view.events.onPointerDown?.(
+              publicPointerEvent(event),
+            )
+          },
+    onPointerUp:
+      view.events.onPointerUp === undefined
+        ? undefined
+        : (event) => {
+            view.events.onPointerUp?.(
+              publicPointerEvent(event),
+            )
+          },
+    onPointerCancel:
+      view.events.onPointerCancel === undefined
+        ? undefined
+        : (event) => {
+            view.events.onPointerCancel?.(
+              publicPointerEvent(event),
+            )
+          },
+    onKeyDown:
+      view.events.onKeyDown === undefined
+        ? undefined
+        : (event) => {
+            view.events.onKeyDown?.(
+              publicKeyboardEvent(event),
+            )
+          },
+    onKeyUp:
+      view.events.onKeyUp === undefined
+        ? undefined
+        : (event) => {
+            view.events.onKeyUp?.(
+              publicKeyboardEvent(event),
+            )
+          },
+    onFocus:
+      view.events.onFocus === undefined
+        ? undefined
+        : (event) => {
+            view.events.onFocus?.(
+              publicFocusEvent(event),
+            )
+          },
+    onBlur:
+      view.events.onBlur === undefined
+        ? undefined
+        : (event) => {
+            view.events.onBlur?.(
+              publicFocusEvent(event),
+            )
+          },
+  }
+}
+
 export interface CompileDiCViewOptions {
   children?: readonly DiCViewNode[]
   semantics?: Partial<ViewSemanticProps>
@@ -302,6 +572,8 @@ export function compileDiCView(
   view: ResolvedView,
   options: CompileDiCViewOptions = {},
 ): DiCViewNode {
+  const publicEvents = publicInteraction(view)
+
   return {
     kind: 'view',
     paint: paint(view.style),
@@ -332,6 +604,7 @@ export function compileDiCView(
       ...view.semantics,
       ...options.semantics,
     },
+    eventTarget: view.eventTarget,
     container: view.container,
     children: options.children ?? [],
     content: options.content,
@@ -352,28 +625,50 @@ export function compileDiCView(
       tabIndex:
         options.interaction?.tabIndex ??
         view.interaction.tabIndex,
-      onPointerEnter:
+      onPointerEnter: composeHandler(
+        publicEvents.onPointerEnter,
         options.interaction?.onPointerEnter,
-      onPointerLeave:
+      ),
+      onPointerLeave: composeHandler(
+        publicEvents.onPointerLeave,
         options.interaction?.onPointerLeave,
-      onPointerMove:
+      ),
+      onPointerMove: composeHandler(
+        publicEvents.onPointerMove,
         options.interaction?.onPointerMove,
-      onPointerDown:
+      ),
+      onPointerDown: composeHandler(
+        publicEvents.onPointerDown,
         options.interaction?.onPointerDown,
-      onPointerUp:
+      ),
+      onPointerUp: composeHandler(
+        publicEvents.onPointerUp,
         options.interaction?.onPointerUp,
-      onPointerCancel:
+      ),
+      onPointerCancel: composeHandler(
+        publicEvents.onPointerCancel,
         options.interaction?.onPointerCancel,
-      onClick:
+      ),
+      onClick: composeHandler(
+        publicEvents.onClick,
         options.interaction?.onClick,
-      onKeyDown:
+      ),
+      onKeyDown: composeHandler(
+        publicEvents.onKeyDown,
         options.interaction?.onKeyDown,
-      onKeyUp:
+      ),
+      onKeyUp: composeHandler(
+        publicEvents.onKeyUp,
         options.interaction?.onKeyUp,
-      onFocus:
+      ),
+      onFocus: composeHandler(
+        publicEvents.onFocus,
         options.interaction?.onFocus,
-      onBlur:
+      ),
+      onBlur: composeHandler(
+        publicEvents.onBlur,
         options.interaction?.onBlur,
+      ),
     },
     measure: options.measure,
   }
