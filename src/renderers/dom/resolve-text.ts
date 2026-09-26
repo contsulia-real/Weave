@@ -2,10 +2,9 @@ import type { CSSProperties } from 'react'
 import type {
   TextResponsiveProps,
   TextStyleProps,
-  TextTypo,
 } from '../../core/text-types'
 import { length } from '../../core/values'
-import type { ThemeTypographyStyle } from '../../theme/theme-types'
+import { typographyStyleVariableReference } from '../../theme/theme-css'
 
 export type TextVariableStyle = CSSProperties &
   Record<`--weave-text-${string}`, string | number | undefined>
@@ -37,46 +36,31 @@ function textWrapValues(
   return {}
 }
 
-function typographyPreset(
-  typo: TextTypo | undefined,
-  styles: Readonly<Record<string, ThemeTypographyStyle>> | undefined,
-): ThemeTypographyStyle | undefined {
-  return typo === undefined ? undefined : styles?.[typo]
-}
-
 function applyTypographyPreset(
   output: TextVariableStyle,
-  preset: ThemeTypographyStyle | undefined,
+  typo: TextStyleProps['typo'],
   breakpoint?: string,
 ): void {
-  if (preset?.fontSize !== undefined) {
-    output[variable('font-size', breakpoint)] = length(preset.fontSize)
-  }
-  if (preset?.fontWeight !== undefined) {
-    output[variable('font-weight', breakpoint)] = preset.fontWeight
-  }
-  if (preset?.lineHeight !== undefined) {
-    output[variable('line-height', breakpoint)] = preset.lineHeight
-  }
-  if (preset?.letterSpacing !== undefined) {
-    output[variable('letter-spacing', breakpoint)] =
-      length(preset.letterSpacing)
-  }
+  if (typo === undefined) return
+
+  output[variable('font-size', breakpoint)] =
+    typographyStyleVariableReference(typo, 'fontSize')
+  output[variable('font-weight', breakpoint)] =
+    typographyStyleVariableReference(typo, 'fontWeight')
+  output[variable('line-height', breakpoint)] =
+    typographyStyleVariableReference(typo, 'lineHeight')
+  output[variable('letter-spacing', breakpoint)] =
+    typographyStyleVariableReference(typo, 'letterSpacing')
 }
 
 export function resolveTextStyle(
   props: TextStyleProps | TextResponsiveProps | undefined,
-  typographyStyles?: Readonly<Record<string, ThemeTypographyStyle>>,
   breakpoint?: string,
 ): TextVariableStyle {
   const output: TextVariableStyle = {}
   if (props === undefined) return output
 
-  applyTypographyPreset(
-    output,
-    typographyPreset(props.typo, typographyStyles),
-    breakpoint,
-  )
+  applyTypographyPreset(output, props.typo, breakpoint)
 
   if (props.size !== undefined) {
     output[variable('font-size', breakpoint)] =
@@ -130,23 +114,15 @@ export function resolveTextResponsiveStyle(input: {
   responsive?: Readonly<
     Record<string, TextResponsiveProps | undefined>
   >
-  typographyStyles?: Readonly<Record<string, ThemeTypographyStyle>>
 }): TextVariableStyle {
-  const output = resolveTextStyle(
-    input.base,
-    input.typographyStyles,
-  )
+  const output = resolveTextStyle(input.base)
 
   for (const [breakpoint, value] of Object.entries(
     input.responsive ?? {},
   )) {
     Object.assign(
       output,
-      resolveTextStyle(
-        value,
-        input.typographyStyles,
-        breakpoint,
-      ),
+      resolveTextStyle(value, breakpoint),
     )
   }
 
