@@ -8,6 +8,48 @@ import { length } from '../../core/values'
 export type TextVariableStyle = CSSProperties &
   Record<`--weave-text-${string}`, string | number | undefined>
 
+const TYPOGRAPHY_PRESETS: Readonly<
+  Record<NonNullable<TextStyleProps['typo']>, Omit<TextStyleProps, 'typo'>>
+> = {
+  display: {
+    size: 'display',
+    weight: 'bold',
+    lineHeight: '0.95',
+    letterSpacing: '-0.06em',
+  },
+  heading: {
+    size: 'medium',
+    weight: 'semibold',
+    lineHeight: '1.25',
+  },
+  body: {
+    size: 'medium',
+    weight: 'regular',
+    lineHeight: '1.5',
+  },
+  label: {
+    size: 'small',
+    weight: 'semibold',
+    lineHeight: '1.25',
+  },
+  caption: {
+    size: 'small',
+    weight: 'regular',
+    lineHeight: '1.5',
+  },
+}
+
+function withTypographyPreset(
+  props: TextStyleProps | TextResponsiveProps,
+): TextStyleProps | TextResponsiveProps {
+  if (props.typo === undefined) return props
+
+  return {
+    ...TYPOGRAPHY_PRESETS[props.typo],
+    ...props,
+  }
+}
+
 const variable = (
   property: string,
   breakpoint?: string,
@@ -42,31 +84,33 @@ export function resolveTextStyle(
   const output: TextVariableStyle = {}
   if (props === undefined) return output
 
-  if (props.size !== undefined) {
+  const resolved = withTypographyPreset(props)
+
+  if (resolved.size !== undefined) {
     output[variable('font-size', breakpoint)] =
-      `var(--weave-typography-size-${props.size})`
+      `var(--weave-typography-size-${resolved.size})`
   }
 
-  if (props.weight !== undefined) {
+  if (resolved.weight !== undefined) {
     output[variable('font-weight', breakpoint)] =
-      `var(--weave-typography-weight-${props.weight})`
+      `var(--weave-typography-weight-${resolved.weight})`
   }
 
-  if (props.align !== undefined) {
-    output[variable('text-align', breakpoint)] = props.align
+  if (resolved.align !== undefined) {
+    output[variable('text-align', breakpoint)] = resolved.align
   }
 
-  if (props.lineHeight !== undefined) {
-    output[variable('line-height', breakpoint)] = length(props.lineHeight)
+  if (resolved.lineHeight !== undefined) {
+    output[variable('line-height', breakpoint)] = length(resolved.lineHeight)
   }
 
-  if (props.letterSpacing !== undefined) {
+  if (resolved.letterSpacing !== undefined) {
     output[variable('letter-spacing', breakpoint)] = length(
-      props.letterSpacing,
+      resolved.letterSpacing,
     )
   }
 
-  const wrapping = textWrapValues(props.wrap, props.overflow)
+  const wrapping = textWrapValues(resolved.wrap, resolved.overflow)
   if (wrapping.whiteSpace !== undefined) {
     output[variable('white-space', breakpoint)] = wrapping.whiteSpace
   }
@@ -74,16 +118,16 @@ export function resolveTextStyle(
     output[variable('text-wrap', breakpoint)] = wrapping.textWrap
   }
 
-  if (props.overflow !== undefined) {
-    output[variable('text-overflow', breakpoint)] = props.overflow
+  if (resolved.overflow !== undefined) {
+    output[variable('text-overflow', breakpoint)] = resolved.overflow
   }
 
-  if (props.maxLines !== undefined) {
-    output[variable('max-lines', breakpoint)] = props.maxLines
+  if (resolved.maxLines !== undefined) {
+    output[variable('max-lines', breakpoint)] = resolved.maxLines
   }
 
-  if (props.case !== undefined) {
-    output[variable('text-transform', breakpoint)] = props.case
+  if (resolved.case !== undefined) {
+    output[variable('text-transform', breakpoint)] = resolved.case
   }
 
   return output
