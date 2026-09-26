@@ -317,6 +317,12 @@ describe('Button', () => {
     expect(rule).toContain(
       '--weave-button-theme-radius:0.75rem;',
     )
+    expect(rule).toContain(
+      '--weave-button-theme-medium-font-size:var(--weave-typography-style-label-medium-font-size);',
+    )
+    expect(rule).toContain(
+      '--weave-button-theme-medium-font-weight:var(--weave-typography-style-label-medium-font-weight);',
+    )
   })
 
   it('uses the redesigned three-step Button size scale', () => {
