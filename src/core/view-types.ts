@@ -258,8 +258,19 @@ export type ViewBreakpointProps =
     >
   >
 
-export type ViewDynamicBreakpointProps =
-  Readonly<Record<string, unknown>>
+export type ViewDynamicBreakpointProps<
+  TResponsive = ViewResponsiveStyle,
+  TBreakpointName extends string = never,
+> =
+  [TBreakpointName] extends [never]
+    ? object
+    : Partial<Record<TBreakpointName, TResponsive>> &
+        Partial<
+          Record<
+            `container${Capitalize<TBreakpointName>}`,
+            TResponsive
+          >
+        >
 
 export interface ViewSemanticProps {
   role?: HTMLAttributes<HTMLDivElement>['role']
@@ -336,6 +347,10 @@ export type ViewCoreProps<
 
 export type ViewProps<
   TElement extends HTMLElement = HTMLDivElement,
+  TBreakpointName extends string = never,
 > =
   ViewCoreProps<TElement> &
-  ViewDynamicBreakpointProps
+  ViewDynamicBreakpointProps<
+    ViewResponsiveStyle,
+    TBreakpointName
+  >
