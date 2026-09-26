@@ -1,7 +1,11 @@
 import { cleanup, fireEvent, render } from '@testing-library/react'
 import { createRef } from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { Input } from '../src'
+import {
+  Input,
+  ThemeProvider,
+  createTheme,
+} from '../src'
 
 afterEach(cleanup)
 
@@ -236,8 +240,70 @@ describe('Input', () => {
     expect(rule).toContain(
       '--weave-input-theme-radius:0.75rem;',
     )
+    expect(rule).toContain(
+      '--weave-input-theme-font-size:var(--weave-typography-style-body-large-font-size);',
+    )
+    expect(rule).toContain(
+      '--weave-input-theme-font-weight:var(--weave-typography-style-body-large-font-weight);',
+    )
+    expect(rule).toContain(
+      '--weave-input-theme-line-height:var(--weave-typography-style-body-large-line-height);',
+    )
+    expect(rule).toContain(
+      '--weave-input-theme-letter-spacing:var(--weave-typography-style-body-large-letter-spacing);',
+    )
     expect(stylesheet?.textContent).toContain(
       '--weave-component-border-style: solid',
+    )
+  })
+
+  it('lets ThemeProvider select Input typography by typo', () => {
+    const theme = createTheme({
+      components: {
+        Input: {
+          base: {
+            typo: 'body-small',
+          },
+        },
+      },
+    })
+
+    const { getByTestId } = render(
+      <ThemeProvider theme={theme}>
+        <Input
+          placeholder="Typed"
+          viewProps={{
+            data: {
+              testid: 'typo-input',
+            },
+          }}
+        />
+      </ThemeProvider>,
+    )
+
+    const element = getByTestId('typo-input')
+    const rule = runtimeRule(element, 'weave-input-theme-')
+    const stylesheet = document.querySelector(
+      'style[data-weave-input-styles]',
+    )?.textContent ?? ''
+
+    expect(rule).toContain(
+      '--weave-input-theme-font-size:var(--weave-typography-style-body-small-font-size);',
+    )
+    expect(rule).toContain(
+      '--weave-input-theme-font-weight:var(--weave-typography-style-body-small-font-weight);',
+    )
+    expect(rule).toContain(
+      '--weave-input-theme-line-height:var(--weave-typography-style-body-small-line-height);',
+    )
+    expect(rule).toContain(
+      '--weave-input-theme-letter-spacing:var(--weave-typography-style-body-small-letter-spacing);',
+    )
+    expect(stylesheet).toContain(
+      'font-weight: var(--weave-input-theme-font-weight)',
+    )
+    expect(stylesheet).toContain(
+      'letter-spacing: var(--weave-input-theme-letter-spacing)',
     )
   })
 
