@@ -80,6 +80,103 @@ describe('DiC View drawing', () => {
     expect(fill).toHaveBeenCalledTimes(1)
   })
 
+  it('draws zero-blur depth, solid border, and outline without CSS', () => {
+    const roundRect = vi.fn()
+    const fill = vi.fn()
+    const stroke = vi.fn()
+
+    const context = {
+      globalAlpha: 1,
+      fillStyle: '',
+      strokeStyle: '',
+      lineWidth: 0,
+      shadowOffsetX: 0,
+      shadowOffsetY: 0,
+      shadowBlur: 0,
+      shadowColor: '',
+      save: vi.fn(),
+      restore: vi.fn(),
+      translate: vi.fn(),
+      rotate: vi.fn(),
+      scale: vi.fn(),
+      transform: vi.fn(),
+      beginPath: vi.fn(),
+      roundRect,
+      moveTo: vi.fn(),
+      lineTo: vi.fn(),
+      quadraticCurveTo: vi.fn(),
+      closePath: vi.fn(),
+      fill,
+      stroke,
+      createLinearGradient: vi.fn(),
+      createRadialGradient: vi.fn(),
+    } as unknown as CanvasRenderingContext2D
+
+    const node = compileDiCView(
+      resolveView(
+        {
+          width: 8,
+          height: 3,
+          background: 'surface',
+          radius: 'medium',
+          border: '1px',
+          borderColor: 'outline',
+          borderStyle: 'solid',
+          shadow: {
+            x: 0,
+            y: 0.25,
+            blur: 0,
+            color: 'primary',
+          },
+          outlineWidth: 0.125,
+          outlineColor: 'focus',
+          outlineStyle: 'solid',
+          outlineOffset: 0.0625,
+        },
+        defaultBreakpoints,
+      ),
+    )
+
+    drawDiCView(
+      context,
+      node,
+      {
+        x: 0,
+        y: 0,
+        width: 128,
+        height: 48,
+      },
+      {
+        theme: defaultTheme,
+        rem: 16,
+      },
+    )
+
+    expect(roundRect).toHaveBeenCalledWith(
+      0,
+      4,
+      128,
+      48,
+      [12, 12, 12, 12],
+    )
+    expect(fill).toHaveBeenCalledTimes(2)
+    expect(stroke).toHaveBeenCalledTimes(2)
+    expect(roundRect).toHaveBeenCalledWith(
+      0.5,
+      0.5,
+      127,
+      47,
+      [11.5, 11.5, 11.5, 11.5],
+    )
+    expect(roundRect).toHaveBeenCalledWith(
+      -2,
+      -2,
+      132,
+      52,
+      [14, 14, 14, 14],
+    )
+  })
+
   it('resolves percentage radius and translate against the View frame', () => {
     const translate = vi.fn()
     const roundRect = vi.fn()
