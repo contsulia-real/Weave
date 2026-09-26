@@ -4884,7 +4884,7 @@ measure({
 → { width, height }
 ```
 
-因此 `content / fit` 不再依赖 DOM 测量；Text 已接入自身 intrinsic measurement adapter，Image 仍待接入。
+因此 `content / fit` 不再依赖 DOM 测量；Text 与 Image 都已接入各自的 intrinsic measurement adapter。
 
 当前 tree layout 已支持：
 
@@ -4967,7 +4967,7 @@ host measure
 - destroy 必须断开 ResizeObserver / window listener，并取消未执行的 frame；
 - surface 当前仍是 renderer 内部能力，不增加新的公开组件 API。
 
-当前尚未完成的是 Image intrinsic adapter / 绘制、交互命中、完整 grid / wrap / advanced flex，以及 React View 默认切换到 DiC surface。这些能力继续在同一 View tree contract 上扩展。
+当前尚未完成的是交互命中、完整 grid / wrap / advanced flex、Image 的 DiC lazy-loading / load-event bridge，以及 React View 默认切换到 DiC surface。这些能力继续在同一 View tree contract 上扩展。
 
 ## 27.7 DiC Text
 
@@ -5039,7 +5039,91 @@ advanced shaping fallback beyond Canvas 2D capabilities
 
 这些能力不能静默退化成普通 wrap / start align。
 
-## 27.8 组件结构
+## 27.8 DiC Image
+
+Image 已建立 renderer-neutral `ResolvedImage`，DOM 与 DiC 从同一份语义读取：
+
+```text
+src
+alt
+fit
+position
+loading
+```
+
+默认值统一为：
+
+```text
+fit      = fill
+position = center
+```
+
+DiC Image 的 intrinsic size 来自 image resource manager 的天然 bitmap 尺寸，不读取 DOM `<img>` 的 layout / naturalWidth 作为回传数据。
+
+布局规则：
+
+```text
+width / height 都未指定
+→ natural bitmap size
+
+只指定 width
+→ height 按天然宽高比计算
+
+只指定 height
+→ width 按天然宽高比计算
+
+fit / fit
+→ 在当前可用空间内等比 scale-down
+```
+
+`object-fit` 只决定 bitmap 在已经确定的 content frame 内如何绘制，不反向修改 View 的 intrinsic 语义：
+
+```text
+fill
+contain
+cover
+none
+scale-down
+```
+
+`object-position` 当前支持：
+
+```text
+center / top / bottom / left / right
+top-left / top-right / bottom-left / bottom-right
+常见 CSS 两关键字写法，例如 "top left"
+百分比，例如 "25% 75%"
+px / rem 两值位置
+```
+
+复杂四值 CSS position 语法当前必须明确报 unsupported，不能静默近似。
+
+Image resource lifecycle：
+
+```text
+first measure
+→ resource loading
+→ intrinsic size 暂为 0
+→ decode/load ready
+→ surface invalidate
+→ re-measure
+→ re-layout
+→ redraw
+```
+
+同一 surface 对当前树中的图片源做去重 retain；scene 更新后不再使用的资源会 release。Blob object URL 必须在资源释放或 surface 销毁时 revoke。
+
+当前尚未接入 DiC 的 Image 行为：
+
+```text
+loading="lazy" 的 viewport resource policy
+onLoad / onError React event bridge
+Canvas 语义树中的 alt 暴露
+```
+
+这些属于后续 React/interaction/semantic bridge，不允许因为 Canvas 绘制已完成就宣称等价支持。
+
+## 27.9 组件结构
 
 ```text
 React
@@ -5130,4 +5214,9 @@ View
 48. DiC typography inheritance 必须由 tree context 显式传播；不得读取 DOM computed style 作为 Canvas 文本排版来源。
 49. `overflow="ellipsis"` 在无 `maxLines` 时默认单行 nowrap；存在 `maxLines` 时默认 wrap + clamp；显式 `wrap` 始终优先。
 50. 尚未支持的 DiC Text `balance / justify / rich inline runs` 必须显式报 unsupported，不能静默近似。
-51. API 的目标是：AI 易写易读，同时人类易读。
+51. DiC Image 的 intrinsic size 必须来自 image resource manager 的天然 bitmap 尺寸，不得借 DOM `<img>` 的布局结果反向喂给 DiC。
+52. Image 只显式指定一个布局轴时，另一个轴必须保持天然宽高比；`object-fit` 只影响 bitmap 在 content frame 内的绘制，不得改变外层布局语义。
+53. Image resource 从 loading 进入 ready 后必须触发 surface invalidate 并重新 measure / layout / draw，不能只重绘旧 frame。
+54. DiC surface 必须释放 scene 中已不再引用的图片资源；Blob object URL 必须随资源释放而 revoke。
+55. 尚未接入的 DiC Image lazy-loading / load-event / alt semantic bridge 必须保持明确未完成状态，不能用 Canvas draw 成功替代这些语义。
+56. API 的目标是：AI 易写易读，同时人类易读。
