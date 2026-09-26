@@ -3,6 +3,8 @@ import type {
   TextResponsiveProps,
   TextStyleProps,
 } from '../../core/text-types'
+import type { ResolvedText } from '../../core/resolved-text'
+import { breakpointCSSName } from './breakpoint-utils'
 import { length } from './css-values'
 import { typographyStyleVariableReference } from '../../theme/theme-css'
 
@@ -123,6 +125,24 @@ export function resolveTextResponsiveStyle(input: {
     Object.assign(
       output,
       resolveTextStyle(value, breakpoint),
+    )
+  }
+
+  return output
+}
+
+export function compileDOMText(
+  text: ResolvedText,
+): TextVariableStyle {
+  const output = resolveTextStyle(text.base)
+
+  for (const responsive of text.responsive) {
+    Object.assign(
+      output,
+      resolveTextStyle(
+        responsive.style,
+        breakpointCSSName(responsive.name),
+      ),
     )
   }
 
