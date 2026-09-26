@@ -236,11 +236,39 @@ function childContainerWidth(
     : contentWidth
 }
 
+function activeNodeTypo(
+  node: DiCViewNode,
+  environment: DiCTreeLayoutEnvironment,
+  containerWidth: number,
+): string | undefined {
+  const rem = environment.rem ?? 16
+  let typo = node.typography?.typo
+
+  for (const responsive of node.responsive) {
+    const availableWidth =
+      responsive.scope === 'viewport'
+        ? environment.viewportWidth
+        : containerWidth
+
+    if (
+      availableWidth >=
+      responsive.minWidth * rem
+    ) {
+      typo =
+        responsive.typography?.typo ??
+        typo
+    }
+  }
+
+  return typo
+}
+
 function typographyForNode(
   node: DiCViewNode,
   paint: DiCViewPaint,
   inherited: DiCTypographyContext | undefined,
   environment: DiCTreeLayoutEnvironment,
+  containerWidth: number,
 ): DiCTypographyContext | undefined {
   const theme = environment.theme
   if (theme === undefined) return inherited
@@ -250,9 +278,20 @@ function typographyForNode(
     inherited ??
     environment.typography ??
     createRootDiCTypography(theme, rem)
+  const typo = activeNodeTypo(
+    node,
+    environment,
+    containerWidth,
+  )
 
   return resolveDiCNodeTypography(
-    node,
+    {
+      ...node,
+      typography:
+        typo === undefined
+          ? undefined
+          : { typo },
+    },
     base,
     theme,
     rem,
@@ -405,6 +444,7 @@ function measureDiCViewTree(
     paint,
     inheritedTypography,
     environment,
+    containerWidth,
   )
 
   const top = paddingValue(
@@ -783,6 +823,7 @@ function layoutDiCViewTreeInternal(
     paint,
     inheritedTypography,
     environment,
+    containerWidth,
   )
   const measuredSize = measureDiCViewTree(
     node,
