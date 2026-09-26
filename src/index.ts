@@ -66,6 +66,7 @@ export type {
   TextResponsiveProps,
   TextSize,
   TextStyleProps,
+  TextTypo,
   TextViewProps,
   TextWeight,
   TextWrap,
