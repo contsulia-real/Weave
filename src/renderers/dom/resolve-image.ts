@@ -1,8 +1,6 @@
 import type { CSSProperties } from 'react'
-import type {
-  ImageFit,
-  ImagePosition,
-} from '../../core/image-types'
+import type { ImagePosition } from '../../core/image-types'
+import type { ResolvedImage } from '../../core/resolved-image'
 
 export type ImageVariableStyle = CSSProperties &
   Record<`--weave-image-${string}`, string | number | undefined>
@@ -26,17 +24,14 @@ export function imagePosition(
   return positionMap[value] ?? value
 }
 
-export function resolveImageStyle(input: {
-  fit?: ImageFit
-  position?: ImagePosition
-}): ImageVariableStyle {
-  const output: ImageVariableStyle = {}
-
-  if (input.fit !== undefined) {
-    output['--weave-image-fit'] = input.fit
+export function compileDOMImage(
+  image: ResolvedImage,
+): ImageVariableStyle {
+  const output: ImageVariableStyle = {
+    '--weave-image-fit': image.fit,
   }
 
-  const position = imagePosition(input.position)
+  const position = imagePosition(image.position)
   if (position !== undefined) {
     output['--weave-image-position'] = position
   }
