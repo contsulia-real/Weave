@@ -7,6 +7,7 @@ import type {
   ButtonProps,
   ButtonResponsiveProps,
 } from '../core/button-types'
+import { resolveButton } from '../core/resolved-button'
 import type {
   IconComponent,
   IconSvg,
@@ -15,7 +16,7 @@ import type {
   ValidateDynamicBreakpointProps,
   ViewProps,
 } from '../core/view-types'
-import { breakpointEntries } from '../renderers/dom/breakpoint-utils'
+import { breakpointCSSName } from '../renderers/dom/breakpoint-utils'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { ensureButtonStylesheet } from '../renderers/dom/button-stylesheet'
 import { resolveButtonTheme } from '../renderers/dom/resolve-component-theme'
@@ -88,13 +89,20 @@ export function Button<
     >,
 ) {
   const {
-    variant = 'primary',
-    size = 'medium',
-    loading = false,
     viewProps = {},
   } = props
 
   const { theme } = useTheme()
+  const button = resolveButton(
+    props,
+    theme.breakpoints,
+  )
+  const {
+    variant,
+    size,
+    loading,
+    disabled,
+  } = button
   const themeClassName = useRuntimeStyleClass(
     'button-theme',
     resolveButtonTheme(theme),
@@ -102,7 +110,7 @@ export function Button<
 
   const hostProps: ViewProps<HTMLButtonElement> = {
     ...viewProps,
-    disabled: loading || viewProps.disabled,
+    disabled,
     busy: loading || undefined,
   }
 
@@ -116,27 +124,24 @@ export function Button<
   useInsertionEffect(ensureButtonStylesheet, [])
 
   const responsiveAttributes: Record<string, string> = {}
-  const propsRecord = props as Record<string, unknown>
 
-  for (const breakpoint of breakpointEntries(theme.breakpoints)) {
-    const value = propsRecord[
-      breakpoint.name
-    ] as ButtonResponsiveProps | undefined
+  for (const breakpoint of button.responsive) {
+    const cssName = breakpointCSSName(
+      breakpoint.name,
+    )
 
-    if (value?.variant !== undefined) {
+    if (breakpoint.variant !== undefined) {
       responsiveAttributes[
-        `data-weave-button-${breakpoint.cssName}-variant`
-      ] = value.variant
+        `data-weave-button-${cssName}-variant`
+      ] = breakpoint.variant
     }
 
-    if (value?.size !== undefined) {
+    if (breakpoint.size !== undefined) {
       responsiveAttributes[
-        `data-weave-button-${breakpoint.cssName}-size`
-      ] = value.size
+        `data-weave-button-${cssName}-size`
+      ] = breakpoint.size
     }
   }
-
-  const disabled = loading || viewProps.disabled === true
   const iconOnly =
     'icon' in props &&
     props.icon !== undefined &&
