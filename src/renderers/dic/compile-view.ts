@@ -110,6 +110,13 @@ export interface DiCViewBreakpoint {
   minWidth: number
   scope: 'viewport' | 'container'
   paint: DiCViewPaint
+  states?: {
+    hover?: DiCViewPaint
+    active?: DiCViewPaint
+    focus?: DiCViewPaint
+    focusVisible?: DiCViewPaint
+    disabled?: DiCViewPaint
+  }
   typography?: {
     typo?: string
   }
