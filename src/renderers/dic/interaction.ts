@@ -23,8 +23,17 @@ export interface DiCPointerInput extends DiCPoint {
     | 'pointercancel'
     | 'pointerleave'
   pointerId: number
+  pointerType?: string
+  isPrimary?: boolean
   button: number
   buttons: number
+  clientX?: number
+  clientY?: number
+  pressure?: number
+  altKey?: boolean
+  ctrlKey?: boolean
+  metaKey?: boolean
+  shiftKey?: boolean
   capture?: (pointerId: number) => void
   release?: (pointerId: number) => void
 }
@@ -173,16 +182,47 @@ export function createDiCInteractionController(
     type: DiCFocusEvent['type'],
     node: DiCViewNode,
   ) => {
-    const handler =
-      type === 'focus'
-        ? node.interaction?.onFocus
-        : node.interaction?.onBlur
+    const path =
+      pathForNode(node) ??
+      [node]
+    const control: ControlState = {
+      defaultPrevented: false,
+      propagationStopped: false,
+    }
 
-    handler?.({
-      type,
-      target: node,
-      currentTarget: node,
-    })
+    for (
+      let index = path.length - 1;
+      index >= 0;
+      index -= 1
+    ) {
+      const currentTarget = path[index]
+      if (currentTarget === undefined) continue
+
+      const handler =
+        type === 'focus'
+          ? currentTarget.interaction?.onFocus
+          : currentTarget.interaction?.onBlur
+
+      handler?.({
+        type,
+        target: node,
+        currentTarget,
+        get defaultPrevented() {
+          return control.defaultPrevented
+        },
+        get propagationStopped() {
+          return control.propagationStopped
+        },
+        preventDefault() {
+          control.defaultPrevented = true
+        },
+        stopPropagation() {
+          control.propagationStopped = true
+        },
+      })
+
+      if (control.propagationStopped) break
+    }
   }
 
   const setFocus = (
@@ -234,10 +274,19 @@ export function createDiCInteractionController(
     const event: DiCPointerEvent = {
       type,
       pointerId: input.pointerId,
+      pointerType: input.pointerType,
+      isPrimary: input.isPrimary,
       button: input.button,
       buttons: input.buttons,
       x: input.x,
       y: input.y,
+      clientX: input.clientX,
+      clientY: input.clientY,
+      pressure: input.pressure,
+      altKey: input.altKey,
+      ctrlKey: input.ctrlKey,
+      metaKey: input.metaKey,
+      shiftKey: input.shiftKey,
       target: node,
       currentTarget: node,
       get defaultPrevented() {
@@ -359,10 +408,19 @@ export function createDiCInteractionController(
       const event: DiCPointerEvent = {
         type,
         pointerId: input.pointerId,
+        pointerType: input.pointerType,
+        isPrimary: input.isPrimary,
         button: input.button,
         buttons: input.buttons,
         x: input.x,
         y: input.y,
+        clientX: input.clientX,
+        clientY: input.clientY,
+        pressure: input.pressure,
+        altKey: input.altKey,
+        ctrlKey: input.ctrlKey,
+        metaKey: input.metaKey,
+        shiftKey: input.shiftKey,
         target,
         currentTarget,
         get defaultPrevented() {
