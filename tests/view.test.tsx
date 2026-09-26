@@ -120,6 +120,19 @@ describe('View DOM backend', () => {
     expect(element.getAttribute('aria-label')).toBe('Sidebar')
   })
 
+  it('maps heading levels through the semantic layer', () => {
+    const { getByRole } = render(
+      <View role="heading" level={2}>
+        Section
+      </View>,
+    )
+
+    const element = getByRole('heading', { level: 2 })
+
+    expect(element.getAttribute('aria-level')).toBe('2')
+    expect(element.getAttribute('level')).toBeNull()
+  })
+
   it('registers View instance variables as non-inheriting', () => {
     render(
       <View minHeight="100vh" data={{ testid: 'parent' }}>
