@@ -312,6 +312,54 @@ function applyViewContext(
   context.translate(-frame.width / 2, -frame.height / 2)
 }
 
+function clipViewBounds(
+  context: CanvasRenderingContext2D,
+  paint: DiCViewPaint,
+  frame: DiCViewFrame,
+  options: DiCDrawOptions,
+): void {
+  const theme = options.theme
+  const rem = options.rem ?? 16
+  const localFrame: DiCViewFrame = {
+    x: 0,
+    y: 0,
+    width: frame.width,
+    height: frame.height,
+  }
+
+  roundedPath(
+    context,
+    localFrame,
+    [
+      resolveRadius(
+        paint.radiusTopLeft,
+        theme,
+        rem,
+        Math.min(frame.width, frame.height),
+      ),
+      resolveRadius(
+        paint.radiusTopRight,
+        theme,
+        rem,
+        Math.min(frame.width, frame.height),
+      ),
+      resolveRadius(
+        paint.radiusBottomRight,
+        theme,
+        rem,
+        Math.min(frame.width, frame.height),
+      ),
+      resolveRadius(
+        paint.radiusBottomLeft,
+        theme,
+        rem,
+        Math.min(frame.width, frame.height),
+      ),
+    ],
+  )
+  context.clip()
+}
+
 function drawViewBackground(
   context: CanvasRenderingContext2D,
   paint: DiCViewPaint,
@@ -443,6 +491,13 @@ export function drawDiCViewTree(
   }
 
   if (layout.node.content?.kind === 'image') {
+    context.save()
+    clipViewBounds(
+      context,
+      layout.paint,
+      layout.frame,
+      options,
+    )
     drawDiCImage(
       context,
       layout.node.content,
@@ -452,6 +507,7 @@ export function drawDiCViewTree(
         rem,
       },
     )
+    context.restore()
   }
 
   for (const child of layout.children) {
