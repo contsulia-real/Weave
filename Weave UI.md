@@ -4967,7 +4967,7 @@ host measure
 - destroy 必须断开 ResizeObserver / window listener，并取消未执行的 frame；
 - surface 当前仍是 renderer 内部能力，不增加新的公开组件 API。
 
-当前尚未完成的是交互命中、完整 grid / wrap / advanced flex、Image 的 DiC lazy-loading / load-event bridge，以及 React View 默认切换到 DiC surface。这些能力继续在同一 View tree contract 上扩展。
+当前尚未完成的是 Button / Switch / Input 等组件级 DiC interaction adapter、完整键盘 Tab 导航与可访问性 semantic bridge、完整 grid / wrap / advanced flex、Image 的 DiC lazy-loading / load-event bridge，以及 React View 默认切换到 DiC surface。这些能力继续在同一 View tree contract 上扩展。
 
 ## 27.7 DiC Text
 
@@ -5123,7 +5123,116 @@ Canvas 语义树中的 alt 暴露
 
 这些属于后续 React/interaction/semantic bridge，不允许因为 Canvas 绘制已完成就宣称等价支持。
 
-## 27.9 组件结构
+## 27.9 DiC hit testing / input dispatch
+
+DiC 已建立 renderer 内部的 interaction contract。
+
+命中路径：
+
+```text
+canvas pointer coordinates
+→ logical CSS-pixel coordinates
+→ reverse draw-order tree walk
+→ inverse View transform
+→ pointerEvents resolution
+→ deepest hit target
+→ root → target path
+```
+
+hit testing 与 drawing 共用同一套 DiC transform 解析，因此 translate / scale / rotate / skew 不允许出现“视觉位置与点击位置分离”。
+
+`pointerEvents` 遵循 tree context：
+
+```text
+未指定
+→ 继承父级当前值
+
+none
+→ 当前 View 自身不可成为 target
+
+child 显式 auto
+→ 可以重新恢复命中
+```
+
+重叠节点按实际绘制顺序的逆序命中；后绘制的 child 优先成为 target。
+
+当前 pointer dispatch 支持：
+
+```text
+pointerenter
+pointerleave
+pointermove
+pointerdown
+pointerup
+pointercancel
+click
+```
+
+事件沿 target → root 冒泡，并支持：
+
+```text
+preventDefault
+stopPropagation
+pointer capture / release
+```
+
+`click` 当前由同一 primary pointer 在相同 target 上完成 down / up 后合成。pointer capture 只改变 move / up / cancel 的 dispatch path，不会把指针实际位于其它位置时错误合成为 click。
+
+interaction state 直接回到同一个 View state IR：
+
+```text
+hover
+active
+focus
+focusVisible
+disabled
+```
+
+因此 DiC 不维护另一套私有 hover/active 样式。
+
+Focus 语义：
+
+```text
+ViewProps.focusable
+ViewProps.autoFocus
+ViewProps.tabIndex
+→ ResolvedView.interaction
+→ DiC node interaction
+```
+
+pointer 聚焦时 `focusVisible = false`；focused node 接收到 keyboard input 后切换为 `focusVisible = true`。
+
+scene/layout 更新后 interaction controller 必须 reconcile：
+
+- 已离开 tree 的 focused node 被 blur；
+- stale active / capture / pointer-down target 被清理；
+- 首次出现的 autoFocus node 可以获得虚拟焦点。
+
+Canvas 原生事件只是 input bridge：
+
+```text
+native PointerEvent / KeyboardEvent
+→ coordinate normalization
+→ DiC interaction controller
+→ optional native preventDefault / stopPropagation
+```
+
+业务语义不能直接绑定在 canvas DOM target 上。
+
+当前明确未完成：
+
+```text
+Button / Switch / Input 的 DiC semantic interaction adapter
+完整 Tab / Shift+Tab 虚拟焦点遍历
+ARIA / accessibility semantic mirror
+Input 文本编辑 / IME / selection bridge
+wheel / scroll interaction backend
+drag-and-drop semantic backend
+```
+
+generic View 的 `disabled` 当前与 DOM 的 `aria-disabled` 语义一致：它激活 disabled state，但不会全局吞掉事件。真正的 Button / Switch / Input disabled 行为必须由对应组件 adapter 承担。
+
+## 27.10 组件结构
 
 ```text
 React
@@ -5219,4 +5328,10 @@ View
 53. Image resource 从 loading 进入 ready 后必须触发 surface invalidate 并重新 measure / layout / draw，不能只重绘旧 frame。
 54. DiC surface 必须释放 scene 中已不再引用的图片资源；Blob object URL 必须随资源释放而 revoke。
 55. 尚未接入的 DiC Image lazy-loading / load-event / alt semantic bridge 必须保持明确未完成状态，不能用 Canvas draw 成功替代这些语义。
-56. API 的目标是：AI 易写易读，同时人类易读。
+56. DiC hit testing 与 drawing 必须消费同一套 transform 解析；禁止分别维护会产生视觉/命中漂移的 transform 语义。
+57. DiC pointer target 必须按实际绘制顺序逆序命中，并遵循 `pointerEvents` tree inheritance / override。
+58. hover / active / focus / focusVisible / disabled 必须回流到统一 View state IR，不能建立 renderer 私有状态样式体系。
+59. Canvas 原生事件只能作为输入桥；事件冒泡、pointer capture、click 合成与 focus 状态必须在 DiC tree 上执行。
+60. generic View 的 `disabled` 不得被 renderer 擅自解释为“吞掉全部事件”；组件级 disabled 行为由 Button / Switch / Input 等语义 adapter 自己保证。
+61. 在 Tab 导航与 accessibility semantic bridge 完成前，不得把 DiC 的 pointer/keyboard dispatch 描述成完整可访问性交互等价。
+62. API 的目标是：AI 易写易读，同时人类易读。
