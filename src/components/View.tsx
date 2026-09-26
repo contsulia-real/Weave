@@ -87,7 +87,10 @@ function viewMayScroll(
 export function View<
   TBreakpointName extends string = never,
 >(
-  props: ViewProps<HTMLDivElement, TBreakpointName>,
+  props: ViewProps<
+    HTMLDivElement,
+    NoInfer<TBreakpointName>
+  >,
 ) {
   const { children } = props
   const {
