@@ -212,7 +212,14 @@ function applyTextStyle(
       theme,
     ),
     align: style.align ?? 'start',
-    wrap: style.wrap ?? 'wrap',
+    wrap:
+      style.wrap ??
+      (
+        style.overflow === 'ellipsis' &&
+        style.maxLines === undefined
+          ? 'nowrap'
+          : 'wrap'
+      ),
     overflow: style.overflow ?? 'clip',
     maxLines: style.maxLines,
     case: style.case ?? 'none',
