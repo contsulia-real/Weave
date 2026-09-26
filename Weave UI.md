@@ -4884,7 +4884,7 @@ measure({
 → { width, height }
 ```
 
-因此 `content / fit` 不再依赖 DOM 测量；未来 Text 与 Image 只需要各自提供 intrinsic measurement adapter。
+因此 `content / fit` 不再依赖 DOM 测量；Text 已接入自身 intrinsic measurement adapter，Image 仍待接入。
 
 当前 tree layout 已支持：
 
@@ -4967,9 +4967,79 @@ host measure
 - destroy 必须断开 ResizeObserver / window listener，并取消未执行的 frame；
 - surface 当前仍是 renderer 内部能力，不增加新的公开组件 API。
 
-当前尚未完成的是 Text / Image intrinsic adapter 与绘制、交互命中、完整 grid / wrap / advanced flex，以及 React View 默认切换到 DiC surface。这些能力继续在同一 View tree contract 上扩展。
+当前尚未完成的是 Image intrinsic adapter / 绘制、交互命中、完整 grid / wrap / advanced flex，以及 React View 默认切换到 DiC surface。这些能力继续在同一 View tree contract 上扩展。
 
-## 27.7 组件结构
+## 27.7 DiC Text
+
+Text 已建立 renderer-neutral `ResolvedText`，DOM 与 DiC 都从同一语义结果编译。
+
+DiC Text 当前支持：
+
+```text
+plain string / number / bigint
+typo
+size
+weight
+color
+lineHeight
+letterSpacing
+case
+wrap
+nowrap
+ellipsis
+maxLines
+start / center / end align
+viewport responsive typo/style
+ancestor typography inheritance
+```
+
+排版继承是显式 tree context：
+
+```text
+Theme root body-large
+→ parent View typography context
+→ child Text
+```
+
+因此 Button 等组件以后可以在父 View 建立 label typo 上下文，再由内部 Text 继承；Canvas 不依赖 DOM computed style。
+
+Text measurement 与 drawing 共用同一套 line layout：
+
+```text
+resolve text style
+→ apply Canvas font
+→ measure
+→ wrap / ellipsis / maxLines
+→ intrinsic size
+→ tree layout
+→ draw same lines
+```
+
+单行与多行 ellipsis 规则：
+
+```text
+overflow="ellipsis" + 无 maxLines
+→ nowrap
+
+maxLines 存在
+→ wrap + line clamp
+
+显式 wrap
+→ 显式值优先
+```
+
+当前明确未实现：
+
+```text
+text-wrap: balance
+text-align: justify
+rich ReactNode / nested inline runs
+advanced shaping fallback beyond Canvas 2D capabilities
+```
+
+这些能力不能静默退化成普通 wrap / start align。
+
+## 27.8 组件结构
 
 ```text
 React
@@ -5056,4 +5126,8 @@ View
 44. DiC tree layout 的 child intrinsic size 必须来自子树测量或组件自身 measure adapter；不得借 DOM 实际布局结果反向喂给 DiC。
 45. 父 View 的 opacity / transform 必须作为子树绘制上下文继承，不能只影响父节点自己的 background。
 46. 尚未实现的 DiC layout 模式必须显式报 unsupported，不能静默降级为 flow / flex / fill。
-47. API 的目标是：AI 易写易读，同时人类易读。
+47. DiC Text 的 intrinsic measurement 与实际 drawing 必须消费同一套 line layout，不能分别实现两套换行 / ellipsis 逻辑。
+48. DiC typography inheritance 必须由 tree context 显式传播；不得读取 DOM computed style 作为 Canvas 文本排版来源。
+49. `overflow="ellipsis"` 在无 `maxLines` 时默认单行 nowrap；存在 `maxLines` 时默认 wrap + clamp；显式 `wrap` 始终优先。
+50. 尚未支持的 DiC Text `balance / justify / rich inline runs` 必须显式报 unsupported，不能静默近似。
+51. API 的目标是：AI 易写易读，同时人类易读。
