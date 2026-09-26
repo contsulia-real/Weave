@@ -1,13 +1,9 @@
 import type { CSSProperties } from 'react'
+import type { ViewProps } from '../core/view-types'
 import type {
-  ViewProps,
-  ViewStyleProps,
-} from '../core/view-types'
-import {
-  breakpointEntries,
-  containerBreakpointProp,
-} from '../renderers/dom/breakpoint-utils'
-import { useTheme } from '../theme/theme-context'
+  ResolvedView,
+  ResolvedViewStyle,
+} from '../core/resolved-view'
 import { AutoScrollbar } from './internal/AutoScrollbar'
 import { useViewHost } from './internal/use-view-host'
 
@@ -18,7 +14,7 @@ function scrollableOverflow(
 }
 
 function styleMayScroll(
-  style: ViewStyleProps | undefined,
+  style: ResolvedViewStyle | undefined,
 ): boolean {
   if (style === undefined) return false
 
@@ -70,29 +66,21 @@ function overflowIntent(
 }
 
 function viewMayScroll(
-  props: ViewProps<HTMLDivElement>,
-  breakpoints: Readonly<Record<string, number>>,
+  view: ResolvedView,
+  style: CSSProperties | undefined,
+  hasExplicitScrollbar: boolean,
 ): boolean {
-  if (props.scrollbar !== undefined) return true
+  if (hasExplicitScrollbar) return true
 
   if (
-    styleMayScroll(props) ||
-    rawStyleMayScroll(props.style)
+    styleMayScroll(view.style) ||
+    rawStyleMayScroll(style)
   ) {
     return true
   }
 
-  const propsRecord = props as Record<string, unknown>
-
-  return breakpointEntries(breakpoints).some(({ name }) =>
-    styleMayScroll(
-      propsRecord[name] as ViewStyleProps | undefined,
-    ) ||
-    styleMayScroll(
-      propsRecord[
-        containerBreakpointProp(name)
-      ] as ViewStyleProps | undefined,
-    ),
+  return view.responsive.some((responsive) =>
+    styleMayScroll(responsive.style),
   )
 }
 
@@ -102,15 +90,19 @@ export function View<
   props: ViewProps<HTMLDivElement, TBreakpointName>,
 ) {
   const { children } = props
-  const { theme } = useTheme()
   const {
     elementRef,
+    view,
     className,
     inlineStyle,
     resolved,
   } = useViewHost(props)
 
-  const mountsScrollbar = viewMayScroll(props, theme.breakpoints)
+  const mountsScrollbar = viewMayScroll(
+    view,
+    props.style,
+    props.scrollbar !== undefined,
+  )
   const resolvedClassName = [
     mountsScrollbar ? 'weave-scroll-host' : undefined,
     scrollOverflowClass('', props.overflow),
