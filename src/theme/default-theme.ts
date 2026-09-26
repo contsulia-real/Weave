@@ -148,22 +148,22 @@ export const defaultTheme: ResolvedTheme = {
           letterSpacing: '0.005em',
         },
         'label-large': {
-          fontSize: 1,
-          fontWeight: 600,
-          lineHeight: '1.25',
-          letterSpacing: '0em',
-        },
-        'label-medium': {
           fontSize: 0.875,
           fontWeight: 600,
           lineHeight: '1.25',
           letterSpacing: '0em',
         },
-        'label-small': {
+        'label-medium': {
           fontSize: 0.8125,
           fontWeight: 600,
           lineHeight: '1.25',
           letterSpacing: '0.005em',
+        },
+        'label-small': {
+          fontSize: 0.75,
+          fontWeight: 600,
+          lineHeight: '1.25',
+          letterSpacing: '0.01em',
         },
       },
     },
