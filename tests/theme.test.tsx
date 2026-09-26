@@ -98,16 +98,16 @@ describe('Theme', () => {
       '0.01em',
     )
     expect(
-      variables['--weave-typography-style-body-large-font-size'],
+      variables['--weave-typography-style-body-medium-font-size'],
     ).toBe('1rem')
     expect(
-      variables['--weave-typography-style-body-large-font-weight'],
+      variables['--weave-typography-style-body-medium-font-weight'],
     ).toBe(400)
     expect(
-      variables['--weave-typography-style-body-large-line-height'],
+      variables['--weave-typography-style-body-medium-line-height'],
     ).toBe('1.5')
     expect(
-      variables['--weave-typography-style-body-large-letter-spacing'],
+      variables['--weave-typography-style-body-medium-letter-spacing'],
     ).toBe('0.01em')
     expect(variables['--weave-spacing-compact']).toBe('0.5rem')
     expect(variables['--weave-radius-card']).toBe('1rem')
@@ -135,7 +135,7 @@ describe('Theme', () => {
     expect(button?.sizes?.medium).not.toHaveProperty('fontSize')
 
     expect(input?.base).toMatchObject({
-      typo: 'body-large',
+      typo: 'body-medium',
     })
     expect(input?.base).not.toHaveProperty('fontSize')
     expect(input?.base).not.toHaveProperty('lineHeight')
@@ -155,16 +155,16 @@ describe('Theme', () => {
       'font-family: var(--weave-typography-family-body)',
     )
     expect(stylesheet).toContain(
-      'font-size: var(--weave-typography-style-body-large-font-size)',
+      'font-size: var(--weave-typography-style-body-medium-font-size)',
     )
     expect(stylesheet).toContain(
-      'font-weight: var(--weave-typography-style-body-large-font-weight)',
+      'font-weight: var(--weave-typography-style-body-medium-font-weight)',
     )
     expect(stylesheet).toContain(
-      'line-height: var(--weave-typography-style-body-large-line-height)',
+      'line-height: var(--weave-typography-style-body-medium-line-height)',
     )
     expect(stylesheet).toContain(
-      'letter-spacing: var(--weave-typography-style-body-large-letter-spacing)',
+      'letter-spacing: var(--weave-typography-style-body-medium-letter-spacing)',
     )
     expect(stylesheet).toContain('font-size: inherit;')
     expect(stylesheet).toContain('font-weight: inherit;')
@@ -188,16 +188,16 @@ describe('Theme', () => {
       'font-family:var(--weave-typography-family-body);',
     )
     expect(rule).toContain(
-      'font-size:var(--weave-typography-style-body-large-font-size);',
+      'font-size:var(--weave-typography-style-body-medium-font-size);',
     )
     expect(rule).toContain(
-      'font-weight:var(--weave-typography-style-body-large-font-weight);',
+      'font-weight:var(--weave-typography-style-body-medium-font-weight);',
     )
     expect(rule).toContain(
-      'line-height:var(--weave-typography-style-body-large-line-height);',
+      'line-height:var(--weave-typography-style-body-medium-line-height);',
     )
     expect(rule).toContain(
-      'letter-spacing:var(--weave-typography-style-body-large-letter-spacing);',
+      'letter-spacing:var(--weave-typography-style-body-medium-letter-spacing);',
     )
   })
 
