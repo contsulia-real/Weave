@@ -2,6 +2,7 @@ import type {
   ResolvedTheme,
   ScrollbarTheme,
 } from '../../theme/theme-types'
+import { typographyStyleVariableReference } from '../../theme/theme-css'
 import type {
   ScrollbarConfig,
   ScrollbarSize,
@@ -46,8 +47,14 @@ export function resolveInputTheme(
     '--weave-input-theme-min-height': length(base?.minHeight),
     '--weave-input-theme-padding-x': length(base?.paddingX),
     '--weave-input-theme-padding-y': length(base?.paddingY),
-    '--weave-input-theme-font-size': length(base?.fontSize),
-    '--weave-input-theme-line-height': length(base?.lineHeight),
+    '--weave-input-theme-font-size':
+      typographyStyleVariableReference(base?.typo, 'fontSize'),
+    '--weave-input-theme-font-weight':
+      typographyStyleVariableReference(base?.typo, 'fontWeight'),
+    '--weave-input-theme-line-height':
+      typographyStyleVariableReference(base?.typo, 'lineHeight'),
+    '--weave-input-theme-letter-spacing':
+      typographyStyleVariableReference(base?.typo, 'letterSpacing'),
     '--weave-input-theme-focus-outline-width': length(
       base?.focusOutlineWidth,
     ),
@@ -74,7 +81,6 @@ export function resolveButtonTheme(
     '--weave-button-theme-radius': radius(base?.radius),
     '--weave-button-theme-border-width': length(base?.borderWidth),
     '--weave-button-theme-cursor': base?.cursor,
-    '--weave-button-theme-font-weight': base?.fontWeight,
     '--weave-button-theme-focus-outline-width': length(
       base?.focusOutlineWidth,
     ),
@@ -100,7 +106,13 @@ export function resolveButtonTheme(
     output[`--weave-button-theme-${size}-gap`] =
       length(sized?.gap)
     output[`--weave-button-theme-${size}-font-size`] =
-      length(sized?.fontSize)
+      typographyStyleVariableReference(sized?.typo, 'fontSize')
+    output[`--weave-button-theme-${size}-font-weight`] =
+      typographyStyleVariableReference(sized?.typo, 'fontWeight')
+    output[`--weave-button-theme-${size}-line-height`] =
+      typographyStyleVariableReference(sized?.typo, 'lineHeight')
+    output[`--weave-button-theme-${size}-letter-spacing`] =
+      typographyStyleVariableReference(sized?.typo, 'letterSpacing')
   }
 
   for (const variant of BUTTON_VARIANTS) {
