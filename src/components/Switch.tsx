@@ -9,6 +9,7 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from 'react'
 import type { SwitchProps } from '../core/switch-types'
+import { resolveSwitch } from '../core/resolved-switch'
 import { resolveSwitchTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { ensureSwitchStylesheet } from '../renderers/dom/switch-stylesheet'
@@ -90,7 +91,7 @@ export function Switch({
   const { theme } = useTheme()
   const themeDeclarations = useMemo(
     () => resolveSwitchTheme(theme, size),
-    [size, theme],
+    [resolvedSwitch.size, theme],
   )
   const themeClassName = useRuntimeStyleClass(
     'switch-theme',
@@ -101,6 +102,11 @@ export function Switch({
     useState(defaultChecked)
   const isControlled = checked !== undefined
   const currentChecked = checked ?? uncontrolledChecked
+  const resolvedSwitch = resolveSwitch({
+    size,
+    checked: currentChecked,
+    disabled: viewProps.disabled,
+  })
 
   const switchBase = theme.components.Switch?.base
   const dragShrink = switchBase?.thumbDragShrink ?? 0.68
@@ -136,7 +142,7 @@ export function Switch({
 
   const toggle = () => {
     if (viewProps.disabled) return
-    commit(!currentChecked)
+    commit(!resolvedSwitch.checked)
   }
 
   const suppressFollowUpClick = () => {
@@ -218,7 +224,7 @@ export function Switch({
     const nextChecked =
       drag.maxOffset > 0
         ? drag.currentOffset >= drag.maxOffset / 2
-        : currentChecked
+        : resolvedSwitch.checked
 
     clearDragShape(thumb)
     delete root.dataset.weaveSwitchDragging
@@ -237,7 +243,7 @@ export function Switch({
     if (
       applyValue &&
       drag.moved &&
-      nextChecked !== currentChecked
+      nextChecked !== resolvedSwitch.checked
     ) {
       commit(nextChecked)
     }
@@ -292,14 +298,14 @@ export function Switch({
 
     const rootRect = root.getBoundingClientRect()
     const thumbRect = thumb.getBoundingClientRect()
-    const inset = currentChecked
+    const inset = resolvedSwitch.checked
       ? Math.max(0, rootRect.right - thumbRect.right)
       : Math.max(0, thumbRect.left - rootRect.left)
     const maxOffset = Math.max(
       0,
       rootRect.width - thumbRect.width - inset * 2,
     )
-    const startOffset = currentChecked ? maxOffset : 0
+    const startOffset = resolvedSwitch.checked ? maxOffset : 0
 
     const drag: SwitchDragState = {
       pointerId: event.pointerId,
@@ -413,12 +419,12 @@ export function Switch({
       {...viewProps}
       className={[
         'weave-switch',
-        `weave-switch--${size}`,
+        `weave-switch--${resolvedSwitch.size}`,
         themeClassName,
         viewProps.className,
       ].filter(Boolean).join(' ')}
       role="switch"
-      checked={currentChecked}
+      checked={resolvedSwitch.checked}
       focusable={viewProps.focusable ?? true}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
@@ -435,7 +441,7 @@ export function Switch({
       data={{
         ...viewProps.data,
         'weave-switch': '',
-        'weave-switch-size': size,
+        'weave-switch-size': resolvedSwitch.size,
       }}
     >
       <View
