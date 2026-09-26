@@ -10,11 +10,11 @@ import { measureDiCText } from './text-layout'
 export function compileDiCText(
   view: ResolvedView,
   text: ResolvedText,
-  value: string,
+  value: string | number | bigint,
 ): DiCViewNode {
   const content: DiCTextContent = {
     kind: 'text',
-    text: value,
+    text: String(value),
     style: text,
   }
 
