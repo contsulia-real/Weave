@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { resolveView } from '../src/core/resolved-view'
+import type { ViewProps } from '../src/core/view-types'
 import { compileDiCView } from '../src/renderers/dic/compile-view'
 import { drawDiCViewTree } from '../src/renderers/dic/draw-view'
 import { layoutDiCViewTree } from '../src/renderers/dic/layout-tree'
@@ -9,7 +10,7 @@ import {
 } from '../src/theme/default-theme'
 
 function node(
-  props: Parameters<typeof resolveView>[0],
+  props: ViewProps,
   children = [] as ReturnType<typeof compileDiCView>[],
 ) {
   return compileDiCView(
