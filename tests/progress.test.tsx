@@ -302,10 +302,10 @@ describe('Progress', () => {
     expect(rule).toContain('--weave-progress-height:3rem;')
     expect(rule).toContain('--weave-progress-thickness:0.25rem;')
     expect(rule).toContain(
-      '--weave-progress-track-shadow:inset 0 1px 2px black;',
+      '--weave-progress-track-shadow:inset01px2pxblack;',
     )
     expect(rule).toContain(
-      '--weave-progress-value-shadow:0 1px 2px black;',
+      '--weave-progress-value-shadow:01px2pxblack;',
     )
   })
 
