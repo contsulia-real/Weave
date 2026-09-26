@@ -219,6 +219,34 @@ describe('DiC Image', () => {
       width: 200,
       height: 100,
     })
+
+    const reversedKeywords = resolveDiCImagePlacement(
+      {
+        kind: 'image',
+        image: resolveImage({
+          src: '/cover.webp',
+          alt: 'Cover',
+          fit: 'contain',
+          position: 'top left',
+        }),
+      },
+      200,
+      100,
+      {
+        x: 0,
+        y: 0,
+        width: 100,
+        height: 100,
+      },
+      16,
+    )
+
+    expect(reversedKeywords).toEqual({
+      x: 0,
+      y: 0,
+      width: 100,
+      height: 50,
+    })
   })
 
   it('clips and draws the resolved bitmap placement', () => {
