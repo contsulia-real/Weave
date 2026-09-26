@@ -13,6 +13,24 @@ import type {
   ViewPointerEvent,
 } from '../../core/view-types'
 
+const targetCache =
+  new WeakMap<Element, ViewEventTarget>()
+
+function targetForElement(
+  element: Element,
+): ViewEventTarget {
+  const id = element.id || undefined
+  const cached = targetCache.get(element)
+
+  if (cached?.id === id) {
+    return cached
+  }
+
+  const target = { id }
+  targetCache.set(element, target)
+  return target
+}
+
 function targetFromEventTarget(
   target: EventTarget | null,
 ): ViewEventTarget {
@@ -24,9 +42,9 @@ function targetFromEventTarget(
       '[data-weave-view]',
     )
 
-    return {
-      id: host?.id || undefined,
-    }
+    return host === null
+      ? {}
+      : targetForElement(host)
   }
 
   return {}
@@ -35,9 +53,7 @@ function targetFromEventTarget(
 function currentTarget(
   element: HTMLElement,
 ): ViewEventTarget {
-  return {
-    id: element.id || undefined,
-  }
+  return targetForElement(element)
 }
 
 function clickEvent<TElement extends HTMLElement>(
@@ -80,12 +96,16 @@ function pointerEvent<
 >(
   event: ReactPointerEvent<TElement>,
   type: ViewPointerEvent['type'],
+  targetSelf = false,
 ): ViewPointerEvent {
   const host = event.currentTarget
   const pointerId = event.pointerId
-  const target = targetFromEventTarget(
-    event.target,
-  )
+  const target =
+    targetSelf
+      ? currentTarget(host)
+      : targetFromEventTarget(
+          event.target,
+        )
 
   return {
     type,
@@ -223,6 +243,7 @@ export function compileDOMViewEvents<
               pointerEvent(
                 event,
                 'pointerenter',
+                true,
               ),
             )
           },
@@ -236,6 +257,7 @@ export function compileDOMViewEvents<
               pointerEvent(
                 event,
                 'pointerleave',
+                true,
               ),
             )
           },
