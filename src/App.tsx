@@ -228,7 +228,7 @@ function App() {
             <Text typo="title-small">Title small</Text>
             <Text typo="body-large">Body large</Text>
             <Text typo="body-medium">Body medium</Text>
-            <Text typo="body-medium">Body small</Text>
+            <Text typo="body-small">Body small</Text>
             <Text typo="label-large">Label large</Text>
             <Text typo="label-medium">Label medium</Text>
             <Text typo="label-small">Label small</Text>
