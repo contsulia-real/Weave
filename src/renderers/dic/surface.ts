@@ -56,11 +56,11 @@ function defaultScheduler(): DiCSurfaceScheduler {
 
   return {
     request: (callback) =>
-      window.setTimeout(
+      globalThis.setTimeout(
         () => callback(performance.now()),
         16,
       ),
-    cancel: (id) => window.clearTimeout(id),
+    cancel: (id) => globalThis.clearTimeout(id),
   }
 }
 
