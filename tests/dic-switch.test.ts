@@ -71,6 +71,12 @@ describe('DiC Switch adapter', () => {
       radiusTopLeft: 'full',
       cursor: 'pointer',
     })
+    expect(node.states.focusVisible).toMatchObject({
+      outlineWidth: 0.125,
+      outlineColor: 'focus',
+      outlineStyle: 'solid',
+      outlineOffset: 0.0625,
+    })
     expect(node.children).toHaveLength(1)
     expect(node.children[0]?.paint).toMatchObject({
       width: 1.25,
@@ -81,12 +87,9 @@ describe('DiC Switch adapter', () => {
       transform: [
         {
           translate: [
-            0.125,
-            0.125,
+            '18px',
+            '2px',
           ],
-        },
-        {
-          translateX: 1,
         },
       ],
     })
@@ -159,6 +162,98 @@ describe('DiC Switch adapter', () => {
     expect(onChange).toHaveBeenCalledTimes(3)
   })
 
+  it('drags the thumb without layout reads and commits once past midpoint', () => {
+    const onChange = vi.fn()
+    const invalidate = vi.fn()
+    const capture = vi.fn()
+    const release = vi.fn()
+    const node = compileDiCSwitch(
+      resolveView({}, defaultBreakpoints),
+      resolveSwitch({
+        checked: false,
+      }),
+      defaultTheme,
+      {
+        onChange,
+      },
+    )
+    const layout = layoutDiCViewTree(
+      node,
+      {
+        width: 100,
+        height: 100,
+        root: false,
+      },
+      {
+        viewportWidth: 100,
+        rem: 16,
+        theme: defaultTheme,
+      },
+    )
+    const controller = createDiCInteractionController({
+      getLayout: () => layout,
+      invalidate,
+    })
+    const thumb = node.children[0]
+
+    controller.dispatchPointer({
+      type: 'pointerdown',
+      x: 10,
+      y: 10,
+      pointerId: 7,
+      button: 0,
+      buttons: 1,
+      capture,
+      release,
+    })
+
+    expect(capture).toHaveBeenCalledWith(7)
+    expect(thumb?.paint.width).toBe('13.6px')
+    expect(thumb?.paint.height).toBe('13.6px')
+
+    controller.dispatchPointer({
+      type: 'pointermove',
+      x: 30,
+      y: 10,
+      pointerId: 7,
+      button: 0,
+      buttons: 1,
+      capture,
+      release,
+    })
+
+    expect(thumb?.paint.width).toBe('27px')
+    expect(thumb?.paint.height).toBe('13.6px')
+    expect(invalidate).toHaveBeenCalled()
+
+    controller.dispatchPointer({
+      type: 'pointerup',
+      x: 30,
+      y: 10,
+      pointerId: 7,
+      button: 0,
+      buttons: 0,
+      capture,
+      release,
+    })
+
+    expect(onChange).toHaveBeenCalledTimes(1)
+    expect(onChange).toHaveBeenCalledWith(true)
+    expect(release).toHaveBeenCalledTimes(1)
+    expect(thumb?.paint).toMatchObject({
+      width: 1.25,
+      height: 1.25,
+      transform: [
+        {
+          translate: [
+            '2px',
+            '2px',
+          ],
+        },
+      ],
+    })
+  })
+
   it('suppresses toggle while disabled and resolves disabled visuals', () => {
     const onChange = vi.fn()
     const node = compileDiCSwitch(
@@ -188,6 +283,7 @@ describe('DiC Switch adapter', () => {
       stopPropagation: vi.fn(),
       capturePointer: vi.fn(),
       releasePointer: vi.fn(),
+      requestRender: vi.fn(),
     })
 
     expect(onChange).not.toHaveBeenCalled()
