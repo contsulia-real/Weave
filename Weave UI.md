@@ -4732,7 +4732,119 @@ React 归属
 
 # 27. 当前整体结构
 
-当前框架设计可以整体表示为：
+当前渲染管线明确分为语义归一化与后端编译两层：
+
+```text
+React components
+      │
+      ▼
+ViewProps / component semantic props
+      │
+      ▼
+resolve / normalize
+      │
+      ▼
+ResolvedView
+├─ canonical style
+├─ states
+├─ responsive branches
+├─ semantics
+└─ container metadata
+      │
+      ├─────────────────────┐
+      ▼                     ▼
+DOM compiler            DiC compiler
+      │                     │
+      ▼                     ▼
+CSS variables / DOM      DiC View node
+```
+
+`ResolvedView` 是 renderer-neutral IR。它保留 Weave 语义值，例如：
+
+```text
+width = 10
+background = "primary"
+radiusTopLeft = "large"
+transform = [{ translate: [1, 0] }, { scale: 1.05 }]
+```
+
+这一层禁止提前出现：
+
+```text
+10rem
+var(--weave-color-primary)
+linear-gradient(...)
+box-shadow CSS string
+```
+
+这些转换只属于具体 renderer。
+
+## 27.1 View alias normalization
+
+`ViewProps` 中方便书写的简写在进入 IR 时统一展开，例如：
+
+```text
+padding = 1
+paddingTop = 2
+
+→
+
+paddingTop = 2
+paddingRight = 1
+paddingBottom = 1
+paddingLeft = 1
+```
+
+同样适用于：
+
+- margin
+- inset
+- border width / color
+- radius
+- transform shorthand
+
+state 与 breakpoint 分支使用同一套 normalization，不允许各 renderer 各自解释一次。
+
+## 27.2 DOM fallback
+
+DOM fallback 消费 `ResolvedView`，然后才执行 DOM / CSS 专属编译：
+
+```text
+number length → rem
+color token   → CSS variable
+radius token  → CSS variable
+gradient      → CSS gradient
+shadow        → box-shadow
+transform IR  → CSS transform
+```
+
+CSS value compiler 位于 `renderers/dom`，不属于 core。
+
+## 27.3 当前 DiC vertical slice
+
+当前 DiC compiler 已接入同一个 `ResolvedView`，第一批 View paint 能力为：
+
+```text
+width
+height
+padding
+background
+radius
+opacity
+transform
+```
+
+并保留：
+
+```text
+hover / active / focus / disabled states
+viewport breakpoint branches
+container breakpoint branches
+```
+
+这一阶段建立的是 DiC renderer 的 View node contract；后续 Canvas surface、布局执行与真正绘制继续在该 contract 上扩展，不反向解析 DOM/CSS。
+
+## 27.4 组件结构
 
 ```text
 React
@@ -4762,30 +4874,10 @@ View
 ├─ ToolTip
 ├─ Snack
 ├─ List
-└─ ListItem    │
-    ▼
-非 View 组件
-├─ 自身语义属性
-└─ viewProps: ViewProps
-    │
-    ▼
-统一组件公开 API
-├─ 语义化高层属性
-├─ 布局
-├─ 视觉
-├─ 状态样式
-├─ 响应式
-├─ 动画
-├─ 可访问性
-├─ 层级
-├─ 主题
-└─ ViewProps 中的 style / className 逃生口
-    │
-    ▼
-主路径：DOM-in-Canvas
-    │
-    └── fallback：DOM + CSS
+└─ ListItem
 ```
+
+非 View 组件仍使用自身语义属性 + `viewProps: ViewProps`，最终进入相同的 normalization / renderer 管线。
 
 ---
 
@@ -4830,4 +4922,8 @@ View
 35. Scrollbar 只绘制 thumb，不提供 tracked / trackColor；带圆角宿主必须把圆角曲线区域排除出 thumb 的运动区。
 36. 所有框架拥有的文字视觉必须选择或继承 `theme.tokens.typography.styles` 中的 typo；Button、Input 等组件不得平行维护 `fontSize / fontWeight / lineHeight / letterSpacing`。
 37. 普通 View 继承当前排版上下文；根节点与 ThemeProvider 默认建立 `body-large` 上下文，允许 Button 等组件建立自己的 typo 上下文后由内部 Text 继承。
-38. API 的目标是：AI 易写易读，同时人类易读。
+38. `ViewProps` 必须先归一化为 renderer-neutral `ResolvedView`；DOM / DiC renderer 不得各自直接重新解释 View alias。
+39. core 不产生 `rem`、CSS variable、gradient / shadow / transform CSS string；这些字符串只允许在 DOM renderer 中生成。
+40. state 与 responsive breakpoint 必须保留为 IR 分支，不能在进入 renderer 前被压扁为 DOM/CSS 表达。
+41. DiC 与 DOM fallback 必须消费同一个语义 IR；禁止让 DiC 反向解析 DOM/CSS。
+42. API 的目标是：AI 易写易读，同时人类易读。
