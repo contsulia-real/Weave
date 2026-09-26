@@ -2,7 +2,6 @@ import type {
   BackgroundValue,
   Length,
   RadiusValue,
-  TransformOperation,
 } from '../../core/view-types'
 import type { ResolvedTheme } from '../../theme/theme-types'
 import type {
@@ -13,6 +12,7 @@ import type { DiCViewTreeLayout } from './layout-tree'
 import { drawDiCText } from './draw-text'
 import { drawDiCImage } from './draw-image'
 import type { DiCImageResourceManager } from './image-resource'
+import { applyDiCTransform } from './transform'
 
 export interface DiCViewFrame {
   x: number
@@ -163,94 +163,6 @@ function backgroundStyle(
     : radialGradient(context, background, frame, theme)
 }
 
-function angleRadians(value: number | string): number {
-  if (typeof value === 'number') return value * Math.PI / 180
-
-  const input = value.trim()
-  if (input.endsWith('deg')) {
-    const parsed = Number.parseFloat(input)
-    if (Number.isFinite(parsed)) {
-      return parsed * Math.PI / 180
-    }
-  }
-  if (input.endsWith('rad')) {
-    const parsed = Number.parseFloat(input)
-    if (Number.isFinite(parsed)) return parsed
-  }
-
-  throw new Error(
-    `Unsupported DiC angle "${String(value)}"`,
-  )
-}
-
-function translateLength(
-  value: Length,
-  rem: number,
-  reference: number,
-): number {
-  const numeric = numericLength(value, rem, reference)
-  if (numeric === undefined) {
-    throw new Error(
-      `Unsupported DiC transform length "${String(value)}"`,
-    )
-  }
-
-  return numeric
-}
-
-function applyTransform(
-  context: CanvasRenderingContext2D,
-  operation: TransformOperation,
-  rem: number,
-  frame: DiCViewFrame,
-): void {
-  if ('translate' in operation) {
-    context.translate(
-      translateLength(operation.translate[0], rem, frame.width),
-      translateLength(operation.translate[1], rem, frame.height),
-    )
-    return
-  }
-  if ('translateX' in operation) {
-    context.translate(
-      translateLength(operation.translateX, rem, frame.width),
-      0,
-    )
-    return
-  }
-  if ('translateY' in operation) {
-    context.translate(
-      0,
-      translateLength(operation.translateY, rem, frame.height),
-    )
-    return
-  }
-  if ('rotate' in operation) {
-    context.rotate(angleRadians(operation.rotate))
-    return
-  }
-  if ('skewX' in operation) {
-    const radians = angleRadians(operation.skewX)
-    context.transform(1, 0, Math.tan(radians), 1, 0, 0)
-    return
-  }
-  if ('skewY' in operation) {
-    const radians = angleRadians(operation.skewY)
-    context.transform(1, Math.tan(radians), 0, 1, 0, 0)
-    return
-  }
-  if ('scale' in operation) {
-    context.scale(operation.scale, operation.scale)
-    return
-  }
-  if ('scaleX' in operation) {
-    context.scale(operation.scaleX, 1)
-    return
-  }
-
-  context.scale(1, operation.scaleY)
-}
-
 function roundedPath(
   context: CanvasRenderingContext2D,
   frame: DiCViewFrame,
@@ -303,13 +215,12 @@ function applyViewContext(
 ): void {
   context.globalAlpha *= paint.opacity ?? 1
 
-  if (paint.transform === undefined) return
-
-  context.translate(frame.width / 2, frame.height / 2)
-  for (const operation of paint.transform) {
-    applyTransform(context, operation, rem, frame)
-  }
-  context.translate(-frame.width / 2, -frame.height / 2)
+  applyDiCTransform(
+    context,
+    paint.transform,
+    frame,
+    rem,
+  )
 }
 
 function clipViewBounds(
