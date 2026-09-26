@@ -26,6 +26,8 @@ export interface DiCTreeConstraints {
   width: number
   height: number
   root?: boolean
+  forceWidth?: number
+  forceHeight?: number
 }
 
 export interface DiCViewTreeLayout {
@@ -502,6 +504,13 @@ function layoutChildren(
       ? gapValue(paint, contentFrame.width, rem)
       : 0
 
+  const childPaints = node.children.map((child) =>
+    resolvedPaint(
+      child,
+      environment,
+      nextContainerWidth,
+    ),
+  )
   const desired = node.children.map((child) =>
     measureDiCViewTree(
       child,
@@ -521,12 +530,35 @@ function layoutChildren(
   const crossAvailable = row
     ? contentFrame.height
     : contentFrame.width
-  const baseMain = desired.map((size) =>
-    row ? size.width : size.height,
+  const flexible = childPaints.map((childPaint) =>
+    (row ? childPaint.width : childPaint.height) === 'fill',
+  )
+  const baseMain = desired.map((size, index) =>
+    flexible[index]
+      ? 0
+      : row
+        ? size.width
+        : size.height,
+  )
+  const baseGapTotal =
+    gap * Math.max(0, node.children.length - 1)
+  const fixedMain =
+    baseMain.reduce((sum, value) => sum + value, 0)
+  const flexibleCount =
+    flexible.filter(Boolean).length
+  const flexibleShare =
+    flexibleCount === 0
+      ? 0
+      : Math.max(
+          0,
+          mainAvailable - fixedMain - baseGapTotal,
+        ) / flexibleCount
+  const finalMain = baseMain.map((value, index) =>
+    flexible[index] ? flexibleShare : value,
   )
   const occupied =
-    baseMain.reduce((sum, value) => sum + value, 0) +
-    gap * Math.max(0, node.children.length - 1)
+    finalMain.reduce((sum, value) => sum + value, 0) +
+    baseGapTotal
   const justify = justifyOffsets(
     paint.justify,
     mainAvailable - occupied,
@@ -547,13 +579,31 @@ function layoutChildren(
     const size = desired[index]
     if (child === undefined || size === undefined) continue
 
-    const main = row ? size.width : size.height
-    const cross = row ? size.height : size.width
+    const main = finalMain[index] ?? 0
+    const childPaint = childPaints[index]
+    const desiredCross = row ? size.height : size.width
+    const childCrossDimension = row
+      ? childPaint?.height
+      : childPaint?.width
+    const align =
+      paint.align ??
+      (paint.layout === 'flex' ? 'stretch' : 'start')
+    const stretches =
+      align === 'stretch' &&
+      (
+        childCrossDimension === undefined ||
+        childCrossDimension === 'fill'
+      )
+    const cross = stretches
+      ? crossAvailable
+      : desiredCross
     const crossStart = crossOffset(
-      paint.align,
+      align,
       crossAvailable,
       cross,
     )
+    const allocatedWidth = row ? main : cross
+    const allocatedHeight = row ? cross : main
 
     result[index] = layoutDiCViewTreeInternal(
       child,
@@ -564,8 +614,10 @@ function layoutChildren(
         y:
           contentFrame.y +
           (row ? crossStart : cursor),
-        width: row ? main : cross,
-        height: row ? cross : main,
+        width: allocatedWidth,
+        height: allocatedHeight,
+        forceWidth: allocatedWidth,
+        forceHeight: allocatedHeight,
       },
       environment,
       nextContainerWidth,
@@ -591,7 +643,7 @@ function layoutDiCViewTreeInternal(
     environment,
     containerWidth,
   )
-  const size = measureDiCViewTree(
+  const measuredSize = measureDiCViewTree(
     node,
     {
       width: constraints.width,
@@ -601,6 +653,10 @@ function layoutDiCViewTreeInternal(
     containerWidth,
     root,
   )
+  const size = {
+    width: constraints.forceWidth ?? measuredSize.width,
+    height: constraints.forceHeight ?? measuredSize.height,
+  }
 
   const top = paddingValue(
     paint.paddingTop,
