@@ -28,8 +28,8 @@ export type DiCImageLoader = (
 
 export interface DiCImageResourceManager {
   get(source: ImageSource): DiCImageResource
-  retain?(source: ImageSource): void
-  release?(source: ImageSource): void
+  retain(source: ImageSource): void
+  release(source: ImageSource): void
   subscribe(listener: () => void): () => void
   destroy(): void
 }
