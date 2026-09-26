@@ -197,6 +197,19 @@ export function createDiCSurface(
       },
     )
 
+    interactions?.reconcile()
+
+    if (
+      interactions
+        ?.getFocusedNode()
+        ?.interaction
+        ?.autoFocus
+    ) {
+      canvas.focus?.({
+        preventScroll: true,
+      })
+    }
+
     drawDiCViewTree(
       context,
       layout,
