@@ -3,7 +3,7 @@ import type {
   TextResponsiveProps,
   TextStyleProps,
 } from '../../core/text-types'
-import { length } from '../../core/values'
+import { length } from './css-values'
 import { typographyStyleVariableReference } from '../../theme/theme-css'
 
 export type TextVariableStyle = CSSProperties &
