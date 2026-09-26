@@ -24,6 +24,9 @@ describe('ResolvedView IR', () => {
         paddingX: 1.5,
       },
       label: 'Card',
+      focusable: true,
+      autoFocus: true,
+      tabIndex: -1,
     }
 
     const resolved = resolveView(props, defaultBreakpoints)
@@ -50,6 +53,11 @@ describe('ResolvedView IR', () => {
     expect(resolved.style).not.toHaveProperty('radius')
     expect(resolved.style).not.toHaveProperty('translateX')
     expect(resolved.semantics.label).toBe('Card')
+    expect(resolved.interaction).toEqual({
+      focusable: true,
+      autoFocus: true,
+      tabIndex: -1,
+    })
 
     expect(resolved.states.hover).toMatchObject({
       opacity: 1,
