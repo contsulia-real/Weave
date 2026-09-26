@@ -31,6 +31,8 @@ function readyResources(
       width,
       height,
     })),
+    retain: vi.fn(),
+    release: vi.fn(),
     subscribe: vi.fn(() => () => {}),
     destroy: vi.fn(),
   }
@@ -302,6 +304,8 @@ describe('DiC Image', () => {
       get: vi.fn(() => ({
         status: 'loading',
       })),
+      retain: vi.fn(),
+      release: vi.fn(),
       subscribe: vi.fn(() => () => {}),
       destroy: vi.fn(),
     }
