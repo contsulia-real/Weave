@@ -233,6 +233,8 @@ function intrinsicChildrenSize(
       rem,
       resolvedWidth,
       resolvedHeight,
+      widthMode: paint.width,
+      heightMode: paint.height,
     },
     {
       context: environment.context,
