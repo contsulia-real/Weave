@@ -387,6 +387,76 @@ describe('DiC interaction controller', () => {
     expect(release).toHaveBeenCalledWith(1)
   })
 
+  it('bubbles public focus events with stable View targets', () => {
+    const parentFocus = vi.fn()
+    const childFocus = vi.fn()
+
+    const child = node({
+      id: 'focus-child',
+      width: 4,
+      height: 3,
+      focusable: true,
+      onFocus: childFocus,
+    })
+    const root = node(
+      {
+        id: 'focus-parent',
+        layout: 'stack',
+        width: 10,
+        height: 8,
+        onFocus: parentFocus,
+      },
+      undefined,
+      [child],
+    )
+
+    const layout = layoutDiCViewTree(
+      root,
+      {
+        width: 200,
+        height: 200,
+      },
+      {
+        viewportWidth: 200,
+        rem: 16,
+        theme: defaultTheme,
+      },
+    )
+    const controller = createDiCInteractionController({
+      getLayout: () => layout,
+      invalidate: vi.fn(),
+    })
+
+    controller.dispatchPointer(
+      pointer('pointerdown', 20, 20),
+    )
+
+    expect(childFocus).toHaveBeenCalledTimes(1)
+    expect(parentFocus).toHaveBeenCalledTimes(1)
+    expect(
+      childFocus.mock.calls[0]?.[0],
+    ).toMatchObject({
+      type: 'focus',
+      target: {
+        id: 'focus-child',
+      },
+      currentTarget: {
+        id: 'focus-child',
+      },
+    })
+    expect(
+      parentFocus.mock.calls[0]?.[0],
+    ).toMatchObject({
+      type: 'focus',
+      target: {
+        id: 'focus-child',
+      },
+      currentTarget: {
+        id: 'focus-parent',
+      },
+    })
+  })
+
   it('derives autoFocus from ResolvedView and reconciles stale focus after tree replacement', () => {
     const first = node({
       width: 4,
