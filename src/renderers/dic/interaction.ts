@@ -561,8 +561,10 @@ export function createDiCInteractionController(
         )
         activeNodes.clear()
         pointerDownTargets.delete(input.pointerId)
-        captures.delete(input.pointerId)
-        input.release?.(input.pointerId)
+        if (captures.has(input.pointerId)) {
+          captures.delete(input.pointerId)
+          input.release?.(input.pointerId)
+        }
         options.invalidate()
 
         return {
@@ -588,8 +590,10 @@ export function createDiCInteractionController(
 
       activeNodes.clear()
       pointerDownTargets.delete(input.pointerId)
-      captures.delete(input.pointerId)
-      input.release?.(input.pointerId)
+      if (captures.has(input.pointerId)) {
+        captures.delete(input.pointerId)
+        input.release?.(input.pointerId)
+      }
       options.invalidate()
 
       if (
