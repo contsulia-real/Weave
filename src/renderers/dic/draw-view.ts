@@ -368,39 +368,62 @@ function drawViewShadow(
       shadow.spread,
       rem,
     )
-    const shadowFrame: DiCViewFrame = {
-      x: -spread,
-      y: -spread,
-      width: frame.width + spread * 2,
-      height: frame.height + spread * 2,
-    }
-
-    context.save()
-    context.shadowOffsetX = shadowLength(
+    const offsetX = shadowLength(
       shadow.x,
       rem,
     )
-    context.shadowOffsetY = shadowLength(
+    const offsetY = shadowLength(
       shadow.y,
       rem,
     )
-    context.shadowBlur = shadowLength(
+    const blur = shadowLength(
       shadow.blur,
       rem,
     )
-    context.shadowColor = resolveDiCColor(
+    const color = resolveDiCColor(
       shadow.color ?? 'rgb(0 0 0 / 0.2)',
       options.theme,
     )
+    const shadowFrame: DiCViewFrame = {
+      x: offsetX - spread,
+      y: offsetY - spread,
+      width: frame.width + spread * 2,
+      height: frame.height + spread * 2,
+    }
+    const shadowRadii = radii.map(
+      (radius) => Math.max(0, radius + spread),
+    ) as [number, number, number, number]
+
+    context.save()
     context.globalAlpha *= shadow.opacity ?? 1
+
+    if (blur === 0) {
+      context.fillStyle = color
+      roundedPath(
+        context,
+        shadowFrame,
+        shadowRadii,
+      )
+      context.fill()
+      context.restore()
+      continue
+    }
+
+    context.shadowOffsetX = offsetX
+    context.shadowOffsetY = offsetY
+    context.shadowBlur = blur
+    context.shadowColor = color
     context.fillStyle = '#000'
 
     roundedPath(
       context,
-      shadowFrame,
-      radii.map(
-        (radius) => Math.max(0, radius + spread),
-      ) as [number, number, number, number],
+      {
+        x: -spread,
+        y: -spread,
+        width: frame.width + spread * 2,
+        height: frame.height + spread * 2,
+      },
+      shadowRadii,
     )
     context.fill()
     context.restore()
