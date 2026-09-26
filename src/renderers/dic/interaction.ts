@@ -135,6 +135,7 @@ export function createDiCInteractionController(
   options: DiCInteractionControllerOptions,
 ): DiCInteractionController {
   let hoverHit: DiCHitResult | undefined
+  let lastPointerInput: DiCPointerInput | undefined
   let focusedNode: DiCViewNode | undefined
   let focusVisible = false
   const activeNodes = new Set<DiCViewNode>()
@@ -483,6 +484,11 @@ export function createDiCInteractionController(
       }
     },
     dispatchPointer(input) {
+      lastPointerInput =
+        input.type === 'pointerleave'
+          ? undefined
+          : input
+
       const hit = input.type === 'pointerleave'
         ? undefined
         : currentHit(input)
@@ -654,6 +660,22 @@ export function createDiCInteractionController(
       ) {
         hoverHit = undefined
         changed = true
+      }
+
+      if (lastPointerInput !== undefined) {
+        const nextHit = currentHit(lastPointerInput)
+        const previousPath = hoverHit?.path ?? []
+        const nextPath = nextHit?.path ?? []
+
+        if (!samePath(previousPath, nextPath)) {
+          updateHover(
+            nextHit,
+            lastPointerInput,
+          )
+          changed = true
+        } else {
+          hoverHit = nextHit
+        }
       }
 
       if (focusedNode === undefined) {
