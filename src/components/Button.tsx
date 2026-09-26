@@ -142,10 +142,7 @@ export function Button<
       ] = breakpoint.size
     }
   }
-  const iconOnly =
-    'icon' in props &&
-    props.icon !== undefined &&
-    props.text === undefined
+  const iconOnly = button.iconOnly
 
   return (
     <button
