@@ -90,6 +90,93 @@ function scrollbarVisible(
   )
 }
 
+interface RadiusAxes {
+  x: number
+  y: number
+}
+
+interface CornerRadii {
+  topLeft: RadiusAxes
+  topRight: RadiusAxes
+  bottomRight: RadiusAxes
+  bottomLeft: RadiusAxes
+}
+
+function cssLengthPixels(value: string, reference: number): number {
+  const trimmed = value.trim()
+  if (trimmed.endsWith('%')) {
+    const percent = Number.parseFloat(trimmed)
+    return Number.isFinite(percent)
+      ? reference * percent / 100
+      : 0
+  }
+
+  const numeric = Number.parseFloat(trimmed)
+  return Number.isFinite(numeric) ? numeric : 0
+}
+
+function radiusAxes(
+  value: string,
+  width: number,
+  height: number,
+): RadiusAxes {
+  const [xValue = '0', yValue = xValue] =
+    value.trim().split(/\s+/)
+
+  return {
+    x: Math.max(0, cssLengthPixels(xValue, width)),
+    y: Math.max(0, cssLengthPixels(yValue, height)),
+  }
+}
+
+function effectiveCornerRadii(
+  computed: CSSStyleDeclaration,
+  rect: DOMRect,
+): CornerRadii {
+  const radii: CornerRadii = {
+    topLeft: radiusAxes(
+      computed.borderTopLeftRadius,
+      rect.width,
+      rect.height,
+    ),
+    topRight: radiusAxes(
+      computed.borderTopRightRadius,
+      rect.width,
+      rect.height,
+    ),
+    bottomRight: radiusAxes(
+      computed.borderBottomRightRadius,
+      rect.width,
+      rect.height,
+    ),
+    bottomLeft: radiusAxes(
+      computed.borderBottomLeftRadius,
+      rect.width,
+      rect.height,
+    ),
+  }
+
+  const ratio = (available: number, requested: number) =>
+    requested <= 0 ? 1 : available / requested
+
+  const scale = Math.min(
+    1,
+    ratio(rect.width, radii.topLeft.x + radii.topRight.x),
+    ratio(rect.width, radii.bottomLeft.x + radii.bottomRight.x),
+    ratio(rect.height, radii.topLeft.y + radii.bottomLeft.y),
+    ratio(rect.height, radii.topRight.y + radii.bottomRight.y),
+  )
+
+  if (scale >= 1) return radii
+
+  for (const radius of Object.values(radii)) {
+    radius.x *= scale
+    radius.y *= scale
+  }
+
+  return radii
+}
+
 function syncScrollbarLayer(
   track: HTMLElement,
   target: HTMLElement,
@@ -137,7 +224,6 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
   })
 
   const size: ScrollbarSize = config?.size ?? 'medium'
-  const tracked = config?.tracked === true
   const { theme } = useTheme()
   const themeTokenClassName = useRuntimeStyleClass(
     'scrollbar-tokens',
@@ -213,12 +299,7 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
     const borderBottom = parseFloat(computed.borderBottomWidth) || 0
     const borderLeft = parseFloat(computed.borderLeftWidth) || 0
     const inset = SCROLLBAR_INSET_PX
-    const innerTop = rect.top + borderTop + inset
-    const innerRight = rect.right - borderRight - inset
-    const innerBottom = rect.bottom - borderBottom - inset
-    const innerLeft = rect.left + borderLeft + inset
-    const innerHeight = Math.max(0, innerBottom - innerTop)
-    const innerWidth = Math.max(0, innerRight - innerLeft)
+    const radii = effectiveCornerRadii(computed, rect)
 
     syncScrollbarLayer(verticalTrack, target)
     syncScrollbarLayer(horizontalTrack, target)
@@ -267,6 +348,29 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
       ? parseFloat(getComputedStyle(horizontalThumb).height) || 0
       : 0
 
+    const verticalStartInset = Math.max(
+      borderTop + inset,
+      radii.topRight.y,
+    )
+    const verticalEndInset = Math.max(
+      borderBottom + inset,
+      radii.bottomRight.y,
+      horizontalVisible
+        ? borderBottom + inset + horizontalThickness
+        : 0,
+    )
+    const horizontalStartInset = Math.max(
+      borderLeft + inset,
+      radii.bottomLeft.x,
+    )
+    const horizontalEndInset = Math.max(
+      borderRight + inset,
+      radii.bottomRight.x,
+      verticalVisible
+        ? borderRight + inset + verticalThickness
+        : 0,
+    )
+
     let verticalAvailable = 0
     let verticalMaxScroll = 0
     let horizontalAvailable = 0
@@ -275,9 +379,7 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
     if (verticalVisible) {
       const trackLength = Math.max(
         0,
-        innerHeight -
-          horizontalThickness -
-          (horizontalVisible ? inset : 0),
+        rect.height - verticalStartInset - verticalEndInset,
       )
       const thumbLength = Math.min(
         trackLength,
@@ -293,7 +395,8 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
         target.scrollHeight - target.clientHeight,
       )
 
-      verticalTrack.style.top = `${innerTop}px`
+      verticalTrack.style.top =
+        `${rect.top + verticalStartInset}px`
       verticalTrack.style.left = `${rect.right}px`
       verticalTrack.style.height = `${trackLength}px`
       verticalTrack.style.setProperty(
@@ -306,9 +409,7 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
     if (horizontalVisible) {
       const trackLength = Math.max(
         0,
-        innerWidth -
-          verticalThickness -
-          (verticalVisible ? inset : 0),
+        rect.width - horizontalStartInset - horizontalEndInset,
       )
       const thumbLength = Math.min(
         trackLength,
@@ -324,7 +425,8 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
         target.scrollWidth - target.clientWidth,
       )
 
-      horizontalTrack.style.left = `${innerLeft}px`
+      horizontalTrack.style.left =
+        `${rect.left + horizontalStartInset}px`
       horizontalTrack.style.top = `${rect.bottom}px`
       horizontalTrack.style.width = `${trackLength}px`
       horizontalTrack.style.setProperty(
@@ -583,7 +685,6 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
           themeTokenClassName,
           scrollbarThemeClassName,
           'weave-scrollbar--vertical',
-          tracked ? 'weave-scrollbar--tracked' : undefined,
         ].filter(Boolean).join(' ')}
         onPointerDown={(event) =>
           handleTrackPointerDown('vertical', event)
@@ -595,7 +696,6 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
           'weave-scrollbar': '',
           'weave-scrollbar-orientation': 'vertical',
           'weave-scrollbar-visible': 'false',
-          'weave-scrollbar-tracked': tracked || undefined,
         }}
       >
         <ScrollbarView
@@ -617,7 +717,6 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
           themeTokenClassName,
           scrollbarThemeClassName,
           'weave-scrollbar--horizontal',
-          tracked ? 'weave-scrollbar--tracked' : undefined,
         ].filter(Boolean).join(' ')}
         onPointerDown={(event) =>
           handleTrackPointerDown('horizontal', event)
@@ -629,7 +728,6 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
           'weave-scrollbar': '',
           'weave-scrollbar-orientation': 'horizontal',
           'weave-scrollbar-visible': 'false',
-          'weave-scrollbar-tracked': tracked || undefined,
         }}
       >
         <ScrollbarView
