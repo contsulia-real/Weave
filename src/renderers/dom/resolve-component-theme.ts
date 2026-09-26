@@ -176,6 +176,8 @@ export function resolveProgressTheme(
     ),
     '--weave-progress-thickness': length(sized?.spinThickness),
     '--weave-progress-track-color': color(base?.trackColor),
+    '--weave-progress-track-shadow': base?.trackShadow,
+    '--weave-progress-value-shadow': base?.valueShadow,
     '--weave-progress-linear-radius': radius(base?.linearRadius),
   }
 }
@@ -212,6 +214,8 @@ export function resolveScrollbarTheme(
     '--weave-scrollbar-track-color': color(
       config?.trackColor ?? base?.trackColor,
     ),
+    '--weave-scrollbar-track-shadow': base?.trackShadow,
+    '--weave-scrollbar-thumb-shadow': base?.thumbShadow,
     '--weave-scrollbar-radius': radius(config?.radius ?? base?.radius),
     '--weave-scrollbar-opacity': config?.opacity ?? base?.opacity,
     '--weave-scrollbar-thumb-cursor': base?.thumbCursor,
