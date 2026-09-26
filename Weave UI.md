@@ -3615,6 +3615,28 @@ const theme = {
         normal: "0em",
         wide: "0.02em",
       },
+
+      styles: {
+        "display-large": {
+          fontSize: 3.5,
+          fontWeight: 700,
+          lineHeight: "1.05",
+          letterSpacing: "-0.035em",
+        },
+        "headline-small": {
+          fontSize: 1.5,
+          fontWeight: 600,
+          lineHeight: "1.22",
+          letterSpacing: "-0.01em",
+        },
+        "body-medium": {
+          fontSize: 0.875,
+          fontWeight: 400,
+          lineHeight: "1.5",
+          letterSpacing: "0em",
+        },
+        // ...其余完整 type scale
+      },
     },
 
     spacing: {
@@ -3681,7 +3703,7 @@ const theme = {
 
 ### 全局 Typography
 
-`tokens.typography` 不是只给 `Text.size` 查表，而是整个 Weave 子树的排版基线。
+`tokens.typography` 同时承担两层职责：提供整个 Weave 子树的全局排版基线，并通过 `styles` 定义 `Text.typo` 的完整 type scale。
 
 ThemeProvider 默认继承：
 
@@ -4788,4 +4810,6 @@ View
 31. 具体组件已经提供同义语义状态属性时，该状态不在其 `viewProps` 中重复暴露，组件属性作为唯一真值。
 32. 框架自身的 playground、示例与组合组件必须优先 dogfood 已有 Weave 语义组件；已有 `Text`、`Progress` 等能力时，不再平行维护裸 DOM / 私有 CSS 的同义实现。
 33. 组合组件复用基础组件的视觉内核时，可以由组合组件自己承担更高层语义；不得因此重复暴露冲突的 ARIA 角色。
-34. API 的目标是：AI 易写易读，同时人类易读。
+34. `Text.typo` 必须来自主题中的完整 type scale；不能退回 renderer 内部的少量硬编码 preset。
+35. Scrollbar 只绘制 thumb，不提供 tracked / trackColor；带圆角宿主必须把圆角曲线区域排除出 thumb 的运动区。
+36. API 的目标是：AI 易写易读，同时人类易读。
