@@ -106,9 +106,25 @@ function parsePosition(
   }
 
   if (tokens.length === 2) {
-    const [xToken = '', yToken = ''] = tokens
-    const x = axisToken(xToken, 'x', rem, width)
-    const y = axisToken(yToken, 'y', rem, height)
+    const [first = '', second = ''] = tokens
+    const firstIsY =
+      first === 'top' ||
+      first === 'bottom'
+    const secondIsX =
+      second === 'left' ||
+      second === 'right'
+
+    if (firstIsY && secondIsX) {
+      const x = axisToken(second, 'x', rem, width)
+      const y = axisToken(first, 'y', rem, height)
+
+      if (x !== undefined && y !== undefined) {
+        return [x, y]
+      }
+    }
+
+    const x = axisToken(first, 'x', rem, width)
+    const y = axisToken(second, 'y', rem, height)
 
     if (x !== undefined && y !== undefined) {
       return [x, y]
@@ -136,6 +152,15 @@ export function resolveDiCImagePlacement(
   frame: DiCViewFrame,
   rem: number,
 ): DiCImagePlacement {
+  if (naturalWidth <= 0 || naturalHeight <= 0) {
+    return {
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
+    }
+  }
+
   const [xPosition, yPosition] = parsePosition(
     content.image.position,
     rem,
