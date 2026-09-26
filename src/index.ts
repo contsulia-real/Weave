@@ -50,6 +50,7 @@ export type {
   ThemeDefinition,
   ThemeFeedbackTokens,
   ThemeInput,
+  ThemeTypographyStyle,
   ThemeTypographyTokens,
   ThemeMode,
   ThemeOverride,
