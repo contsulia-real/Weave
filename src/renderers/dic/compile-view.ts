@@ -48,21 +48,23 @@ export interface DiCViewNode {
 }
 
 function paint(style: ResolvedViewStyle): DiCViewPaint {
-  return {
-    width: style.width,
-    height: style.height,
-    paddingTop: style.paddingTop,
-    paddingRight: style.paddingRight,
-    paddingBottom: style.paddingBottom,
-    paddingLeft: style.paddingLeft,
-    background: style.background,
-    radiusTopLeft: style.radiusTopLeft,
-    radiusTopRight: style.radiusTopRight,
-    radiusBottomRight: style.radiusBottomRight,
-    radiusBottomLeft: style.radiusBottomLeft,
-    opacity: style.opacity,
-    transform: style.transform,
-  }
+  return Object.fromEntries(
+    Object.entries({
+      width: style.width,
+      height: style.height,
+      paddingTop: style.paddingTop,
+      paddingRight: style.paddingRight,
+      paddingBottom: style.paddingBottom,
+      paddingLeft: style.paddingLeft,
+      background: style.background,
+      radiusTopLeft: style.radiusTopLeft,
+      radiusTopRight: style.radiusTopRight,
+      radiusBottomRight: style.radiusBottomRight,
+      radiusBottomLeft: style.radiusBottomLeft,
+      opacity: style.opacity,
+      transform: style.transform,
+    }).filter(([, value]) => value !== undefined),
+  ) as DiCViewPaint
 }
 
 function breakpoint(
