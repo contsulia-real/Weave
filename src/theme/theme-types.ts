@@ -60,8 +60,7 @@ export interface InputThemeBase {
   minHeight?: ThemeScaleValue
   paddingX?: ThemeScaleValue
   paddingY?: ThemeScaleValue
-  fontSize?: ThemeScaleValue
-  lineHeight?: ThemeScaleValue
+  typo?: string
   focusOutlineWidth?: ThemeScaleValue
   focusOutlineColor?: string
   focusOutlineStyle?: string
@@ -122,7 +121,6 @@ export interface ButtonThemeBase {
   radius?: ThemeScaleValue
   borderWidth?: ThemeScaleValue
   cursor?: string
-  fontWeight?: number | string
   focusOutlineWidth?: ThemeScaleValue
   focusOutlineColor?: string
   focusOutlineStyle?: string
@@ -134,7 +132,7 @@ export interface ButtonThemeSize {
   paddingX?: ThemeScaleValue
   paddingY?: ThemeScaleValue
   gap?: ThemeScaleValue
-  fontSize?: ThemeScaleValue
+  typo?: string
 }
 
 export interface ButtonThemeVariant {
