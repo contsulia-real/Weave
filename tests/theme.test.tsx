@@ -67,7 +67,7 @@ describe('Theme', () => {
           normal: '0.01em',
         },
         styles: {
-          'body-large': {
+          'body-medium': {
             fontSize: 1,
             fontWeight: 400,
             lineHeight: '1.5',
