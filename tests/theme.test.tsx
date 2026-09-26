@@ -142,6 +142,10 @@ describe('Theme', () => {
     expect(stylesheet).toContain(
       'letter-spacing: var(--weave-typography-style-body-large-letter-spacing)',
     )
+    expect(stylesheet).toContain('font-size: inherit;')
+    expect(stylesheet).toContain('font-weight: inherit;')
+    expect(stylesheet).toContain('line-height: inherit;')
+    expect(stylesheet).toContain('letter-spacing: inherit;')
   })
 
   it('applies the typography baseline through ThemeProvider', () => {
