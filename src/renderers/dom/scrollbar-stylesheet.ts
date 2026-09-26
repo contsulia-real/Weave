@@ -36,6 +36,7 @@ const stylesheet = `
   pointer-events: none;
   background: var(--weave-scrollbar-track-color);
   border-radius: var(--weave-scrollbar-radius);
+  box-shadow: var(--weave-scrollbar-track-shadow);
 }
 
 :where(.weave-scrollbar--vertical) {
@@ -79,6 +80,7 @@ const stylesheet = `
   );
   --weave-component-cursor: var(--weave-scrollbar-thumb-cursor);
   --weave-component-user-select: none;
+  --weave-component-box-shadow: var(--weave-scrollbar-thumb-shadow);
 
   will-change: transform, scale;
   scale: 1;
