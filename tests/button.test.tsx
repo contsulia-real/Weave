@@ -452,6 +452,18 @@ describe('Button', () => {
       '[data-weave-button-compact-size="large"]',
     )
     expect(styles).toContain(
+      '--weave-button-font-size:var(--weave-button-theme-large-font-size)',
+    )
+    expect(styles).toContain(
+      '--weave-button-font-weight:var(--weave-button-theme-large-font-weight)',
+    )
+    expect(styles).toContain(
+      '--weave-button-line-height:var(--weave-button-theme-large-line-height)',
+    )
+    expect(styles).toContain(
+      '--weave-button-letter-spacing:var(--weave-button-theme-large-letter-spacing)',
+    )
+    expect(styles).toContain(
       '[data-weave-button-compact-variant="danger"]',
     )
   })
