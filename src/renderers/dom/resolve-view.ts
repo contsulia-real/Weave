@@ -365,10 +365,18 @@ export function compileDOMView<TElement extends HTMLElement>(
   if (semantic.controls !== undefined) domProps['aria-controls'] = semantic.controls
   if (semantic.owns !== undefined) domProps['aria-owns'] = semantic.owns
 
-  if ((props.focusable || props.autoFocus) && props.tabIndex === undefined) {
+  const interaction = resolvedView.interaction
+
+  if (
+    (
+      interaction.focusable ||
+      interaction.autoFocus
+    ) &&
+    interaction.tabIndex === undefined
+  ) {
     domProps.tabIndex = 0
-  } else if (props.tabIndex !== undefined) {
-    domProps.tabIndex = props.tabIndex
+  } else if (interaction.tabIndex !== undefined) {
+    domProps.tabIndex = interaction.tabIndex
   }
 
   if (props.hidden !== undefined) domProps.hidden = props.hidden
