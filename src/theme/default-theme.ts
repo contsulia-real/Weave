@@ -11,7 +11,6 @@ const controlBaseline = {
 
 const controlMedium = {
   minHeight: 2.5,
-  fontSize: 1,
 } as const
 
 export const defaultBreakpoints = {
