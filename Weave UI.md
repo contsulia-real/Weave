@@ -122,11 +122,11 @@ View
 
 对于不允许子内容的 DOM 元素，组件同样不接受 `children`，不会为了统一布局模型额外改变其 DOM 内容模型。
 
-### 2.5 CSS 是内部实现和布局/样式语义基础，但公开 API 不是“裸 CSS API”
+### 2.5 布局 / 样式语义是 renderer-neutral；DOM fallback 使用 CSS
 
-框架内部最终以 CSS 表达布局和样式。
+框架内部先以 Weave 语义和 `ResolvedView` IR 表达布局 / 样式。CSS 只属于 DOM fallback renderer；DiC renderer 直接消费同一 IR，不经过 CSS。
 
-但公开组件 API 应提供高层、语义化、适合 AI 易写易读，同时也适合人类阅读的属性。
+公开组件 API 应提供高层、语义化、适合 AI 易写易读，同时也适合人类阅读的属性。
 
 例如：
 
