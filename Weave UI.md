@@ -2555,6 +2555,8 @@ tracked = true
 → 显示同一基础形态的浅色连续轨道
 ```
 
+默认 Progress 延续 Switch 的触感语言：track 使用轻微内凹阴影，前景 progress / 不确定运动段使用轻微抬起阴影。深度必须保持克制，不能让细小的进度视觉变成厚重实体；track 与前景阴影均属于 `theme.components.Progress.base`，品牌主题可以覆盖。
+
 ## 16.4 speed
 
 `speed`：
@@ -2694,6 +2696,8 @@ Scrollable View
 ## 17.4 视觉实体仍然是框架组件
 
 因此它可以拥有 `View` 的通用能力并接受主题。
+
+默认视觉与 Switch / Progress 使用同一触感语言：tracked track 轻微内凹，thumb 轻微抬起。轨道阴影只在 `tracked = true` 时出现；thumb 的抬起深度始终很轻，并继续保留 hover / drag 的颜色与尺度反馈。track / thumb 阴影属于 `theme.components.Scrollbar.base`，不写死在业务配置中。
 
 局部定制挂在滚动容器上：
 
