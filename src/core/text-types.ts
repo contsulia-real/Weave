@@ -92,6 +92,12 @@ export type TextProps =
     viewProps?: TextViewProps
   }
 
+export type TextPropsWithBreakpoints<
+  TBreakpointName extends string,
+> =
+  TextProps &
+  Partial<Record<TBreakpointName, TextResponsiveProps>>
+
 export function mergeTextColorResponsive(
   base: ViewResponsiveStyle | undefined,
   text: TextResponsiveProps | undefined,
