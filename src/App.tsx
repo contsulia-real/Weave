@@ -181,7 +181,7 @@ function App() {
                 background="primary"
                 color="onPrimary"
               >
-                <Text size="small" weight="semibold">
+                <Text typo="label-large">
                   Light primary
                 </Text>
               </View>
@@ -194,7 +194,7 @@ function App() {
                 background="primary"
                 color="#18181b"
               >
-                <Text size="small" weight="semibold">
+                <Text typo="label-large">
                   Dark primary
                 </Text>
               </View>
@@ -308,7 +308,7 @@ function App() {
                   stroke="regular"
                   viewProps={{ color: 'primary' }}
                 />
-                <Text size="small">Outline</Text>
+                <Text typo="body-medium">Outline</Text>
               </View>
 
               <View layout="flex" direction="row" gap={0.75} align="center">
@@ -318,7 +318,7 @@ function App() {
                   stroke="regular"
                   viewProps={{ color: 'primary' }}
                 />
-                <Text size="small">Filled</Text>
+                <Text typo="body-medium">Filled</Text>
               </View>
             </View>
 
@@ -330,7 +330,7 @@ function App() {
                   stroke="thin"
                   viewProps={{ color: 'secondary' }}
                 />
-                <Text size="small">Small / thin</Text>
+                <Text typo="body-medium">Small / thin</Text>
               </View>
 
               <View layout="flex" direction="row" gap={0.5} align="center">
@@ -340,7 +340,7 @@ function App() {
                   stroke="regular"
                   viewProps={{ color: 'primary' }}
                 />
-                <Text size="small">Medium / regular</Text>
+                <Text typo="body-medium">Medium / regular</Text>
               </View>
 
               <View layout="flex" direction="row" gap={0.5} align="center">
@@ -350,7 +350,7 @@ function App() {
                   stroke="bold"
                   viewProps={{ color: 'success' }}
                 />
-                <Text size="small">Large / bold</Text>
+                <Text typo="body-medium">Large / bold</Text>
               </View>
 
               <View layout="flex" direction="row" gap={0.5} align="center">
@@ -363,7 +363,7 @@ function App() {
                     label: 'Settings',
                   }}
                 />
-                <Text size="small">Xlarge / labelled</Text>
+                <Text typo="body-medium">Xlarge / labelled</Text>
               </View>
             </View>
 
@@ -388,7 +388,7 @@ function App() {
                 }
                 viewProps={{ color: '#0f766e' }}
               />
-              <Text size="small">
+              <Text typo="body-medium">
                 Custom SVG
               </Text>
             </View>
@@ -454,7 +454,7 @@ function App() {
                   size="small"
                   stroke="regular"
                 />
-                <Text weight="bold">Custom children</Text>
+                <Text typo="label-medium" weight="bold">Custom children</Text>
               </Button>
             </View>
 
@@ -532,17 +532,17 @@ function App() {
           <View layout="flex" direction="row" gap={1.5} align="center" wrap>
             <View layout="flex" direction="row" gap={0.5} align="center">
               <Switch size="small" />
-              <Text size="small">Small</Text>
+              <Text typo="body-medium">Small</Text>
             </View>
 
             <View layout="flex" direction="row" gap={0.5} align="center">
               <Switch size="medium" defaultChecked />
-              <Text size="small">Medium</Text>
+              <Text typo="body-medium">Medium</Text>
             </View>
 
             <View layout="flex" direction="row" gap={0.5} align="center">
               <Switch size="large" />
-              <Text size="small">Large</Text>
+              <Text typo="body-medium">Large</Text>
             </View>
           </View>
         </View>
@@ -570,7 +570,7 @@ function App() {
                   size="medium"
                   color="primary"
                 />
-                <Text size="small">Spin</Text>
+                <Text typo="body-medium">Spin</Text>
               </View>
 
               <View layout="flex" direction="row" gap={0.5} align="center">
@@ -581,7 +581,7 @@ function App() {
                   size="medium"
                   color="primary"
                 />
-                <Text size="small">Spin tracked</Text>
+                <Text typo="body-medium">Spin tracked</Text>
               </View>
 
               <View layout="flex" direction="row" gap={0.5} align="center">
@@ -591,7 +591,7 @@ function App() {
                   size="medium"
                   color="primary"
                 />
-                <Text size="small">Linear</Text>
+                <Text typo="body-medium">Linear</Text>
               </View>
 
               <View layout="flex" direction="row" gap={0.5} align="center">
@@ -602,7 +602,7 @@ function App() {
                   size="medium"
                   color="primary"
                 />
-                <Text size="small">Linear tracked</Text>
+                <Text typo="body-medium">Linear tracked</Text>
               </View>
             </View>
 
@@ -629,7 +629,7 @@ function App() {
                 size="small"
               />
 
-              <Text size="small">
+              <Text typo="body-medium">
                 {Math.round(progress * 100)}%
               </Text>
             </View>
@@ -683,7 +683,7 @@ function App() {
                   }
                   radius="small"
                 >
-                  <Text size="small">
+                  <Text typo="body-medium">
                     Scroll row {index + 1} — horizontal content width 44rem
                   </Text>
                 </View>
