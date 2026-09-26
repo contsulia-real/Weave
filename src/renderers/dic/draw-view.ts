@@ -293,6 +293,12 @@ function parseShadowToken(
   }
 }
 
+function isShadowArray(
+  value: ShadowValue,
+): value is readonly ShadowDefinition[] {
+  return Array.isArray(value)
+}
+
 function shadowDefinitions(
   value: ShadowValue | undefined,
   theme: ResolvedTheme,
@@ -301,7 +307,7 @@ function shadowDefinitions(
     return []
   }
 
-  if (Array.isArray(value)) {
+  if (isShadowArray(value)) {
     return value
   }
 
