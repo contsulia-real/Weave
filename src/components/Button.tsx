@@ -79,7 +79,7 @@ function semanticContent<
 export function Button<
   TBreakpointName extends string = never,
 >(
-  props: ButtonProps<TBreakpointName>,
+  props: ButtonProps<NoInfer<TBreakpointName>>,
 ) {
   const {
     variant = 'primary',
