@@ -230,6 +230,69 @@ describe('automatic Scrollbar', () => {
     expect(hitRegion.style.height).toBe('58px')
   })
 
+  it('keeps a horizontal thumb between the bottom rounded corners', () => {
+    const { getByTestId } = render(
+      <View
+        style={{
+          overflowX: 'auto',
+          width: '200px',
+          height: '100px',
+          borderBottomLeftRadius: '30px',
+          borderBottomRightRadius: '20px',
+        }}
+        data={{
+          testid: 'rounded-horizontal-scroll-host',
+        }}
+      >
+        <View width={40} />
+      </View>,
+    )
+
+    const host = getByTestId(
+      'rounded-horizontal-scroll-host',
+    ) as HTMLDivElement
+
+    Object.defineProperties(host, {
+      clientHeight: {
+        configurable: true,
+        value: 100,
+      },
+      scrollHeight: {
+        configurable: true,
+        value: 100,
+      },
+      clientWidth: {
+        configurable: true,
+        value: 200,
+      },
+      scrollWidth: {
+        configurable: true,
+        value: 400,
+      },
+    })
+
+    host.getBoundingClientRect = () => ({
+      x: 10,
+      y: 20,
+      top: 20,
+      right: 210,
+      bottom: 120,
+      left: 10,
+      width: 200,
+      height: 100,
+      toJSON: () => ({}),
+    })
+
+    fireEvent(window, new Event('resize'))
+
+    const hitRegion = document.body.querySelector(
+      '[data-weave-scrollbar-orientation="horizontal"]',
+    ) as HTMLDivElement
+
+    expect(hitRegion.style.left).toBe('40px')
+    expect(hitRegion.style.width).toBe('150px')
+  })
+
   it('keeps the hit target flush to the edge while the thumb stays inset', () => {
     const { getByTestId } = render(
       <View
@@ -337,7 +400,7 @@ describe('automatic Scrollbar', () => {
     expect(track.dataset.weaveScrollbarDragging).toBeUndefined()
   })
 
-  it('keeps tracks visible for overflow scroll semantics', () => {
+  it('keeps hit regions active for overflow scroll semantics', () => {
     const { getByTestId } = render(
       <View
         style={{
