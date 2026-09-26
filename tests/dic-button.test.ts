@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { resolveButton } from '../src/core/resolved-button'
 import { resolveView } from '../src/core/resolved-view'
+import type { ViewClickEvent } from '../src/core/view-types'
 import { compileDiCButton } from '../src/renderers/dic/compile-button'
 import { createDiCInteractionController } from '../src/renderers/dic/interaction'
 import { layoutDiCViewTree } from '../src/renderers/dic/layout-tree'
@@ -326,7 +327,7 @@ describe('DiC Button adapter', () => {
 
   it('lets public View events cancel Button default activation', () => {
     const activate = vi.fn()
-    const onClick = vi.fn((event) => {
+    const onClick = vi.fn((event: ViewClickEvent) => {
       event.preventDefault()
     })
     const node = compileDiCButton(
