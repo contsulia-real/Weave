@@ -89,14 +89,6 @@ export function Switch({
   useInsertionEffect(ensureSwitchStylesheet, [])
 
   const { theme } = useTheme()
-  const themeDeclarations = useMemo(
-    () => resolveSwitchTheme(theme, size),
-    [resolvedSwitch.size, theme],
-  )
-  const themeClassName = useRuntimeStyleClass(
-    'switch-theme',
-    themeDeclarations,
-  )
 
   const [uncontrolledChecked, setUncontrolledChecked] =
     useState(defaultChecked)
@@ -107,6 +99,18 @@ export function Switch({
     checked: currentChecked,
     disabled: viewProps.disabled,
   })
+
+  const themeDeclarations = useMemo(
+    () => resolveSwitchTheme(
+      theme,
+      resolvedSwitch.size,
+    ),
+    [resolvedSwitch.size, theme],
+  )
+  const themeClassName = useRuntimeStyleClass(
+    'switch-theme',
+    themeDeclarations,
+  )
 
   const switchBase = theme.components.Switch?.base
   const dragShrink = switchBase?.thumbDragShrink ?? 0.68
