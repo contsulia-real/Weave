@@ -1,11 +1,11 @@
-import type { ViewCoreProps, ViewDynamicBreakpointProps } from './view-types'
+import type { ViewCoreProps } from './view-types'
 
 export type SwitchSize = 'small' | 'medium' | 'large'
 
 export type SwitchViewProps = Omit<
   ViewCoreProps<HTMLDivElement>,
   'children' | 'checked'
-> & ViewDynamicBreakpointProps
+>
 
 export interface SwitchProps {
   checked?: boolean
