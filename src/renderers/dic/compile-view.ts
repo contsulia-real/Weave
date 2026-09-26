@@ -85,6 +85,10 @@ export interface DiCViewPaint {
   justify?: ViewJustify
   width?: Dimension
   height?: Dimension
+  minWidth?: Dimension
+  maxWidth?: Dimension
+  minHeight?: Dimension
+  maxHeight?: Dimension
   paddingTop?: Length
   paddingRight?: Length
   paddingBottom?: Length
@@ -204,6 +208,10 @@ function paint(style: ResolvedViewStyle): DiCViewPaint {
       justify: style.justify,
       width: style.width,
       height: style.height,
+      minWidth: style.minWidth,
+      maxWidth: style.maxWidth,
+      minHeight: style.minHeight,
+      maxHeight: style.maxHeight,
       paddingTop: style.paddingTop,
       paddingRight: style.paddingRight,
       paddingBottom: style.paddingBottom,
