@@ -96,8 +96,10 @@ function viewMayScroll(
   )
 }
 
-export function View(
-  props: ViewProps<HTMLDivElement>,
+export function View<
+  TBreakpointName extends string = never,
+>(
+  props: ViewProps<HTMLDivElement, TBreakpointName>,
 ) {
   const { children } = props
   const { theme } = useTheme()
