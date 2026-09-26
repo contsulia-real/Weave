@@ -262,6 +262,9 @@ export function createDiCInteractionController(
           input.release?.(input.pointerId)
         }
       },
+      requestRender() {
+        options.invalidate()
+      },
     }
 
     node.interaction?.[handlerName(type)]?.(event)
@@ -389,6 +392,9 @@ export function createDiCInteractionController(
             captures.delete(input.pointerId)
             input.release?.(input.pointerId)
           }
+        },
+        requestRender() {
+          options.invalidate()
         },
       }
 
@@ -587,6 +593,7 @@ export function createDiCInteractionController(
       options.invalidate()
 
       if (
+        !result.defaultPrevented &&
         input.button === 0 &&
         downTarget !== undefined &&
         hit?.target === downTarget
