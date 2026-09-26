@@ -23,7 +23,9 @@ describe('ResolvedView IR', () => {
         width: 12,
         paddingX: 1.5,
       },
+      id: 'card',
       label: 'Card',
+      onClick: () => {},
       focusable: true,
       autoFocus: true,
       tabIndex: -1,
@@ -53,6 +55,12 @@ describe('ResolvedView IR', () => {
     expect(resolved.style).not.toHaveProperty('radius')
     expect(resolved.style).not.toHaveProperty('translateX')
     expect(resolved.semantics.label).toBe('Card')
+    expect(resolved.eventTarget).toEqual({
+      id: 'card',
+    })
+    expect(resolved.events.onClick).toBe(
+      props.onClick,
+    )
     expect(resolved.interaction).toEqual({
       focusable: true,
       autoFocus: true,
