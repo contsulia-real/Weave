@@ -1,3 +1,4 @@
+import type { ImageSource } from '../../core/image-types'
 import type { ResolvedTheme } from '../../theme/theme-types'
 import type { DiCViewNode } from './compile-view'
 import { drawDiCViewTree } from './draw-view'
@@ -76,6 +77,19 @@ function finiteSize(value: number): number {
     : 0
 }
 
+function collectImageSources(
+  node: DiCViewNode,
+  output: Set<ImageSource>,
+): void {
+  if (node.content?.kind === 'image') {
+    output.add(node.content.image.src)
+  }
+
+  for (const child of node.children) {
+    collectImageSources(child, output)
+  }
+}
+
 export function createDiCSurface(
   canvas: HTMLCanvasElement,
   initialScene: DiCSurfaceScene,
@@ -99,6 +113,29 @@ export function createDiCSurface(
     canvas
 
   let scene = initialScene
+  let retainedImageSources = new Set<ImageSource>()
+
+  const syncImageSources = (node: DiCViewNode) => {
+    const next = new Set<ImageSource>()
+    collectImageSources(node, next)
+
+    for (const source of next) {
+      if (!retainedImageSources.has(source)) {
+        imageResources.retain?.(source)
+      }
+    }
+
+    for (const source of retainedImageSources) {
+      if (!next.has(source)) {
+        imageResources.release?.(source)
+      }
+    }
+
+    retainedImageSources = next
+  }
+
+  syncImageSources(scene.node)
+
   let width = 0
   let height = 0
   let dpr = 1
@@ -202,6 +239,7 @@ export function createDiCSurface(
   return {
     update(nextScene) {
       scene = nextScene
+      syncImageSources(scene.node)
       invalidate()
     },
     resize,
@@ -218,6 +256,11 @@ export function createDiCSurface(
 
       resizeObserver?.disconnect()
       unsubscribeImages()
+
+      for (const source of retainedImageSources) {
+        imageResources.release?.(source)
+      }
+      retainedImageSources.clear()
 
       if (ownsImageResources) {
         imageResources.destroy()
