@@ -28,7 +28,9 @@ const stylesheet = `
 
   font: inherit;
   font-size: var(--weave-input-theme-font-size);
+  font-weight: var(--weave-input-theme-font-weight);
   line-height: var(--weave-input-theme-line-height);
+  letter-spacing: var(--weave-input-theme-letter-spacing);
   transition:
     background-color var(--weave-motion-duration-fast)
       var(--weave-motion-curve-standard),
