@@ -148,6 +148,7 @@ ${propertyRegistrationBlock()}
 :root {
   ${themeVariableDeclarations(defaultTheme)}
   color: var(--weave-color-text);
+  color: var(--weave-color-text);
   font-family: var(--weave-typography-family-body);
   font-size: var(--weave-typography-style-body-large-font-size);
   font-weight: var(--weave-typography-style-body-large-font-weight);
