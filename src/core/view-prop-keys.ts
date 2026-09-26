@@ -105,6 +105,14 @@ export const VIEW_STYLE_PROP_KEYS = [
   'selectable',
 ] as const satisfies readonly (keyof ViewStyleProps)[]
 
+export type ViewStylePropKey =
+  (typeof VIEW_STYLE_PROP_KEYS)[number]
+
+export const VIEW_STYLE_PROP_KEYS_COMPLETE:
+  Exclude<keyof ViewStyleProps, ViewStylePropKey> extends never
+    ? true
+    : never = true
+
 export const VIEW_SEMANTIC_PROP_KEYS = [
   'role',
   'label',
@@ -128,6 +136,17 @@ export const VIEW_SEMANTIC_PROP_KEYS = [
   'controls',
   'owns',
 ] as const satisfies readonly (keyof ViewSemanticProps)[]
+
+export type ViewSemanticPropKey =
+  (typeof VIEW_SEMANTIC_PROP_KEYS)[number]
+
+export const VIEW_SEMANTIC_PROP_KEYS_COMPLETE:
+  Exclude<
+    keyof ViewSemanticProps,
+    ViewSemanticPropKey
+  > extends never
+    ? true
+    : never = true
 
 export const VIEW_DEFAULT_BREAKPOINT_PROP_KEYS = [
   'sm',
