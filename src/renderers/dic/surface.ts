@@ -6,6 +6,10 @@ import {
   type DiCViewTreeLayout,
 } from './layout-tree'
 import type { DiCInteractionState } from './resolve-paint'
+import {
+  createDiCImageResourceManager,
+  type DiCImageResourceManager,
+} from './image-resource'
 
 export interface DiCSurfaceScene {
   node: DiCViewNode
@@ -25,6 +29,7 @@ export interface DiCSurfaceOptions {
   resizeTarget?: Element
   scheduler?: DiCSurfaceScheduler
   devicePixelRatio?: () => number
+  imageResources?: DiCImageResourceManager
 }
 
 export interface DiCSurface {
@@ -83,6 +88,11 @@ export function createDiCSurface(
 
   const scheduler = options.scheduler ?? defaultScheduler()
   const getDpr = options.devicePixelRatio ?? defaultDpr
+  const ownsImageResources =
+    options.imageResources === undefined
+  const imageResources =
+    options.imageResources ??
+    createDiCImageResourceManager()
   const resizeTarget =
     options.resizeTarget ??
     canvas.parentElement ??
@@ -117,6 +127,7 @@ export function createDiCSurface(
         rem,
         context,
         theme: scene.theme,
+        imageResources,
         stateForNode: (node) =>
           node === scene.node
             ? scene.state
@@ -131,6 +142,7 @@ export function createDiCSurface(
         theme: scene.theme,
         rem,
         viewportWidth: width,
+        imageResources,
       },
     )
   }
@@ -139,6 +151,9 @@ export function createDiCSurface(
     if (destroyed || frameRequest !== undefined) return
     frameRequest = scheduler.request(render)
   }
+
+  const unsubscribeImages =
+    imageResources.subscribe(invalidate)
 
   const resize = (
     nextWidth: number,
@@ -202,6 +217,11 @@ export function createDiCSurface(
       }
 
       resizeObserver?.disconnect()
+      unsubscribeImages()
+
+      if (ownsImageResources) {
+        imageResources.destroy()
+      }
 
       if (typeof window !== 'undefined') {
         window.removeEventListener(
