@@ -1,7 +1,7 @@
 import { cleanup, fireEvent, render } from '@testing-library/react'
-import type { MouseEvent } from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { Switch, ThemeProvider, createTheme } from '../src'
+import type { ViewClickEvent } from '../src'
 
 afterEach(cleanup)
 
@@ -84,7 +84,7 @@ describe('Switch', () => {
 
   it('keeps user click cancellation semantics', () => {
     const onChange = vi.fn()
-    const onClick = vi.fn((event: MouseEvent<HTMLDivElement>) => {
+    const onClick = vi.fn((event: ViewClickEvent) => {
       event.preventDefault()
     })
 
@@ -115,6 +115,7 @@ describe('Switch', () => {
       pointerId: 7,
       button: 0,
       clientX: 2,
+      clientY: 10,
     })
 
     expect(parseFloat(thumb.style.height)).toBeCloseTo(13.6)
@@ -133,6 +134,7 @@ describe('Switch', () => {
     fireEvent.pointerMove(element, {
       pointerId: 7,
       clientX: 30,
+      clientY: 10,
     })
 
     expect(parseFloat(thumb.style.width)).toBeCloseTo(27)
@@ -173,14 +175,17 @@ describe('Switch', () => {
       pointerId: 10,
       button: 0,
       clientX: 30,
+      clientY: 10,
     })
     fireEvent.pointerMove(element, {
       pointerId: 10,
       clientX: 0,
+      clientY: 10,
     })
     fireEvent.pointerUp(element, {
       pointerId: 10,
       clientX: 0,
+      clientY: 10,
     })
 
     expect(onChange).toHaveBeenCalledWith(false)
@@ -201,6 +206,7 @@ describe('Switch', () => {
       pointerId: 8,
       button: 0,
       clientX: 2,
+      clientY: 10,
     })
     fireEvent.pointerMove(element, {
       pointerId: 8,
@@ -235,6 +241,7 @@ describe('Switch', () => {
       pointerId: 9,
       button: 0,
       clientX: 0,
+      clientY: 10,
     })
 
     expect(onChange).not.toHaveBeenCalled()
@@ -280,6 +287,7 @@ describe('Switch', () => {
       pointerId: 44,
       button: 0,
       clientX: 2,
+      clientY: 10,
     })
 
     rootRect.mockClear()
