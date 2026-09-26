@@ -36,14 +36,14 @@ function pickTextStyle(
 }
 
 export function resolveText(
-  props: TextStyleProps &
-    Readonly<Record<string, unknown>>,
+  props: TextStyleProps,
   breakpoints: Readonly<Record<string, number>>,
 ): ResolvedText {
   const responsive: ResolvedTextBreakpoint[] = []
+  const record = props as Readonly<Record<string, unknown>>
 
   for (const breakpoint of breakpointEntries(breakpoints)) {
-    const value = props[breakpoint.name]
+    const value = record[breakpoint.name]
 
     if (
       typeof value === 'object' &&
