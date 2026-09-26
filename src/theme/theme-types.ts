@@ -18,12 +18,20 @@ export interface ThemeFeedbackTokens {
   dragScale?: number
 }
 
+export interface ThemeTypographyStyle {
+  fontSize?: ThemeScaleValue
+  fontWeight?: number | string
+  lineHeight?: number | string
+  letterSpacing?: ThemeScaleValue
+}
+
 export interface ThemeTypographyTokens {
   family?: Readonly<Record<string, string>>
   size?: Readonly<Record<string, number | string>>
   weight?: Readonly<Record<string, number | string>>
   lineHeight?: Readonly<Record<string, number | string>>
   letterSpacing?: Readonly<Record<string, number | string>>
+  styles?: Readonly<Record<string, ThemeTypographyStyle>>
 }
 
 export interface ThemeTokens {
