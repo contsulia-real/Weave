@@ -74,3 +74,9 @@ export type ButtonProps =
   ButtonBaseProps &
   ButtonBreakpointProps &
   (ButtonSemanticContent | ButtonCustomContent)
+
+export type ButtonPropsWithBreakpoints<
+  TBreakpointName extends string,
+> =
+  ButtonProps &
+  Partial<Record<TBreakpointName, ButtonResponsiveProps>>
