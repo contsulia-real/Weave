@@ -27,7 +27,8 @@ export function resolveButton(
   breakpoints: Readonly<Record<string, number>>,
 ): ResolvedButton {
   const responsive: ResolvedButtonBreakpoint[] = []
-  const record = props as Readonly<Record<string, unknown>>
+  const record =
+    props as unknown as Readonly<Record<string, unknown>>
 
   for (const breakpoint of breakpointEntries(breakpoints)) {
     const value = record[
