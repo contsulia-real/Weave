@@ -15,6 +15,8 @@ import type {
   ResolvedViewBreakpoint,
   ResolvedViewStyle,
 } from '../../core/resolved-view'
+import type { ResolvedText } from '../../core/resolved-text'
+import type { ResolvedTheme } from '../../theme/theme-types'
 
 export interface DiCIntrinsicConstraints {
   maxWidth: number
@@ -27,9 +29,35 @@ export interface DiCIntrinsicSize {
   height: number
 }
 
+export interface DiCTypographyContext {
+  fontFamily: string
+  fontSize: number
+  fontWeight: number | string
+  lineHeight: number
+  letterSpacing: number
+  color: string
+}
+
+export interface DiCIntrinsicEnvironment {
+  context?: CanvasRenderingContext2D
+  theme?: ResolvedTheme
+  typography?: DiCTypographyContext
+  viewportWidth: number
+  containerWidth: number
+}
+
 export type DiCIntrinsicMeasure = (
   constraints: DiCIntrinsicConstraints,
+  environment: DiCIntrinsicEnvironment,
 ) => DiCIntrinsicSize
+
+export interface DiCTextContent {
+  kind: 'text'
+  text: string
+  style: ResolvedText
+}
+
+export type DiCViewContent = DiCTextContent
 
 export interface DiCViewPaint {
   layout?: ViewLayout
@@ -45,6 +73,7 @@ export interface DiCViewPaint {
   paddingBottom?: Length
   paddingLeft?: Length
   background?: BackgroundValue
+  color?: string
   radiusTopLeft?: RadiusValue
   radiusTopRight?: RadiusValue
   radiusBottomRight?: RadiusValue
@@ -73,6 +102,10 @@ export interface DiCViewNode {
   responsive: readonly DiCViewBreakpoint[]
   container?: string
   children: readonly DiCViewNode[]
+  content?: DiCViewContent
+  typography?: {
+    typo?: string
+  }
   measure?: DiCIntrinsicMeasure
 }
 
@@ -92,6 +125,7 @@ function paint(style: ResolvedViewStyle): DiCViewPaint {
       paddingBottom: style.paddingBottom,
       paddingLeft: style.paddingLeft,
       background: style.background,
+      color: style.color,
       radiusTopLeft: style.radiusTopLeft,
       radiusTopRight: style.radiusTopRight,
       radiusBottomRight: style.radiusBottomRight,
@@ -115,6 +149,10 @@ function breakpoint(
 
 export interface CompileDiCViewOptions {
   children?: readonly DiCViewNode[]
+  content?: DiCViewContent
+  typography?: {
+    typo?: string
+  }
   measure?: DiCIntrinsicMeasure
 }
 
@@ -150,6 +188,8 @@ export function compileDiCView(
     responsive: view.responsive.map(breakpoint),
     container: view.container,
     children: options.children ?? [],
+    content: options.content,
+    typography: options.typography,
     measure: options.measure,
   }
 }
