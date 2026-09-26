@@ -162,6 +162,62 @@ describe('DiC Switch adapter', () => {
     expect(onChange).toHaveBeenCalledTimes(3)
   })
 
+  it('lets public View events cancel Switch default toggle', () => {
+    const onChange = vi.fn()
+    const onClick = vi.fn((event) => {
+      event.preventDefault()
+    })
+    const node = compileDiCSwitch(
+      resolveView(
+        {
+          id: 'switch',
+          onClick,
+        },
+        defaultBreakpoints,
+      ),
+      resolveSwitch({
+        checked: false,
+      }),
+      defaultTheme,
+      {
+        onChange,
+      },
+    )
+    const layout = layoutDiCViewTree(
+      node,
+      {
+        width: 100,
+        height: 100,
+        root: false,
+      },
+      {
+        viewportWidth: 100,
+        rem: 16,
+        theme: defaultTheme,
+      },
+    )
+    const controller = createDiCInteractionController({
+      getLayout: () => layout,
+      invalidate: vi.fn(),
+    })
+
+    controller.dispatchPointer(
+      pointer('pointerdown'),
+    )
+    controller.dispatchPointer(
+      pointer('pointerup'),
+    )
+
+    expect(onClick).toHaveBeenCalledTimes(1)
+    expect(onChange).not.toHaveBeenCalled()
+    expect(onClick.mock.calls[0]?.[0]).toMatchObject({
+      currentTarget: {
+        id: 'switch',
+      },
+      defaultPrevented: true,
+    })
+  })
+
   it('drags the thumb without layout reads and commits once past midpoint', () => {
     const onChange = vi.fn()
     const invalidate = vi.fn()
