@@ -1751,6 +1751,7 @@ Text
 当前文本专属属性：
 
 ```text
+typo
 size
 weight
 color
@@ -1763,6 +1764,42 @@ maxLines
 case
 ```
 
+### typo
+
+`typo` 提供常用排版组合，避免标题、正文、标签等在应用层重复手写 `size / weight / lineHeight / letterSpacing`：
+
+```text
+display
+heading
+body
+label
+caption
+```
+
+显式传入的文本属性优先于 `typo` 预设，因此可以只覆盖需要调整的一项：
+
+```tsx
+<Text typo="heading" weight="bold">
+  标题
+</Text>
+```
+
+标题语义仍通过统一语义层表达，不通过公开 HTML 标签选择：
+
+```tsx
+<Text
+  typo="display"
+  viewProps={{
+    role: "heading",
+    level: 1,
+  }}
+>
+  Weave
+</Text>
+```
+
+DOM fallback 将 `level` 映射到 `aria-level`。
+
 ### size
 
 语义值：
@@ -1774,6 +1811,7 @@ medium
 large
 xlarge
 xxlarge
+display
 ```
 
 ### weight
@@ -2733,7 +2771,7 @@ Button
 
 DOM fallback 使用真实 `<button type="button">`，不使用 `div role="button"`。
 
-loading 状态的旋转指示器属于 Button 自己的装饰层，不直接把当前 `Progress` DOM 结构嵌进 `button`。原因是 Button 必须保持合法的 button 内容模型，同时 loading 只需要表达 Button 自身的 busy 状态，不应该在 Button 内再暴露一个独立 `progressbar` 语义。
+loading 状态不单独实现另一套 spinner。Button 与公开 `Progress` 复用同一个 Progress 视觉内核；公开 `Progress` 负责 `progressbar` 语义，而 Button loading 只复用其不确定 spin 视觉，并将该视觉节点设为 `aria-hidden`。Button 自身通过 `busy` / `aria-busy` 表达加载状态，因此不会在 Button 内重复暴露一个独立 `progressbar` 语义。Progress 的 DOM fallback 视觉宿主使用合法的内联结构，使该视觉内核可以安全用于 Button 内容模型。
 
 ## 18.1 快捷语义 API
 
@@ -4714,4 +4752,6 @@ View
 29. 组件默认承担正确可访问性和键盘语义，不把标准行为推给业务开发者。
 30. 浮层使用语义 layer，普通用户不需要手工管理 portal 或全局 z-index。
 31. 具体组件已经提供同义语义状态属性时，该状态不在其 `viewProps` 中重复暴露，组件属性作为唯一真值。
-32. API 的目标是：AI 易写易读，同时人类易读。
+32. 框架自身的 playground、示例与组合组件必须优先 dogfood 已有 Weave 语义组件；已有 `Text`、`Progress` 等能力时，不再平行维护裸 DOM / 私有 CSS 的同义实现。
+33. 组合组件复用基础组件的视觉内核时，可以由组合组件自己承担更高层语义；不得因此重复暴露冲突的 ARIA 角色。
+34. API 的目标是：AI 易写易读，同时人类易读。
