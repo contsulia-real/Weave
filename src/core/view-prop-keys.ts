@@ -1,4 +1,5 @@
 import type {
+  ViewEventProps,
   ViewSemanticProps,
   ViewStyleProps,
 } from './view-types'
@@ -148,6 +149,28 @@ export const VIEW_SEMANTIC_PROP_KEYS_COMPLETE:
     ? true
     : never = true
 
+export const VIEW_EVENT_PROP_KEYS = [
+  'onClick',
+  'onPointerEnter',
+  'onPointerLeave',
+  'onPointerMove',
+  'onPointerDown',
+  'onPointerUp',
+  'onPointerCancel',
+  'onKeyDown',
+  'onKeyUp',
+  'onFocus',
+  'onBlur',
+] as const satisfies readonly (keyof ViewEventProps)[]
+
+export type ViewEventPropKey =
+  (typeof VIEW_EVENT_PROP_KEYS)[number]
+
+export const VIEW_EVENT_PROP_KEYS_COMPLETE:
+  Exclude<keyof ViewEventProps, ViewEventPropKey> extends never
+    ? true
+    : never = true
+
 export const VIEW_DEFAULT_BREAKPOINT_PROP_KEYS = [
   'sm',
   'md',
@@ -182,6 +205,7 @@ export const VIEW_CONTROL_PROP_KEYS = [
 export const VIEW_INTERNAL_PROP_KEYS = new Set<string>([
   ...VIEW_STYLE_PROP_KEYS,
   ...VIEW_SEMANTIC_PROP_KEYS,
+  ...VIEW_EVENT_PROP_KEYS,
   ...VIEW_DEFAULT_BREAKPOINT_PROP_KEYS,
   ...VIEW_CONTROL_PROP_KEYS,
 ])
