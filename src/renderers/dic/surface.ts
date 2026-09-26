@@ -115,6 +115,8 @@ export function createDiCSurface(
         containerWidth:
           scene.containerWidth ?? width,
         rem,
+        context,
+        theme: scene.theme,
         stateForNode: (node) =>
           node === scene.node
             ? scene.state
@@ -128,6 +130,7 @@ export function createDiCSurface(
       {
         theme: scene.theme,
         rem,
+        viewportWidth: width,
       },
     )
   }
