@@ -3,7 +3,10 @@ import { resolveImage } from '../src/core/resolved-image'
 import { resolveView } from '../src/core/resolved-view'
 import type { ViewProps } from '../src/core/view-types'
 import { compileDiCImage } from '../src/renderers/dic/compile-image'
-import { compileDiCView } from '../src/renderers/dic/compile-view'
+import {
+  compileDiCView,
+  type DiCViewInteraction,
+} from '../src/renderers/dic/compile-view'
 import type {
   DiCImageResource,
   DiCImageResourceManager,
@@ -162,6 +165,202 @@ describe('DiC surface', () => {
 
     surface.invalidate()
     expect(scheduler.request).toHaveBeenCalledTimes(1)
+  })
+
+  it('bridges native canvas pointer and keyboard input into DiC interaction', () => {
+    let scheduled:
+      | FrameRequestCallback
+      | undefined
+    const listeners = new Map<
+      string,
+      EventListenerOrEventListenerObject
+    >()
+    const click = vi.fn()
+    const keyDown = vi.fn()
+    const focus = vi.fn()
+    const preventDefault = vi.fn()
+
+    const scheduler: DiCSurfaceScheduler = {
+      request: vi.fn((callback) => {
+        scheduled = callback
+        return 29
+      }),
+      cancel: vi.fn(),
+    }
+
+    const context = {
+      globalAlpha: 1,
+      fillStyle: '',
+      setTransform: vi.fn(),
+      clearRect: vi.fn(),
+      save: vi.fn(),
+      restore: vi.fn(),
+      translate: vi.fn(),
+      rotate: vi.fn(),
+      scale: vi.fn(),
+      transform: vi.fn(),
+      beginPath: vi.fn(),
+      roundRect: vi.fn(),
+      moveTo: vi.fn(),
+      lineTo: vi.fn(),
+      quadraticCurveTo: vi.fn(),
+      closePath: vi.fn(),
+      fill: vi.fn(),
+      createLinearGradient: vi.fn(),
+      createRadialGradient: vi.fn(),
+    } as unknown as CanvasRenderingContext2D
+
+    const canvas = {
+      width: 0,
+      height: 0,
+      tabIndex: 0,
+      style: {
+        cursor: '',
+      },
+      getContext: vi.fn(() => context),
+      getBoundingClientRect: vi.fn(() => ({
+        left: 10,
+        top: 20,
+        width: 200,
+        height: 100,
+        right: 210,
+        bottom: 120,
+        x: 10,
+        y: 20,
+        toJSON: () => ({}),
+      })),
+      addEventListener: vi.fn(
+        (
+          type: string,
+          listener: EventListenerOrEventListenerObject,
+        ) => {
+          listeners.set(type, listener)
+        },
+      ),
+      removeEventListener: vi.fn(
+        (type: string) => {
+          listeners.delete(type)
+        },
+      ),
+      hasAttribute: vi.fn(() => true),
+      focus,
+      setPointerCapture: vi.fn(),
+      hasPointerCapture: vi.fn(() => false),
+      releasePointerCapture: vi.fn(),
+    } as unknown as HTMLCanvasElement
+
+    const interaction: DiCViewInteraction = {
+      focusable: true,
+      onPointerDown: (event) => {
+        event.preventDefault()
+      },
+      onClick: click,
+      onKeyDown: keyDown,
+    }
+
+    const node = compileDiCView(
+      resolveView(
+        {
+          width: 10,
+          height: 5,
+          cursor: 'pointer',
+          hover: {
+            opacity: 0.8,
+          },
+          active: {
+            opacity: 0.6,
+          },
+        },
+        defaultBreakpoints,
+      ),
+      {
+        interaction,
+      },
+    )
+
+    const surface = createDiCSurface(
+      canvas,
+      {
+        node,
+        theme: defaultTheme,
+      },
+      {
+        autoResize: false,
+        scheduler,
+      },
+    )
+
+    surface.resize(200, 100, 1)
+    scheduled?.(0)
+
+    const fire = (
+      type: string,
+      event: object,
+    ) => {
+      const listener = listeners.get(type)
+      if (typeof listener === 'function') {
+        listener(event as Event)
+      } else {
+        listener?.handleEvent(event as Event)
+      }
+    }
+
+    const pointerBase = {
+      pointerId: 1,
+      button: 0,
+      buttons: 1,
+      clientX: 30,
+      clientY: 40,
+      preventDefault,
+      stopPropagation: vi.fn(),
+    }
+
+    fire('pointermove', pointerBase)
+
+    expect(canvas.style.cursor).toBe('pointer')
+    expect(
+      surface.getInteraction()?.stateForNode(node).hover,
+    ).toBe(true)
+
+    fire('pointerdown', pointerBase)
+
+    expect(preventDefault).toHaveBeenCalled()
+    expect(focus).toHaveBeenCalledWith({
+      preventScroll: true,
+    })
+    expect(
+      surface.getInteraction()?.stateForNode(node).active,
+    ).toBe(true)
+
+    fire('pointerup', {
+      ...pointerBase,
+      buttons: 0,
+    })
+
+    expect(click).toHaveBeenCalledTimes(1)
+    expect(
+      surface.getInteraction()?.stateForNode(node).active,
+    ).toBe(false)
+
+    fire('keydown', {
+      key: 'Enter',
+      code: 'Enter',
+      repeat: false,
+      altKey: false,
+      ctrlKey: false,
+      metaKey: false,
+      shiftKey: false,
+      preventDefault: vi.fn(),
+      stopPropagation: vi.fn(),
+    })
+
+    expect(keyDown).toHaveBeenCalledTimes(1)
+    expect(
+      surface.getInteraction()?.stateForNode(node).focusVisible,
+    ).toBe(true)
+
+    surface.destroy()
+    expect(listeners.size).toBe(0)
   })
 
   it('reflows and redraws when an image resource becomes ready', () => {
