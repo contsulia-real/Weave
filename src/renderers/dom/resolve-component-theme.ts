@@ -211,11 +211,6 @@ export function resolveScrollbarTheme(
       config?.color === undefined
         ? color(base?.dragColor)
         : `color-mix(in srgb, ${resolvedColor} 76%, black)`,
-    '--weave-scrollbar-track-color': color(
-      config?.trackColor ?? base?.trackColor,
-    ),
-    '--weave-scrollbar-track-shadow': base?.trackShadow,
-    '--weave-scrollbar-thumb-shadow': base?.thumbShadow,
     '--weave-scrollbar-radius': radius(config?.radius ?? base?.radius),
     '--weave-scrollbar-opacity': config?.opacity ?? base?.opacity,
     '--weave-scrollbar-thumb-cursor': base?.thumbCursor,
