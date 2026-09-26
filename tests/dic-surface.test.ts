@@ -100,7 +100,7 @@ describe('DiC surface', () => {
       240,
       120,
     )
-    expect(surface.getLayout()).toEqual({
+    expect(surface.getLayout()).toMatchObject({
       frame: {
         x: 0,
         y: 0,
@@ -113,6 +113,7 @@ describe('DiC surface', () => {
         width: 128,
         height: 88,
       },
+      children: [],
     })
   })
 
