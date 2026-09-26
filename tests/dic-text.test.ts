@@ -242,7 +242,9 @@ describe('DiC Text', () => {
       },
     )
 
-    expect(small.width).toBeCloseTo(30)
+    // body-small uses 0.005em letter spacing:
+    // 5 glyphs => 4 × 0.06px extra at 12px.
+    expect(small.width).toBeCloseTo(30.24)
     expect(small.height).toBeCloseTo(17.4)
     expect(large.width).toBeCloseTo(40)
     expect(large.height).toBeCloseTo(24.8)
