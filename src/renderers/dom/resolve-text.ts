@@ -20,6 +20,7 @@ const variable = (
 function textWrapValues(
   wrap: TextStyleProps['wrap'],
   overflow: TextStyleProps['overflow'],
+  maxLines: TextStyleProps['maxLines'],
 ): { whiteSpace?: string; textWrap?: string } {
   if (wrap === 'nowrap') return { whiteSpace: 'nowrap' }
   if (wrap === 'balance') {
@@ -34,7 +35,18 @@ function textWrapValues(
       textWrap: 'wrap',
     }
   }
-  if (overflow === 'ellipsis') return { whiteSpace: 'nowrap' }
+  if (
+    overflow === 'ellipsis' &&
+    maxLines === undefined
+  ) {
+    return { whiteSpace: 'nowrap' }
+  }
+  if (maxLines !== undefined) {
+    return {
+      whiteSpace: 'normal',
+      textWrap: 'wrap',
+    }
+  }
   return {}
 }
 
@@ -88,7 +100,11 @@ export function resolveTextStyle(
     )
   }
 
-  const wrapping = textWrapValues(props.wrap, props.overflow)
+  const wrapping = textWrapValues(
+    props.wrap,
+    props.overflow,
+    props.maxLines,
+  )
   if (wrapping.whiteSpace !== undefined) {
     output[variable('white-space', breakpoint)] = wrapping.whiteSpace
   }
