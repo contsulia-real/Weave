@@ -224,6 +224,8 @@ describe('Text', () => {
       'ellipsis',
     )
     expect(element.getAttribute('data-weave-text-md-max-lines')).toBe('2')
+    expect(textRule).toContain('--weave-text-md-white-space:normal;')
+    expect(textRule).toContain('--weave-text-md-text-wrap:wrap;')
     expect(stylesheet?.textContent).not.toContain('@media')
     expect(responsiveStyles).toContain('@media(min-width:48rem)')
   })
