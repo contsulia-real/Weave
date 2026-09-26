@@ -62,6 +62,7 @@ describe('DiC Button adapter', () => {
       size: 'small',
       loading: false,
       disabled: false,
+      iconOnly: false,
     })
     expect(button.responsive).toContainEqual({
       name: 'md',
@@ -103,10 +104,31 @@ describe('DiC Button adapter', () => {
       paddingLeft: 0.625,
       paddingRight: 0.625,
       background: 'surface',
+      borderTop: 0.0625,
+      borderTopColor: 'outline',
+      borderStyle: 'solid',
       radiusTopLeft: 0.75,
       cursor: 'pointer',
+      shadow: {
+        x: 0,
+        y: 0.1875,
+        blur: 0,
+        spread: 0,
+      },
     })
     expect(node.typography?.typo).toBe('label-small')
+    expect(node.states.focusVisible).toMatchObject({
+      outlineWidth: 0.125,
+      outlineColor: 'focus',
+      outlineStyle: 'solid',
+      outlineOffset: 0.0625,
+    })
+    expect(node.states.hover?.shadow).toMatchObject({
+      y: 0.25,
+    })
+    expect(node.states.active?.shadow).toMatchObject({
+      y: 0.0625,
+    })
 
     expect(
       layoutButton(node, 700).typography?.fontSize,
@@ -115,20 +137,67 @@ describe('DiC Button adapter', () => {
       layoutButton(node, 900).typography?.fontSize,
     ).toBe(14)
 
-    expect(
-      resolveDiCViewPaint(
-        node,
-        {
-          viewportWidth: 900,
-          rem: 16,
-          state: {
-            hover: true,
-          },
+    const responsiveHover = resolveDiCViewPaint(
+      node,
+      {
+        viewportWidth: 900,
+        rem: 16,
+        state: {
+          hover: true,
         },
-      ).background,
-    ).toBe(
+      },
+    )
+    expect(responsiveHover.background).toBe(
       defaultTheme.components.Button?.variants?.danger
         ?.hoverBackground,
+    )
+    expect(responsiveHover.shadow).toMatchObject({
+      y: 0.25,
+      color:
+        defaultTheme.components.Button?.variants?.danger
+          ?.depthColor,
+    })
+  })
+
+  it('keeps icon-only controls square across responsive sizes', () => {
+    const button = resolveButton(
+      {
+        icon: (() => null) as never,
+        size: 'small',
+        md: {
+          size: 'large',
+        },
+      },
+      defaultBreakpoints,
+    )
+    const node = compileDiCButton(
+      resolveView({}, defaultBreakpoints),
+      button,
+      defaultTheme,
+    )
+
+    expect(button.iconOnly).toBe(true)
+    expect(node.paint).toMatchObject({
+      minHeight: 1.75,
+      minWidth: 1.75,
+      paddingLeft: 0,
+      paddingRight: 0,
+    })
+
+    const responsive = node.responsive.find(
+      (value) =>
+        value.name === 'md' &&
+        value.scope === 'viewport',
+    )
+
+    expect(responsive?.paint).toMatchObject({
+      minHeight: 2.5,
+      minWidth: 2.5,
+      paddingLeft: 0,
+      paddingRight: 0,
+    })
+    expect(responsive?.typography?.typo).toBe(
+      'label-large',
     )
   })
 
@@ -295,6 +364,7 @@ describe('DiC Button adapter', () => {
       stopPropagation: vi.fn(),
       capturePointer: vi.fn(),
       releasePointer: vi.fn(),
+      requestRender: vi.fn(),
     })
 
     expect(activate).not.toHaveBeenCalled()
