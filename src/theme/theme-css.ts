@@ -1,5 +1,9 @@
 import type { CSSProperties } from 'react'
-import type { ResolvedTheme, ThemeTokens } from './theme-types'
+import type {
+  ResolvedTheme,
+  ThemeTypographyStyle,
+  ThemeTokens,
+} from './theme-types'
 
 export type ThemeVariableStyle = CSSProperties &
   Record<`--weave-${string}`, string | number>
@@ -13,6 +17,54 @@ const toMs = (value: number | string) =>
 const toCurve = (
   value: string | readonly [number, number, number, number],
 ) => (typeof value === 'string' ? value : `cubic-bezier(${value.join(', ')})`)
+
+export type TypographyStyleProperty =
+  | 'fontSize'
+  | 'fontWeight'
+  | 'lineHeight'
+  | 'letterSpacing'
+
+const toKebab = (value: string) =>
+  value.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)
+
+export function typographyStyleVariableName(
+  typo: string,
+  property: TypographyStyleProperty,
+): `--weave-typography-style-${string}` {
+  return `--weave-typography-style-${typo}-${toKebab(property)}`
+}
+
+export function typographyStyleVariableReference(
+  typo: string | undefined,
+  property: TypographyStyleProperty,
+): string | undefined {
+  return typo === undefined
+    ? undefined
+    : `var(${typographyStyleVariableName(typo, property)})`
+}
+
+function typographyStyleVariables(
+  output: ThemeVariableStyle,
+  name: string,
+  style: ThemeTypographyStyle,
+): void {
+  if (style.fontSize !== undefined) {
+    output[typographyStyleVariableName(name, 'fontSize')] =
+      toRem(style.fontSize)
+  }
+  if (style.fontWeight !== undefined) {
+    output[typographyStyleVariableName(name, 'fontWeight')] =
+      style.fontWeight
+  }
+  if (style.lineHeight !== undefined) {
+    output[typographyStyleVariableName(name, 'lineHeight')] =
+      style.lineHeight
+  }
+  if (style.letterSpacing !== undefined) {
+    output[typographyStyleVariableName(name, 'letterSpacing')] =
+      toRem(style.letterSpacing)
+  }
+}
 
 function assignRecord(
   output: ThemeVariableStyle,
@@ -79,6 +131,12 @@ export function themeTokenVariables(tokens: ThemeTokens): ThemeVariableStyle {
     tokens.typography?.letterSpacing,
     toRem,
   )
+
+  for (const [name, style] of Object.entries(
+    tokens.typography?.styles ?? {},
+  )) {
+    typographyStyleVariables(output, name, style)
+  }
 
   assignRecord(output, 'motion-duration', tokens.motion?.duration, toMs)
 
