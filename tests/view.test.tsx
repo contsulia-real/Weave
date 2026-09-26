@@ -176,6 +176,50 @@ describe('View DOM backend', () => {
     expect(element.getAttribute('aria-label')).toBe('Sidebar')
   })
 
+  it('preserves target/currentTarget and public stopPropagation through DOM bubbling', () => {
+    const parentClick = vi.fn()
+    const childClick = vi.fn((event: ViewClickEvent) => {
+      event.stopPropagation()
+    })
+
+    const { getByTestId } = render(
+      <View
+        id="parent"
+        onClick={parentClick}
+        data={{ testid: 'event-parent' }}
+      >
+        <View
+          id="child"
+          onClick={childClick}
+          data={{ testid: 'event-child' }}
+        />
+      </View>,
+    )
+
+    fireEvent.click(
+      getByTestId('event-child'),
+      {
+        clientX: 18,
+        clientY: 27,
+      },
+    )
+
+    expect(childClick).toHaveBeenCalledTimes(1)
+    expect(parentClick).not.toHaveBeenCalled()
+    expect(childClick.mock.calls[0]?.[0]).toMatchObject({
+      type: 'click',
+      target: {
+        id: 'child',
+      },
+      currentTarget: {
+        id: 'child',
+      },
+      clientX: 18,
+      clientY: 27,
+      propagationStopped: true,
+    })
+  })
+
   it('maps heading levels through the semantic layer', () => {
     const { getByRole } = render(
       <View role="heading" level={2}>
