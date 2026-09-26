@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { resolveView } from '../src/core/resolved-view'
+import type { ViewProps } from '../src/core/view-types'
 import {
   compileDiCView,
   type DiCPointerEvent,
@@ -13,7 +14,7 @@ import {
 } from '../src/theme/default-theme'
 
 function node(
-  props: Parameters<typeof resolveView>[0],
+  props: ViewProps,
   interaction?: DiCViewInteraction,
   children = [] as ReturnType<typeof compileDiCView>[],
 ) {
