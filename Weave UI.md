@@ -4844,9 +4844,83 @@ container breakpoint branches
 
 当前 vertical slice 同时提供 Canvas 2D draw primitive：给定布局阶段产生的 frame 后，可以直接绘制 solid / linear-gradient / radial-gradient background、四角 radius、opacity 与 transform。主题 color / radius token 在 DiC renderer 内解析，不经过 CSS variable。
 
-当前尚未在这一阶段解决的是完整布局执行、Canvas surface 生命周期、文本 / 图片绘制与交互命中；这些能力继续在同一 View node contract 上扩展，不反向解析 DOM/CSS。
+## 27.4 DiC paint resolution
 
-## 27.4 组件结构
+DiC 在绘制前先从同一 View node 解析当前 paint：
+
+```text
+base paint
+→ active viewport breakpoints
+→ active container breakpoints
+→ hover
+→ active
+→ focus
+→ focusVisible
+→ disabled
+```
+
+breakpoint 的数值仍遵循 Weave 尺度语义，以 rem 为阈值单位；surface 使用逻辑 CSS pixel 宽度选择当前分支。
+
+## 27.5 DiC minimal layout
+
+当前最小布局层已经消费：
+
+```text
+width
+height
+paddingTop
+paddingRight
+paddingBottom
+paddingLeft
+```
+
+输出：
+
+```text
+frame
+contentFrame
+```
+
+当前支持的尺寸表达：
+
+```text
+number       → rem
+px
+rem
+%
+fill
+undefined    → surface 可用尺寸
+```
+
+`fit / content` 需要子树 intrinsic measurement，因此当前明确报出“requires tree measurement”，而不是错误地猜成 fill。其它尚未支持的复杂尺寸表达也必须明确失败，不能静默降级。
+
+## 27.6 DiC surface lifecycle
+
+内部 canvas surface 负责：
+
+```text
+host measure
+→ logical CSS-pixel size
+→ devicePixelRatio backing store
+→ RAF invalidate coalescing
+→ resolve paint
+→ layout
+→ clear
+→ draw
+```
+
+规则：
+
+- backing store 使用 `logicalSize × DPR`；
+- Canvas 2D context 在每帧恢复为 DPR transform，因此 layout / drawing 始终使用逻辑 CSS pixel；
+- 多次 `invalidate / update / resize` 在同一帧合并为一次 redraw；
+- resize 优先观察外层 host，而不是依赖 canvas intrinsic width / height；
+- destroy 必须断开 ResizeObserver / window listener，并取消未执行的 frame；
+- surface 当前仍是 renderer 内部能力，不增加新的公开组件 API。
+
+当前尚未完成的是多节点树布局、intrinsic child measurement、Text / Image 绘制、交互命中与 React View 默认切换到 DiC surface。这些能力继续在同一 View node contract 上扩展。
+
+## 27.7 组件结构
 
 ```text
 React
@@ -4898,7 +4972,7 @@ View
 9. 组合组件可以由 `View`、基础组件、组合组件共同构建。
 10. 组件层级判断按真实内部依赖，不靠 children 绕开依赖关系。
 11. 不暴露 `as`、`asChild` 或底层 HTML 标签选择权。
-12. CSS 是内部实现与语义基础，但公开 API 应提供高层、语义化属性。
+12. Weave 语义与 renderer-neutral IR 是布局 / 样式语义基础；CSS 只属于 DOM fallback 的内部实现。
 13. `style` 保留为原始 CSS 逃生口。
 14. 除 `style` 外，所有表示尺度的无单位数字统一按 `rem`。
 15. 所有表示时间的裸数字统一按毫秒（`ms`）。
@@ -4928,4 +5002,6 @@ View
 39. core 不产生 `rem`、CSS variable、gradient / shadow / transform CSS string；这些字符串只允许在 DOM renderer 中生成。
 40. state 与 responsive breakpoint 必须保留为 IR 分支，不能在进入 renderer 前被压扁为 DOM/CSS 表达。
 41. DiC 与 DOM fallback 必须消费同一个语义 IR；禁止让 DiC 反向解析 DOM/CSS。
-42. API 的目标是：AI 易写易读，同时人类易读。
+42. DiC surface 的 layout / draw 使用逻辑 CSS pixel；devicePixelRatio 只影响 canvas backing store，不改变 IR / layout 单位。
+43. DiC 当前不支持的 intrinsic / complex sizing 必须显式失败，不能静默猜测成 fill 或 0。
+44. API 的目标是：AI 易写易读，同时人类易读。
