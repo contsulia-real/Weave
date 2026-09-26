@@ -42,6 +42,7 @@ export function resolveDiCViewPaint(
 ): DiCViewPaint {
   const rem = environment.rem ?? 16
   let paint: DiCViewPaint = { ...node.paint }
+  const activeResponsive: typeof node.responsive[number][] = []
 
   for (const responsive of node.responsive) {
     const availableWidth =
@@ -52,24 +53,46 @@ export function resolveDiCViewPaint(
 
     if (availableWidth >= responsive.minWidth * rem) {
       paint = mergePaint(paint, responsive.paint)
+      activeResponsive.push(responsive)
+    }
+  }
+
+  const mergeState = (
+    key:
+      | 'hover'
+      | 'active'
+      | 'focus'
+      | 'focusVisible'
+      | 'disabled',
+  ) => {
+    paint = mergePaint(
+      paint,
+      node.states[key],
+    )
+
+    for (const responsive of activeResponsive) {
+      paint = mergePaint(
+        paint,
+        responsive.states?.[key],
+      )
     }
   }
 
   const state = environment.state
   if (state?.hover) {
-    paint = mergePaint(paint, node.states.hover)
+    mergeState('hover')
   }
   if (state?.active) {
-    paint = mergePaint(paint, node.states.active)
+    mergeState('active')
   }
   if (state?.focus) {
-    paint = mergePaint(paint, node.states.focus)
+    mergeState('focus')
   }
   if (state?.focusVisible) {
-    paint = mergePaint(paint, node.states.focusVisible)
+    mergeState('focusVisible')
   }
   if (state?.disabled) {
-    paint = mergePaint(paint, node.states.disabled)
+    mergeState('disabled')
   }
 
   return paint
