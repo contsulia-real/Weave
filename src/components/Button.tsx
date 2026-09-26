@@ -58,6 +58,8 @@ function semanticContent(props: ButtonProps) {
   const icon = props.icon
   const position = props.iconPosition ?? 'start'
   const iconNode = icon === undefined ? null : iconContent(icon)
+  // The Button host establishes the active typo for its size.
+  // Internal Text inherits that context so responsive size changes stay aligned.
   const textNode =
     props.text === undefined ? null : <Text>{props.text}</Text>
 
