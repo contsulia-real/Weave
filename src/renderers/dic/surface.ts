@@ -152,6 +152,15 @@ export function createDiCSurface(
   let layout: DiCViewTreeLayout | undefined
   let interactions: DiCInteractionController | undefined
 
+  const updateCursor = () => {
+    if (interactions === undefined) return
+
+    canvas.style.cursor =
+      cursorForDiCHit(
+        interactions.getHoverHit(),
+      ) ?? ''
+  }
+
   const render = () => {
     frameRequest = undefined
     if (destroyed) return
@@ -220,6 +229,8 @@ export function createDiCSurface(
         imageResources,
       },
     )
+
+    updateCursor()
   }
 
   const invalidate = () => {
@@ -269,20 +280,6 @@ export function createDiCSurface(
     if (result.propagationStopped) {
       event.stopPropagation()
     }
-  }
-
-  const updateCursor = () => {
-    if (
-      interactions === undefined ||
-      canvas.style === undefined
-    ) {
-      return
-    }
-
-    canvas.style.cursor =
-      cursorForDiCHit(
-        interactions.getHoverHit(),
-      ) ?? ''
   }
 
   const dispatchPointer = (
