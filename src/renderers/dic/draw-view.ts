@@ -25,6 +25,7 @@ export interface DiCDrawOptions {
 function numericLength(
   value: Length | undefined,
   rem: number,
+  reference?: number,
 ): number | undefined {
   if (value === undefined) return undefined
   if (typeof value === 'number') return value * rem
@@ -39,6 +40,12 @@ function numericLength(
     const parsed = Number.parseFloat(input)
     return Number.isFinite(parsed) ? parsed : undefined
   }
+  if (input.endsWith('%') && reference !== undefined) {
+    const parsed = Number.parseFloat(input)
+    return Number.isFinite(parsed)
+      ? reference * parsed / 100
+      : undefined
+  }
 
   return undefined
 }
@@ -47,6 +54,7 @@ function resolveRadius(
   value: RadiusValue | undefined,
   theme: ResolvedTheme,
   rem: number,
+  reference: number,
 ): number {
   if (value === undefined || value === 'none') return 0
 
@@ -56,7 +64,14 @@ function resolveRadius(
       : undefined
   const resolved = token ?? value
 
-  return numericLength(resolved, rem) ?? 0
+  const numeric = numericLength(resolved, rem, reference)
+  if (numeric === undefined) {
+    throw new Error(
+      `Unsupported DiC radius "${String(value)}"`,
+    )
+  }
+
+  return numeric
 }
 
 function resolveColor(
@@ -142,68 +157,80 @@ function backgroundStyle(
     : radialGradient(context, background, frame, theme)
 }
 
-function angleRadians(value: number | string): number | undefined {
+function angleRadians(value: number | string): number {
   if (typeof value === 'number') return value * Math.PI / 180
 
   const input = value.trim()
   if (input.endsWith('deg')) {
     const parsed = Number.parseFloat(input)
-    return Number.isFinite(parsed)
-      ? parsed * Math.PI / 180
-      : undefined
+    if (Number.isFinite(parsed)) {
+      return parsed * Math.PI / 180
+    }
   }
   if (input.endsWith('rad')) {
     const parsed = Number.parseFloat(input)
-    return Number.isFinite(parsed) ? parsed : undefined
+    if (Number.isFinite(parsed)) return parsed
   }
 
-  return undefined
+  throw new Error(
+    `Unsupported DiC angle "${String(value)}"`,
+  )
 }
 
 function translateLength(
   value: Length,
   rem: number,
+  reference: number,
 ): number {
-  return numericLength(value, rem) ?? 0
+  const numeric = numericLength(value, rem, reference)
+  if (numeric === undefined) {
+    throw new Error(
+      `Unsupported DiC transform length "${String(value)}"`,
+    )
+  }
+
+  return numeric
 }
 
 function applyTransform(
   context: CanvasRenderingContext2D,
   operation: TransformOperation,
   rem: number,
+  frame: DiCViewFrame,
 ): void {
   if ('translate' in operation) {
     context.translate(
-      translateLength(operation.translate[0], rem),
-      translateLength(operation.translate[1], rem),
+      translateLength(operation.translate[0], rem, frame.width),
+      translateLength(operation.translate[1], rem, frame.height),
     )
     return
   }
   if ('translateX' in operation) {
-    context.translate(translateLength(operation.translateX, rem), 0)
+    context.translate(
+      translateLength(operation.translateX, rem, frame.width),
+      0,
+    )
     return
   }
   if ('translateY' in operation) {
-    context.translate(0, translateLength(operation.translateY, rem))
+    context.translate(
+      0,
+      translateLength(operation.translateY, rem, frame.height),
+    )
     return
   }
   if ('rotate' in operation) {
-    const radians = angleRadians(operation.rotate)
-    if (radians !== undefined) context.rotate(radians)
+    context.rotate(angleRadians(operation.rotate))
     return
   }
   if ('skewX' in operation) {
     const radians = angleRadians(operation.skewX)
-    if (radians !== undefined) {
-      context.transform(1, 0, Math.tan(radians), 1, 0, 0)
-    }
+    context.transform(1, 0, Math.tan(radians), 1, 0, 0)
     return
   }
   if ('skewY' in operation) {
     const radians = angleRadians(operation.skewY)
-    if (radians !== undefined) {
-      context.transform(1, Math.tan(radians), 0, 1, 0, 0)
-    }
+    context.transform(1, Math.tan(radians), 0, 1, 0, 0)
     return
   }
   if ('scale' in operation) {
@@ -277,7 +304,7 @@ export function drawDiCViewPaint(
   if (paint.transform !== undefined) {
     context.translate(frame.width / 2, frame.height / 2)
     for (const operation of paint.transform) {
-      applyTransform(context, operation, rem)
+      applyTransform(context, operation, rem, frame)
     }
     context.translate(-frame.width / 2, -frame.height / 2)
   }
@@ -287,10 +314,30 @@ export function drawDiCViewPaint(
       context,
       frame,
       [
-        resolveRadius(paint.radiusTopLeft, theme, rem),
-        resolveRadius(paint.radiusTopRight, theme, rem),
-        resolveRadius(paint.radiusBottomRight, theme, rem),
-        resolveRadius(paint.radiusBottomLeft, theme, rem),
+        resolveRadius(
+          paint.radiusTopLeft,
+          theme,
+          rem,
+          Math.min(frame.width, frame.height),
+        ),
+        resolveRadius(
+          paint.radiusTopRight,
+          theme,
+          rem,
+          Math.min(frame.width, frame.height),
+        ),
+        resolveRadius(
+          paint.radiusBottomRight,
+          theme,
+          rem,
+          Math.min(frame.width, frame.height),
+        ),
+        resolveRadius(
+          paint.radiusBottomLeft,
+          theme,
+          rem,
+          Math.min(frame.width, frame.height),
+        ),
       ],
     )
     context.fillStyle = backgroundStyle(
