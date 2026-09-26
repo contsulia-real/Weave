@@ -10,6 +10,7 @@ import type {
   DiCViewPaint,
 } from './compile-view'
 import type { DiCViewTreeLayout } from './layout-tree'
+import { drawDiCText } from './draw-text'
 
 export interface DiCViewFrame {
   x: number
@@ -21,6 +22,7 @@ export interface DiCViewFrame {
 export interface DiCDrawOptions {
   theme: ResolvedTheme
   rem?: number
+  viewportWidth?: number
 }
 
 function numericLength(
@@ -416,6 +418,26 @@ export function drawDiCViewTree(
     layout.frame,
     options,
   )
+
+  if (
+    layout.node.content?.kind === 'text' &&
+    layout.typography !== undefined
+  ) {
+    drawDiCText(
+      context,
+      layout.node.content,
+      layout.contentFrame,
+      {
+        theme: options.theme,
+        typography: layout.typography,
+        viewportWidth:
+          options.viewportWidth ??
+          layout.frame.width,
+        containerWidth: layout.contentFrame.width,
+        rem,
+      },
+    )
+  }
 
   for (const child of layout.children) {
     drawDiCViewTree(
