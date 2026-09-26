@@ -39,6 +39,7 @@ describe('Progress', () => {
 
     const element = getByRole('progressbar')
 
+    expect(element.tagName).toBe('SPAN')
     expect(element.getAttribute('aria-busy')).toBe('true')
     expect(element.getAttribute('aria-valuemin')).toBeNull()
     expect(element.getAttribute('aria-valuemax')).toBeNull()
@@ -63,7 +64,7 @@ describe('Progress', () => {
     const element = getByRole('progressbar')
     const value = element.querySelector(
       '[data-weave-progress-value]',
-    ) as HTMLDivElement
+    ) as HTMLSpanElement
 
     expect(element.getAttribute('aria-busy')).toBeNull()
     expect(element.getAttribute('aria-valuemin')).toBe('0')
@@ -99,7 +100,7 @@ describe('Progress', () => {
     const element = getByRole('progressbar')
     const track = element.querySelector(
       '[data-weave-progress-track]',
-    ) as HTMLDivElement
+    ) as HTMLSpanElement
 
     expect(element.className).toContain('weave-progress--tracked')
     expect(
@@ -131,7 +132,7 @@ describe('Progress', () => {
     const element = getByRole('progressbar')
     const value = element.querySelector(
       '[data-weave-progress-value]',
-    ) as HTMLDivElement
+    ) as HTMLSpanElement
 
     expect(runtimeRule(value, 'weave-progress-value-')).toContain(
       '--weave-progress-value:20%;',
@@ -215,7 +216,7 @@ describe('Progress', () => {
     const element = getByRole('progressbar')
     const value = element.querySelector(
       '[data-weave-progress-value]',
-    ) as HTMLDivElement
+    ) as HTMLSpanElement
 
     expect(element.getAttribute('aria-valuenow')).toBe('1')
     expect(runtimeRule(value, 'weave-progress-value-')).toContain(
