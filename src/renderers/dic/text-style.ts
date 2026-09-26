@@ -17,6 +17,11 @@ export interface DiCResolvedTextStyle extends DiCTypographyContext {
   case: NonNullable<TextStyleProps['case']>
 }
 
+type DiCTextStyleInput =
+  Omit<TextResponsiveProps, 'typo'> & {
+    typo?: string
+  }
+
 function parseAbsoluteLength(
   value: ThemeScaleValue,
   rem: number,
@@ -162,7 +167,7 @@ function resolveColor(
 
 function applyTextStyle(
   inherited: DiCTypographyContext,
-  style: TextResponsiveProps,
+  style: DiCTextStyleInput,
   theme: ResolvedTheme,
   rem: number,
 ): DiCResolvedTextStyle {
