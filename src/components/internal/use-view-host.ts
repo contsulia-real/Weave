@@ -32,9 +32,8 @@ export interface ViewHostResult<TElement extends HTMLElement> {
 
 export function useViewHost<
   TElement extends HTMLElement,
-  TBreakpointName extends string = never,
 >(
-  props: ViewProps<TElement, TBreakpointName>,
+  props: ViewProps<TElement>,
   componentStyle?: CSSProperties,
   componentName?: string,
 ): ViewHostResult<TElement> {
