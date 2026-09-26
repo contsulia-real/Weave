@@ -394,12 +394,9 @@ export function layoutDiCText(
     }
   }
 
-  const width = Math.min(
-    maxWidth,
-    Math.max(
-      0,
-      ...lines.map((line) => line.width),
-    ),
+  const width = Math.max(
+    0,
+    ...lines.map((line) => line.width),
   )
   const height = lines.length * style.lineHeight
 
