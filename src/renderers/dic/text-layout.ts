@@ -104,6 +104,7 @@ function ellipsize(
   value: string,
   maxWidth: number,
   letterSpacing: number,
+  force = false,
 ): DiCTextLine {
   const ellipsis = '…'
   const ellipsisWidth = lineWidth(
@@ -119,20 +120,16 @@ function ellipsize(
     }
   }
 
-  if (
-    lineWidth(
-      context,
-      value,
-      letterSpacing,
-    ) <= maxWidth
-  ) {
+  const currentWidth = lineWidth(
+    context,
+    value,
+    letterSpacing,
+  )
+
+  if (!force && currentWidth <= maxWidth) {
     return {
       text: value,
-      width: lineWidth(
-        context,
-        value,
-        letterSpacing,
-      ),
+      width: currentWidth,
     }
   }
 
@@ -309,6 +306,7 @@ function layoutLines(
           collapsed,
           maxWidth,
           style.letterSpacing,
+          true,
         ),
       ]
     }
