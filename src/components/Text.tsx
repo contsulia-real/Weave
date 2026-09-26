@@ -44,7 +44,7 @@ function responsiveData(
 export function Text<
   TBreakpointName extends string = never,
 >(
-  props: TextProps<TBreakpointName>,
+  props: TextProps<NoInfer<TBreakpointName>>,
 ) {
   const {
     children,
