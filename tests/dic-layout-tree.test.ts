@@ -117,6 +117,60 @@ describe('DiC View tree layout', () => {
     })
   })
 
+  it('uses border-box geometry for intrinsic content and content frames', () => {
+    const leaf = node(
+      {
+        width: 'content',
+        height: 'content',
+        padding: 1,
+        border: '1px',
+      },
+      {
+        measure: () => ({
+          width: 80,
+          height: 20,
+        }),
+      },
+    )
+
+    expect(
+      measureDiCIntrinsicSize(
+        leaf,
+        {
+          width: 400,
+          height: 300,
+        },
+        {
+          viewportWidth: 400,
+          rem: 16,
+        },
+      ),
+    ).toEqual({
+      width: 114,
+      height: 54,
+    })
+
+    const layout = layoutDiCViewTree(
+      leaf,
+      {
+        width: 400,
+        height: 300,
+        root: false,
+      },
+      {
+        viewportWidth: 400,
+        rem: 16,
+      },
+    )
+
+    expect(layout.contentFrame).toEqual({
+      x: 17,
+      y: 17,
+      width: 80,
+      height: 20,
+    })
+  })
+
   it('shares remaining row space between fill children', () => {
     const root = node(
       {
