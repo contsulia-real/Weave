@@ -176,7 +176,10 @@ describe('Button', () => {
     expect(element.getAttribute('aria-busy')).toBe('true')
     expect(element.className).toContain('weave-button--loading')
     expect(element.textContent).toContain('Submit')
-    expect(element.querySelector('.weave-button__spinner')).not.toBeNull()
+    const indicator = element.querySelector('[data-weave-progress]')
+    expect(indicator).not.toBeNull()
+    expect(indicator?.getAttribute('aria-hidden')).toBe('true')
+    expect(element.querySelector('[role="progressbar"]')).toBeNull()
 
     fireEvent.click(element)
     expect(onClick).not.toHaveBeenCalled()
@@ -452,15 +455,24 @@ describe('Button', () => {
     )
   })
 
-  it('installs reduced-motion handling for the loading spinner', () => {
+  it('reuses Progress motion handling for the loading indicator', () => {
     render(<Button text="Loading" loading />)
 
-    const stylesheet = document.querySelector(
+    const buttonStylesheet = document.querySelector(
       'style[data-weave-button-styles]',
     )
+    const progressStylesheet = document.querySelector(
+      'style[data-weave-progress-styles]',
+    )
 
-    expect(stylesheet?.textContent).toContain(
+    expect(buttonStylesheet?.textContent).not.toContain(
+      'weave-button-spin',
+    )
+    expect(progressStylesheet?.textContent).toContain(
       '@media (prefers-reduced-motion: reduce)',
+    )
+    expect(progressStylesheet?.textContent).toContain(
+      'weave-progress-spin-rotate',
     )
   })
 })
