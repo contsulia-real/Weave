@@ -30,37 +30,14 @@ const stylesheet = `
   --weave-component-display: block;
 }
 
-:where(.weave-scrollbar--tracked)::before {
-  content: "";
-  position: absolute;
-  pointer-events: none;
-  background: var(--weave-scrollbar-track-color);
-  border-radius: var(--weave-scrollbar-radius);
-  box-shadow: var(--weave-scrollbar-track-shadow);
-}
-
 :where(.weave-scrollbar--vertical) {
   --weave-component-width: var(--weave-scrollbar-hit-size);
   --weave-component-transform: translateX(-100%);
 }
 
-:where(.weave-scrollbar--vertical.weave-scrollbar--tracked)::before {
-  top: 0;
-  right: var(--weave-scrollbar-edge-inset, 0.25rem);
-  bottom: 0;
-  width: var(--weave-scrollbar-thickness);
-}
-
 :where(.weave-scrollbar--horizontal) {
   --weave-component-height: var(--weave-scrollbar-hit-size);
   --weave-component-transform: translateY(-100%);
-}
-
-:where(.weave-scrollbar--horizontal.weave-scrollbar--tracked)::before {
-  left: 0;
-  right: 0;
-  bottom: var(--weave-scrollbar-edge-inset, 0.25rem);
-  height: var(--weave-scrollbar-thickness);
 }
 
 :where(.weave-scrollbar__thumb) {
@@ -80,7 +57,6 @@ const stylesheet = `
   );
   --weave-component-cursor: var(--weave-scrollbar-thumb-cursor);
   --weave-component-user-select: none;
-  --weave-component-box-shadow: var(--weave-scrollbar-thumb-shadow);
 
   will-change: transform, scale;
   scale: 1;
