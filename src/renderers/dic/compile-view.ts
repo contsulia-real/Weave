@@ -162,6 +162,7 @@ export interface DiCPointerEvent extends DiCEventControl {
   readonly currentTarget: DiCViewNode
   capturePointer(): void
   releasePointer(): void
+  requestRender(): void
 }
 
 export interface DiCKeyboardEvent extends DiCEventControl {
