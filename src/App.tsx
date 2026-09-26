@@ -67,7 +67,7 @@ function DemoBox({ label }: { label: string }) {
       radius="medium"
       background="#f4f4f5"
     >
-      <strong>{label}</strong>
+      <Text typo="label">{label}</Text>
     </View>
   )
 }
@@ -97,8 +97,23 @@ function App() {
         shadow="medium"
       >
         <View layout="flex" direction="column" gap={0.5}>
-          <p className="eyebrow">Weave playground</p>
-          <h1>Weave</h1>
+          <Text
+            typo="label"
+            color="secondary"
+            case="uppercase"
+            letterSpacing="0.08em"
+          >
+            Weave playground
+          </Text>
+          <Text
+            typo="display"
+            viewProps={{
+              role: 'heading',
+              level: 1,
+            }}
+          >
+            Weave
+          </Text>
           <Text
             size="small"
             color="secondary"
@@ -112,10 +127,18 @@ function App() {
         </View>
 
         <View layout="flex" direction="column" gap={0.75}>
-          <h2>Viewport breakpoint</h2>
-          <p className="hint">
+          <Text
+            typo="heading"
+            viewProps={{
+              role: 'heading',
+              level: 2,
+            }}
+          >
+            Viewport breakpoint
+          </Text>
+          <Text typo="caption" color="secondary">
             窄窗口为纵向；达到 md（48rem）后变为横向并改变背景。
-          </p>
+          </Text>
 
           <View
             layout="flex"
@@ -137,10 +160,18 @@ function App() {
         </View>
 
         <View layout="flex" direction="column" gap={0.75}>
-          <h2>Theme inheritance</h2>
-          <p className="hint">
+          <Text
+            typo="heading"
+            viewProps={{
+              role: 'heading',
+              level: 2,
+            }}
+          >
+            Theme inheritance
+          </Text>
+          <Text typo="caption" color="secondary">
             两块都使用 background="primary"；右侧只通过 mode="dark" 改变同一 token。
-          </p>
+          </Text>
 
           <View layout="flex" direction="row" gap={0.75} wrap>
             <ThemeProvider theme={diagnosticTheme} mode="light">
@@ -150,7 +181,9 @@ function App() {
                 background="primary"
                 color="onPrimary"
               >
-                Light primary
+                <Text size="small" weight="semibold">
+                  Light primary
+                </Text>
               </View>
             </ThemeProvider>
 
@@ -161,17 +194,27 @@ function App() {
                 background="primary"
                 color="#18181b"
               >
-                Dark primary
+                <Text size="small" weight="semibold">
+                  Dark primary
+                </Text>
               </View>
             </ThemeProvider>
           </View>
         </View>
 
         <View layout="flex" direction="column" gap={0.75}>
-          <h2>Global typography</h2>
-          <p className="hint">
+          <Text
+            typo="heading"
+            viewProps={{
+              role: 'heading',
+              level: 2,
+            }}
+          >
+            Global typography
+          </Text>
+          <Text typo="caption" color="secondary">
             ThemeProvider 提供 family / size / weight / line-height / letter-spacing 的全局继承基线；Text 和控件共享同一套 typography tokens。
-          </p>
+          </Text>
 
           <View layout="flex" direction="column" gap={0.5}>
             <Text size="xsmall">XSmall — 12px</Text>
@@ -193,10 +236,18 @@ function App() {
         </View>
 
         <View layout="flex" direction="column" gap={0.75}>
-          <h2>Image</h2>
-          <p className="hint">
+          <Text
+            typo="heading"
+            viewProps={{
+              role: 'heading',
+              level: 2,
+            }}
+          >
+            Image
+          </Text>
+          <Text typo="caption" color="secondary">
             方形源图放进横向容器：contain 应完整显示并留空，cover 应填满并裁切；尺寸和圆角来自 viewProps。
-          </p>
+          </Text>
 
           <View layout="flex" direction="row" gap={1} wrap>
             <Image
@@ -225,10 +276,18 @@ function App() {
         </View>
 
         <View layout="flex" direction="column" gap={0.75}>
-          <h2>Icon</h2>
-          <p className="hint">
+          <Text
+            typo="heading"
+            viewProps={{
+              role: 'heading',
+              level: 2,
+            }}
+          >
+            Icon
+          </Text>
+          <Text typo="caption" color="secondary">
             Outline / Filled 由调用方传入的 Tabler 图标组件决定；size / stroke 由 Weave 统一，颜色和其他通用视觉继续走 viewProps。
-          </p>
+          </Text>
 
           <View layout="flex" direction="column" gap={1}>
             <View layout="flex" direction="row" gap={1.5} align="center" wrap>
@@ -327,10 +386,18 @@ function App() {
         </View>
 
         <View layout="flex" direction="column" gap={0.75}>
-          <h2>Button</h2>
-          <p className="hint">
+          <Text
+            typo="heading"
+            viewProps={{
+              role: 'heading',
+              level: 2,
+            }}
+          >
+            Button
+          </Text>
+          <Text typo="caption" color="secondary">
             Weave 的 tactile control 基准：hover 会抬起，按住会下沉并压缩，释放使用 spring 回弹；variant / size 仍可由主题和 breakpoint 覆盖。
-          </p>
+          </Text>
 
           <View layout="flex" direction="column" gap={1}>
             <View layout="flex" direction="row" gap={0.75} align="center" wrap>
@@ -397,10 +464,18 @@ function App() {
         </View>
 
         <View layout="flex" direction="column" gap={0.75}>
-          <h2>Input</h2>
-          <p className="hint">
+          <Text
+            typo="heading"
+            viewProps={{
+              role: 'heading',
+              level: 2,
+            }}
+          >
+            Input
+          </Text>
+          <Text typo="caption" color="secondary">
             单行和多行共用同一个 Input；默认视觉来自 Input theme，multiline 内部滚动统一使用 Weave Scrollbar。
-          </p>
+          </Text>
 
           <View layout="flex" direction="column" gap={0.75} maxWidth={32}>
             <Input
@@ -431,10 +506,18 @@ function App() {
         </View>
 
         <View layout="flex" direction="column" gap={0.75}>
-          <h2>Switch</h2>
-          <p className="hint">
+          <Text
+            typo="heading"
+            viewProps={{
+              role: 'heading',
+              level: 2,
+            }}
+          >
+            Switch
+          </Text>
+          <Text typo="caption" color="secondary">
             三档语义尺寸；hover 时 thumb 轻微增强，拖动时产生抓取反馈并直接跟手，释放后 spring 归位。
-          </p>
+          </Text>
 
           <View layout="flex" direction="row" gap={1.5} align="center" wrap>
             <View layout="flex" direction="row" gap={0.5} align="center">
@@ -455,10 +538,18 @@ function App() {
         </View>
 
         <View layout="flex" direction="column" gap={0.75}>
-          <h2>Progress</h2>
-          <p className="hint">
+          <Text
+            typo="heading"
+            viewProps={{
+              role: 'heading',
+              level: 2,
+            }}
+          >
+            Progress
+          </Text>
+          <Text typo="caption" color="secondary">
             mode 决定 spin / linear；tracked 只控制浅色连续轨道。
-          </p>
+          </Text>
 
           <View layout="flex" direction="column" gap={1}>
             <View layout="flex" direction="row" gap={1.5} align="center" wrap>
@@ -536,10 +627,18 @@ function App() {
         </View>
 
         <View layout="flex" direction="column" gap={0.75}>
-          <h2>Scrollbar</h2>
-          <p className="hint">
+          <Text
+            typo="heading"
+            viewProps={{
+              role: 'heading',
+              level: 2,
+            }}
+          >
+            Scrollbar
+          </Text>
+          <Text typo="caption" color="secondary">
             View overflow="auto" 自动挂载框架 Scrollbar；视觉 rail/thumb 内缩，但透明命中区贴着真实边缘，边缘也能直接抓取；hover / drag 会变色，thumb 位置继续直接跟随原生 scrollTop / scrollLeft。
-          </p>
+          </Text>
 
           <View
             width={28}
@@ -576,7 +675,9 @@ function App() {
                   }
                   radius="small"
                 >
-                  Scroll row {index + 1} — horizontal content width 44rem
+                  <Text size="small">
+                    Scroll row {index + 1} — horizontal content width 44rem
+                  </Text>
                 </View>
               ))}
             </View>
@@ -584,10 +685,18 @@ function App() {
         </View>
 
         <View layout="flex" direction="column" gap={0.75}>
-          <h2>Container breakpoint</h2>
-          <p className="hint">
+          <Text
+            typo="heading"
+            viewProps={{
+              role: 'heading',
+              level: 2,
+            }}
+          >
+            Container breakpoint
+          </Text>
+          <Text typo="caption" color="secondary">
             拖动下面容器右下角改变它自己的宽度；达到 48rem 后内部切为横向。
-          </p>
+          </Text>
 
           <View
             container="demo"
