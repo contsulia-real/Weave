@@ -303,8 +303,17 @@ export function createDiCSurface(
       type,
       ...point,
       pointerId: event.pointerId,
+      pointerType: event.pointerType,
+      isPrimary: event.isPrimary,
       button: event.button,
       buttons: event.buttons,
+      clientX: event.clientX,
+      clientY: event.clientY,
+      pressure: event.pressure,
+      altKey: event.altKey,
+      ctrlKey: event.ctrlKey,
+      metaKey: event.metaKey,
+      shiftKey: event.shiftKey,
       capture: (pointerId) => {
         canvas.setPointerCapture?.(pointerId)
       },
