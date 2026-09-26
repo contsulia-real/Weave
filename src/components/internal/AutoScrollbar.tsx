@@ -356,7 +356,7 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
       borderBottom + inset,
       radii.bottomRight.y,
       horizontalVisible
-        ? borderBottom + inset + horizontalThickness
+        ? borderBottom + inset * 2 + horizontalThickness
         : 0,
     )
     const horizontalStartInset = Math.max(
@@ -367,7 +367,7 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
       borderRight + inset,
       radii.bottomRight.x,
       verticalVisible
-        ? borderRight + inset + verticalThickness
+        ? borderRight + inset * 2 + verticalThickness
         : 0,
     )
 
