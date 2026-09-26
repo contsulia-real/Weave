@@ -29,7 +29,7 @@ export type {
   ViewData,
   ViewDataValue,
   ViewDirection,
-  ViewDynamicBreakpointProps,
+  ValidateDynamicBreakpointProps,
   ViewJustify,
   ViewLayout,
   ViewProps,
