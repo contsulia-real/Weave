@@ -239,6 +239,59 @@ describe('DiC interaction controller', () => {
     expect(release).toHaveBeenCalledWith(1)
   })
 
+  it('derives autoFocus from ResolvedView and reconciles stale focus after tree replacement', () => {
+    const first = node({
+      width: 4,
+      height: 3,
+      autoFocus: true,
+    })
+    const second = node({
+      width: 4,
+      height: 3,
+    })
+
+    expect(first.interaction).toMatchObject({
+      focusable: true,
+      autoFocus: true,
+    })
+
+    let currentLayout = layoutDiCViewTree(
+      first,
+      {
+        width: 200,
+        height: 200,
+      },
+      {
+        viewportWidth: 200,
+        rem: 16,
+        theme: defaultTheme,
+      },
+    )
+    const controller = createDiCInteractionController({
+      getLayout: () => currentLayout,
+      invalidate: vi.fn(),
+    })
+
+    controller.reconcile()
+    expect(controller.getFocusedNode()).toBe(first)
+
+    currentLayout = layoutDiCViewTree(
+      second,
+      {
+        width: 200,
+        height: 200,
+      },
+      {
+        viewportWidth: 200,
+        rem: 16,
+        theme: defaultTheme,
+      },
+    )
+
+    controller.reconcile()
+    expect(controller.getFocusedNode()).toBeUndefined()
+  })
+
   it('marks semantic disabled state without suppressing generic View events', () => {
     const down = vi.fn()
     const disabled = node(
