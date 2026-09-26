@@ -65,6 +65,14 @@ describe('Theme', () => {
         letterSpacing: {
           normal: '0.01em',
         },
+        styles: {
+          'body-large': {
+            fontSize: 1,
+            fontWeight: 400,
+            lineHeight: '1.5',
+            letterSpacing: '0.01em',
+          },
+        },
       },
       feedback: {
         restDepth: 0.1875,
@@ -88,6 +96,18 @@ describe('Theme', () => {
     expect(variables['--weave-typography-letter-spacing-normal']).toBe(
       '0.01em',
     )
+    expect(
+      variables['--weave-typography-style-body-large-font-size'],
+    ).toBe('1rem')
+    expect(
+      variables['--weave-typography-style-body-large-font-weight'],
+    ).toBe(400)
+    expect(
+      variables['--weave-typography-style-body-large-line-height'],
+    ).toBe('1.5')
+    expect(
+      variables['--weave-typography-style-body-large-letter-spacing'],
+    ).toBe('0.01em')
     expect(variables['--weave-spacing-compact']).toBe('0.5rem')
     expect(variables['--weave-radius-card']).toBe('1rem')
     expect(variables['--weave-feedback-rest-depth']).toBe('0.1875rem')
@@ -111,10 +131,16 @@ describe('Theme', () => {
       'font-family: var(--weave-typography-family-body)',
     )
     expect(stylesheet).toContain(
-      'line-height: var(--weave-typography-line-height-body)',
+      'font-size: var(--weave-typography-style-body-large-font-size)',
     )
     expect(stylesheet).toContain(
-      'letter-spacing: var(--weave-typography-letter-spacing-normal)',
+      'font-weight: var(--weave-typography-style-body-large-font-weight)',
+    )
+    expect(stylesheet).toContain(
+      'line-height: var(--weave-typography-style-body-large-line-height)',
+    )
+    expect(stylesheet).toContain(
+      'letter-spacing: var(--weave-typography-style-body-large-letter-spacing)',
     )
   })
 
@@ -134,16 +160,16 @@ describe('Theme', () => {
       'font-family:var(--weave-typography-family-body);',
     )
     expect(rule).toContain(
-      'font-size:var(--weave-typography-size-medium);',
+      'font-size:var(--weave-typography-style-body-large-font-size);',
     )
     expect(rule).toContain(
-      'font-weight:var(--weave-typography-weight-regular);',
+      'font-weight:var(--weave-typography-style-body-large-font-weight);',
     )
     expect(rule).toContain(
-      'line-height:var(--weave-typography-line-height-body);',
+      'line-height:var(--weave-typography-style-body-large-line-height);',
     )
     expect(rule).toContain(
-      'letter-spacing:var(--weave-typography-letter-spacing-normal);',
+      'letter-spacing:var(--weave-typography-style-body-large-letter-spacing);',
     )
   })
 
