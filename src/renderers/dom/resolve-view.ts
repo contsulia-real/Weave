@@ -304,11 +304,8 @@ export interface ResolvedDOMView<TElement extends HTMLElement> {
   layout: ViewProps<TElement>['layout']
 }
 
-export function compileDOMView<
-  TElement extends HTMLElement,
-  TBreakpointName extends string = never,
->(
-  props: ViewProps<TElement, TBreakpointName>,
+export function compileDOMView<TElement extends HTMLElement>(
+  props: ViewProps<TElement>,
   resolvedView: ResolvedView,
   breakpoints: Readonly<Record<string, number>> = defaultBreakpoints,
 ): ResolvedDOMView<TElement> {
@@ -412,11 +409,8 @@ export function compileDOMView<
   }
 }
 
-export function resolveDOMView<
-  TElement extends HTMLElement,
-  TBreakpointName extends string = never,
->(
-  props: ViewProps<TElement, TBreakpointName>,
+export function resolveDOMView<TElement extends HTMLElement>(
+  props: ViewProps<TElement>,
   breakpoints: Readonly<Record<string, number>> = defaultBreakpoints,
 ): ResolvedDOMView<TElement> {
   return compileDOMView(
