@@ -8,6 +8,12 @@ import {
 } from './layout-tree'
 import type { DiCInteractionState } from './resolve-paint'
 import {
+  createDiCInteractionController,
+  type DiCDispatchResult,
+  type DiCInteractionController,
+} from './interaction'
+import { cursorForDiCHit } from './hit-test'
+import {
   createDiCImageResourceManager,
   type DiCImageResourceManager,
 } from './image-resource'
@@ -27,6 +33,7 @@ export interface DiCSurfaceScheduler {
 
 export interface DiCSurfaceOptions {
   autoResize?: boolean
+  interactive?: boolean
   resizeTarget?: Element
   scheduler?: DiCSurfaceScheduler
   devicePixelRatio?: () => number
@@ -40,6 +47,7 @@ export interface DiCSurface {
   invalidate(): void
   destroy(): void
   getLayout(): DiCViewTreeLayout | undefined
+  getInteraction(): DiCInteractionController | undefined
 }
 
 function defaultScheduler(): DiCSurfaceScheduler {
@@ -142,6 +150,7 @@ export function createDiCSurface(
   let frameRequest: number | undefined
   let destroyed = false
   let layout: DiCViewTreeLayout | undefined
+  let interactions: DiCInteractionController | undefined
 
   const render = () => {
     frameRequest = undefined
@@ -165,10 +174,26 @@ export function createDiCSurface(
         context,
         theme: scene.theme,
         imageResources,
-        stateForNode: (node) =>
-          node === scene.node
-            ? scene.state
-            : undefined,
+        stateForNode: (node) => {
+          const interactive =
+            interactions?.stateForNode(node)
+          const external =
+            node === scene.node
+              ? scene.state
+              : undefined
+
+          if (
+            interactive === undefined &&
+            external === undefined
+          ) {
+            return undefined
+          }
+
+          return {
+            ...interactive,
+            ...external,
+          }
+        },
       },
     )
 
@@ -191,6 +216,186 @@ export function createDiCSurface(
 
   const unsubscribeImages =
     imageResources.subscribe(invalidate)
+
+  const interactive = options.interactive !== false
+
+  if (interactive) {
+    interactions = createDiCInteractionController({
+      getLayout: () => layout,
+      invalidate,
+      rem: () => scene.rem ?? 16,
+    })
+  }
+
+  const eventPoint = (
+    event: PointerEvent,
+  ) => {
+    const rect = canvas.getBoundingClientRect()
+    const scaleX =
+      rect.width > 0
+        ? width / rect.width
+        : 1
+    const scaleY =
+      rect.height > 0
+        ? height / rect.height
+        : 1
+
+    return {
+      x: (event.clientX - rect.left) * scaleX,
+      y: (event.clientY - rect.top) * scaleY,
+    }
+  }
+
+  const applyDispatchResult = (
+    event: Event,
+    result: DiCDispatchResult,
+  ) => {
+    if (result.defaultPrevented) {
+      event.preventDefault()
+    }
+    if (result.propagationStopped) {
+      event.stopPropagation()
+    }
+  }
+
+  const updateCursor = () => {
+    if (
+      interactions === undefined ||
+      canvas.style === undefined
+    ) {
+      return
+    }
+
+    canvas.style.cursor =
+      cursorForDiCHit(
+        interactions.getHoverHit(),
+      ) ?? ''
+  }
+
+  const dispatchPointer = (
+    event: PointerEvent,
+    type:
+      | 'pointermove'
+      | 'pointerdown'
+      | 'pointerup'
+      | 'pointercancel'
+      | 'pointerleave',
+  ) => {
+    if (interactions === undefined) return
+
+    const point = eventPoint(event)
+    const result = interactions.dispatchPointer({
+      type,
+      ...point,
+      pointerId: event.pointerId,
+      button: event.button,
+      buttons: event.buttons,
+      capture: (pointerId) => {
+        canvas.setPointerCapture?.(pointerId)
+      },
+      release: (pointerId) => {
+        if (canvas.hasPointerCapture?.(pointerId)) {
+          canvas.releasePointerCapture?.(pointerId)
+        }
+      },
+    })
+
+    if (
+      type === 'pointerdown' &&
+      interactions.getFocusedNode() !== undefined
+    ) {
+      canvas.focus?.({
+        preventScroll: true,
+      })
+    }
+
+    updateCursor()
+    applyDispatchResult(event, result)
+  }
+
+  const handlePointerMove = (event: PointerEvent) =>
+    dispatchPointer(event, 'pointermove')
+  const handlePointerDown = (event: PointerEvent) =>
+    dispatchPointer(event, 'pointerdown')
+  const handlePointerUp = (event: PointerEvent) =>
+    dispatchPointer(event, 'pointerup')
+  const handlePointerCancel = (event: PointerEvent) =>
+    dispatchPointer(event, 'pointercancel')
+  const handlePointerLeave = (event: PointerEvent) =>
+    dispatchPointer(event, 'pointerleave')
+
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (interactions === undefined) return
+
+    const result = interactions.dispatchKeyboard({
+      type: 'keydown',
+      key: event.key,
+      code: event.code,
+      repeat: event.repeat,
+      altKey: event.altKey,
+      ctrlKey: event.ctrlKey,
+      metaKey: event.metaKey,
+      shiftKey: event.shiftKey,
+    })
+    applyDispatchResult(event, result)
+  }
+
+  const handleKeyUp = (event: KeyboardEvent) => {
+    if (interactions === undefined) return
+
+    const result = interactions.dispatchKeyboard({
+      type: 'keyup',
+      key: event.key,
+      code: event.code,
+      repeat: event.repeat,
+      altKey: event.altKey,
+      ctrlKey: event.ctrlKey,
+      metaKey: event.metaKey,
+      shiftKey: event.shiftKey,
+    })
+    applyDispatchResult(event, result)
+  }
+
+  const handleBlur = () => {
+    interactions?.blur()
+    updateCursor()
+  }
+
+  if (
+    interactive &&
+    typeof canvas.addEventListener === 'function'
+  ) {
+    canvas.addEventListener(
+      'pointermove',
+      handlePointerMove,
+    )
+    canvas.addEventListener(
+      'pointerdown',
+      handlePointerDown,
+    )
+    canvas.addEventListener(
+      'pointerup',
+      handlePointerUp,
+    )
+    canvas.addEventListener(
+      'pointercancel',
+      handlePointerCancel,
+    )
+    canvas.addEventListener(
+      'pointerleave',
+      handlePointerLeave,
+    )
+    canvas.addEventListener('keydown', handleKeyDown)
+    canvas.addEventListener('keyup', handleKeyUp)
+    canvas.addEventListener('blur', handleBlur)
+
+    if (
+      typeof canvas.hasAttribute === 'function' &&
+      !canvas.hasAttribute('tabindex')
+    ) {
+      canvas.tabIndex = -1
+    }
+  }
 
   const resize = (
     nextWidth: number,
@@ -257,6 +462,44 @@ export function createDiCSurface(
       resizeObserver?.disconnect()
       unsubscribeImages()
 
+      if (
+        interactive &&
+        typeof canvas.removeEventListener === 'function'
+      ) {
+        canvas.removeEventListener(
+          'pointermove',
+          handlePointerMove,
+        )
+        canvas.removeEventListener(
+          'pointerdown',
+          handlePointerDown,
+        )
+        canvas.removeEventListener(
+          'pointerup',
+          handlePointerUp,
+        )
+        canvas.removeEventListener(
+          'pointercancel',
+          handlePointerCancel,
+        )
+        canvas.removeEventListener(
+          'pointerleave',
+          handlePointerLeave,
+        )
+        canvas.removeEventListener(
+          'keydown',
+          handleKeyDown,
+        )
+        canvas.removeEventListener(
+          'keyup',
+          handleKeyUp,
+        )
+        canvas.removeEventListener('blur', handleBlur)
+      }
+
+      interactions?.blur()
+      interactions = undefined
+
       for (const source of retainedImageSources) {
         imageResources.release(source)
       }
@@ -275,6 +518,9 @@ export function createDiCSurface(
     },
     getLayout() {
       return layout
+    },
+    getInteraction() {
+      return interactions
     },
   }
 }
