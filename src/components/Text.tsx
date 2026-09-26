@@ -45,6 +45,7 @@ export function Text(props: TextProps) {
   const {
     children,
     viewProps = {},
+    typo,
     size,
     weight,
     color,
@@ -100,6 +101,7 @@ export function Text(props: TextProps) {
 
   const componentStyle = resolveTextResponsiveStyle({
     base: {
+      typo,
       size,
       weight,
       align,
@@ -129,6 +131,7 @@ export function Text(props: TextProps) {
       ref={elementRef}
       data-weave-view=""
       data-weave-text=""
+      data-weave-text-typo={typo}
       data-weave-layout={resolved.layout}
       data-weave-text-overflow={overflow}
       data-weave-text-max-lines={
