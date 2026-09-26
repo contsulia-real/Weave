@@ -9,7 +9,10 @@ import type {
   RefObject,
 } from 'react'
 import type { ViewProps } from '../../core/view-types'
-import { resolveView } from '../../core/resolved-view'
+import {
+  resolveView,
+  type ResolvedView,
+} from '../../core/resolved-view'
 import {
   compileDOMView,
   type ResolvedDOMView,
@@ -21,6 +24,7 @@ import { useTheme } from '../../theme/theme-context'
 
 export interface ViewHostResult<TElement extends HTMLElement> {
   elementRef: RefObject<TElement | null>
+  view: ResolvedView
   className: string | undefined
   inlineStyle: CSSProperties | undefined
   resolved: ResolvedDOMView<TElement>
@@ -81,6 +85,7 @@ export function useViewHost<
 
   return {
     elementRef,
+    view,
     className: resolvedClassName,
     inlineStyle: style,
     resolved,
