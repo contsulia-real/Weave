@@ -268,7 +268,7 @@ export type ValidateDynamicBreakpointProps<
 > = {
   [TKey in Exclude<
     keyof TProps,
-    KeysOfUnion<TKnownProps>
+    KeysOfUnion<TKnownProps> | 'key'
   >]:
     TKey extends string
       ? TProps[TKey] extends TResponsive | undefined
