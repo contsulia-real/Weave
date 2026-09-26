@@ -8,8 +8,9 @@ import type {
   TextProps,
   TextResponsiveProps,
 } from '../core/text-types'
+import { resolveText } from '../core/resolved-text'
 import { breakpointEntries } from '../renderers/dom/breakpoint-utils'
-import { resolveTextResponsiveStyle } from '../renderers/dom/resolve-text'
+import { compileDOMText } from '../renderers/dom/resolve-text'
 import { ensureTextStylesheet } from '../renderers/dom/text-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { useViewHost } from './internal/use-view-host'
@@ -75,10 +76,10 @@ export function Text<
   const breakpoints = breakpointEntries(theme.breakpoints)
   const propsRecord = props as Record<string, unknown>
   const viewPropsRecord = viewProps as Record<string, unknown>
-  const responsiveText: Record<
-    string,
-    TextResponsiveProps | undefined
-  > = {}
+  const resolvedText = resolveText(
+    props,
+    theme.breakpoints,
+  )
   const responsiveAttributes: Record<string, string> = {}
 
   const hostProps: ViewProps<HTMLSpanElement> = {
@@ -95,8 +96,6 @@ export function Text<
       breakpoint.name
     ] as ViewResponsiveStyle | undefined
 
-    responsiveText[breakpoint.cssName] = textResponsive
-
     const merged = mergeResponsive(
       viewResponsive,
       colorStyle(textResponsive),
@@ -112,21 +111,7 @@ export function Text<
     )
   }
 
-  const componentStyle = resolveTextResponsiveStyle({
-    base: {
-      typo,
-      size,
-      weight,
-      align,
-      lineHeight,
-      letterSpacing,
-      wrap,
-      overflow,
-      maxLines,
-      case: textCase,
-    },
-    responsive: responsiveText,
-  })
+  const componentStyle = compileDOMText(resolvedText)
 
   const {
     elementRef,
