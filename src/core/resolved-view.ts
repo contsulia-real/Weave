@@ -52,11 +52,18 @@ export interface ResolvedViewStates {
   disabled?: ResolvedViewStyle
 }
 
+export interface ResolvedViewInteraction {
+  focusable?: boolean
+  autoFocus?: boolean
+  tabIndex?: number
+}
+
 export interface ResolvedView {
   style: ResolvedViewStyle
   states: ResolvedViewStates
   responsive: readonly ResolvedViewBreakpoint[]
   semantics: Readonly<ViewSemanticProps>
+  interaction: Readonly<ResolvedViewInteraction>
   container?: string
   layout: ViewStyleProps['layout']
 }
@@ -303,6 +310,11 @@ export function resolveView<TElement extends HTMLElement>(
     },
     responsive,
     semantics: semantics(props),
+    interaction: {
+      focusable: props.focusable,
+      autoFocus: props.autoFocus,
+      tabIndex: props.tabIndex,
+    },
     container: props.container,
     layout: props.layout,
   }
