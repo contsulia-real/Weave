@@ -1,5 +1,9 @@
 import { useInsertionEffect } from 'react'
-import type { ViewProps, ViewResponsiveStyle } from '../core/view-types'
+import type {
+  ValidateDynamicBreakpointProps,
+  ViewProps,
+  ViewResponsiveStyle,
+} from '../core/view-types'
 import type {
   TextProps,
   TextResponsiveProps,
@@ -42,9 +46,14 @@ function responsiveData(
 }
 
 export function Text<
-  TBreakpointName extends string = never,
+  TProps extends TextProps,
 >(
-  props: TextProps<NoInfer<TBreakpointName>>,
+  props: TProps &
+    ValidateDynamicBreakpointProps<
+      TProps,
+      TextProps,
+      TextResponsiveProps
+    >,
 ) {
   const {
     children,
