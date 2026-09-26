@@ -252,6 +252,7 @@ function breakpoint(
 
 export interface CompileDiCViewOptions {
   children?: readonly DiCViewNode[]
+  semantics?: Partial<ViewSemanticProps>
   content?: DiCViewContent
   typography?: {
     typo?: string
@@ -290,7 +291,10 @@ export function compileDiCView(
           : paint(view.states.disabled),
     },
     responsive: view.responsive.map(breakpoint),
-    semantics: view.semantics,
+    semantics: {
+      ...view.semantics,
+      ...options.semantics,
+    },
     container: view.container,
     children: options.children ?? [],
     content: options.content,
