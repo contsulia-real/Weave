@@ -21,7 +21,7 @@ export interface DiCLayoutOptions {
   rem?: number
 }
 
-function numericLength(
+export function resolveDiCLength(
   value: Length | undefined,
   reference: number,
   rem: number,
@@ -71,7 +71,7 @@ function dimension(
     )
   }
 
-  const resolved = numericLength(value, available, rem)
+  const resolved = resolveDiCLength(value, available, rem)
   if (resolved === undefined) {
     throw new Error(
       `Unsupported DiC dimension "${String(value)}"`,
@@ -88,7 +88,7 @@ function padding(
 ): number {
   if (value === undefined) return 0
 
-  const resolved = numericLength(value, width, rem)
+  const resolved = resolveDiCLength(value, width, rem)
   if (resolved === undefined) {
     throw new Error(
       `Unsupported DiC padding "${String(value)}"`,
