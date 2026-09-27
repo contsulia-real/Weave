@@ -1,15 +1,37 @@
+type DrawElementImageResult =
+  | DOMMatrix
+  | undefined
+
 type HTMLInCanvas2DContext =
   CanvasRenderingContext2D & {
     drawElementImage(
       element: Element,
       dx: number,
       dy: number,
-    ): void
+    ): DrawElementImageResult
     reset?: () => void
   }
 
+interface ElementGeometryOptions {
+  preserveHitTestOrder?: boolean
+  canvasTransform?: DOMMatrixInit
+}
+
 interface HTMLInCanvasElement extends HTMLCanvasElement {
   requestPaint(): void
+  updateElementGeometry?: (
+    element: Element,
+    options?: ElementGeometryOptions,
+  ) => void
+  clearElementGeometry?: (
+    element: Element,
+  ) => void
+}
+
+interface LegacyCanvasTransformElement extends HTMLElement {
+  setCanvasTransform?: (
+    matrix?: DOMMatrixInit,
+  ) => void
 }
 
 export interface HTMLInCanvasMount {
@@ -77,6 +99,57 @@ function resetContext(
     canvas.width,
     canvas.height,
   )
+}
+
+function syncElementGeometry(
+  canvas: HTMLInCanvasElement,
+  element: LegacyCanvasTransformElement,
+  drawResult: DrawElementImageResult,
+): void {
+  // Current Chromium automatically updates hit-test geometry from
+  // drawElementImage(), but updateElementGeometry() makes the contract
+  // explicit and also covers transitional builds.
+  if (
+    typeof canvas.updateElementGeometry ===
+    'function'
+  ) {
+    canvas.updateElementGeometry(
+      element,
+      {
+        preserveHitTestOrder: true,
+        canvasTransform:
+          drawResult ?? {
+            a: 1,
+            b: 0,
+            c: 0,
+            d: 1,
+            e: 0,
+            f: 0,
+          },
+      },
+    )
+    return
+  }
+
+  // Older Chromium returned the CSS-space draw matrix and required
+  // callers to register it on the element for hit testing.
+  if (
+    drawResult !== undefined &&
+    typeof element.setCanvasTransform ===
+      'function'
+  ) {
+    element.setCanvasTransform(
+      drawResult,
+    )
+    return
+  }
+
+  // Very early experimental builds predate setCanvasTransform().
+  // Their published usage applied the returned matrix as CSS transform.
+  if (drawResult !== undefined) {
+    element.style.transform =
+      drawResult.toString()
+  }
 }
 
 function devicePixelRatioFor(
@@ -231,7 +304,9 @@ export function createHTMLInCanvasMount(
   canvas.style.height = '100%'
 
   const host =
-    document.createElement('div')
+    document.createElement(
+      'div',
+    ) as LegacyCanvasTransformElement
   host.setAttribute(
     'drawable',
     '',
@@ -260,10 +335,17 @@ export function createHTMLInCanvasMount(
       context,
       canvas,
     )
-    context.drawElementImage(
+    const drawResult =
+      context.drawElementImage(
+        host,
+        0,
+        0,
+      )
+
+    syncElementGeometry(
+      canvas,
       host,
-      0,
-      0,
+      drawResult,
     )
   }
 
@@ -293,6 +375,16 @@ export function createHTMLInCanvasMount(
         'paint',
         handlePaint,
       )
+
+      if (
+        typeof canvas.clearElementGeometry ===
+        'function'
+      ) {
+        canvas.clearElementGeometry(
+          host,
+        )
+      }
+
       canvas.remove()
     },
   }
