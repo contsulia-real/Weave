@@ -1,6 +1,7 @@
 import {
   Children,
   Fragment,
+  cloneElement,
   isValidElement,
   useCallback,
   useInsertionEffect,
@@ -9,6 +10,7 @@ import {
   useState,
 } from 'react'
 import type {
+  ReactElement,
   ReactNode,
   Ref,
 } from 'react'
@@ -50,6 +52,10 @@ import {
   ListContext,
   type ListFocusMove,
 } from './internal/list-context'
+import {
+  VirtualListWindow,
+  type VirtualListEntry,
+} from './internal/VirtualListWindow'
 
 interface ListDescriptor {
   id: string
@@ -106,6 +112,56 @@ function compositeDescriptors(
         id: itemProps.id,
         disabled:
           itemProps.disabled === true,
+      })
+    },
+  )
+
+  return output
+}
+
+function compositeVirtualEntries(
+  children: ReactNode,
+  output:
+    VirtualListEntry[] = [],
+): VirtualListEntry[] {
+  Children.forEach(
+    children,
+    (child) => {
+      if (!isValidElement(child)) {
+        return
+      }
+
+      if (child.type === Fragment) {
+        compositeVirtualEntries(
+          (
+            child.props as {
+              children?: ReactNode
+            }
+          ).children,
+          output,
+        )
+        return
+      }
+
+      if (child.type !== ListItem) {
+        return
+      }
+
+      const element =
+        child as ReactElement<
+          ListItemProps
+        >
+      const itemProps =
+        element.props
+
+      output.push({
+        id: itemProps.id,
+        node: cloneElement(
+          element,
+          {
+            key: itemProps.id,
+          },
+        ),
       })
     },
   )
@@ -560,25 +616,54 @@ export function List(
 
         setStoredActiveId(nextId)
 
-        const items =
-          rootRef.current
-            ?.querySelectorAll<HTMLElement>(
-              '[data-weave-list-item-id]',
-            )
+        const focusItem = () => {
+          const items =
+            rootRef.current
+              ?.querySelectorAll<HTMLElement>(
+                '[data-weave-list-item-id]',
+              )
 
-        if (items === undefined) {
+          if (items === undefined) {
+            return false
+          }
+
+          for (const item of items) {
+            if (
+              item.dataset
+                .weaveListItemId ===
+              nextId
+            ) {
+              item.focus()
+              return true
+            }
+          }
+
+          return false
+        }
+
+        if (focusItem()) {
           return
         }
 
-        for (const item of items) {
-          if (
-            item.dataset
-              .weaveListItemId ===
-            nextId
-          ) {
-            item.focus()
-            break
-          }
+        const view =
+          rootRef.current
+            ?.ownerDocument
+            .defaultView
+
+        if (
+          view !== null &&
+          view !== undefined &&
+          typeof view
+            .requestAnimationFrame ===
+            'function'
+        ) {
+          view.requestAnimationFrame(
+            focusItem,
+          )
+        } else {
+          queueMicrotask(
+            focusItem,
+          )
         }
       },
       [enabledIds],
@@ -626,28 +711,65 @@ export function List(
     theme.components.ListItem
       ?.base
 
-  const content =
-    props.items !== undefined
-      ? props.items.map(
-          (item) => (
-            <ListItem
-              key={item.id}
-              id={item.id}
-              disabled={
-                item.disabled
-              }
-            >
-              {dataItemContent(
-                item,
-                itemTheme
-                  ?.primaryTypo,
-                itemTheme
-                  ?.secondaryTypo,
-              )}
-            </ListItem>
-          ),
+  const dataEntries =
+    props.items === undefined
+      ? undefined
+      : props.items.map(
+          (item) => ({
+            id: item.id,
+            node: (
+              <ListItem
+                key={item.id}
+                id={item.id}
+                disabled={
+                  item.disabled
+                }
+              >
+                {dataItemContent(
+                  item,
+                  itemTheme
+                    ?.primaryTypo,
+                  itemTheme
+                    ?.secondaryTypo,
+                )}
+              </ListItem>
+            ),
+          }),
         )
-      : props.children
+
+  const virtualEntries =
+    dataEntries ??
+    compositeVirtualEntries(
+      props.children,
+    )
+
+  const content =
+    virtualized
+      ? (
+          <VirtualListWindow
+            entries={
+              virtualEntries
+            }
+            orientation={
+              orientation
+            }
+            rootRef={
+              rootRef
+            }
+            activeId={
+              activeId
+            }
+          />
+        )
+      : (
+          dataEntries ===
+          undefined
+            ? props.children
+            : dataEntries.map(
+                (entry) =>
+                  entry.node,
+              )
+        )
 
   return (
     <ListContext.Provider
@@ -671,11 +793,20 @@ export function List(
             ? undefined
             : orientation
         }
-        layout="flex"
+        layout={
+          virtualized
+            ? undefined
+            : 'flex'
+        }
         direction={
-          orientation === 'vertical'
-            ? 'column'
-            : 'row'
+          virtualized
+            ? undefined
+            : (
+                orientation ===
+                  'vertical'
+                  ? 'column'
+                  : 'row'
+              )
         }
         gap={gap}
         className={[
