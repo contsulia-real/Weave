@@ -427,18 +427,22 @@ export function createDiCSemanticMirror(
       }
 
       if (
-        editor instanceof HTMLInputElement
+        editor.tagName === 'INPUT'
       ) {
-        editor.type = input.type
+        const singleLine =
+          editor as HTMLInputElement
+        singleLine.type = input.type
 
         if (input.pattern !== undefined) {
-          editor.pattern =
+          singleLine.pattern =
             input.pattern
         }
       } else if (
         input.rows !== undefined
       ) {
-        editor.rows =
+        (
+          editor as HTMLTextAreaElement
+        ).rows =
           Math.max(
             1,
             Math.floor(input.rows),
