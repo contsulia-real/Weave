@@ -2,6 +2,7 @@ import {
   useCallback,
   useEffect,
   useId,
+  useInsertionEffect,
   useLayoutEffect,
   useRef,
   useState,
@@ -15,6 +16,9 @@ import type {
   ToolTipProps,
 } from '../core/tooltip-types'
 import { length } from '../core/values'
+import { resolveToolTipTheme } from '../renderers/dom/resolve-component-theme'
+import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
+import { ensureToolTipStylesheet } from '../renderers/dom/tooltip-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { ThemeProvider } from '../theme/ThemeProvider'
 import { Text } from './Text'
@@ -150,6 +154,16 @@ export function ToolTip({
     useTheme()
   const base =
     theme.components.ToolTip?.base
+  const themeClassName =
+    useRuntimeStyleClass(
+      'tooltip-theme',
+      resolveToolTipTheme(theme),
+    )
+
+  useInsertionEffect(
+    ensureToolTipStylesheet,
+    [],
+  )
 
   useEffect(() => {
     requestedOpenRef.current =
@@ -522,41 +536,6 @@ export function ToolTip({
           mode={mode}
         >
           <View
-            background={
-              viewProps.background ??
-              base?.background ??
-              '#292524'
-            }
-            color={
-              viewProps.color ??
-              base?.color ??
-              '#fffdfa'
-            }
-            radius={
-              viewProps.radius ??
-              base?.radius ??
-              'small'
-            }
-            paddingX={
-              viewProps.paddingX ??
-              base?.paddingX ??
-              0.625
-            }
-            paddingY={
-              viewProps.paddingY ??
-              base?.paddingY ??
-              0.375
-            }
-            maxWidth={
-              viewProps.maxWidth ??
-              base?.maxWidth ??
-              20
-            }
-            shadow={
-              viewProps.shadow ??
-              base?.shadow ??
-              'medium'
-            }
             {...viewProps}
             id={tooltipId}
             role="tooltip"
@@ -569,6 +548,11 @@ export function ToolTip({
               viewProps.pointerEvents ??
               'none'
             }
+            className={[
+              'weave-tooltip',
+              themeClassName,
+              viewProps.className,
+            ].filter(Boolean).join(' ')}
             data={{
               ...viewProps.data,
               'weave-tooltip': '',
