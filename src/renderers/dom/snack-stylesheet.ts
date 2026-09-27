@@ -1,11 +1,22 @@
 const stylesheet = `
 :where(.weave-snack-region) {
+  --weave-snack-available-width:
+    var(--weave-snack-available-width);
+
   position: fixed;
   display: flex;
   gap: 0.5rem;
-  max-width: calc(100vw - 2rem);
+  max-width:
+    var(--weave-snack-available-width);
   pointer-events: none;
   z-index: var(--weave-layer-snack);
+}
+
+:where(.weave-snack-region[data-weave-snack-scope="container"]) {
+  --weave-snack-available-width:
+    calc(100% - 2rem);
+
+  position: absolute;
 }
 
 :where(.weave-snack-region[data-weave-snack-region^="top-"]) {
@@ -42,11 +53,11 @@ const stylesheet = `
 
   --weave-component-min-width: min(
     var(--weave-snack-min-width),
-    calc(100vw - 2rem)
+    var(--weave-snack-available-width)
   );
   --weave-component-max-width: min(
     var(--weave-snack-max-width),
-    calc(100vw - 2rem)
+    var(--weave-snack-available-width)
   );
 
   --weave-component-background: var(--weave-snack-background);
