@@ -215,8 +215,6 @@ export interface ToolTipThemeBase {
   paddingY?: ThemeScaleValue
   maxWidth?: ThemeScaleValue
   shadow?: string
-  depth?: ThemeScaleValue
-  depthColor?: string
   arrowSize?: ThemeScaleValue
   typo?: string
 }
