@@ -111,6 +111,96 @@ describe('DiC public View events', () => {
     )
   })
 
+  it('bridges public pointer capture through the DiC controller', () => {
+    const capture = vi.fn()
+    const release = vi.fn()
+    const move = vi.fn()
+
+    const child = compileDiCView(
+      resolveView(
+        {
+          width: 4,
+          height: 4,
+          onPointerDown: (event) => {
+            event.capturePointer()
+          },
+          onPointerMove: move,
+          onPointerUp: (event) => {
+            event.releasePointer()
+          },
+        },
+        defaultBreakpoints,
+      ),
+    )
+    const root = compileDiCView(
+      resolveView(
+        {
+          layout: 'stack',
+          width: 10,
+          height: 10,
+        },
+        defaultBreakpoints,
+      ),
+      {
+        children: [child],
+      },
+    )
+    const layout = layoutDiCViewTree(
+      root,
+      {
+        width: 200,
+        height: 200,
+      },
+      {
+        viewportWidth: 200,
+        rem: 16,
+        theme: defaultTheme,
+      },
+    )
+    const controller = createDiCInteractionController({
+      getLayout: () => layout,
+      invalidate: vi.fn(),
+    })
+
+    controller.dispatchPointer({
+      type: 'pointerdown',
+      x: 20,
+      y: 20,
+      pointerId: 11,
+      button: 0,
+      buttons: 1,
+      capture,
+      release,
+    })
+
+    controller.dispatchPointer({
+      type: 'pointermove',
+      x: 180,
+      y: 180,
+      pointerId: 11,
+      button: 0,
+      buttons: 1,
+      capture,
+      release,
+    })
+
+    controller.dispatchPointer({
+      type: 'pointerup',
+      x: 180,
+      y: 180,
+      pointerId: 11,
+      button: 0,
+      buttons: 0,
+      capture,
+      release,
+    })
+
+    expect(capture).toHaveBeenCalledWith(11)
+    expect(move).toHaveBeenCalledTimes(1)
+    expect(release).toHaveBeenCalledTimes(1)
+    expect(release).toHaveBeenCalledWith(11)
+  })
+
   it('bubbles focus with the focused target preserved', () => {
     const parentFocus = vi.fn()
     const childFocus = vi.fn()
