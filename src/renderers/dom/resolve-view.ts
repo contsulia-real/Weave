@@ -30,6 +30,7 @@ import {
 } from './breakpoint-utils'
 import { variableName } from './view-stylesheet'
 import { compileDOMViewEvents } from './events'
+import { compileWebSemanticAttributes } from '../web/semantic-attributes'
 
 type CSSVariableStyle = CSSProperties &
   Record<`--weave-${string}`, string | number | undefined>
@@ -342,35 +343,12 @@ export function compileDOMView<TElement extends HTMLElement>(
     ),
   )
 
-  const semantic = resolvedView.semantics
-
-  if (semantic.role !== undefined) domProps.role = semantic.role
-  if (semantic.label !== undefined) domProps['aria-label'] = semantic.label
-  if (semantic.description !== undefined) {
-    domProps['aria-description'] = semantic.description
-  }
-  if (semantic.level !== undefined) domProps['aria-level'] = semantic.level
-  if (semantic.disabled !== undefined) domProps['aria-disabled'] = semantic.disabled
-  if (semantic.required !== undefined) domProps['aria-required'] = semantic.required
-  if (semantic.invalid !== undefined) domProps['aria-invalid'] = semantic.invalid
-  if (semantic.busy !== undefined) domProps['aria-busy'] = semantic.busy
-  if (semantic.expanded !== undefined) domProps['aria-expanded'] = semantic.expanded
-  if (semantic.selected !== undefined) domProps['aria-selected'] = semantic.selected
-  if (semantic.checked !== undefined) domProps['aria-checked'] = semantic.checked
-  if (semantic.pressed !== undefined) domProps['aria-pressed'] = semantic.pressed
-  if (semantic.readOnly !== undefined) domProps['aria-readonly'] = semantic.readOnly
-  if (semantic.valueMin !== undefined) domProps['aria-valuemin'] = semantic.valueMin
-  if (semantic.valueMax !== undefined) domProps['aria-valuemax'] = semantic.valueMax
-  if (semantic.valueNow !== undefined) domProps['aria-valuenow'] = semantic.valueNow
-  if (semantic.valueText !== undefined) domProps['aria-valuetext'] = semantic.valueText
-  if (semantic.labelledBy !== undefined) {
-    domProps['aria-labelledby'] = semantic.labelledBy
-  }
-  if (semantic.describedBy !== undefined) {
-    domProps['aria-describedby'] = semantic.describedBy
-  }
-  if (semantic.controls !== undefined) domProps['aria-controls'] = semantic.controls
-  if (semantic.owns !== undefined) domProps['aria-owns'] = semantic.owns
+  Object.assign(
+    writableDOMProps,
+    compileWebSemanticAttributes(
+      resolvedView.semantics,
+    ),
+  )
 
   const interaction = resolvedView.interaction
 
