@@ -9,6 +9,7 @@ import {
 } from 'react'
 import type {
   CSSProperties,
+  TransitionEvent as ReactTransitionEvent,
 } from 'react'
 import { createPortal } from 'react-dom'
 import type {
@@ -27,6 +28,45 @@ import { View } from './View'
 interface AnchorPosition {
   left: number
   top: number
+}
+
+type ToolTipVisualState =
+  | 'open'
+  | 'closing'
+
+function durationMilliseconds(
+  value: number | string | undefined,
+  fallback: number,
+): number {
+  if (typeof value === 'number') {
+    return Math.max(0, value)
+  }
+
+  if (typeof value !== 'string') {
+    return fallback
+  }
+
+  const normalized =
+    value.trim().toLowerCase()
+  const parsed =
+    Number.parseFloat(normalized)
+
+  if (!Number.isFinite(parsed)) {
+    return fallback
+  }
+
+  if (normalized.endsWith('ms')) {
+    return Math.max(0, parsed)
+  }
+
+  if (normalized.endsWith('s')) {
+    return Math.max(
+      0,
+      parsed * 1000,
+    )
+  }
+
+  return fallback
 }
 
 function positionedStyle(
@@ -121,6 +161,16 @@ export function ToolTip({
   ] = useState(defaultOpen)
   const resolvedOpen =
     open ?? uncontrolledOpen
+  const [
+    present,
+    setPresent,
+  ] = useState(resolvedOpen)
+  const [
+    visualState,
+    setVisualState,
+  ] = useState<ToolTipVisualState>(
+    'open',
+  )
 
   const wrapperRef =
     useRef<HTMLSpanElement>(null)
@@ -154,6 +204,12 @@ export function ToolTip({
     useTheme()
   const base =
     theme.components.ToolTip?.base
+  const exitDuration =
+    durationMilliseconds(
+      theme.tokens.motion
+        ?.duration?.fast,
+      120,
+    )
   const themeClassName =
     useRuntimeStyleClass(
       'tooltip-theme',
@@ -169,6 +225,52 @@ export function ToolTip({
     requestedOpenRef.current =
       resolvedOpen
   }, [resolvedOpen])
+
+  useEffect(() => {
+    if (resolvedOpen) {
+      setPresent(true)
+      setVisualState('open')
+      return
+    }
+
+    if (!present) {
+      return
+    }
+
+    setVisualState('closing')
+
+    const view =
+      targetRef.current
+        ?.ownerDocument
+        .defaultView
+    const reducedMotion =
+      view?.matchMedia?.(
+        '(prefers-reduced-motion: reduce)',
+      ).matches ?? false
+
+    if (reducedMotion) {
+      setPresent(false)
+      return
+    }
+
+    const timer =
+      globalThis.setTimeout(
+        () => {
+          setPresent(false)
+        },
+        exitDuration + 32,
+      )
+
+    return () => {
+      globalThis.clearTimeout(
+        timer,
+      )
+    }
+  }, [
+    exitDuration,
+    present,
+    resolvedOpen,
+  ])
 
   const clearOpenTimer =
     useCallback(() => {
@@ -381,17 +483,15 @@ export function ToolTip({
       !resolvedOpen ||
       target === null
     ) {
-      setPositioned(false)
       return
     }
 
-    const previousDescription =
-      target.getAttribute(
-        'aria-describedby',
-      )
     const descriptionIds =
       new Set(
-        previousDescription
+        target
+          .getAttribute(
+            'aria-describedby',
+          )
           ?.split(/\s+/)
           .filter(Boolean) ??
           [],
@@ -402,6 +502,49 @@ export function ToolTip({
       'aria-describedby',
       [...descriptionIds].join(' '),
     )
+
+    return () => {
+      const currentDescription =
+        target.getAttribute(
+          'aria-describedby',
+        )
+      const remainingIds =
+        currentDescription
+          ?.split(/\s+/)
+          .filter(
+            (id) =>
+              id.length > 0 &&
+              id !== tooltipId,
+          ) ??
+        []
+
+      if (remainingIds.length === 0) {
+        target.removeAttribute(
+          'aria-describedby',
+        )
+      } else {
+        target.setAttribute(
+          'aria-describedby',
+          remainingIds.join(' '),
+        )
+      }
+    }
+  }, [
+    resolvedOpen,
+    tooltipId,
+  ])
+
+  useLayoutEffect(() => {
+    const target =
+      targetRef.current
+
+    if (
+      !present ||
+      target === null
+    ) {
+      setPositioned(false)
+      return
+    }
 
     const view =
       target.ownerDocument.defaultView
@@ -442,7 +585,7 @@ export function ToolTip({
         )
     }
 
-    update()
+    applyPosition()
 
     const resizeObserver =
       typeof ResizeObserver ===
@@ -487,37 +630,31 @@ export function ToolTip({
         update,
         true,
       )
-
-      const currentDescription =
-        target.getAttribute(
-          'aria-describedby',
-        )
-      const remainingIds =
-        currentDescription
-          ?.split(/\s+/)
-          .filter(
-            (id) =>
-              id.length > 0 &&
-              id !== tooltipId,
-          ) ??
-        []
-
-      if (remainingIds.length === 0) {
-        target.removeAttribute(
-          'aria-describedby',
-        )
-      } else {
-        target.setAttribute(
-          'aria-describedby',
-          remainingIds.join(' '),
-        )
-      }
     }
   }, [
     placement,
-    resolvedOpen,
-    tooltipId,
+    present,
   ])
+
+  const handleTransitionEnd = (
+    event:
+      ReactTransitionEvent<HTMLDivElement>,
+  ) => {
+    viewProps.onTransitionEnd?.(
+      event,
+    )
+
+    if (
+      event.target !==
+        event.currentTarget ||
+      resolvedOpen ||
+      visualState !== 'closing'
+    ) {
+      return
+    }
+
+    setPresent(false)
+  }
 
   const offsetValue =
     length(offset) ??
@@ -529,7 +666,7 @@ export function ToolTip({
       offsetValue,
     )
 
-  const tooltip = resolvedOpen
+  const tooltip = present
     ? createPortal(
         <ThemeProvider
           theme={theme}
@@ -539,6 +676,14 @@ export function ToolTip({
             {...viewProps}
             id={tooltipId}
             role="tooltip"
+            aria-hidden={
+              visualState === 'closing'
+                ? true
+                : undefined
+            }
+            onTransitionEnd={
+              handleTransitionEnd
+            }
             position="fixed"
             layer={
               viewProps.layer ??
@@ -556,6 +701,8 @@ export function ToolTip({
             data={{
               ...viewProps.data,
               'weave-tooltip': '',
+              'weave-tooltip-state':
+                visualState,
               placement,
             }}
             style={{
