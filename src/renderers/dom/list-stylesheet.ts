@@ -80,6 +80,17 @@ const stylesheet = `
     var(--weave-list-item-selected-hover-background);
 }
 
+:where(
+  .weave-list-item[
+    data-weave-list-item-selected="true"
+  ][
+    data-weave-list-item-selectable="true"
+  ]:not([aria-disabled="true"]):active
+) {
+  --weave-component-background:
+    var(--weave-list-item-active-background);
+}
+
 :where(.weave-list-item:focus-visible) {
   --weave-component-outline-width:
     var(--weave-list-item-focus-outline-width);
