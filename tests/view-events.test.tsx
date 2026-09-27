@@ -61,6 +61,44 @@ describe('View renderer-neutral DOM events', () => {
     ).toBe(false)
   })
 
+  it('normalizes pointer boundary events to self targets', () => {
+    const parentEnter = vi.fn()
+
+    const { getByTestId } = render(
+      <View
+        id="parent"
+        onPointerEnter={parentEnter}
+      >
+        <View
+          id="child"
+          data={{
+            testid: 'child',
+          }}
+        />
+      </View>,
+    )
+
+    fireEvent.pointerEnter(
+      getByTestId('child'),
+      {
+        pointerId: 4,
+        pointerType: 'mouse',
+      },
+    )
+
+    expect(parentEnter).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: 'pointerenter',
+        target: {
+          id: 'parent',
+        },
+        currentTarget: {
+          id: 'parent',
+        },
+      }),
+    )
+  })
+
   it('normalizes keyboard and focus events without exposing SyntheticEvent', () => {
     const onKeyDown = vi.fn<
       (event: ViewKeyboardEvent) => void
