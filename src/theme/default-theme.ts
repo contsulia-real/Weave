@@ -431,9 +431,9 @@ export const defaultTheme: ResolvedTheme = {
     },
     ToolTip: {
       base: {
-        background: 'surfaceHover',
-        color: 'tertiary',
-        borderColor: 'outline',
+        background: 'primary',
+        color: 'onPrimary',
+        borderColor: 'primary',
         borderWidth: 0.0625,
         radius: 'small',
         paddingX: 0.5,
