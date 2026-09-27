@@ -27,6 +27,9 @@ const capturedLayouts =
     Map<HTMLElement, SnackPosition>
   >()
 
+const layoutAnimations =
+  new WeakMap<HTMLElement, Animation>()
+
 function snackElements(
   element: HTMLDivElement,
 ): HTMLElement[] {
@@ -37,16 +40,157 @@ function snackElements(
   )
 }
 
-function openSnackElements(
-  element: HTMLDivElement,
-): HTMLElement[] {
-  return snackElements(
-    element,
-  ).filter(
-    (snack) =>
-      snack.dataset.weaveSnackState !==
-        'closing',
+function reducedMotion(
+  element: HTMLElement,
+): boolean {
+  const view =
+    element.ownerDocument.defaultView
+
+  return (
+    view?.matchMedia?.(
+      '(prefers-reduced-motion: reduce)',
+    ).matches ?? false
   )
+}
+
+function motionDuration(
+  element: HTMLElement,
+): number {
+  const view =
+    element.ownerDocument.defaultView
+
+  if (view === null) {
+    return 180
+  }
+
+  return durationMilliseconds(
+    view
+      .getComputedStyle(element)
+      .getPropertyValue(
+        '--weave-motion-duration-normal',
+      ),
+    180,
+  )
+}
+
+function motionCurve(
+  element: HTMLElement,
+): string {
+  const view =
+    element.ownerDocument.defaultView
+
+  if (view === null) {
+    return 'ease'
+  }
+
+  const value =
+    view
+      .getComputedStyle(element)
+      .getPropertyValue(
+        '--weave-motion-curve-emphasized',
+      )
+      .trim()
+
+  return value || 'ease'
+}
+
+function animateCapturedLayout(
+  element: HTMLDivElement,
+): void {
+  const previous =
+    capturedLayouts.get(element)
+
+  capturedLayouts.delete(element)
+
+  if (
+    previous === undefined ||
+    reducedMotion(element)
+  ) {
+    return
+  }
+
+  for (
+    const snack of
+      snackElements(element)
+  ) {
+    if (
+      snack.dataset.weaveSnackState ===
+        'closing'
+    ) {
+      continue
+    }
+
+    const before =
+      previous.get(snack)
+
+    if (before === undefined) {
+      continue
+    }
+
+    const after =
+      snack.getBoundingClientRect()
+    const x =
+      before.left - after.left
+    const y =
+      before.top - after.top
+
+    if (
+      Math.abs(x) < 0.5 &&
+      Math.abs(y) < 0.5
+    ) {
+      continue
+    }
+
+    layoutAnimations
+      .get(snack)
+      ?.cancel()
+
+    if (
+      typeof snack.animate !==
+      'function'
+    ) {
+      continue
+    }
+
+    const animation =
+      snack.animate(
+        [
+          {
+            translate:
+              `${x}px ${y}px`,
+          },
+          {
+            translate: '0px 0px',
+          },
+        ],
+        {
+          duration:
+            motionDuration(snack),
+          easing:
+            motionCurve(snack),
+          fill: 'both',
+        },
+      )
+
+    layoutAnimations.set(
+      snack,
+      animation,
+    )
+
+    animation.finished
+      .catch(() => undefined)
+      .finally(() => {
+        if (
+          layoutAnimations.get(
+            snack,
+          ) === animation
+        ) {
+          layoutAnimations.delete(
+            snack,
+          )
+        }
+      })
+  }
 }
 
 export function captureSnackRegionLayout(
@@ -60,8 +204,15 @@ export function captureSnackRegionLayout(
 
   for (
     const snack of
-      openSnackElements(element)
+      snackElements(element)
   ) {
+    if (
+      snack.dataset.weaveSnackState ===
+        'closing'
+    ) {
+      continue
+    }
+
     const rect =
       snack.getBoundingClientRect()
 
@@ -78,106 +229,30 @@ export function captureSnackRegionLayout(
     element,
     positions,
   )
-}
-
-function animateCapturedLayout(
-  element: HTMLDivElement,
-): void {
-  const previous =
-    capturedLayouts.get(
-      element,
-    )
-
-  if (previous === undefined) {
-    return
-  }
-
-  capturedLayouts.delete(element)
 
   const view =
     element.ownerDocument.defaultView
 
   if (
     view === null ||
-    view.matchMedia?.(
-      '(prefers-reduced-motion: reduce)',
-    ).matches
+    typeof view.requestAnimationFrame !==
+      'function'
   ) {
+    queueMicrotask(
+      () =>
+        animateCapturedLayout(
+          element,
+        ),
+    )
     return
   }
 
-  for (
-    const snack of
-      openSnackElements(element)
-  ) {
-    const before =
-      previous.get(snack)
-
-    if (before === undefined) {
-      continue
-    }
-
-    const after =
-      snack.getBoundingClientRect()
-    const deltaX =
-      before.left -
-      after.left
-    const deltaY =
-      before.top -
-      after.top
-
-    if (
-      Math.abs(deltaX) < 0.5 &&
-      Math.abs(deltaY) < 0.5
-    ) {
-      continue
-    }
-
-    if (
-      typeof snack.animate !==
-        'function'
-    ) {
-      continue
-    }
-
-    const computed =
-      view.getComputedStyle(
-        snack,
-      )
-    const duration =
-      durationMilliseconds(
-        computed
-          .getPropertyValue(
-            '--weave-motion-duration-normal',
-          )
-          .trim(),
-        220,
-      )
-    const easing =
-      computed
-        .getPropertyValue(
-          '--weave-motion-curve-emphasized',
-        )
-        .trim() ||
-      'ease'
-
-    snack.animate(
-      [
-        {
-          transform:
-            `translate(${deltaX}px, ${deltaY}px)`,
-        },
-        {
-          transform:
-            'translate(0px, 0px)',
-        },
-      ],
-      {
-        duration,
-        easing,
-      },
-    )
-  }
+  view.requestAnimationFrame(
+    () =>
+      animateCapturedLayout(
+        element,
+      ),
+  )
 }
 
 export function syncSnackRegion(
@@ -205,10 +280,6 @@ export function syncSnackRegion(
       String(queueIndex)
     queueIndex += 1
   }
-
-  animateCapturedLayout(
-    element,
-  )
 }
 
 function scheduleSync(
