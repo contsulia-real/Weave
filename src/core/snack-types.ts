@@ -1,5 +1,6 @@
 import type {
   ReactNode,
+  RefObject,
 } from 'react'
 import type {
   ButtonIcon,
@@ -25,6 +26,12 @@ export type SnackPlacement =
   | 'bottom-right'
 
 export type SnackIcon = ButtonIcon
+
+export type SnackContainer =
+  | HTMLElement
+  | RefObject<HTMLElement | null>
+  | (() => HTMLElement | null)
+  | null
 
 export type SnackViewProps =
   Omit<
