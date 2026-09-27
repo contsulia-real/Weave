@@ -1,4 +1,5 @@
 import type { ImageSource } from '../../core/image-types'
+import { DiCCapabilityError } from './capability-error'
 import type { ResolvedTheme } from '../../theme/theme-types'
 import type { DiCViewNode } from './compile-view'
 import { drawDiCViewTree } from './draw-view'
@@ -111,7 +112,9 @@ export function createDiCSurface(
 ): DiCSurface {
   const context = canvas.getContext('2d')
   if (context === null) {
-    throw new Error('DiC requires a Canvas 2D context')
+    throw new DiCCapabilityError(
+      'DiC requires a Canvas 2D context',
+    )
   }
 
   const scheduler = options.scheduler ?? defaultScheduler()
