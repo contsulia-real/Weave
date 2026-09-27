@@ -16,8 +16,10 @@ import {
 import {
   Button,
   Snack,
+  SnackProvider,
   Text,
   View,
+  useSnack,
 } from '../src'
 
 afterEach(() => {
@@ -34,7 +36,112 @@ afterEach(() => {
     )
 })
 
+function SnackTriggerHarness() {
+  const snack =
+    useSnack()
+
+  return (
+    <Button
+      text="Trigger"
+      viewProps={{
+        onClick: () => {
+          snack.show({
+            text: 'Queued',
+            placement: 'top-left',
+            direction: 'right',
+            persistent: true,
+          })
+        },
+      }}
+    />
+  )
+}
+
 describe('Snack', () => {
+  it('creates a fresh Snack on every queue trigger', () => {
+    const {
+      getByRole,
+    } = render(
+      <SnackProvider>
+        <SnackTriggerHarness />
+      </SnackProvider>,
+    )
+
+    const trigger =
+      getByRole(
+        'button',
+        {
+          name: 'Trigger',
+        },
+      )
+
+    fireEvent.click(trigger)
+    fireEvent.click(trigger)
+
+    const region =
+      document.querySelector(
+        '[data-weave-snack-region="top-left"]',
+      )
+
+    expect(
+      region?.querySelectorAll(
+        '[data-weave-snack]',
+      ),
+    ).toHaveLength(2)
+  })
+
+  it('keeps placement and motion direction independent', () => {
+    render(
+      <Snack
+        text="Directional"
+        placement="top-right"
+        direction="left"
+        persistent
+      />,
+    )
+
+    const snack =
+      document.querySelector(
+        '[data-weave-snack]',
+      )
+
+    expect(
+      snack?.getAttribute(
+        'data-weave-snack-placement',
+      ),
+    ).toBe('top-right')
+    expect(
+      snack?.getAttribute(
+        'data-weave-snack-direction',
+      ),
+    ).toBe('left')
+  })
+
+  it('uses tonal material instead of the old accent stripe', () => {
+    render(
+      <Snack
+        text="Material"
+        variant="info"
+        persistent
+      />,
+    )
+
+    const stylesheet =
+      document.querySelector<HTMLStyleElement>(
+        'style[data-weave-snack-styles]',
+      )?.textContent ?? ''
+
+    expect(stylesheet).toContain(
+      'color-mix',
+    )
+    expect(stylesheet).toContain(
+      '.weave-snack__icon-shell',
+    )
+    expect(stylesheet).not.toContain(
+      '--weave-snack-accent-width',
+    )
+  })
+
   it('renders shortcut content into the requested shared placement region', () => {
     const {
       getByRole,
