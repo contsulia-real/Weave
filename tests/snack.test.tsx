@@ -268,6 +268,218 @@ describe('Snack', () => {
     )
   })
 
+  it('animates folded exits through the overflow indicator', () => {
+    vi.useFakeTimers()
+
+    render(
+      <>
+        <Snack text="One" persistent />
+        <Snack text="Two" persistent />
+        <Snack text="Three" persistent />
+        <Snack
+          text="Four"
+          duration={100}
+        />
+      </>,
+    )
+
+    const region =
+      document.querySelector(
+        '[data-weave-snack-region="bottom-center"]',
+      )
+    const overflow =
+      region?.querySelector<HTMLElement>(
+        '[data-weave-snack-overflow]',
+      )
+
+    expect(
+      overflow?.getAttribute(
+        'data-weave-snack-overflow-state',
+      ),
+    ).toBe('open')
+
+    act(() => {
+      vi.advanceTimersByTime(100)
+    })
+
+    expect(
+      overflow?.getAttribute(
+        'data-weave-snack-overflow-state',
+      ),
+    ).toBe('closing')
+
+    const hiddenClosing =
+      region?.querySelector<HTMLElement>(
+        '[data-weave-snack-queue-hidden][data-weave-snack-state="closing"]',
+      )
+
+    expect(
+      hiddenClosing,
+    ).not.toBeNull()
+
+    if (hiddenClosing !== null) {
+      fireEvent.transitionEnd(
+        hiddenClosing,
+      )
+    }
+
+    expect(
+      region?.querySelector(
+        '[data-weave-snack-overflow]',
+      ),
+    ).toBeNull()
+  })
+
+  it('reveals the next FIFO item when a visible Snack leaves overflow', () => {
+    vi.useFakeTimers()
+
+    render(
+      <>
+        <Snack
+          text="One"
+          duration={100}
+        />
+        <Snack text="Two" persistent />
+        <Snack text="Three" persistent />
+        <Snack text="Four" persistent />
+      </>,
+    )
+
+    act(() => {
+      vi.advanceTimersByTime(100)
+    })
+
+    const closing =
+      document.querySelector<HTMLElement>(
+        '[data-weave-snack-state="closing"]',
+      )
+
+    expect(closing).not.toBeNull()
+
+    if (closing !== null) {
+      fireEvent.transitionEnd(
+        closing,
+      )
+    }
+
+    const four =
+      Array.from(
+        document.querySelectorAll<HTMLElement>(
+          '[data-weave-snack]',
+        ),
+      ).find(
+        (snack) =>
+          snack.textContent?.includes(
+            'Four',
+          ),
+      )
+
+    expect(
+      four?.hasAttribute(
+        'data-weave-snack-queue-hidden',
+      ),
+    ).toBe(false)
+    expect(
+      four?.hasAttribute(
+        'data-weave-snack-queue-revealed',
+      ),
+    ).toBe(true)
+  })
+
+  it('shows linear lifetime progress and pauses it with the Snack timer', () => {
+    vi.useFakeTimers()
+
+    const {
+      getByRole,
+    } = render(
+      <Snack
+        text="Timed progress"
+        duration={1000}
+      />,
+    )
+
+    const snack =
+      getByRole('status')
+    const progress =
+      () =>
+        document.querySelector<HTMLElement>(
+          '[data-weave-snack-lifetime-progress]',
+        )
+
+    expect(
+      Number(
+        progress()?.getAttribute(
+          'data-weave-snack-lifetime-progress',
+        ),
+      ),
+    ).toBe(1)
+
+    act(() => {
+      vi.advanceTimersByTime(500)
+    })
+
+    const halfway =
+      Number(
+        progress()?.getAttribute(
+          'data-weave-snack-lifetime-progress',
+        ),
+      )
+
+    expect(halfway).toBeGreaterThan(
+      0.45,
+    )
+    expect(halfway).toBeLessThan(
+      0.55,
+    )
+
+    fireEvent.pointerEnter(snack)
+
+    act(() => {
+      vi.advanceTimersByTime(300)
+    })
+
+    const pausedProgress =
+      Number(
+        progress()?.getAttribute(
+          'data-weave-snack-lifetime-progress',
+        ),
+      )
+
+    expect(
+      Math.abs(
+        pausedProgress -
+          halfway,
+      ),
+    ).toBeLessThan(0.02)
+
+    fireEvent.pointerLeave(snack)
+
+    act(() => {
+      vi.advanceTimersByTime(500)
+    })
+
+    expect(
+      snack.getAttribute(
+        'data-weave-snack-state',
+      ),
+    ).toBe('closing')
+  })
+
+  it('does not render lifetime progress for persistent Snacks', () => {
+    render(
+      <Snack
+        text="Persistent"
+        persistent
+      />,
+    )
+
+    expect(
+      document.querySelector(
+        '[data-weave-snack-lifetime-progress]',
+      ),
+    ).toBeNull()
+  })
+
   it('keeps each queued Snack on its own creation-time timer', () => {
     vi.useFakeTimers()
 
