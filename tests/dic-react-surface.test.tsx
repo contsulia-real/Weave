@@ -252,7 +252,7 @@ describe('DiC React surface', () => {
 
     const second =
       root.getNodes()[0]
-    expect(second).not.toBe(first)
+    expect(second).toBe(first)
     expect(second?.semantics.checked).toBe(true)
 
     harness.frame()
