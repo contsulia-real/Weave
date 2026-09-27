@@ -222,6 +222,15 @@ const stylesheet = `
   }
 }
 
+:where(.weave-progress--undetermined[data-weave-progress-offscreen])
+  > :where(.weave-progress__value),
+:where(.weave-progress--linear.weave-progress--undetermined[data-weave-progress-offscreen])
+  > :where(.weave-progress__value)::before,
+:where(.weave-progress--linear.weave-progress--undetermined[data-weave-progress-offscreen])
+  > :where(.weave-progress__value)::after {
+  animation-play-state: paused;
+}
+
 @media (prefers-reduced-motion: reduce) {
   :where(.weave-progress--spin.weave-progress--determined)
     > :where(.weave-progress__value) {
