@@ -8,8 +8,6 @@ import {
   useState,
 } from 'react'
 import type {
-  ReactElement,
-  SVGProps,
   TransitionEvent as ReactTransitionEvent,
 } from 'react'
 import { createPortal } from 'react-dom'
@@ -191,9 +189,13 @@ export function Snack({
     setVisualState('closing')
 
     const reducedMotion =
-      globalThis.matchMedia?.(
-        '(prefers-reduced-motion: reduce)',
-      ).matches ?? false
+      typeof window !== 'undefined' &&
+      typeof window.matchMedia ===
+        'function'
+        ? window.matchMedia(
+            '(prefers-reduced-motion: reduce)',
+          ).matches
+        : false
 
     if (reducedMotion) {
       setPresent(false)
