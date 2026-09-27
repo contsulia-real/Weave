@@ -62,6 +62,11 @@ describe('ToolTip', () => {
         'data-placement',
       ),
     ).toBe('top')
+    expect(
+      getByText('Save changes').getAttribute(
+        'data-weave-text-typo',
+      ),
+    ).toBe('body-xsmall')
   })
 
   it('honors hover delay and closes when the pointer leaves', () => {
@@ -261,7 +266,7 @@ describe('ToolTip', () => {
               background: 'primary',
               color: 'onPrimary',
               borderColor: 'primary',
-              depthColor: 'primary',
+              shadow: 'medium',
             },
           },
         },
@@ -313,6 +318,9 @@ describe('ToolTip', () => {
       )?.textContent ?? ''
 
     expect(stylesheet).toContain(
+      '--weave-tooltip-shadow',
+    )
+    expect(stylesheet).not.toContain(
       '--weave-tooltip-depth',
     )
     expect(stylesheet).toContain(
