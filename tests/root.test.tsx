@@ -231,14 +231,54 @@ describe('public Weave root', () => {
       Array<unknown> = []
     const terminate =
       vi.fn()
+    let workerMessageListener:
+      | ((
+          event: MessageEvent<unknown>,
+        ) => void)
+      | undefined
+    let imageIndex = 0
+    const images = [
+      { close: vi.fn() },
+      { close: vi.fn() },
+      { close: vi.fn() },
+    ]
     const captureElementImage =
-      vi.fn(() => ({
-        close: vi.fn(),
-      }))
+      vi.fn(() => {
+        const image =
+          images[
+            Math.min(
+              imageIndex,
+              images.length - 1,
+            )
+          ]!
+        imageIndex += 1
+        return image
+      })
 
     class TestWorker {
       postMessage(message: unknown): void {
         posted.push(message)
+      }
+
+      addEventListener(
+        type: string,
+        listener: (
+          event: MessageEvent<unknown>,
+        ) => void,
+      ): void {
+        if (type === 'message') {
+          workerMessageListener =
+            listener
+        }
+      }
+
+      removeEventListener(
+        type: string,
+      ): void {
+        if (type === 'message') {
+          workerMessageListener =
+            undefined
+        }
       }
 
       terminate(): void {
@@ -346,16 +386,39 @@ describe('public Weave root', () => {
       expect(
         drawElementImage,
       ).not.toHaveBeenCalled()
-      expect(
-        posted.some(
+      const frameCount = () =>
+        posted.filter(
           (message) =>
             (
               message as {
                 type?: string
               }
             ).type === 'frame',
-        ),
-      ).toBe(true)
+        ).length
+
+      expect(frameCount()).toBe(1)
+
+      canvas?.dispatchEvent(
+        new Event('paint'),
+      )
+      canvas?.dispatchEvent(
+        new Event('paint'),
+      )
+
+      expect(frameCount()).toBe(1)
+      expect(
+        images[1]?.close,
+      ).toHaveBeenCalled()
+
+      workerMessageListener?.(
+        {
+          data: {
+            type: 'frame-drawn',
+          },
+        } as MessageEvent<unknown>,
+      )
+
+      expect(frameCount()).toBe(2)
 
       root.unmount()
       expect(
