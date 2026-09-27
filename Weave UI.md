@@ -331,17 +331,35 @@ ctx.drawElementImage()
 
 当前实验 API 存在版本迁移：Chromium 实现仍要求 Canvas 带 `layoutsubtree`，最新 WICG explainer 已改用 `content="drawable"`。Weave 在迁移期同时设置两者，不自行模拟任何 HTML-in-Canvas 能力。
 
-2D `drawElementImage()` 默认同时更新 drawable 元素的 Canvas geometry，因此浏览器可以继续使用同一批真实元素完成：
+2D `drawElementImage()` 的当前规范会自动更新 drawable 元素的 Canvas geometry，因此浏览器可以继续使用同一批真实元素完成：
 
 ```text
 hit testing
 pointer / keyboard event
+wheel / scrolling
 focus
 form controls
 text selection
 IME
 accessibility geometry
 ```
+
+HTML-in-Canvas 仍处于实验 API 迁移期。Weave 必须兼容 Chromium 已出现过的 geometry 注册方式：
+
+```text
+新接口
+→ drawElementImage() 自动更新 geometry
+→ 必要时显式 updateElementGeometry()
+
+过渡接口
+→ drawElementImage() 返回 DOMMatrix
+→ setCanvasTransform(matrix)
+
+更早实验接口
+→ 返回的 DOMMatrix 作为元素 CSS transform
+```
+
+这里的兼容层只负责把浏览器提供的绘制几何重新登记给浏览器自身的 hit testing；不得把 pointer / click / wheel / focus 重新实现成 JavaScript 事件转发系统。
 
 Weave 不允许为这些能力平行维护第二套 JavaScript 实现。
 
