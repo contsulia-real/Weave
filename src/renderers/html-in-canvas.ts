@@ -234,24 +234,6 @@ function observeCanvasSize(
   shouldPreserveFrame: () => boolean,
   requestPaint: () => void,
 ): () => void {
-  const resizeToDevicePixels = (
-    width: number,
-    height: number,
-  ) => {
-    if (
-      applyCanvasSize(
-        canvas,
-        context,
-        resizeBuffer,
-        shouldPreserveFrame(),
-        width,
-        height,
-      )
-    ) {
-      requestPaint()
-    }
-  }
-
   const resizeFromCSSPixels = (
     width: number,
     height: number,
@@ -259,10 +241,18 @@ function observeCanvasSize(
     const dpr =
       devicePixelRatioFor(canvas)
 
-    resizeToDevicePixels(
-      width * dpr,
-      height * dpr,
-    )
+    if (
+      applyCanvasSize(
+        canvas,
+        context,
+        resizeBuffer,
+        shouldPreserveFrame(),
+        width * dpr,
+        height * dpr,
+      )
+    ) {
+      requestPaint()
+    }
   }
 
   const initial =
@@ -280,17 +270,6 @@ function observeCanvasSize(
       ([entry]) => {
         if (entry === undefined) return
 
-        const devicePixelSize =
-          entry.devicePixelContentBoxSize?.[0]
-
-        if (devicePixelSize !== undefined) {
-          resizeToDevicePixels(
-            devicePixelSize.inlineSize,
-            devicePixelSize.blockSize,
-          )
-          return
-        }
-
         resizeFromCSSPixels(
           entry.contentRect.width,
           entry.contentRect.height,
@@ -298,20 +277,7 @@ function observeCanvasSize(
       },
     )
 
-    const supportsDevicePixelContentBox =
-      typeof ResizeObserverEntry !==
-        'undefined' &&
-      'devicePixelContentBoxSize' in
-        ResizeObserverEntry.prototype
-
-    observer.observe(
-      canvas,
-      supportsDevicePixelContentBox
-        ? {
-            box: 'device-pixel-content-box',
-          }
-        : undefined,
-    )
+    observer.observe(canvas)
 
     return () => observer.disconnect()
   }
@@ -329,86 +295,6 @@ function observeCanvasSize(
     resizeFromCSSPixels(
       rect.width,
       rect.height,
-    )
-  }
-
-  view.addEventListener(
-    'resize',
-    handleResize,
-  )
-
-  return () => {
-    view.removeEventListener(
-      'resize',
-      handleResize,
-    )
-  }
-}
-
-function observeDrawableHeight(
-  canvas: HTMLCanvasElement,
-  host: HTMLDivElement,
-): () => void {
-  const applyHeight = (
-    measuredHeight: number,
-  ) => {
-    const nextHeight =
-      Math.max(
-        1,
-        measuredHeight,
-        host.scrollHeight,
-      )
-    const nextCSSHeight =
-      `${nextHeight}px`
-
-    if (
-      canvas.style.height !==
-      nextCSSHeight
-    ) {
-      canvas.style.height =
-        nextCSSHeight
-    }
-  }
-
-  applyHeight(
-    host.getBoundingClientRect().height,
-  )
-
-  if (
-    typeof ResizeObserver !== 'undefined'
-  ) {
-    const observer = new ResizeObserver(
-      ([entry]) => {
-        if (entry === undefined) return
-
-        const borderBoxSize =
-          entry.borderBoxSize?.[0]
-
-        applyHeight(
-          borderBoxSize?.blockSize ??
-            entry.contentRect.height,
-        )
-      },
-    )
-
-    observer.observe(
-      host,
-      { box: 'border-box' },
-    )
-
-    return () => observer.disconnect()
-  }
-
-  const view =
-    host.ownerDocument.defaultView
-
-  if (view === null) {
-    return () => {}
-  }
-
-  const handleResize = () => {
-    applyHeight(
-      host.getBoundingClientRect().height,
     )
   }
 
@@ -464,7 +350,7 @@ export function createHTMLInCanvasMount(
   )
   canvas.style.display = 'block'
   canvas.style.width = '100%'
-  canvas.style.height = '1px'
+  canvas.style.height = '100%'
 
   const host =
     document.createElement(
@@ -479,6 +365,7 @@ export function createHTMLInCanvasMount(
     '',
   )
   host.style.width = '100%'
+  host.style.height = '100%'
 
   canvas.append(host)
   container.replaceChildren(canvas)
@@ -521,13 +408,7 @@ export function createHTMLInCanvasMount(
     handlePaint,
   )
 
-  const stopObservingDrawable =
-    observeDrawableHeight(
-      canvas,
-      host,
-    )
-
-  const stopObservingCanvas =
+  const stopObserving =
     observeCanvasSize(
       canvas,
       context,
@@ -546,8 +427,7 @@ export function createHTMLInCanvasMount(
       if (destroyed) return
       destroyed = true
 
-      stopObservingDrawable()
-      stopObservingCanvas()
+      stopObserving()
       canvas.removeEventListener(
         'paint',
         handlePaint,
