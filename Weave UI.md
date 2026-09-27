@@ -3210,16 +3210,30 @@ ToolTip 的默认视觉来自：
 theme.components.ToolTip.base
 ```
 
+ToolTip 的默认视觉必须遵循 Weave 已有的“材质 + 层级”语言，而不是使用独立的深色黑底提示条：
+
+- 默认使用暖色 `surface`，而不是纯黑背景；
+- 使用 `outline` 建立清晰边界；
+- 使用轻微实体厚度 + ambient shadow 表达浮层层级，但不复制 Button 的可按压反馈；
+- 使用中等圆角，与现有控件保持同一几何语言；
+- 使用指向目标的锚点箭头，明确 ToolTip 与目标之间的空间关系；
+- 出现时从锚点方向做一次极短的展开反馈；`prefers-reduced-motion: reduce` 下取消该运动。
+
 当前可主题化字段：
 
 ```text
 background
 color
+borderColor
+borderWidth
 radius
 paddingX
 paddingY
 maxWidth
 shadow
+depth
+depthColor
+arrowSize
 typo
 ```
 
