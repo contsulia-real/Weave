@@ -13,8 +13,10 @@ export { ToolTip } from './components/ToolTip'
 export { Snack } from './components/Snack'
 export {
   SnackProvider,
-  useSnack,
 } from './components/SnackProvider'
+export {
+  useSnack,
+} from './components/useSnack'
 export type {
   SnackProviderProps,
 } from './components/SnackProvider'
