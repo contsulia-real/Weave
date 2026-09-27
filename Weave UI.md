@@ -307,7 +307,7 @@ React
   ↓
 浏览器原生 HTML / CSS layout、paint、事件、表单、可访问性
   ↓
-<canvas content="drawable">
+<canvas layoutsubtree content="drawable">
   ↓
 drawable HTML subtree
   ↓
@@ -321,12 +321,15 @@ CanvasRenderingContext2D.drawElementImage()
 当前主路径使用 WICG HTML-in-Canvas 提案中的原生能力：
 
 ```text
+canvas layoutsubtree
 canvas content="drawable"
 drawable attribute
 paint event
 canvas.requestPaint()
 ctx.drawElementImage()
 ```
+
+当前实验 API 存在版本迁移：Chromium 实现仍要求 Canvas 带 `layoutsubtree`，最新 WICG explainer 已改用 `content="drawable"`。Weave 在迁移期同时设置两者，不自行模拟任何 HTML-in-Canvas 能力。
 
 2D `drawElementImage()` 默认同时更新 drawable 元素的 Canvas geometry，因此浏览器可以继续使用同一批真实元素完成：
 
