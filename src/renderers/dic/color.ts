@@ -42,12 +42,20 @@ function replaceColorVariables(
 export function resolveDiCColor(
   value: string,
   theme: ResolvedTheme,
+  currentColor?: string,
 ): string {
   const token =
     theme.tokens.color?.[value] ??
     value
+  const withCurrentColor =
+    currentColor === undefined
+      ? token
+      : token.replace(
+          /\bcurrentColor\b/g,
+          currentColor,
+        )
   const resolved = replaceColorVariables(
-    token,
+    withCurrentColor,
     theme,
     0,
   )
