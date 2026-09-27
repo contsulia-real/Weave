@@ -59,6 +59,8 @@ export interface DiCInteractionController {
   stateForNode(node: DiCViewNode): DiCInteractionState
   dispatchPointer(input: DiCPointerInput): DiCDispatchResult
   dispatchKeyboard(input: DiCKeyboardInput): DiCDispatchResult
+  dispatchClick(node: DiCViewNode): DiCDispatchResult
+  focusNode(node: DiCViewNode, visible?: boolean): boolean
   reconcile(): void
   blur(): void
   getFocusedNode(): DiCViewNode | undefined
@@ -683,6 +685,49 @@ export function createDiCInteractionController(
       }
     },
     dispatchKeyboard,
+    dispatchClick(node) {
+      const path = pathForNode(node)
+      if (path === undefined) {
+        return {
+          defaultPrevented: false,
+          propagationStopped: false,
+        }
+      }
+
+      return dispatchBubbledPointer(
+        'click',
+        path,
+        {
+          type: 'pointerup',
+          x: 0,
+          y: 0,
+          pointerId: 0,
+          pointerType: 'semantic',
+          isPrimary: true,
+          button: 0,
+          buttons: 0,
+          clientX: 0,
+          clientY: 0,
+          pressure: 0,
+          altKey: false,
+          ctrlKey: false,
+          metaKey: false,
+          shiftKey: false,
+        },
+      )
+    },
+    focusNode(node, visible = true) {
+      const path = pathForNode(node)
+      if (
+        path === undefined ||
+        !node.interaction?.focusable
+      ) {
+        return false
+      }
+
+      setFocus(node, visible)
+      return true
+    },
     reconcile() {
       const current = layout()
       if (current === undefined) return
