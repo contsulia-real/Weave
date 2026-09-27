@@ -208,11 +208,16 @@ export interface ScrollbarTheme {
 export interface ToolTipThemeBase {
   background?: string
   color?: string
+  borderColor?: string
+  borderWidth?: ThemeScaleValue
   radius?: ThemeScaleValue
   paddingX?: ThemeScaleValue
   paddingY?: ThemeScaleValue
   maxWidth?: ThemeScaleValue
   shadow?: string
+  depth?: ThemeScaleValue
+  depthColor?: string
+  arrowSize?: ThemeScaleValue
   typo?: string
 }
 
