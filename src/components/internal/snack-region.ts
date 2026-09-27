@@ -130,6 +130,8 @@ export function syncSnackRegion(
     ) {
       snack.dataset.weaveSnackQueueHidden =
         ''
+      delete snack.dataset
+        .weaveSnackQueueRevealed
 
       if (
         snack.dataset.weaveSnackState ===
@@ -138,8 +140,22 @@ export function syncSnackRegion(
         hiddenClosing = true
       }
     } else {
+      const wasHidden =
+        snack.hasAttribute(
+          'data-weave-snack-queue-hidden',
+        )
+
       delete snack.dataset
         .weaveSnackQueueHidden
+
+      if (
+        wasHidden &&
+        snack.dataset.weaveSnackState ===
+          'open'
+      ) {
+        snack.dataset.weaveSnackQueueRevealed =
+          ''
+      }
     }
   }
 
