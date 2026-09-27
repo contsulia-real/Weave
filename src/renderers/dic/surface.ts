@@ -250,7 +250,10 @@ export function createDiCSurface(
     )
 
     interactions?.reconcile()
-    ensureSemanticMirror()?.update(scene.node)
+    ensureSemanticMirror()?.update(
+      scene.node,
+      layout,
+    )
 
     const focusedNode =
       interactions?.getFocusedNode()
