@@ -185,7 +185,7 @@ function DiCView(
   const { theme } = useTheme()
 
   assertDiCViewPropsSupported(
-    props as ViewProps<HTMLElement>,
+    props as unknown as ViewProps<HTMLElement>,
     theme.breakpoints,
     'View',
   )
