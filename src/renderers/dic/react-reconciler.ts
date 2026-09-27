@@ -140,7 +140,7 @@ function textValue(
     if (child.hidden) continue
 
     if (child.kind !== 'text') {
-      throw new Error(
+      throw new DiCCapabilityError(
         'DiC Text rich inline children are not implemented yet',
       )
     }
@@ -300,7 +300,7 @@ function compileContainer(
 
     if (child.kind === 'text') {
       if (child.value.trim().length !== 0) {
-        throw new Error(
+        throw new DiCCapabilityError(
           'Raw text cannot be a DiC React root',
         )
       }
