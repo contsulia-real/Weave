@@ -3249,7 +3249,15 @@ typo
 
 # 20. `Snack`
 
-`Snack` 是组合组件。
+`Snack` 是组合组件，同时提供：
+
+```text
+Snack
+→ 单个声明式通知实例
+
+SnackProvider + useSnack()
+→ 正常业务使用的通知队列
+```
 
 依赖：
 
@@ -3260,17 +3268,83 @@ Icon?
 Button?
 ```
 
-## 20.1 基础用法
+## 20.1 推荐：队列触发
+
+应用根建立一次队列：
+
+```tsx
+<ThemeProvider>
+  <SnackProvider>
+    <App />
+  </SnackProvider>
+</ThemeProvider>
+```
+
+业务侧：
+
+```tsx
+const snack = useSnack()
+
+<Button
+  text="Save"
+  viewProps={{
+    onClick: () => {
+      snack.show({
+        text: "保存成功",
+        variant: "success",
+      })
+    },
+  }}
+/>
+```
+
+**每一次 `show()` 都创建一个新的 Snack 实例。**
+
+因此同一个触发控件连续点击：
+
+```text
+click
+→ Snack #1
+
+click
+→ Snack #2
+
+click
+→ Snack #3
+```
+
+三条会同时进入队列和对应 placement region，而不是复用一个布尔 `open`。
+
+`show()` 返回实例 id：
+
+```tsx
+const id = snack.show({
+  text: "Uploading...",
+  persistent: true,
+})
+
+snack.dismiss(id)
+snack.dismissAll()
+```
+
+## 20.2 声明式单实例
+
+需要直接控制某一个实例时仍可使用：
 
 ```tsx
 <Snack
   text="保存成功"
   variant="success"
-  duration={3000}
+  open={open}
+  onOpenChange={setOpen}
 />
 ```
 
-带图标：
+声明式 `Snack` 是底层能力，不应该拿一个布尔实例模拟整个通知队列。
+
+## 20.3 内容 API
+
+快捷内容：
 
 ```tsx
 <Snack
@@ -3290,91 +3364,9 @@ Button?
 />
 ```
 
-## 20.2 当前属性
+`action` 与 `onAction` 必须成对出现；执行 action 后当前 Snack 请求关闭。
 
-```text
-text
-
-variant
-  default
-  success
-  warning
-  danger
-  info
-
-icon
-duration
-persistent
-action
-onAction
-placement
-open
-defaultOpen
-onOpenChange
-children
-viewProps
-```
-
-默认值：
-
-```text
-variant     = default
-duration    = 4000ms
-persistent  = false
-placement   = bottom-center
-defaultOpen = true
-layer       = snack
-```
-
-### icon
-
-快捷模式中的 `icon` 与当前 Weave Icon / Button 图标输入一致：
-
-```text
-IconComponent
-SVG ReactElement
-```
-
-不在 Snack 内部维护第二套图标名称注册表。
-
-### duration
-
-时间裸数字按毫秒（`ms`）解释。
-
-自动关闭规则：
-
-- `open=true` 且 `persistent=false` 时启动计时；
-- pointer 停留在 Snack 上时暂停自动关闭；
-- focus 位于 Snack 或其 action 内时暂停自动关闭；
-- 离开后重新开始自动关闭计时；
-- `persistent=true` 时完全禁用自动关闭。
-
-### persistent
-
-```tsx
-<Snack
-  text="正在等待连接"
-  persistent
-/>
-```
-
-表示不自动消失。
-
-### action
-
-`action` 与 `onAction` 必须成对出现：
-
-```tsx
-<Snack
-  text="文件已删除"
-  action="撤销"
-  onAction={undo}
-/>
-```
-
-执行 action 后 Snack 同时请求关闭。
-
-## 20.3 完整组合
+完整组合：
 
 ```tsx
 <Snack>
@@ -3388,12 +3380,61 @@ SVG ReactElement
 
 快捷内容与完整组合互斥：
 
-- 使用 `children` 时，不再同时使用 `text`、`icon`、`action`、`onAction`。
-- `variant`、`duration`、`persistent`、`placement`、受控状态和 `viewProps` 仍可用于两种模式。
+- 使用 `children` 时，不再同时使用 `text`、`icon`、`action`、`onAction`；
+- `variant`、`duration`、`persistent`、`placement`、`direction` 和 `viewProps` 仍可用于两种模式。
 
-## 20.4 placement 与堆叠
+## 20.4 当前属性
 
-当前：
+```text
+text
+children
+
+variant
+  default
+  success
+  warning
+  danger
+  info
+
+icon
+duration
+persistent
+action
+onAction
+
+placement
+direction
+
+open
+defaultOpen
+onOpenChange
+onDismissed
+
+viewProps
+```
+
+默认：
+
+```text
+variant     = default
+duration    = 4000ms
+persistent  = false
+placement   = bottom-center
+direction   = inferred from placement
+defaultOpen = true
+layer       = snack
+```
+
+### duration / persistent
+
+- `persistent=false` 时按 `duration` 自动关闭；
+- pointer 停留在 Snack 上时暂停；
+- focus 位于 Snack 或 action 内时暂停；
+- `persistent=true` 时完全禁用自动关闭。
+
+## 20.5 placement：位置
+
+当前位置：
 
 ```text
 top-left
@@ -3404,59 +3445,93 @@ bottom-center
 bottom-right
 ```
 
-每个 placement 在 `document.body` 中由框架内部维护一个共享 region：
+每个 placement 在 `document.body` 中由框架维护共享 region。业务不创建 portal host、不计算坐标、不维护堆叠 index。
+
+同一 placement 的多个 Snack 自动垂直堆叠：
 
 ```text
-Snack A ─┐
-Snack B ─┼→ same placement region → automatic vertical stack
-Snack C ─┘
+Snack #1 ─┐
+Snack #2 ─┼→ same region
+Snack #3 ─┘
 ```
 
-业务不创建 portal host，不计算 index，也不手工计算坐标。
+顶部 placement 的最新通知靠近顶部边缘；底部 placement 的最新通知靠近底部边缘。
 
-同一 placement 的多个 Snack 自动按 DOM 顺序垂直堆叠，间距由框架样式统一控制。region 本身 `pointer-events: none`，Snack 卡片恢复 `pointer-events: auto`。
+## 20.6 direction：进入 / 退出方向
 
-## 20.5 默认视觉
+`direction` 与 `placement` **独立**：
 
-Snack 与 ToolTip、Button 必须保持不同视觉角色：
+```text
+up
+down
+left
+right
+```
+
+例如：
+
+```tsx
+snack.show({
+  text: "Saved",
+  placement: "top-right",
+  direction: "left",
+})
+```
+
+表示 Snack 位于右上角，但从左侧进入，并沿左侧方向退出。
+
+未显式设置时：
+
+```text
+top-*    → up
+bottom-* → down
+```
+
+因此默认运动仍然符合所在屏幕边缘，但业务可以覆盖。
+
+## 20.7 默认视觉语言
+
+Snack 不使用通用 Toast 的“白卡 + 左侧彩条”样式。
+
+Weave 中三类组件视觉角色必须明确区分：
 
 ```text
 Button
-→ 可按压实体
+→ 有实体厚度的可按压控件
 
 ToolTip
-→ 主题色紧凑辅助标签
+→ primary 主题色的紧凑辅助标签
 
 Snack
-→ 稳定的 surface 状态通知卡片
+→ variant 色轻度染入 surface 的浮层通知材质
 ```
 
-默认：
+Snack 默认视觉：
 
-- 背景使用 `surface`；
-- 文字使用 `tertiary`；
-- 使用 `outline` 边界和 `medium` shadow；
-- 左侧使用 variant accent 条表达状态，不把整张卡片染成高饱和状态色；
-- `default / success / warning / danger / info` 分别使用 `secondary / success / warning / danger / primary` accent；
+- 基底仍使用暖色 `surface`；
+- variant accent 以低比例混入整张卡片背景，而不是贴一条彩色边；
+- 边框同样轻度混入 variant accent；
+- 使用 `large` 圆角和 `medium` ambient shadow，表达独立浮层而不是按钮；
+- 图标放入独立圆形 tonal 容器，容器和图标共同使用当前 variant accent；
+- `default / success / warning / danger / info` accent 分别来自 `secondary / success / warning / danger / primary`；
 - 默认 typo 为 `body-medium`；
-- action 使用紧凑 ghost Button，并继承当前 variant accent；
-- 默认宽度约束由 `minWidth / maxWidth` 控制，同时不得溢出 viewport。
+- action 使用紧凑 ghost Button，并继承当前 accent；
+- 整体宽度通过 `minWidth / maxWidth` 限制，同时不得溢出 viewport。
 
-当前组件主题入口：
+组件主题入口：
 
 ```text
 theme.components.Snack.base
 theme.components.Snack.variants
 ```
 
-base 当前字段：
+base：
 
 ```text
 background
 color
 borderColor
 borderWidth
-accentWidth
 radius
 paddingX
 paddingY
@@ -3464,24 +3539,23 @@ gap
 minWidth
 maxWidth
 shadow
+iconSize
 typo
 motionOffset
 ```
 
-variant 当前字段：
+variant：
 
 ```text
 accentColor
 ```
 
-实例通用覆盖继续通过 `viewProps` 使用。
-
-## 20.6 动效与生命周期
+## 20.8 动效与生命周期
 
 进入：
 
 ```text
-placement 对应方向轻微位移
+direction 对应轻微位移
 + opacity 0 → 1
 + scale 0.985 → 1
 ```
@@ -3489,19 +3563,17 @@ placement 对应方向轻微位移
 退出：
 
 ```text
-向 placement 外侧轻微收回
+沿同一 direction 收回
 + opacity 1 → 0
 + scale 1 → 0.99
-→ transition 完成后才卸载
+→ transition 完成后才从队列移除
 ```
 
-进入使用 `motion.duration.normal + emphasized`，透明度使用较短的 `fast + enter`；退出使用 `fast + exit`。
+进入使用 `motion.duration.normal + emphasized`；退出使用 `fast + exit`。
 
-`prefers-reduced-motion: reduce` 下取消位移 / 缩放动画，并直接完成退出。
+`prefers-reduced-motion: reduce` 下取消位移和缩放，并直接完成退出。
 
-## 20.7 可访问性
-
-语义按紧急程度区分：
+## 20.9 可访问性
 
 ```text
 default / success / info
@@ -3513,7 +3585,7 @@ warning / danger
 
 Snack root 使用 `aria-atomic="true"`。
 
-进入 closing 状态后设置 `aria-hidden="true"`，视觉退出仍可完成，但不会继续作为有效通知暴露给辅助技术。
+进入 closing 后设置 `aria-hidden="true"`；视觉退出可以完成，但不会继续作为有效通知暴露给辅助技术。
 
 
 ---
