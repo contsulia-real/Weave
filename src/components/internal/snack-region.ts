@@ -61,11 +61,6 @@ export function retainSnackRegion(
     'weave-snack-region'
   element.dataset.weaveSnackRegion =
     placement
-  element.setAttribute(
-    'aria-live',
-    'off',
-  )
-
   document.body.append(element)
 
   const entry: RegionEntry = {
