@@ -241,6 +241,9 @@ export interface SnackThemeBase {
   iconSize?: ThemeScaleValue
   typo?: TextTypo
   motionOffset?: ThemeScaleValue
+  stackOffset?: ThemeScaleValue
+  stackScaleStep?: number
+  stackOpacityStep?: number
 }
 
 export interface SnackThemeVariant {
