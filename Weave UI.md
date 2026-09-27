@@ -5192,8 +5192,9 @@ first measure
 ```text
 loading="lazy" 的 viewport resource policy
 onLoad / onError React event bridge
-Canvas 语义树中的 alt 暴露
 ```
+
+Image 的 `alt` 已由 DiC semantic mirror 映射为 `role="img"` + accessible label。
 
 这些属于后续 React/interaction/semantic bridge，不允许因为 Canvas 绘制已完成就宣称等价支持。
 
@@ -5669,13 +5670,13 @@ View
 52. Image 只显式指定一个布局轴时，另一个轴必须保持天然宽高比；`object-fit` 只影响 bitmap 在 content frame 内的绘制，不得改变外层布局语义。
 53. Image resource 从 loading 进入 ready 后必须触发 surface invalidate 并重新 measure / layout / draw，不能只重绘旧 frame。
 54. DiC surface 必须释放 scene 中已不再引用的图片资源；Blob object URL 必须随资源释放而 revoke。
-55. 尚未接入的 DiC Image lazy-loading / load-event / alt semantic bridge 必须保持明确未完成状态，不能用 Canvas draw 成功替代这些语义。
+55. 尚未接入的 DiC Image lazy-loading / load-event bridge 必须保持明确未完成状态，不能用 Canvas draw 成功替代这些语义。
 56. DiC hit testing 与 drawing 必须消费同一套 transform 解析；禁止分别维护会产生视觉/命中漂移的 transform 语义。
 57. DiC pointer target 必须按实际绘制顺序逆序命中，并遵循 `pointerEvents` tree inheritance / override。
 58. hover / active / focus / focusVisible / disabled 必须回流到统一 View state IR，不能建立 renderer 私有状态样式体系。
 59. Canvas 原生事件只能作为输入桥；事件冒泡、pointer capture、click 合成与 focus 状态必须在 DiC tree 上执行。
 60. generic View 的 `disabled` 不得被 renderer 擅自解释为“吞掉全部事件”；组件级 disabled 行为由 Button / Switch / Input 等语义 adapter 自己保证。
-61. 在 Tab 导航与 accessibility semantic bridge 完成前，不得把 DiC 的 pointer/keyboard dispatch 描述成完整可访问性交互等价。
+61. DiC 已通过 semantic mirror 使用浏览器原生 Tab 与基础 ARIA tree；但在 Input / IME / live region / composite-widget 专用语义完成前，不得描述成完整可访问性等价。
 62. Button / Switch 的 DOM 与 DiC adapter 必须消费同一个 ResolvedButton / ResolvedSwitch 语义结果；不得分别重新解释 variant / size / loading / checked / disabled。
 63. DiC Button 的组件默认视觉必须低于用户 View base / state / responsive paint；用户显式 View 语义始终拥有更高优先级。
 64. DiC Switch pointermove 热路径不得读取 DOM layout；drag geometry 必须来自已解析的组件 / theme 几何和 pointer delta。
