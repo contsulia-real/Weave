@@ -17,7 +17,6 @@ import type {
 } from '../core/icon-types'
 import type {
   SnackIcon,
-  SnackPlacement,
   SnackProps,
   SnackVariant,
   SnackViewProps,
