@@ -1,9 +1,5 @@
 export { createRoot } from './root'
-export type {
-  Root,
-  RootFallback,
-  RootOptions,
-} from './root'
+export type { Root } from './root'
 
 export { View } from './components/View'
 export { Text } from './components/Text'
