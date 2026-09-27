@@ -574,7 +574,7 @@ export function ToolTip({
               <Text
                 typo={
                   base?.typo ??
-                  'label-small'
+                  'body-xsmall'
                 }
               >
                 {content}
