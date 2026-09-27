@@ -320,6 +320,10 @@ describe('ToolTip', () => {
     expect(stylesheet).toContain(
       '--weave-tooltip-shadow',
     )
+
+    expect(runtimeStyle).toContain(
+      '--weave-tooltip-color:',
+    )
     expect(stylesheet).not.toContain(
       '--weave-tooltip-depth',
     )
