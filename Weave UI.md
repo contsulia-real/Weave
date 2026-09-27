@@ -3452,66 +3452,121 @@ bottom-* → 从底部边缘进入 / 向底部边缘退出
 - `persistent=true` 时完全禁用自动关闭；
 - 关闭进入 exit transition，transition 完成后才从队列移除。
 
-## 20.6 placement 与自动折叠
+## 20.6 placement、视觉 FIFO 与自动折叠
 
 每个 placement 在 `document.body` 中由框架维护一个共享 region。
 
-业务不创建 portal host、不计算坐标、不维护 stack index。
+业务不创建 portal host、不计算坐标、不维护队列 index。
 
-同一 placement 最多保持 **3 条展开可见 Snack**。
+### 视觉顺序必须 FIFO
+
+Snack 在视觉上的排列顺序必须严格等于创建顺序：
+
+```text
+A 先创建
+B 后创建
+C 再创建
+
+视觉：
+A
+B
+C
+```
+
+不允许：
+
+- 后来的 Snack 排到前面；
+- 反转创建顺序；
+- 卡片互相覆盖；
+- 通过负 margin、scale、translate 等方式把多张 Snack 压成层叠卡片；
+- 用 z-index 表达所谓“前后栈层”。
+
+placement 只决定队列从哪个屏幕边缘向内延伸：
+
+```text
+top-*
+→ A 最靠近顶部
+→ B 在 A 之后
+→ C 在 B 之后
+
+bottom-*
+→ A 最靠近底部
+→ B 在 A 之后向上排列
+→ C 在 B 之后继续向上排列
+```
+
+因此无论 placement 在哪里，**最早创建的 Snack 始终是视觉队列的第一项**。
+
+### 自动折叠
+
+同一 placement 最多展开显示 **3 条最早仍存活的 Snack**。
 
 超过 3 条时：
 
 ```text
-最新 3 条
-→ 保留在 region 中
-→ 自动压成紧凑叠层
+A
+B
+C
++2
 
-更早的实例
-→ 折叠隐藏
-
-region
-→ 显示 +N 折叠计数
+D / E
+→ 保持自己的实例和生命周期
+→ 仅折叠隐藏
 ```
 
-hover / focus region 时，最新 3 条恢复正常间距，方便读取和操作。
+当 A 退出后：
 
-折叠只改变视觉展示，不改变每个 Snack 自己的 duration、状态或关闭顺序。
+```text
+B
+C
+D
++1
+```
 
-顶部 placement 的最新通知靠近顶部边缘；底部 placement 的最新通知靠近底部边缘。
+也就是后续条目按 FIFO 顺序自然补入可见区。
+
+折叠规则：
+
+- 只折叠超过可见上限的后续条目；
+- 不改变任何 Snack 的创建顺序；
+- 不改变任何 Snack 自己的 duration；
+- 不暂停、重启或同步其他 Snack 的 timer；
+- 折叠计数使用当前主题 typography / color token；
+- 折叠计数独立占位，不覆盖任何 Snack。
 
 ## 20.7 默认视觉语言
 
-Snack 必须延续 Weave 的材质语言，但不能伪装成 Button，也不能退回通用 Toast 的“整卡状态色”或“左侧彩条”。
+Snack 必须从“短暂系统通知”的组件语义推导视觉，不允许复制 Button、ToolTip 或其他组件的表面造型。
 
-角色区分：
+它使用 Weave 的共享设计词汇：
 
 ```text
-Button
-→ 有实体厚度的可按压控件
-
-ToolTip
-→ primary 主题色的紧凑辅助标签
-
-Snack
-→ 暖色 surface 上的静态浮层通知
+surface
+outline
+shadow
+typography
+variant color
+motion
+layer
 ```
+
+但组合方式属于 Snack 自己。
 
 默认：
 
-- 卡片主体使用主题 `surface`，不把 success / warning / danger 色铺满整张卡；
-- 使用统一 `outline` 边界；
-- 使用一条非常薄的静态材质底边 + ambient shadow，与 Weave 其他控件保持同一物理语言；
-- Snack 本体没有 hover / press 的抬升、下压或缩放反馈，因此不会被理解为可按压控件；
-- variant 色只用于图标 tonal 容器、图标和 action；
-- 图标位于独立圆形 tonal 容器中；
-- 默认使用 `medium` 圆角，尺寸比前一版更紧凑；
-- `default / success / warning / danger / info` accent 分别来自 `secondary / success / warning / danger / primary`；
-- 默认 typo 为 `body-medium`；
-- action 使用紧凑 ghost Button；
+- Snack 是 `layer="snack"` 的浮层通知；
+- 卡片主体使用主题 `surface`；
+- 使用 `outline` 建立边界；
+- 使用 ambient shadow 表达浮层层级；
+- **不使用 Button 的 depth / hoverLift / pressDepth / 实体底边语义**；
+- Snack 本体没有 hover 抬升、press 下沉或可按压反馈；
+- variant 影响通知语义、图标 / action 强调色和可访问性，而不是把整张卡片染成状态色；
+- 图标与 action 可以使用 variant accent，但正文仍遵循正常信息层级；
+- typography 来自统一 type scale；
+- spacing、radius、shadow、motion 必须来自 theme token / component theme；
 - 卡片不得溢出 viewport。
 
-主题入口：
+组件主题入口：
 
 ```text
 theme.components.Snack.base
@@ -3545,26 +3600,35 @@ accentColor
 
 ## 20.8 动效
 
-进入：
+Snack 的动效只表达：
 
 ```text
-placement 对应边缘轻微位移
+出现
+退出
+FIFO 队列中某一项被移除后的自然布局补位
+```
+
+单条进入：
+
+```text
+从 placement 对应屏幕边缘轻微位移
 + opacity 0 → 1
-+ scale 0.985 → 1
 ```
 
-退出：
+单条退出：
 
 ```text
-沿同一屏幕边缘方向收回
+向同一屏幕边缘轻微退出
 + opacity 1 → 0
-+ scale 1 → 0.99
-→ transition 完成后从队列移除
+→ transition 完成后移除
 ```
 
-进入使用 `motion.duration.normal + emphasized`；退出使用 `fast + exit`。
+不使用 Button 式弹跳、depth、press/release，也不使用多卡重叠缩放。
 
-`prefers-reduced-motion: reduce` 下取消位移和缩放，并直接完成退出。
+队列补位属于 layout change；浏览器布局变化应保持连续，不额外排一套动画队列。
+
+`prefers-reduced-motion: reduce` 下取消非必要位移，只保留状态变化。
+
 
 ## 20.9 可访问性
 
