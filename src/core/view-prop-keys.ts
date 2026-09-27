@@ -99,6 +99,7 @@ export const VIEW_STYLE_PROP_KEYS = [
   'outlineColor',
   'outlineStyle',
   'outlineOffset',
+  'layer',
   'zIndex',
   'pointerEvents',
   'cursor',
