@@ -316,6 +316,8 @@ export function resolveSnackTheme(
       shadowToken(base?.shadow),
     '--weave-snack-icon-size':
       length(base?.iconSize),
+    '--weave-snack-progress-height':
+      length(base?.progressHeight),
     '--weave-snack-motion-offset':
       length(base?.motionOffset),
   }
