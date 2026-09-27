@@ -1735,6 +1735,7 @@ title-small
 body-large
 body-medium
 body-small
+body-xsmall
 
 label-large
 label-medium
@@ -1751,7 +1752,7 @@ label-medium = 0.8125rem // 13px
 label-large  = 0.875rem  // 14px
 ```
 
-Playground 的普通说明文字使用 `body-medium`；`body-small` 仅保留给真正的 caption / meta 信息。
+Playground 的普通说明文字使用 `body-medium`；`body-small` 保留给 caption / meta 信息；`body-xsmall` 用于 ToolTip 这类需要明显低于控件标签的紧凑辅助信息。
 
 显式传入的文本属性优先于 `typo`，因此可以只覆盖需要调整的一项：
 
@@ -3210,12 +3211,14 @@ ToolTip 的默认视觉来自：
 theme.components.ToolTip.base
 ```
 
-ToolTip 的默认视觉必须遵循 Weave 已有的“材质 + 层级”语言，而不是使用独立的深色黑底提示条：
+ToolTip 的默认视觉必须遵循 Weave 已有的“材质 + 层级”语言，但必须和 Button 的“可按压实体”语言区分开：
 
-- 默认使用暖色 `surface`，而不是纯黑背景；
-- 使用 `outline` 建立清晰边界；
-- 使用轻微实体厚度 + ambient shadow 表达浮层层级，但不复制 Button 的可按压反馈；
-- 使用中等圆角，与现有控件保持同一几何语言；
+- 默认使用暖色 `surfaceHover`，不使用纯黑背景；
+- 使用 `outline` 建立轻边界；
+- 只使用 ambient shadow 表达浮层层级，不使用 Button 式实体厚度 / 底边 extrusion；
+- 使用 `small` 圆角，而不是与 Button 接近的较大圆角；
+- 默认水平 / 垂直 padding 分别为 `0.5rem / 0.25rem`；
+- 默认文字使用 `body-xsmall`，尺寸和字重都低于 Button 的 label scale；
 - 使用指向目标的锚点箭头，明确 ToolTip 与目标之间的空间关系；
 - 出现时从锚点方向做一次极短的展开反馈；`prefers-reduced-motion: reduce` 下取消该运动。
 
@@ -3231,8 +3234,6 @@ paddingX
 paddingY
 maxWidth
 shadow
-depth
-depthColor
 arrowSize
 typo
 ```
