@@ -401,6 +401,19 @@ export function createDiCSemanticMirror(
         }
       }
 
+      editor.style.whiteSpace =
+        input.multiline
+          ? 'pre-wrap'
+          : 'pre'
+
+      if (
+        editor.tagName === 'TEXTAREA'
+      ) {
+        (
+          editor as HTMLTextAreaElement
+        ).wrap = 'soft'
+      }
+
       editor.placeholder =
         input.placeholder ?? ''
       editor.readOnly =
