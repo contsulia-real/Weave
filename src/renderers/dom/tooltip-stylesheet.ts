@@ -49,7 +49,9 @@ const stylesheet = `
   height: var(--weave-tooltip-arrow-size);
   box-sizing: border-box;
   background: inherit;
-  border: inherit;
+  border-style: solid;
+  border-color: var(--weave-tooltip-border-color);
+  border-width: 0;
   z-index: -1;
 }
 
@@ -60,6 +62,8 @@ const stylesheet = `
 :where(.weave-tooltip[data-placement="top"])::before {
   left: 50%;
   bottom: calc(-0.5 * var(--weave-tooltip-arrow-size));
+  border-right-width: var(--weave-tooltip-border-width);
+  border-bottom-width: var(--weave-tooltip-border-width);
   transform: translateX(-50%) rotate(45deg);
 }
 
@@ -70,6 +74,8 @@ const stylesheet = `
 :where(.weave-tooltip[data-placement="bottom"])::before {
   left: 50%;
   top: calc(-0.5 * var(--weave-tooltip-arrow-size));
+  border-left-width: var(--weave-tooltip-border-width);
+  border-top-width: var(--weave-tooltip-border-width);
   transform: translateX(-50%) rotate(45deg);
 }
 
@@ -80,6 +86,8 @@ const stylesheet = `
 :where(.weave-tooltip[data-placement="left"])::before {
   top: 50%;
   right: calc(-0.5 * var(--weave-tooltip-arrow-size));
+  border-top-width: var(--weave-tooltip-border-width);
+  border-right-width: var(--weave-tooltip-border-width);
   transform: translateY(-50%) rotate(45deg);
 }
 
