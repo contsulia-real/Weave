@@ -3450,6 +3450,8 @@ bottom-* → 从底部边缘进入 / 向底部边缘退出
 - `persistent=false` 时按自己的 `duration` 自动关闭；
 - 每个自动关闭 Snack 底部显示一条线性 lifetime Progress，从 1 线性下降到 0；
 - lifetime Progress 必须直接使用公开的 `Progress` 组件，固定 `mode="linear"`，不得调用 `ProgressVisual` 或另外实现一条私有进度条；
+- lifetime Progress 必须位于 Snack 圆角 surface 内部：左右至少按 `paddingX` inset，不得贴着或穿出外层 border radius；
+- lifetime Progress 使用自身 linear radius / track 语义，不通过 Snack 边框充当进度轨道；
 - Progress 与自动关闭计时必须共享同一份剩余时间状态，不允许视觉进度和真实关闭时刻分离；
 - pointer 停留在当前 Snack 上时暂停该实例，同时暂停 lifetime Progress；
 - focus 位于当前 Snack 或其 action 内时暂停该实例，同时暂停 lifetime Progress；
@@ -3520,6 +3522,9 @@ D
 
 - 最早进入的可见 Snack 永远最先因容量溢出而退出；
 - 被驱逐项必须播放和正常关闭相同的 exit motion，不能瞬间消失；
+- 溢出过渡期间可见完整 Snack 数量不得超过 3；
+- 新 Snack 必须等最旧项退出完成后再进入可见队尾，不能提前出现成第 4 张；
+- 旧项移除后的 B / C 补位必须使用 layout animation，从当前视觉位置连续前移，不能瞬移；
 - 新 Snack 不能覆盖旧 Snack；
 - 超出可见容量的新项只允许作为短暂 pending 等待当前 FIFO 头完成退出；pending 不渲染、不占视觉位置，也不提前启动 lifetime；
 - 任意时刻同一 placement 最多渲染 3 条 Snack；
@@ -3609,17 +3614,26 @@ FIFO 容量溢出时最旧项的退出
 单条进入：
 
 ```text
-从 placement 对应屏幕边缘轻微位移
+从 FIFO 队尾的增长方向轻微进入
 + opacity 0 → 1
 ```
 
 单条退出：
 
 ```text
-向同一屏幕边缘轻微退出
+最旧项朝对应屏幕边缘轻微退出
 + opacity 1 → 0
 → transition 完成后移除
 ```
+
+因此：
+
+```text
+top-*    → 新项从下方进入；最旧项向上退出
+bottom-* → 新项从上方进入；最旧项向下退出
+```
+
+A 移除后的 B / C 使用 FLIP / layout animation 从旧位置平滑补位；快速连续变化时新布局从当前视觉值接管，不排动画队列。
 
 不使用 Button 式弹跳、depth、press/release，也不使用多卡重叠缩放。
 
