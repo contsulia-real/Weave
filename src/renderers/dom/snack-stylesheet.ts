@@ -34,6 +34,56 @@ const stylesheet = `
   transform: translateX(-50%);
 }
 
+:where(.weave-snack-region[data-weave-snack-folded])
+  > :where(.weave-snack):nth-last-child(n + 4) {
+  display: none;
+}
+
+:where(.weave-snack-region[data-weave-snack-folded])::after {
+  content: "+" attr(data-weave-snack-hidden-count);
+  position: absolute;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  padding-inline: 0.375rem;
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  border: 0.0625rem solid var(--weave-color-primary);
+  border-radius: 9999px;
+  background: var(--weave-color-primary);
+  color: var(--weave-color-onPrimary);
+  font-size: var(--weave-typography-style-body-xsmall-font-size);
+  font-weight: 600;
+  line-height: 1;
+  box-shadow: var(--weave-shadow-small);
+  pointer-events: none;
+  z-index: 4;
+}
+
+:where(.weave-snack-region[data-weave-snack-region^="bottom-"][data-weave-snack-folded])::after {
+  top: -0.625rem;
+  right: -0.625rem;
+}
+
+:where(.weave-snack-region[data-weave-snack-region^="top-"][data-weave-snack-folded])::after {
+  bottom: -0.625rem;
+  right: -0.625rem;
+}
+
+:where(.weave-snack-region[data-weave-snack-folded]:not(:hover):not(:focus-within)) {
+  gap: 0;
+}
+
+:where(.weave-snack-region[data-weave-snack-region^="bottom-"][data-weave-snack-folded]:not(:hover):not(:focus-within))
+  > :where(.weave-snack):nth-last-child(-n + 2) {
+  margin-top: -1.75rem;
+}
+
+:where(.weave-snack-region[data-weave-snack-region^="top-"][data-weave-snack-folded]:not(:hover):not(:focus-within))
+  > :where(.weave-snack):nth-last-child(-n + 2) {
+  margin-bottom: -1.75rem;
+}
+
 :where(.weave-snack) {
   --weave-component-display: flex;
   --weave-component-flex-direction: row;
@@ -49,12 +99,7 @@ const stylesheet = `
     calc(100vw - 2rem)
   );
 
-  --weave-component-background:
-    color-mix(
-      in srgb,
-      var(--weave-snack-accent) 7%,
-      var(--weave-snack-background)
-    );
+  --weave-component-background: var(--weave-snack-background);
   --weave-component-color: var(--weave-snack-color);
 
   --weave-component-border-top-width: var(--weave-snack-border-width);
@@ -62,30 +107,10 @@ const stylesheet = `
   --weave-component-border-bottom-width: var(--weave-snack-border-width);
   --weave-component-border-left-width: var(--weave-snack-border-width);
   --weave-component-border-style: solid;
-  --weave-component-border-top-color:
-    color-mix(
-      in srgb,
-      var(--weave-snack-accent) 28%,
-      var(--weave-snack-border-color)
-    );
-  --weave-component-border-right-color:
-    color-mix(
-      in srgb,
-      var(--weave-snack-accent) 28%,
-      var(--weave-snack-border-color)
-    );
-  --weave-component-border-bottom-color:
-    color-mix(
-      in srgb,
-      var(--weave-snack-accent) 28%,
-      var(--weave-snack-border-color)
-    );
-  --weave-component-border-left-color:
-    color-mix(
-      in srgb,
-      var(--weave-snack-accent) 28%,
-      var(--weave-snack-border-color)
-    );
+  --weave-component-border-top-color: var(--weave-snack-border-color);
+  --weave-component-border-right-color: var(--weave-snack-border-color);
+  --weave-component-border-bottom-color: var(--weave-snack-border-color);
+  --weave-component-border-left-color: var(--weave-snack-border-color);
 
   --weave-component-border-top-left-radius: var(--weave-snack-radius);
   --weave-component-border-top-right-radius: var(--weave-snack-radius);
@@ -97,15 +122,23 @@ const stylesheet = `
   --weave-component-padding-bottom: var(--weave-snack-padding-y);
   --weave-component-padding-left: var(--weave-snack-padding-x);
 
-  --weave-component-box-shadow: var(--weave-snack-shadow);
+  --weave-component-box-shadow:
+    0 0.125rem 0
+      color-mix(
+        in srgb,
+        var(--weave-snack-accent) 12%,
+        var(--weave-color-outline)
+      ),
+    var(--weave-snack-shadow);
   --weave-component-pointer-events: auto;
 
-  --weave-snack-motion-x: 0rem;
   --weave-snack-motion-y: 0rem;
 
   opacity: 1;
   translate: 0 0;
   scale: 1;
+  margin-top: 0;
+  margin-bottom: 0;
   will-change: opacity, translate, scale;
 
   transition:
@@ -114,44 +147,32 @@ const stylesheet = `
     translate var(--weave-motion-duration-normal)
       var(--weave-motion-curve-emphasized),
     scale var(--weave-motion-duration-normal)
+      var(--weave-motion-curve-emphasized),
+    margin var(--weave-motion-duration-normal)
       var(--weave-motion-curve-emphasized);
 }
 
-:where(.weave-snack[data-weave-snack-direction="up"]) {
+:where(.weave-snack[data-weave-snack-placement^="top-"]) {
   --weave-snack-motion-y:
     calc(-1 * var(--weave-snack-motion-offset));
 }
 
-:where(.weave-snack[data-weave-snack-direction="down"]) {
+:where(.weave-snack[data-weave-snack-placement^="bottom-"]) {
   --weave-snack-motion-y:
-    var(--weave-snack-motion-offset);
-}
-
-:where(.weave-snack[data-weave-snack-direction="left"]) {
-  --weave-snack-motion-x:
-    calc(-1 * var(--weave-snack-motion-offset));
-}
-
-:where(.weave-snack[data-weave-snack-direction="right"]) {
-  --weave-snack-motion-x:
     var(--weave-snack-motion-offset);
 }
 
 @starting-style {
   :where(.weave-snack[data-weave-snack-state="open"]) {
     opacity: 0;
-    translate:
-      var(--weave-snack-motion-x)
-      var(--weave-snack-motion-y);
+    translate: 0 var(--weave-snack-motion-y);
     scale: 0.985;
   }
 }
 
 :where(.weave-snack[data-weave-snack-state="closing"]) {
   opacity: 0;
-  translate:
-    var(--weave-snack-motion-x)
-    var(--weave-snack-motion-y);
+  translate: 0 var(--weave-snack-motion-y);
   scale: 0.99;
   transition:
     opacity var(--weave-motion-duration-fast)
@@ -192,8 +213,8 @@ const stylesheet = `
   --weave-component-background:
     color-mix(
       in srgb,
-      var(--weave-snack-accent) 14%,
-      transparent
+      var(--weave-snack-accent) 12%,
+      var(--weave-color-surface)
     );
   --weave-component-border-top-width: var(--weave-snack-border-width);
   --weave-component-border-right-width: var(--weave-snack-border-width);
@@ -201,13 +222,13 @@ const stylesheet = `
   --weave-component-border-left-width: var(--weave-snack-border-width);
   --weave-component-border-style: solid;
   --weave-component-border-top-color:
-    color-mix(in srgb, var(--weave-snack-accent) 26%, transparent);
+    color-mix(in srgb, var(--weave-snack-accent) 30%, var(--weave-color-outline));
   --weave-component-border-right-color:
-    color-mix(in srgb, var(--weave-snack-accent) 26%, transparent);
+    color-mix(in srgb, var(--weave-snack-accent) 30%, var(--weave-color-outline));
   --weave-component-border-bottom-color:
-    color-mix(in srgb, var(--weave-snack-accent) 26%, transparent);
+    color-mix(in srgb, var(--weave-snack-accent) 30%, var(--weave-color-outline));
   --weave-component-border-left-color:
-    color-mix(in srgb, var(--weave-snack-accent) 26%, transparent);
+    color-mix(in srgb, var(--weave-snack-accent) 30%, var(--weave-color-outline));
   --weave-component-border-top-left-radius: 9999px;
   --weave-component-border-top-right-radius: 9999px;
   --weave-component-border-bottom-right-radius: 9999px;
@@ -234,6 +255,8 @@ const stylesheet = `
     transition: none;
     translate: 0 0;
     scale: 1;
+    margin-top: 0;
+    margin-bottom: 0;
   }
 }
 `
