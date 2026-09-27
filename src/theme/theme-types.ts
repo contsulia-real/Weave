@@ -205,12 +205,28 @@ export interface ScrollbarTheme {
   >
 }
 
+export interface ToolTipThemeBase {
+  background?: string
+  color?: string
+  radius?: ThemeScaleValue
+  paddingX?: ThemeScaleValue
+  paddingY?: ThemeScaleValue
+  maxWidth?: ThemeScaleValue
+  shadow?: string
+  typo?: string
+}
+
+export interface ToolTipTheme {
+  base?: ToolTipThemeBase
+}
+
 export interface ThemeComponents {
   Button?: ButtonTheme
   Input?: InputTheme
   Switch?: SwitchTheme
   Progress?: ProgressTheme
   Scrollbar?: ScrollbarTheme
+  ToolTip?: ToolTipTheme
   readonly [name: string]: unknown
 }
 
