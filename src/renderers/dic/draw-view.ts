@@ -13,6 +13,7 @@ import type {
 import type { DiCViewTreeLayout } from './layout-tree'
 import { drawDiCText } from './draw-text'
 import { drawDiCImage } from './draw-image'
+import { drawDiCInput } from './draw-input'
 import { drawDiCProgress } from './draw-progress'
 import type { DiCImageResourceManager } from './image-resource'
 import { applyDiCTransform } from './transform'
@@ -868,6 +869,22 @@ export function drawDiCViewTree(
         reducedMotion:
           nodeOptions.reducedMotion ?? false,
         color: layout.typography?.color,
+      },
+    )
+  }
+
+  if (
+    layout.node.content?.kind === 'input' &&
+    layout.typography !== undefined
+  ) {
+    drawDiCInput(
+      context,
+      layout.node.content,
+      layout.contentFrame,
+      {
+        theme: nodeOptions.theme,
+        typography:
+          layout.typography,
       },
     )
   }
