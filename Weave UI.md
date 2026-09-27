@@ -5492,9 +5492,12 @@ Button depth 使用结构化零模糊 shadow 绘制为偏移后的同形色块�
 
 ```text
 loading Progress spinner 的 DiC visual
-任意 ReactNode children → DiC child tree 的 React renderer bridge
+Icon adapter，因此 icon Button 当前仍显式 unsupported
+Text rich inline / 任意非 Weave host child 的语义投影
 motion interpolation / spring animation
 ```
+
+Button 的普通 React children 已由 DiC custom reconciler 递归 materialize 为 child node tree；这不等于所有 ReactNode 类型都已经具有 DiC visual / semantic backend。
 
 ### Switch
 
@@ -5573,9 +5576,98 @@ Switch → onChange
 
 它们属于组件 adapter 内部，不替代公开 View event。
 
-当前 event bridge 已覆盖 click / pointer / keyboard / focus；React 组件默认切换到 DiC surface 不再被 SyntheticEvent payload 阻塞，但仍需完成 React child tree renderer、Tab / accessibility bridge 和剩余组件 adapter。
+当前 event bridge 已覆盖 click / pointer / keyboard / focus。React child tree 已有 custom reconciler，Tab / 基础 accessibility 已由 semantic mirror 接入浏览器原生 focus / ARIA；React 默认切换到 DiC surface 现在主要剩下公开入口 / fallback 策略、剩余组件 adapter 与尚未实现的 renderer 能力。
 
-## 27.12 组件结构
+## 27.12 React custom reconciler / React surface
+
+DiC 已建立 React custom renderer，而不是让 React DOM renderer 直接创建 `weave:*` DOM 元素。
+
+组件在 DiC renderer scope 中输出内部 host：
+
+```text
+View   → weave:view
+Text   → weave:text
+Image  → weave:image
+Button → weave:button
+Switch → weave:switch
+```
+
+这些 host 只由 `react-reconciler` 消费：
+
+```text
+React component tree
+→ DiCRendererScope
+→ custom reconciler host instances
+→ compileInstance()
+→ DiCViewNode tree
+```
+
+因此函数组件、Hooks、state、context、ThemeProvider 和 React reconciliation 仍由 React 自己负责；Weave 只实现 host renderer，不重做 React。
+
+当前 reconciler 支持：
+
+- create / update / remove host instance；
+- raw text instance；
+- React Fragment / function component / context / Hooks；
+- View / Text / Image / Button / Switch host；
+- Text primitive children；
+- Button 普通 Weave child tree；
+- host hide / unhide；
+- commit 后重新编译当前 DiC node tree；
+- 每个 host node 保存自己解析后的 theme，因此 nested ThemeProvider 可以跨 DiC tree 生效。
+
+当前明确 unsupported：
+
+```text
+Text rich inline host children
+Image / Switch host children
+raw text 作为整个 DiC React root
+未知非 Weave host element
+```
+
+这些情况必须显式失败。
+
+### React tree → Canvas surface
+
+内部 `createDiCReactSurface()` 已把 reconciler 与 `createDiCSurface()` 串成同一生命周期：
+
+```text
+React render
+→ reconciler commit
+→ DiC node root
+→ surface.update()
+→ measure / layout / draw
+→ semantic mirror
+```
+
+React 后续 render / state commit 会更新同一个 surface，不重新创建 Canvas backend。
+
+当前内部 React surface 规则：
+
+- 0 个 root node → 空 DiC root；
+- 1 个 root node → 直接作为 surface scene root；
+- 多个顶层 Weave node → 当前显式 unsupported；
+- surface theme 默认取 root node 的 resolved theme；
+- child node 自己的 theme 优先于继承 theme；
+- destroy 时先停止接收 reconciler commit，再 unmount React root，再销毁 surface。
+
+多顶层 sibling 当前不能被 renderer 私自包装成 column / stack 等布局，因为那会凭空创造用户没有声明的布局语义。
+
+### 当前仍未决定的公开入口
+
+`createDiCReactRoot()`、`createDiCReactSurface()`、`DiCRendererScope` 当前仍是 renderer internal，不从 package root 导出。
+
+设计目标仍是“DiC 默认主路径，不需要逐组件显式开启”，但公开 root mounting / capability fallback API 在正式冻结前不能通过临时内部函数泄漏出去。
+
+因此当前代码状态是：
+
+```text
+内部 React → DiC → Canvas 链路已闭环
+≠
+公开默认 mounting API 已冻结
+```
+
+## 27.13 组件结构
 
 ```text
 React
@@ -5693,4 +5785,10 @@ View
 75. semantic mirror 的辅助技术 click / keyboard activation 必须重新进入同一个 DiC interaction / component adapter 管线，不能直接旁路调用业务 callback。
 76. 非 primitive Button children / icon-only accessible name 不得由 renderer 猜测；在完整 child semantic projection 可用前必须由显式 label / labelledBy 提供。
 77. semantic mirror 完成不等于 Input / IME / live region / composite-widget accessibility 已完成；这些能力必须按真实 backend 状态分别声明。
-78. API 的目标是：AI 易写易读，同时人类易读。
+78. DiC React renderer 必须使用 React custom reconciler materialize 内部 host；不得让 React DOM renderer 把 `weave:*` host 当作真实 DOM 组件。
+79. React custom renderer 只负责 host backend；Hooks / state / context / reconciliation 继续由 React 负责，不得在 Weave 内重做第二套 React。
+80. 每个 DiC host node 必须保留自身 resolved theme；nested ThemeProvider 不得被 surface root theme 覆盖。
+81. 当前多顶层 DiC React node 必须显式失败；在正式定义 fragment root layout 语义前，不得私自包装成 column / row / stack。
+82. React reconciler commit 与 Canvas surface 必须共享同一持续生命周期；普通 state update 不得通过销毁并重建整个 surface 实现。
+83. React custom reconciler / surface / renderer scope 在公开 mounting API 冻结前保持 internal，不能提前从 package root 泄漏临时接口。
+84. API 的目标是：AI 易写易读，同时人类易读。
