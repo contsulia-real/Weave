@@ -459,6 +459,7 @@ export const defaultTheme: ResolvedTheme = {
         maxWidth: 22,
         shadow: 'medium',
         iconSize: 1.625,
+        progressHeight: 0.125,
         typo: 'body-medium',
         motionOffset: 0.5,
       },
