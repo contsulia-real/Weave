@@ -423,6 +423,18 @@ export const defaultTheme: ResolvedTheme = {
         },
       },
     },
+    ToolTip: {
+      base: {
+        background: '#292524',
+        color: '#fffdfa',
+        radius: 'small',
+        paddingX: 0.625,
+        paddingY: 0.375,
+        maxWidth: 20,
+        shadow: 'medium',
+        typo: 'label-small',
+      },
+    },
   },
   breakpoints: defaultBreakpoints,
   layers: {
