@@ -8,6 +8,7 @@ import {
 interface RegionEntry {
   element: HTMLDivElement
   count: number
+  releaseHostPosition(): void
 }
 
 interface SnackPosition {
@@ -15,10 +16,22 @@ interface SnackPosition {
   top: number
 }
 
+interface HostPositionEntry {
+  count: number
+  changedInlinePosition: boolean
+  previousInlinePosition: string
+}
+
 const regions =
   new WeakMap<
-    Document,
+    HTMLElement,
     Map<SnackPlacement, RegionEntry>
+  >()
+
+const hostPositions =
+  new WeakMap<
+    HTMLElement,
+    HostPositionEntry
   >()
 
 const capturedLayouts =
@@ -194,6 +207,91 @@ function animateCapturedLayout(
   }
 }
 
+function retainHostPosition(
+  host: HTMLElement,
+): () => void {
+  if (
+    host ===
+    host.ownerDocument.body
+  ) {
+    return () => {}
+  }
+
+  const existing =
+    hostPositions.get(host)
+
+  if (existing !== undefined) {
+    existing.count += 1
+
+    return () => {
+      existing.count -= 1
+
+      if (existing.count > 0) {
+        return
+      }
+
+      if (
+        existing.changedInlinePosition &&
+        host.style.position ===
+          'relative'
+      ) {
+        host.style.position =
+          existing.previousInlinePosition
+      }
+
+      hostPositions.delete(host)
+    }
+  }
+
+  const view =
+    host.ownerDocument.defaultView
+  const computedPosition =
+    view
+      ?.getComputedStyle(host)
+      .position ??
+    host.style.position
+
+  const previousInlinePosition =
+    host.style.position
+  const changedInlinePosition =
+    computedPosition === 'static' ||
+    computedPosition.length === 0
+
+  if (changedInlinePosition) {
+    host.style.position = 'relative'
+  }
+
+  const entry: HostPositionEntry = {
+    count: 1,
+    changedInlinePosition,
+    previousInlinePosition,
+  }
+
+  hostPositions.set(
+    host,
+    entry,
+  )
+
+  return () => {
+    entry.count -= 1
+
+    if (entry.count > 0) {
+      return
+    }
+
+    if (
+      entry.changedInlinePosition &&
+      host.style.position ===
+        'relative'
+    ) {
+      host.style.position =
+        entry.previousInlinePosition
+    }
+
+    hostPositions.delete(host)
+  }
+}
+
 export function captureSnackRegionLayout(
   element: HTMLDivElement,
 ): void {
@@ -295,22 +393,35 @@ function scheduleSync(
   })
 }
 
+export function getSnackRegion(
+  host: HTMLElement,
+  placement: SnackPlacement,
+): HTMLDivElement | null {
+  return (
+    regions
+      .get(host)
+      ?.get(placement)
+      ?.element ??
+    null
+  )
+}
+
 export interface SnackRegionHandle {
   element: HTMLDivElement
   release(): void
 }
 
 export function retainSnackRegion(
-  document: Document,
+  host: HTMLElement,
   placement: SnackPlacement,
 ): SnackRegionHandle {
   let byPlacement =
-    regions.get(document)
+    regions.get(host)
 
   if (byPlacement === undefined) {
     byPlacement = new Map()
     regions.set(
-      document,
+      host,
       byPlacement,
     )
   }
@@ -329,6 +440,7 @@ export function retainSnackRegion(
 
         if (existing.count <= 0) {
           existing.element.remove()
+          existing.releaseHostPosition()
           byPlacement?.delete(
             placement,
           )
@@ -343,17 +455,31 @@ export function retainSnackRegion(
   }
 
   const element =
-    document.createElement('div')
+    host.ownerDocument.createElement(
+      'div',
+    )
+  const scoped =
+    host !==
+    host.ownerDocument.body
 
   element.className =
     'weave-snack-region'
   element.dataset.weaveSnackRegion =
     placement
-  document.body.append(element)
+  element.dataset.weaveSnackScope =
+    scoped
+      ? 'container'
+      : 'viewport'
+
+  const releaseHostPosition =
+    retainHostPosition(host)
+
+  host.append(element)
 
   const entry: RegionEntry = {
     element,
     count: 1,
+    releaseHostPosition,
   }
 
   byPlacement.set(
@@ -370,6 +496,7 @@ export function retainSnackRegion(
 
       if (entry.count <= 0) {
         entry.element.remove()
+        entry.releaseHostPosition()
         byPlacement?.delete(
           placement,
         )
