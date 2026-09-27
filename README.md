@@ -24,7 +24,7 @@ Weave uses the browser-native [HTML-in-Canvas](https://wicg.github.io/html-in-ca
 
 If the browser does not expose HTML-in-Canvas, `createRoot(container)` falls back to ordinary DOM + CSS rendering. Pass `{ fallback: 'none' }` to make missing native support an explicit error.
 
-Applications do not create or manage the internal canvas.
+Applications do not create or manage the internal canvas. When the browser exposes the current transferable `ElementImage` and `OffscreenCanvas` path, Weave captures each native HTML snapshot on the document thread and performs the Canvas composition in a dedicated Worker. Only one frame may be in flight; newer snapshots replace stale queued snapshots instead of building a rendering backlog. Browsers without that path keep the compatible main-thread 2D renderer.
 
 ## HTML-in-Canvas status
 
