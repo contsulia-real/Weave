@@ -4,8 +4,7 @@
 > 状态：当前设计汇总  
 > 范围：仅 Web  
 > 宿主：React  
-> 主渲染路径：浏览器原生 HTML-in-Canvas（DiC）  
-> 兼容回退：DOM + CSS  
+> 渲染路径：React DOM + CSS  
 > 原则：本文件只整理当前已经形成的设计，不把已被否定的方案重新混入，不擅自缩减为概览版。
 
 ---
@@ -279,98 +278,26 @@ dragScale
 
 ---
 
-## 3. DOM-in-Canvas 与 DOM + CSS
+## 3. DOM + CSS 渲染架构
 
-### 3.1 DiC 指浏览器原生 HTML-in-Canvas
+### 3.1 单一渲染路径
 
-Weave 的主渲染路径使用 Web Platform 的 **HTML-in-Canvas** API。
-
-这里的 DiC 不是 Weave 自己实现一套 Canvas UI renderer，也不是：
+Weave 只维护一条渲染路径：
 
 ```text
 React / Weave 组件
-→ 自研布局树
-→ 自研文本测量
-→ 自研命中测试
-→ 自研可访问性镜像
-→ Canvas 2D 手工重绘控件
+→ 真实 HTML / DOM
+→ CSS
+→ 浏览器原生 layout / paint / compositing
 ```
 
-上述路线明确禁止。
+框架不提供第二套 Canvas renderer、custom renderer 或渲染 fallback。HTML / DOM / CSS 是组件视觉、布局与交互的唯一真值。
 
-正确结构是：
+### 3.2 React 直接渲染真实 DOM
 
-```text
-React
-  ↓
-真实 HTML / DOM
-  ↓
-浏览器原生 HTML / CSS layout、paint、事件、表单、可访问性
-  ↓
-<canvas layoutsubtree content="drawable">
-  ↓
-drawable HTML subtree
-  ↓
-CanvasRenderingContext2D.drawElementImage()
-```
+Weave 不提供 React custom renderer，不使用 `react-reconciler` 构造私有 host tree。
 
-也就是说，HTML 本身始终是真值。Canvas 直接消费浏览器已经完成的 HTML rendering snapshot，而不是由 Weave 重建 HTML 的视觉结果。
-
-### 3.2 使用当前 HTML-in-Canvas 原生原语
-
-当前主路径使用 WICG HTML-in-Canvas 提案中的原生能力：
-
-```text
-canvas layoutsubtree
-canvas content="drawable"
-drawable attribute
-paint event
-canvas.requestPaint()
-ctx.drawElementImage()
-```
-
-当前实验 API 存在版本迁移：Chromium 实现仍要求 Canvas 带 `layoutsubtree`，最新 WICG explainer 已改用 `content="drawable"`。Weave 在迁移期同时设置两者，不自行模拟任何 HTML-in-Canvas 能力。
-
-2D `drawElementImage()` 的当前规范会自动更新 drawable 元素的 Canvas geometry，因此浏览器可以继续使用同一批真实元素完成：
-
-```text
-hit testing
-pointer / keyboard event
-wheel / scrolling
-focus
-form controls
-text selection
-IME
-accessibility geometry
-```
-
-HTML-in-Canvas 仍处于实验 API 迁移期。Weave 必须兼容 Chromium 已出现过的 geometry 注册方式：
-
-```text
-新接口
-→ drawElementImage() 自动更新 geometry
-→ 不再额外覆盖浏览器计算出的 transform
-
-过渡接口
-→ drawElementImage() 返回 DOMMatrix
-→ 若存在 updateElementGeometry()，用返回矩阵登记 geometry
-→ 否则 setCanvasTransform(matrix)
-
-更早实验接口
-→ 返回的 DOMMatrix 作为元素 CSS transform
-```
-
-这里的兼容层只负责把浏览器提供的绘制几何重新登记给浏览器自身的 hit testing；不得把 pointer / click / wheel / focus 重新实现成 JavaScript 事件转发系统。
-
-Canvas backing store 的尺寸变化会清空当前 bitmap。Weave 在实时 resize 时必须先保留上一帧，并在修改 backing size 后于同一任务内立即恢复该帧，再请求下一次原生 `paint` 更新到新的 HTML snapshot；不得让透明的中间帧暴露给用户造成闪烁。
-
-Weave 不允许为这些能力平行维护第二套 JavaScript 实现。
-
-### 3.3 React 仍然只渲染真实 DOM
-
-Weave 不提供 React custom renderer，不使用 `react-reconciler` 构造私有 Canvas host tree。
-
-组件仍然正常产生真实 DOM：
+组件正常产生真实 DOM：
 
 ```text
 View     → div
@@ -383,102 +310,40 @@ Button   → button
 
 因此：
 
-- CSS layout 由浏览器负责；
+- CSS layout 与 compositing 由浏览器负责；
 - 文本 shaping、换行、双向文字、字体与 emoji 由浏览器负责；
 - Input / textarea、selection、clipboard、IME 由浏览器负责；
-- DOM event 与 focus 由浏览器负责；
+- DOM event、pointer、keyboard 与 focus 由浏览器负责；
+- scrolling 与原生控件行为由浏览器负责；
 - ARIA / accessibility tree 由真实 DOM 负责。
 
-Canvas 只改变这些真实 HTML 最终如何被合成 / 绘制。
+### 3.3 `createRoot` 直接创建 React DOM root
 
-### 3.4 DiC 不需要业务显式开启
-
-开发者正常使用：
+公开入口：
 
 ```tsx
-<View
-  blur={1}
-  radius="large"
-  shadow="medium"
-  transition="fast"
-/>
+const root = createRoot(container)
+root.render(<App />)
 ```
 
-公开 `createRoot(container)` 在浏览器支持 HTML-in-Canvas 时自动建立内部：
+内部直接使用 `react-dom/client.createRoot(container)`。业务不需要选择 renderer，也没有 feature detect、renderer fallback 或渲染模式切换。
 
-```text
-canvas
-└─ drawable DOM root
-   └─ React / Weave DOM tree
-```
+### 3.4 禁止重新实现浏览器
 
-业务不创建 Canvas，也不需要为普通组件选择 renderer。
-
-### 3.5 DOM + CSS fallback
-
-HTML-in-Canvas 当前仍是实验性 Web Platform API，因此必须运行时 feature detect。
-
-默认规则：
-
-```text
-支持 HTML-in-Canvas
-→ 使用原生 HTML-in-Canvas
-
-不支持
-→ 整棵 root 使用普通 DOM + CSS
-```
-
-fallback 不是另一套组件实现。两条路径使用同一套 React 组件、真实 DOM、CSS 和浏览器语义；区别只是支持时额外把同一 DOM subtree 原生绘制进 Canvas。
-
-因此普通组件 API 必须保持：
-
-```text
-同组件
-同 props
-同 DOM 语义
-同 CSS
-同状态
-同布局
-同动画
-同事件
-同可访问性
-```
-
-### 3.6 禁止重新实现浏览器
-
-以下内容不得为了 DiC 再造一套：
+以下内容不得在 Weave 中另造一套平行实现：
 
 - View tree layout engine；
 - flex / grid / absolute 布局器；
 - 文本测量、换行、ellipsis、shaping；
 - Image intrinsic layout；
-- Canvas hit-test tree；
 - pointer / keyboard event bubbling 系统；
 - focus / Tab 系统；
 - ARIA semantic mirror；
 - Input editor / IME / selection bridge；
 - React custom reconciler；
-- 为组件手工 Canvas 复刻视觉的 parallel backend。
+- 为组件手工复刻浏览器已经提供的 HTML / CSS 行为。
 
-如果浏览器 HTML-in-Canvas 当前无法表达某项真正的 Canvas 合成需求，应把它作为原生 API 能力边界处理，而不是用一套私有 UI 引擎绕过。
-
-### 3.7 高级 Canvas 能力
-
-显式 Canvas 配置只用于真正属于绘制 / 合成层的高级能力，例如：
-
-```text
-shader
-uniforms
-renderPass
-custom composition
-WebGL / WebGPU texture integration
-```
-
-判断边界：
-
-> 如果一个能力描述“组件应该长什么样、如何布局、如何输入、如何访问”，它属于 HTML / CSS / DOM。  
-> 只有描述“浏览器已经渲染好的 HTML 应如何进入 Canvas 或后续 GPU 合成”时，才属于 Canvas 层。
-
+若某项能力可以由标准 HTML / CSS / DOM 表达，应优先使用浏览器原生能力，而不是建立第二套渲染语义。
 ---
 
 ## 4. 数值与单位规则
@@ -1067,7 +932,7 @@ data-foo
 
 `View` 直接使用；非 `View` 组件通过 `viewProps` 使用。
 
-DiC 与 DOM fallback 都必须实现同样公开语义。
+DOM + CSS 是唯一实现路径，所有公开语义都由这一路径实现。
 
 ## 7.1 Background
 
@@ -1598,7 +1463,7 @@ createTheme({
 />
 ```
 
-`View`、所有组件的 `viewProps`、以及支持高层响应式语义的组件（当前包括 `Text`）都读取当前 ThemeProvider 的有效 breakpoint 集合。DOM fallback 不再把 `sm / md / lg / xl` 的媒体查询写死在静态 stylesheet 中，而是根据当前主题生成对应的低 specificity breakpoint class。
+`View`、所有组件的 `viewProps`、以及支持高层响应式语义的组件（当前包括 `Text`）都读取当前 ThemeProvider 的有效 breakpoint 集合。DOM 实现不把 `sm / md / lg / xl` 的媒体查询写死在静态 stylesheet 中，而是根据当前主题生成对应的低 specificity breakpoint class。
 
 嵌套 ThemeProvider 可以具有不同 breakpoint 配置；生成的响应式规则只作用于带有对应 breakpoint class 的组件实例，不污染外层或相邻主题作用域。
 
@@ -1921,7 +1786,7 @@ Playground 的普通说明文字使用 `body-medium`；`body-small` 仅保留给
 </Text>
 ```
 
-DOM fallback 将 `level` 映射到 `aria-level`。
+DOM 实现将 `level` 映射到 `aria-level`。
 
 ### size
 
@@ -2392,7 +2257,7 @@ url
 
 不额外建立 `TextArea` 基础组件。
 
-DOM fallback 下仍然使用真实 `<textarea>`，保留浏览器原生文本编辑、选择、输入法与 `scrollTop / scrollLeft` 行为。
+DOM 下仍然使用真实 `<textarea>`，保留浏览器原生文本编辑、选择、输入法与 `scrollTop / scrollLeft` 行为。
 
 当 textarea 内容溢出时，原生滚动条视觉隐藏，并自动挂载与普通可滚动 View 相同的 Weave `Scrollbar`。因此 multiline Input 不再显示浏览器默认 scrollbar。
 
@@ -2825,7 +2690,7 @@ Scrollbar 不再提供可见 track / rail。透明 HitRegion 只负责命中、�
 
 Scrollbar 的默认视觉刻意与 Switch / Progress 区分：它没有可见轨道，也没有凸起阴影，只保留平面的 thumb。hover / drag 仍可改变颜色和横截面尺度，但不会通过 shadow 模拟抬起。
 
-圆角宿主必须为角落保留安全区。右侧 Scrollbar 的运动区从 top-right 圆角结束处开始，到 bottom-right 圆角开始处结束；底部 Scrollbar 同理只占用 bottom-left 与 bottom-right 之间的直线段。DOM fallback 根据宿主最终计算得到的四角半径和边框动态求出这个直线区域；圆角越大，可用滚动条长度越短。
+圆角宿主必须为角落保留安全区。右侧 Scrollbar 的运动区从 top-right 圆角结束处开始，到 bottom-right 圆角开始处结束；底部 Scrollbar 同理只占用 bottom-left 与 bottom-right 之间的直线段。DOM 实现根据宿主最终计算得到的四角半径和边框动态求出这个直线区域；圆角越大，可用滚动条长度越短。
 
 局部定制挂在滚动容器上：
 
@@ -2869,9 +2734,9 @@ thumbPosition
 visibilityAlgorithm
 ```
 
-### 17.5 DOM fallback 实现约束
+### 17.5 DOM 实现约束
 
-DOM fallback 下：
+DOM 实现中：
 
 - 原 `View` 仍然是真实原生滚动容器，不额外包裹内容，不改变 flex / grid 子项结构。
 - multiline `Input` 的真实 `textarea` 同样可以直接作为 Scrollbar target，不需要外包一层伪滚动容器。
@@ -2901,9 +2766,9 @@ Button
 + 可选 Icon
 ```
 
-DOM fallback 使用真实 `<button type="button">`，不使用 `div role="button"`。
+DOM 使用真实 `<button type="button">`，不使用 `div role="button"`。
 
-loading 状态不单独实现另一套 spinner。Button 与公开 `Progress` 复用同一个 Progress 视觉内核；公开 `Progress` 负责 `progressbar` 语义，而 Button loading 只复用其不确定 spin 视觉，并将该视觉节点设为 `aria-hidden`。Button 自身通过 `busy` / `aria-busy` 表达加载状态，因此不会在 Button 内重复暴露一个独立 `progressbar` 语义。Progress 的 DOM fallback 视觉宿主使用合法的内联结构，使该视觉内核可以安全用于 Button 内容模型。
+loading 状态不单独实现另一套 spinner。Button 与公开 `Progress` 复用同一个 Progress 视觉内核；公开 `Progress` 负责 `progressbar` 语义，而 Button loading 只复用其不确定 spin 视觉，并将该视觉节点设为 `aria-hidden`。Button 自身通过 `busy` / `aria-busy` 表达加载状态，因此不会在 Button 内重复暴露一个独立 `progressbar` 语义。Progress 的 DOM 视觉宿主使用合法的内联结构，使该视觉内核可以安全用于 Button 内容模型。
 
 ## 18.1 快捷语义 API
 
@@ -4868,9 +4733,9 @@ View
 └─ ViewProps 中的 style / className 逃生口
     │
     ▼
-主路径：浏览器原生 HTML-in-Canvas
+单一渲染路径：React DOM + CSS
     │
-    └── 不支持时 fallback：普通 DOM + CSS
+    └── 浏览器原生 layout / paint / compositing
 ```
 
 ---
@@ -4897,10 +4762,10 @@ View
 16. 组件公开 `size` 只接受该组件定义的语义尺寸值，不接受数字。
 17. 样式最终优先级为 `style > className > 属性体系`。
 18. 通用布局、视觉、状态样式、响应式、动画与通用事件能力属于 `ViewProps`；具体组件可以提供自身更自然的高层语义属性。
-19. DiC 默认使用浏览器原生 HTML-in-Canvas，不得自研 Canvas UI renderer。
-20. HTML-in-Canvas 与 DOM fallback 必须使用同一套真实 DOM / CSS / 浏览器语义；fallback 不能维护第二套组件实现。
-21. 布局、文本、表单、事件、焦点与可访问性必须继续由浏览器 HTML / CSS / DOM 负责，禁止在 Canvas 侧重复实现。
-22. 显式 `canvas` 只用于真正的高级 HTML-in-Canvas 绘制 / GPU 合成控制。
+19. DOM + CSS 是唯一渲染路径，不维护第二套组件 renderer。
+20. 组件视觉、布局、状态与交互必须以真实 DOM / CSS / 浏览器语义为唯一真值。
+21. 布局、文本、表单、事件、焦点、滚动与可访问性必须继续由浏览器 HTML / CSS / DOM 负责，禁止平行重复实现。
+22. 框架自身不提供 Canvas UI 渲染后端；业务自行使用普通 Web `<canvas>` 不改变 Weave 的 DOM 渲染模型。
 23. Scrollbar 是由 `View` 构建的基础组件，不是伪元素样式。
 24. Scrollbar 由框架自动插入，不要求开发者显式使用。
 25. `selectable` 是 `ViewProps` 通用能力，不是 Text 专属。
