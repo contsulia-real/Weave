@@ -145,7 +145,6 @@ export type {
 
 export type {
   SnackController,
-  SnackDirection,
   SnackIcon,
   SnackPlacement,
   SnackProps,
