@@ -10,7 +10,6 @@ import {
 } from '@tabler/icons-react'
 import {
   List,
-  ListItem,
   Switch,
   Text,
   View,
@@ -34,12 +33,6 @@ export function ListPlayground() {
   >([
     'alerts',
   ])
-  const [
-    horizontal,
-    setHorizontal,
-  ] = useState<string | null>(
-    'one',
-  )
   const [
     wifi,
     setWifi,
@@ -213,34 +206,6 @@ export function ListPlayground() {
                 : multiple.join(', ')
             }
           </Text>
-        </View>
-
-        <View
-          layout="flex"
-          direction="column"
-          gap={0.5}
-        >
-          <Text typo="label-medium">
-            Composed · horizontal
-          </Text>
-
-          <List
-            orientation="horizontal"
-            selection="single"
-            selected={horizontal}
-            onSelect={setHorizontal}
-            gap={0.5}
-          >
-            <ListItem id="one">
-              <Text>One</Text>
-            </ListItem>
-            <ListItem id="two">
-              <Text>Two</Text>
-            </ListItem>
-            <ListItem id="three">
-              <Text>Three</Text>
-            </ListItem>
-          </List>
         </View>
 
         <View
