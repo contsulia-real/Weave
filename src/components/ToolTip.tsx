@@ -474,16 +474,28 @@ export function ToolTip({
         true,
       )
 
-      if (
-        previousDescription === null
-      ) {
+      const currentDescription =
+        target.getAttribute(
+          'aria-describedby',
+        )
+      const remainingIds =
+        currentDescription
+          ?.split(/\s+/)
+          .filter(
+            (id) =>
+              id.length > 0 &&
+              id !== tooltipId,
+          ) ??
+        []
+
+      if (remainingIds.length === 0) {
         target.removeAttribute(
           'aria-describedby',
         )
       } else {
         target.setAttribute(
           'aria-describedby',
-          previousDescription,
+          remainingIds.join(' '),
         )
       }
     }
