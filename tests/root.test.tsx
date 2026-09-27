@@ -28,11 +28,19 @@ describe('public Weave root', () => {
   let drawElementImage:
     | ReturnType<typeof vi.fn>
     | undefined
+  let updateElementGeometry:
+    | ReturnType<typeof vi.fn>
+    | undefined
+  let clearElementGeometry:
+    | ReturnType<typeof vi.fn>
+    | undefined
 
   beforeEach(() => {
     requestPaint = vi.fn()
     reset = vi.fn()
     drawElementImage = vi.fn()
+    updateElementGeometry = vi.fn()
+    clearElementGeometry = vi.fn()
 
     Object.defineProperty(
       HTMLCanvasElement.prototype,
@@ -40,6 +48,24 @@ describe('public Weave root', () => {
       {
         configurable: true,
         value: requestPaint,
+      },
+    )
+
+    Object.defineProperty(
+      HTMLCanvasElement.prototype,
+      'updateElementGeometry',
+      {
+        configurable: true,
+        value: updateElementGeometry,
+      },
+    )
+
+    Object.defineProperty(
+      HTMLCanvasElement.prototype,
+      'clearElementGeometry',
+      {
+        configurable: true,
+        value: clearElementGeometry,
       },
     )
 
@@ -66,8 +92,40 @@ describe('public Weave root', () => {
       HTMLCanvasElement.prototype as
         HTMLCanvasElement & {
           requestPaint?: () => void
+          updateElementGeometry?: (
+            element: Element,
+            options?: unknown,
+          ) => void
+          clearElementGeometry?: (
+            element: Element,
+          ) => void
         }
     ).requestPaint
+    delete (
+      HTMLCanvasElement.prototype as
+        HTMLCanvasElement & {
+          updateElementGeometry?: (
+            element: Element,
+            options?: unknown,
+          ) => void
+        }
+    ).updateElementGeometry
+    delete (
+      HTMLCanvasElement.prototype as
+        HTMLCanvasElement & {
+          clearElementGeometry?: (
+            element: Element,
+          ) => void
+        }
+    ).clearElementGeometry
+    delete (
+      HTMLElement.prototype as
+        HTMLElement & {
+          setCanvasTransform?: (
+            matrix?: DOMMatrixInit,
+          ) => void
+        }
+    ).setCanvasTransform
     document.body.innerHTML = ''
   })
 
@@ -136,11 +194,98 @@ describe('public Weave root', () => {
       0,
       0,
     )
+    expect(
+      updateElementGeometry,
+    ).toHaveBeenCalledWith(
+      host,
+      {
+        preserveHitTestOrder: true,
+        canvasTransform: {
+          a: 1,
+          b: 0,
+          c: 0,
+          d: 1,
+          e: 0,
+          f: 0,
+        },
+      },
+    )
 
     root.unmount()
     expect(
+      clearElementGeometry,
+    ).toHaveBeenCalledWith(
+      host,
+    )
+    expect(
       container.childNodes,
     ).toHaveLength(0)
+  })
+
+  it('registers the legacy draw matrix for hit testing', async () => {
+    delete (
+      HTMLCanvasElement.prototype as
+        HTMLCanvasElement & {
+          updateElementGeometry?: (
+            element: Element,
+            options?: unknown,
+          ) => void
+        }
+    ).updateElementGeometry
+
+    const matrix = {
+      toString: () =>
+        'matrix(1, 0, 0, 1, 0, 0)',
+    } as unknown as DOMMatrix
+    const setCanvasTransform =
+      vi.fn()
+
+    Object.defineProperty(
+      HTMLElement.prototype,
+      'setCanvasTransform',
+      {
+        configurable: true,
+        value: setCanvasTransform,
+      },
+    )
+
+    drawElementImage?.mockReturnValue(
+      matrix,
+    )
+
+    const container =
+      document.createElement('div')
+    document.body.appendChild(
+      container,
+    )
+
+    const root =
+      createRoot(container)
+
+    await act(async () => {
+      root.render(
+        <View>
+          <Text>Interactive</Text>
+        </View>,
+      )
+    })
+
+    const canvas =
+      container.querySelector(
+        'canvas[data-weave-root-canvas]',
+      )
+
+    canvas?.dispatchEvent(
+      new Event('paint'),
+    )
+
+    expect(
+      setCanvasTransform,
+    ).toHaveBeenCalledWith(
+      matrix,
+    )
+
+    root.unmount()
   })
 
   it('falls back to ordinary DOM when HTML-in-Canvas is unavailable', async () => {
