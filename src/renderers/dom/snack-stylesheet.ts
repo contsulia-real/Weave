@@ -1,21 +1,13 @@
 const stylesheet = `
 :where(.weave-snack-region) {
-  --weave-snack-available-width:
-    calc(100vw - 2rem);
-
   position: fixed;
   display: flex;
   gap: 0.5rem;
-  max-width:
-    var(--weave-snack-available-width);
   pointer-events: none;
   z-index: var(--weave-layer-snack);
 }
 
 :where(.weave-snack-region[data-weave-snack-scope="container"]) {
-  --weave-snack-available-width:
-    calc(100% - 2rem);
-
   position: absolute;
 }
 
@@ -50,15 +42,6 @@ const stylesheet = `
   --weave-component-flex-direction: row;
   --weave-component-align-items: center;
   --weave-component-gap: var(--weave-snack-gap);
-
-  --weave-component-min-width: min(
-    var(--weave-snack-min-width),
-    var(--weave-snack-available-width)
-  );
-  --weave-component-max-width: min(
-    var(--weave-snack-max-width),
-    var(--weave-snack-available-width)
-  );
 
   --weave-component-background: var(--weave-snack-background);
   --weave-component-color: var(--weave-snack-color);
