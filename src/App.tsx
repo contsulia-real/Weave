@@ -17,13 +17,15 @@ import {
   Image,
   Input,
   Progress,
-  Snack,
   Switch,
   Text,
   ThemeProvider,
   ToolTip,
   View,
   createTheme,
+  useSnack,
+  type SnackDirection,
+  type SnackPlacement,
 } from './index'
 
 const diagnosticImage =
@@ -64,6 +66,22 @@ const diagnosticTheme = createTheme({
   },
 })
 
+const snackPlacements: readonly SnackPlacement[] = [
+  'top-left',
+  'top-center',
+  'top-right',
+  'bottom-left',
+  'bottom-center',
+  'bottom-right',
+]
+
+const snackDirections: readonly SnackDirection[] = [
+  'up',
+  'down',
+  'left',
+  'right',
+]
+
 
 function DemoBox({ label }: { label: string }) {
   return (
@@ -78,10 +96,16 @@ function DemoBox({ label }: { label: string }) {
 }
 
 function App() {
+  const snack = useSnack()
   const [progressHigh, setProgressHigh] = useState(false)
-  const [showSavedSnack, setShowSavedSnack] = useState(false)
-  const [showWarningSnack, setShowWarningSnack] = useState(false)
-  const [showActionSnack, setShowActionSnack] = useState(false)
+  const [
+    snackPlacement,
+    setSnackPlacement,
+  ] = useState<SnackPlacement>('bottom-right')
+  const [
+    snackDirection,
+    setSnackDirection,
+  ] = useState<SnackDirection>('down')
   const progress = progressHigh ? 0.82 : 0.28
 
   return (
@@ -533,64 +557,146 @@ function App() {
             Snack
           </Text>
           <Text typo="body-medium" color="secondary">
-            点击后进入 bottom-right 共享区域；连续打开多个实例会自动堆叠，hover / focus 会暂停自动关闭。
+            每次点击都会创建新的 Snack 实例。placement 控制出现位置，direction 独立控制进入 / 退出方向；同一位置的多个实例自动堆叠。
           </Text>
+
+          <View layout="flex" direction="column" gap={0.5}>
+            <Text typo="label-small" color="secondary">
+              Placement
+            </Text>
+            <View layout="flex" direction="row" gap={0.5} wrap>
+              {snackPlacements.map((placement) => (
+                <Button
+                  key={placement}
+                  text={placement}
+                  size="small"
+                  variant={
+                    snackPlacement === placement
+                      ? 'primary'
+                      : 'secondary'
+                  }
+                  viewProps={{
+                    onClick: () => {
+                      setSnackPlacement(placement)
+                    },
+                  }}
+                />
+              ))}
+            </View>
+          </View>
+
+          <View layout="flex" direction="column" gap={0.5}>
+            <Text typo="label-small" color="secondary">
+              Direction
+            </Text>
+            <View layout="flex" direction="row" gap={0.5} wrap>
+              {snackDirections.map((direction) => (
+                <Button
+                  key={direction}
+                  text={direction}
+                  size="small"
+                  variant={
+                    snackDirection === direction
+                      ? 'primary'
+                      : 'secondary'
+                  }
+                  viewProps={{
+                    onClick: () => {
+                      setSnackDirection(direction)
+                    },
+                  }}
+                />
+              ))}
+            </View>
+          </View>
 
           <View layout="flex" direction="row" gap={0.75} wrap>
             <Button
               text="Success snack"
               variant="secondary"
               viewProps={{
-                onClick: () => setShowSavedSnack(true),
+                onClick: () => {
+                  snack.show({
+                    text: 'Changes saved',
+                    icon: IconCheck,
+                    variant: 'success',
+                    placement: snackPlacement,
+                    direction: snackDirection,
+                    duration: 3200,
+                  })
+                },
               }}
             />
+
             <Button
               text="Warning snack"
               variant="secondary"
               viewProps={{
-                onClick: () => setShowWarningSnack(true),
+                onClick: () => {
+                  snack.show({
+                    text: 'Connection is unstable',
+                    icon: IconAlertTriangle,
+                    variant: 'warning',
+                    placement: snackPlacement,
+                    direction: snackDirection,
+                    duration: 4200,
+                  })
+                },
               }}
             />
+
             <Button
               text="Action snack"
               variant="secondary"
               viewProps={{
-                onClick: () => setShowActionSnack(true),
+                onClick: () => {
+                  snack.show({
+                    text: 'File deleted',
+                    icon: IconTrash,
+                    variant: 'danger',
+                    action: 'Undo',
+                    onAction: () => {},
+                    placement: snackPlacement,
+                    direction: snackDirection,
+                    duration: 5000,
+                  })
+                },
+              }}
+            />
+
+            <Button
+              text="Stack ×3"
+              variant="secondary"
+              viewProps={{
+                onClick: () => {
+                  snack.show({
+                    text: 'First notification',
+                    icon: IconCheck,
+                    variant: 'success',
+                    placement: snackPlacement,
+                    direction: snackDirection,
+                    duration: 5000,
+                  })
+                  snack.show({
+                    text: 'Second notification',
+                    icon: IconBell,
+                    variant: 'info',
+                    placement: snackPlacement,
+                    direction: snackDirection,
+                    duration: 5000,
+                  })
+                  snack.show({
+                    text: 'Third notification',
+                    icon: IconAlertTriangle,
+                    variant: 'warning',
+                    placement: snackPlacement,
+                    direction: snackDirection,
+                    duration: 5000,
+                  })
+                },
               }}
             />
           </View>
-
-          <Snack
-            text="Changes saved"
-            icon={IconCheck}
-            variant="success"
-            placement="bottom-right"
-            duration={3200}
-            open={showSavedSnack}
-            onOpenChange={setShowSavedSnack}
-          />
-
-          <Snack
-            text="Connection is unstable"
-            icon={IconAlertTriangle}
-            variant="warning"
-            placement="bottom-right"
-            duration={4200}
-            open={showWarningSnack}
-            onOpenChange={setShowWarningSnack}
-          />
-
-          <Snack
-            text="File deleted"
-            icon={IconTrash}
-            variant="danger"
-            action="Undo"
-            onAction={() => {}}
-            placement="bottom-right"
-            duration={5000}
-            open={showActionSnack}
-            onOpenChange={setShowActionSnack}
-          />
         </View>
 
         <View layout="flex" direction="column" gap={0.75}>
