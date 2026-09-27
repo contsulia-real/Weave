@@ -257,6 +257,11 @@ export interface SnackTheme {
 }
 
 export interface ListThemeBase {
+  background?: string
+  borderColor?: string
+  borderWidth?: ThemeScaleValue
+  radius?: ThemeScaleValue
+  padding?: ThemeScaleValue
   gap?: ThemeScaleValue
 }
 

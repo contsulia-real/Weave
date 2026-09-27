@@ -587,6 +587,11 @@ describe('List', () => {
         components: {
           List: {
             base: {
+              background: 'surface',
+              borderColor: 'outline',
+              borderWidth: 0.125,
+              radius: 'large',
+              padding: 0.5,
               gap: 1,
             },
           },
@@ -630,12 +635,25 @@ describe('List', () => {
     const option =
       getByRole('option')
 
-    expect(
+    const listRule =
       runtimeRule(
         list,
         'weave-list-theme-',
-      ),
-    ).toContain(
+      )
+
+    expect(listRule).toContain(
+      '--weave-list-background:var(--weave-color-surface,surface)',
+    )
+    expect(listRule).toContain(
+      '--weave-list-border-width:0.125rem',
+    )
+    expect(listRule).toContain(
+      '--weave-list-radius:var(--weave-radius-large)',
+    )
+    expect(listRule).toContain(
+      '--weave-list-padding:0.5rem',
+    )
+    expect(listRule).toContain(
       '--weave-list-gap:1rem',
     )
 

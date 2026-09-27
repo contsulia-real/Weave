@@ -481,7 +481,12 @@ export const defaultTheme: ResolvedTheme = {
     },
     List: {
       base: {
-        gap: 0.25,
+        background: 'surface',
+        borderColor: 'outline',
+        borderWidth: 0.0625,
+        radius: 'medium',
+        padding: 0.25,
+        gap: 0.125,
       },
     },
     ListItem: {
@@ -489,19 +494,19 @@ export const defaultTheme: ResolvedTheme = {
         background: 'transparent',
         hoverBackground: 'surfaceHover',
         activeBackground:
-          'color-mix(in srgb, var(--weave-color-outline) 52%, var(--weave-color-surface))',
+          'color-mix(in srgb, var(--weave-color-outline) 44%, var(--weave-color-surface))',
         selectedBackground:
-          'color-mix(in srgb, var(--weave-color-primary) 10%, var(--weave-color-surface))',
+          'color-mix(in srgb, var(--weave-color-primary) 8%, var(--weave-color-surface))',
         selectedHoverBackground:
-          'color-mix(in srgb, var(--weave-color-primary) 15%, var(--weave-color-surface))',
+          'color-mix(in srgb, var(--weave-color-primary) 12%, var(--weave-color-surface))',
         color: 'tertiary',
         secondaryColor: 'secondary',
         selectedColor: 'tertiary',
-        radius: 'medium',
-        paddingX: 0.875,
-        paddingY: 0.625,
-        gap: 0.75,
-        iconSize: 1.25,
+        radius: 'small',
+        paddingX: 0.75,
+        paddingY: 0.5625,
+        gap: 0.625,
+        iconSize: 1.125,
         primaryTypo: 'body-medium',
         secondaryTypo: 'body-small',
         focusOutlineWidth: 0.125,
