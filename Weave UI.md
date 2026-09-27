@@ -5041,7 +5041,7 @@ host measure
 - destroy 必须断开 ResizeObserver / window listener，并取消未执行的 frame；
 - surface 当前仍是 renderer 内部能力，不增加新的公开组件 API。
 
-当前尚未完成的是 Input 等剩余组件级 DiC adapter、完整键盘 Tab 导航与可访问性 semantic bridge、double-click / scroll / wheel / drag-drop 等后续事件 backend、完整 grid / wrap / advanced flex、Image 的 DiC lazy-loading / load-event bridge，以及 React View 默认切换到 DiC surface。这些能力继续在同一 View tree contract 上扩展。
+当前尚未完成的是 Input 等剩余组件级 DiC adapter、Input/IME/selection 等编辑桥、复杂 composite widget 的专用键盘语义、live region 等动态辅助技术能力、double-click / scroll / wheel / drag-drop 等后续事件 backend、完整 grid / wrap / advanced flex、Image 的 DiC lazy-loading / load-event bridge、任意 React child tree 到 DiC tree 的 renderer bridge，以及 React View 默认切换到 DiC surface。这些能力继续在同一 View tree contract 上扩展。
 
 ## 27.7 DiC Text
 
@@ -5300,16 +5300,144 @@ native PointerEvent / KeyboardEvent
 ```text
 Input 等剩余组件的 DiC semantic interaction adapter
 double-click / scroll / wheel / drag-drop event backend
-完整 Tab / Shift+Tab 虚拟焦点遍历
-ARIA / accessibility semantic mirror
 Input 文本编辑 / IME / selection bridge
+复杂 composite widget 的专用键盘导航
+live region / announcement bridge
 wheel / scroll interaction backend
 drag-and-drop semantic backend
 ```
 
 generic View 的 `disabled` 当前与 DOM 的 `aria-disabled` 语义一致：它激活 disabled state，但不会全局吞掉事件。真正的 Button / Switch / Input disabled 行为必须由对应组件 adapter 承担。
 
-## 27.10 DiC Button / Switch semantic adapters
+## 27.10 DiC semantic mirror / native Tab
+
+DiC surface 现在维护一棵内部、不可见但真实存在于浏览器 accessibility tree 中的 DOM semantic mirror。
+
+它不承担任何视觉渲染，也不参与 Weave layout：
+
+```text
+DiC View tree
+├─ Canvas paint / hit testing
+└─ semantic mirror DOM
+   ├─ role / aria-*
+   ├─ text content
+   ├─ Image alt
+   └─ native browser focus order
+```
+
+mirror 的容器：
+
+- 视觉上裁掉；
+- `pointer-events: none`；
+- 不接管 Canvas pointer；
+- 只负责浏览器 focus、Tab、辅助技术语义和辅助技术 activation。
+
+ARIA 属性由 DOM fallback 与 semantic mirror 共用同一个 Web semantic compiler：
+
+```text
+ResolvedView.semantics
+→ compileWebSemanticAttributes()
+├─ normal DOM View
+└─ DiC semantic mirror
+```
+
+因此 role / label / checked / disabled / pressed / value / labelledBy / describedBy / controls / owns 等不能由两条 renderer 分别解释。
+
+### Tab / focus
+
+DiC 不手写 Tab 排序算法。
+
+每个可聚焦 DiC node 在 mirror 中获得真实 `tabIndex`：
+
+```text
+focusable + 无显式 tabIndex
+→ tabIndex = 0
+
+显式 tabIndex
+→ 原值
+
+非 focusable
+→ 无 tabIndex
+```
+
+Tab / Shift+Tab 的顺序由浏览器原生 focus navigation 决定；DiC 只监听 mirror 的 focus change 并同步：
+
+```text
+browser focus
+→ semantic mirror
+→ DiC interaction controller
+→ focus / focusVisible
+→ View state IR
+→ Canvas redraw
+```
+
+pointer 聚焦通过 mirror programmatic focus 同步，但保持 `focusVisible = false`；浏览器通过键盘把焦点移入 mirror node 时使用 `focusVisible = true`。
+
+disabled Button / Switch 不进入 mirror 的 Tab 顺序。
+
+### Semantic activation
+
+辅助技术或浏览器对 mirror 节点产生的 click / keyboard input 不直接调用组件业务逻辑，而是重新进入同一个 DiC controller：
+
+```text
+semantic mirror click / key
+→ DiC interaction dispatch
+→ public Weave event
+→ component default behavior
+```
+
+因此 `preventDefault()`、事件 bubbling、Button activation、Switch toggle 都与 Canvas pointer 路径共用同一套语义。
+
+### Semantic content
+
+当前 mirror 额外映射：
+
+- DiC Text → 真实文本内容；
+- DiC Image → `role="img"` + `aria-label=alt`，除非用户显式覆盖；
+- Button 的 primitive `text: string | number | bigint` → shared IR accessible label。
+
+Button 的任意 ReactNode/custom children 与 icon-only accessible name 不能靠 renderer 猜测；在 React child tree bridge 完成前应通过 `viewProps.label` / `labelledBy` 明确提供。
+
+### ID relationships
+
+mirror 不把用户逻辑 `id` 原样复制到隐藏 DOM，避免与真实宿主产生重复 DOM id。
+
+当前规则：
+
+```text
+logical View id
+→ mirror-owned unique DOM id
+
+labelledBy / describedBy / controls / owns
+→ 若引用同一 DiC tree 内 logical id
+→ 自动重写为 mirror DOM id
+```
+
+引用 mirror 外部 DOM id 时保持原值。
+
+### Lifecycle
+
+semantic mirror：
+
+- surface render 时增量 reconcile；
+- node identity 未变化时复用 DOM element，避免每帧丢失 browser focus；
+- scene 替换后删除 stale semantic node；
+- surface 创建早于 canvas 挂载时，第一次已挂载 render 可惰性创建 mirror；
+- surface destroy 时完整移除 mirror 与监听器。
+
+当前 semantic mirror 仍不等于“所有可访问性工作完成”。
+
+尚未覆盖：
+
+```text
+Input / textarea editing semantics
+IME / selection / clipboard bridge
+live region / announcements
+复杂 composite widget 的 roving focus / aria-activedescendant
+任意 ReactNode child tree 的完整 semantic projection
+```
+
+## 27.11 DiC Button / Switch semantic adapters
 
 Button 与 Switch 已建立组件级 renderer-neutral IR：
 
@@ -5446,7 +5574,7 @@ Switch → onChange
 
 当前 event bridge 已覆盖 click / pointer / keyboard / focus；React 组件默认切换到 DiC surface 不再被 SyntheticEvent payload 阻塞，但仍需完成 React child tree renderer、Tab / accessibility bridge 和剩余组件 adapter。
 
-## 27.11 组件结构
+## 27.12 组件结构
 
 ```text
 React
@@ -5557,4 +5685,11 @@ View
 68. 用户公开 event handler 必须先于组件默认语义执行；`preventDefault()` 必须能够取消对应 Button / Switch 等组件默认行为。
 69. `pointerenter / pointerleave` 是节点边界事件，不沿 View tree 冒泡；DOM 与 DiC 必须归一为相同 target/currentTarget 语义。
 70. inset shadow 等尚未存在等价结构化 IR 的视觉能力不得在 Canvas 中静默近似；必须保持明确 parity gap。
-71. API 的目标是：AI 易写易读，同时人类易读。
+71. DiC 的 Tab / Shift+Tab 顺序必须优先交给浏览器 semantic mirror 的原生 focus navigation；不得平行维护一套自定义 Tab 排序算法。
+72. semantic mirror 只能承载语义 / focus / accessibility input，不得参与视觉布局、不得拦截 Canvas pointer、不得成为第二套绘制树。
+73. DOM fallback 与 DiC semantic mirror 必须共享同一个 Web semantic attribute compiler；ARIA 状态不得分别解释。
+74. mirror 内部 DOM id 必须与用户 logical View id 隔离；同一 DiC tree 内的 labelledBy / describedBy / controls / owns 引用必须重写到 mirror-owned id。
+75. semantic mirror 的辅助技术 click / keyboard activation 必须重新进入同一个 DiC interaction / component adapter 管线，不能直接旁路调用业务 callback。
+76. 非 primitive Button children / icon-only accessible name 不得由 renderer 猜测；在完整 child semantic projection 可用前必须由显式 label / labelledBy 提供。
+77. semantic mirror 完成不等于 Input / IME / live region / composite-widget accessibility 已完成；这些能力必须按真实 backend 状态分别声明。
+78. API 的目标是：AI 易写易读，同时人类易读。
