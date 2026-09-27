@@ -22,6 +22,7 @@ import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { ensureToolTipStylesheet } from '../renderers/dom/tooltip-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { ThemeProvider } from '../theme/ThemeProvider'
+import { durationMilliseconds } from './internal/motion-duration'
 import { Text } from './Text'
 import { View } from './View'
 
@@ -33,41 +34,6 @@ interface AnchorPosition {
 type ToolTipVisualState =
   | 'open'
   | 'closing'
-
-function durationMilliseconds(
-  value: number | string | undefined,
-  fallback: number,
-): number {
-  if (typeof value === 'number') {
-    return Math.max(0, value)
-  }
-
-  if (typeof value !== 'string') {
-    return fallback
-  }
-
-  const normalized =
-    value.trim().toLowerCase()
-  const parsed =
-    Number.parseFloat(normalized)
-
-  if (!Number.isFinite(parsed)) {
-    return fallback
-  }
-
-  if (normalized.endsWith('ms')) {
-    return Math.max(0, parsed)
-  }
-
-  if (normalized.endsWith('s')) {
-    return Math.max(
-      0,
-      parsed * 1000,
-    )
-  }
-
-  return fallback
-}
 
 function positionedStyle(
   position: AnchorPosition,
