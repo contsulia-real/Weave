@@ -16,7 +16,9 @@ import type {
   IconSvg,
 } from '../core/icon-types'
 import type {
+  SnackDirection,
   SnackIcon,
+  SnackPlacement,
   SnackProps,
   SnackVariant,
   SnackViewProps,
@@ -48,14 +50,34 @@ function urgentVariant(
   )
 }
 
+function defaultDirection(
+  placement: SnackPlacement,
+): SnackDirection {
+  return placement.startsWith('top-')
+    ? 'up'
+    : 'down'
+}
+
+
 function iconContent(
   icon: SnackIcon,
 ) {
-  if (isValidElement(icon)) {
-    return (
+  const renderedIcon =
+    isValidElement(icon) ? (
       <Icon
         svg={icon as IconSvg}
-        size="medium"
+        size="small"
+        stroke="regular"
+        viewProps={{
+          className:
+            'weave-snack__icon',
+          'aria-hidden': true,
+        }}
+      />
+    ) : (
+      <Icon
+        icon={icon as IconComponent}
+        size="small"
         stroke="regular"
         viewProps={{
           className:
@@ -64,19 +86,14 @@ function iconContent(
         }}
       />
     )
-  }
 
   return (
-    <Icon
-      icon={icon as IconComponent}
-      size="medium"
-      stroke="regular"
-      viewProps={{
-        className:
-          'weave-snack__icon',
-        'aria-hidden': true,
-      }}
-    />
+    <View
+      className="weave-snack__icon-shell"
+      aria-hidden="true"
+    >
+      {renderedIcon}
+    </View>
   )
 }
 
@@ -85,9 +102,11 @@ export function Snack({
   duration = 4000,
   persistent = false,
   placement = 'bottom-center',
+  direction,
   open,
   defaultOpen = true,
   onOpenChange,
+  onDismissed,
   viewProps = {},
   ...contentProps
 }: SnackProps) {
@@ -99,6 +118,9 @@ export function Snack({
   ] = useState(defaultOpen)
   const resolvedOpen =
     open ?? uncontrolledOpen
+  const resolvedDirection =
+    direction ??
+    defaultDirection(placement)
 
   const [
     present,
@@ -123,6 +145,8 @@ export function Snack({
 
   const requestedOpenRef =
     useRef(resolvedOpen)
+  const dismissedRef =
+    useRef(!resolvedOpen)
 
   const { theme, mode } =
     useTheme()
@@ -149,6 +173,17 @@ export function Snack({
     requestedOpenRef.current =
       resolvedOpen
   }, [resolvedOpen])
+
+  const completeDismiss =
+    useCallback(() => {
+      if (dismissedRef.current) {
+        return
+      }
+
+      dismissedRef.current = true
+      setPresent(false)
+      onDismissed?.()
+    }, [onDismissed])
 
   const requestOpen =
     useCallback(
@@ -177,6 +212,7 @@ export function Snack({
 
   useEffect(() => {
     if (resolvedOpen) {
+      dismissedRef.current = false
       setPresent(true)
       setVisualState('open')
       return
@@ -198,14 +234,14 @@ export function Snack({
         : false
 
     if (reducedMotion) {
-      setPresent(false)
+      completeDismiss()
       return
     }
 
     const timer =
       globalThis.setTimeout(
         () => {
-          setPresent(false)
+          completeDismiss()
         },
         exitDuration + 32,
       )
@@ -216,6 +252,7 @@ export function Snack({
       )
     }
   }, [
+    completeDismiss,
     exitDuration,
     present,
     resolvedOpen,
@@ -352,7 +389,7 @@ export function Snack({
       return
     }
 
-    setPresent(false)
+    completeDismiss()
   }
 
   if (
@@ -462,6 +499,8 @@ export function Snack({
             visualState,
           'weave-snack-placement':
             placement,
+          'weave-snack-direction':
+            resolvedDirection,
           variant,
         }}
       >
