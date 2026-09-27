@@ -14,6 +14,7 @@ import {
   color,
   length,
   radius,
+  shadow,
 } from '../../core/values'
 import type {
   RuntimeStyleDeclarations,
@@ -226,5 +227,40 @@ export function resolveScrollbarTheme(
     '--weave-scrollbar-radius': radius(config?.radius ?? base?.radius),
     '--weave-scrollbar-opacity': config?.opacity ?? base?.opacity,
     '--weave-scrollbar-thumb-cursor': base?.thumbCursor,
+  }
+}
+
+
+export function resolveToolTipTheme(
+  theme: ResolvedTheme,
+): RuntimeStyleDeclarations {
+  const base =
+    theme.components.ToolTip?.base
+
+  return {
+    '--weave-tooltip-background':
+      color(base?.background),
+    '--weave-tooltip-color':
+      color(base?.color),
+    '--weave-tooltip-border-color':
+      color(base?.borderColor),
+    '--weave-tooltip-border-width':
+      length(base?.borderWidth),
+    '--weave-tooltip-radius':
+      radius(base?.radius),
+    '--weave-tooltip-padding-x':
+      length(base?.paddingX),
+    '--weave-tooltip-padding-y':
+      length(base?.paddingY),
+    '--weave-tooltip-max-width':
+      length(base?.maxWidth),
+    '--weave-tooltip-shadow':
+      shadow(base?.shadow),
+    '--weave-tooltip-depth':
+      length(base?.depth),
+    '--weave-tooltip-depth-color':
+      color(base?.depthColor),
+    '--weave-tooltip-arrow-size':
+      length(base?.arrowSize),
   }
 }
