@@ -324,6 +324,7 @@ export function createDiCSurface(
       semanticMirror = createDiCSemanticMirror(
         canvas,
         interactions,
+        invalidate,
       )
     }
 
