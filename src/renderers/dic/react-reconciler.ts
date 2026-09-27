@@ -16,12 +16,14 @@ import type { ResolvedTheme } from '../../theme/theme-types'
 import { DiCRendererScope } from '../renderer-context'
 import { compileDiCButton } from './compile-button'
 import { compileDiCImage } from './compile-image'
+import { compileDiCProgress } from './compile-progress'
 import { compileDiCSwitch } from './compile-switch'
 import { compileDiCText } from './compile-text'
 import { compileDiCView, type DiCViewNode } from './compile-view'
 import {
   DIC_BUTTON_HOST,
   DIC_IMAGE_HOST,
+  DIC_PROGRESS_HOST,
   DIC_SWITCH_HOST,
   DIC_TEXT_HOST,
   DIC_VIEW_HOST,
@@ -29,6 +31,7 @@ import {
   type DiCHostProps,
   type DiCHostType,
   type DiCImageHostProps,
+  type DiCProgressHostProps,
   type DiCSwitchHostProps,
   type DiCTextHostProps,
   type DiCViewHostProps,
@@ -74,6 +77,7 @@ function isHostType(
     type === DIC_TEXT_HOST ||
     type === DIC_IMAGE_HOST ||
     type === DIC_BUTTON_HOST ||
+    type === DIC_PROGRESS_HOST ||
     type === DIC_SWITCH_HOST
   )
 }
@@ -283,6 +287,21 @@ function compileInstance(
           {
             onChange: props.onChange,
           },
+        ),
+        props.theme,
+      )
+    }
+
+    case DIC_PROGRESS_HOST: {
+      assertNoHostChildren(instance)
+      const props =
+        instance.props as DiCProgressHostProps
+
+      return withTheme(
+        compileDiCProgress(
+          props.view,
+          props.progress,
+          props.theme,
         ),
         props.theme,
       )
