@@ -1,5 +1,6 @@
 import {
   useCallback,
+  useId,
   useMemo,
   useRef,
   useState,
@@ -132,6 +133,7 @@ function rebalancePlacement(
 function capturePlacementLayout(
   placement: SnackPlacement,
   container: SnackContainer | undefined,
+  scopeId: string,
 ): void {
   if (
     typeof document ===
@@ -153,6 +155,7 @@ function capturePlacementLayout(
   const region =
     getSnackRegion(
       host,
+      scopeId,
       placement,
     )
 
@@ -173,6 +176,19 @@ export function SnackProvider({
   ] = useState<SnackQueueItem[]>([])
   const nextId =
     useRef(0)
+  const scopeId =
+    useId()
+  const hostContext =
+    useMemo(
+      () => ({
+        target: container,
+        scopeId,
+      }),
+      [
+        container,
+        scopeId,
+      ],
+    )
 
   const show =
     useCallback(
@@ -345,7 +361,7 @@ export function SnackProvider({
       value={controller}
     >
       <SnackHostContext.Provider
-        value={container}
+        value={hostContext}
       >
         {children}
 
@@ -380,6 +396,7 @@ export function SnackProvider({
                   capturePlacementLayout(
                     placement,
                     container,
+                    scopeId,
                   )
 
                   setItems(
