@@ -25,6 +25,48 @@ function snackElements(
   )
 }
 
+function overflowElement(
+  element: HTMLDivElement,
+): HTMLSpanElement | null {
+  return element.querySelector<HTMLSpanElement>(
+    '[data-weave-snack-overflow]',
+  )
+}
+
+function syncOverflow(
+  element: HTMLDivElement,
+  hiddenCount: number,
+): void {
+  const existing =
+    overflowElement(element)
+
+  if (hiddenCount <= 0) {
+    existing?.remove()
+    return
+  }
+
+  const overflow =
+    existing ??
+    element.ownerDocument.createElement(
+      'span',
+    )
+
+  if (existing === null) {
+    overflow.className =
+      'weave-snack-overflow'
+    overflow.dataset.weaveSnackOverflow =
+      ''
+    overflow.setAttribute(
+      'aria-hidden',
+      'true',
+    )
+    element.append(overflow)
+  }
+
+  overflow.textContent =
+    `+${hiddenCount}`
+}
+
 export function syncSnackRegion(
   element: HTMLDivElement,
 ): void {
@@ -49,36 +91,26 @@ export function syncSnackRegion(
   ) {
     const snack =
       snacks[index]
-    const rank =
-      index
 
-    snack.dataset.weaveSnackStackRank =
-      String(rank)
+    snack.dataset.weaveSnackQueueIndex =
+      String(index)
 
     if (
-      rank >=
+      index >=
       MAX_VISIBLE_SNACKS
     ) {
-      snack.dataset.weaveSnackStackHidden =
+      snack.dataset.weaveSnackQueueHidden =
         ''
     } else {
       delete snack.dataset
-        .weaveSnackStackHidden
+        .weaveSnackQueueHidden
     }
   }
 
-  if (hiddenCount > 0) {
-    element.dataset.weaveSnackFolded =
-      ''
-    element.dataset.weaveSnackHiddenCount =
-      String(hiddenCount)
-    return
-  }
-
-  delete element.dataset
-    .weaveSnackFolded
-  delete element.dataset
-    .weaveSnackHiddenCount
+  syncOverflow(
+    element,
+    hiddenCount,
+  )
 }
 
 function scheduleSync(
