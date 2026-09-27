@@ -1,3 +1,4 @@
+import { DiCCapabilityError } from './capability-error'
 import type { ViewProps } from '../../core/view-types'
 import {
   VIEW_INTERNAL_PROP_KEYS,
@@ -24,22 +25,22 @@ export function assertDiCViewPropsSupported(
   owner = 'View',
 ): void {
   if (props.style !== undefined) {
-    throw new Error(
+    throw new DiCCapabilityError(
       `${owner} raw style is not supported by the DiC React renderer yet`,
     )
   }
   if (present(props.className)) {
-    throw new Error(
+    throw new DiCCapabilityError(
       `${owner} className is DOM-only and cannot be applied by DiC`,
     )
   }
   if (props.ref !== undefined) {
-    throw new Error(
+    throw new DiCCapabilityError(
       `${owner} ref bridge is not implemented for DiC yet`,
     )
   }
   if (props.scrollbar !== undefined) {
-    throw new Error(
+    throw new DiCCapabilityError(
       `${owner} DiC scrolling / Scrollbar backend is not implemented yet`,
     )
   }
@@ -48,22 +49,22 @@ export function assertDiCViewPropsSupported(
     props.overflowX !== undefined ||
     props.overflowY !== undefined
   ) {
-    throw new Error(
+    throw new DiCCapabilityError(
       `${owner} DiC overflow / scrolling backend is not implemented yet`,
     )
   }
   if (props.hidden !== undefined) {
-    throw new Error(
+    throw new DiCCapabilityError(
       `${owner} hidden semantic bridge is not implemented for DiC yet`,
     )
   }
   if (props.draggable !== undefined) {
-    throw new Error(
+    throw new DiCCapabilityError(
       `${owner} drag-and-drop backend is not implemented for DiC yet`,
     )
   }
   if (props.selectable !== undefined) {
-    throw new Error(
+    throw new DiCCapabilityError(
       `${owner} selectable text backend is not implemented for DiC yet`,
     )
   }
@@ -87,7 +88,7 @@ export function assertDiCViewPropsSupported(
       continue
     }
 
-    throw new Error(
+    throw new DiCCapabilityError(
       `${owner} prop "${key}" has no DiC backend yet`,
     )
   }
