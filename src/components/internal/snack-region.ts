@@ -15,31 +15,82 @@ const regions =
     Map<SnackPlacement, RegionEntry>
   >()
 
-function syncRegionState(
-  entry: RegionEntry,
+function snackElements(
+  element: HTMLDivElement,
+): HTMLElement[] {
+  return Array.from(
+    element.querySelectorAll<HTMLElement>(
+      '[data-weave-snack]',
+    ),
+  )
+}
+
+export function syncSnackRegion(
+  element: HTMLDivElement,
 ): void {
+  const snacks =
+    snackElements(element)
+  const total =
+    snacks.length
   const hiddenCount =
     Math.max(
       0,
-      entry.count -
+      total -
         MAX_VISIBLE_SNACKS,
     )
 
-  entry.element.dataset.weaveSnackCount =
-    String(entry.count)
+  element.dataset.weaveSnackCount =
+    String(total)
+
+  for (
+    let index = 0;
+    index < total;
+    index += 1
+  ) {
+    const snack =
+      snacks[index]
+    const rank =
+      total - 1 - index
+
+    snack.dataset.weaveSnackStackRank =
+      String(rank)
+
+    if (
+      rank >=
+      MAX_VISIBLE_SNACKS
+    ) {
+      snack.dataset.weaveSnackStackHidden =
+        ''
+    } else {
+      delete snack.dataset
+        .weaveSnackStackHidden
+    }
+  }
 
   if (hiddenCount > 0) {
-    entry.element.dataset.weaveSnackFolded =
+    element.dataset.weaveSnackFolded =
       ''
-    entry.element.dataset.weaveSnackHiddenCount =
+    element.dataset.weaveSnackHiddenCount =
       String(hiddenCount)
     return
   }
 
-  delete entry.element.dataset
+  delete element.dataset
     .weaveSnackFolded
-  delete entry.element.dataset
+  delete element.dataset
     .weaveSnackHiddenCount
+}
+
+function scheduleSync(
+  element: HTMLDivElement,
+): void {
+  queueMicrotask(() => {
+    if (!element.isConnected) {
+      return
+    }
+
+    syncSnackRegion(element)
+  })
 }
 
 export interface SnackRegionHandle {
@@ -67,7 +118,7 @@ export function retainSnackRegion(
 
   if (existing !== undefined) {
     existing.count += 1
-    syncRegionState(existing)
+    scheduleSync(existing.element)
 
     return {
       element: existing.element,
@@ -82,7 +133,9 @@ export function retainSnackRegion(
           return
         }
 
-        syncRegionState(existing)
+        scheduleSync(
+          existing.element,
+        )
       },
     }
   }
@@ -94,19 +147,19 @@ export function retainSnackRegion(
     'weave-snack-region'
   element.dataset.weaveSnackRegion =
     placement
+  document.body.append(element)
 
   const entry: RegionEntry = {
     element,
     count: 1,
   }
 
-  syncRegionState(entry)
-  document.body.append(element)
-
   byPlacement.set(
     placement,
     entry,
   )
+
+  scheduleSync(element)
 
   return {
     element,
@@ -121,7 +174,7 @@ export function retainSnackRegion(
         return
       }
 
-      syncRegionState(entry)
+      scheduleSync(entry.element)
     },
   }
 }
