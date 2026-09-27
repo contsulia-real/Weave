@@ -3,13 +3,17 @@ import type {
 } from '../../core/view-types'
 import { compileWebSemanticAttributes } from '../web/semantic-attributes'
 import type { DiCViewNode } from './compile-view'
+import type { DiCViewTreeLayout } from './layout-tree'
 import type {
   DiCDispatchResult,
   DiCInteractionController,
 } from './interaction'
 
 export interface DiCSemanticMirror {
-  update(node: DiCViewNode): void
+  update(
+    node: DiCViewNode,
+    layout?: DiCViewTreeLayout,
+  ): void
   focusNode(
     node: DiCViewNode,
     visible?: boolean,
@@ -304,6 +308,7 @@ export function createDiCSemanticMirror(
   const updateElement = (
     element: HTMLElement,
     node: DiCViewNode,
+    layout?: DiCViewTreeLayout,
   ) => {
     clearOwnedAttributes(element)
 
@@ -357,6 +362,40 @@ export function createDiCSemanticMirror(
       )
 
       if (editor === undefined) return
+
+      if (
+        layout !== undefined
+      ) {
+        const typography =
+          layout.typography
+
+        editor.style.boxSizing =
+          'content-box'
+        editor.style.width =
+          `${layout.contentFrame.width}px`
+        editor.style.height =
+          `${layout.contentFrame.height}px`
+        editor.style.margin = '0'
+        editor.style.padding = '0'
+        editor.style.border = '0'
+        editor.style.resize = 'none'
+        editor.style.overflow = 'auto'
+
+        if (typography !== undefined) {
+          editor.style.fontFamily =
+            typography.fontFamily
+          editor.style.fontSize =
+            `${typography.fontSize}px`
+          editor.style.fontWeight =
+            String(
+              typography.fontWeight,
+            )
+          editor.style.lineHeight =
+            `${typography.lineHeight}px`
+          editor.style.letterSpacing =
+            `${typography.letterSpacing}px`
+        }
+      }
 
       editor.placeholder =
         input.placeholder ?? ''
@@ -437,6 +476,7 @@ export function createDiCSemanticMirror(
 
   const update = (
     node: DiCViewNode,
+    layout?: DiCViewTreeLayout,
   ) => {
     if (destroyed) return
 
@@ -446,6 +486,32 @@ export function createDiCSemanticMirror(
       new Map<string, string>()
     const referencedIds =
       referencedLogicalIds(node)
+    const layouts =
+      new Map<
+        DiCViewNode,
+        DiCViewTreeLayout
+      >()
+
+    const collectLayouts = (
+      current:
+        | DiCViewTreeLayout
+        | undefined,
+    ) => {
+      if (current === undefined) return
+
+      layouts.set(
+        current.node,
+        current,
+      )
+
+      for (
+        const child of current.children
+      ) {
+        collectLayouts(child)
+      }
+    }
+
+    collectLayouts(layout)
 
     const collectIds = (
       current: DiCViewNode,
@@ -523,6 +589,7 @@ export function createDiCSemanticMirror(
         updateElement(
           element,
           current,
+          layouts.get(current),
         )
 
         if (
