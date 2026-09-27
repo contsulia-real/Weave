@@ -3,11 +3,9 @@ import {
 } from 'react'
 import {
   afterEach,
-  beforeEach,
   describe,
   expect,
   it,
-  vi,
 } from 'vitest'
 import {
   Text,
@@ -15,445 +13,12 @@ import {
   createRoot,
 } from '../src'
 
+afterEach(() => {
+  document.body.innerHTML = ''
+})
+
 describe('public Weave root', () => {
-  let getContext:
-    | ReturnType<typeof vi.spyOn>
-    | undefined
-  let requestPaint:
-    | ReturnType<typeof vi.fn>
-    | undefined
-  let reset:
-    | ReturnType<typeof vi.fn>
-    | undefined
-  let drawElementImage:
-    | ReturnType<typeof vi.fn>
-    | undefined
-  let drawImage:
-    | ReturnType<typeof vi.fn>
-    | undefined
-  let updateElementGeometry:
-    | ReturnType<typeof vi.fn>
-    | undefined
-  let clearElementGeometry:
-    | ReturnType<typeof vi.fn>
-    | undefined
-
-  beforeEach(() => {
-    requestPaint = vi.fn()
-    reset = vi.fn()
-    drawElementImage = vi.fn()
-    drawImage = vi.fn()
-    updateElementGeometry = vi.fn()
-    clearElementGeometry = vi.fn()
-
-    Object.defineProperty(
-      HTMLCanvasElement.prototype,
-      'requestPaint',
-      {
-        configurable: true,
-        value: requestPaint,
-      },
-    )
-
-    Object.defineProperty(
-      HTMLCanvasElement.prototype,
-      'updateElementGeometry',
-      {
-        configurable: true,
-        value: updateElementGeometry,
-      },
-    )
-
-    Object.defineProperty(
-      HTMLCanvasElement.prototype,
-      'clearElementGeometry',
-      {
-        configurable: true,
-        value: clearElementGeometry,
-      },
-    )
-
-    getContext = vi
-      .spyOn(
-        HTMLCanvasElement.prototype,
-        'getContext',
-      )
-      .mockImplementation(
-        () =>
-          ({
-            reset,
-            drawElementImage,
-            drawImage,
-            setTransform: vi.fn(),
-            clearRect: vi.fn(),
-          }) as unknown as
-            CanvasRenderingContext2D,
-      )
-  })
-
-  afterEach(() => {
-    getContext?.mockRestore()
-    delete (
-      HTMLCanvasElement.prototype as
-        HTMLCanvasElement & {
-          requestPaint?: () => void
-          updateElementGeometry?: (
-            element: Element,
-            options?: unknown,
-          ) => void
-          clearElementGeometry?: (
-            element: Element,
-          ) => void
-        }
-    ).requestPaint
-    delete (
-      HTMLCanvasElement.prototype as
-        HTMLCanvasElement & {
-          updateElementGeometry?: (
-            element: Element,
-            options?: unknown,
-          ) => void
-        }
-    ).updateElementGeometry
-    delete (
-      HTMLCanvasElement.prototype as
-        HTMLCanvasElement & {
-          clearElementGeometry?: (
-            element: Element,
-          ) => void
-        }
-    ).clearElementGeometry
-    delete (
-      HTMLElement.prototype as
-        HTMLElement & {
-          setCanvasTransform?: (
-            matrix?: DOMMatrixInit,
-          ) => void
-        }
-    ).setCanvasTransform
-    document.body.innerHTML = ''
-  })
-
-  it('uses native HTML-in-Canvas when the browser exposes it', async () => {
-    const container =
-      document.createElement('div')
-    document.body.appendChild(
-      container,
-    )
-
-    const root =
-      createRoot(container)
-
-    await act(async () => {
-      root.render(
-        <View
-          width={10}
-          height={6}
-        >
-          <Text>Hello</Text>
-        </View>,
-      )
-    })
-
-    const canvas =
-      container.querySelector(
-        'canvas[data-weave-root-canvas]',
-      )
-    const host =
-      container.querySelector(
-        '[data-weave-root-host]',
-      )
-
-    expect(canvas).toBeInstanceOf(
-      HTMLCanvasElement,
-    )
-    expect(
-      canvas?.hasAttribute(
-        'layoutsubtree',
-      ),
-    ).toBe(true)
-    expect(
-      canvas?.getAttribute(
-        'content',
-      ),
-    ).toBe('drawable')
-    expect(host).toBeInstanceOf(
-      HTMLDivElement,
-    )
-    expect(
-      host?.hasAttribute(
-        'drawable',
-      ),
-    ).toBe(true)
-    expect(requestPaint).toHaveBeenCalled()
-
-    canvas?.dispatchEvent(
-      new Event('paint'),
-    )
-
-    expect(reset).toHaveBeenCalled()
-    expect(
-      drawElementImage,
-    ).toHaveBeenCalledWith(
-      host,
-      0,
-      0,
-    )
-    expect(
-      updateElementGeometry,
-    ).not.toHaveBeenCalled()
-
-    canvas?.dispatchEvent(
-      new Event('paint'),
-    )
-
-    expect(
-      drawElementImage,
-    ).toHaveBeenCalledTimes(2)
-
-    root.unmount()
-    expect(
-      clearElementGeometry,
-    ).toHaveBeenCalledWith(
-      host,
-    )
-    expect(
-      container.childNodes,
-    ).toHaveLength(0)
-  })
-
-  it('registers a returned draw matrix through the canvas geometry API', async () => {
-    const matrix = {
-      toString: () =>
-        'matrix(1, 0, 0, 1, 12, 8)',
-    } as unknown as DOMMatrix
-
-    drawElementImage?.mockReturnValue(
-      matrix,
-    )
-
-    const container =
-      document.createElement('div')
-    document.body.appendChild(
-      container,
-    )
-
-    const root =
-      createRoot(container)
-
-    await act(async () => {
-      root.render(
-        <View>
-          <Text>Transitional</Text>
-        </View>,
-      )
-    })
-
-    const canvas =
-      container.querySelector(
-        'canvas[data-weave-root-canvas]',
-      )
-    const host =
-      container.querySelector(
-        '[data-weave-root-host]',
-      )
-
-    canvas?.dispatchEvent(
-      new Event('paint'),
-    )
-
-    expect(
-      updateElementGeometry,
-    ).toHaveBeenCalledWith(
-      host,
-      {
-        preserveHitTestOrder: true,
-        canvasTransform: matrix,
-      },
-    )
-
-    root.unmount()
-  })
-
-  it('registers the legacy draw matrix for hit testing', async () => {
-    delete (
-      HTMLCanvasElement.prototype as
-        HTMLCanvasElement & {
-          updateElementGeometry?: (
-            element: Element,
-            options?: unknown,
-          ) => void
-        }
-    ).updateElementGeometry
-
-    const matrix = {
-      toString: () =>
-        'matrix(1, 0, 0, 1, 0, 0)',
-    } as unknown as DOMMatrix
-    const setCanvasTransform =
-      vi.fn()
-
-    Object.defineProperty(
-      HTMLElement.prototype,
-      'setCanvasTransform',
-      {
-        configurable: true,
-        value: setCanvasTransform,
-      },
-    )
-
-    drawElementImage?.mockReturnValue(
-      matrix,
-    )
-
-    const container =
-      document.createElement('div')
-    document.body.appendChild(
-      container,
-    )
-
-    const root =
-      createRoot(container)
-
-    await act(async () => {
-      root.render(
-        <View>
-          <Text>Interactive</Text>
-        </View>,
-      )
-    })
-
-    const canvas =
-      container.querySelector(
-        'canvas[data-weave-root-canvas]',
-      )
-
-    canvas?.dispatchEvent(
-      new Event('paint'),
-    )
-
-    expect(
-      setCanvasTransform,
-    ).toHaveBeenCalledWith(
-      matrix,
-    )
-
-    root.unmount()
-  })
-
-  it('preserves the previous canvas frame while resizing', async () => {
-    const originalResizeObserver =
-      globalThis.ResizeObserver
-    const originalGetBoundingClientRect =
-      HTMLCanvasElement.prototype
-        .getBoundingClientRect
-
-    let width = 200
-    let height = 100
-
-    Object.defineProperty(
-      globalThis,
-      'ResizeObserver',
-      {
-        configurable: true,
-        value: undefined,
-      },
-    )
-
-    HTMLCanvasElement.prototype.getBoundingClientRect =
-      () =>
-        ({
-          x: 0,
-          y: 0,
-          top: 0,
-          right: width,
-          bottom: height,
-          left: 0,
-          width,
-          height,
-          toJSON: () => ({}),
-        }) as DOMRect
-
-    try {
-      const container =
-        document.createElement('div')
-      document.body.appendChild(
-        container,
-      )
-
-      const root =
-        createRoot(container)
-
-      await act(async () => {
-        root.render(
-          <View>
-            <Text>Resize</Text>
-          </View>,
-        )
-      })
-
-      const canvas =
-        container.querySelector(
-          'canvas[data-weave-root-canvas]',
-        ) as HTMLCanvasElement | null
-
-      canvas?.dispatchEvent(
-        new Event('paint'),
-      )
-
-      drawImage?.mockClear()
-      requestPaint?.mockClear()
-
-      width = 260
-      height = 140
-
-      window.dispatchEvent(
-        new Event('resize'),
-      )
-
-      expect(drawImage).toHaveBeenCalledTimes(
-        2,
-      )
-      expect(
-        requestPaint,
-      ).toHaveBeenCalled()
-      expect(canvas?.width).toBe(
-        Math.round(
-          width *
-            window.devicePixelRatio,
-        ),
-      )
-      expect(canvas?.height).toBe(
-        Math.round(
-          height *
-            window.devicePixelRatio,
-        ),
-      )
-
-      root.unmount()
-    } finally {
-      HTMLCanvasElement.prototype.getBoundingClientRect =
-        originalGetBoundingClientRect
-
-      Object.defineProperty(
-        globalThis,
-        'ResizeObserver',
-        {
-          configurable: true,
-          value: originalResizeObserver,
-        },
-      )
-    }
-  })
-
-  it('falls back to ordinary DOM when HTML-in-Canvas is unavailable', async () => {
-    delete (
-      HTMLCanvasElement.prototype as
-        HTMLCanvasElement & {
-          requestPaint?: () => void
-        }
-    ).requestPaint
-
+  it('renders directly into ordinary DOM', async () => {
     const container =
       document.createElement('div')
     document.body.appendChild(
@@ -467,71 +32,33 @@ describe('public Weave root', () => {
       root.render(
         <View
           data={{
-            testid: 'fallback',
+            testid: 'root-view',
           }}
         >
-          <Text>Fallback</Text>
+          <Text>Hello</Text>
         </View>,
       )
     })
 
     expect(
       container.querySelector(
-        'canvas[data-weave-root-canvas]',
-      ),
-    ).toBeNull()
-    expect(
-      container.querySelector(
-        '[data-testid="fallback"]',
+        '[data-testid="root-view"]',
       ),
     ).toBeInstanceOf(
       HTMLDivElement,
     )
+    expect(
+      container.querySelector('canvas'),
+    ).toBeNull()
 
     root.unmount()
-  })
-
-  it('can disable DOM fallback and expose missing native support', () => {
-    delete (
-      HTMLCanvasElement.prototype as
-        HTMLCanvasElement & {
-          requestPaint?: () => void
-        }
-    ).requestPaint
-
-    const container =
-      document.createElement('div')
-    document.body.appendChild(
-      container,
-    )
-
-    const root =
-      createRoot(
-        container,
-        {
-          fallback: 'none',
-        },
-      )
-
-    expect(() =>
-      root.render(<View />),
-    ).toThrow(
-      'HTML-in-Canvas is not supported by this browser',
-    )
 
     expect(
       container.childNodes,
     ).toHaveLength(0)
   })
 
-  it('keeps the selected DOM fallback for later renders', async () => {
-    delete (
-      HTMLCanvasElement.prototype as
-        HTMLCanvasElement & {
-          requestPaint?: () => void
-        }
-    ).requestPaint
-
+  it('updates the same DOM root across renders', async () => {
     const container =
       document.createElement('div')
     document.body.appendChild(
@@ -549,39 +76,24 @@ describe('public Weave root', () => {
       )
     })
 
-    Object.defineProperty(
-      HTMLCanvasElement.prototype,
-      'requestPaint',
-      {
-        configurable: true,
-        value: requestPaint,
-      },
-    )
+    expect(
+      container.textContent,
+    ).toContain('First')
 
     await act(async () => {
       root.render(
-        <View
-          data={{
-            testid: 'later',
-          }}
-        >
-          <Text>Later</Text>
+        <View>
+          <Text>Second</Text>
         </View>,
       )
     })
 
     expect(
-      container.querySelector(
-        'canvas[data-weave-root-canvas]',
-      ),
-    ).toBeNull()
+      container.textContent,
+    ).toContain('Second')
     expect(
-      container.querySelector(
-        '[data-testid="later"]',
-      ),
-    ).toBeInstanceOf(
-      HTMLDivElement,
-    )
+      container.textContent,
+    ).not.toContain('First')
 
     root.unmount()
   })
