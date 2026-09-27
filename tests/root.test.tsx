@@ -51,7 +51,9 @@ describe('public Weave root', () => {
       container.querySelector('canvas'),
     ).toBeNull()
 
-    root.unmount()
+    await act(async () => {
+      root.unmount()
+    })
 
     expect(
       container.childNodes,
@@ -95,10 +97,12 @@ describe('public Weave root', () => {
       container.textContent,
     ).not.toContain('First')
 
-    root.unmount()
+    await act(async () => {
+      root.unmount()
+    })
   })
 
-  it('cannot render again after unmount', () => {
+  it('cannot render again after unmount', async () => {
     const container =
       document.createElement('div')
     document.body.appendChild(
@@ -108,10 +112,15 @@ describe('public Weave root', () => {
     const root =
       createRoot(container)
 
-    root.render(
-      <View />,
-    )
-    root.unmount()
+    await act(async () => {
+      root.render(
+        <View />,
+      )
+    })
+
+    await act(async () => {
+      root.unmount()
+    })
 
     expect(() =>
       root.render(<View />),
