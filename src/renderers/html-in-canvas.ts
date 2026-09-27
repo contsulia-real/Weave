@@ -158,6 +158,9 @@ function devicePixelRatioFor(
 
 function applyCanvasSize(
   canvas: HTMLCanvasElement,
+  context: HTMLInCanvas2DContext,
+  resizeBuffer: HTMLCanvasElement,
+  preserveCurrentFrame: boolean,
   width: number,
   height: number,
 ): boolean {
@@ -173,13 +176,62 @@ function applyCanvasSize(
     return false
   }
 
+  const previousWidth = canvas.width
+  const previousHeight = canvas.height
+  let resizeBufferContext:
+    | CanvasRenderingContext2D
+    | null = null
+
+  if (
+    preserveCurrentFrame &&
+    previousWidth > 0 &&
+    previousHeight > 0 &&
+    nextWidth > 0 &&
+    nextHeight > 0
+  ) {
+    resizeBuffer.width = previousWidth
+    resizeBuffer.height = previousHeight
+    resizeBufferContext =
+      resizeBuffer.getContext('2d')
+
+    if (resizeBufferContext !== null) {
+      resizeBufferContext.drawImage(
+        canvas,
+        0,
+        0,
+      )
+    }
+  }
+
+  // Updating either bitmap dimension clears the visible canvas immediately.
+  // Restore the previous frame in the same task so live window resizing never
+  // exposes that transparent intermediate state while the next HTML snapshot
+  // is being prepared.
   canvas.width = nextWidth
   canvas.height = nextHeight
+
+  if (resizeBufferContext !== null) {
+    context.drawImage(
+      resizeBuffer,
+      0,
+      0,
+      previousWidth,
+      previousHeight,
+      0,
+      0,
+      nextWidth,
+      nextHeight,
+    )
+  }
+
   return true
 }
 
 function observeCanvasSize(
   canvas: HTMLCanvasElement,
+  context: HTMLInCanvas2DContext,
+  resizeBuffer: HTMLCanvasElement,
+  shouldPreserveFrame: () => boolean,
   requestPaint: () => void,
 ): () => void {
   const resizeFromCSSPixels = (
@@ -192,6 +244,9 @@ function observeCanvasSize(
     if (
       applyCanvasSize(
         canvas,
+        context,
+        resizeBuffer,
+        shouldPreserveFrame(),
         width * dpr,
         height * dpr,
       )
@@ -315,7 +370,11 @@ export function createHTMLInCanvasMount(
   canvas.append(host)
   container.replaceChildren(canvas)
 
+  const resizeBuffer =
+    document.createElement('canvas')
+
   let destroyed = false
+  let hasPainted = false
 
   const requestPaint = () => {
     if (destroyed) return
@@ -341,6 +400,7 @@ export function createHTMLInCanvasMount(
       host,
       drawResult,
     )
+    hasPainted = true
   }
 
   canvas.addEventListener(
@@ -351,6 +411,9 @@ export function createHTMLInCanvasMount(
   const stopObserving =
     observeCanvasSize(
       canvas,
+      context,
+      resizeBuffer,
+      () => hasPainted,
       requestPaint,
     )
 
