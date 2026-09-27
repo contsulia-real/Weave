@@ -13,6 +13,11 @@ const stylesheet = `
   --weave-component-flex-direction: row;
 }
 
+:where(.weave-list[data-weave-list-virtualized="true"]) {
+  --weave-component-display: block;
+  --weave-component-position: relative;
+}
+
 :where(.weave-list-item) {
   --weave-component-display: flex;
   --weave-component-flex-direction: row;
