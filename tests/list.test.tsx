@@ -1,4 +1,5 @@
 import {
+  act,
   cleanup,
   fireEvent,
   render,
@@ -419,7 +420,9 @@ describe('List', () => {
         'first',
       )
 
-    options[1]?.focus()
+    act(() => {
+      options[1]?.focus()
+    })
     fireEvent.keyDown(
       options[1]!,
       {
@@ -642,7 +645,7 @@ describe('List', () => {
         'weave-list-item-theme-',
       ),
     ).toContain(
-      '--weave-list-item-selected-background:var(--weave-color-primary)',
+      '--weave-list-item-selected-background:var(--weave-color-primary,primary)',
     )
   })
 

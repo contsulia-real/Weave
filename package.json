@@ -17,12 +17,13 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "pnpm run typecheck && vite build && pnpm run build:types",
+    "build": "pnpm run typecheck && vite build && pnpm run build:types && pnpm run verify:package",
     "build:types": "tsc -p tsconfig.lib.json",
     "typecheck": "tsc -b",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "oxlint",
+    "verify:package": "node verify-package.mjs",
     "preview": "vite preview"
   },
   "peerDependencies": {

@@ -84,11 +84,13 @@ interface MultipleListSelectionState {
   ) => void
 }
 
+const EMPTY_SELECTED_IDS: readonly string[] = []
+
 function assignRef<T>(
   ref: Ref<T> | undefined,
   value: T | null,
 ): void {
-  if (ref === undefined) {
+  if (ref === null || ref === undefined) {
     return
   }
 
@@ -435,7 +437,7 @@ export function List(
           multipleProps?.selected ??
           uncontrolledMultiple
         )
-      : []
+      : EMPTY_SELECTED_IDS
 
   const selectedIds =
     useMemo(
