@@ -308,10 +308,6 @@ export function resolveSnackTheme(
       length(base?.paddingY),
     '--weave-snack-gap':
       length(base?.gap),
-    '--weave-snack-min-width':
-      length(base?.minWidth),
-    '--weave-snack-max-width':
-      length(base?.maxWidth),
     '--weave-snack-shadow':
       shadowToken(base?.shadow),
     '--weave-snack-icon-size':
