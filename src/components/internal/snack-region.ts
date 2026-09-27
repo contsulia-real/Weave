@@ -50,7 +50,7 @@ export function syncSnackRegion(
     const snack =
       snacks[index]
     const rank =
-      total - 1 - index
+      index
 
     snack.dataset.weaveSnackStackRank =
       String(rank)
