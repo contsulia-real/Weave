@@ -8,7 +8,6 @@ import {
 } from 'react'
 import type {
   CSSProperties,
-  FocusEvent as ReactFocusEvent,
 } from 'react'
 import { createPortal } from 'react-dom'
 import type {
@@ -390,27 +389,41 @@ export function ToolTip({
       [...descriptionIds].join(' '),
     )
 
+    const view =
+      target.ownerDocument.defaultView
     let frame:
       | number
       | undefined
 
+    const applyPosition = () => {
+      setPosition(
+        anchorPosition(
+          target,
+          placement,
+        ),
+      )
+      setPositioned(true)
+    }
+
     const update = () => {
+      if (
+        view === null ||
+        typeof view.requestAnimationFrame !==
+          'function'
+      ) {
+        applyPosition()
+        return
+      }
+
       if (frame !== undefined) {
         return
       }
 
       frame =
-        window.requestAnimationFrame(
+        view.requestAnimationFrame(
           () => {
             frame = undefined
-
-            setPosition(
-              anchorPosition(
-                target,
-                placement,
-              ),
-            )
-            setPositioned(true)
+            applyPosition()
           },
         )
     }
@@ -427,30 +440,35 @@ export function ToolTip({
 
     resizeObserver?.observe(target)
 
-    window.addEventListener(
+    view?.addEventListener(
       'resize',
       update,
     )
-    window.addEventListener(
+    view?.addEventListener(
       'scroll',
       update,
       true,
     )
 
     return () => {
-      if (frame !== undefined) {
-        window.cancelAnimationFrame(
+      if (
+        frame !== undefined &&
+        view !== null &&
+        typeof view.cancelAnimationFrame ===
+          'function'
+      ) {
+        view.cancelAnimationFrame(
           frame,
         )
       }
 
       resizeObserver?.disconnect()
 
-      window.removeEventListener(
+      view?.removeEventListener(
         'resize',
         update,
       )
-      window.removeEventListener(
+      view?.removeEventListener(
         'scroll',
         update,
         true,
@@ -541,7 +559,7 @@ export function ToolTip({
             }
             data={{
               ...viewProps.data,
-              weaveTooltip: '',
+              'weave-tooltip': '',
               placement,
             }}
             style={{
