@@ -158,8 +158,13 @@ export function Snack({
   const dismissedRef =
     useRef(!resolvedOpen)
 
-  const snackHostTarget =
+  const snackHostContext =
     useContext(SnackHostContext)
+  const snackHostTarget =
+    snackHostContext?.target
+  const snackHostScopeId =
+    snackHostContext?.scopeId ??
+    'standalone'
   const { theme, mode } =
     useTheme()
   const base =
@@ -435,6 +440,7 @@ export function Snack({
     const handle =
       retainSnackRegion(
         host,
+        snackHostScopeId,
         placement,
       )
 
@@ -446,6 +452,7 @@ export function Snack({
   }, [
     placement,
     present,
+    snackHostScopeId,
     snackHostTarget,
   ])
   /* oxlint-enable react/set-state-in-effect */
