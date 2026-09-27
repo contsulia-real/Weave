@@ -445,6 +445,41 @@ export const defaultTheme: ResolvedTheme = {
         typo: 'body-xsmall',
       },
     },
+    Snack: {
+      base: {
+        background: 'surface',
+        color: 'tertiary',
+        borderColor: 'outline',
+        borderWidth: 0.0625,
+        accentWidth: 0.25,
+        radius: 'medium',
+        paddingX: 0.75,
+        paddingY: 0.625,
+        gap: 0.625,
+        minWidth: 18,
+        maxWidth: 30,
+        shadow: 'medium',
+        typo: 'body-medium',
+        motionOffset: 0.5,
+      },
+      variants: {
+        default: {
+          accentColor: 'secondary',
+        },
+        success: {
+          accentColor: 'success',
+        },
+        warning: {
+          accentColor: 'warning',
+        },
+        danger: {
+          accentColor: 'danger',
+        },
+        info: {
+          accentColor: 'primary',
+        },
+      },
+    },
   },
   breakpoints: defaultBreakpoints,
   layers: {
