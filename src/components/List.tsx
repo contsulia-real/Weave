@@ -24,6 +24,9 @@ import type {
   ListItemProps,
   ListProps,
 } from '../core/list-types'
+import type {
+  TextTypo,
+} from '../core/text-types'
 import {
   resolveListTheme,
 } from '../renderers/dom/resolve-component-theme'
@@ -222,15 +225,9 @@ function listIcon(
 function dataItemContent(
   item: ListDataItem,
   primaryTypo:
-    | Parameters<
-        typeof Text
-      >[0]['typo']
-    | undefined,
+    TextTypo | undefined,
   secondaryTypo:
-    | Parameters<
-        typeof Text
-      >[0]['typo']
-    | undefined,
+    TextTypo | undefined,
 ) {
   return (
     <>
