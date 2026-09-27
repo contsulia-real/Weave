@@ -24,12 +24,6 @@ export type SnackPlacement =
   | 'bottom-center'
   | 'bottom-right'
 
-export type SnackDirection =
-  | 'up'
-  | 'down'
-  | 'left'
-  | 'right'
-
 export type SnackIcon = ButtonIcon
 
 export type SnackViewProps =
@@ -46,7 +40,6 @@ interface SnackRequestBase {
   duration?: number
   persistent?: boolean
   placement?: SnackPlacement
-  direction?: SnackDirection
   viewProps?: SnackViewProps
 }
 
