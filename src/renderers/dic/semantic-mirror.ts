@@ -349,6 +349,10 @@ export function createDiCSemanticMirror(
       element.tabIndex =
         node.interaction.tabIndex ??
         0
+    } else if (
+      node.content?.kind === 'input'
+    ) {
+      element.tabIndex = -1
     } else {
       element.removeAttribute('tabindex')
     }
