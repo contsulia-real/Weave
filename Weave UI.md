@@ -3220,7 +3220,11 @@ ToolTip 的默认视觉必须遵循 Weave 已有的“材质 + 层级”语言�
 - 默认水平 / 垂直 padding 分别为 `0.5rem / 0.25rem`；
 - 默认文字使用 `body-xsmall`，尺寸和字重都低于 Button 的 label scale；
 - 使用指向目标的锚点箭头，明确 ToolTip 与目标之间的空间关系；
-- 出现时从锚点方向做一次极短的展开反馈；`prefers-reduced-motion: reduce` 下取消该运动。
+- 进入时从锚点方向轻微位移并淡入，只保留几乎不可察觉的缩放；不使用 Button 式弹跳；
+- 退出时沿相反过程向锚点收回并淡出，完成过渡后才卸载 DOM，不允许瞬间消失；
+- 位移距离由 `theme.components.ToolTip.base.motionOffset` 控制；默认 `0.1875rem`；
+- 进入使用全局 `motion.duration.normal + motion.curve.emphasized`，透明度使用较短的 `fast + enter`；退出使用 `fast + exit`；
+- `prefers-reduced-motion: reduce` 下取消位移、缩放与退出等待。
 
 当前可主题化字段：
 
@@ -3235,6 +3239,7 @@ paddingY
 maxWidth
 shadow
 arrowSize
+motionOffset
 typo
 ```
 
