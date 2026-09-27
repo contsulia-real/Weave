@@ -5,5 +5,6 @@ describe('Weave package entry', () => {
     const weave = await import('../src/index')
 
     expect(weave).toBeDefined()
+    expect(weave.createRoot).toBeTypeOf('function')
   })
 })
