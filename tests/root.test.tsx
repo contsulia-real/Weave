@@ -173,16 +173,19 @@ describe('public Weave root', () => {
 
     await act(async () => {
       root.render(
-        <Input
-          value="first"
-          onChange={() => {}}
+        <View
+          style={{
+            color: 'red',
+          }}
         />,
       )
     })
 
     expect(
-      container.querySelector('input'),
-    ).toBeInstanceOf(HTMLInputElement)
+      container.querySelector(
+        'canvas[data-weave-root-canvas]',
+      ),
+    ).toBeNull()
 
     await act(async () => {
       root.render(
