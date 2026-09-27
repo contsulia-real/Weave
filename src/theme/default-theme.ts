@@ -486,7 +486,7 @@ export const defaultTheme: ResolvedTheme = {
         borderWidth: 0.0625,
         radius: 'medium',
         padding: 0.25,
-        gap: 0.125,
+        gap: 0,
       },
     },
     ListItem: {

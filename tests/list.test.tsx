@@ -102,6 +102,44 @@ describe('List', () => {
     ).toBeDefined()
   })
 
+  it('shows item dividers by default and can disable them', () => {
+    const items = [
+      { id: 'first', text: 'First' },
+      { id: 'second', text: 'Second' },
+    ] as const
+    const { getByRole, rerender } = render(
+      <List items={items} />,
+    )
+
+    const list = getByRole('list')
+    expect(
+      list.getAttribute(
+        'data-weave-list-dividers',
+      ),
+    ).toBe('true')
+
+    const stylesheet =
+      document.querySelector<HTMLStyleElement>(
+        'style[data-weave-list-styles]',
+      )?.textContent ?? ''
+    expect(stylesheet).toContain(
+      'data-weave-list-dividers="true"',
+    )
+    expect(stylesheet).toContain(
+      'data-weave-list-virtual-index="0"',
+    )
+
+    rerender(
+      <List items={items} noDividers />,
+    )
+
+    expect(
+      getByRole('list').getAttribute(
+        'data-weave-list-dividers',
+      ),
+    ).toBe('false')
+  })
+
   it('supports composed ListItem children with the same id semantics', () => {
     const {
       getAllByRole,

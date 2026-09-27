@@ -524,6 +524,21 @@ describe('Snack', () => {
     ])
   })
 
+  it('does not render lifetime progress unless progress is enabled', () => {
+    render(
+      <Snack
+        text="Timed without progress"
+        duration={1000}
+      />,
+    )
+
+    expect(
+      document.querySelector(
+        '[data-weave-snack-lifetime-progress]',
+      ),
+    ).toBeNull()
+  })
+
   it('shows linear lifetime progress and pauses it with the Snack timer', () => {
     vi.useFakeTimers()
 
@@ -533,6 +548,7 @@ describe('Snack', () => {
       <Snack
         text="Timed progress"
         duration={1000}
+        progress
       />,
     )
 
@@ -613,6 +629,7 @@ describe('Snack', () => {
       <Snack
         text="Persistent"
         persistent
+        progress
       />,
     )
 

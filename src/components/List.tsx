@@ -329,6 +329,7 @@ export function List(
   const {
     orientation = 'vertical',
     gap,
+    noDividers = false,
     virtualized = false,
     viewProps = {},
   } = props
@@ -844,6 +845,10 @@ export function List(
             orientation,
           'weave-list-selection':
             selection,
+          'weave-list-dividers':
+            noDividers
+              ? 'false'
+              : 'true',
           'weave-list-virtualized':
             virtualized
               ? 'true'

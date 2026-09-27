@@ -106,11 +106,13 @@ function sameViewport(
 
 function VirtualItem({
   entry,
+  index,
   offset,
   orientation,
   onMeasure,
 }: {
   entry: VirtualListEntry
+  index: number
   offset: number
   orientation:
     ListOrientation
@@ -248,6 +250,9 @@ function VirtualItem({
       data-weave-list-virtual-item=""
       data-weave-list-virtual-id={
         entry.id
+      }
+      data-weave-list-virtual-index={
+        index
       }
       style={style}
     >
@@ -664,6 +669,7 @@ export function VirtualListWindow({
             <VirtualItem
               key={entry.id}
               entry={entry}
+              index={index}
               offset={
                 layout.offsets[
                   index

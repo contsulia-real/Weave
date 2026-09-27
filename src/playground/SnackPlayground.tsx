@@ -109,6 +109,7 @@ function SnackTriggerButtons({
               variant: 'success',
               placement,
               duration: 3200,
+              progress: true,
             })
           },
         }}
@@ -271,7 +272,7 @@ export function SnackPlayground() {
   return (
     <PlaygroundSection
       title="Snack"
-      description="页面级与容器级 Snack 使用同一套 API。FIFO、placement、lifetime Progress 和挂载作用域都由各自的 SnackProvider 管理。"
+      description="页面级与容器级 Snack 使用同一套 API。FIFO、placement、可选 lifetime Progress 和挂载作用域都由各自的 SnackProvider 管理。"
     >
       <View
         layout="flex"

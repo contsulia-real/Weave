@@ -3439,6 +3439,7 @@ variant
 icon
 duration
 persistent
+progress
 action
 onAction
 
@@ -3464,6 +3465,7 @@ viewProps
 variant     = default
 duration    = 4000ms
 persistent  = false
+progress    = false
 placement   = bottom-center
 defaultOpen = true
 layer       = snack
@@ -3495,13 +3497,13 @@ bottom-* → 从底部边缘进入 / 向底部边缘退出
 规则：
 
 - `persistent=false` 时按自己的 `duration` 自动关闭；
-- 每个自动关闭 Snack 底部显示一条线性 lifetime Progress，从 1 线性下降到 0；
+- 默认不显示 lifetime Progress；只有 `progress=true` 时，自动关闭 Snack 底部才显示一条从 1 线性下降到 0 的线性 lifetime Progress；
 - lifetime Progress 必须直接使用公开的 `Progress` 组件，固定 `mode="linear"`，不得调用 `ProgressVisual` 或另外实现一条私有进度条；
 - lifetime Progress 必须位于 Snack 圆角 surface 内部：左右至少按 `paddingX` inset，不得贴着或穿出外层 border radius；
 - lifetime Progress 使用自身 linear radius / track 语义，不通过 Snack 边框充当进度轨道；
-- Progress 与自动关闭计时必须共享同一份剩余时间状态，不允许视觉进度和真实关闭时刻分离；
-- pointer 停留在当前 Snack 上时暂停该实例，同时暂停 lifetime Progress；
-- focus 位于当前 Snack 或其 action 内时暂停该实例，同时暂停 lifetime Progress；
+- 启用 `progress` 时，Progress 与自动关闭计时必须共享同一份剩余时间状态，不允许视觉进度和真实关闭时刻分离；
+- pointer 停留在当前 Snack 上时暂停该实例；启用 `progress` 时同时暂停 lifetime Progress；
+- focus 位于当前 Snack 或其 action 内时暂停该实例；启用 `progress` 时同时暂停 lifetime Progress；
 - 离开后从真实剩余时间继续，不得重新获得完整 `duration`；
 - `persistent=true` 时完全禁用自动关闭，并且不显示 lifetime Progress；
 - 关闭进入 exit transition，transition 完成后才从队列移除。
@@ -3880,6 +3882,14 @@ orientation
 
 `gap={0.5}` 表示 `0.5rem`。
 
+List 默认在相邻 item 之间显示分割线；需要无分割线列表时使用：
+
+```tsx
+<List items={items} noDividers />
+```
+
+`noDividers` 只控制 item 之间的视觉分割线，不改变 ListItem 的选择、焦点、虚拟化或布局语义。
+
 ## 21.6 键盘、焦点与可访问性
 
 `selection="none"`：
@@ -4026,6 +4036,7 @@ defaultSelected
 onSelect
 orientation
 gap
+noDividers
 virtualized
 children
 viewProps

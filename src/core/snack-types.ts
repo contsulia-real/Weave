@@ -46,6 +46,7 @@ interface SnackRequestBase {
   variant?: SnackVariant
   duration?: number
   persistent?: boolean
+  progress?: boolean
   placement?: SnackPlacement
   viewProps?: SnackViewProps
 }

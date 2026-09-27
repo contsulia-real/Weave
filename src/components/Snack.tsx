@@ -99,6 +99,7 @@ export function Snack({
   variant = 'default',
   duration = 4000,
   persistent = false,
+  progress = false,
   placement = 'bottom-center',
   open,
   defaultOpen = true,
@@ -350,13 +351,17 @@ export function Snack({
       )
     }
 
-    updateProgress()
+    if (progress) {
+      updateProgress()
+    }
 
     const progressTimer =
-      globalThis.setInterval(
-        updateProgress,
-        PROGRESS_UPDATE_MS,
-      )
+      progress
+        ? globalThis.setInterval(
+            updateProgress,
+            PROGRESS_UPDATE_MS,
+          )
+        : undefined
 
     const closeTimer =
       globalThis.setTimeout(
@@ -371,9 +376,13 @@ export function Snack({
       )
 
     return () => {
-      globalThis.clearInterval(
-        progressTimer,
-      )
+      if (
+        progressTimer !== undefined
+      ) {
+        globalThis.clearInterval(
+          progressTimer,
+        )
+      }
       globalThis.clearTimeout(
         closeTimer,
       )
@@ -409,6 +418,7 @@ export function Snack({
   }, [
     paused,
     persistent,
+    progress,
     requestOpen,
     resolvedOpen,
   ])
@@ -671,7 +681,8 @@ export function Snack({
       >
         {content}
 
-        {!persistent &&
+        {progress &&
+          !persistent &&
           resolvedOpen &&
           durationMs > 0 ? (
           <Progress

@@ -124,10 +124,11 @@ export function ListPlayground() {
           gap={0.5}
         >
           <Text typo="label-medium">
-            Trailing control · no row selection
+            Trailing control · noDividers
           </Text>
 
           <List
+            noDividers
             items={[
               {
                 id: 'wifi',

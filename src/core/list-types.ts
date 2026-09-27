@@ -60,6 +60,7 @@ export interface ListItemProps {
 interface ListBaseProps {
   orientation?: ListOrientation
   gap?: ViewStyleProps['gap']
+  noDividers?: boolean
   virtualized?: boolean
   viewProps?: ListViewProps
 }
