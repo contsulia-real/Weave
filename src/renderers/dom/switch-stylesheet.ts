@@ -77,7 +77,19 @@ const stylesheet = `
     width var(--weave-motion-duration-fast)
       var(--weave-motion-curve-spring),
     height var(--weave-motion-duration-fast)
-      var(--weave-motion-curve-spring);
+      var(--weave-motion-curve-spring),
+    box-shadow var(--weave-motion-duration-fast)
+      var(--weave-motion-curve-standard);
+}
+
+:where(
+  .weave-switch:hover:not([aria-disabled="true"]):not([
+    data-weave-switch-dragging="true"
+  ])
+) > :where(.weave-switch__thumb) {
+  --weave-component-box-shadow: var(
+    --weave-switch-thumb-hover-shadow
+  );
 }
 
 :where(.weave-switch[aria-checked="true"])

@@ -4327,7 +4327,7 @@ Weave 默认主题内置完整 light / dark 配色。`ThemeProvider` 未显式�
 
 默认深色模式不是对浅色值做滤镜或简单反相，而是提供独立的语义 token：深色 surface、提高亮度的 primary、适配深色背景的正文 / 次级文字、outline、状态色、focus 色与阴影。组件继续只消费语义 token，不需要知道当前模式。
 
-深色模式下，交互控件不能仅靠文字颜色判断边界：Button 的 primary / secondary / tertiary / danger 必须保持可辨识的 surface / border / depth 层级，ghost 仍保持最低视觉权重但 hover / active 必须清楚；Switch 的 off track 必须通过独立 track fill 与 inset outline 从背景中分离，on track 则继续使用 primary。
+深色模式必须保持与浅色模式相同的组件设计语言，而不是另起一套“加边框提高对比度”的规则。Button 继续沿用同一套 variant 配方与实体厚度：rest 有 depth，hover 抬起并增加 depth，press 下沉并收缩 depth；dark 只替换语义 token 和必要的阴影颜色。Switch 继续保持“track 凹陷、thumb 凸起”的物理层级：off track 沿用默认混色并用方向性 inset shadow 表达凹槽，不使用均匀 outline；on track 使用 primary；thumb 用外部投影与顶部高光表达突起。
 
 默认深色核心颜色：
 
@@ -4338,7 +4338,7 @@ secondary     #aaa3b5
 tertiary      #e9e5ef
 surface       #18161b
 surfaceHover  #242129
-outline       #3b3542
+outline       #5b5262
 focus         #b8adff
 success       #55d792
 warning       #f4b44c

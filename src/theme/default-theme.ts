@@ -40,7 +40,7 @@ export const defaultDarkTheme: ThemeOverride = {
       success: '#55d792',
       warning: '#f4b44c',
       danger: '#ff7272',
-      outline: '#3b3542',
+      outline: '#5b5262',
       focus: '#b8adff',
     },
     shadow: {
@@ -55,68 +55,29 @@ export const defaultDarkTheme: ThemeOverride = {
   components: {
     Button: {
       variants: {
-        primary: {
-          borderColor: 'primaryHover',
-          depthColor:
-            'color-mix(in srgb, var(--weave-color-primary) 55%, black)',
-        },
         secondary: {
-          background:
-            'color-mix(in srgb, var(--weave-color-secondary) 10%, var(--weave-color-surface))',
-          color: 'tertiary',
-          borderColor:
-            'color-mix(in srgb, var(--weave-color-secondary) 65%, var(--weave-color-surface))',
           depthColor:
-            'color-mix(in srgb, var(--weave-color-secondary) 38%, black)',
-          hoverBackground:
-            'color-mix(in srgb, var(--weave-color-secondary) 17%, var(--weave-color-surface))',
-          activeBackground:
-            'color-mix(in srgb, var(--weave-color-secondary) 25%, var(--weave-color-surface))',
+            'color-mix(in srgb, var(--weave-color-outline) 72%, black)',
         },
         tertiary: {
-          background:
-            'color-mix(in srgb, var(--weave-color-secondary) 16%, var(--weave-color-surface))',
-          color: 'tertiary',
-          borderColor:
-            'color-mix(in srgb, var(--weave-color-secondary) 55%, var(--weave-color-surface))',
           depthColor:
-            'color-mix(in srgb, var(--weave-color-secondary) 32%, black)',
-          hoverBackground:
-            'color-mix(in srgb, var(--weave-color-secondary) 24%, var(--weave-color-surface))',
-          activeBackground:
-            'color-mix(in srgb, var(--weave-color-secondary) 32%, var(--weave-color-surface))',
-        },
-        ghost: {
-          color: 'tertiary',
-          hoverBackground:
-            'color-mix(in srgb, var(--weave-color-secondary) 14%, transparent)',
-          activeBackground:
-            'color-mix(in srgb, var(--weave-color-secondary) 22%, transparent)',
+            'color-mix(in srgb, var(--weave-color-outline) 66%, black)',
         },
         danger: {
-          background:
-            'color-mix(in srgb, var(--weave-color-danger) 13%, var(--weave-color-surface))',
-          color: 'danger',
-          borderColor:
-            'color-mix(in srgb, var(--weave-color-danger) 65%, var(--weave-color-surface))',
           depthColor:
             'color-mix(in srgb, var(--weave-color-danger) 38%, black)',
-          hoverBackground:
-            'color-mix(in srgb, var(--weave-color-danger) 19%, var(--weave-color-surface))',
-          activeBackground:
-            'color-mix(in srgb, var(--weave-color-danger) 27%, var(--weave-color-surface))',
         },
       },
     },
     Switch: {
       base: {
-        background:
-          'color-mix(in srgb, var(--weave-color-secondary) 12%, var(--weave-color-surface))',
         trackShadow:
-          'inset 0 0 0 0.0625rem color-mix(in srgb, var(--weave-color-secondary) 62%, var(--weave-color-surface)), inset 0 0.0625rem 0.125rem rgb(0 0 0 / 0.52)',
+          'inset 0 0.125rem 0.1875rem rgb(0 0 0 / 0.58), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.045)',
         thumbBackground: 'tertiary',
         thumbShadow:
-          '0 0.0625rem 0.125rem rgb(0 0 0 / 0.42), 0 0.125rem 0.3rem rgb(0 0 0 / 0.24)',
+          '0 0.0625rem 0.125rem rgb(0 0 0 / 0.52), 0 0.1875rem 0.375rem rgb(0 0 0 / 0.34), inset 0 0.0625rem 0 rgb(255 255 255 / 0.18)',
+        thumbHoverShadow:
+          '0 0.0625rem 0.125rem rgb(0 0 0 / 0.58), 0 0.25rem 0.5rem rgb(0 0 0 / 0.42), inset 0 0.0625rem 0 rgb(255 255 255 / 0.22)',
       },
     },
     Progress: {
@@ -446,6 +407,8 @@ export const defaultTheme: ResolvedTheme = {
         thumbInset: 0.125,
         thumbShadow:
           '0 0.0625rem 0.125rem rgb(58 48 40 / 0.18), 0 0.125rem 0.25rem rgb(58 48 40 / 0.08)',
+        thumbHoverShadow:
+          '0 0.0625rem 0.125rem rgb(58 48 40 / 0.22), 0 0.1875rem 0.375rem rgb(58 48 40 / 0.12)',
         thumbDragShrink: 0.68,
         thumbDragMaxWidth: 1.35,
         focusOutlineWidth: 0.125,

@@ -325,6 +325,37 @@ describe('Button', () => {
     )
   })
 
+  it('keeps the same tactile variant recipe in dark mode', () => {
+    const { getByRole } = render(
+      <ThemeProvider mode="dark">
+        <Button
+          text="Dark secondary"
+          variant="secondary"
+        />
+      </ThemeProvider>,
+    )
+
+    const rule = runtimeRule(
+      getByRole('button', {
+        name: 'Dark secondary',
+      }),
+      'weave-button-theme-',
+    )
+
+    expect(rule).toContain(
+      '--weave-button-theme-secondary-background:var(--weave-color-surface,surface);',
+    )
+    expect(rule).toContain(
+      '--weave-button-theme-secondary-border-color:var(--weave-color-outline,outline);',
+    )
+    expect(rule).toContain(
+      '--weave-button-theme-secondary-hover-background:var(--weave-color-surfaceHover,surfaceHover);',
+    )
+    expect(rule).toContain(
+      '--weave-button-theme-secondary-depth-color:color-mix(insrgb,var(--weave-color-outline)72%,black);',
+    )
+  })
+
   it('uses the redesigned three-step Button size scale', () => {
     const { getByRole, rerender } = render(
       <Button text="Sized" size="small" />,

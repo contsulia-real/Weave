@@ -320,11 +320,47 @@ describe('Switch', () => {
     expect(themeRule).toContain('--weave-switch-thumb-drag-max-width:1.35;')
     expect(themeRule).toContain('--weave-switch-track-shadow:')
     expect(themeRule).toContain('--weave-switch-thumb-shadow:')
+    expect(themeRule).toContain('--weave-switch-thumb-hover-shadow:')
     expect(stylesheet).toContain(
       '--weave-component-box-shadow: var(--weave-switch-track-shadow)',
     )
     expect(stylesheet).toContain(
       '--weave-component-box-shadow: var(--weave-switch-thumb-shadow)',
+    )
+    expect(stylesheet).toContain(
+      '--weave-switch-thumb-hover-shadow',
+    )
+  })
+
+  it('keeps the recessed track and raised thumb language in dark mode', () => {
+    const { getByRole } = render(
+      <ThemeProvider mode="dark">
+        <Switch />
+      </ThemeProvider>,
+    )
+
+    const rule = runtimeRule(
+      getByRole('switch'),
+      'weave-switch-theme-',
+    )
+
+    expect(rule).toContain(
+      '--weave-switch-background:color-mix(insrgb,var(--weave-color-outline)34%,var(--weave-color-surface));',
+    )
+    expect(rule).toContain(
+      '--weave-switch-checked-background:var(--weave-color-primary',
+    )
+    expect(rule).toContain(
+      '--weave-switch-track-shadow:inset00.125rem0.1875remrgb(000/0.58),inset0-0.0625rem0rgb(255255255/0.045);',
+    )
+    expect(rule).toContain(
+      '--weave-switch-thumb-background:var(--weave-color-tertiary,tertiary);',
+    )
+    expect(rule).toContain(
+      '--weave-switch-thumb-shadow:00.0625rem0.125remrgb(000/0.52),00.1875rem0.375remrgb(000/0.34),inset00.0625rem0rgb(255255255/0.18);',
+    )
+    expect(rule).toContain(
+      '--weave-switch-thumb-hover-shadow:00.0625rem0.125remrgb(000/0.58),00.25rem0.5remrgb(000/0.42),inset00.0625rem0rgb(255255255/0.22);',
     )
   })
 

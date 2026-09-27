@@ -167,6 +167,7 @@ export function resolveSwitchTheme(
     '--weave-switch-thumb-radius': radius(base?.thumbRadius),
     '--weave-switch-thumb-inset': length(base?.thumbInset),
     '--weave-switch-thumb-shadow': base?.thumbShadow,
+    '--weave-switch-thumb-hover-shadow': base?.thumbHoverShadow,
     '--weave-switch-thumb-drag-shrink': base?.thumbDragShrink,
     '--weave-switch-thumb-drag-max-width': base?.thumbDragMaxWidth,
     '--weave-switch-focus-outline-width': length(base?.focusOutlineWidth),

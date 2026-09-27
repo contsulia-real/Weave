@@ -333,7 +333,7 @@ describe('Theme', () => {
       '--weave-color-tertiary:#e9e5ef;',
     )
     expect(rule).toContain(
-      '--weave-color-outline:#3b3542;',
+      '--weave-color-outline:#5b5262;',
     )
     expect(rule).toContain(
       'color:var(--weave-color-tertiary);',
@@ -348,41 +348,36 @@ describe('Theme', () => {
     ).toBe('dark')
   })
 
-  it('keeps dark Button variants and Switch controls visually separated from dark surfaces', () => {
+  it('preserves the light control language in dark mode instead of replacing it with outlines', () => {
     const button =
       defaultDarkTheme.components?.Button
     const switchTheme =
       defaultDarkTheme.components?.Switch
 
     expect(
+      button?.variants?.secondary?.background,
+    ).toBeUndefined()
+    expect(
       button?.variants?.secondary?.borderColor,
-    ).toBe(
-      'color-mix(in srgb, var(--weave-color-secondary) 65%, var(--weave-color-surface))',
-    )
+    ).toBeUndefined()
     expect(
-      button?.variants?.tertiary?.borderColor,
-    ).toBe(
-      'color-mix(in srgb, var(--weave-color-secondary) 55%, var(--weave-color-surface))',
-    )
+      button?.variants?.tertiary?.background,
+    ).toBeUndefined()
     expect(
-      button?.variants?.danger?.borderColor,
-    ).toBe(
-      'color-mix(in srgb, var(--weave-color-danger) 65%, var(--weave-color-surface))',
-    )
-    expect(
-      button?.variants?.ghost?.hoverBackground,
-    ).toBe(
-      'color-mix(in srgb, var(--weave-color-secondary) 14%, transparent)',
-    )
+      button?.variants?.ghost,
+    ).toBeUndefined()
     expect(
       switchTheme?.base?.background,
-    ).toBe(
-      'color-mix(in srgb, var(--weave-color-secondary) 12%, var(--weave-color-surface))',
-    )
+    ).toBeUndefined()
     expect(
       switchTheme?.base?.trackShadow,
     ).toContain(
-      'var(--weave-color-secondary) 62%',
+      'inset 0 0.125rem 0.1875rem',
+    )
+    expect(
+      switchTheme?.base?.thumbShadow,
+    ).toContain(
+      '0 0.1875rem 0.375rem',
     )
   })
 
