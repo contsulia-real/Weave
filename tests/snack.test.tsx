@@ -109,9 +109,6 @@ describe('Snack', () => {
     expect(stylesheet).toContain(
       '.weave-snack__icon-shell',
     )
-    expect(stylesheet).toContain(
-      '0 0.125rem 0',
-    )
     expect(stylesheet).not.toContain(
       '--weave-snack-accent-width',
     )
@@ -151,7 +148,7 @@ describe('Snack', () => {
     ).toBe('success')
   })
 
-  it('folds overflowing regions after three visible Snacks', () => {
+  it('keeps the oldest Snacks visible in FIFO order and folds only later items', () => {
     render(
       <>
         <Snack text="One" persistent />
@@ -172,16 +169,6 @@ describe('Snack', () => {
         'data-weave-snack-count',
       ),
     ).toBe('5')
-    expect(
-      region?.hasAttribute(
-        'data-weave-snack-folded',
-      ),
-    ).toBe(true)
-    expect(
-      region?.getAttribute(
-        'data-weave-snack-hidden-count',
-      ),
-    ).toBe('2')
 
     const snacks =
       Array.from(
@@ -191,31 +178,73 @@ describe('Snack', () => {
       )
 
     expect(
-      snacks[0]?.hasAttribute(
-        'data-weave-snack-stack-hidden',
+      snacks.map(
+        (snack) =>
+          snack.textContent,
       ),
-    ).toBe(true)
-    expect(
-      snacks[1]?.hasAttribute(
-        'data-weave-snack-stack-hidden',
-      ),
-    ).toBe(true)
+    ).toEqual([
+      'One',
+      'Two',
+      'Three',
+      'Four',
+      'Five',
+    ])
 
     expect(
-      snacks[2]?.getAttribute(
-        'data-weave-snack-stack-rank',
+      snacks[0]?.getAttribute(
+        'data-weave-snack-queue-index',
       ),
-    ).toBe('2')
+    ).toBe('0')
     expect(
-      snacks[3]?.getAttribute(
-        'data-weave-snack-stack-rank',
+      snacks[1]?.getAttribute(
+        'data-weave-snack-queue-index',
       ),
     ).toBe('1')
     expect(
-      snacks[4]?.getAttribute(
-        'data-weave-snack-stack-rank',
+      snacks[2]?.getAttribute(
+        'data-weave-snack-queue-index',
       ),
-    ).toBe('0')
+    ).toBe('2')
+
+    expect(
+      snacks[0]?.hasAttribute(
+        'data-weave-snack-queue-hidden',
+      ),
+    ).toBe(false)
+    expect(
+      snacks[1]?.hasAttribute(
+        'data-weave-snack-queue-hidden',
+      ),
+    ).toBe(false)
+    expect(
+      snacks[2]?.hasAttribute(
+        'data-weave-snack-queue-hidden',
+      ),
+    ).toBe(false)
+    expect(
+      snacks[3]?.hasAttribute(
+        'data-weave-snack-queue-hidden',
+      ),
+    ).toBe(true)
+    expect(
+      snacks[4]?.hasAttribute(
+        'data-weave-snack-queue-hidden',
+      ),
+    ).toBe(true)
+
+    const overflow =
+      region?.querySelector(
+        '[data-weave-snack-overflow]',
+      )
+
+    expect(
+      overflow?.textContent,
+    ).toBe('+2')
+    expect(
+      overflow?.closest(
+        '[data-weave-theme]',
+      ),
+    ).not.toBeNull()
 
     const stylesheet =
       document.querySelector<HTMLStyleElement>(
@@ -223,13 +252,19 @@ describe('Snack', () => {
       )?.textContent ?? ''
 
     expect(stylesheet).toContain(
-      'data-weave-snack-stack-hidden',
+      'flex-direction: column;',
     )
     expect(stylesheet).toContain(
-      'data-weave-snack-stack-rank="1"',
+      'flex-direction: column-reverse;',
     )
     expect(stylesheet).toContain(
-      'data-weave-snack-folded',
+      'data-weave-snack-queue-hidden',
+    )
+    expect(stylesheet).not.toContain(
+      'margin-top: -',
+    )
+    expect(stylesheet).not.toContain(
+      'margin-bottom: -',
     )
   })
 
