@@ -47,12 +47,12 @@ const stylesheet = `
   --weave-component-cursor: pointer;
 }
 
-:where(.weave-list-item[data-weave-list-item-selectable="true"]:hover) {
+:where(.weave-list-item[data-weave-list-item-selectable="true"]:not([aria-disabled="true"]):hover) {
   --weave-component-background:
     var(--weave-list-item-hover-background);
 }
 
-:where(.weave-list-item[data-weave-list-item-selectable="true"]:active) {
+:where(.weave-list-item[data-weave-list-item-selectable="true"]:not([aria-disabled="true"]):active) {
   --weave-component-background:
     var(--weave-list-item-active-background);
 }
@@ -69,7 +69,7 @@ const stylesheet = `
     data-weave-list-item-selected="true"
   ][
     data-weave-list-item-selectable="true"
-  ]:hover
+  ]:not([aria-disabled="true"]):hover
 ) {
   --weave-component-background:
     var(--weave-list-item-selected-hover-background);
