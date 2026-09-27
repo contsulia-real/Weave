@@ -505,8 +505,8 @@ function App() {
               placement="right"
               content={
                 <View layout="flex" direction="column" gap={0.25}>
-                  <Text typo="label-medium">Complex tooltip</Text>
-                  <Text typo="body-small">View + Text content</Text>
+                  <Text typo="label-small">Complex tooltip</Text>
+                  <Text typo="body-xsmall">View + Text content</Text>
                 </View>
               }
             >
