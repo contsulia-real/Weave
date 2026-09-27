@@ -370,6 +370,15 @@ describe('Snack', () => {
     expect(stylesheet).not.toContain(
       '--weave-snack-accent-width',
     )
+    expect(stylesheet).not.toContain(
+      '--weave-snack-min-width',
+    )
+    expect(stylesheet).not.toContain(
+      '--weave-snack-max-width',
+    )
+    expect(stylesheet).not.toContain(
+      '--weave-snack-available-width',
+    )
   })
 
   it('renders shortcut content into the requested shared placement region', () => {
