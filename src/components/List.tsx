@@ -218,6 +218,10 @@ function listIcon(
         viewProps={{
           className:
             'weave-list-item__icon',
+          width:
+            'var(--weave-list-item-icon-size)',
+          height:
+            'var(--weave-list-item-icon-size)',
           'aria-hidden': true,
         }}
       />
