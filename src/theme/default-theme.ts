@@ -461,9 +461,6 @@ export const defaultTheme: ResolvedTheme = {
         iconSize: 1.625,
         typo: 'body-medium',
         motionOffset: 0.5,
-        stackOffset: 0.375,
-        stackScaleStep: 0.025,
-        stackOpacityStep: 0.16,
       },
       variants: {
         default: {
