@@ -455,8 +455,6 @@ export const defaultTheme: ResolvedTheme = {
         paddingX: 0.875,
         paddingY: 0.625,
         gap: 0.625,
-        minWidth: 0,
-        maxWidth: 22,
         shadow: 'medium',
         iconSize: 1.625,
         progressHeight: 0.125,
