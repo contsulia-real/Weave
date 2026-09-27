@@ -12,6 +12,9 @@ import {
   LayoutPlayground,
 } from './playground/LayoutPlayground'
 import {
+  ListPlayground,
+} from './playground/ListPlayground'
+import {
   SnackPlayground,
 } from './playground/SnackPlayground'
 
@@ -75,6 +78,7 @@ function App() {
 
         <FoundationPlayground />
         <SnackPlayground />
+        <ListPlayground />
         <FormPlayground />
         <LayoutPlayground />
       </View>
