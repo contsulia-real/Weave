@@ -414,6 +414,29 @@ canvas
 
 业务不创建 Canvas，也不需要为普通组件选择 renderer。
 
+#### 页面级滚动必须位于 Canvas 外部
+
+当前 HTML-in-Canvas 尚不能让 Canvas 内部的大型滚动区域像普通 DOM 一样完全由 compositor/threaded scrolling 独立更新。Weave 因此采用以下根节点规则：
+
+```text
+document / outer DOM
+└─ content-sized canvas
+   └─ drawable DOM root
+      └─ React / Weave page content
+```
+
+Canvas 的 CSS 高度跟随 drawable 根内容高度，Canvas backing store 再跟随其实际 device-pixel content box。浏览器滚动的是整个 Canvas DOM 元素，而不是在固定高度 Canvas 内滚动整棵页面。
+
+因此：
+
+- 页面根 View 默认不得依赖 `height="100vh" + overflow="auto"` 承担整个页面滚动；
+- 页面根应使用自然内容高度或 `minHeight="100vh"`；
+- 文档滚动由浏览器外层页面负责；
+- Input textarea、局部 List、局部 View 等有明确边界的内部滚动仍允许位于 drawable subtree 内；
+- 不得为了页面滚动自行实现 Canvas scroll offset、事件转发或手工虚拟滚动 renderer。
+
+当前 WICG 对 responsive canvas sizing 仍是开放设计问题；Weave 使用其当前公开 workaround：观察 drawable 内容尺寸并同步 Canvas CSS 尺寸，再按 device pixel 尺寸同步 backing store。
+
 ### 3.5 DOM + CSS fallback
 
 HTML-in-Canvas 当前仍是实验性 Web Platform API，因此必须运行时 feature detect。
