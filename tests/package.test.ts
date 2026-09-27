@@ -1,9 +1,12 @@
 import { describe, expect, it } from 'vitest'
 
-describe('Weave package entry', () => {
-  it('loads as an ES module', async () => {
-    const weave = await import('../src/index')
+describe('Weave built package entry', () => {
+  it('loads the built ES module with current public exports', async () => {
+    const weave = await import('../dist/weave.js')
 
     expect(weave).toBeDefined()
+    expect(weave.List).toBeTypeOf('function')
+    expect(weave.ListItem).toBeTypeOf('function')
+    expect(weave.createRoot).toBeTypeOf('function')
   })
 })

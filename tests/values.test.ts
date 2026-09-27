@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   angle,
   background,
+  color,
   dimension,
   length,
   time,
@@ -23,6 +24,12 @@ describe('Weave value normalization', () => {
   it('keeps non-scale angle semantics', () => {
     expect(angle(20)).toBe('20deg')
     expect(angle('0.5turn')).toBe('0.5turn')
+  })
+
+  it('keeps token lookup and direct named-color fallback in one color value', () => {
+    expect(color('primary')).toBe('var(--weave-color-primary, primary)')
+    expect(color('red')).toBe('var(--weave-color-red, red)')
+    expect(color('#ff0000')).toBe('#ff0000')
   })
 
   it('maps semantic dimensions to CSS', () => {

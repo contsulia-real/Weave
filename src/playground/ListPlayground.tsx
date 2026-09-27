@@ -87,8 +87,6 @@ export function ListPlayground() {
               {
                 id: 'home',
                 text: 'Home',
-                secondaryText:
-                  'Overview and recent activity',
                 icon: IconHome,
               },
               {
