@@ -3421,7 +3421,7 @@ defaultOpen = true
 layer       = snack
 ```
 
-Snack **没有独立 Direction API**。进入与退出方向只由 placement 的屏幕边缘语义自然决定：
+Snack 的进入与退出方向只由 placement 的屏幕边缘语义自动决定：
 
 ```text
 top-*    → 从顶部边缘进入 / 向顶部边缘退出
