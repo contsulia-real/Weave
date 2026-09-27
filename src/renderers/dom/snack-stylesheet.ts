@@ -34,47 +34,6 @@ const stylesheet = `
   transform: translateX(-50%);
 }
 
-:where(.weave-snack[data-weave-snack-queue-hidden]) {
-  display: none;
-}
-
-:where(.weave-snack-overflow) {
-  --weave-snack-overflow-motion-y: 0rem;
-
-  display: block;
-  padding-inline: 0.25rem;
-  color: var(--weave-color-secondary);
-  font-family: var(--weave-typography-family-body);
-  font-size: var(--weave-typography-style-body-xsmall-font-size);
-  font-weight: var(--weave-typography-style-body-xsmall-font-weight);
-  line-height: var(--weave-typography-style-body-xsmall-line-height);
-  letter-spacing: var(--weave-typography-style-body-xsmall-letter-spacing);
-  pointer-events: none;
-  user-select: none;
-  opacity: 1;
-  translate: 0 0;
-  transition:
-    opacity var(--weave-motion-duration-fast)
-      var(--weave-motion-curve-exit),
-    translate var(--weave-motion-duration-fast)
-      var(--weave-motion-curve-exit);
-}
-
-:where(.weave-snack-region[data-weave-snack-region^="top-"])
-  :where(.weave-snack-overflow) {
-  --weave-snack-overflow-motion-y: -0.25rem;
-}
-
-:where(.weave-snack-region[data-weave-snack-region^="bottom-"])
-  :where(.weave-snack-overflow) {
-  --weave-snack-overflow-motion-y: 0.25rem;
-}
-
-:where(.weave-snack-overflow[data-weave-snack-overflow-state="closing"]) {
-  opacity: 0;
-  translate: 0 var(--weave-snack-overflow-motion-y);
-}
-
 :where(.weave-snack) {
   --weave-component-display: flex;
   --weave-component-flex-direction: row;
@@ -158,26 +117,6 @@ const stylesheet = `
       var(--weave-motion-curve-exit);
 }
 
-:where(.weave-snack[data-weave-snack-queue-revealed]) {
-  animation:
-    weave-snack-fifo-reveal
-    var(--weave-motion-duration-normal)
-    var(--weave-motion-curve-emphasized)
-    both;
-}
-
-@keyframes weave-snack-fifo-reveal {
-  from {
-    opacity: 0;
-    translate: 0 var(--weave-snack-motion-y);
-  }
-
-  to {
-    opacity: 1;
-    translate: 0 0;
-  }
-}
-
 :where(.weave-snack__lifetime) {
   --weave-motion-curve-standard: linear;
   z-index: 1;
@@ -257,9 +196,6 @@ const stylesheet = `
     translate: 0 0;
   }
 
-  :where(.weave-snack[data-weave-snack-queue-revealed]) {
-    animation: none;
-  }
 }
 `
 
