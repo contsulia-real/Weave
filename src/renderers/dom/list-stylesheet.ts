@@ -1,0 +1,158 @@
+const stylesheet = `
+:where(.weave-list) {
+  --weave-component-display: flex;
+  --weave-component-align-items: stretch;
+  --weave-component-gap: var(--weave-list-gap);
+}
+
+:where(.weave-list[data-weave-list-orientation="vertical"]) {
+  --weave-component-flex-direction: column;
+}
+
+:where(.weave-list[data-weave-list-orientation="horizontal"]) {
+  --weave-component-flex-direction: row;
+}
+
+:where(.weave-list-item) {
+  --weave-component-display: flex;
+  --weave-component-flex-direction: row;
+  --weave-component-align-items: center;
+  --weave-component-gap: var(--weave-list-item-gap);
+  --weave-component-background: var(--weave-list-item-background);
+  --weave-component-color: var(--weave-list-item-color);
+
+  --weave-component-padding-top: var(--weave-list-item-padding-y);
+  --weave-component-padding-right: var(--weave-list-item-padding-x);
+  --weave-component-padding-bottom: var(--weave-list-item-padding-y);
+  --weave-component-padding-left: var(--weave-list-item-padding-x);
+
+  --weave-component-border-top-left-radius: var(--weave-list-item-radius);
+  --weave-component-border-top-right-radius: var(--weave-list-item-radius);
+  --weave-component-border-bottom-right-radius: var(--weave-list-item-radius);
+  --weave-component-border-bottom-left-radius: var(--weave-list-item-radius);
+
+  --weave-component-outline-width: 0;
+  --weave-component-user-select: none;
+
+  min-width: 0;
+
+  transition:
+    background var(--weave-motion-duration-fast)
+      var(--weave-motion-curve-standard),
+    color var(--weave-motion-duration-fast)
+      var(--weave-motion-curve-standard);
+}
+
+:where(.weave-list-item[data-weave-list-item-selectable="true"]) {
+  --weave-component-cursor: pointer;
+}
+
+:where(.weave-list-item[data-weave-list-item-selectable="true"]:hover) {
+  --weave-component-background:
+    var(--weave-list-item-hover-background);
+}
+
+:where(.weave-list-item[data-weave-list-item-selectable="true"]:active) {
+  --weave-component-background:
+    var(--weave-list-item-active-background);
+}
+
+:where(.weave-list-item[data-weave-list-item-selected="true"]) {
+  --weave-component-background:
+    var(--weave-list-item-selected-background);
+  --weave-component-color:
+    var(--weave-list-item-selected-color);
+}
+
+:where(
+  .weave-list-item[
+    data-weave-list-item-selected="true"
+  ][
+    data-weave-list-item-selectable="true"
+  ]:hover
+) {
+  --weave-component-background:
+    var(--weave-list-item-selected-hover-background);
+}
+
+:where(.weave-list-item:focus-visible) {
+  --weave-component-outline-width:
+    var(--weave-list-item-focus-outline-width);
+  --weave-component-outline-color:
+    var(--weave-list-item-focus-outline-color);
+  --weave-component-outline-style:
+    var(--weave-list-item-focus-outline-style);
+  --weave-component-outline-offset:
+    var(--weave-list-item-focus-outline-offset);
+}
+
+:where(.weave-list-item[aria-disabled="true"]) {
+  --weave-component-opacity:
+    var(--weave-list-item-disabled-opacity);
+  --weave-component-cursor: default;
+}
+
+:where(.weave-list-item__icon) {
+  --weave-component-width:
+    var(--weave-list-item-icon-size);
+  --weave-component-height:
+    var(--weave-list-item-icon-size);
+  --weave-component-flex-shrink: 0;
+}
+
+:where(.weave-list-item__text) {
+  --weave-component-display: flex;
+  --weave-component-flex-direction: column;
+  --weave-component-gap: 0.125rem;
+  --weave-component-flex-grow: 1;
+  --weave-component-min-width: 0rem;
+}
+
+:where(.weave-list-item__secondary) {
+  color: var(--weave-list-item-secondary-color);
+}
+
+:where(.weave-list-item__trailing) {
+  --weave-component-display: flex;
+  --weave-component-align-items: center;
+  --weave-component-flex-shrink: 0;
+  margin-inline-start: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(.weave-list-item) {
+    transition: none;
+  }
+}
+`
+
+export function ensureListStylesheet(): void {
+  if (typeof document === 'undefined') {
+    return
+  }
+
+  const existing =
+    document.querySelector<HTMLStyleElement>(
+      'style[data-weave-list-styles]',
+    )
+
+  if (existing !== null) {
+    if (
+      existing.textContent !==
+      stylesheet
+    ) {
+      existing.textContent =
+        stylesheet
+    }
+    return
+  }
+
+  const element =
+    document.createElement('style')
+
+  element.dataset.weaveListStyles =
+    ''
+  element.textContent =
+    stylesheet
+  document.head.append(element)
+}
