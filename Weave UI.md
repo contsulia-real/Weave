@@ -3266,6 +3266,7 @@ View
 Text
 Icon?
 Button?
+Progress
 ```
 
 ## 20.1 推荐：队列触发
@@ -3448,6 +3449,7 @@ bottom-* → 从底部边缘进入 / 向底部边缘退出
 
 - `persistent=false` 时按自己的 `duration` 自动关闭；
 - 每个自动关闭 Snack 底部显示一条线性 lifetime Progress，从 1 线性下降到 0；
+- lifetime Progress 必须直接使用公开的 `Progress` 组件，固定 `mode="linear"`，不得调用 `ProgressVisual` 或另外实现一条私有进度条；
 - Progress 与自动关闭计时必须共享同一份剩余时间状态，不允许视觉进度和真实关闭时刻分离；
 - pointer 停留在当前 Snack 上时暂停该实例，同时暂停 lifetime Progress；
 - focus 位于当前 Snack 或其 action 内时暂停该实例，同时暂停 lifetime Progress；
@@ -3455,15 +3457,15 @@ bottom-* → 从底部边缘进入 / 向底部边缘退出
 - `persistent=true` 时完全禁用自动关闭，并且不显示 lifetime Progress；
 - 关闭进入 exit transition，transition 完成后才从队列移除。
 
-## 20.6 placement、视觉 FIFO 与自动折叠
+## 20.6 placement、视觉 FIFO 与容量溢出
 
 每个 placement 在 `document.body` 中由框架维护一个共享 region。
 
 业务不创建 portal host、不计算坐标、不维护队列 index。
 
-### 视觉顺序必须 FIFO
+同一 placement 的**可见容量固定为 3**。
 
-Snack 在视觉上的排列顺序必须严格等于创建顺序：
+视觉顺序严格按照创建顺序：
 
 ```text
 A 先创建
@@ -3475,14 +3477,6 @@ A
 B
 C
 ```
-
-不允许：
-
-- 后来的 Snack 排到前面；
-- 反转创建顺序；
-- 卡片互相覆盖；
-- 通过负 margin、scale、translate 等方式把多张 Snack 压成层叠卡片；
-- 用 z-index 表达所谓“前后栈层”。
 
 placement 只决定队列从哪个屏幕边缘向内延伸：
 
@@ -3498,47 +3492,38 @@ bottom-*
 → C 在 B 之后继续向上排列
 ```
 
-因此无论 placement 在哪里，**最早创建的 Snack 始终是视觉队列的第一项**。
+### 容量溢出必须 FIFO 驱逐
 
-### 自动折叠
-
-同一 placement 最多展开显示 **3 条最早仍存活的 Snack**。
-
-超过 3 条时：
+当 A / B / C 已占满容量，第 4 条 D 进入时：
 
 ```text
 A
 B
 C
-+2
 
-D / E
-→ 保持自己的实例和生命周期
-→ 仅折叠隐藏
-```
+D 到达
+→ A 立即进入 closing
+→ A 播放正常退出动效
+→ D 进入队尾
 
-当 A 退出后：
+A 退出完成后：
 
-```text
 B
 C
 D
-+1
 ```
 
-也就是后续条目按 FIFO 顺序自然补入可见区。
+因此：
 
-折叠规则：
+- 最早进入的可见 Snack 永远最先因容量溢出而退出；
+- 被驱逐项必须播放和正常关闭相同的 exit motion，不能瞬间消失；
+- 新 Snack 不能覆盖旧 Snack；
+- 不存在隐藏等待队列；
+- 不存在 `+N` overflow 指示；
+- 不允许卡片重叠、负 margin、scale 堆叠或 z-index 模拟栈；
+- 每条 Snack 自己的 duration 仍从自己的创建 / 打开时刻计算；
+- 新增 Snack 不得重置其他 Snack 的 timer。
 
-- 只折叠超过可见上限的后续条目；
-- 不改变任何 Snack 的创建顺序；
-- 不改变任何 Snack 自己的 duration；
-- 不暂停、重启或同步其他 Snack 的 timer；
-- 折叠计数使用当前主题 typography / color token；
-- 折叠计数独立占位，不覆盖任何 Snack；
-- 折叠中的 Snack 自己关闭时，不能因为 `display: none` 而完全没有视觉退出反馈；对应的 overflow 指示必须进入 closing 动效后再更新计数；
-- 当前面可见 Snack 离开、折叠中的下一条补入可见区时，该 Snack 使用一次短的 reveal 动效进入自己的 FIFO 位置；
-- overflow exit / reveal 都只使用 opacity + placement 对应轻微位移，不允许卡片重叠、scale 堆叠或改变 FIFO 顺序。
 
 ## 20.7 默认视觉语言
 
@@ -3611,10 +3596,9 @@ Snack 的动效只表达：
 
 ```text
 出现
-退出
-折叠 overflow 的出栈反馈
-折叠项补入可见区
-FIFO 队列中某一项被移除后的自然布局补位
+正常退出
+FIFO 容量溢出时最旧项的退出
+队列中某一项被移除后的自然布局补位
 ```
 
 单条进入：
