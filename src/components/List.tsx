@@ -65,6 +65,22 @@ interface ListDescriptor {
   disabled: boolean
 }
 
+type SingleListProps =
+  Extract<
+    ListProps,
+    {
+      selection: 'single'
+    }
+  >
+
+type MultipleListProps =
+  Extract<
+    ListProps,
+    {
+      selection: 'multiple'
+    }
+  >
+
 function assignRef<T>(
   ref: Ref<T> | undefined,
   value: T | null,
@@ -369,11 +385,17 @@ export function List(
 
   const singleProps =
     selection === 'single'
-      ? props
+      ? (
+          props as
+            SingleListProps
+        )
       : undefined
   const multipleProps =
     selection === 'multiple'
-      ? props
+      ? (
+          props as
+            MultipleListProps
+        )
       : undefined
 
   const [
@@ -485,13 +507,8 @@ export function List(
           selection === 'single'
         ) {
           const selectionProps =
-            props as Extract<
-              ListProps,
-              {
-                selection:
-                  'single'
-              }
-            >
+            props as
+              SingleListProps
 
           if (
             currentSingle === id
@@ -518,13 +535,8 @@ export function List(
           selection === 'multiple'
         ) {
           const selectionProps =
-            props as Extract<
-              ListProps,
-              {
-                selection:
-                  'multiple'
-              }
-            >
+            props as
+              MultipleListProps
           const next =
             currentMultiple.includes(
               id,
@@ -806,6 +818,11 @@ export function List(
               )
         }
         gap={gap}
+        position={
+          virtualized
+            ? 'relative'
+            : viewProps.position
+        }
         className={[
           'weave-list',
           themeClassName,
