@@ -1,9 +1,11 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { resolveButton } from '../src/core/resolved-button'
+import { resolveImage } from '../src/core/resolved-image'
 import { resolveSwitch } from '../src/core/resolved-switch'
 import { resolveText } from '../src/core/resolved-text'
 import { resolveView } from '../src/core/resolved-view'
 import { compileDiCButton } from '../src/renderers/dic/compile-button'
+import { compileDiCImage } from '../src/renderers/dic/compile-image'
 import { compileDiCSwitch } from '../src/renderers/dic/compile-switch'
 import { compileDiCText } from '../src/renderers/dic/compile-text'
 import { compileDiCView } from '../src/renderers/dic/compile-view'
@@ -162,6 +164,43 @@ describe('DiC semantic mirror', () => {
         '[data-weave-dic-semantic-root]',
       ),
     ).toBeNull()
+  })
+
+  it('exposes Image alt text through the semantic mirror', () => {
+    const image = compileDiCImage(
+      resolveView(
+        {
+          width: 4,
+          height: 3,
+        },
+        defaultBreakpoints,
+      ),
+      resolveImage({
+        src: '/cover.webp',
+        alt: 'Album cover',
+      }),
+    )
+    const controller = createDiCInteractionController({
+      getLayout: () => undefined,
+      invalidate: vi.fn(),
+    })
+
+    const host = document.createElement('div')
+    const canvas = document.createElement('canvas')
+    host.appendChild(canvas)
+    document.body.appendChild(host)
+
+    const mirror = createDiCSemanticMirror(
+      canvas,
+      controller,
+    )
+    mirror.update(image)
+
+    const element = mirror.getElement(image)
+    expect(element?.getAttribute('role')).toBe('img')
+    expect(element?.getAttribute('aria-label')).toBe(
+      'Album cover',
+    )
   })
 
   it('uses native DOM focus order while keeping DiC focus state authoritative', () => {
