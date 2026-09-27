@@ -3626,9 +3626,8 @@ layer
 - 图标与 action 可以使用 variant accent，但正文仍遵循正常信息层级；
 - typography 来自统一 type scale；
 - spacing、radius、shadow、motion 必须来自 theme token / component theme；
-- 页面级 Snack 不得溢出 viewport；
-- container-scoped Snack 不得溢出指定容器的可用宽度；
 - lifetime Progress 必须位于 Snack 自己的底部 padding 内部，与左右内容边界对齐，不得贴到或穿过外层 border radius。
+- Snack 不自行规定 `minWidth` / `maxWidth`；默认宽度由内容自然决定。需要明确宽度约束时由调用方通过 `viewProps.width / minWidth / maxWidth` 指定。
 
 组件主题入口：
 
@@ -3648,8 +3647,6 @@ radius
 paddingX
 paddingY
 gap
-minWidth
-maxWidth
 shadow
 iconSize
 progressHeight
