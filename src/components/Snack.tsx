@@ -16,7 +16,6 @@ import type {
   IconSvg,
 } from '../core/icon-types'
 import type {
-  SnackDirection,
   SnackIcon,
   SnackPlacement,
   SnackProps,
@@ -49,15 +48,6 @@ function urgentVariant(
     variant === 'danger'
   )
 }
-
-function defaultDirection(
-  placement: SnackPlacement,
-): SnackDirection {
-  return placement.startsWith('top-')
-    ? 'up'
-    : 'down'
-}
-
 
 function iconContent(
   icon: SnackIcon,
@@ -102,7 +92,6 @@ export function Snack({
   duration = 4000,
   persistent = false,
   placement = 'bottom-center',
-  direction,
   open,
   defaultOpen = true,
   onOpenChange,
@@ -118,9 +107,6 @@ export function Snack({
   ] = useState(defaultOpen)
   const resolvedOpen =
     open ?? uncontrolledOpen
-  const resolvedDirection =
-    direction ??
-    defaultDirection(placement)
 
   const [
     present,
@@ -145,6 +131,10 @@ export function Snack({
 
   const requestedOpenRef =
     useRef(resolvedOpen)
+  const controlledRef =
+    useRef(controlled)
+  const onOpenChangeRef =
+    useRef(onOpenChange)
   const dismissedRef =
     useRef(!resolvedOpen)
 
@@ -174,6 +164,11 @@ export function Snack({
       resolvedOpen
   }, [resolvedOpen])
 
+  controlledRef.current =
+    controlled
+  onOpenChangeRef.current =
+    onOpenChange
+
   const completeDismiss =
     useCallback(() => {
       if (dismissedRef.current) {
@@ -198,16 +193,15 @@ export function Snack({
         requestedOpenRef.current =
           next
 
-        if (!controlled) {
+        if (!controlledRef.current) {
           setUncontrolledOpen(next)
         }
 
-        onOpenChange?.(next)
+        onOpenChangeRef.current?.(
+          next,
+        )
       },
-      [
-        controlled,
-        onOpenChange,
-      ],
+      [],
     )
 
   useEffect(() => {
@@ -499,8 +493,6 @@ export function Snack({
             visualState,
           'weave-snack-placement':
             placement,
-          'weave-snack-direction':
-            resolvedDirection,
           variant,
         }}
       >
