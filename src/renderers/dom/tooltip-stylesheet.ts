@@ -25,9 +25,7 @@ const stylesheet = `
   --weave-component-padding-bottom: var(--weave-tooltip-padding-y);
   --weave-component-padding-left: var(--weave-tooltip-padding-x);
 
-  --weave-component-box-shadow:
-    0 var(--weave-tooltip-depth) 0 var(--weave-tooltip-depth-color),
-    var(--weave-tooltip-shadow);
+  --weave-component-box-shadow: var(--weave-tooltip-shadow);
 
   isolation: isolate;
   scale: 1;
