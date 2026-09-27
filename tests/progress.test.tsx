@@ -215,12 +215,7 @@ describe('Progress', () => {
       | IntersectionObserverCallback
       | undefined
 
-    class TestIntersectionObserver
-      implements IntersectionObserver {
-      readonly root = null
-      readonly rootMargin = '0px'
-      readonly thresholds = [0]
-
+    class TestIntersectionObserver {
       constructor(
         observerCallback:
           IntersectionObserverCallback,
@@ -264,7 +259,7 @@ describe('Progress', () => {
         ],
         new TestIntersectionObserver(
           () => {},
-        ),
+        ) as unknown as IntersectionObserver,
       )
 
       expect(
@@ -282,7 +277,7 @@ describe('Progress', () => {
         ],
         new TestIntersectionObserver(
           () => {},
-        ),
+        ) as unknown as IntersectionObserver,
       )
 
       expect(
