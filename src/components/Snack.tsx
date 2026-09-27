@@ -1,6 +1,7 @@
 import {
   isValidElement,
   useCallback,
+  useContext,
   useEffect,
   useInsertionEffect,
   useLayoutEffect,
@@ -32,6 +33,10 @@ import { Progress } from './Progress'
 import { Text } from './Text'
 import { View } from './View'
 import { durationMilliseconds } from './internal/motion-duration'
+import {
+  SnackHostContext,
+  resolveSnackHost,
+} from './internal/snack-host-context'
 import {
   retainSnackRegion,
   syncSnackRegion,
@@ -153,6 +158,8 @@ export function Snack({
   const dismissedRef =
     useRef(!resolvedOpen)
 
+  const snackHostTarget =
+    useContext(SnackHostContext)
   const { theme, mode } =
     useTheme()
   const base =
@@ -408,15 +415,26 @@ export function Snack({
     if (
       !present ||
       typeof document ===
-      'undefined'
+        'undefined'
     ) {
+      setRegion(null)
+      return
+    }
+
+    const host =
+      resolveSnackHost(
+        snackHostTarget,
+        document,
+      )
+
+    if (host === null) {
       setRegion(null)
       return
     }
 
     const handle =
       retainSnackRegion(
-        document,
+        host,
         placement,
       )
 
@@ -428,6 +446,7 @@ export function Snack({
   }, [
     placement,
     present,
+    snackHostTarget,
   ])
   /* oxlint-enable react/set-state-in-effect */
 
