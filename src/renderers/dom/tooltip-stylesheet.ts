@@ -98,6 +98,8 @@ const stylesheet = `
 :where(.weave-tooltip[data-placement="right"])::before {
   top: 50%;
   left: calc(-0.5 * var(--weave-tooltip-arrow-size));
+  border-left-width: var(--weave-tooltip-border-width);
+  border-bottom-width: var(--weave-tooltip-border-width);
   transform: translateY(-50%) rotate(45deg);
 }
 @media (prefers-reduced-motion: reduce) {
