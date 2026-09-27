@@ -211,6 +211,13 @@ export function createHTMLInCanvasMount(
     )
   }
 
+  // Chromium's current experimental implementation still requires
+  // `layoutsubtree`, while the latest WICG explainer uses
+  // `content="drawable"`. Keep both during the API transition.
+  canvas.setAttribute(
+    'layoutsubtree',
+    '',
+  )
   canvas.setAttribute(
     'content',
     'drawable',
