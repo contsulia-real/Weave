@@ -26,6 +26,8 @@ If the browser does not expose HTML-in-Canvas, `createRoot(container)` falls bac
 
 Applications do not create or manage the internal canvas.
 
+For document-level scrolling, Weave sizes the internal canvas to the drawable DOM content and lets the browser scroll that canvas as an ordinary page element. Large page roots should therefore use normal document scrolling rather than making the root View itself `overflow="auto"`. Bounded component-level scrollers such as textarea or list regions can still scroll inside the drawable subtree.
+
 ## HTML-in-Canvas status
 
 HTML-in-Canvas is currently an experimental Web Platform API implemented behind a Chromium flag. Weave feature-detects the API at runtime; it does not emulate HTML-in-Canvas by reimplementing browser layout, text rendering, hit testing, input editing or accessibility in JavaScript.
