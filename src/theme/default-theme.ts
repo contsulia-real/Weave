@@ -479,6 +479,38 @@ export const defaultTheme: ResolvedTheme = {
         },
       },
     },
+    List: {
+      base: {
+        gap: 0.25,
+      },
+    },
+    ListItem: {
+      base: {
+        background: 'transparent',
+        hoverBackground: 'surfaceHover',
+        activeBackground:
+          'color-mix(in srgb, var(--weave-color-outline) 52%, var(--weave-color-surface))',
+        selectedBackground:
+          'color-mix(in srgb, var(--weave-color-primary) 10%, var(--weave-color-surface))',
+        selectedHoverBackground:
+          'color-mix(in srgb, var(--weave-color-primary) 15%, var(--weave-color-surface))',
+        color: 'tertiary',
+        secondaryColor: 'secondary',
+        selectedColor: 'tertiary',
+        radius: 'medium',
+        paddingX: 0.875,
+        paddingY: 0.625,
+        gap: 0.75,
+        iconSize: 1.25,
+        primaryTypo: 'body-medium',
+        secondaryTypo: 'body-small',
+        focusOutlineWidth: 0.125,
+        focusOutlineColor: 'focus',
+        focusOutlineStyle: 'solid',
+        focusOutlineOffset: 0.0625,
+        disabledOpacity: 0.5,
+      },
+    },
   },
   breakpoints: defaultBreakpoints,
   layers: {
