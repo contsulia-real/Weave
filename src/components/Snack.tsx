@@ -180,6 +180,16 @@ export function Snack({
   }, [resolvedOpen])
 
   useEffect(() => {
+    controlledRef.current =
+      controlled
+    onOpenChangeRef.current =
+      onOpenChange
+  }, [
+    controlled,
+    onOpenChange,
+  ])
+
+  useEffect(() => {
     const wasOpen =
       previousOpenRef.current
     previousOpenRef.current =
@@ -199,11 +209,6 @@ export function Snack({
     durationMs,
     resolvedOpen,
   ])
-
-  controlledRef.current =
-    controlled
-  onOpenChangeRef.current =
-    onOpenChange
 
   const completeDismiss =
     useCallback(() => {
