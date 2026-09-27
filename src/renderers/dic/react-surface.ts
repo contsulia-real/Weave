@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { DiCCapabilityError } from './capability-error'
 import { resolveView } from '../../core/resolved-view'
 import { defaultTheme } from '../../theme/default-theme'
 import { compileDiCView, type DiCViewNode } from './compile-view'
@@ -45,7 +46,7 @@ function surfaceRoot(
   }
 
   if (nodes.length !== 1) {
-    throw new Error(
+    throw new DiCCapabilityError(
       'DiC React surface currently requires exactly one top-level Weave node',
     )
   }
