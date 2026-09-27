@@ -256,6 +256,41 @@ export interface SnackTheme {
   >
 }
 
+export interface ListThemeBase {
+  gap?: ThemeScaleValue
+}
+
+export interface ListTheme {
+  base?: ListThemeBase
+}
+
+export interface ListItemThemeBase {
+  background?: string
+  hoverBackground?: string
+  activeBackground?: string
+  selectedBackground?: string
+  selectedHoverBackground?: string
+  color?: string
+  secondaryColor?: string
+  selectedColor?: string
+  radius?: ThemeScaleValue
+  paddingX?: ThemeScaleValue
+  paddingY?: ThemeScaleValue
+  gap?: ThemeScaleValue
+  iconSize?: ThemeScaleValue
+  primaryTypo?: TextTypo
+  secondaryTypo?: TextTypo
+  focusOutlineWidth?: ThemeScaleValue
+  focusOutlineColor?: string
+  focusOutlineStyle?: string
+  focusOutlineOffset?: ThemeScaleValue
+  disabledOpacity?: number
+}
+
+export interface ListItemTheme {
+  base?: ListItemThemeBase
+}
+
 export interface ThemeComponents {
   Button?: ButtonTheme
   Input?: InputTheme
@@ -264,6 +299,8 @@ export interface ThemeComponents {
   Scrollbar?: ScrollbarTheme
   ToolTip?: ToolTipTheme
   Snack?: SnackTheme
+  List?: ListTheme
+  ListItem?: ListItemTheme
   readonly [name: string]: unknown
 }
 
