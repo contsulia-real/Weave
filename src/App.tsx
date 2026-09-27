@@ -17,6 +17,7 @@ import {
   Switch,
   Text,
   ThemeProvider,
+  ToolTip,
   View,
   createTheme,
 } from './index'
@@ -470,6 +471,47 @@ function App() {
                 width: 'fit',
               }}
             />
+          </View>
+        </View>
+
+        <View layout="flex" direction="column" gap={0.75}>
+          <Text
+            typo="headline-small"
+            viewProps={{
+              role: 'heading',
+              level: 2,
+            }}
+          >
+            ToolTip
+          </Text>
+          <Text typo="body-medium" color="secondary">
+            hover 或 focus 后自动显示；定位和 tooltip layer 由框架处理，业务不创建 portal。
+          </Text>
+
+          <View layout="flex" direction="row" gap={1} align="center" wrap>
+            <ToolTip content="Top tooltip" placement="top">
+              <Button text="Top" variant="secondary" />
+            </ToolTip>
+
+            <ToolTip content="Bottom tooltip" placement="bottom">
+              <Button text="Bottom" variant="secondary" />
+            </ToolTip>
+
+            <ToolTip content="Left tooltip" placement="left" delay={0}>
+              <Button text="Left / instant" variant="secondary" />
+            </ToolTip>
+
+            <ToolTip
+              placement="right"
+              content={
+                <View layout="flex" direction="column" gap={0.25}>
+                  <Text typo="label-medium">Complex tooltip</Text>
+                  <Text typo="body-small">View + Text content</Text>
+                </View>
+              }
+            >
+              <Button text="Right / complex" variant="secondary" />
+            </ToolTip>
           </View>
         </View>
 
