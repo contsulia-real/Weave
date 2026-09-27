@@ -79,7 +79,8 @@ function App() {
   return (
     <View
       layout="grid"
-      minHeight="100vh"
+      height="100vh"
+      overflow="auto"
       align="start"
       padding={2}
     >
