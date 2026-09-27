@@ -2,10 +2,6 @@ type DrawElementImageResult =
   | DOMMatrix
   | undefined
 
-type ElementImageHandle = {
-  close(): void
-}
-
 type HTMLInCanvas2DContext =
   CanvasRenderingContext2D & {
     drawElementImage(
@@ -16,15 +12,6 @@ type HTMLInCanvas2DContext =
     reset?: () => void
   }
 
-type HTMLInCanvasOffscreen2DContext =
-  OffscreenCanvasRenderingContext2D & {
-    drawElementImage(
-      image: ElementImageHandle,
-      dx: number,
-      dy: number,
-    ): void
-  }
-
 interface ElementGeometryOptions {
   preserveHitTestOrder?: boolean
   canvasTransform?: DOMMatrixInit
@@ -32,9 +19,6 @@ interface ElementGeometryOptions {
 
 interface HTMLInCanvasElement extends HTMLCanvasElement {
   requestPaint(): void
-  captureElementImage?: (
-    element: Element,
-  ) => ElementImageHandle
   updateElementGeometry?: (
     element: Element,
     options?: ElementGeometryOptions,
@@ -48,15 +32,6 @@ interface LegacyCanvasTransformElement extends HTMLDivElement {
   setCanvasTransform?: (
     matrix?: DOMMatrixInit,
   ) => void
-}
-
-interface HTMLInCanvasRenderer {
-  paint(): void
-  resize(
-    width: number,
-    height: number,
-  ): void
-  destroy(): void
 }
 
 export interface HTMLInCanvasMount {
@@ -96,40 +71,6 @@ function htmlInCanvasContext(
   return context as HTMLInCanvas2DContext
 }
 
-function supportsWorkerRenderer(
-  canvas: HTMLInCanvasElement,
-): boolean {
-  if (
-    typeof Worker === 'undefined' ||
-    typeof OffscreenCanvas ===
-      'undefined' ||
-    typeof canvas.captureElementImage !==
-      'function' ||
-    typeof canvas.transferControlToOffscreen !==
-      'function'
-  ) {
-    return false
-  }
-
-  try {
-    const probe =
-      new OffscreenCanvas(1, 1)
-    const context =
-      probe.getContext('2d')
-
-    return (
-      context !== null &&
-      typeof (
-        context as
-          HTMLInCanvasOffscreen2DContext
-      ).drawElementImage ===
-        'function'
-    )
-  } catch {
-    return false
-  }
-}
-
 export function isHTMLInCanvasSupported(
   document: Document,
 ): boolean {
@@ -165,10 +106,16 @@ function syncElementGeometry(
   element: LegacyCanvasTransformElement,
   drawResult: DrawElementImageResult,
 ): void {
+  // Current Chromium automatically updates element geometry as part of
+  // drawElementImage(). Do not overwrite that transform with an identity
+  // matrix: the browser-calculated transform also captures canvas scale,
+  // destination position and other geometry details.
   if (drawResult === undefined) {
     return
   }
 
+  // Transitional Chromium builds returned the CSS-space draw matrix.
+  // Prefer the canvas-owned geometry API when that build exposes it.
   if (
     typeof canvas.updateElementGeometry ===
     'function'
@@ -183,9 +130,10 @@ function syncElementGeometry(
     return
   }
 
+  // Older builds registered that returned matrix directly on the element.
   if (
     typeof element.setCanvasTransform ===
-      'function'
+    'function'
   ) {
     element.setCanvasTransform(
       drawResult,
@@ -193,6 +141,7 @@ function syncElementGeometry(
     return
   }
 
+  // Earliest experimental builds used the returned matrix as CSS transform.
   element.style.transform =
     drawResult.toString()
 }
@@ -254,6 +203,10 @@ function applyCanvasSize(
     }
   }
 
+  // Updating either bitmap dimension clears the visible canvas immediately.
+  // Restore the previous frame in the same task so live window resizing never
+  // exposes that transparent intermediate state while the next HTML snapshot
+  // is being prepared.
   canvas.width = nextWidth
   canvas.height = nextHeight
 
@@ -274,261 +227,12 @@ function applyCanvasSize(
   return true
 }
 
-function createMainThreadRenderer(
-  document: Document,
-  canvas: HTMLInCanvasElement,
-  host: LegacyCanvasTransformElement,
-  requestPaint: () => void,
-): HTMLInCanvasRenderer | null {
-  const context =
-    htmlInCanvasContext(canvas)
-
-  if (context === null) {
-    return null
-  }
-
-  const resizeBuffer =
-    document.createElement('canvas')
-  let hasPainted = false
-
-  canvas.setAttribute(
-    'data-weave-canvas-thread',
-    'main',
-  )
-
-  return {
-    paint() {
-      resetContext(
-        context,
-        canvas,
-      )
-
-      const drawResult =
-        context.drawElementImage(
-          host,
-          0,
-          0,
-        )
-
-      syncElementGeometry(
-        canvas,
-        host,
-        drawResult,
-      )
-      hasPainted = true
-    },
-
-    resize(width, height) {
-      if (
-        applyCanvasSize(
-          canvas,
-          context,
-          resizeBuffer,
-          hasPainted,
-          width,
-          height,
-        )
-      ) {
-        requestPaint()
-      }
-    },
-
-    destroy() {},
-  }
-}
-
-function createWorkerRenderer(
-  canvas: HTMLInCanvasElement,
-  host: LegacyCanvasTransformElement,
-  requestPaint: () => void,
-): HTMLInCanvasRenderer | null {
-  if (
-    !supportsWorkerRenderer(canvas)
-  ) {
-    return null
-  }
-
-  let worker: Worker
-
-  try {
-    worker =
-      new Worker(
-        new URL(
-          './html-in-canvas-worker.ts',
-          import.meta.url,
-        ),
-        {
-          type: 'module',
-          name: 'weave-html-in-canvas',
-        },
-      )
-  } catch {
-    return null
-  }
-
-  let offscreen: OffscreenCanvas
-
-  try {
-    offscreen =
-      canvas.transferControlToOffscreen()
-  } catch {
-    worker.terminate()
-    return null
-  }
-
-  try {
-    worker.postMessage(
-      {
-        type: 'init',
-        canvas: offscreen,
-      },
-      [offscreen],
-    )
-  } catch {
-    worker.terminate()
-    return null
-  }
-
-  let width = -1
-  let height = -1
-  let frameInFlight = false
-  let pendingImage:
-    | ElementImageHandle
-    | undefined
-
-  const sendFrame = (
-    image: ElementImageHandle,
-  ) => {
-    frameInFlight = true
-
-    worker.postMessage(
-      {
-        type: 'frame',
-        image,
-      },
-      [
-        image as unknown as
-          Transferable,
-      ],
-    )
-  }
-
-  const handleWorkerMessage = (
-    event: MessageEvent<unknown>,
-  ) => {
-    const message =
-      event.data as {
-        type?: string
-      }
-
-    if (
-      message.type !==
-        'frame-drawn'
-    ) {
-      return
-    }
-
-    frameInFlight = false
-
-    if (
-      pendingImage === undefined
-    ) {
-      return
-    }
-
-    const nextImage =
-      pendingImage
-    pendingImage = undefined
-    sendFrame(nextImage)
-  }
-
-  worker.addEventListener(
-    'message',
-    handleWorkerMessage,
-  )
-
-  canvas.setAttribute(
-    'data-weave-canvas-thread',
-    'worker',
-  )
-
-  return {
-    paint() {
-      const capture =
-        canvas.captureElementImage
-
-      if (capture === undefined) {
-        return
-      }
-
-      const image =
-        capture.call(
-          canvas,
-          host,
-        )
-
-      if (frameInFlight) {
-        pendingImage?.close()
-        pendingImage = image
-        return
-      }
-
-      sendFrame(image)
-    },
-
-    resize(
-      nextWidth,
-      nextHeight,
-    ) {
-      const normalizedWidth =
-        Math.max(
-          0,
-          Math.round(nextWidth),
-        )
-      const normalizedHeight =
-        Math.max(
-          0,
-          Math.round(nextHeight),
-        )
-
-      if (
-        width === normalizedWidth &&
-        height === normalizedHeight
-      ) {
-        return
-      }
-
-      width = normalizedWidth
-      height = normalizedHeight
-
-      worker.postMessage({
-        type: 'resize',
-        width,
-        height,
-      })
-
-      requestPaint()
-    },
-
-    destroy() {
-      pendingImage?.close()
-      pendingImage = undefined
-
-      worker.removeEventListener(
-        'message',
-        handleWorkerMessage,
-      )
-      worker.terminate()
-    },
-  }
-}
-
 function observeCanvasSize(
   canvas: HTMLCanvasElement,
-  resize: (
-    width: number,
-    height: number,
-  ) => void,
+  context: HTMLInCanvas2DContext,
+  resizeBuffer: HTMLCanvasElement,
+  shouldPreserveFrame: () => boolean,
+  requestPaint: () => void,
 ): () => void {
   const resizeFromCSSPixels = (
     width: number,
@@ -537,10 +241,18 @@ function observeCanvasSize(
     const dpr =
       devicePixelRatioFor(canvas)
 
-    resize(
-      width * dpr,
-      height * dpr,
-    )
+    if (
+      applyCanvasSize(
+        canvas,
+        context,
+        resizeBuffer,
+        shouldPreserveFrame(),
+        width * dpr,
+        height * dpr,
+      )
+    ) {
+      requestPaint()
+    }
   }
 
   const initial =
@@ -557,17 +269,6 @@ function observeCanvasSize(
     const observer = new ResizeObserver(
       ([entry]) => {
         if (entry === undefined) return
-
-        const devicePixelSize =
-          entry.devicePixelContentBoxSize?.[0]
-
-        if (devicePixelSize !== undefined) {
-          resize(
-            devicePixelSize.inlineSize,
-            devicePixelSize.blockSize,
-          )
-          return
-        }
 
         resizeFromCSSPixels(
           entry.contentRect.width,
@@ -591,7 +292,6 @@ function observeCanvasSize(
   const handleResize = () => {
     const rect =
       canvas.getBoundingClientRect()
-
     resizeFromCSSPixels(
       rect.width,
       rect.height,
@@ -620,16 +320,22 @@ export function createHTMLInCanvasMount(
     document.createElement(
       'canvas',
     ) as HTMLInCanvasElement
+  const context =
+    htmlInCanvasContext(canvas)
 
   if (
     typeof canvas.requestPaint !==
-      'function'
+      'function' ||
+    context === null
   ) {
     throw new HTMLInCanvasCapabilityError(
       'HTML-in-Canvas is not supported by this browser',
     )
   }
 
+  // Chromium's current experimental implementation still requires
+  // `layoutsubtree`, while the latest WICG explainer uses
+  // `content="drawable"`. Keep both during the API transition.
   canvas.setAttribute(
     'layoutsubtree',
     '',
@@ -650,7 +356,6 @@ export function createHTMLInCanvasMount(
     document.createElement(
       'div',
     ) as LegacyCanvasTransformElement
-
   host.setAttribute(
     'drawable',
     '',
@@ -665,37 +370,37 @@ export function createHTMLInCanvasMount(
   canvas.append(host)
   container.replaceChildren(canvas)
 
+  const resizeBuffer =
+    document.createElement('canvas')
+
   let destroyed = false
+  let hasPainted = false
 
   const requestPaint = () => {
     if (destroyed) return
     canvas.requestPaint()
   }
 
-  const renderer =
-    createWorkerRenderer(
-      canvas,
-      host,
-      requestPaint,
-    ) ??
-    createMainThreadRenderer(
-      document,
-      canvas,
-      host,
-      requestPaint,
-    )
-
-  if (renderer === null) {
-    canvas.remove()
-
-    throw new HTMLInCanvasCapabilityError(
-      'HTML-in-Canvas is not supported by this browser',
-    )
-  }
-
   const handlePaint = () => {
     if (destroyed) return
-    renderer.paint()
+
+    resetContext(
+      context,
+      canvas,
+    )
+    const drawResult =
+      context.drawElementImage(
+        host,
+        0,
+        0,
+      )
+
+    syncElementGeometry(
+      canvas,
+      host,
+      drawResult,
+    )
+    hasPainted = true
   }
 
   canvas.addEventListener(
@@ -706,12 +411,10 @@ export function createHTMLInCanvasMount(
   const stopObserving =
     observeCanvasSize(
       canvas,
-      (width, height) => {
-        renderer.resize(
-          width,
-          height,
-        )
-      },
+      context,
+      resizeBuffer,
+      () => hasPainted,
+      requestPaint,
     )
 
   requestPaint()
@@ -729,7 +432,6 @@ export function createHTMLInCanvasMount(
         'paint',
         handlePaint,
       )
-      renderer.destroy()
 
       if (
         typeof canvas.clearElementGeometry ===
