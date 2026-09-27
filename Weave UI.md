@@ -5499,6 +5499,7 @@ Input 的 browser-native editor 是编辑语义真值；Canvas 不实现第二�
 
 ```text
 multiline soft-wrap 对复杂 Unicode / bidi 的像素级一致性
+Canvas pointer → caret 精确定位 / pointer drag 文本选择
 caret blink timing
 visible Weave Scrollbar for multiline overflow
 selection geometry for advanced grapheme shaping
