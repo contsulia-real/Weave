@@ -640,7 +640,7 @@ export function Snack({
               lifetimeProgress
             }
             mode="linear"
-            tracked={false}
+            tracked
             size="small"
             color="var(--weave-snack-accent)"
             speed={
@@ -655,6 +655,7 @@ export function Snack({
                 'var(--weave-snack-padding-x)',
               right:
                 'var(--weave-snack-padding-x)',
+              width: 'auto',
               bottom:
                 'calc(var(--weave-snack-padding-y) * 0.35)',
               height:
