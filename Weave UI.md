@@ -3298,22 +3298,17 @@ const snack = useSnack()
 />
 ```
 
-**每一次 `show()` 都创建一个新的 Snack 实例。**
+每一次 `show()` 都创建一个新的 Snack 实例。
 
-因此同一个触发控件连续点击：
+同一个触发器连续点击：
 
 ```text
-click
-→ Snack #1
-
-click
-→ Snack #2
-
-click
-→ Snack #3
+click → Snack #1
+click → Snack #2
+click → Snack #3
 ```
 
-三条会同时进入队列和对应 placement region，而不是复用一个布尔 `open`。
+不会复用一个 `open` 布尔实例，也不会因为新增通知而重置已有 Snack 的生命周期计时。
 
 `show()` 返回实例 id：
 
@@ -3329,7 +3324,7 @@ snack.dismissAll()
 
 ## 20.2 声明式单实例
 
-需要直接控制某一个实例时仍可使用：
+需要直接控制单个实例时仍可使用：
 
 ```tsx
 <Snack
@@ -3340,9 +3335,9 @@ snack.dismissAll()
 />
 ```
 
-声明式 `Snack` 是底层能力，不应该拿一个布尔实例模拟整个通知队列。
+声明式 `Snack` 是底层能力；通知队列不应通过复用一个声明式实例来模拟。
 
-## 20.3 内容 API
+## 20.3 内容
 
 快捷内容：
 
@@ -3378,10 +3373,7 @@ snack.dismissAll()
 </Snack>
 ```
 
-快捷内容与完整组合互斥：
-
-- 使用 `children` 时，不再同时使用 `text`、`icon`、`action`、`onAction`；
-- `variant`、`duration`、`persistent`、`placement`、`direction` 和 `viewProps` 仍可用于两种模式。
+使用 `children` 时，不同时使用 `text`、`icon`、`action`、`onAction`。
 
 ## 20.4 当前属性
 
@@ -3403,7 +3395,12 @@ action
 onAction
 
 placement
-direction
+  top-left
+  top-center
+  top-right
+  bottom-left
+  bottom-center
+  bottom-right
 
 open
 defaultOpen
@@ -3420,80 +3417,74 @@ variant     = default
 duration    = 4000ms
 persistent  = false
 placement   = bottom-center
-direction   = inferred from placement
 defaultOpen = true
 layer       = snack
 ```
 
-### duration / persistent
-
-- `persistent=false` 时按 `duration` 自动关闭；
-- pointer 停留在 Snack 上时暂停；
-- focus 位于 Snack 或 action 内时暂停；
-- `persistent=true` 时完全禁用自动关闭。
-
-## 20.5 placement：位置
-
-当前位置：
+Snack **没有独立 Direction API**。进入与退出方向只由 placement 的屏幕边缘语义自然决定：
 
 ```text
-top-left
-top-center
-top-right
-bottom-left
-bottom-center
-bottom-right
+top-*    → 从顶部边缘进入 / 向顶部边缘退出
+bottom-* → 从底部边缘进入 / 向底部边缘退出
 ```
 
-每个 placement 在 `document.body` 中由框架维护共享 region。业务不创建 portal host、不计算坐标、不维护堆叠 index。
+不允许再增加与 placement 冲突的第二套方向配置。
 
-同一 placement 的多个 Snack 自动垂直堆叠：
+## 20.5 生命周期计时
+
+每个 Snack 的自动关闭计时从**该实例自己的创建 / 打开时刻**开始。
+
+新增其他 Snack：
 
 ```text
-Snack #1 ─┐
-Snack #2 ─┼→ same region
-Snack #3 ─┘
+不得
+→ 清除旧实例 timer
+→ 重启旧实例 duration
 ```
+
+因此不同时间创建的 Snack 必须在不同时间到期。
+
+规则：
+
+- `persistent=false` 时按自己的 `duration` 自动关闭；
+- pointer 停留在当前 Snack 上时暂停该实例；
+- focus 位于当前 Snack 或其 action 内时暂停该实例；
+- `persistent=true` 时完全禁用自动关闭；
+- 关闭进入 exit transition，transition 完成后才从队列移除。
+
+## 20.6 placement 与自动折叠
+
+每个 placement 在 `document.body` 中由框架维护一个共享 region。
+
+业务不创建 portal host、不计算坐标、不维护 stack index。
+
+同一 placement 最多保持 **3 条展开可见 Snack**。
+
+超过 3 条时：
+
+```text
+最新 3 条
+→ 保留在 region 中
+→ 自动压成紧凑叠层
+
+更早的实例
+→ 折叠隐藏
+
+region
+→ 显示 +N 折叠计数
+```
+
+hover / focus region 时，最新 3 条恢复正常间距，方便读取和操作。
+
+折叠只改变视觉展示，不改变每个 Snack 自己的 duration、状态或关闭顺序。
 
 顶部 placement 的最新通知靠近顶部边缘；底部 placement 的最新通知靠近底部边缘。
 
-## 20.6 direction：进入 / 退出方向
-
-`direction` 与 `placement` **独立**：
-
-```text
-up
-down
-left
-right
-```
-
-例如：
-
-```tsx
-snack.show({
-  text: "Saved",
-  placement: "top-right",
-  direction: "left",
-})
-```
-
-表示 Snack 位于右上角，但从左侧进入，并沿左侧方向退出。
-
-未显式设置时：
-
-```text
-top-*    → up
-bottom-* → down
-```
-
-因此默认运动仍然符合所在屏幕边缘，但业务可以覆盖。
-
 ## 20.7 默认视觉语言
 
-Snack 不使用通用 Toast 的“白卡 + 左侧彩条”样式。
+Snack 必须延续 Weave 的材质语言，但不能伪装成 Button，也不能退回通用 Toast 的“整卡状态色”或“左侧彩条”。
 
-Weave 中三类组件视觉角色必须明确区分：
+角色区分：
 
 ```text
 Button
@@ -3503,22 +3494,24 @@ ToolTip
 → primary 主题色的紧凑辅助标签
 
 Snack
-→ variant 色轻度染入 surface 的浮层通知材质
+→ 暖色 surface 上的静态浮层通知
 ```
 
-Snack 默认视觉：
+默认：
 
-- 基底仍使用暖色 `surface`；
-- variant accent 以低比例混入整张卡片背景，而不是贴一条彩色边；
-- 边框同样轻度混入 variant accent；
-- 使用 `large` 圆角和 `medium` ambient shadow，表达独立浮层而不是按钮；
-- 图标放入独立圆形 tonal 容器，容器和图标共同使用当前 variant accent；
+- 卡片主体使用主题 `surface`，不把 success / warning / danger 色铺满整张卡；
+- 使用统一 `outline` 边界；
+- 使用一条非常薄的静态材质底边 + ambient shadow，与 Weave 其他控件保持同一物理语言；
+- Snack 本体没有 hover / press 的抬升、下压或缩放反馈，因此不会被理解为可按压控件；
+- variant 色只用于图标 tonal 容器、图标和 action；
+- 图标位于独立圆形 tonal 容器中；
+- 默认使用 `medium` 圆角，尺寸比前一版更紧凑；
 - `default / success / warning / danger / info` accent 分别来自 `secondary / success / warning / danger / primary`；
 - 默认 typo 为 `body-medium`；
-- action 使用紧凑 ghost Button，并继承当前 accent；
-- 整体宽度通过 `minWidth / maxWidth` 限制，同时不得溢出 viewport。
+- action 使用紧凑 ghost Button；
+- 卡片不得溢出 viewport。
 
-组件主题入口：
+主题入口：
 
 ```text
 theme.components.Snack.base
@@ -3550,12 +3543,12 @@ variant：
 accentColor
 ```
 
-## 20.8 动效与生命周期
+## 20.8 动效
 
 进入：
 
 ```text
-direction 对应轻微位移
+placement 对应边缘轻微位移
 + opacity 0 → 1
 + scale 0.985 → 1
 ```
@@ -3563,10 +3556,10 @@ direction 对应轻微位移
 退出：
 
 ```text
-沿同一 direction 收回
+沿同一屏幕边缘方向收回
 + opacity 1 → 0
 + scale 1 → 0.99
-→ transition 完成后才从队列移除
+→ transition 完成后从队列移除
 ```
 
 进入使用 `motion.duration.normal + emphasized`；退出使用 `fast + exit`。
