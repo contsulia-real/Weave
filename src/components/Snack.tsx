@@ -651,9 +651,12 @@ export function Snack({
                 'weave-snack__lifetime',
               position:
                 'absolute',
-              left: 0,
-              bottom: 0,
-              width: '100%',
+              left:
+                'var(--weave-snack-padding-x)',
+              right:
+                'var(--weave-snack-padding-x)',
+              bottom:
+                'calc(var(--weave-snack-padding-y) * 0.35)',
               height:
                 'var(--weave-snack-progress-height)',
               pointerEvents:
