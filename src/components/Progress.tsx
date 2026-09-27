@@ -1,4 +1,4 @@
-import { useEffect, useInsertionEffect } from 'react'
+import { useInsertionEffect } from 'react'
 import type {
   ProgressMode,
   ProgressProps,
@@ -71,45 +71,6 @@ export function ProgressVisual({
     resolved,
   } = useViewHost(hostProps)
 
-  useEffect(() => {
-    const element = elementRef.current
-
-    if (element === null) {
-      return
-    }
-
-    if (
-      !undetermined ||
-      typeof IntersectionObserver ===
-        'undefined'
-    ) {
-      element.removeAttribute(
-        'data-weave-progress-offscreen',
-      )
-      return
-    }
-
-    const observer =
-      new IntersectionObserver(
-        ([entry]) => {
-          if (entry === undefined) return
-
-          element.toggleAttribute(
-            'data-weave-progress-offscreen',
-            !entry.isIntersecting,
-          )
-        },
-      )
-
-    observer.observe(element)
-
-    return () => {
-      observer.disconnect()
-      element.removeAttribute(
-        'data-weave-progress-offscreen',
-      )
-    }
-  }, [elementRef, undetermined])
 
   return (
     <span
