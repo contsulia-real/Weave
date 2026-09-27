@@ -190,8 +190,7 @@ const stylesheet = `
 
 @media (prefers-reduced-motion: reduce) {
   :where(.weave-snack),
-  :where(.weave-snack[data-weave-snack-state="closing"]),
-  :where(.weave-snack-overflow) {
+  :where(.weave-snack[data-weave-snack-state="closing"]) {
     transition: none;
     translate: 0 0;
   }
