@@ -10,6 +10,7 @@ export { Input } from './components/Input'
 export { Switch } from './components/Switch'
 export { Progress } from './components/Progress'
 export { ToolTip } from './components/ToolTip'
+export { Snack } from './components/Snack'
 export type {
   BackgroundValue,
   BlendMode,
@@ -134,3 +135,11 @@ export type {
   ToolTipProps,
   ToolTipViewProps,
 } from './core/tooltip-types'
+
+export type {
+  SnackIcon,
+  SnackPlacement,
+  SnackProps,
+  SnackVariant,
+  SnackViewProps,
+} from './core/snack-types'
