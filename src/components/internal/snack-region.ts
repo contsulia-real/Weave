@@ -35,12 +35,31 @@ function overflowElement(
 
 function syncOverflow(
   element: HTMLDivElement,
+  snacks: HTMLElement[],
   hiddenCount: number,
 ): void {
   const existing =
     overflowElement(element)
 
   if (hiddenCount <= 0) {
+    existing?.remove()
+    return
+  }
+
+  const lastVisibleSnack =
+    snacks[
+      Math.min(
+        MAX_VISIBLE_SNACKS,
+        snacks.length,
+      ) - 1
+    ]
+  const host =
+    lastVisibleSnack
+      ?.closest<HTMLElement>(
+        '[data-weave-theme]',
+      )
+
+  if (host === undefined || host === null) {
     existing?.remove()
     return
   }
@@ -60,7 +79,10 @@ function syncOverflow(
       'aria-hidden',
       'true',
     )
-    element.append(overflow)
+  }
+
+  if (overflow.parentElement !== host) {
+    host.append(overflow)
   }
 
   overflow.textContent =
@@ -109,6 +131,7 @@ export function syncSnackRegion(
 
   syncOverflow(
     element,
+    snacks,
     hiddenCount,
   )
 }
