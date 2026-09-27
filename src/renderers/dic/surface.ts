@@ -219,7 +219,7 @@ export function createDiCSurface(
     )
 
     interactions?.reconcile()
-    semanticMirror?.update(scene.node)
+    ensureSemanticMirror()?.update(scene.node)
 
     const focusedNode =
       interactions?.getFocusedNode()
@@ -230,7 +230,7 @@ export function createDiCSurface(
         ?.autoFocus
     ) {
       if (
-        semanticMirror?.focusNode(
+        ensureSemanticMirror()?.focusNode(
           focusedNode,
           false,
         ) !== true
@@ -271,10 +271,13 @@ export function createDiCSurface(
       invalidate,
       rem: () => scene.rem ?? 16,
     })
+  }
 
+  const ensureSemanticMirror = () => {
     if (
+      semanticMirror === undefined &&
+      interactions !== undefined &&
       options.semanticMirror !== false &&
-      canvas.ownerDocument !== undefined &&
       canvas.parentElement !== null
     ) {
       semanticMirror = createDiCSemanticMirror(
@@ -282,6 +285,8 @@ export function createDiCSurface(
         interactions,
       )
     }
+
+    return semanticMirror
   }
 
   const eventPoint = (
@@ -358,7 +363,7 @@ export function createDiCSurface(
 
       if (focusedNode !== undefined) {
         if (
-          semanticMirror?.focusNode(
+          ensureSemanticMirror()?.focusNode(
             focusedNode,
             false,
           ) !== true
