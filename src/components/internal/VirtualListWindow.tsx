@@ -2,7 +2,6 @@ import {
   useCallback,
   useEffect,
   useMemo,
-  useReducer,
   useRef,
   useState,
 } from 'react'
@@ -263,20 +262,17 @@ export function VirtualListWindow({
   rootRef,
   activeId,
 }: VirtualListWindowProps) {
-  const measurements =
-    useRef(
-      new Map<
-        string,
-        VirtualMeasurement
-      >(),
-    )
   const [
-    revision,
-    bumpRevision,
-  ] = useReducer(
-    (value: number) =>
-      value + 1,
-    0,
+    measurements,
+    setMeasurements,
+  ] = useState<
+    ReadonlyMap<
+      string,
+      VirtualMeasurement
+    >
+  >(
+    () =>
+      new Map(),
   )
   const [
     viewport,
@@ -396,29 +392,36 @@ export function VirtualListWindow({
         next:
           VirtualMeasurement,
       ) => {
-        const current =
-          measurements.current
-            .get(id)
+        setMeasurements(
+          (current) => {
+            const previous =
+              current.get(id)
 
-        if (
-          current !== undefined &&
-          Math.abs(
-            current.main -
-              next.main,
-          ) < 0.5 &&
-          Math.abs(
-            current.cross -
-              next.cross,
-          ) < 0.5
-        ) {
-          return
-        }
+            if (
+              previous !== undefined &&
+              Math.abs(
+                previous.main -
+                  next.main,
+              ) < 0.5 &&
+              Math.abs(
+                previous.cross -
+                  next.cross,
+              ) < 0.5
+            ) {
+              return current
+            }
 
-        measurements.current.set(
-          id,
-          next,
+            const updated =
+              new Map(current)
+
+            updated.set(
+              id,
+              next,
+            )
+
+            return updated
+          },
         )
-        bumpRevision()
       },
       [],
     )
@@ -451,7 +454,7 @@ export function VirtualListWindow({
           const entry =
             entries[index]!
           const measurement =
-            measurements.current
+            measurements
               .get(entry.id)
           const size =
             measurement?.main ??
@@ -489,7 +492,7 @@ export function VirtualListWindow({
       [
         entries,
         orientation,
-        revision,
+        measurements,
         viewport.gap,
       ],
     )
