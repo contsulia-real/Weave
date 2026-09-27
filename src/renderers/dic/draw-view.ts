@@ -13,6 +13,7 @@ import type {
 import type { DiCViewTreeLayout } from './layout-tree'
 import { drawDiCText } from './draw-text'
 import { drawDiCImage } from './draw-image'
+import { drawDiCProgress } from './draw-progress'
 import type { DiCImageResourceManager } from './image-resource'
 import { applyDiCTransform } from './transform'
 import { resolveDiCColor } from './color'
@@ -29,6 +30,8 @@ export interface DiCDrawOptions {
   rem?: number
   viewportWidth?: number
   imageResources?: DiCImageResourceManager
+  time?: number
+  reducedMotion?: boolean
 }
 
 function numericLength(
@@ -851,6 +854,22 @@ export function drawDiCViewTree(
       },
     )
     context.restore()
+  }
+
+  if (layout.node.content?.kind === 'progress') {
+    drawDiCProgress(
+      context,
+      layout.node.content,
+      layout.contentFrame,
+      {
+        theme: nodeOptions.theme,
+        rem,
+        time: nodeOptions.time ?? 0,
+        reducedMotion:
+          nodeOptions.reducedMotion ?? false,
+        color: layout.typography?.color,
+      },
+    )
   }
 
   for (const child of layout.children) {
