@@ -208,6 +208,110 @@ describe('Progress', () => {
     )
   })
 
+  it('pauses undetermined motion while the Progress is offscreen', () => {
+    const originalIntersectionObserver =
+      globalThis.IntersectionObserver
+    let callback:
+      | IntersectionObserverCallback
+      | undefined
+
+    class TestIntersectionObserver
+      implements IntersectionObserver {
+      readonly root = null
+      readonly rootMargin = '0px'
+      readonly thresholds = [0]
+
+      constructor(
+        observerCallback:
+          IntersectionObserverCallback,
+      ) {
+        callback = observerCallback
+      }
+
+      disconnect(): void {}
+      observe(): void {}
+      unobserve(): void {}
+      takeRecords(): IntersectionObserverEntry[] {
+        return []
+      }
+    }
+
+    Object.defineProperty(
+      globalThis,
+      'IntersectionObserver',
+      {
+        configurable: true,
+        value: TestIntersectionObserver,
+      },
+    )
+
+    try {
+      const { getByRole } = render(
+        <Progress
+          undetermined
+          mode="spin"
+        />,
+      )
+      const element =
+        getByRole('progressbar')
+
+      callback?.(
+        [
+          {
+            isIntersecting: false,
+            target: element,
+          } as IntersectionObserverEntry,
+        ],
+        new TestIntersectionObserver(
+          () => {},
+        ),
+      )
+
+      expect(
+        element.hasAttribute(
+          'data-weave-progress-offscreen',
+        ),
+      ).toBe(true)
+
+      callback?.(
+        [
+          {
+            isIntersecting: true,
+            target: element,
+          } as IntersectionObserverEntry,
+        ],
+        new TestIntersectionObserver(
+          () => {},
+        ),
+      )
+
+      expect(
+        element.hasAttribute(
+          'data-weave-progress-offscreen',
+        ),
+      ).toBe(false)
+
+      const stylesheet =
+        document.querySelector(
+          'style[data-weave-progress-styles]',
+        )?.textContent ?? ''
+
+      expect(stylesheet).toContain(
+        'animation-play-state: paused',
+      )
+    } finally {
+      Object.defineProperty(
+        globalThis,
+        'IntersectionObserver',
+        {
+          configurable: true,
+          value:
+            originalIntersectionObserver,
+        },
+      )
+    }
+  })
+
   it('clamps determined progress to the public 0 to 1 range', () => {
     const { getByRole, rerender } = render(
       <Progress progress={1.5} />,
