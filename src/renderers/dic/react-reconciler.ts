@@ -150,14 +150,25 @@ function textValue(
   return output
 }
 
+function withTheme(
+  node: DiCViewNode,
+  theme: ResolvedTheme,
+): DiCViewNode {
+  node.theme = theme
+  return node
+}
+
 function implicitText(
   value: string,
   theme: ResolvedTheme,
 ): DiCViewNode {
-  return compileDiCText(
-    resolveView({}, theme.breakpoints),
-    resolveText({}, theme.breakpoints),
-    value,
+  return withTheme(
+    compileDiCText(
+      resolveView({}, theme.breakpoints),
+      resolveText({}, theme.breakpoints),
+      value,
+    ),
+    theme,
   )
 }
 
@@ -196,14 +207,17 @@ function compileInstance(
       const props =
         instance.props as DiCViewHostProps
 
-      return compileDiCView(
-        props.view,
-        {
-          children: compileChildren(
-            instance,
-            props.theme,
-          ),
-        },
+      return withTheme(
+        compileDiCView(
+          props.view,
+          {
+            children: compileChildren(
+              instance,
+              props.theme,
+            ),
+          },
+        ),
+        props.theme,
       )
     }
 
@@ -211,10 +225,13 @@ function compileInstance(
       const props =
         instance.props as DiCTextHostProps
 
-      return compileDiCText(
-        props.view,
-        props.text,
-        textValue(instance),
+      return withTheme(
+        compileDiCText(
+          props.view,
+          props.text,
+          textValue(instance),
+        ),
+        props.theme,
       )
     }
 
@@ -223,9 +240,12 @@ function compileInstance(
       const props =
         instance.props as DiCImageHostProps
 
-      return compileDiCImage(
-        props.view,
-        props.image,
+      return withTheme(
+        compileDiCImage(
+          props.view,
+          props.image,
+        ),
+        props.theme,
       )
     }
 
@@ -233,16 +253,19 @@ function compileInstance(
       const props =
         instance.props as DiCButtonHostProps
 
-      return compileDiCButton(
-        props.view,
-        props.button,
+      return withTheme(
+        compileDiCButton(
+          props.view,
+          props.button,
+          props.theme,
+          {
+            children: compileChildren(
+              instance,
+              props.theme,
+            ),
+          },
+        ),
         props.theme,
-        {
-          children: compileChildren(
-            instance,
-            props.theme,
-          ),
-        },
       )
     }
 
@@ -251,13 +274,16 @@ function compileInstance(
       const props =
         instance.props as DiCSwitchHostProps
 
-      return compileDiCSwitch(
-        props.view,
-        props.value,
+      return withTheme(
+        compileDiCSwitch(
+          props.view,
+          props.value,
+          props.theme,
+          {
+            onChange: props.onChange,
+          },
+        ),
         props.theme,
-        {
-          onChange: props.onChange,
-        },
       )
     }
   }
