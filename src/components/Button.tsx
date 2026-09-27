@@ -234,7 +234,7 @@ function DiCButton(
     }
 
   assertDiCViewPropsSupported(
-    hostProps as ViewProps<HTMLElement>,
+    hostProps as unknown as ViewProps<HTMLElement>,
     theme.breakpoints,
     'Button.viewProps',
   )
