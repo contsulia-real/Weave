@@ -3,36 +3,11 @@ import {
   createRoot as createDOMRoot,
   type Root as DOMRoot,
 } from 'react-dom/client'
-import {
-  createHTMLInCanvasMount,
-  HTMLInCanvasCapabilityError,
-  isHTMLInCanvasSupported,
-  type HTMLInCanvasMount,
-} from './renderers/html-in-canvas'
-
-export type RootFallback =
-  | 'dom'
-  | 'none'
-
-export interface RootOptions {
-  fallback?: RootFallback
-}
 
 export interface Root {
   render(node: ReactNode): void
   unmount(): void
 }
-
-type SelectedRoot =
-  | {
-      kind: 'html-in-canvas'
-      root: DOMRoot
-      mount: HTMLInCanvasMount
-    }
-  | {
-      kind: 'dom'
-      root: DOMRoot
-    }
 
 function assertContainer(
   container: HTMLElement,
@@ -47,62 +22,15 @@ function assertContainer(
   }
 }
 
-function mountDOM(
-  container: HTMLElement,
-  node: ReactNode,
-): SelectedRoot {
-  container.replaceChildren()
-
-  const root =
-    createDOMRoot(container)
-  root.render(node)
-
-  return {
-    kind: 'dom',
-    root,
-  }
-}
-
-function mountHTMLInCanvas(
-  container: HTMLElement,
-  node: ReactNode,
-): SelectedRoot {
-  const mount =
-    createHTMLInCanvasMount(
-      container,
-    )
-  const root =
-    createDOMRoot(
-      mount.host,
-    )
-
-  try {
-    root.render(node)
-    mount.requestPaint()
-
-    return {
-      kind: 'html-in-canvas',
-      root,
-      mount,
-    }
-  } catch (error) {
-    root.unmount()
-    mount.destroy()
-    throw error
-  }
-}
-
 export function createRoot(
   container: HTMLElement,
-  options: RootOptions = {},
 ): Root {
   assertContainer(container)
 
-  const fallback =
-    options.fallback ?? 'dom'
-  let selected:
-    | SelectedRoot
-    | undefined
+  container.replaceChildren()
+
+  const root: DOMRoot =
+    createDOMRoot(container)
   let unmounted = false
 
   const assertMounted = () => {
@@ -113,77 +41,17 @@ export function createRoot(
     }
   }
 
-  const firstRender = (
-    node: ReactNode,
-  ) => {
-    try {
-      if (
-        !isHTMLInCanvasSupported(
-          container.ownerDocument,
-        )
-      ) {
-        throw new HTMLInCanvasCapabilityError(
-          'HTML-in-Canvas is not supported by this browser',
-        )
-      }
-
-      selected =
-        mountHTMLInCanvas(
-          container,
-          node,
-        )
-    } catch (error) {
-      if (
-        fallback !== 'dom' ||
-        !(
-          error instanceof
-          HTMLInCanvasCapabilityError
-        )
-      ) {
-        throw error
-      }
-
-      selected =
-        mountDOM(
-          container,
-          node,
-        )
-    }
-  }
-
   return {
     render(node) {
       assertMounted()
-
-      if (selected === undefined) {
-        firstRender(node)
-        return
-      }
-
-      selected.root.render(node)
-
-      if (
-        selected.kind ===
-        'html-in-canvas'
-      ) {
-        selected.mount.requestPaint()
-      }
+      root.render(node)
     },
 
     unmount() {
       if (unmounted) return
       unmounted = true
 
-      selected?.root.unmount()
-
-      if (
-        selected?.kind ===
-        'html-in-canvas'
-      ) {
-        selected.mount.destroy()
-      }
-
-      selected = undefined
+      root.unmount()
       container.replaceChildren()
     },
   }
