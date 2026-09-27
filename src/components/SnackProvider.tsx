@@ -118,35 +118,66 @@ export function SnackProvider({
     >
       {children}
 
-      {items.map(
-        ({
-          id,
-          request,
-          open,
-        }) => (
-          <Snack
-            key={id}
-            {...request}
-            open={open}
-            onOpenChange={(
-              nextOpen,
-            ) => {
-              if (!nextOpen) {
-                dismiss(id)
-              }
-            }}
-            onDismissed={() => {
-              setItems(
-                (current) =>
-                  current.filter(
-                    (item) =>
-                      item.id !== id,
-                  ),
+      {(() => {
+        const activePlacements =
+          new Set<string>()
+
+        return items.map(
+          ({
+            id,
+            request,
+            open,
+          }) => {
+            const placement =
+              request.placement ??
+              'bottom-center'
+            const isFront =
+              !activePlacements.has(
+                placement,
               )
-            }}
-          />
-        ),
-      )}
+
+            if (!isFront) {
+              activePlacements.add(
+                placement,
+              )
+            } else {
+              activePlacements.add(
+                placement,
+              )
+            }
+
+            return (
+              <Snack
+                key={id}
+                {...request}
+                persistent={
+                  Boolean(
+                    request.persistent,
+                  ) ||
+                  !isFront
+                }
+                open={open}
+                onOpenChange={(
+                  nextOpen,
+                ) => {
+                  if (!nextOpen) {
+                    dismiss(id)
+                  }
+                }}
+                onDismissed={() => {
+                  setItems(
+                    (current) =>
+                      current.filter(
+                        (item) =>
+                          item.id !== id,
+                      ),
+                  )
+                }}
+              />
+            )
+          },
+        )
+      })()}
     </SnackContext.Provider>
   )
 }
