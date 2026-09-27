@@ -734,6 +734,21 @@ export function drawDiCViewPaint(
   context.restore()
 }
 
+function drawOptionsForTheme(
+  options: DiCDrawOptions,
+  theme: ResolvedTheme | undefined,
+): DiCDrawOptions {
+  return (
+    theme === undefined ||
+    theme === options.theme
+  )
+    ? options
+    : {
+        ...options,
+        theme,
+      }
+}
+
 export function drawDiCView(
   context: CanvasRenderingContext2D,
   node: DiCViewNode,
@@ -744,7 +759,10 @@ export function drawDiCView(
     context,
     node.paint,
     frame,
-    options,
+    drawOptionsForTheme(
+      options,
+      node.theme,
+    ),
   )
 }
 
@@ -753,7 +771,11 @@ export function drawDiCViewTree(
   layout: DiCViewTreeLayout,
   options: DiCDrawOptions,
 ): void {
-  const rem = options.rem ?? 16
+  const nodeOptions = drawOptionsForTheme(
+    options,
+    layout.theme,
+  )
+  const rem = nodeOptions.rem ?? 16
 
   context.save()
   context.translate(
@@ -770,25 +792,25 @@ export function drawDiCViewTree(
     context,
     layout.paint,
     layout.frame,
-    options,
+    nodeOptions,
   )
   drawViewBackground(
     context,
     layout.paint,
     layout.frame,
-    options,
+    nodeOptions,
   )
   drawViewBorder(
     context,
     layout.paint,
     layout.frame,
-    options,
+    nodeOptions,
   )
   drawViewOutline(
     context,
     layout.paint,
     layout.frame,
-    options,
+    nodeOptions,
   )
 
   if (
@@ -800,10 +822,10 @@ export function drawDiCViewTree(
       layout.node.content,
       layout.contentFrame,
       {
-        theme: options.theme,
+        theme: nodeOptions.theme,
         typography: layout.typography,
         viewportWidth:
-          options.viewportWidth ??
+          nodeOptions.viewportWidth ??
           layout.frame.width,
         containerWidth: layout.contentFrame.width,
         rem,
@@ -817,14 +839,14 @@ export function drawDiCViewTree(
       context,
       layout.paint,
       layout.frame,
-      options,
+      nodeOptions,
     )
     drawDiCImage(
       context,
       layout.node.content,
       layout.contentFrame,
       {
-        imageResources: options.imageResources,
+        imageResources: nodeOptions.imageResources,
         rem,
       },
     )
