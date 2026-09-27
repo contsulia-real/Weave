@@ -226,6 +226,37 @@ export interface ToolTipTheme {
   base?: ToolTipThemeBase
 }
 
+export interface SnackThemeBase {
+  background?: string
+  color?: string
+  borderColor?: string
+  borderWidth?: ThemeScaleValue
+  accentWidth?: ThemeScaleValue
+  radius?: ThemeScaleValue
+  paddingX?: ThemeScaleValue
+  paddingY?: ThemeScaleValue
+  gap?: ThemeScaleValue
+  minWidth?: ThemeScaleValue
+  maxWidth?: ThemeScaleValue
+  shadow?: string
+  typo?: TextTypo
+  motionOffset?: ThemeScaleValue
+}
+
+export interface SnackThemeVariant {
+  accentColor?: string
+}
+
+export interface SnackTheme {
+  base?: SnackThemeBase
+  variants?: Partial<
+    Record<
+      'default' | 'success' | 'warning' | 'danger' | 'info',
+      SnackThemeVariant
+    >
+  >
+}
+
 export interface ThemeComponents {
   Button?: ButtonTheme
   Input?: InputTheme
@@ -233,6 +264,7 @@ export interface ThemeComponents {
   Progress?: ProgressTheme
   Scrollbar?: ScrollbarTheme
   ToolTip?: ToolTipTheme
+  Snack?: SnackTheme
   readonly [name: string]: unknown
 }
 
