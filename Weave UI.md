@@ -362,6 +362,8 @@ HTML-in-Canvas 仍处于实验 API 迁移期。Weave 必须兼容 Chromium 已�
 
 这里的兼容层只负责把浏览器提供的绘制几何重新登记给浏览器自身的 hit testing；不得把 pointer / click / wheel / focus 重新实现成 JavaScript 事件转发系统。
 
+Canvas backing store 的尺寸变化会清空当前 bitmap。Weave 在实时 resize 时必须先保留上一帧，并在修改 backing size 后于同一任务内立即恢复该帧，再请求下一次原生 `paint` 更新到新的 HTML snapshot；不得让透明的中间帧暴露给用户造成闪烁。
+
 Weave 不允许为这些能力平行维护第二套 JavaScript 实现。
 
 ### 3.3 React 仍然只渲染真实 DOM
