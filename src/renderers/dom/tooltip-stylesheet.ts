@@ -27,17 +27,46 @@ const stylesheet = `
 
   --weave-component-box-shadow: var(--weave-tooltip-shadow);
 
+  --weave-tooltip-motion-x: 0rem;
+  --weave-tooltip-motion-y: 0rem;
+
   isolation: isolate;
+  opacity: 1;
+  translate: 0 0;
   scale: 1;
+  will-change: opacity, translate, scale;
   transition:
-    scale var(--weave-motion-duration-fast)
-      var(--weave-motion-curve-enter);
+    opacity var(--weave-motion-duration-fast)
+      var(--weave-motion-curve-enter),
+    translate var(--weave-motion-duration-normal)
+      var(--weave-motion-curve-emphasized),
+    scale var(--weave-motion-duration-normal)
+      var(--weave-motion-curve-emphasized);
 }
 
 @starting-style {
-  :where(.weave-tooltip) {
-    scale: 0.94;
+  :where(.weave-tooltip[data-weave-tooltip-state="open"]) {
+    opacity: 0;
+    translate:
+      var(--weave-tooltip-motion-x)
+      var(--weave-tooltip-motion-y);
+    scale: 0.985;
   }
+}
+
+:where(.weave-tooltip[data-weave-tooltip-state="closing"]) {
+  opacity: 0;
+  translate:
+    var(--weave-tooltip-motion-x)
+    var(--weave-tooltip-motion-y);
+  scale: 0.99;
+  transition:
+    opacity var(--weave-motion-duration-fast)
+      var(--weave-motion-curve-exit),
+    translate var(--weave-motion-duration-fast)
+      var(--weave-motion-curve-exit),
+    scale var(--weave-motion-duration-fast)
+      var(--weave-motion-curve-exit);
 }
 
 :where(.weave-tooltip)::before {
@@ -54,6 +83,7 @@ const stylesheet = `
 }
 
 :where(.weave-tooltip[data-placement="top"]) {
+  --weave-tooltip-motion-y: var(--weave-tooltip-motion-offset);
   transform-origin: center bottom;
 }
 
@@ -66,6 +96,8 @@ const stylesheet = `
 }
 
 :where(.weave-tooltip[data-placement="bottom"]) {
+  --weave-tooltip-motion-y:
+    calc(-1 * var(--weave-tooltip-motion-offset));
   transform-origin: center top;
 }
 
@@ -78,6 +110,7 @@ const stylesheet = `
 }
 
 :where(.weave-tooltip[data-placement="left"]) {
+  --weave-tooltip-motion-x: var(--weave-tooltip-motion-offset);
   transform-origin: right center;
 }
 
@@ -90,6 +123,8 @@ const stylesheet = `
 }
 
 :where(.weave-tooltip[data-placement="right"]) {
+  --weave-tooltip-motion-x:
+    calc(-1 * var(--weave-tooltip-motion-offset));
   transform-origin: left center;
 }
 
@@ -101,8 +136,11 @@ const stylesheet = `
   transform: translateY(-50%) rotate(45deg);
 }
 @media (prefers-reduced-motion: reduce) {
-  :where(.weave-tooltip) {
+  :where(.weave-tooltip),
+  :where(.weave-tooltip[data-weave-tooltip-state="closing"]) {
     transition: none;
+    translate: 0 0;
+    scale: 1;
   }
 }
 
