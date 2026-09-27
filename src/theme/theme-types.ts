@@ -1,3 +1,5 @@
+import type { TextTypo } from '../core/text-types'
+
 export type ThemeMode = 'light' | 'dark' | 'system'
 
 export type ThemeTokenScalar = string | number
@@ -216,7 +218,7 @@ export interface ToolTipThemeBase {
   maxWidth?: ThemeScaleValue
   shadow?: string
   arrowSize?: ThemeScaleValue
-  typo?: string
+  typo?: TextTypo
 }
 
 export interface ToolTipTheme {
