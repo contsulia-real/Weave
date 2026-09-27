@@ -6,6 +6,9 @@ import {
   createTheme,
   defaultTheme,
 } from '../src'
+import {
+  defaultDarkTheme,
+} from '../src/theme/default-theme'
 import { themeTokenVariables } from '../src/theme/theme-css'
 
 afterEach(cleanup)
@@ -343,6 +346,44 @@ describe('Theme', () => {
         'data-weave-theme-mode',
       ),
     ).toBe('dark')
+  })
+
+  it('keeps dark Button variants and Switch controls visually separated from dark surfaces', () => {
+    const button =
+      defaultDarkTheme.components?.Button
+    const switchTheme =
+      defaultDarkTheme.components?.Switch
+
+    expect(
+      button?.variants?.secondary?.borderColor,
+    ).toBe(
+      'color-mix(in srgb, var(--weave-color-secondary) 65%, var(--weave-color-surface))',
+    )
+    expect(
+      button?.variants?.tertiary?.borderColor,
+    ).toBe(
+      'color-mix(in srgb, var(--weave-color-secondary) 55%, var(--weave-color-surface))',
+    )
+    expect(
+      button?.variants?.danger?.borderColor,
+    ).toBe(
+      'color-mix(in srgb, var(--weave-color-danger) 65%, var(--weave-color-surface))',
+    )
+    expect(
+      button?.variants?.ghost?.hoverBackground,
+    ).toBe(
+      'color-mix(in srgb, var(--weave-color-secondary) 14%, transparent)',
+    )
+    expect(
+      switchTheme?.base?.background,
+    ).toBe(
+      'color-mix(in srgb, var(--weave-color-secondary) 12%, var(--weave-color-surface))',
+    )
+    expect(
+      switchTheme?.base?.trackShadow,
+    ).toContain(
+      'var(--weave-color-secondary) 62%',
+    )
   })
 
   it('keeps base brand colors authoritative while inheriting other dark defaults', () => {

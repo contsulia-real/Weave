@@ -56,27 +56,64 @@ export const defaultDarkTheme: ThemeOverride = {
     Button: {
       variants: {
         primary: {
+          borderColor: 'primaryHover',
           depthColor:
             'color-mix(in srgb, var(--weave-color-primary) 55%, black)',
         },
         secondary: {
+          background:
+            'color-mix(in srgb, var(--weave-color-secondary) 10%, var(--weave-color-surface))',
+          color: 'tertiary',
+          borderColor:
+            'color-mix(in srgb, var(--weave-color-secondary) 65%, var(--weave-color-surface))',
           depthColor:
-            'color-mix(in srgb, var(--weave-color-outline) 72%, black)',
+            'color-mix(in srgb, var(--weave-color-secondary) 38%, black)',
+          hoverBackground:
+            'color-mix(in srgb, var(--weave-color-secondary) 17%, var(--weave-color-surface))',
+          activeBackground:
+            'color-mix(in srgb, var(--weave-color-secondary) 25%, var(--weave-color-surface))',
         },
         tertiary: {
+          background:
+            'color-mix(in srgb, var(--weave-color-secondary) 16%, var(--weave-color-surface))',
+          color: 'tertiary',
+          borderColor:
+            'color-mix(in srgb, var(--weave-color-secondary) 55%, var(--weave-color-surface))',
           depthColor:
-            'color-mix(in srgb, var(--weave-color-outline) 66%, black)',
+            'color-mix(in srgb, var(--weave-color-secondary) 32%, black)',
+          hoverBackground:
+            'color-mix(in srgb, var(--weave-color-secondary) 24%, var(--weave-color-surface))',
+          activeBackground:
+            'color-mix(in srgb, var(--weave-color-secondary) 32%, var(--weave-color-surface))',
+        },
+        ghost: {
+          color: 'tertiary',
+          hoverBackground:
+            'color-mix(in srgb, var(--weave-color-secondary) 14%, transparent)',
+          activeBackground:
+            'color-mix(in srgb, var(--weave-color-secondary) 22%, transparent)',
         },
         danger: {
+          background:
+            'color-mix(in srgb, var(--weave-color-danger) 13%, var(--weave-color-surface))',
+          color: 'danger',
+          borderColor:
+            'color-mix(in srgb, var(--weave-color-danger) 65%, var(--weave-color-surface))',
           depthColor:
             'color-mix(in srgb, var(--weave-color-danger) 38%, black)',
+          hoverBackground:
+            'color-mix(in srgb, var(--weave-color-danger) 19%, var(--weave-color-surface))',
+          activeBackground:
+            'color-mix(in srgb, var(--weave-color-danger) 27%, var(--weave-color-surface))',
         },
       },
     },
     Switch: {
       base: {
+        background:
+          'color-mix(in srgb, var(--weave-color-secondary) 12%, var(--weave-color-surface))',
         trackShadow:
-          'inset 0 0.0625rem 0.125rem rgb(0 0 0 / 0.45), inset 0 0 0 0.0625rem rgb(255 255 255 / 0.04)',
+          'inset 0 0 0 0.0625rem color-mix(in srgb, var(--weave-color-secondary) 62%, var(--weave-color-surface)), inset 0 0.0625rem 0.125rem rgb(0 0 0 / 0.52)',
         thumbBackground: 'tertiary',
         thumbShadow:
           '0 0.0625rem 0.125rem rgb(0 0 0 / 0.42), 0 0.125rem 0.3rem rgb(0 0 0 / 0.24)',
