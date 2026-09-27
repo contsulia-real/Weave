@@ -335,10 +335,16 @@ export function compileDiCSwitch(
       },
       interaction: {
         focusable:
-          view.interaction.focusable ??
-          true,
+          value.disabled
+            ? false
+            : (
+                view.interaction.focusable ??
+                true
+              ),
         autoFocus:
-          view.interaction.autoFocus,
+          value.disabled
+            ? false
+            : view.interaction.autoFocus,
         tabIndex:
           view.interaction.tabIndex,
         onClick: (event) => {
