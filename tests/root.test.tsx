@@ -196,20 +196,15 @@ describe('public Weave root', () => {
     )
     expect(
       updateElementGeometry,
-    ).toHaveBeenCalledWith(
-      host,
-      {
-        preserveHitTestOrder: true,
-        canvasTransform: {
-          a: 1,
-          b: 0,
-          c: 0,
-          d: 1,
-          e: 0,
-          f: 0,
-        },
-      },
+    ).not.toHaveBeenCalled()
+
+    canvas?.dispatchEvent(
+      new Event('paint'),
     )
+
+    expect(
+      drawElementImage,
+    ).toHaveBeenCalledTimes(2)
 
     root.unmount()
     expect(
@@ -220,6 +215,59 @@ describe('public Weave root', () => {
     expect(
       container.childNodes,
     ).toHaveLength(0)
+  })
+
+  it('registers a returned draw matrix through the canvas geometry API', async () => {
+    const matrix = {
+      toString: () =>
+        'matrix(1, 0, 0, 1, 12, 8)',
+    } as unknown as DOMMatrix
+
+    drawElementImage?.mockReturnValue(
+      matrix,
+    )
+
+    const container =
+      document.createElement('div')
+    document.body.appendChild(
+      container,
+    )
+
+    const root =
+      createRoot(container)
+
+    await act(async () => {
+      root.render(
+        <View>
+          <Text>Transitional</Text>
+        </View>,
+      )
+    })
+
+    const canvas =
+      container.querySelector(
+        'canvas[data-weave-root-canvas]',
+      )
+    const host =
+      container.querySelector(
+        '[data-weave-root-host]',
+      )
+
+    canvas?.dispatchEvent(
+      new Event('paint'),
+    )
+
+    expect(
+      updateElementGeometry,
+    ).toHaveBeenCalledWith(
+      host,
+      {
+        preserveHitTestOrder: true,
+        canvasTransform: matrix,
+      },
+    )
+
+    root.unmount()
   })
 
   it('registers the legacy draw matrix for hit testing', async () => {
