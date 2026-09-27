@@ -39,6 +39,8 @@ const stylesheet = `
 }
 
 :where(.weave-snack-overflow) {
+  --weave-snack-overflow-motion-y: 0rem;
+
   display: block;
   padding-inline: 0.25rem;
   color: var(--weave-color-secondary);
@@ -49,6 +51,28 @@ const stylesheet = `
   letter-spacing: var(--weave-typography-style-body-xsmall-letter-spacing);
   pointer-events: none;
   user-select: none;
+  opacity: 1;
+  translate: 0 0;
+  transition:
+    opacity var(--weave-motion-duration-fast)
+      var(--weave-motion-curve-exit),
+    translate var(--weave-motion-duration-fast)
+      var(--weave-motion-curve-exit);
+}
+
+:where(.weave-snack-region[data-weave-snack-region^="top-"])
+  :where(.weave-snack-overflow) {
+  --weave-snack-overflow-motion-y: -0.25rem;
+}
+
+:where(.weave-snack-region[data-weave-snack-region^="bottom-"])
+  :where(.weave-snack-overflow) {
+  --weave-snack-overflow-motion-y: 0.25rem;
+}
+
+:where(.weave-snack-overflow[data-weave-snack-overflow-state="closing"]) {
+  opacity: 0;
+  translate: 0 var(--weave-snack-overflow-motion-y);
 }
 
 :where(.weave-snack) {
@@ -91,6 +115,8 @@ const stylesheet = `
 
   --weave-component-box-shadow: var(--weave-snack-shadow);
   --weave-component-pointer-events: auto;
+  --weave-component-position: relative;
+  --weave-component-overflow: hidden;
 
   --weave-snack-motion-y: 0rem;
 
@@ -130,6 +156,31 @@ const stylesheet = `
       var(--weave-motion-curve-exit),
     translate var(--weave-motion-duration-fast)
       var(--weave-motion-curve-exit);
+}
+
+:where(.weave-snack[data-weave-snack-queue-revealed]) {
+  animation:
+    weave-snack-fifo-reveal
+    var(--weave-motion-duration-normal)
+    var(--weave-motion-curve-emphasized)
+    both;
+}
+
+@keyframes weave-snack-fifo-reveal {
+  from {
+    opacity: 0;
+    translate: 0 var(--weave-snack-motion-y);
+  }
+
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+:where(.weave-snack__lifetime) {
+  --weave-motion-curve-standard: linear;
+  z-index: 1;
 }
 
 :where(.weave-snack--default) {
@@ -200,9 +251,14 @@ const stylesheet = `
 
 @media (prefers-reduced-motion: reduce) {
   :where(.weave-snack),
-  :where(.weave-snack[data-weave-snack-state="closing"]) {
+  :where(.weave-snack[data-weave-snack-state="closing"]),
+  :where(.weave-snack-overflow) {
     transition: none;
     translate: 0 0;
+  }
+
+  :where(.weave-snack[data-weave-snack-queue-revealed]) {
+    animation: none;
   }
 }
 `
