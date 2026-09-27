@@ -1,7 +1,10 @@
 import { describe, expect, it, vi } from 'vitest'
 import { resolveButton } from '../src/core/resolved-button'
 import { resolveView } from '../src/core/resolved-view'
-import type { ViewClickEvent } from '../src/core/view-types'
+import type {
+  ViewClickEvent,
+  ViewKeyboardEvent,
+} from '../src/core/view-types'
 import { compileDiCButton } from '../src/renderers/dic/compile-button'
 import { createDiCInteractionController } from '../src/renderers/dic/interaction'
 import { layoutDiCViewTree } from '../src/renderers/dic/layout-tree'
@@ -371,6 +374,66 @@ describe('DiC Button adapter', () => {
       },
       defaultPrevented: true,
     })
+  })
+
+  it('lets public keyboard handlers cancel Button default activation', () => {
+    const activate = vi.fn()
+    const onKeyDown = vi.fn(
+      (event: ViewKeyboardEvent) => {
+        event.preventDefault()
+      },
+    )
+    const node = compileDiCButton(
+      resolveView(
+        {
+          width: 8,
+          onKeyDown,
+        },
+        defaultBreakpoints,
+      ),
+      resolveButton(
+        {
+          text: 'Cancel key',
+        },
+        defaultBreakpoints,
+      ),
+      defaultTheme,
+      {
+        onActivate: activate,
+      },
+    )
+    const layout = layoutButton(node)
+    const controller = createDiCInteractionController({
+      getLayout: () => layout,
+      invalidate: vi.fn(),
+    })
+
+    controller.dispatchPointer(
+      pointer('pointerdown'),
+    )
+    controller.dispatchPointer(
+      pointer('pointerup'),
+    )
+    expect(controller.getFocusedNode()).toBe(node)
+
+    activate.mockClear()
+
+    controller.dispatchKeyboard({
+      type: 'keydown',
+      key: 'Enter',
+      code: 'Enter',
+      repeat: false,
+      altKey: false,
+      ctrlKey: false,
+      metaKey: false,
+      shiftKey: false,
+    })
+
+    expect(onKeyDown).toHaveBeenCalledTimes(1)
+    expect(
+      onKeyDown.mock.calls[0]?.[0].defaultPrevented,
+    ).toBe(true)
+    expect(activate).not.toHaveBeenCalled()
   })
 
   it('suppresses activation and focus while disabled or loading', () => {
