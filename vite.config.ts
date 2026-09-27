@@ -11,7 +11,13 @@ export default defineConfig({
       fileName: 'weave',
     },
     rollupOptions: {
-      external: ['react', 'react-dom', 'react/jsx-runtime'],
+      external: [
+        'react',
+        'react-dom',
+        'react/jsx-runtime',
+        'react-reconciler',
+        'react-reconciler/constants',
+      ],
     },
   },
 })
