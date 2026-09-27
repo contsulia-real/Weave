@@ -136,15 +136,9 @@ export function SnackProvider({
                 placement,
               )
 
-            if (!isFront) {
-              activePlacements.add(
-                placement,
-              )
-            } else {
-              activePlacements.add(
-                placement,
-              )
-            }
+            activePlacements.add(
+              placement,
+            )
 
             return (
               <Snack
