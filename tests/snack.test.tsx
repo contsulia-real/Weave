@@ -246,8 +246,11 @@ describe('Snack', () => {
       'A',
       'B',
       'C',
-      'D',
     ])
+
+    expect(
+      snacksBeforeRemoval,
+    ).toHaveLength(3)
 
     expect(
       snacksBeforeRemoval[0]?.getAttribute(
@@ -265,6 +268,10 @@ describe('Snack', () => {
             ) === 'open',
         ),
     ).toBe(true)
+
+    expect(
+      region?.textContent,
+    ).not.toContain('D')
 
     const oldest =
       snacksBeforeRemoval[0]
