@@ -156,9 +156,6 @@ export function ListPlayground() {
                   />,
               },
             ]}
-            viewProps={{
-              maxWidth: 34,
-            }}
           />
         </View>
 
