@@ -17,6 +17,10 @@ import {
   createDiCImageResourceManager,
   type DiCImageResourceManager,
 } from './image-resource'
+import {
+  createDiCSemanticMirror,
+  type DiCSemanticMirror,
+} from './semantic-mirror'
 
 export interface DiCSurfaceScene {
   node: DiCViewNode
@@ -38,6 +42,7 @@ export interface DiCSurfaceOptions {
   scheduler?: DiCSurfaceScheduler
   devicePixelRatio?: () => number
   imageResources?: DiCImageResourceManager
+  semanticMirror?: boolean
 }
 
 export interface DiCSurface {
@@ -48,6 +53,7 @@ export interface DiCSurface {
   destroy(): void
   getLayout(): DiCViewTreeLayout | undefined
   getInteraction(): DiCInteractionController | undefined
+  getSemanticMirror(): DiCSemanticMirror | undefined
 }
 
 function defaultScheduler(): DiCSurfaceScheduler {
@@ -151,6 +157,7 @@ export function createDiCSurface(
   let destroyed = false
   let layout: DiCViewTreeLayout | undefined
   let interactions: DiCInteractionController | undefined
+  let semanticMirror: DiCSemanticMirror | undefined
 
   const updateCursor = () => {
     if (
@@ -212,16 +219,26 @@ export function createDiCSurface(
     )
 
     interactions?.reconcile()
+    semanticMirror?.update(scene.node)
+
+    const focusedNode =
+      interactions?.getFocusedNode()
 
     if (
-      interactions
-        ?.getFocusedNode()
+      focusedNode
         ?.interaction
         ?.autoFocus
     ) {
-      canvas.focus?.({
-        preventScroll: true,
-      })
+      if (
+        semanticMirror?.focusNode(
+          focusedNode,
+          false,
+        ) !== true
+      ) {
+        canvas.focus?.({
+          preventScroll: true,
+        })
+      }
     }
 
     drawDiCViewTree(
@@ -254,6 +271,17 @@ export function createDiCSurface(
       invalidate,
       rem: () => scene.rem ?? 16,
     })
+
+    if (
+      options.semanticMirror !== false &&
+      canvas.ownerDocument !== undefined &&
+      canvas.parentElement !== null
+    ) {
+      semanticMirror = createDiCSemanticMirror(
+        canvas,
+        interactions,
+      )
+    }
   }
 
   const eventPoint = (
@@ -324,13 +352,22 @@ export function createDiCSurface(
       },
     })
 
-    if (
-      type === 'pointerdown' &&
-      interactions.getFocusedNode() !== undefined
-    ) {
-      canvas.focus?.({
-        preventScroll: true,
-      })
+    if (type === 'pointerdown') {
+      const focusedNode =
+        interactions.getFocusedNode()
+
+      if (focusedNode !== undefined) {
+        if (
+          semanticMirror?.focusNode(
+            focusedNode,
+            false,
+          ) !== true
+        ) {
+          canvas.focus?.({
+            preventScroll: true,
+          })
+        }
+      }
     }
 
     updateCursor()
@@ -521,6 +558,9 @@ export function createDiCSurface(
         canvas.removeEventListener('blur', handleBlur)
       }
 
+      semanticMirror?.destroy()
+      semanticMirror = undefined
+
       interactions?.blur()
       interactions = undefined
 
@@ -545,6 +585,9 @@ export function createDiCSurface(
     },
     getInteraction() {
       return interactions
+    },
+    getSemanticMirror() {
+      return semanticMirror
     },
   }
 }
