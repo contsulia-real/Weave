@@ -441,6 +441,7 @@ export const defaultTheme: ResolvedTheme = {
         maxWidth: 16,
         shadow: 'small',
         arrowSize: 0.5,
+        motionOffset: 0.1875,
         typo: 'body-xsmall',
       },
     },
