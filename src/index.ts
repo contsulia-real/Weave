@@ -11,6 +11,8 @@ export { Switch } from './components/Switch'
 export { Progress } from './components/Progress'
 export { ToolTip } from './components/ToolTip'
 export { Snack } from './components/Snack'
+export { List } from './components/List'
+export { ListItem } from './components/ListItem'
 export {
   SnackProvider,
 } from './components/SnackProvider'
@@ -155,3 +157,14 @@ export type {
   SnackVariant,
   SnackViewProps,
 } from './core/snack-types'
+
+export type {
+  ListDataItem,
+  ListItemIcon,
+  ListItemProps,
+  ListItemViewProps,
+  ListOrientation,
+  ListProps,
+  ListSelection,
+  ListViewProps,
+} from './core/list-types'
