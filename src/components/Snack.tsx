@@ -33,6 +33,7 @@ import { View } from './View'
 import { durationMilliseconds } from './internal/motion-duration'
 import {
   retainSnackRegion,
+  syncSnackRegion,
 } from './internal/snack-region'
 
 type SnackVisualState =
@@ -308,6 +309,17 @@ export function Snack({
   }, [
     placement,
     present,
+  ])
+
+  useLayoutEffect(() => {
+    if (region === null) {
+      return
+    }
+
+    syncSnackRegion(region)
+  }, [
+    region,
+    visualState,
   ])
 
   const handlePointerEnter:
