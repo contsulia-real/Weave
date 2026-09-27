@@ -40,6 +40,7 @@ function shouldMirror(
   return (
     node.content?.kind === 'text' ||
     node.content?.kind === 'image' ||
+    node.content?.kind === 'input' ||
     hasSemanticValue(node.semantics) ||
     node.interaction?.focusable === true ||
     node.interaction?.autoFocus === true ||
@@ -130,6 +131,7 @@ function applyDispatchResult(
 export function createDiCSemanticMirror(
   canvas: HTMLCanvasElement,
   interaction: DiCInteractionController,
+  invalidate: () => void = () => {},
 ): DiCSemanticMirror {
   const document = canvas.ownerDocument
   const parent = canvas.parentElement
@@ -221,6 +223,71 @@ export function createDiCSemanticMirror(
     return undefined
   }
 
+  const semanticTag = (
+    node: DiCViewNode,
+  ): 'span' | 'input' | 'textarea' | 'div' => {
+    if (node.content?.kind === 'text') {
+      return 'span'
+    }
+
+    if (node.content?.kind === 'input') {
+      return node.content.input.multiline
+        ? 'textarea'
+        : 'input'
+    }
+
+    return 'div'
+  }
+
+  const editableElement = (
+    node: DiCViewNode,
+    element: HTMLElement,
+  ):
+    | HTMLInputElement
+    | HTMLTextAreaElement
+    | undefined => {
+    if (node.content?.kind !== 'input') {
+      return undefined
+    }
+
+    return element as
+      | HTMLInputElement
+      | HTMLTextAreaElement
+  }
+
+  const syncInputRuntime = (
+    node: DiCViewNode,
+    element: HTMLElement,
+  ) => {
+    const content = node.content
+    if (content?.kind !== 'input') return
+
+    const editor = editableElement(
+      node,
+      element,
+    )
+    if (editor === undefined) return
+
+    try {
+      content.selectionStart =
+        editor.selectionStart ??
+        content.value.length
+      content.selectionEnd =
+        editor.selectionEnd ??
+        content.selectionStart
+    } catch {
+      content.selectionStart =
+        content.value.length
+      content.selectionEnd =
+        content.value.length
+    }
+
+    content.scrollLeft =
+      editor.scrollLeft
+    content.scrollTop =
+      editor.scrollTop
+  }
+
   const clearOwnedAttributes = (
     element: HTMLElement,
   ) => {
@@ -279,6 +346,85 @@ export function createDiCSemanticMirror(
         0
     } else {
       element.removeAttribute('tabindex')
+    }
+
+    if (node.content?.kind === 'input') {
+      const content = node.content
+      const input = content.input
+      const editor = editableElement(
+        node,
+        element,
+      )
+
+      if (editor === undefined) return
+
+      editor.placeholder =
+        input.placeholder ?? ''
+      editor.readOnly =
+        input.readOnly
+      editor.required =
+        input.required
+      editor.disabled =
+        input.disabled
+
+      if (input.name !== undefined) {
+        editor.name = input.name
+      }
+      if (input.autoComplete !== undefined) {
+        editor.autocomplete =
+          input.autoComplete
+      }
+      if (input.minLength !== undefined) {
+        editor.setAttribute(
+          'minlength',
+          String(input.minLength),
+        )
+      }
+      if (input.maxLength !== undefined) {
+        editor.setAttribute(
+          'maxlength',
+          String(input.maxLength),
+        )
+      }
+
+      if (
+        editor instanceof HTMLInputElement
+      ) {
+        editor.type = input.type
+
+        if (input.pattern !== undefined) {
+          editor.pattern =
+            input.pattern
+        }
+      } else if (
+        input.rows !== undefined
+      ) {
+        editor.rows =
+          Math.max(
+            1,
+            Math.floor(input.rows),
+          )
+      }
+
+      if (
+        editor.value !==
+        content.value
+      ) {
+        editor.value =
+          content.value
+      }
+
+      if (
+        document.activeElement ===
+        editor
+      ) {
+        syncInputRuntime(
+          node,
+          element,
+        )
+      }
+
+      return
     }
 
     if (node.content?.kind === 'text') {
@@ -343,12 +489,26 @@ export function createDiCSemanticMirror(
 
         let element =
           nodeElements.get(current)
+        const tag =
+          semanticTag(current)
+
+        if (
+          element !== undefined &&
+          element.tagName.toLowerCase() !== tag
+        ) {
+          element.remove()
+          elementNodes.delete(
+            element,
+          )
+          nodeElements.delete(
+            current,
+          )
+          element = undefined
+        }
 
         if (element === undefined) {
           element = document.createElement(
-            current.content?.kind === 'text'
-              ? 'span'
-              : 'div',
+            tag,
           )
           nodeElements.set(
             current,
@@ -443,6 +603,18 @@ export function createDiCSemanticMirror(
         : true
     pendingFocus = undefined
 
+    if (
+      node.content?.kind === 'input' &&
+      event.target instanceof HTMLElement
+    ) {
+      node.content.focused = true
+      syncInputRuntime(
+        node,
+        event.target,
+      )
+      invalidate()
+    }
+
     interaction.focusNode(
       node,
       visible,
@@ -453,6 +625,23 @@ export function createDiCSemanticMirror(
   const handleFocusOut = (
     event: FocusEvent,
   ) => {
+    const currentNode =
+      nodeFromTarget(
+        event.target,
+      )
+
+    if (
+      currentNode?.content?.kind === 'input' &&
+      event.target instanceof HTMLElement
+    ) {
+      currentNode.content.focused = false
+      syncInputRuntime(
+        currentNode,
+        event.target,
+      )
+      invalidate()
+    }
+
     const nextNode = nodeFromTarget(
       event.relatedTarget,
     )
@@ -515,6 +704,89 @@ export function createDiCSemanticMirror(
     )
   }
 
+  const handleInput = (
+    event: Event,
+  ) => {
+    const node = nodeFromTarget(
+      event.target,
+    )
+    if (
+      node?.content?.kind !== 'input' ||
+      !(event.target instanceof HTMLElement)
+    ) {
+      return
+    }
+
+    const content = node.content
+    const editor = editableElement(
+      node,
+      event.target,
+    )
+
+    if (
+      editor === undefined ||
+      content.input.disabled ||
+      content.input.readOnly
+    ) {
+      event.stopPropagation()
+      return
+    }
+
+    content.value =
+      editor.value
+    syncInputRuntime(
+      node,
+      event.target,
+    )
+    content.onChange?.(
+      editor.value,
+    )
+    invalidate()
+    event.stopPropagation()
+  }
+
+  const handleSelect = (
+    event: Event,
+  ) => {
+    const node = nodeFromTarget(
+      event.target,
+    )
+
+    if (
+      node?.content?.kind === 'input' &&
+      event.target instanceof HTMLElement
+    ) {
+      syncInputRuntime(
+        node,
+        event.target,
+      )
+      invalidate()
+    }
+
+    event.stopPropagation()
+  }
+
+  const handleScroll = (
+    event: Event,
+  ) => {
+    const node = nodeFromTarget(
+      event.target,
+    )
+
+    if (
+      node?.content?.kind === 'input' &&
+      event.target instanceof HTMLElement
+    ) {
+      syncInputRuntime(
+        node,
+        event.target,
+      )
+      invalidate()
+    }
+
+    event.stopPropagation()
+  }
+
   const keyDown = (event: KeyboardEvent) =>
     handleKeyboard(event, 'keydown')
   const keyUp = (event: KeyboardEvent) =>
@@ -539,6 +811,19 @@ export function createDiCSemanticMirror(
   root.addEventListener(
     'click',
     handleClick,
+  )
+  root.addEventListener(
+    'input',
+    handleInput,
+  )
+  root.addEventListener(
+    'select',
+    handleSelect,
+  )
+  root.addEventListener(
+    'scroll',
+    handleScroll,
+    true,
   )
 
   return {
@@ -573,6 +858,19 @@ export function createDiCSemanticMirror(
       root.removeEventListener(
         'click',
         handleClick,
+      )
+      root.removeEventListener(
+        'input',
+        handleInput,
+      )
+      root.removeEventListener(
+        'select',
+        handleSelect,
+      )
+      root.removeEventListener(
+        'scroll',
+        handleScroll,
+        true,
       )
 
       root.remove()
