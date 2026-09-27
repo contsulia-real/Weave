@@ -105,6 +105,11 @@ describe('public Weave root', () => {
       HTMLCanvasElement,
     )
     expect(
+      canvas?.hasAttribute(
+        'layoutsubtree',
+      ),
+    ).toBe(true)
+    expect(
       canvas?.getAttribute(
         'content',
       ),
