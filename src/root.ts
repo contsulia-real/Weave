@@ -160,7 +160,6 @@ export function createRoot(
       }
 
       selected.root.render(node)
-
     },
 
     unmount() {
