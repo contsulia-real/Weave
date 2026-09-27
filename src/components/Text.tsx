@@ -218,7 +218,7 @@ function DiCText(
   )
 
   assertDiCViewPropsSupported(
-    hostProps as ViewProps<HTMLElement>,
+    hostProps as unknown as ViewProps<HTMLElement>,
     theme.breakpoints,
     'Text.viewProps',
   )
