@@ -1,25 +1,15 @@
 import {
-  createElement,
   useEffect,
-  useImperativeHandle,
   useInsertionEffect,
   useMemo,
   useRef,
   useState,
+  type KeyboardEvent,
+  type MouseEvent,
+  type PointerEvent as ReactPointerEvent,
 } from 'react'
 import type { SwitchProps } from '../core/switch-types'
-import type {
-  ViewClickEvent,
-  ViewKeyboardEvent,
-  ViewPointerEvent,
-  ViewProps,
-} from '../core/view-types'
-import { resolveSwitch } from '../core/resolved-switch'
-import { resolveView } from '../core/resolved-view'
 import { resolveSwitchTheme } from '../renderers/dom/resolve-component-theme'
-import { assertDiCViewPropsSupported } from '../renderers/dic/react-compat'
-import { DIC_SWITCH_HOST } from '../renderers/dic/react-host-types'
-import { useWeaveRenderer } from '../renderers/renderer-context'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { ensureSwitchStylesheet } from '../renderers/dom/switch-stylesheet'
 import { useTheme } from '../theme/theme-context'
@@ -88,7 +78,7 @@ function clearDragShape(thumb: HTMLDivElement): void {
   thumb.style.removeProperty('transform')
 }
 
-function DOMSwitch({
+export function Switch({
   checked,
   defaultChecked = false,
   onChange,
@@ -98,46 +88,34 @@ function DOMSwitch({
   useInsertionEffect(ensureSwitchStylesheet, [])
 
   const { theme } = useTheme()
-
-  const [uncontrolledChecked, setUncontrolledChecked] =
-    useState(defaultChecked)
-  const isControlled = checked !== undefined
-  const currentChecked = checked ?? uncontrolledChecked
-  const resolvedSwitch = resolveSwitch({
-    size,
-    checked: currentChecked,
-    disabled: viewProps.disabled,
-  })
-
   const themeDeclarations = useMemo(
-    () => resolveSwitchTheme(
-      theme,
-      resolvedSwitch.size,
-    ),
-    [resolvedSwitch.size, theme],
+    () => resolveSwitchTheme(theme, size),
+    [size, theme],
   )
   const themeClassName = useRuntimeStyleClass(
     'switch-theme',
     themeDeclarations,
   )
 
+  const [uncontrolledChecked, setUncontrolledChecked] =
+    useState(defaultChecked)
+  const isControlled = checked !== undefined
+  const currentChecked = checked ?? uncontrolledChecked
+
   const switchBase = theme.components.Switch?.base
   const dragShrink = switchBase?.thumbDragShrink ?? 0.68
   const dragMaxWidth = switchBase?.thumbDragMaxWidth ?? 1.35
 
-  const rootRef = useRef<HTMLDivElement>(null)
   const thumbRef = useRef<HTMLDivElement>(null)
   const dragRef = useRef<SwitchDragState | null>(null)
+  const nativeDragCleanupRef = useRef<(() => void) | null>(null)
   const suppressClickRef = useRef(false)
   const suppressClickTimerRef = useRef<number | null>(null)
 
-  useImperativeHandle(
-    viewProps.ref,
-    () => rootRef.current as HTMLDivElement,
-  )
-
   useEffect(
     () => () => {
+      nativeDragCleanupRef.current?.()
+
       if (
         suppressClickTimerRef.current !== null &&
         typeof window !== 'undefined'
@@ -158,7 +136,7 @@ function DOMSwitch({
 
   const toggle = () => {
     if (viewProps.disabled) return
-    commit(!resolvedSwitch.checked)
+    commit(!currentChecked)
   }
 
   const suppressFollowUpClick = () => {
@@ -234,13 +212,20 @@ function DOMSwitch({
       return
     }
 
+    nativeDragCleanupRef.current?.()
+    nativeDragCleanupRef.current = null
+
     const nextChecked =
       drag.maxOffset > 0
         ? drag.currentOffset >= drag.maxOffset / 2
-        : resolvedSwitch.checked
+        : currentChecked
 
     clearDragShape(thumb)
     delete root.dataset.weaveSwitchDragging
+
+    if (root.hasPointerCapture?.(pointerId)) {
+      root.releasePointerCapture(pointerId)
+    }
 
     dragRef.current = null
 
@@ -252,15 +237,13 @@ function DOMSwitch({
     if (
       applyValue &&
       drag.moved &&
-      nextChecked !== resolvedSwitch.checked
+      nextChecked !== currentChecked
     ) {
       commit(nextChecked)
     }
   }
 
-  const handleClick = (
-    event: ViewClickEvent,
-  ) => {
+  const handleClick = (event: MouseEvent<HTMLDivElement>) => {
     viewProps.onClick?.(event)
     if (event.defaultPrevented) return
 
@@ -272,23 +255,18 @@ function DOMSwitch({
     toggle()
   }
 
-  const handleKeyDown = (
-    event: ViewKeyboardEvent,
-  ) => {
+  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     viewProps.onKeyDown?.(event)
     if (event.defaultPrevented) return
 
-    if (
-      event.key === ' ' ||
-      event.key === 'Enter'
-    ) {
+    if (event.key === ' ' || event.key === 'Enter') {
       event.preventDefault()
       toggle()
     }
   }
 
   const handlePointerDown = (
-    event: ViewPointerEvent,
+    event: ReactPointerEvent<HTMLDivElement>,
   ) => {
     viewProps.onPointerDown?.(event)
 
@@ -300,48 +278,28 @@ function DOMSwitch({
       return
     }
 
-    const root = rootRef.current
+    const root = event.currentTarget
     const thumb = thumbRef.current
+    const target = event.target
 
     if (
-      root === null ||
-      thumb === null
+      thumb === null ||
+      !(target instanceof Node) ||
+      !thumb.contains(target)
     ) {
       return
     }
 
-    const rootRect =
-      root.getBoundingClientRect()
-    const thumbRect =
-      thumb.getBoundingClientRect()
-
-    const insideThumb =
-      event.clientX >= thumbRect.left &&
-      event.clientX <= thumbRect.right &&
-      event.clientY >= thumbRect.top &&
-      event.clientY <= thumbRect.bottom
-
-    if (!insideThumb) return
-
-    const inset = resolvedSwitch.checked
-      ? Math.max(
-          0,
-          rootRect.right - thumbRect.right,
-        )
-      : Math.max(
-          0,
-          thumbRect.left - rootRect.left,
-        )
+    const rootRect = root.getBoundingClientRect()
+    const thumbRect = thumb.getBoundingClientRect()
+    const inset = currentChecked
+      ? Math.max(0, rootRect.right - thumbRect.right)
+      : Math.max(0, thumbRect.left - rootRect.left)
     const maxOffset = Math.max(
       0,
-      rootRect.width -
-        thumbRect.width -
-        inset * 2,
+      rootRect.width - thumbRect.width - inset * 2,
     )
-    const startOffset =
-      resolvedSwitch.checked
-        ? maxOffset
-        : 0
+    const startOffset = currentChecked ? maxOffset : 0
 
     const drag: SwitchDragState = {
       pointerId: event.pointerId,
@@ -365,83 +323,119 @@ function DOMSwitch({
       dragMaxWidth,
     )
 
-    event.capturePointer()
+    root.setPointerCapture?.(event.pointerId)
+
+    nativeDragCleanupRef.current?.()
+    nativeDragCleanupRef.current = null
+
+    const usesReactDragHandlers =
+      viewProps.onPointerMove !== undefined ||
+      viewProps.onPointerUp !== undefined ||
+      viewProps.onPointerCancel !== undefined
+
+    if (!usesReactDragHandlers) {
+      const pointerId = event.pointerId
+
+      const onMove = (nativeEvent: globalThis.PointerEvent) => {
+        if (nativeEvent.pointerId !== pointerId) return
+
+        if (moveDrag(pointerId, nativeEvent.clientX)) {
+          nativeEvent.preventDefault()
+        }
+      }
+
+      const onUp = (nativeEvent: globalThis.PointerEvent) => {
+        if (nativeEvent.pointerId !== pointerId) return
+
+        finishDrag(
+          root,
+          pointerId,
+          true,
+          () => nativeEvent.preventDefault(),
+        )
+      }
+
+      const onCancel = (nativeEvent: globalThis.PointerEvent) => {
+        if (nativeEvent.pointerId !== pointerId) return
+        finishDrag(root, pointerId, false)
+      }
+
+      root.addEventListener('pointermove', onMove)
+      root.addEventListener('pointerup', onUp)
+      root.addEventListener('pointercancel', onCancel)
+
+      nativeDragCleanupRef.current = () => {
+        root.removeEventListener('pointermove', onMove)
+        root.removeEventListener('pointerup', onUp)
+        root.removeEventListener('pointercancel', onCancel)
+      }
+    }
   }
 
   const handlePointerMove = (
-    event: ViewPointerEvent,
+    event: ReactPointerEvent<HTMLDivElement>,
   ) => {
     viewProps.onPointerMove?.(event)
     if (event.defaultPrevented) return
 
-    if (
-      moveDrag(
-        event.pointerId,
-        event.clientX,
-      )
-    ) {
+    if (moveDrag(event.pointerId, event.clientX)) {
       event.preventDefault()
     }
   }
 
   const handlePointerUp = (
-    event: ViewPointerEvent,
+    event: ReactPointerEvent<HTMLDivElement>,
   ) => {
     viewProps.onPointerUp?.(event)
 
-    const root = rootRef.current
-    if (root === null) return
-
     finishDrag(
-      root,
+      event.currentTarget,
       event.pointerId,
       !event.defaultPrevented,
       () => event.preventDefault(),
     )
-
-    event.releasePointer()
   }
 
   const handlePointerCancel = (
-    event: ViewPointerEvent,
+    event: ReactPointerEvent<HTMLDivElement>,
   ) => {
     viewProps.onPointerCancel?.(event)
-
-    const root = rootRef.current
-    if (root === null) return
-
-    finishDrag(
-      root,
-      event.pointerId,
-      false,
-    )
-
-    event.releasePointer()
+    finishDrag(event.currentTarget, event.pointerId, false)
   }
+
+  const usesReactDragHandlers =
+    viewProps.onPointerMove !== undefined ||
+    viewProps.onPointerUp !== undefined ||
+    viewProps.onPointerCancel !== undefined
 
   return (
     <View
       {...viewProps}
-      ref={rootRef}
       className={[
         'weave-switch',
-        `weave-switch--${resolvedSwitch.size}`,
+        `weave-switch--${size}`,
         themeClassName,
         viewProps.className,
       ].filter(Boolean).join(' ')}
       role="switch"
-      checked={resolvedSwitch.checked}
+      checked={currentChecked}
       focusable={viewProps.focusable ?? true}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
       onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerUp}
-      onPointerCancel={handlePointerCancel}
+      onPointerMove={
+        usesReactDragHandlers ? handlePointerMove : undefined
+      }
+      onPointerUp={
+        usesReactDragHandlers ? handlePointerUp : undefined
+      }
+      onPointerCancel={
+        usesReactDragHandlers ? handlePointerCancel : undefined
+      }
       data={{
         ...viewProps.data,
         'weave-switch': '',
-        'weave-switch-size': resolvedSwitch.size,
+        'weave-switch-size': size,
       }}
     >
       <View
@@ -453,71 +447,4 @@ function DOMSwitch({
       />
     </View>
   )
-}
-
-
-function DiCSwitch({
-  checked,
-  defaultChecked = false,
-  onChange,
-  size = 'medium',
-  viewProps = {},
-}: SwitchProps) {
-  const { theme } = useTheme()
-  const [
-    uncontrolledChecked,
-    setUncontrolledChecked,
-  ] = useState(defaultChecked)
-  const isControlled =
-    checked !== undefined
-  const currentChecked =
-    checked ?? uncontrolledChecked
-  const value = resolveSwitch({
-    size,
-    checked: currentChecked,
-    disabled: viewProps.disabled,
-  })
-
-  assertDiCViewPropsSupported(
-    viewProps as unknown as ViewProps<HTMLElement>,
-    theme.breakpoints,
-    'Switch.viewProps',
-  )
-
-  const view = resolveView(
-    viewProps,
-    theme.breakpoints,
-  )
-
-  const commit = (
-    nextChecked: boolean,
-  ) => {
-    if (!isControlled) {
-      setUncontrolledChecked(
-        nextChecked,
-      )
-    }
-
-    onChange?.(nextChecked)
-  }
-
-  return createElement(
-    DIC_SWITCH_HOST,
-    {
-      view,
-      value,
-      theme,
-      onChange: commit,
-    },
-  )
-}
-
-export function Switch(
-  props: SwitchProps,
-) {
-  const renderer = useWeaveRenderer()
-
-  return renderer === 'dic'
-    ? <DiCSwitch {...props} />
-    : <DOMSwitch {...props} />
 }

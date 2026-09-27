@@ -3,11 +3,12 @@ import {
   createRoot as createDOMRoot,
   type Root as DOMRoot,
 } from 'react-dom/client'
-import { isDiCCapabilityError } from './renderers/dic/capability-error'
 import {
-  createDiCReactSurface,
-  type DiCReactSurface,
-} from './renderers/dic/react-surface'
+  createHTMLInCanvasMount,
+  HTMLInCanvasCapabilityError,
+  isHTMLInCanvasSupported,
+  type HTMLInCanvasMount,
+} from './renderers/html-in-canvas'
 
 export type RootFallback =
   | 'dom'
@@ -22,11 +23,11 @@ export interface Root {
   unmount(): void
 }
 
-type SelectedRenderer =
+type SelectedRoot =
   | {
-      kind: 'dic'
-      canvas: HTMLCanvasElement
-      root: DiCReactSurface
+      kind: 'html-in-canvas'
+      root: DOMRoot
+      mount: HTMLInCanvasMount
     }
   | {
       kind: 'dom'
@@ -46,66 +47,48 @@ function assertContainer(
   }
 }
 
-function canvasForRoot(
-  container: HTMLElement,
-): HTMLCanvasElement {
-  const canvas =
-    container.ownerDocument.createElement(
-      'canvas',
-    )
-
-  canvas.setAttribute(
-    'data-weave-root-canvas',
-    '',
-  )
-  canvas.setAttribute(
-    'aria-hidden',
-    'true',
-  )
-  canvas.style.display = 'block'
-  canvas.style.width = '100%'
-  canvas.style.height = '100%'
-
-  container.replaceChildren(canvas)
-  return canvas
-}
-
-function mountDiC(
-  container: HTMLElement,
-  node: ReactNode,
-): SelectedRenderer {
-  const canvas = canvasForRoot(container)
-
-  try {
-    return {
-      kind: 'dic',
-      canvas,
-      root: createDiCReactSurface(
-        canvas,
-        node,
-        {
-          resizeTarget: container,
-        },
-      ),
-    }
-  } catch (error) {
-    canvas.remove()
-    throw error
-  }
-}
-
 function mountDOM(
   container: HTMLElement,
   node: ReactNode,
-): SelectedRenderer {
+): SelectedRoot {
   container.replaceChildren()
 
-  const root = createDOMRoot(container)
+  const root =
+    createDOMRoot(container)
   root.render(node)
 
   return {
     kind: 'dom',
     root,
+  }
+}
+
+function mountHTMLInCanvas(
+  container: HTMLElement,
+  node: ReactNode,
+): SelectedRoot {
+  const mount =
+    createHTMLInCanvasMount(
+      container,
+    )
+  const root =
+    createDOMRoot(
+      mount.host,
+    )
+
+  try {
+    root.render(node)
+    mount.requestPaint()
+
+    return {
+      kind: 'html-in-canvas',
+      root,
+      mount,
+    }
+  } catch (error) {
+    root.unmount()
+    mount.destroy()
+    throw error
   }
 }
 
@@ -118,7 +101,7 @@ export function createRoot(
   const fallback =
     options.fallback ?? 'dom'
   let selected:
-    | SelectedRenderer
+    | SelectedRoot
     | undefined
   let unmounted = false
 
@@ -134,22 +117,37 @@ export function createRoot(
     node: ReactNode,
   ) => {
     try {
-      selected = mountDiC(
-        container,
-        node,
-      )
+      if (
+        !isHTMLInCanvasSupported(
+          container.ownerDocument,
+        )
+      ) {
+        throw new HTMLInCanvasCapabilityError(
+          'HTML-in-Canvas is not supported by this browser',
+        )
+      }
+
+      selected =
+        mountHTMLInCanvas(
+          container,
+          node,
+        )
     } catch (error) {
       if (
         fallback !== 'dom' ||
-        !isDiCCapabilityError(error)
+        !(
+          error instanceof
+          HTMLInCanvasCapabilityError
+        )
       ) {
         throw error
       }
 
-      selected = mountDOM(
-        container,
-        node,
-      )
+      selected =
+        mountDOM(
+          container,
+          node,
+        )
     }
   }
 
@@ -162,23 +160,27 @@ export function createRoot(
         return
       }
 
-      if (selected.kind === 'dic') {
-        selected.root.render(node)
-        return
-      }
-
       selected.root.render(node)
+
+      if (
+        selected.kind ===
+        'html-in-canvas'
+      ) {
+        selected.mount.requestPaint()
+      }
     },
 
     unmount() {
       if (unmounted) return
       unmounted = true
 
-      if (selected?.kind === 'dic') {
-        selected.root.destroy()
-        selected.canvas.remove()
-      } else {
-        selected?.root.unmount()
+      selected?.root.unmount()
+
+      if (
+        selected?.kind ===
+        'html-in-canvas'
+      ) {
+        selected.mount.destroy()
       }
 
       selected = undefined

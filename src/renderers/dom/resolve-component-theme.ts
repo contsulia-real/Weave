@@ -14,7 +14,7 @@ import {
   color,
   length,
   radius,
-} from './css-values'
+} from '../../core/values'
 import type {
   RuntimeStyleDeclarations,
   RuntimeStyleValue,

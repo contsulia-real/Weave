@@ -4,7 +4,7 @@
 > 状态：当前设计汇总  
 > 范围：仅 Web  
 > 宿主：React  
-> 主渲染路径：DOM-in-Canvas（DiC）  
+> 主渲染路径：浏览器原生 HTML-in-Canvas（DiC）  
 > 兼容回退：DOM + CSS  
 > 原则：本文件只整理当前已经形成的设计，不把已被否定的方案重新混入，不擅自缩减为概览版。
 
@@ -23,7 +23,7 @@
 - `props`
 - `state`
 - `context`
-- React 风格事件命名；公开事件 payload 使用 Weave renderer-neutral event，不暴露 React SyntheticEvent
+- React 事件模型
 - React 生命周期语义
 - React 的组合模型
 - React 生态兼容
@@ -122,11 +122,11 @@ View
 
 对于不允许子内容的 DOM 元素，组件同样不接受 `children`，不会为了统一布局模型额外改变其 DOM 内容模型。
 
-### 2.5 布局 / 样式语义是 renderer-neutral；DOM fallback 使用 CSS
+### 2.5 CSS 是内部实现和布局/样式语义基础，但公开 API 不是“裸 CSS API”
 
-框架内部先以 Weave 语义和 `ResolvedView` IR 表达布局 / 样式。CSS 只属于 DOM fallback renderer；DiC renderer 直接消费同一 IR，不经过 CSS。
+框架内部最终以 CSS 表达布局和样式。
 
-公开组件 API 应提供高层、语义化、适合 AI 易写易读，同时也适合人类阅读的属性。
+但公开组件 API 应提供高层、语义化、适合 AI 易写易读，同时也适合人类阅读的属性。
 
 例如：
 
@@ -281,28 +281,93 @@ dragScale
 
 ## 3. DOM-in-Canvas 与 DOM + CSS
 
-### 3.1 DiC 是默认主路径，不是增强插件
+### 3.1 DiC 指浏览器原生 HTML-in-Canvas
 
-框架的默认语义以 **DOM-in-Canvas（DiC）** 为主。
+Weave 的主渲染路径使用 Web Platform 的 **HTML-in-Canvas** API。
 
-不是：
-
-```text
-普通 DOM UI
-+ 可选 Canvas 增强
-```
-
-而是：
+这里的 DiC 不是 Weave 自己实现一套 Canvas UI renderer，也不是：
 
 ```text
-统一 UI API
-    ↓
-默认按 DiC 语义运行
-    ├─ DiC 后端
-    └─ DOM + CSS fallback 后端
+React / Weave 组件
+→ 自研布局树
+→ 自研文本测量
+→ 自研命中测试
+→ 自研可访问性镜像
+→ Canvas 2D 手工重绘控件
 ```
 
-### 3.2 DiC 不需要显式开启
+上述路线明确禁止。
+
+正确结构是：
+
+```text
+React
+  ↓
+真实 HTML / DOM
+  ↓
+浏览器原生 HTML / CSS layout、paint、事件、表单、可访问性
+  ↓
+<canvas content="drawable">
+  ↓
+drawable HTML subtree
+  ↓
+CanvasRenderingContext2D.drawElementImage()
+```
+
+也就是说，HTML 本身始终是真值。Canvas 直接消费浏览器已经完成的 HTML rendering snapshot，而不是由 Weave 重建 HTML 的视觉结果。
+
+### 3.2 使用当前 HTML-in-Canvas 原生原语
+
+当前主路径使用 WICG HTML-in-Canvas 提案中的原生能力：
+
+```text
+canvas content="drawable"
+drawable attribute
+paint event
+canvas.requestPaint()
+ctx.drawElementImage()
+```
+
+2D `drawElementImage()` 默认同时更新 drawable 元素的 Canvas geometry，因此浏览器可以继续使用同一批真实元素完成：
+
+```text
+hit testing
+pointer / keyboard event
+focus
+form controls
+text selection
+IME
+accessibility geometry
+```
+
+Weave 不允许为这些能力平行维护第二套 JavaScript 实现。
+
+### 3.3 React 仍然只渲染真实 DOM
+
+Weave 不提供 React custom renderer，不使用 `react-reconciler` 构造私有 Canvas host tree。
+
+组件仍然正常产生真实 DOM：
+
+```text
+View     → div
+Text     → span
+Image    → img
+Input    → input / textarea
+Button   → button
+...
+```
+
+因此：
+
+- CSS layout 由浏览器负责；
+- 文本 shaping、换行、双向文字、字体与 emoji 由浏览器负责；
+- Input / textarea、selection、clipboard、IME 由浏览器负责；
+- DOM event 与 focus 由浏览器负责；
+- ARIA / accessibility tree 由真实 DOM 负责。
+
+Canvas 只改变这些真实 HTML 最终如何被合成 / 绘制。
+
+### 3.4 DiC 不需要业务显式开启
 
 开发者正常使用：
 
@@ -315,83 +380,80 @@ dragScale
 />
 ```
 
-无需额外写：
+公开 `createRoot(container)` 在浏览器支持 HTML-in-Canvas 时自动建立内部：
 
-```tsx
-canvas={...}
+```text
+canvas
+└─ drawable DOM root
+   └─ React / Weave DOM tree
 ```
 
-才能获得“正常能力”。
+业务不创建 Canvas，也不需要为普通组件选择 renderer。
 
-### 3.3 DOM + CSS 是 fallback，但默认 API 与行为必须一致
+### 3.5 DOM + CSS fallback
 
-DiC 与 DOM fallback 对普通组件 API 必须保持：
+HTML-in-Canvas 当前仍是实验性 Web Platform API，因此必须运行时 feature detect。
+
+默认规则：
+
+```text
+支持 HTML-in-Canvas
+→ 使用原生 HTML-in-Canvas
+
+不支持
+→ 整棵 root 使用普通 DOM + CSS
+```
+
+fallback 不是另一套组件实现。两条路径使用同一套 React 组件、真实 DOM、CSS 和浏览器语义；区别只是支持时额外把同一 DOM subtree 原生绘制进 Canvas。
+
+因此普通组件 API 必须保持：
 
 ```text
 同组件
 同 props
+同 DOM 语义
+同 CSS
 同状态
-同布局语义
-同视觉语义
-同动画语义
-同交互语义
+同布局
+同动画
+同事件
+同可访问性
 ```
 
-区别只能存在于内部实现。
+### 3.6 禁止重新实现浏览器
 
-开发者不应该因为当前浏览器进入 DOM fallback，就需要改写组件代码。
+以下内容不得为了 DiC 再造一套：
 
-### 3.4 普通视觉能力不能被错误划入 Canvas 专属能力
+- View tree layout engine；
+- flex / grid / absolute 布局器；
+- 文本测量、换行、ellipsis、shaping；
+- Image intrinsic layout；
+- Canvas hit-test tree；
+- pointer / keyboard event bubbling 系统；
+- focus / Tab 系统；
+- ARIA semantic mirror；
+- Input editor / IME / selection bridge；
+- React custom reconciler；
+- 为组件手工 Canvas 复刻视觉的 parallel backend。
 
-以下属于默认组件 API，而不是 Canvas 专属：
+如果浏览器 HTML-in-Canvas 当前无法表达某项真正的 Canvas 合成需求，应把它作为原生 API 能力边界处理，而不是用一套私有 UI 引擎绕过。
 
-- `blur`
-- `shadow`
-- `mask`
-- `clip`
-- `blend`
-- `opacity`
-- `transform`
-- `transition`
-- 普通滤镜
-- 背景滤镜
+### 3.7 高级 Canvas 能力
 
-这些能力由 DiC 和 DOM fallback 分别实现同样的公开语义。
-
-### 3.5 允许显式 Canvas / DiC 高级配置
-
-可以显式配置 Canvas 行为，但它的定位是：
-
-> 覆盖或定制 DiC 的具体绘制 / 合成行为，而不是启用 DiC。
-
-例如：
-
-```tsx
-<View
-  canvas={{
-    shader: glassShader,
-    uniforms: {
-      distortion: 0.2,
-      refraction: 0.4,
-    },
-  }}
-/>
-```
-
-`canvas` 适合承载真正属于绘制实现层的高级能力，例如：
+显式 Canvas 配置只用于真正属于绘制 / 合成层的高级能力，例如：
 
 ```text
 shader
 uniforms
 renderPass
-composite strategy
-custom draw
+custom composition
+WebGL / WebGPU texture integration
 ```
 
 判断边界：
 
-> 如果一个能力描述的是“组件最终应该长什么样、怎么交互”，它属于默认 API。  
-> 只有描述“DiC 应该具体怎么绘制 / 合成它”时，才进入 `canvas`。
+> 如果一个能力描述“组件应该长什么样、如何布局、如何输入、如何访问”，它属于 HTML / CSS / DOM。  
+> 只有描述“浏览器已经渲染好的 HTML 应如何进入 Canvas 或后续 GPU 合成”时，才属于 Canvas 层。
 
 ---
 
@@ -918,100 +980,35 @@ autoFocus
 
 ## 6.9 通用事件
 
-事件名称沿用 React 风格，不额外发明另一套同义名称；事件 payload 则必须 renderer-neutral，不直接暴露 React SyntheticEvent。
+事件沿用 React 风格，不额外发明另一套同义事件名称。
 
-当前第一批公开事件：
+例如：
 
 ```tsx
 <View
   onClick={...}
+  onDoubleClick={...}
 
   onPointerDown={...}
   onPointerUp={...}
   onPointerMove={...}
   onPointerEnter={...}
   onPointerLeave={...}
-  onPointerCancel={...}
 
   onKeyDown={...}
   onKeyUp={...}
 
   onFocus={...}
   onBlur={...}
+
+  onScroll={...}
+
+  onDragStart={...}
+  onDrag={...}
+  onDragEnd={...}
+  onDrop={...}
 />
 ```
-
-公开事件类型：
-
-```text
-ViewClickEvent
-ViewPointerEvent
-ViewKeyboardEvent
-ViewFocusEvent
-```
-
-共同支持：
-
-```text
-target
-currentTarget
-defaultPrevented
-propagationStopped
-preventDefault()
-stopPropagation()
-```
-
-`target / currentTarget` 是 renderer-neutral `ViewEventTarget`，当前稳定身份字段为：
-
-```text
-id
-```
-
-Pointer event 额外提供：
-
-```text
-pointerId
-pointerType
-isPrimary
-button / buttons
-clientX / clientY
-pressure
-modifier keys
-capturePointer()
-releasePointer()
-```
-
-DOM fallback：
-
-```text
-React SyntheticEvent
-→ DOM event adapter
-→ Weave event
-→ user handler
-```
-
-DiC：
-
-```text
-Canvas native input
-→ DiC tree dispatch
-→ Weave event
-→ user handler
-```
-
-因此业务 handler 不需要、也不能依赖 `nativeEvent / React.MouseEvent / React.PointerEvent`。
-
-当前尚未公开的通用事件：
-
-```text
-onDoubleClick
-onScroll / onWheel
-onDragStart / onDrag / onDragEnd / onDrop
-onContextMenu
-animation / transition DOM events
-```
-
-这些能力必须等 DiC 有对应 backend 后再加入 `ViewEventProps`；不得因为 DOM 能原生处理就从 `HTMLAttributes` 偷漏成 DOM-only API。
 
 ---
 
@@ -4797,1031 +4794,7 @@ React 归属
 
 # 27. 当前整体结构
 
-当前渲染管线明确分为语义归一化与后端编译两层：
-
-```text
-React components
-      │
-      ▼
-ViewProps / component semantic props
-      │
-      ▼
-resolve / normalize
-      │
-      ▼
-ResolvedView
-├─ canonical style
-├─ states
-├─ responsive branches
-├─ semantics
-└─ container metadata
-      │
-      ├─────────────────────┐
-      ▼                     ▼
-DOM compiler            DiC compiler
-      │                     │
-      ▼                     ▼
-CSS variables / DOM      DiC View node
-```
-
-`ResolvedView` 是 renderer-neutral IR。它保留 Weave 语义值，例如：
-
-```text
-width = 10
-background = "primary"
-radiusTopLeft = "large"
-transform = [{ translate: [1, 0] }, { scale: 1.05 }]
-```
-
-这一层禁止提前出现：
-
-```text
-10rem
-var(--weave-color-primary)
-linear-gradient(...)
-box-shadow CSS string
-```
-
-这些转换只属于具体 renderer。
-
-## 27.1 View alias normalization
-
-`ViewProps` 中方便书写的简写在进入 IR 时统一展开，例如：
-
-```text
-padding = 1
-paddingTop = 2
-
-→
-
-paddingTop = 2
-paddingRight = 1
-paddingBottom = 1
-paddingLeft = 1
-```
-
-同样适用于：
-
-- margin
-- inset
-- border width / color
-- radius
-- transform shorthand
-
-state 与 breakpoint 分支使用同一套 normalization，不允许各 renderer 各自解释一次。
-
-## 27.2 DOM fallback
-
-DOM fallback 消费 `ResolvedView`，然后才执行 DOM / CSS 专属编译：
-
-```text
-number length → rem
-color token   → CSS variable
-radius token  → CSS variable
-gradient      → CSS gradient
-shadow        → box-shadow
-transform IR  → CSS transform
-```
-
-CSS value compiler 位于 `renderers/dom`，不属于 core。
-
-## 27.3 当前 DiC vertical slice
-
-当前 DiC compiler 已接入同一个 `ResolvedView`，View paint 已覆盖：
-
-```text
-width / height
-min / max dimensions
-padding
-border
-background
-radius
-external shadow
-outline
-opacity
-transform
-pointerEvents
-cursor
-```
-
-当前 border renderer 精确支持 uniform solid border；非对称 border 与非 solid border 尚未完成时必须显式失败。外部 shadow 支持结构化 `ShadowDefinition` 与当前普通 shadow token；inset shadow 不做近似。
-
-并保留：
-
-```text
-hover / active / focus / disabled states
-viewport breakpoint branches
-container breakpoint branches
-```
-
-当前 vertical slice 同时提供 Canvas 2D draw primitive：给定布局阶段产生的 frame 后，可以直接绘制 solid / linear-gradient / radial-gradient background、四角 radius、opacity 与 transform。主题 color / radius token 在 DiC renderer 内解析，不经过 CSS variable。
-
-## 27.4 DiC paint resolution
-
-DiC 在绘制前先从同一 View node 解析当前 paint：
-
-```text
-base paint
-→ active viewport breakpoints
-→ active container breakpoints
-→ hover
-→ active
-→ focus
-→ focusVisible
-→ disabled
-```
-
-breakpoint 的数值仍遵循 Weave 尺度语义，以 rem 为阈值单位；surface 使用逻辑 CSS pixel 宽度选择当前分支。
-
-## 27.5 DiC tree layout / intrinsic measurement
-
-DiC 已从单节点 frame 推进为递归 View tree layout。
-
-每个 View layout node 输出：
-
-```text
-frame
-contentFrame
-children[]
-```
-
-并支持通用 intrinsic measure contract：
-
-```text
-measure({
-  maxWidth,
-  maxHeight,
-  rem,
-})
-→ { width, height }
-```
-
-因此 `content / fit` 不再依赖 DOM 测量；Text 与 Image 都已接入各自的 intrinsic measurement adapter。
-
-当前 tree layout 已支持：
-
-```text
-普通 flow（纵向）
-flex row / column
-row-reverse / column-reverse
-justify
-align
-gap
-padding
-border-box content geometry
-min / max dimensions
-fill 主轴剩余空间分配
-stack
-content / fit intrinsic sizing
-viewport breakpoint
-nearest container breakpoint
-```
-
-flex 默认语义与 DOM 对齐：
-
-```text
-direction 默认 row
-align 默认 stretch
-```
-
-当前支持的尺寸表达：
-
-```text
-number       → rem
-px
-rem
-%
-fill
-content
-fit
-undefined
-```
-
-其中：
-
-- root 未指定 width / height 时使用 surface 可用尺寸；
-- 普通 child 未指定尺寸时使用自身 intrinsic size；
-- 主轴上的多个 `fill` child 平分剩余空间；
-- `fit` 不超过当前可用空间；
-- `content` 使用真实 intrinsic size。
-
-当前尚未实现的 tree layout 能力：
-
-```text
-grid
-absolute tree layout
-flex-wrap
-完整 grow / shrink / basis
-margin collapse / advanced placement
-```
-
-这些模式必须明确报 unsupported，不能静默按另一种布局处理。
-
-## 27.6 DiC surface lifecycle
-
-内部 canvas surface 负责：
-
-```text
-host measure
-→ logical CSS-pixel size
-→ devicePixelRatio backing store
-→ RAF invalidate coalescing
-→ resolve paint
-→ layout
-→ clear
-→ draw
-```
-
-规则：
-
-- backing store 使用 `logicalSize × DPR`；
-- Canvas 2D context 在每帧恢复为 DPR transform，因此 layout / drawing 始终使用逻辑 CSS pixel；
-- 多次 `invalidate / update / resize` 在同一帧合并为一次 redraw；
-- resize 优先观察外层 host，而不是依赖 canvas intrinsic width / height；
-- destroy 必须断开 ResizeObserver / window listener，并取消未执行的 frame；
-- surface 当前仍是 renderer 内部能力，不增加新的公开组件 API。
-
-当前尚未完成的是 Icon / Scrollbar 等剩余 DiC backend、复杂 composite widget 的专用键盘语义、live region 等动态辅助技术能力、double-click / wheel / drag-drop 等后续事件 backend、完整 grid / wrap / advanced flex、Image 的 DiC lazy-loading / load-event bridge，以及部分组件的 motion / shadow 视觉 parity。这些能力继续在同一 View tree contract 上扩展。
-
-## 27.7 DiC Text
-
-Text 已建立 renderer-neutral `ResolvedText`，DOM 与 DiC 都从同一语义结果编译。
-
-DiC Text 当前支持：
-
-```text
-plain string / number / bigint
-typo
-size
-weight
-color
-lineHeight
-letterSpacing
-case
-wrap
-nowrap
-ellipsis
-maxLines
-start / center / end align
-viewport responsive typo/style
-ancestor typography inheritance
-```
-
-排版继承是显式 tree context：
-
-```text
-Theme root body-large
-→ parent View typography context
-→ child Text
-```
-
-因此 Button 等组件以后可以在父 View 建立 label typo 上下文，再由内部 Text 继承；Canvas 不依赖 DOM computed style。
-
-Text measurement 与 drawing 共用同一套 line layout：
-
-```text
-resolve text style
-→ apply Canvas font
-→ measure
-→ wrap / ellipsis / maxLines
-→ intrinsic size
-→ tree layout
-→ draw same lines
-```
-
-单行与多行 ellipsis 规则：
-
-```text
-overflow="ellipsis" + 无 maxLines
-→ nowrap
-
-maxLines 存在
-→ wrap + line clamp
-
-显式 wrap
-→ 显式值优先
-```
-
-当前明确未实现：
-
-```text
-text-wrap: balance
-text-align: justify
-rich ReactNode / nested inline runs
-advanced shaping fallback beyond Canvas 2D capabilities
-```
-
-这些能力不能静默退化成普通 wrap / start align。
-
-## 27.8 DiC Image
-
-Image 已建立 renderer-neutral `ResolvedImage`，DOM 与 DiC 从同一份语义读取：
-
-```text
-src
-alt
-fit
-position
-loading
-```
-
-默认值统一为：
-
-```text
-fit      = fill
-position = center
-```
-
-DiC Image 的 intrinsic size 来自 image resource manager 的天然 bitmap 尺寸，不读取 DOM `<img>` 的 layout / naturalWidth 作为回传数据。
-
-布局规则：
-
-```text
-width / height 都未指定
-→ natural bitmap size
-
-只指定 width
-→ height 按天然宽高比计算
-
-只指定 height
-→ width 按天然宽高比计算
-
-fit / fit
-→ 在当前可用空间内等比 scale-down
-```
-
-`object-fit` 只决定 bitmap 在已经确定的 content frame 内如何绘制，不反向修改 View 的 intrinsic 语义：
-
-```text
-fill
-contain
-cover
-none
-scale-down
-```
-
-`object-position` 当前支持：
-
-```text
-center / top / bottom / left / right
-top-left / top-right / bottom-left / bottom-right
-常见 CSS 两关键字写法，例如 "top left"
-百分比，例如 "25% 75%"
-px / rem 两值位置
-```
-
-复杂四值 CSS position 语法当前必须明确报 unsupported，不能静默近似。
-
-Image resource lifecycle：
-
-```text
-first measure
-→ resource loading
-→ intrinsic size 暂为 0
-→ decode/load ready
-→ surface invalidate
-→ re-measure
-→ re-layout
-→ redraw
-```
-
-同一 surface 对当前树中的图片源做去重 retain；scene 更新后不再使用的资源会 release。Blob object URL 必须在资源释放或 surface 销毁时 revoke。
-
-当前尚未接入 DiC 的 Image 行为：
-
-```text
-loading="lazy" 的 viewport resource policy
-onLoad / onError React event bridge
-```
-
-Image 的 `alt` 已由 DiC semantic mirror 映射为 `role="img"` + accessible label。
-
-这些属于后续 React/interaction/semantic bridge，不允许因为 Canvas 绘制已完成就宣称等价支持。
-
-## 27.9 DiC hit testing / input dispatch
-
-DiC 已建立 renderer 内部的 interaction contract。
-
-命中路径：
-
-```text
-canvas pointer coordinates
-→ logical CSS-pixel coordinates
-→ reverse draw-order tree walk
-→ inverse View transform
-→ pointerEvents resolution
-→ deepest hit target
-→ root → target path
-```
-
-hit testing 与 drawing 共用同一套 DiC transform 解析，因此 translate / scale / rotate / skew 不允许出现“视觉位置与点击位置分离”。
-
-`pointerEvents` 遵循 tree context：
-
-```text
-未指定
-→ 继承父级当前值
-
-none
-→ 当前 View 自身不可成为 target
-
-child 显式 auto
-→ 可以重新恢复命中
-```
-
-重叠节点按实际绘制顺序的逆序命中；后绘制的 child 优先成为 target。
-
-当前 pointer dispatch 支持：
-
-```text
-pointerenter
-pointerleave
-pointermove
-pointerdown
-pointerup
-pointercancel
-click
-```
-
-除 `pointerenter / pointerleave` 外，pointer 事件沿 target → root 冒泡，并支持：
-
-```text
-preventDefault
-stopPropagation
-pointer capture / release
-```
-
-`pointerenter / pointerleave` 是节点边界事件，不沿 View tree 冒泡；其公开事件中 `target === currentTarget`。
-
-`click` 当前由同一 primary pointer 在相同 target 上完成 down / up 后合成。pointer capture 只改变 move / up / cancel 的 dispatch path，不会把指针实际位于其它位置时错误合成为 click。
-
-interaction state 直接回到同一个 View state IR：
-
-```text
-hover
-active
-focus
-focusVisible
-disabled
-```
-
-因此 DiC 不维护另一套私有 hover/active 样式。
-
-Focus 语义：
-
-```text
-ViewProps.focusable
-ViewProps.autoFocus
-ViewProps.tabIndex
-→ ResolvedView.interaction
-→ DiC node interaction
-```
-
-pointer 聚焦时 `focusVisible = false`；focused node 接收到 keyboard input 后切换为 `focusVisible = true`。
-
-scene/layout 更新后 interaction controller 必须 reconcile：
-
-- 已离开 tree 的 focused node 被 blur；
-- stale active / capture / pointer-down target 被清理；
-- 首次出现的 autoFocus node 可以获得虚拟焦点。
-
-Canvas 原生事件只是 input bridge：
-
-```text
-native PointerEvent / KeyboardEvent
-→ coordinate normalization
-→ DiC interaction controller
-→ optional native preventDefault / stopPropagation
-```
-
-业务语义不能直接绑定在 canvas DOM target 上。
-
-当前明确未完成：
-
-```text
-Input 等剩余组件的 DiC semantic interaction adapter
-double-click / scroll / wheel / drag-drop event backend
-Input 文本编辑 / IME / selection bridge
-复杂 composite widget 的专用键盘导航
-live region / announcement bridge
-wheel / scroll interaction backend
-drag-and-drop semantic backend
-```
-
-generic View 的 `disabled` 当前与 DOM 的 `aria-disabled` 语义一致：它激活 disabled state，但不会全局吞掉事件。真正的 Button / Switch / Input disabled 行为必须由对应组件 adapter 承担。
-
-## 27.10 DiC semantic mirror / native Tab
-
-DiC surface 现在维护一棵内部、不可见但真实存在于浏览器 accessibility tree 中的 DOM semantic mirror。
-
-它不承担任何视觉渲染，也不参与 Weave layout：
-
-```text
-DiC View tree
-├─ Canvas paint / hit testing
-└─ semantic mirror DOM
-   ├─ role / aria-*
-   ├─ text content
-   ├─ Image alt
-   └─ native browser focus order
-```
-
-mirror 的容器：
-
-- 视觉上裁掉；
-- `pointer-events: none`；
-- 不接管 Canvas pointer；
-- 只负责浏览器 focus、Tab、辅助技术语义和辅助技术 activation。
-
-ARIA 属性由 DOM fallback 与 semantic mirror 共用同一个 Web semantic compiler：
-
-```text
-ResolvedView.semantics
-→ compileWebSemanticAttributes()
-├─ normal DOM View
-└─ DiC semantic mirror
-```
-
-因此 role / label / checked / disabled / pressed / value / labelledBy / describedBy / controls / owns 等不能由两条 renderer 分别解释。
-
-### Tab / focus
-
-DiC 不手写 Tab 排序算法。
-
-每个可聚焦 DiC node 在 mirror 中获得真实 `tabIndex`：
-
-```text
-focusable + 无显式 tabIndex
-→ tabIndex = 0
-
-显式 tabIndex
-→ 原值
-
-非 focusable
-→ 无 tabIndex
-```
-
-Tab / Shift+Tab 的顺序由浏览器原生 focus navigation 决定；DiC 只监听 mirror 的 focus change 并同步：
-
-```text
-browser focus
-→ semantic mirror
-→ DiC interaction controller
-→ focus / focusVisible
-→ View state IR
-→ Canvas redraw
-```
-
-pointer 聚焦通过 mirror programmatic focus 同步，但保持 `focusVisible = false`；浏览器通过键盘把焦点移入 mirror node 时使用 `focusVisible = true`。
-
-disabled Button / Switch 不进入 mirror 的 Tab 顺序。
-
-### Semantic activation
-
-辅助技术或浏览器对 mirror 节点产生的 click / keyboard input 不直接调用组件业务逻辑，而是重新进入同一个 DiC controller：
-
-```text
-semantic mirror click / key
-→ DiC interaction dispatch
-→ public Weave event
-→ component default behavior
-```
-
-因此 `preventDefault()`、事件 bubbling、Button activation、Switch toggle 都与 Canvas pointer 路径共用同一套语义。
-
-### Semantic content
-
-当前 mirror 额外映射：
-
-- DiC Text → 真实文本内容；
-- DiC Image → `role="img"` + `aria-label=alt`，除非用户显式覆盖；
-- Button 的 primitive `text: string | number | bigint` → shared IR accessible label。
-
-Button 的任意 ReactNode/custom children 与 icon-only accessible name 不能靠 renderer 猜测；在 React child tree bridge 完成前应通过 `viewProps.label` / `labelledBy` 明确提供。
-
-### ID relationships
-
-mirror 不把用户逻辑 `id` 原样复制到隐藏 DOM，避免与真实宿主产生重复 DOM id。
-
-当前规则：
-
-```text
-logical View id
-→ mirror-owned unique DOM id
-
-labelledBy / describedBy / controls / owns
-→ 若引用同一 DiC tree 内 logical id
-→ 自动重写为 mirror DOM id
-```
-
-引用 mirror 外部 DOM id 时保持原值。
-
-### Lifecycle
-
-semantic mirror：
-
-- surface render 时增量 reconcile；
-- node identity 未变化时复用 DOM element，避免每帧丢失 browser focus；
-- scene 替换后删除 stale semantic node；
-- surface 创建早于 canvas 挂载时，第一次已挂载 render 可惰性创建 mirror；
-- surface destroy 时完整移除 mirror 与监听器。
-
-当前 semantic mirror 仍不等于“所有可访问性工作完成”。
-
-Input / textarea 已经接入真实 native editor：
-
-```text
-DiC Input node
-→ semantic mirror
-→ hidden native <input> / <textarea>
-→ browser editing / IME / selection / clipboard
-→ value + selection + scroll state
-→ same DiC node
-→ Canvas redraw
-```
-
-mirror 的 native editor 会消费已经完成的 DiC `contentFrame` 与 typography 来匹配编辑宽高、字体和滚动几何，但这些 DOM 尺寸**不得反向参与 DiC layout**。
-
-受控 Input 更新时：
-
-- React host node identity 保持不变；
-- mirror 复用同一个 native editor；
-- editor value 只有实际不同才写回，避免无意义 caret reset；
-- selection / scroll / focused runtime state 在 host recompile 后保留。
-
-尚未覆盖：
-
-```text
-live region / announcements
-复杂 composite widget 的 roving focus / aria-activedescendant
-任意 ReactNode child tree 的完整 semantic projection
-Input Canvas visual 的复杂 bidi / grapheme / browser soft-wrap 像素级 parity
-multiline DiC visible Weave Scrollbar
-```
-
-## 27.11 DiC Input / Progress
-
-### Input
-
-Input 已建立：
-
-```text
-Input props
-→ ResolvedInput
-├─ DOM native input / textarea
-└─ DiC Input adapter
-   ├─ Canvas control / text visual
-   └─ semantic mirror native editor
-```
-
-DiC Input 当前支持：
-
-- single-line / multiline；
-- controlled / uncontrolled value；
-- text / password / email / number / search / tel / url；
-- placeholder；
-- readOnly / required / disabled；
-- name / autoComplete；
-- minLength / maxLength / pattern；
-- rows；
-- Input theme background / foreground / border / radius / padding / body-large typo；
-- focus-visible border / outline；
-- disabled opacity / cursor；
-- Canvas value / placeholder；
-- password masking；
-- caret / selection visual；
-- horizontal / vertical editor scroll state；
-- native IME / clipboard / selection / keyboard editing。
-
-Input 的 browser-native editor 是编辑语义真值；Canvas 不实现第二套输入法或文本编辑器。
-
-当前 Input DiC 视觉 parity 缺口：
-
-```text
-multiline soft-wrap 对复杂 Unicode / bidi 的像素级一致性
-Canvas pointer → caret 精确定位 / pointer drag 文本选择
-caret blink timing
-visible Weave Scrollbar for multiline overflow
-selection geometry for advanced grapheme shaping
-```
-
-这些缺口不得通过读取 DOM layout 再反喂 DiC tree 来“修正”。
-
-### Progress
-
-Progress 已进入 DiC custom renderer：
-
-```text
-Progress props
-→ ResolvedProgress
-├─ DOM Progress
-└─ DiC Progress
-```
-
-当前 DiC Progress 支持：
-
-- spin / linear；
-- determined / undetermined；
-- tracked；
-- small / medium / large；
-- color；
-- semantic speed / numeric milliseconds；
-- progress clamp 0…1；
-- undetermined spin 固定 96°弧段匀速旋转；
-- undetermined linear 双运动段；
-- `prefers-reduced-motion` 静止替代；
-- surface 只在存在 undetermined Progress 且未启用 reduced motion 时持续请求下一帧。
-
-speed 与 DOM 使用同一 motion token 与倍率：
-
-```text
-slow   → duration.slow × 6
-normal → duration.normal × 8
-fast   → duration.fast × 9
-```
-
-determined 状态使用当前 progress 直接绘制；其跨值 interpolation / easing 仍待统一 motion backend。Progress 的 recessed track / raised value shadow 当前依赖尚未结构化的 inset / multi-layer shadow，也继续作为明确 parity gap。
-
-## 27.12 DiC Button / Switch semantic adapters
-
-Button 与 Switch 已建立组件级 renderer-neutral IR：
-
-```text
-Button props
-→ ResolvedButton
-├─ DOM Button adapter
-└─ DiC Button adapter
-
-Switch current state
-→ ResolvedSwitch
-├─ DOM Switch adapter
-└─ DiC Switch adapter
-```
-
-### Button
-
-`ResolvedButton` 当前统一保存：
-
-```text
-variant
-size
-loading
-disabled
-iconOnly
-responsive size / variant branches
-```
-
-DiC Button adapter 当前支持：
-
-- theme size geometry；
-- `minHeight` 与 padding；
-- icon-only 正方形最小尺寸；
-- size 对应的 label typo，并随 viewport breakpoint 切换；
-- variant background / text color / border / depth color；
-- rest / hover / active depth；
-- hover lift / scale；
-- press offset / scale；
-- focus-visible outline；
-- disabled opacity / cursor；
-- `role="button"`、disabled、busy 语义；
-- pointer click activation；
-- Enter keydown activation；
-- Space keydown preventDefault + keyup activation；
-- loading 时禁止 activation 与 focus；
-- 用户 View base / state / responsive paint 始终高于组件默认视觉。
-
-Button depth 使用结构化零模糊 shadow 绘制为偏移后的同形色块，不依赖 CSS box-shadow，也不会在 transparent ghost Button 上泄漏 source fill。
-
-当前 Button DiC 仍未完成：
-
-```text
-loading Progress spinner 的 DiC visual
-Icon adapter，因此 icon Button 当前仍显式 unsupported
-Text rich inline / 任意非 Weave host child 的语义投影
-motion interpolation / spring animation
-```
-
-Button 的普通 React children 已由 DiC custom reconciler 递归 materialize 为 child node tree；这不等于所有 ReactNode 类型都已经具有 DiC visual / semantic backend。
-
-### Switch
-
-`ResolvedSwitch` 当前统一保存：
-
-```text
-size
-checked
-disabled
-```
-
-DiC Switch adapter 当前支持：
-
-- track size / background / radius；
-- checked primary track；
-- thumb size / inset / checked shift；
-- focus-visible outline；
-- disabled opacity / cursor；
-- `role="switch"`、checked、disabled 语义；
-- click toggle；
-- Space / Enter keyboard toggle；
-- 直接拖动 thumb；
-- pointer capture；
-- 3 CSS-pixel drag threshold；
-- drag 中 thumb shrink / stretch；
-- midpoint 决定最终 checked 状态；
-- drag pointermove 不读取 DOM layout；
-- drag release 后恢复 resting geometry；
-- drag 已发生时通过 pointerup cancellation 阻止后续 synthetic click 二次 toggle。
-
-Switch drag geometry直接来自 theme size / inset / shift，不借 DOM `getBoundingClientRect()` 回传布局。
-
-当前 Switch DiC 仍未完成的视觉 parity：
-
-```text
-recessed track inset shadow
-raised thumb multi-layer shadow
-motion interpolation / spring return
-```
-
-这些 shadow 当前主题使用包含 `inset` 的 CSS shadow 字符串；在建立等价的结构化 shadow IR 前，不允许 Canvas 做近似替代。
-
-### Renderer-neutral public event bridge
-
-`ViewCoreProps` 已不再从 React `HTMLAttributes` 继承任何 `on*` handler 类型。
-
-当前路径为：
-
-```text
-ViewProps
-→ ViewEventProps
-→ ResolvedView.events
-├─ DOM event adapter
-└─ DiC interaction adapter
-```
-
-DOM adapter 可以内部接收 React SyntheticEvent，但必须在调用业务 handler 前转换成 Weave event。
-
-DiC adapter 直接从 tree event 生成同一种 Weave event，不构造假的 React SyntheticEvent。
-
-公开 handler 与组件默认行为的顺序：
-
-```text
-user View handler
-→ component semantic default
-```
-
-因此用户 `preventDefault()` 可以取消 Button activation、Switch toggle / drag start 等组件默认行为；`stopPropagation()` 控制 View tree bubbling。
-
-Button / Switch 的内部高层语义 callback 仍保持：
-
-```text
-Button → onActivate
-Switch → onChange
-```
-
-它们属于组件 adapter 内部，不替代公开 View event。
-
-当前 event bridge 已覆盖 click / pointer / keyboard / focus。React child tree 已有 custom reconciler，Tab / 基础 accessibility 已由 semantic mirror 接入浏览器原生 focus / ARIA；React 默认切换到 DiC surface 现在主要剩下公开入口 / fallback 策略、剩余组件 adapter 与尚未实现的 renderer 能力。
-
-## 27.13 React custom reconciler / React surface
-
-DiC 已建立 React custom renderer，而不是让 React DOM renderer 直接创建 `weave:*` DOM 元素。
-
-组件在 DiC renderer scope 中输出内部 host：
-
-```text
-View     → weave:view
-Text     → weave:text
-Image    → weave:image
-Input    → weave:input
-Button   → weave:button
-Switch   → weave:switch
-Progress → weave:progress
-```
-
-这些 host 只由 `react-reconciler` 消费：
-
-```text
-React component tree
-→ DiCRendererScope
-→ custom reconciler host instances
-→ compileInstance()
-→ DiCViewNode tree
-```
-
-因此函数组件、Hooks、state、context、ThemeProvider 和 React reconciliation 仍由 React 自己负责；Weave 只实现 host renderer，不重做 React。
-
-当前 reconciler 支持：
-
-- create / update / remove host instance；
-- raw text instance；
-- React Fragment / function component / context / Hooks；
-- View / Text / Image / Input / Button / Switch / Progress host；
-- Text primitive children；
-- Button 普通 Weave child tree；
-- host hide / unhide；
-- commit 后重新编译当前 DiC node tree；
-- 每个 host node 保存自己解析后的 theme，因此 nested ThemeProvider 可以跨 DiC tree 生效。
-
-当前明确 unsupported：
-
-```text
-Text rich inline host children
-Image / Input / Switch / Progress host children
-raw text 作为整个 DiC React root
-未知非 Weave host element
-```
-
-这些情况必须显式失败。
-
-### React tree → Canvas surface
-
-内部 `createDiCReactSurface()` 已把 reconciler 与 `createDiCSurface()` 串成同一生命周期：
-
-```text
-React render
-→ reconciler commit
-→ DiC node root
-→ surface.update()
-→ measure / layout / draw
-→ semantic mirror
-```
-
-React 后续 render / state commit 会更新同一个 surface，不重新创建 Canvas backend。
-
-当前内部 React surface 规则：
-
-- 0 个 root node → 空 DiC root；
-- 1 个 root node → 直接作为 surface scene root；
-- 多个顶层 Weave node → 当前显式 unsupported；
-- surface theme 默认取 root node 的 resolved theme；
-- child node 自己的 theme 优先于继承 theme；
-- destroy 时先停止接收 reconciler commit，再 unmount React root，再销毁 surface。
-
-多顶层 sibling 当前不能被 renderer 私自包装成 column / stack 等布局，因为那会凭空创造用户没有声明的布局语义。
-
-### 公开 root mounting / fallback
-
-公开入口已经冻结为：
-
-```tsx
-import { createRoot } from "weave"
-
-const root = createRoot(container)
-root.render(<App />)
-```
-
-业务只提供普通 `HTMLElement` 容器，不创建 Canvas，也不接触 `DiC` renderer 名称。
-
-默认首次 render 流程：
-
-```text
-createRoot(container)
-→ first render
-→ try DiC
-   ├─ success
-   │  → 创建并持有内部 canvas
-   │  → React custom reconciler
-   │  → DiC surface
-   │  → semantic mirror
-   │
-   └─ explicit DiC capability failure
-      → 整棵 root 切到 React DOM fallback
-```
-
-默认 `fallback="dom"`。需要严格暴露 DiC capability gap 时可写：
-
-```tsx
-createRoot(container, {
-  fallback: "none",
-})
-```
-
-fallback 只响应 `DiCCapabilityError`，普通应用异常、业务异常和框架 invariant 不允许被 DOM fallback 吞掉。
-
-renderer 只在第一次 render 时选择一次：
-
-```text
-first render → DiC
-后续 render → 一直 DiC
-
-first render → DOM fallback
-后续 render → 一直 DOM
-```
-
-不允许在后续 state / Hooks update 中因为新 capability gap 自动切 renderer，因为整 root backend 切换会 remount React tree、破坏 state 连续性。
-
-DOM fallback 是**整棵 root fallback**，不是一部分 Canvas、一部分 DOM 的隐式混合渲染。
-
-公开 `Root` 当前只提供：
-
-```text
-render(node)
-unmount()
-```
-
-内部 `createDiCReactRoot()`、`createDiCReactSurface()`、`DiCRendererScope` 继续保持 renderer internal，不从 package root 导出。
-
-## 27.14 组件结构
+当前框架设计可以整体表示为：
 
 ```text
 React
@@ -5851,10 +4824,30 @@ View
 ├─ ToolTip
 ├─ Snack
 ├─ List
-└─ ListItem
+└─ ListItem    │
+    ▼
+非 View 组件
+├─ 自身语义属性
+└─ viewProps: ViewProps
+    │
+    ▼
+统一组件公开 API
+├─ 语义化高层属性
+├─ 布局
+├─ 视觉
+├─ 状态样式
+├─ 响应式
+├─ 动画
+├─ 可访问性
+├─ 层级
+├─ 主题
+└─ ViewProps 中的 style / className 逃生口
+    │
+    ▼
+主路径：浏览器原生 HTML-in-Canvas
+    │
+    └── 不支持时 fallback：普通 DOM + CSS
 ```
-
-非 View 组件仍使用自身语义属性 + `viewProps: ViewProps`，最终进入相同的 normalization / renderer 管线。
 
 ---
 
@@ -5873,17 +4866,17 @@ View
 9. 组合组件可以由 `View`、基础组件、组合组件共同构建。
 10. 组件层级判断按真实内部依赖，不靠 children 绕开依赖关系。
 11. 不暴露 `as`、`asChild` 或底层 HTML 标签选择权。
-12. Weave 语义与 renderer-neutral IR 是布局 / 样式语义基础；CSS 只属于 DOM fallback 的内部实现。
+12. CSS 是内部实现与语义基础，但公开 API 应提供高层、语义化属性。
 13. `style` 保留为原始 CSS 逃生口。
 14. 除 `style` 外，所有表示尺度的无单位数字统一按 `rem`。
 15. 所有表示时间的裸数字统一按毫秒（`ms`）。
 16. 组件公开 `size` 只接受该组件定义的语义尺寸值，不接受数字。
 17. 样式最终优先级为 `style > className > 属性体系`。
 18. 通用布局、视觉、状态样式、响应式、动画与通用事件能力属于 `ViewProps`；具体组件可以提供自身更自然的高层语义属性。
-19. DiC 是默认主路径，不是可选增强插件。
-20. DOM + CSS 是 fallback，但默认 API、展示语义和交互语义必须一致。
-21. 普通能力不能错误地塞进 Canvas 专属 API。
-22. 显式 `canvas` 只用于真正的高级 DiC 绘制 / 合成控制。
+19. DiC 默认使用浏览器原生 HTML-in-Canvas，不得自研 Canvas UI renderer。
+20. HTML-in-Canvas 与 DOM fallback 必须使用同一套真实 DOM / CSS / 浏览器语义；fallback 不能维护第二套组件实现。
+21. 布局、文本、表单、事件、焦点与可访问性必须继续由浏览器 HTML / CSS / DOM 负责，禁止在 Canvas 侧重复实现。
+22. 显式 `canvas` 只用于真正的高级 HTML-in-Canvas 绘制 / GPU 合成控制。
 23. Scrollbar 是由 `View` 构建的基础组件，不是伪元素样式。
 24. Scrollbar 由框架自动插入，不要求开发者显式使用。
 25. `selectable` 是 `ViewProps` 通用能力，不是 Text 专属。
@@ -5899,61 +4892,4 @@ View
 35. Scrollbar 只绘制 thumb，不提供 tracked / trackColor；带圆角宿主必须把圆角曲线区域排除出 thumb 的运动区。
 36. 所有框架拥有的文字视觉必须选择或继承 `theme.tokens.typography.styles` 中的 typo；Button、Input 等组件不得平行维护 `fontSize / fontWeight / lineHeight / letterSpacing`。
 37. 普通 View 继承当前排版上下文；根节点与 ThemeProvider 默认建立 `body-large` 上下文，允许 Button 等组件建立自己的 typo 上下文后由内部 Text 继承。
-38. `ViewProps` 必须先归一化为 renderer-neutral `ResolvedView`；DOM / DiC renderer 不得各自直接重新解释 View alias。
-39. core 不产生 `rem`、CSS variable、gradient / shadow / transform CSS string；这些字符串只允许在 DOM renderer 中生成。
-40. state 与 responsive breakpoint 必须保留为 IR 分支，不能在进入 renderer 前被压扁为 DOM/CSS 表达。
-41. DiC 与 DOM fallback 必须消费同一个语义 IR；禁止让 DiC 反向解析 DOM/CSS。
-42. DiC surface 的 layout / draw 使用逻辑 CSS pixel；devicePixelRatio 只影响 canvas backing store，不改变 IR / layout 单位。
-43. DiC 当前不支持的 intrinsic / complex sizing 必须显式失败，不能静默猜测成 fill 或 0。
-44. DiC tree layout 的 child intrinsic size 必须来自子树测量或组件自身 measure adapter；不得借 DOM 实际布局结果反向喂给 DiC。
-45. 父 View 的 opacity / transform 必须作为子树绘制上下文继承，不能只影响父节点自己的 background。
-46. 尚未实现的 DiC layout 模式必须显式报 unsupported，不能静默降级为 flow / flex / fill。
-47. DiC Text 的 intrinsic measurement 与实际 drawing 必须消费同一套 line layout，不能分别实现两套换行 / ellipsis 逻辑。
-48. DiC typography inheritance 必须由 tree context 显式传播；不得读取 DOM computed style 作为 Canvas 文本排版来源。
-49. `overflow="ellipsis"` 在无 `maxLines` 时默认单行 nowrap；存在 `maxLines` 时默认 wrap + clamp；显式 `wrap` 始终优先。
-50. 尚未支持的 DiC Text `balance / justify / rich inline runs` 必须显式报 unsupported，不能静默近似。
-51. DiC Image 的 intrinsic size 必须来自 image resource manager 的天然 bitmap 尺寸，不得借 DOM `<img>` 的布局结果反向喂给 DiC。
-52. Image 只显式指定一个布局轴时，另一个轴必须保持天然宽高比；`object-fit` 只影响 bitmap 在 content frame 内的绘制，不得改变外层布局语义。
-53. Image resource 从 loading 进入 ready 后必须触发 surface invalidate 并重新 measure / layout / draw，不能只重绘旧 frame。
-54. DiC surface 必须释放 scene 中已不再引用的图片资源；Blob object URL 必须随资源释放而 revoke。
-55. 尚未接入的 DiC Image lazy-loading / load-event bridge 必须保持明确未完成状态，不能用 Canvas draw 成功替代这些语义。
-56. DiC hit testing 与 drawing 必须消费同一套 transform 解析；禁止分别维护会产生视觉/命中漂移的 transform 语义。
-57. DiC pointer target 必须按实际绘制顺序逆序命中，并遵循 `pointerEvents` tree inheritance / override。
-58. hover / active / focus / focusVisible / disabled 必须回流到统一 View state IR，不能建立 renderer 私有状态样式体系。
-59. Canvas 原生事件只能作为输入桥；事件冒泡、pointer capture、click 合成与 focus 状态必须在 DiC tree 上执行。
-60. generic View 的 `disabled` 不得被 renderer 擅自解释为“吞掉全部事件”；组件级 disabled 行为由 Button / Switch / Input 等语义 adapter 自己保证。
-61. DiC 已通过 semantic mirror 使用浏览器原生 Tab 与基础 ARIA tree；但在 Input / IME / live region / composite-widget 专用语义完成前，不得描述成完整可访问性等价。
-62. Button / Switch 的 DOM 与 DiC adapter 必须消费同一个 ResolvedButton / ResolvedSwitch 语义结果；不得分别重新解释 variant / size / loading / checked / disabled。
-63. DiC Button 的组件默认视觉必须低于用户 View base / state / responsive paint；用户显式 View 语义始终拥有更高优先级。
-64. DiC Switch pointermove 热路径不得读取 DOM layout；drag geometry 必须来自已解析的组件 / theme 几何和 pointer delta。
-65. Switch drag 已经发生时，pointerup cancellation 必须阻止后续 click 合成，避免一次拖动触发第二次 toggle。
-66. 公开 ViewProps 事件 payload 必须使用 renderer-neutral Weave event；DOM renderer 可以内部接收 React SyntheticEvent，但必须在进入业务 handler 前转换，DiC 永远不得伪造 React SyntheticEvent。
-67. 只有 DOM 与 DiC 都具备明确等价 backend 的事件才允许进入 ViewEventProps；DOM-only 的事件不得通过 HTMLAttributes 偷漏成公共 API。
-68. 用户公开 event handler 必须先于组件默认语义执行；`preventDefault()` 必须能够取消对应 Button / Switch 等组件默认行为。
-69. `pointerenter / pointerleave` 是节点边界事件，不沿 View tree 冒泡；DOM 与 DiC 必须归一为相同 target/currentTarget 语义。
-70. inset shadow 等尚未存在等价结构化 IR 的视觉能力不得在 Canvas 中静默近似；必须保持明确 parity gap。
-71. DiC 的 Tab / Shift+Tab 顺序必须优先交给浏览器 semantic mirror 的原生 focus navigation；不得平行维护一套自定义 Tab 排序算法。
-72. semantic mirror 只能承载语义 / focus / accessibility input，不得参与视觉布局、不得拦截 Canvas pointer、不得成为第二套绘制树。
-73. DOM fallback 与 DiC semantic mirror 必须共享同一个 Web semantic attribute compiler；ARIA 状态不得分别解释。
-74. mirror 内部 DOM id 必须与用户 logical View id 隔离；同一 DiC tree 内的 labelledBy / describedBy / controls / owns 引用必须重写到 mirror-owned id。
-75. semantic mirror 的辅助技术 click / keyboard activation 必须重新进入同一个 DiC interaction / component adapter 管线，不能直接旁路调用业务 callback。
-76. 非 primitive Button children / icon-only accessible name 不得由 renderer 猜测；在完整 child semantic projection 可用前必须由显式 label / labelledBy 提供。
-77. semantic mirror 完成不等于 live region / composite-widget accessibility 已完成；Input / textarea editing 已由 native editor bridge 承担，但其它辅助技术能力仍必须按真实 backend 状态分别声明。
-78. DiC React renderer 必须使用 React custom reconciler materialize 内部 host；不得让 React DOM renderer 把 `weave:*` host 当作真实 DOM 组件。
-79. React custom renderer 只负责 host backend；Hooks / state / context / reconciliation 继续由 React 负责，不得在 Weave 内重做第二套 React。
-80. 每个 DiC host node 必须保留自身 resolved theme；nested ThemeProvider 不得被 surface root theme 覆盖。
-81. 当前多顶层 DiC React node 必须显式失败；在正式定义 fragment root layout 语义前，不得私自包装成 column / row / stack。
-82. React reconciler commit 与 Canvas surface 必须共享同一持续生命周期；普通 state update 不得通过销毁并重建整个 surface 实现。
-83. 公开默认 mounting API 只有 `createRoot(container)`；业务不得被要求创建 Canvas 或显式开启 DiC。
-84. 首次 renderer 选择默认优先 DiC；只有明确的 `DiCCapabilityError` 可以触发整 root DOM fallback，普通异常不得被 fallback 吞掉。
-85. root renderer 一旦在首次 render 中选定，后续 render / state update 不得自动切 backend，避免整棵 React tree remount 和 state 丢失。
-86. DOM fallback 必须是整棵 root fallback；在定义明确的跨 renderer composition 语义前，不得做隐式 Canvas / DOM 混合树。
-87. `createDiCReactRoot()`、`createDiCReactSurface()`、`DiCRendererScope` 继续保持 renderer internal；公开 root 不泄漏这些实现细节。
-88. DiC Input 的编辑、IME、selection 与 clipboard 必须由 semantic mirror 中的真实 native `<input> / <textarea>` 承担；Canvas 不得重做第二套文本编辑器。
-89. semantic mirror 可以消费已经完成的 DiC layout / typography 来配置隐藏 editor 的编辑几何，但 DOM measurement 不得反向参与 DiC layout 决策。
-90. controlled Input 的普通 React commit 必须保持 DiC host node 与 native editor identity；value 未变化时不得无意义重写 editor value 破坏 caret。
-91. Input native editor 的 input / selection / scroll / focus runtime state 必须同步回同一个 DiC node 并只通过 invalidate 驱动 Canvas visual。
-92. Progress DOM / DiC 必须消费同一个 ResolvedProgress clamp / mode / size / speed 语义；不得各自重新解释。
-93. undetermined Progress 只有在实际存在于当前 tree 且未启用 reduced motion 时才能驱动持续 frame scheduling；普通静态 UI 不得因此常驻 RAF。
-94. Progress 尚未结构化的 inset / multi-layer shadow 与 determined interpolation 必须保持明确 parity gap，不能静默近似为已完成。
-95. API 的目标是：AI 易写易读，同时人类易读。
+38. API 的目标是：AI 易写易读，同时人类易读。

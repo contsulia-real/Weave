@@ -4,8 +4,6 @@ import {
   ThemeProvider,
   View,
   createTheme,
-  type ViewClickEvent,
-  type ViewPointerEvent,
 } from '../src'
 
 afterEach(cleanup)
@@ -100,173 +98,26 @@ describe('View DOM backend', () => {
     )
   })
 
-  it('bridges DOM input into renderer-neutral View events and semantics', () => {
-    const onClick = vi.fn(
-      (event: ViewClickEvent) => {
-        event.preventDefault()
-      },
-    )
-    const onPointerDown = vi.fn(
-      (_event: ViewPointerEvent) => {},
-    )
+  it('forwards React events and high-level semantics', () => {
+    const onClick = vi.fn()
 
     const { getByTestId } = render(
       <View
-        id="sidebar"
         focusable
         disabled
         label="Sidebar"
         onClick={onClick}
-        onPointerDown={onPointerDown}
         data={{ testid: 'semantic' }}
       />,
     )
 
     const element = getByTestId('semantic')
-    fireEvent.pointerDown(element, {
-      pointerId: 7,
-      pointerType: 'pen',
-      isPrimary: true,
-      clientX: 24,
-      clientY: 32,
-      pressure: 0.5,
-    })
-    fireEvent.click(element, {
-      clientX: 24,
-      clientY: 32,
-    })
+    fireEvent.click(element)
 
-    expect(onPointerDown).toHaveBeenCalledTimes(1)
     expect(onClick).toHaveBeenCalledTimes(1)
-
-    const click = onClick.mock.calls[0]?.[0]
-    expect(click).toMatchObject({
-      type: 'click',
-      target: {
-        id: 'sidebar',
-      },
-      currentTarget: {
-        id: 'sidebar',
-      },
-      clientX: 24,
-      clientY: 32,
-      defaultPrevented: true,
-    })
-    expect(click).not.toHaveProperty('nativeEvent')
-
-    const pointer = onPointerDown.mock.calls[0]?.[0]
-    expect(pointer).toMatchObject({
-      type: 'pointerdown',
-      target: {
-        id: 'sidebar',
-      },
-      currentTarget: {
-        id: 'sidebar',
-      },
-      pointerId: 7,
-      pointerType: 'pen',
-      isPrimary: true,
-      clientX: 24,
-      clientY: 32,
-      pressure: 0.5,
-    })
-
     expect(element.tabIndex).toBe(0)
     expect(element.getAttribute('aria-disabled')).toBe('true')
     expect(element.getAttribute('aria-label')).toBe('Sidebar')
-  })
-
-  it('preserves target/currentTarget and public stopPropagation through DOM bubbling', () => {
-    const parentClick = vi.fn()
-    const childClick = vi.fn((event: ViewClickEvent) => {
-      event.stopPropagation()
-    })
-
-    const { getByTestId } = render(
-      <View
-        id="parent"
-        onClick={parentClick}
-        data={{ testid: 'event-parent' }}
-      >
-        <View
-          id="child"
-          onClick={childClick}
-          data={{ testid: 'event-child' }}
-        />
-      </View>,
-    )
-
-    fireEvent.click(
-      getByTestId('event-child'),
-      {
-        clientX: 18,
-        clientY: 27,
-      },
-    )
-
-    expect(childClick).toHaveBeenCalledTimes(1)
-    expect(parentClick).not.toHaveBeenCalled()
-    expect(childClick.mock.calls[0]?.[0]).toMatchObject({
-      type: 'click',
-      target: {
-        id: 'child',
-      },
-      currentTarget: {
-        id: 'child',
-      },
-      clientX: 18,
-      clientY: 27,
-      propagationStopped: true,
-    })
-  })
-
-  it('normalizes bubbling focus targets through the DOM event bridge', () => {
-    const parentFocus = vi.fn()
-    const childFocus = vi.fn()
-
-    const { getByTestId } = render(
-      <View
-        id="focus-parent"
-        onFocus={parentFocus}
-        data={{ testid: 'focus-parent' }}
-      >
-        <View
-          id="focus-child"
-          focusable
-          onFocus={childFocus}
-          data={{ testid: 'focus-child' }}
-        />
-      </View>,
-    )
-
-    fireEvent.focus(
-      getByTestId('focus-child'),
-    )
-
-    expect(childFocus).toHaveBeenCalledTimes(1)
-    expect(parentFocus).toHaveBeenCalledTimes(1)
-    expect(
-      childFocus.mock.calls[0]?.[0],
-    ).toMatchObject({
-      type: 'focus',
-      target: {
-        id: 'focus-child',
-      },
-      currentTarget: {
-        id: 'focus-child',
-      },
-    })
-    expect(
-      parentFocus.mock.calls[0]?.[0],
-    ).toMatchObject({
-      type: 'focus',
-      target: {
-        id: 'focus-child',
-      },
-      currentTarget: {
-        id: 'focus-parent',
-      },
-    })
   })
 
   it('maps heading levels through the semantic layer', () => {

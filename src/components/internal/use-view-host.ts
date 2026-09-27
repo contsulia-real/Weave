@@ -10,11 +10,7 @@ import type {
 } from 'react'
 import type { ViewProps } from '../../core/view-types'
 import {
-  resolveView,
-  type ResolvedView,
-} from '../../core/resolved-view'
-import {
-  compileDOMView,
+  resolveDOMView,
   type ResolvedDOMView,
 } from '../../renderers/dom/resolve-view'
 import { useBreakpointStylesheet } from '../../renderers/dom/breakpoint-stylesheet'
@@ -24,15 +20,12 @@ import { useTheme } from '../../theme/theme-context'
 
 export interface ViewHostResult<TElement extends HTMLElement> {
   elementRef: RefObject<TElement | null>
-  view: ResolvedView
   className: string | undefined
   inlineStyle: CSSProperties | undefined
   resolved: ResolvedDOMView<TElement>
 }
 
-export function useViewHost<
-  TElement extends HTMLElement,
->(
+export function useViewHost<TElement extends HTMLElement>(
   props: ViewProps<TElement>,
   componentStyle?: CSSProperties,
   componentName?: string,
@@ -55,12 +48,7 @@ export function useViewHost<
 
   const { theme } = useTheme()
   const breakpointClassName = useBreakpointStylesheet(theme.breakpoints)
-  const view = resolveView(props, theme.breakpoints)
-  const resolved = compileDOMView(
-    props,
-    view,
-    theme.breakpoints,
-  )
+  const resolved = resolveDOMView(props, theme.breakpoints)
   const componentClassName = useRuntimeStyleClass(
     componentName === undefined
       ? 'component-props'
@@ -84,7 +72,6 @@ export function useViewHost<
 
   return {
     elementRef,
-    view,
     className: resolvedClassName,
     inlineStyle: style,
     resolved,

@@ -1,20 +1,12 @@
-import {
-  createElement,
-  type CSSProperties,
-} from 'react'
+import type { CSSProperties } from 'react'
 import type {
-  ValidateDynamicBreakpointProps,
   ViewProps,
-  ViewResponsiveStyle,
+  ViewStyleProps,
 } from '../core/view-types'
 import {
-  resolveView,
-  type ResolvedView,
-  type ResolvedViewStyle,
-} from '../core/resolved-view'
-import { useWeaveRenderer } from '../renderers/renderer-context'
-import { assertDiCViewPropsSupported } from '../renderers/dic/react-compat'
-import { DIC_VIEW_HOST } from '../renderers/dic/react-host-types'
+  breakpointEntries,
+  containerBreakpointProp,
+} from '../renderers/dom/breakpoint-utils'
 import { useTheme } from '../theme/theme-context'
 import { AutoScrollbar } from './internal/AutoScrollbar'
 import { useViewHost } from './internal/use-view-host'
@@ -26,7 +18,7 @@ function scrollableOverflow(
 }
 
 function styleMayScroll(
-  style: ResolvedViewStyle | undefined,
+  style: ViewStyleProps | undefined,
 ): boolean {
   if (style === undefined) return false
 
@@ -55,14 +47,8 @@ function scrollOverflowClass(
 ): string | undefined {
   if (!scrollableOverflow(value)) return undefined
 
-  const suffix =
-    value === 'scroll'
-      ? 'scroll'
-      : 'auto'
-  const axisPart =
-    axis.length === 0
-      ? ''
-      : `-${axis}`
+  const suffix = value === 'scroll' ? 'scroll' : 'auto'
+  const axisPart = axis.length === 0 ? '' : `-${axis}`
 
   return `weave-scroll-host--overflow${axisPart}-${suffix}`
 }
@@ -70,79 +56,64 @@ function scrollOverflowClass(
 function cssString(
   value: CSSProperties['overflow'] | undefined,
 ): string | undefined {
-  return typeof value === 'string'
-    ? value
-    : undefined
+  return typeof value === 'string' ? value : undefined
 }
 
 function overflowIntent(
   props: ViewProps<HTMLDivElement>,
 ) {
   return {
-    styleOverflow: cssString(
-      props.style?.overflow,
-    ),
-    styleOverflowX: cssString(
-      props.style?.overflowX,
-    ),
-    styleOverflowY: cssString(
-      props.style?.overflowY,
-    ),
+    styleOverflow: cssString(props.style?.overflow),
+    styleOverflowX: cssString(props.style?.overflowX),
+    styleOverflowY: cssString(props.style?.overflowY),
   }
 }
 
 function viewMayScroll(
-  view: ResolvedView,
-  style: CSSProperties | undefined,
-  hasExplicitScrollbar: boolean,
+  props: ViewProps<HTMLDivElement>,
+  breakpoints: Readonly<Record<string, number>>,
 ): boolean {
-  if (hasExplicitScrollbar) return true
+  if (props.scrollbar !== undefined) return true
 
   if (
-    styleMayScroll(view.style) ||
-    rawStyleMayScroll(style)
+    styleMayScroll(props) ||
+    rawStyleMayScroll(props.style)
   ) {
     return true
   }
 
-  return view.responsive.some((responsive) =>
-    styleMayScroll(responsive.style),
+  const propsRecord = props as Record<string, unknown>
+
+  return breakpointEntries(breakpoints).some(({ name }) =>
+    styleMayScroll(
+      propsRecord[name] as ViewStyleProps | undefined,
+    ) ||
+    styleMayScroll(
+      propsRecord[
+        containerBreakpointProp(name)
+      ] as ViewStyleProps | undefined,
+    ),
   )
 }
 
-function DOMView(
+export function View(
   props: ViewProps<HTMLDivElement>,
 ) {
   const { children } = props
+  const { theme } = useTheme()
   const {
     elementRef,
-    view,
     className,
     inlineStyle,
     resolved,
   } = useViewHost(props)
 
-  const mountsScrollbar = viewMayScroll(
-    view,
-    props.style,
-    props.scrollbar !== undefined,
-  )
+  const mountsScrollbar = viewMayScroll(props, theme.breakpoints)
   const resolvedClassName = [
-    mountsScrollbar
-      ? 'weave-scroll-host'
-      : undefined,
-    scrollOverflowClass(
-      '',
-      props.overflow,
-    ),
-    scrollOverflowClass(
-      'x',
-      props.overflowX,
-    ),
-    scrollOverflowClass(
-      'y',
-      props.overflowY,
-    ),
+    mountsScrollbar ? 'weave-scroll-host' : undefined,
+    scrollOverflowClass('', props.overflow),
+    scrollOverflowClass('x', props.overflowX),
+    scrollOverflowClass('y', props.overflowY),
     className,
   ]
     .filter(Boolean)
@@ -155,11 +126,7 @@ function DOMView(
         ref={elementRef}
         data-weave-view=""
         data-weave-layout={resolved.layout}
-        data-weave-scroll-host={
-          mountsScrollbar
-            ? ''
-            : undefined
-        }
+        data-weave-scroll-host={mountsScrollbar ? '' : undefined}
         className={resolvedClassName}
         style={inlineStyle}
       >
@@ -170,56 +137,9 @@ function DOMView(
         <AutoScrollbar
           targetRef={elementRef}
           config={props.scrollbar}
-          overflowIntent={
-            overflowIntent(props)
-          }
+          overflowIntent={overflowIntent(props)}
         />
       ) : null}
     </>
   )
-}
-
-function DiCView(
-  props: ViewProps<HTMLDivElement>,
-) {
-  const { theme } = useTheme()
-
-  assertDiCViewPropsSupported(
-    props as unknown as ViewProps<HTMLElement>,
-    theme.breakpoints,
-    'View',
-  )
-
-  const view = resolveView(
-    props,
-    theme.breakpoints,
-  )
-
-  return createElement(
-    DIC_VIEW_HOST,
-    {
-      view,
-      theme,
-    },
-    props.children,
-  )
-}
-
-export function View<
-  TProps extends ViewProps<HTMLDivElement>,
->(
-  props: TProps &
-    ValidateDynamicBreakpointProps<
-      TProps,
-      ViewProps<HTMLDivElement>,
-      ViewResponsiveStyle
-    >,
-) {
-  const renderer = useWeaveRenderer()
-  const runtimeProps =
-    props as ViewProps<HTMLDivElement>
-
-  return renderer === 'dic'
-    ? <DiCView {...runtimeProps} />
-    : <DOMView {...runtimeProps} />
 }

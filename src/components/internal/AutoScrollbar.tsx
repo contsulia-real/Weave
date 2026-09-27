@@ -3,13 +3,13 @@ import {
   useInsertionEffect,
   useLayoutEffect,
   useRef,
+  type PointerEvent,
   type RefObject,
 } from 'react'
 import { createPortal } from 'react-dom'
 import type {
   ScrollbarConfig,
   ScrollbarSize,
-  ViewPointerEvent,
   ViewProps,
 } from '../../core/view-types'
 import { resolveScrollbarTheme } from '../../renderers/dom/resolve-component-theme'
@@ -515,7 +515,7 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
 
   const beginDrag = (
     orientation: Orientation,
-    event: ViewPointerEvent,
+    event: PointerEvent<HTMLDivElement>,
   ) => {
     const target = targetRef.current
     const hitRegion =
@@ -531,7 +531,7 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
 
     event.preventDefault()
     event.stopPropagation()
-    event.capturePointer()
+    hitRegion.setPointerCapture?.(event.pointerId)
     hitRegion.dataset.weaveScrollbarDragging = 'true'
 
     const hitRegionRect = hitRegion.getBoundingClientRect()
@@ -561,7 +561,7 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
 
   const continueDrag = (
     orientation: Orientation,
-    event: ViewPointerEvent,
+    event: PointerEvent<HTMLDivElement>,
   ) => {
     const target = targetRef.current
     const drag = dragRef.current
@@ -593,7 +593,7 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
   }
 
   const endDrag = (
-    event: ViewPointerEvent,
+    event: PointerEvent<HTMLDivElement>,
   ) => {
     const drag = dragRef.current
     if (drag === null || drag.pointerId !== event.pointerId) return
@@ -602,7 +602,7 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
       drag.orientation === 'vertical'
         ? verticalHitRegionRef.current
         : horizontalHitRegionRef.current
-    event.releasePointer()
+    hitRegion?.releasePointerCapture?.(event.pointerId)
     if (hitRegion !== null) {
       delete hitRegion.dataset.weaveScrollbarDragging
     }
@@ -612,8 +612,10 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
 
   const pageHitRegion = (
     orientation: Orientation,
-    event: ViewPointerEvent,
+    event: PointerEvent<HTMLDivElement>,
   ) => {
+    if (event.target !== event.currentTarget) return
+
     const target = targetRef.current
     const thumb =
       orientation === 'vertical'
@@ -642,8 +644,10 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
 
   const handleHitRegionPointerDown = (
     orientation: Orientation,
-    event: ViewPointerEvent,
+    event: PointerEvent<HTMLDivElement>,
   ) => {
+    if (event.target !== event.currentTarget) return
+
     const thumb =
       orientation === 'vertical'
         ? verticalThumbRef.current
@@ -697,10 +701,7 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
         <ScrollbarView
           ref={verticalThumbRef}
           className="weave-scrollbar__thumb"
-          onPointerDown={(event) => {
-            event.stopPropagation()
-            beginDrag('vertical', event)
-          }}
+          onPointerDown={(event) => beginDrag('vertical', event)}
           data={{
             'weave-scrollbar-thumb': '',
           }}
@@ -732,10 +733,7 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
         <ScrollbarView
           ref={horizontalThumbRef}
           className="weave-scrollbar__thumb"
-          onPointerDown={(event) => {
-            event.stopPropagation()
-            beginDrag('horizontal', event)
-          }}
+          onPointerDown={(event) => beginDrag('horizontal', event)}
           data={{
             'weave-scrollbar-thumb': '',
           }}

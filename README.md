@@ -20,7 +20,15 @@ root.render(
 )
 ```
 
-`createRoot(container)` uses the DiC renderer as the primary path and falls the whole root back to DOM when the initial tree has an explicit DiC capability gap. Applications do not create or manage the internal canvas.
+Weave uses the browser-native [HTML-in-Canvas](https://wicg.github.io/html-in-canvas/) API as its primary rendering path when the API is available. React still renders real HTML elements with normal CSS, layout, events, form behavior and accessibility semantics. The canvas opts its HTML descendants into drawable layout with `content="drawable"`, and the native 2D context paints the real HTML subtree with `drawElementImage()`.
+
+If the browser does not expose HTML-in-Canvas, `createRoot(container)` falls back to ordinary DOM + CSS rendering. Pass `{ fallback: 'none' }` to make missing native support an explicit error.
+
+Applications do not create or manage the internal canvas.
+
+## HTML-in-Canvas status
+
+HTML-in-Canvas is currently an experimental Web Platform API implemented behind a Chromium flag. Weave feature-detects the API at runtime; it does not emulate HTML-in-Canvas by reimplementing browser layout, text rendering, hit testing, input editing or accessibility in JavaScript.
 
 ## Development
 
@@ -44,4 +52,4 @@ pnpm build
 
 ## Status
 
-DiC is the primary renderer and DOM + CSS is the compatibility fallback. The React-to-DiC surface, semantic mirror, renderer-neutral event bridge, and public `createRoot(container)` entry are implemented; remaining capability gaps are tracked in the design specification.
+The component system and DOM/CSS implementation are the semantic source used by both paths. Native HTML-in-Canvas is the primary path; ordinary DOM + CSS is the compatibility fallback.

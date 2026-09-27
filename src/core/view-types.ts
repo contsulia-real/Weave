@@ -258,24 +258,8 @@ export type ViewBreakpointProps =
     >
   >
 
-type KeysOfUnion<T> =
-  T extends unknown ? keyof T : never
-
-export type ValidateDynamicBreakpointProps<
-  TProps,
-  TKnownProps,
-  TResponsive,
-> = {
-  [TKey in Exclude<
-    keyof TProps,
-    KeysOfUnion<TKnownProps> | 'key'
-  >]:
-    TKey extends string
-      ? TProps[TKey] extends TResponsive | undefined
-        ? TProps[TKey]
-        : never
-      : never
-}
+export type ViewDynamicBreakpointProps =
+  Readonly<Record<string, unknown>>
 
 export interface ViewSemanticProps {
   role?: HTMLAttributes<HTMLDivElement>['role']
@@ -307,93 +291,6 @@ export interface ViewSemanticProps {
 export type ViewDataValue = string | number | boolean | null | undefined
 export type ViewData = Readonly<Record<string, ViewDataValue>>
 
-export interface ViewEventTarget {
-  readonly id?: string
-}
-
-export interface ViewEventControl {
-  readonly defaultPrevented: boolean
-  readonly propagationStopped: boolean
-  readonly target: ViewEventTarget
-  readonly currentTarget: ViewEventTarget
-  preventDefault(): void
-  stopPropagation(): void
-}
-
-export interface ViewModifierKeys {
-  readonly altKey: boolean
-  readonly ctrlKey: boolean
-  readonly metaKey: boolean
-  readonly shiftKey: boolean
-}
-
-export interface ViewClickEvent
-  extends ViewEventControl,
-    ViewModifierKeys {
-  readonly type: 'click'
-  readonly button: number
-  readonly buttons: number
-  readonly clientX: number
-  readonly clientY: number
-}
-
-export interface ViewPointerEvent
-  extends ViewEventControl,
-    ViewModifierKeys {
-  readonly type:
-    | 'pointerenter'
-    | 'pointerleave'
-    | 'pointermove'
-    | 'pointerdown'
-    | 'pointerup'
-    | 'pointercancel'
-  readonly pointerId: number
-  readonly pointerType: string
-  readonly isPrimary: boolean
-  readonly button: number
-  readonly buttons: number
-  readonly clientX: number
-  readonly clientY: number
-  readonly pressure: number
-  capturePointer(): void
-  releasePointer(): void
-}
-
-export interface ViewKeyboardEvent
-  extends ViewEventControl,
-    ViewModifierKeys {
-  readonly type: 'keydown' | 'keyup'
-  readonly key: string
-  readonly code: string
-  readonly repeat: boolean
-}
-
-export interface ViewFocusEvent
-  extends ViewEventControl {
-  readonly type: 'focus' | 'blur'
-}
-
-export interface ViewEventProps {
-  onClick?: (event: ViewClickEvent) => void
-  onPointerEnter?: (event: ViewPointerEvent) => void
-  onPointerLeave?: (event: ViewPointerEvent) => void
-  onPointerMove?: (event: ViewPointerEvent) => void
-  onPointerDown?: (event: ViewPointerEvent) => void
-  onPointerUp?: (event: ViewPointerEvent) => void
-  onPointerCancel?: (event: ViewPointerEvent) => void
-  onKeyDown?: (event: ViewKeyboardEvent) => void
-  onKeyUp?: (event: ViewKeyboardEvent) => void
-  onFocus?: (event: ViewFocusEvent) => void
-  onBlur?: (event: ViewFocusEvent) => void
-}
-
-type NativeEventPropKey<TElement extends HTMLElement> = {
-  [TKey in keyof HTMLAttributes<TElement>]-?:
-    TKey extends `on${string}`
-      ? TKey
-      : never
-}[keyof HTMLAttributes<TElement>]
-
 type NativeElementProps<TElement extends HTMLElement> = Omit<
   HTMLAttributes<TElement>,
   | 'children'
@@ -404,14 +301,12 @@ type NativeElementProps<TElement extends HTMLElement> = Omit<
   | 'hidden'
   | 'draggable'
   | 'tabIndex'
-  | NativeEventPropKey<TElement>
 >
 
 export type ViewCoreProps<
   TElement extends HTMLElement = HTMLDivElement,
 > =
   NativeElementProps<TElement> &
-  ViewEventProps &
   ViewStyleProps &
   ViewSemanticProps &
   ViewBreakpointProps & {
@@ -441,17 +336,6 @@ export type ViewCoreProps<
 
 export type ViewProps<
   TElement extends HTMLElement = HTMLDivElement,
-> = ViewCoreProps<TElement>
-
-export type ViewPropsWithBreakpoints<
-  TBreakpointName extends string,
-  TElement extends HTMLElement = HTMLDivElement,
 > =
-  ViewProps<TElement> &
-  Partial<Record<TBreakpointName, ViewResponsiveStyle>> &
-  Partial<
-    Record<
-      `container${Capitalize<TBreakpointName>}`,
-      ViewResponsiveStyle
-    >
-  >
+  ViewCoreProps<TElement> &
+  ViewDynamicBreakpointProps

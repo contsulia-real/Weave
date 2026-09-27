@@ -1,28 +1,18 @@
 import {
-  createElement,
   isValidElement,
   useInsertionEffect,
-  type ReactNode,
 } from 'react'
 import type {
   ButtonIcon,
   ButtonProps,
   ButtonResponsiveProps,
 } from '../core/button-types'
-import { resolveButton } from '../core/resolved-button'
-import { resolveView } from '../core/resolved-view'
 import type {
   IconComponent,
   IconSvg,
 } from '../core/icon-types'
-import type {
-  ValidateDynamicBreakpointProps,
-  ViewProps,
-} from '../core/view-types'
-import { breakpointCSSName } from '../renderers/dom/breakpoint-utils'
-import { assertDiCViewPropsSupported } from '../renderers/dic/react-compat'
-import { DIC_BUTTON_HOST } from '../renderers/dic/react-host-types'
-import { useWeaveRenderer } from '../renderers/renderer-context'
+import type { ViewProps } from '../core/view-types'
+import { breakpointEntries } from '../renderers/dom/breakpoint-utils'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { ensureButtonStylesheet } from '../renderers/dom/button-stylesheet'
 import { resolveButtonTheme } from '../renderers/dom/resolve-component-theme'
@@ -60,9 +50,7 @@ function iconContent(icon: ButtonIcon) {
   )
 }
 
-function semanticContent(
-  props: ButtonProps,
-) {
+function semanticContent(props: ButtonProps) {
   if ('children' in props && props.children !== undefined) {
     return props.children
   }
@@ -84,24 +72,15 @@ function semanticContent(
   )
 }
 
-function DOMButton(
-  props: ButtonProps,
-) {
+export function Button(props: ButtonProps) {
   const {
+    variant = 'primary',
+    size = 'medium',
+    loading = false,
     viewProps = {},
   } = props
 
   const { theme } = useTheme()
-  const button = resolveButton(
-    props,
-    theme.breakpoints,
-  )
-  const {
-    variant,
-    size,
-    loading,
-    disabled,
-  } = button
   const themeClassName = useRuntimeStyleClass(
     'button-theme',
     resolveButtonTheme(theme),
@@ -109,7 +88,7 @@ function DOMButton(
 
   const hostProps: ViewProps<HTMLButtonElement> = {
     ...viewProps,
-    disabled,
+    disabled: loading || viewProps.disabled,
     busy: loading || undefined,
   }
 
@@ -123,25 +102,31 @@ function DOMButton(
   useInsertionEffect(ensureButtonStylesheet, [])
 
   const responsiveAttributes: Record<string, string> = {}
+  const propsRecord = props as Record<string, unknown>
 
-  for (const breakpoint of button.responsive) {
-    const cssName = breakpointCSSName(
-      breakpoint.name,
-    )
+  for (const breakpoint of breakpointEntries(theme.breakpoints)) {
+    const value = propsRecord[
+      breakpoint.name
+    ] as ButtonResponsiveProps | undefined
 
-    if (breakpoint.variant !== undefined) {
+    if (value?.variant !== undefined) {
       responsiveAttributes[
-        `data-weave-button-${cssName}-variant`
-      ] = breakpoint.variant
+        `data-weave-button-${breakpoint.cssName}-variant`
+      ] = value.variant
     }
 
-    if (breakpoint.size !== undefined) {
+    if (value?.size !== undefined) {
       responsiveAttributes[
-        `data-weave-button-${cssName}-size`
-      ] = breakpoint.size
+        `data-weave-button-${breakpoint.cssName}-size`
+      ] = value.size
     }
   }
-  const iconOnly = button.iconOnly
+
+  const disabled = loading || viewProps.disabled === true
+  const iconOnly =
+    'icon' in props &&
+    props.icon !== undefined &&
+    props.text === undefined
 
   return (
     <button
@@ -188,89 +173,3 @@ function DOMButton(
     </button>
   )
 }
-
-function dicButtonContent(
-  props: ButtonProps,
-): ReactNode {
-  if (
-    'children' in props &&
-    props.children !== undefined
-  ) {
-    return props.children
-  }
-
-  if (
-    'icon' in props &&
-    props.icon !== undefined
-  ) {
-    throw new Error(
-      'Button icon content requires the DiC Icon adapter, which is not implemented yet',
-    )
-  }
-
-  return props.text === undefined
-    ? null
-    : <Text>{props.text}</Text>
-}
-
-function DiCButton(
-  props: ButtonProps,
-) {
-  const {
-    viewProps = {},
-  } = props
-  const { theme } = useTheme()
-  const button = resolveButton(
-    props,
-    theme.breakpoints,
-  )
-  const hostProps:
-    ViewProps<HTMLButtonElement> = {
-      ...viewProps,
-      disabled: button.disabled,
-      busy:
-        button.loading ||
-        undefined,
-    }
-
-  assertDiCViewPropsSupported(
-    hostProps as unknown as ViewProps<HTMLElement>,
-    theme.breakpoints,
-    'Button.viewProps',
-  )
-
-  const view = resolveView(
-    hostProps,
-    theme.breakpoints,
-  )
-
-  return createElement(
-    DIC_BUTTON_HOST,
-    {
-      view,
-      button,
-      theme,
-    },
-    dicButtonContent(props),
-  )
-}
-
-export function Button<
-  TProps extends ButtonProps,
->(
-  props: TProps &
-    ValidateDynamicBreakpointProps<
-      TProps,
-      ButtonProps,
-      ButtonResponsiveProps
-    >,
-) {
-  const renderer = useWeaveRenderer()
-  const runtimeProps =
-    props as ButtonProps
-
-  return renderer === 'dic'
-    ? <DiCButton {...runtimeProps} />
-    : <DOMButton {...runtimeProps} />
-}
-

@@ -6,7 +6,6 @@ import {
   type ReactNode,
 } from 'react'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
-import { useWeaveRenderer } from '../renderers/renderer-context'
 import { ThemeContext } from './theme-context'
 import {
   mergeThemeDefinitions,
@@ -59,49 +58,6 @@ export interface ThemeProviderProps {
   children?: ReactNode
 }
 
-function DOMThemeBoundary({
-  theme,
-  mode,
-  children,
-}: {
-  theme: ReturnType<typeof resolveTheme>
-  mode: 'light' | 'dark'
-  children?: ReactNode
-}) {
-  const variables = useMemo(
-    () => ({
-      display: 'contents',
-      color: 'var(--weave-color-text)',
-      'font-family': 'var(--weave-typography-family-body)',
-      'font-size': 'var(--weave-typography-style-body-large-font-size)',
-      'font-weight': 'var(--weave-typography-style-body-large-font-weight)',
-      'line-height': 'var(--weave-typography-style-body-large-line-height)',
-      'letter-spacing':
-        'var(--weave-typography-style-body-large-letter-spacing)',
-      ...themeVariables(theme),
-    }),
-    [theme],
-  )
-
-  const className = useRuntimeStyleClass(
-    'theme',
-    variables,
-  )
-
-  return (
-    <span
-      data-weave-theme=""
-      data-weave-theme-mode={mode}
-      className={[
-        'weave-theme',
-        className,
-      ].filter(Boolean).join(' ')}
-    >
-      {children}
-    </span>
-  )
-}
-
 export function ThemeProvider({
   theme = {},
   mode,
@@ -131,20 +87,31 @@ export function ThemeProvider({
     [activeMode, definition, requestedMode, resolvedTheme],
   )
 
-  const renderer = useWeaveRenderer()
+  const variables = useMemo(
+    () => ({
+      display: 'contents',
+      'font-family': 'var(--weave-typography-family-body)',
+      'font-size': 'var(--weave-typography-style-body-large-font-size)',
+      'font-weight': 'var(--weave-typography-style-body-large-font-weight)',
+      'line-height': 'var(--weave-typography-style-body-large-line-height)',
+      'letter-spacing':
+        'var(--weave-typography-style-body-large-letter-spacing)',
+      ...themeVariables(resolvedTheme),
+    }),
+    [resolvedTheme],
+  )
+
+  const className = useRuntimeStyleClass('theme', variables)
 
   return (
     <ThemeContext.Provider value={contextValue}>
-      {renderer === 'dic' ? (
-        children
-      ) : (
-        <DOMThemeBoundary
-          theme={resolvedTheme}
-          mode={activeMode}
-        >
-          {children}
-        </DOMThemeBoundary>
-      )}
+      <span
+        data-weave-theme=""
+        data-weave-theme-mode={activeMode}
+        className={['weave-theme', className].filter(Boolean).join(' ')}
+      >
+        {children}
+      </span>
     </ThemeContext.Provider>
   )
 }

@@ -1,16 +1,10 @@
 import type {
   TransformOperation,
-  ViewEventProps,
-  ViewEventTarget,
   ViewProps,
   ViewSemanticProps,
   ViewStateStyle,
   ViewStyleProps,
 } from './view-types'
-import {
-  breakpointEntries,
-  containerBreakpointProp,
-} from './breakpoints'
 import { VIEW_STYLE_PROP_KEYS } from './view-prop-keys'
 
 type ViewStyleAlias =
@@ -54,22 +48,36 @@ export interface ResolvedViewStates {
   disabled?: ResolvedViewStyle
 }
 
-export interface ResolvedViewInteraction {
-  focusable?: boolean
-  autoFocus?: boolean
-  tabIndex?: number
-}
-
 export interface ResolvedView {
   style: ResolvedViewStyle
   states: ResolvedViewStates
   responsive: readonly ResolvedViewBreakpoint[]
   semantics: Readonly<ViewSemanticProps>
-  events: Readonly<ViewEventProps>
-  eventTarget: Readonly<ViewEventTarget>
-  interaction: Readonly<ResolvedViewInteraction>
   container?: string
   layout: ViewStyleProps['layout']
+}
+
+function breakpointList(
+  breakpoints: Readonly<Record<string, number>>,
+): readonly Readonly<{ name: string; minWidth: number }>[] {
+  return Object.entries(breakpoints)
+    .filter(
+      ([name, minWidth]) =>
+        name.length > 0 &&
+        Number.isFinite(minWidth) &&
+        minWidth >= 0,
+    )
+    .map(([name, minWidth]) => ({ name, minWidth }))
+    .sort(
+      (left, right) =>
+        left.minWidth - right.minWidth ||
+        left.name.localeCompare(right.name),
+    )
+}
+
+function containerBreakpointProp(name: string): string {
+  if (name.length === 0) return 'container'
+  return `container${name[0]?.toUpperCase() ?? ''}${name.slice(1)}`
 }
 
 function pickStyleProps(
@@ -235,7 +243,7 @@ function resolvedState(
 }
 
 function semantics<TElement extends HTMLElement>(
-  props: ViewProps<TElement>,
+  props: ViewProps<TElement, string>,
 ): Readonly<ViewSemanticProps> {
   return {
     role: props.role,
@@ -262,32 +270,14 @@ function semantics<TElement extends HTMLElement>(
   }
 }
 
-function events<TElement extends HTMLElement>(
-  props: ViewProps<TElement>,
-): Readonly<ViewEventProps> {
-  return {
-    onClick: props.onClick,
-    onPointerEnter: props.onPointerEnter,
-    onPointerLeave: props.onPointerLeave,
-    onPointerMove: props.onPointerMove,
-    onPointerDown: props.onPointerDown,
-    onPointerUp: props.onPointerUp,
-    onPointerCancel: props.onPointerCancel,
-    onKeyDown: props.onKeyDown,
-    onKeyUp: props.onKeyUp,
-    onFocus: props.onFocus,
-    onBlur: props.onBlur,
-  }
-}
-
 export function resolveView<TElement extends HTMLElement>(
-  props: ViewProps<TElement>,
+  props: ViewProps<TElement, string>,
   breakpoints: Readonly<Record<string, number>>,
 ): ResolvedView {
   const record = props as Record<string, unknown>
   const responsive: ResolvedViewBreakpoint[] = []
 
-  for (const breakpoint of breakpointEntries(breakpoints)) {
+  for (const breakpoint of breakpointList(breakpoints)) {
     const viewportValue = record[breakpoint.name]
     if (
       typeof viewportValue === 'object' &&
@@ -332,15 +322,6 @@ export function resolveView<TElement extends HTMLElement>(
     },
     responsive,
     semantics: semantics(props),
-    events: events(props),
-    eventTarget: {
-      id: props.id,
-    },
-    interaction: {
-      focusable: props.focusable,
-      autoFocus: props.autoFocus,
-      tabIndex: props.tabIndex,
-    },
     container: props.container,
     layout: props.layout,
   }

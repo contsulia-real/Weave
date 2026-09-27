@@ -10,6 +10,7 @@ import type {
 import type {
   DefaultBreakpointName,
   ViewCoreProps,
+  ViewDynamicBreakpointProps,
 } from './view-types'
 
 export type ButtonVariant =
@@ -38,9 +39,10 @@ export type ButtonBreakpointProps = Partial<
 export type ButtonViewProps = Omit<
   ViewCoreProps<HTMLButtonElement>,
   'children' | 'busy'
-> & {
-  ref?: Ref<HTMLButtonElement>
-}
+> &
+  ViewDynamicBreakpointProps & {
+    ref?: Ref<HTMLButtonElement>
+  }
 
 interface ButtonBaseProps {
   variant?: ButtonVariant
@@ -73,10 +75,5 @@ type ButtonCustomContent = {
 export type ButtonProps =
   ButtonBaseProps &
   ButtonBreakpointProps &
+  ViewDynamicBreakpointProps &
   (ButtonSemanticContent | ButtonCustomContent)
-
-export type ButtonPropsWithBreakpoints<
-  TBreakpointName extends string,
-> =
-  ButtonProps &
-  Partial<Record<TBreakpointName, ButtonResponsiveProps>>

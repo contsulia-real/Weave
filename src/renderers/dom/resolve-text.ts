@@ -3,9 +3,7 @@ import type {
   TextResponsiveProps,
   TextStyleProps,
 } from '../../core/text-types'
-import type { ResolvedText } from '../../core/resolved-text'
-import { breakpointCSSName } from './breakpoint-utils'
-import { length } from './css-values'
+import { length } from '../../core/values'
 import { typographyStyleVariableReference } from '../../theme/theme-css'
 
 export type TextVariableStyle = CSSProperties &
@@ -20,7 +18,6 @@ const variable = (
 function textWrapValues(
   wrap: TextStyleProps['wrap'],
   overflow: TextStyleProps['overflow'],
-  maxLines: TextStyleProps['maxLines'],
 ): { whiteSpace?: string; textWrap?: string } {
   if (wrap === 'nowrap') return { whiteSpace: 'nowrap' }
   if (wrap === 'balance') {
@@ -35,18 +32,7 @@ function textWrapValues(
       textWrap: 'wrap',
     }
   }
-  if (
-    overflow === 'ellipsis' &&
-    maxLines === undefined
-  ) {
-    return { whiteSpace: 'nowrap' }
-  }
-  if (maxLines !== undefined) {
-    return {
-      whiteSpace: 'normal',
-      textWrap: 'wrap',
-    }
-  }
+  if (overflow === 'ellipsis') return { whiteSpace: 'nowrap' }
   return {}
 }
 
@@ -100,11 +86,7 @@ export function resolveTextStyle(
     )
   }
 
-  const wrapping = textWrapValues(
-    props.wrap,
-    props.overflow,
-    props.maxLines,
-  )
+  const wrapping = textWrapValues(props.wrap, props.overflow)
   if (wrapping.whiteSpace !== undefined) {
     output[variable('white-space', breakpoint)] = wrapping.whiteSpace
   }
@@ -141,24 +123,6 @@ export function resolveTextResponsiveStyle(input: {
     Object.assign(
       output,
       resolveTextStyle(value, breakpoint),
-    )
-  }
-
-  return output
-}
-
-export function compileDOMText(
-  text: ResolvedText,
-): TextVariableStyle {
-  const output = resolveTextStyle(text.base)
-
-  for (const responsive of text.responsive) {
-    Object.assign(
-      output,
-      resolveTextStyle(
-        responsive.style,
-        breakpointCSSName(responsive.name),
-      ),
     )
   }
 

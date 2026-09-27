@@ -1,19 +1,11 @@
-import {
-  createElement,
-  useInsertionEffect,
-} from 'react'
+import { useInsertionEffect } from 'react'
 import type {
   ProgressMode,
   ProgressProps,
   ProgressSize,
   ProgressSpeed,
 } from '../core/progress-types'
-import { resolveProgress } from '../core/resolved-progress'
-import { resolveView } from '../core/resolved-view'
 import type { ViewProps } from '../core/view-types'
-import { assertDiCViewPropsSupported } from '../renderers/dic/react-compat'
-import { DIC_PROGRESS_HOST } from '../renderers/dic/react-host-types'
-import { useWeaveRenderer } from '../renderers/renderer-context'
 import { resolveProgressTheme } from '../renderers/dom/resolve-component-theme'
 import {
   resolveProgressStyle,
@@ -35,42 +27,41 @@ export interface ProgressVisualProps {
   viewProps?: ViewProps<HTMLSpanElement>
 }
 
-function DOMProgressVisual(
-  props: ProgressVisualProps,
-) {
-  useInsertionEffect(
-    ensureProgressStylesheet,
-    [],
-  )
+export function ProgressVisual({
+  undetermined,
+  progress,
+  mode = 'spin',
+  tracked = false,
+  size = 'medium',
+  color = 'primary',
+  speed = 'normal',
+  viewProps = {},
+}: ProgressVisualProps) {
+  useInsertionEffect(ensureProgressStylesheet, [])
 
-  const progress = resolveProgress(props)
+  const normalizedProgress = undetermined
+    ? undefined
+    : Math.min(1, Math.max(0, progress ?? 0))
+
   const { theme } = useTheme()
   const themeClassName = useRuntimeStyleClass(
     'progress-theme',
-    resolveProgressTheme(
-      theme,
-      progress.mode,
-      progress.size,
-    ),
+    resolveProgressTheme(theme, mode, size),
   )
   const speedClassName = useRuntimeStyleClass(
     'progress-speed',
-    resolveProgressStyle(
-      progress.speed,
-    ),
+    resolveProgressStyle(speed),
   )
   const valueClassName = useRuntimeStyleClass(
     'progress-value',
-    progress.progress === undefined
+    normalizedProgress === undefined
       ? undefined
-      : resolveProgressValueStyle(
-          progress.progress,
-        ),
+      : resolveProgressValueStyle(normalizedProgress),
   )
 
   const hostProps: ViewProps<HTMLSpanElement> = {
-    ...props.viewProps,
-    color: progress.color,
+    ...viewProps,
+    color,
   }
 
   const {
@@ -86,23 +77,19 @@ function DOMProgressVisual(
       ref={elementRef}
       data-weave-view=""
       data-weave-progress=""
-      data-weave-progress-mode={progress.mode}
-      data-weave-progress-tracked={
-        progress.tracked || undefined
-      }
+      data-weave-progress-mode={mode}
+      data-weave-progress-tracked={tracked || undefined}
       data-weave-layout={resolved.layout}
       className={[
         'weave-progress',
-        `weave-progress--${progress.mode}`,
-        `weave-progress--${progress.size}`,
-        progress.tracked
-          ? 'weave-progress--tracked'
-          : undefined,
-        progress.undetermined
+        `weave-progress--${mode}`,
+        `weave-progress--${size}`,
+        tracked ? 'weave-progress--tracked' : undefined,
+        undetermined
           ? 'weave-progress--undetermined'
           : 'weave-progress--determined',
-        typeof progress.speed === 'string'
-          ? `weave-progress--speed-${progress.speed}`
+        typeof speed === 'string'
+          ? `weave-progress--speed-${speed}`
           : undefined,
         themeClassName,
         speedClassName,
@@ -132,91 +119,30 @@ function DOMProgressVisual(
   )
 }
 
-function DiCProgressVisual(
-  props: ProgressVisualProps,
-) {
-  const { theme } = useTheme()
-  const progress = resolveProgress(props)
-  const hostProps: ViewProps<HTMLSpanElement> = {
+export function Progress(props: ProgressProps) {
+  const undetermined = props.undetermined === true
+  const progress = undetermined
+    ? undefined
+    : Math.min(1, Math.max(0, props.progress))
+
+  const semanticViewProps: ViewProps<HTMLSpanElement> = {
     ...props.viewProps,
-    color: progress.color,
+    role: 'progressbar',
+    busy: undetermined || undefined,
+    valueMin: undetermined ? undefined : 0,
+    valueMax: undetermined ? undefined : 1,
+    valueNow: progress,
   }
-
-  assertDiCViewPropsSupported(
-    hostProps as unknown as ViewProps<HTMLElement>,
-    theme.breakpoints,
-    'Progress.viewProps',
-  )
-
-  const view = resolveView(
-    hostProps,
-    theme.breakpoints,
-  )
-
-  return createElement(
-    DIC_PROGRESS_HOST,
-    {
-      view,
-      progress,
-      theme,
-    },
-  )
-}
-
-export function ProgressVisual(
-  props: ProgressVisualProps,
-) {
-  const renderer = useWeaveRenderer()
-
-  return renderer === 'dic'
-    ? <DiCProgressVisual {...props} />
-    : <DOMProgressVisual {...props} />
-}
-
-export function Progress(
-  props: ProgressProps,
-) {
-  const progress = resolveProgress({
-    undetermined:
-      props.undetermined === true,
-    progress:
-      props.undetermined === true
-        ? undefined
-        : props.progress,
-    mode: props.mode,
-    tracked: props.tracked,
-    size: props.size,
-    color: props.color,
-    speed: props.speed,
-  })
-
-  const semanticViewProps:
-    ViewProps<HTMLSpanElement> = {
-      ...props.viewProps,
-      role: 'progressbar',
-      busy:
-        progress.undetermined ||
-        undefined,
-      valueMin:
-        progress.undetermined
-          ? undefined
-          : 0,
-      valueMax:
-        progress.undetermined
-          ? undefined
-          : 1,
-      valueNow: progress.progress,
-    }
 
   return (
     <ProgressVisual
-      undetermined={progress.undetermined}
-      progress={progress.progress}
-      mode={progress.mode}
-      tracked={progress.tracked}
-      size={progress.size}
-      color={progress.color}
-      speed={progress.speed}
+      undetermined={undetermined}
+      progress={progress}
+      mode={props.mode}
+      tracked={props.tracked}
+      size={props.size}
+      color={props.color}
+      speed={props.speed}
       viewProps={semanticViewProps}
     />
   )

@@ -25,7 +25,6 @@ export type DefaultBreakpointName = keyof typeof defaultBreakpoints
 export const defaultTheme: ResolvedTheme = {
   tokens: {
     color: {
-      text: '#18181b',
       primary: '#6d5dfc',
       onPrimary: '#ffffff',
       primaryHover: '#5f50e8',

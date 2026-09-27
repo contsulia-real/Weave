@@ -1,14 +1,8 @@
-import {
-  createElement,
-  useInsertionEffect,
-  useState,
-} from 'react'
+import { useInsertionEffect } from 'react'
 import type {
   ChangeEvent,
   CSSProperties,
 } from 'react'
-import { resolveInput } from '../core/resolved-input'
-import { resolveView } from '../core/resolved-view'
 import type {
   InputProps,
   InputType,
@@ -16,9 +10,6 @@ import type {
   SingleLineInputViewProps,
 } from '../core/input-types'
 import type { ViewProps } from '../core/view-types'
-import { assertDiCViewPropsSupported } from '../renderers/dic/react-compat'
-import { DIC_INPUT_HOST } from '../renderers/dic/react-host-types'
-import { useWeaveRenderer } from '../renderers/renderer-context'
 import { ensureInputStylesheet } from '../renderers/dom/input-stylesheet'
 import { resolveInputTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
@@ -206,13 +197,8 @@ function MultilineInput({
   )
 }
 
-function DOMInput(
-  props: InputProps,
-) {
-  useInsertionEffect(
-    ensureInputStylesheet,
-    [],
-  )
+export function Input(props: InputProps) {
+  useInsertionEffect(ensureInputStylesheet, [])
 
   if (props.multiline) {
     return (
@@ -250,87 +236,4 @@ function DOMInput(
       viewProps={props.viewProps}
     />
   )
-}
-
-function stringValue(
-  value: string | number | undefined,
-): string {
-  return value === undefined
-    ? ''
-    : String(value)
-}
-
-function DiCInput(
-  props: InputProps,
-) {
-  const { theme } = useTheme()
-  const input = resolveInput(props)
-  const [uncontrolledValue, setUncontrolledValue] =
-    useState(
-      stringValue(
-        props.defaultValue,
-      ),
-    )
-  const controlled =
-    props.value !== undefined
-  const value =
-    controlled
-      ? stringValue(props.value)
-      : uncontrolledValue
-
-  const sourceView =
-    props.viewProps ?? {}
-  const hostProps:
-    ViewProps<HTMLElement> = {
-      ...sourceView,
-      disabled: input.disabled,
-      readOnly: input.readOnly,
-      required: input.required,
-    } as unknown as ViewProps<HTMLElement>
-
-  assertDiCViewPropsSupported(
-    hostProps,
-    theme.breakpoints,
-    'Input.viewProps',
-  )
-
-  const view = resolveView(
-    hostProps,
-    theme.breakpoints,
-  )
-
-  const commit = (
-    nextValue: string,
-  ) => {
-    if (!controlled) {
-      setUncontrolledValue(
-        nextValue,
-      )
-    }
-
-    props.onChange?.(
-      nextValue,
-    )
-  }
-
-  return createElement(
-    DIC_INPUT_HOST,
-    {
-      view,
-      input,
-      theme,
-      value,
-      onChange: commit,
-    },
-  )
-}
-
-export function Input(
-  props: InputProps,
-) {
-  const renderer = useWeaveRenderer()
-
-  return renderer === 'dic'
-    ? <DiCInput {...props} />
-    : <DOMInput {...props} />
 }

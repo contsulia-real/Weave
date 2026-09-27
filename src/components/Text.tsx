@@ -1,40 +1,19 @@
-import {
-  createElement,
-  useInsertionEffect,
-} from 'react'
-import type {
-  ValidateDynamicBreakpointProps,
-  ViewProps,
-  ViewResponsiveStyle,
-} from '../core/view-types'
+import { useInsertionEffect } from 'react'
+import type { ViewProps, ViewResponsiveStyle } from '../core/view-types'
 import type {
   TextProps,
   TextResponsiveProps,
 } from '../core/text-types'
-import { resolveText } from '../core/resolved-text'
-import { resolveView } from '../core/resolved-view'
-import {
-  breakpointEntries as coreBreakpointEntries,
-} from '../core/breakpoints'
-import {
-  breakpointEntries as domBreakpointEntries,
-} from '../renderers/dom/breakpoint-utils'
-import { compileDOMText } from '../renderers/dom/resolve-text'
+import { breakpointEntries } from '../renderers/dom/breakpoint-utils'
+import { resolveTextResponsiveStyle } from '../renderers/dom/resolve-text'
 import { ensureTextStylesheet } from '../renderers/dom/text-stylesheet'
-import { assertDiCViewPropsSupported } from '../renderers/dic/react-compat'
-import { DIC_TEXT_HOST } from '../renderers/dic/react-host-types'
-import { useWeaveRenderer } from '../renderers/renderer-context'
 import { useTheme } from '../theme/theme-context'
 import { useViewHost } from './internal/use-view-host'
 
 function colorStyle(
   value: TextResponsiveProps | undefined,
 ): ViewResponsiveStyle | undefined {
-  return value?.color === undefined
-    ? undefined
-    : {
-        color: value.color,
-      }
+  return value?.color === undefined ? undefined : { color: value.color }
 }
 
 function mergeResponsive(
@@ -43,64 +22,7 @@ function mergeResponsive(
 ): ViewResponsiveStyle | undefined {
   if (base === undefined) return addition
   if (addition === undefined) return base
-
-  return {
-    ...base,
-    ...addition,
-  }
-}
-
-function textHostProps(
-  props: TextProps,
-  breakpoints: Readonly<Record<string, number>>,
-): ViewProps<HTMLSpanElement> {
-  const {
-    viewProps = {},
-    color,
-  } = props
-  const hostProps: ViewProps<HTMLSpanElement> = {
-    ...viewProps,
-    color,
-  }
-  const writable =
-    hostProps as unknown as Record<
-      string,
-      unknown
-    >
-  const propsRecord =
-    props as unknown as Record<
-      string,
-      unknown
-    >
-  const viewRecord =
-    viewProps as unknown as Record<
-      string,
-      unknown
-    >
-
-  for (
-    const breakpoint of
-      coreBreakpointEntries(breakpoints)
-  ) {
-    const textResponsive =
-      propsRecord[
-        breakpoint.name
-      ] as TextResponsiveProps | undefined
-    const viewResponsive =
-      viewRecord[
-        breakpoint.name
-      ] as ViewResponsiveStyle | undefined
-    const merged = mergeResponsive(
-      viewResponsive,
-      colorStyle(textResponsive),
-    )
-
-    if (merged !== undefined) {
-      writable[breakpoint.name] = merged
-    }
-  }
-
-  return hostProps
+  return { ...base, ...addition }
 }
 
 function responsiveData(
@@ -110,77 +32,97 @@ function responsiveData(
   const output: Record<string, string> = {}
 
   if (value?.overflow !== undefined) {
-    output[
-      `data-weave-text-${prefix}-overflow`
-    ] = value.overflow
+    output[`data-weave-text-${prefix}-overflow`] = value.overflow
   }
   if (value?.maxLines !== undefined) {
-    output[
-      `data-weave-text-${prefix}-max-lines`
-    ] = String(value.maxLines)
+    output[`data-weave-text-${prefix}-max-lines`] = String(value.maxLines)
   }
 
   return output
 }
 
-function DOMText(
-  props: TextProps,
-) {
+export function Text(props: TextProps) {
   const {
     children,
+    viewProps = {},
     typo,
+    size,
+    weight,
+    color,
+    align,
+    lineHeight,
+    letterSpacing,
+    wrap,
     overflow,
     maxLines,
+    case: textCase,
   } = props
-  const { theme } = useTheme()
-  const resolvedText = resolveText(
-    props,
-    theme.breakpoints,
-  )
-  const hostProps = textHostProps(
-    props,
-    theme.breakpoints,
-  )
-  const responsiveAttributes:
-    Record<string, string> = {}
-  const propsRecord =
-    props as unknown as Record<
-      string,
-      unknown
-    >
 
-  for (
-    const breakpoint of
-      domBreakpointEntries(theme.breakpoints)
-  ) {
+  const { theme } = useTheme()
+  const breakpoints = breakpointEntries(theme.breakpoints)
+  const propsRecord = props as Record<string, unknown>
+  const viewPropsRecord = viewProps as Record<string, unknown>
+  const responsiveText: Record<
+    string,
+    TextResponsiveProps | undefined
+  > = {}
+  const responsiveAttributes: Record<string, string> = {}
+
+  const hostProps: ViewProps<HTMLSpanElement> = {
+    ...viewProps,
+    color,
+  }
+  const writableHostProps = hostProps as Record<string, unknown>
+
+  for (const breakpoint of breakpoints) {
+    const textResponsive = propsRecord[
+      breakpoint.name
+    ] as TextResponsiveProps | undefined
+    const viewResponsive = viewPropsRecord[
+      breakpoint.name
+    ] as ViewResponsiveStyle | undefined
+
+    responsiveText[breakpoint.cssName] = textResponsive
+
+    const merged = mergeResponsive(
+      viewResponsive,
+      colorStyle(textResponsive),
+    )
+
+    if (merged !== undefined) {
+      writableHostProps[breakpoint.name] = merged
+    }
+
     Object.assign(
       responsiveAttributes,
-      responsiveData(
-        breakpoint.cssName,
-        propsRecord[
-          breakpoint.name
-        ] as TextResponsiveProps | undefined,
-      ),
+      responsiveData(breakpoint.cssName, textResponsive),
     )
   }
 
-  const componentStyle =
-    compileDOMText(resolvedText)
+  const componentStyle = resolveTextResponsiveStyle({
+    base: {
+      typo,
+      size,
+      weight,
+      align,
+      lineHeight,
+      letterSpacing,
+      wrap,
+      overflow,
+      maxLines,
+      case: textCase,
+    },
+    responsive: responsiveText,
+  })
+
   const {
     elementRef,
     className,
     inlineStyle,
     resolved,
-  } = useViewHost(
-    hostProps,
-    componentStyle,
-    'text',
-  )
+  } = useViewHost(hostProps, componentStyle, 'text')
 
-  useInsertionEffect(
-    ensureTextStylesheet,
-    [],
-  )
+  useInsertionEffect(ensureTextStylesheet, [])
 
   return (
     <span
@@ -193,70 +135,12 @@ function DOMText(
       data-weave-layout={resolved.layout}
       data-weave-text-overflow={overflow}
       data-weave-text-max-lines={
-        maxLines === undefined
-          ? undefined
-          : String(maxLines)
+        maxLines === undefined ? undefined : String(maxLines)
       }
-      className={[
-        'weave-text',
-        className,
-      ].filter(Boolean).join(' ')}
+      className={['weave-text', className].filter(Boolean).join(' ')}
       style={inlineStyle}
     >
       {children}
     </span>
   )
-}
-
-function DiCText(
-  props: TextProps,
-) {
-  const { theme } = useTheme()
-  const hostProps = textHostProps(
-    props,
-    theme.breakpoints,
-  )
-
-  assertDiCViewPropsSupported(
-    hostProps as unknown as ViewProps<HTMLElement>,
-    theme.breakpoints,
-    'Text.viewProps',
-  )
-
-  const view = resolveView(
-    hostProps,
-    theme.breakpoints,
-  )
-  const text = resolveText(
-    props,
-    theme.breakpoints,
-  )
-
-  return createElement(
-    DIC_TEXT_HOST,
-    {
-      view,
-      text,
-      theme,
-    },
-    props.children,
-  )
-}
-
-export function Text<
-  TProps extends TextProps,
->(
-  props: TProps &
-    ValidateDynamicBreakpointProps<
-      TProps,
-      TextProps,
-      TextResponsiveProps
-    >,
-) {
-  const renderer = useWeaveRenderer()
-  const runtimeProps = props as TextProps
-
-  return renderer === 'dic'
-    ? <DiCText {...runtimeProps} />
-    : <DOMText {...runtimeProps} />
 }

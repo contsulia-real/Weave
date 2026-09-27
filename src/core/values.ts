@@ -10,7 +10,7 @@ import type {
   ShadowValue,
   TransformOperation,
   TransformOriginValue,
-} from '../../core/view-types'
+} from './view-types'
 
 const TOKEN_NAME = /^[A-Za-z][A-Za-z0-9_-]*$/
 
