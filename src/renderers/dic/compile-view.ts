@@ -24,6 +24,7 @@ import type {
 } from '../../core/resolved-view'
 import type { ResolvedText } from '../../core/resolved-text'
 import type { ResolvedImage } from '../../core/resolved-image'
+import type { ResolvedProgress } from '../../core/resolved-progress'
 import type { ResolvedTheme } from '../../theme/theme-types'
 import type { DiCImageResourceManager } from './image-resource'
 
@@ -78,9 +79,15 @@ export interface DiCImageContent {
   image: ResolvedImage
 }
 
+export interface DiCProgressContent {
+  kind: 'progress'
+  progress: ResolvedProgress
+}
+
 export type DiCViewContent =
   | DiCTextContent
   | DiCImageContent
+  | DiCProgressContent
 
 export interface DiCViewPaint {
   layout?: ViewLayout
