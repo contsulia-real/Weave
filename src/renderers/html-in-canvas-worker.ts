@@ -38,6 +38,19 @@ type RendererMessage =
   | FrameMessage
   | DestroyMessage
 
+const workerGlobal =
+  globalThis as unknown as {
+    onmessage:
+      | ((
+          event: MessageEvent<RendererMessage>,
+        ) => void)
+      | null
+    postMessage(
+      message: unknown,
+    ): void
+    close(): void
+  }
+
 let canvas:
   | OffscreenCanvas
   | undefined
@@ -96,7 +109,7 @@ function drawLatest(): void {
   )
 }
 
-self.onmessage = (
+workerGlobal.onmessage = (
   event: MessageEvent<RendererMessage>,
 ) => {
   const message = event.data
@@ -169,6 +182,9 @@ self.onmessage = (
 
     drawLatest()
     previous?.close()
+    workerGlobal.postMessage({
+      type: 'frame-drawn',
+    })
     return
   }
 
@@ -176,5 +192,5 @@ self.onmessage = (
   latestImage = undefined
   context = undefined
   canvas = undefined
-  self.close()
+  workerGlobal.close()
 }
