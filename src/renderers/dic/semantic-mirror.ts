@@ -810,6 +810,18 @@ export function createDiCSemanticMirror(
         shiftKey: event.shiftKey,
       })
 
+    if (
+      type === 'keyup' &&
+      node.content?.kind === 'input' &&
+      event.target instanceof HTMLElement
+    ) {
+      syncInputRuntime(
+        node,
+        event.target,
+      )
+      invalidate()
+    }
+
     applyDispatchResult(
       event,
       result,
