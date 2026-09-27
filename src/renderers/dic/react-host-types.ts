@@ -1,5 +1,6 @@
 import type { ResolvedButton } from '../../core/resolved-button'
 import type { ResolvedImage } from '../../core/resolved-image'
+import type { ResolvedProgress } from '../../core/resolved-progress'
 import type { ResolvedSwitch } from '../../core/resolved-switch'
 import type { ResolvedText } from '../../core/resolved-text'
 import type { ResolvedView } from '../../core/resolved-view'
@@ -10,6 +11,7 @@ export const DIC_TEXT_HOST = 'weave:text'
 export const DIC_IMAGE_HOST = 'weave:image'
 export const DIC_BUTTON_HOST = 'weave:button'
 export const DIC_SWITCH_HOST = 'weave:switch'
+export const DIC_PROGRESS_HOST = 'weave:progress'
 
 export type DiCHostType =
   | typeof DIC_VIEW_HOST
@@ -17,6 +19,7 @@ export type DiCHostType =
   | typeof DIC_IMAGE_HOST
   | typeof DIC_BUTTON_HOST
   | typeof DIC_SWITCH_HOST
+  | typeof DIC_PROGRESS_HOST
 
 export interface DiCViewHostProps {
   view: ResolvedView
@@ -48,9 +51,16 @@ export interface DiCSwitchHostProps {
   onChange?: (checked: boolean) => void
 }
 
+export interface DiCProgressHostProps {
+  view: ResolvedView
+  progress: ResolvedProgress
+  theme: ResolvedTheme
+}
+
 export type DiCHostProps =
   | DiCViewHostProps
   | DiCTextHostProps
   | DiCImageHostProps
   | DiCButtonHostProps
   | DiCSwitchHostProps
+  | DiCProgressHostProps
