@@ -238,6 +238,7 @@ export interface ViewStyleProps {
   outlineStyle?: CSSProperties['outlineStyle']
   outlineOffset?: Length
 
+  layer?: string
   zIndex?: number
   pointerEvents?: CSSProperties['pointerEvents']
   cursor?: CSSProperties['cursor']
