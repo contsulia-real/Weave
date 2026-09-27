@@ -185,6 +185,7 @@ function animateCapturedLayout(
             snack,
           ) === animation
         ) {
+          animation.cancel()
           layoutAnimations.delete(
             snack,
           )
