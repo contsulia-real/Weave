@@ -210,6 +210,46 @@ describe('public Weave root', () => {
     root.unmount()
   })
 
+  it('does not hide ordinary application errors behind DOM fallback', () => {
+    const container =
+      document.createElement('div')
+    document.body.appendChild(container)
+
+    const Broken = () => {
+      throw new Error('application boom')
+    }
+
+    const root = createRoot(container)
+
+    expect(() =>
+      root.render(<Broken />),
+    ).toThrow('application boom')
+
+    expect(
+      container.querySelector(
+        'canvas[data-weave-root-canvas]',
+      ),
+    ).toBeNull()
+
+    root.unmount()
+  })
+
+  it('cannot render again after unmount', () => {
+    const container =
+      document.createElement('div')
+    document.body.appendChild(container)
+
+    const root = createRoot(container)
+    root.render(<View />)
+    root.unmount()
+
+    expect(() =>
+      root.render(<View />),
+    ).toThrow(
+      'Cannot render into an unmounted Weave root',
+    )
+  })
+
   it('can disable DOM fallback and surface capability errors', () => {
     const container =
       document.createElement('div')
