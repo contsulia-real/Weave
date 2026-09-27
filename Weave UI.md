@@ -3165,6 +3165,66 @@ top-end
 </ToolTip>
 ```
 
+## 19.3 默认行为
+
+当前默认值：
+
+```text
+placement = top
+delay = 500ms
+offset = 0.5rem
+layer = tooltip
+```
+
+触发规则：
+
+- pointer 进入目标后按 `delay` 打开；
+- focus 进入目标后按同一 `delay` 打开；
+- pointer 与 focus 任一仍停留在目标内时保持打开；
+- 两者都离开后立即关闭；
+- `Escape` 关闭当前 ToolTip；
+- ToolTip 默认 `pointer-events: none`，它不是交互式弹层。
+
+定位由框架自动根据目标真实 `getBoundingClientRect()` 计算，并在 viewport resize、任意祖先 scroll、目标尺寸变化时更新。ToolTip 使用 `position: fixed`，业务不手工提供坐标。
+
+ToolTip 不增加会改变目标布局的可见包裹层。内部 anchor 只使用 `display: contents` 找到目标真实 DOM。
+
+## 19.4 浮层、主题与可访问性
+
+ToolTip 由框架内部 portal 到 document body，普通用户不创建 portal root。React context 仍按原组件树继承；portal 内重新建立当前 ThemeProvider 的 CSS 变量作用域，因此主题 token 与局部主题不会丢失。
+
+默认语义：
+
+```text
+tooltip content → role="tooltip"
+target → aria-describedby="<tooltip id>"
+```
+
+ToolTip 关闭或卸载时只移除自己添加的 description id，不覆盖目标已有或期间新增的其他 `aria-describedby` 关联。
+
+字符串 / 数字 `content` 使用 `theme.components.ToolTip.base.typo`；复杂 React 内容由调用方通过 View / Text 自行组合。
+
+ToolTip 的默认视觉来自：
+
+```text
+theme.components.ToolTip.base
+```
+
+当前可主题化字段：
+
+```text
+background
+color
+radius
+paddingX
+paddingY
+maxWidth
+shadow
+typo
+```
+
+通用视觉覆盖继续通过 `viewProps` 使用；ToolTip 自己拥有 `role` 与 fixed positioning 语义。
+
 ---
 
 # 20. `Snack`
