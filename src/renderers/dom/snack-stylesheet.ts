@@ -1,7 +1,7 @@
 const stylesheet = `
 :where(.weave-snack-region) {
   --weave-snack-available-width:
-    var(--weave-snack-available-width);
+    calc(100vw - 2rem);
 
   position: fixed;
   display: flex;
