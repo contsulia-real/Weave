@@ -1,11 +1,12 @@
-interface HTMLInCanvas2DContext extends CanvasRenderingContext2D {
-  drawElementImage(
-    element: Element,
-    dx: number,
-    dy: number,
-  ): void
-  reset?: () => void
-}
+type HTMLInCanvas2DContext =
+  CanvasRenderingContext2D & {
+    drawElementImage(
+      element: Element,
+      dx: number,
+      dy: number,
+    ): void
+    reset?: () => void
+  }
 
 interface HTMLInCanvasElement extends HTMLCanvasElement {
   requestPaint(): void
@@ -26,7 +27,15 @@ export class HTMLInCanvasCapabilityError extends Error {
 function htmlInCanvasContext(
   canvas: HTMLCanvasElement,
 ): HTMLInCanvas2DContext | null {
-  const context = canvas.getContext('2d')
+  let context:
+    | CanvasRenderingContext2D
+    | null
+
+  try {
+    context = canvas.getContext('2d')
+  } catch {
+    return null
+  }
 
   if (
     context === null ||
@@ -139,22 +148,6 @@ function observeCanvasSize(
       ([entry]) => {
         if (entry === undefined) return
 
-        const deviceSize =
-          entry.devicePixelContentBoxSize?.[0]
-
-        if (deviceSize !== undefined) {
-          if (
-            applyCanvasSize(
-              canvas,
-              deviceSize.inlineSize,
-              deviceSize.blockSize,
-            )
-          ) {
-            requestPaint()
-          }
-          return
-        }
-
         resizeFromCSSPixels(
           entry.contentRect.width,
           entry.contentRect.height,
@@ -162,26 +155,7 @@ function observeCanvasSize(
       },
     )
 
-    const supportsDevicePixelBox =
-      typeof ResizeObserverEntry !==
-        'undefined' &&
-      'devicePixelContentBoxSize' in
-        ResizeObserverEntry.prototype
-
-    try {
-      if (supportsDevicePixelBox) {
-        observer.observe(
-          canvas,
-          {
-            box: 'device-pixel-content-box',
-          },
-        )
-      } else {
-        observer.observe(canvas)
-      }
-    } catch {
-      observer.observe(canvas)
-    }
+    observer.observe(canvas)
 
     return () => observer.disconnect()
   }
