@@ -8,7 +8,6 @@ import {
   useState,
 } from 'react'
 import type {
-  CSSProperties,
   TransitionEvent as ReactTransitionEvent,
 } from 'react'
 import { createPortal } from 'react-dom'
@@ -29,7 +28,7 @@ import { useTheme } from '../theme/theme-context'
 import { ThemeProvider } from '../theme/ThemeProvider'
 import { Button } from './Button'
 import { Icon } from './Icon'
-import { ProgressVisual } from './Progress'
+import { Progress } from './Progress'
 import { Text } from './Text'
 import { View } from './View'
 import { durationMilliseconds } from './internal/motion-duration'
@@ -37,6 +36,8 @@ import {
   retainSnackRegion,
   syncSnackRegion,
 } from './internal/snack-region'
+
+const PROGRESS_UPDATE_MS = 50
 
 type SnackVisualState =
   | 'open'
@@ -127,6 +128,10 @@ export function Snack({
     setPaused,
   ] = useState(false)
   const [
+    remainingMs,
+    setRemainingMs,
+  ] = useState(durationMs)
+  const [
     region,
     setRegion,
   ] = useState<HTMLDivElement | null>(
@@ -188,6 +193,7 @@ export function Snack({
         durationMs
       activeStartedAtRef.current =
         null
+      setRemainingMs(durationMs)
     }
   }, [
     durationMs,
@@ -304,18 +310,49 @@ export function Snack({
     activeStartedAtRef.current =
       startedAt
 
+    const updateProgress = () => {
+      const elapsed =
+        Math.max(
+          0,
+          Date.now() -
+            startedAt,
+        )
+      const nextRemaining =
+        Math.max(
+          0,
+          startRemaining -
+            elapsed,
+        )
+
+      setRemainingMs(
+        nextRemaining,
+      )
+    }
+
+    updateProgress()
+
+    const progressTimer =
+      globalThis.setInterval(
+        updateProgress,
+        PROGRESS_UPDATE_MS,
+      )
+
     const closeTimer =
       globalThis.setTimeout(
         () => {
           remainingMsRef.current = 0
           activeStartedAtRef.current =
             null
+          setRemainingMs(0)
           requestOpen(false)
         },
         startRemaining,
       )
 
     return () => {
+      globalThis.clearInterval(
+        progressTimer,
+      )
       globalThis.clearTimeout(
         closeTimer,
       )
@@ -333,15 +370,20 @@ export function Snack({
           Date.now() -
             startedAt,
         )
-
-      remainingMsRef.current =
+      const nextRemaining =
         Math.max(
           0,
           startRemaining -
             elapsed,
         )
+
+      remainingMsRef.current =
+        nextRemaining
       activeStartedAtRef.current =
         null
+      setRemainingMs(
+        nextRemaining,
+      )
     }
   }, [
     paused,
@@ -523,6 +565,18 @@ export function Snack({
         </>
       )
 
+  const lifetimeProgress =
+    durationMs <= 0
+      ? 0
+      : Math.min(
+          1,
+          Math.max(
+            0,
+            remainingMs /
+              durationMs,
+          ),
+        )
+
   return createPortal(
     <ThemeProvider
       theme={theme}
@@ -581,13 +635,17 @@ export function Snack({
         {!persistent &&
         resolvedOpen &&
         durationMs > 0 ? (
-          <ProgressVisual
-            undetermined={false}
-            progress={1}
+          <Progress
+            progress={
+              lifetimeProgress
+            }
             mode="linear"
             tracked={false}
             size="small"
             color="var(--weave-snack-accent)"
+            speed={
+              PROGRESS_UPDATE_MS
+            }
             viewProps={{
               className:
                 'weave-snack__lifetime',
@@ -602,14 +660,10 @@ export function Snack({
                 'none',
               data: {
                 'weave-snack-lifetime-progress':
-                  '',
+                  lifetimeProgress.toFixed(
+                    4,
+                  ),
               },
-              style: {
-                '--weave-snack-lifetime-duration':
-                  `${durationMs}ms`,
-              } as CSSProperties,
-              'aria-hidden':
-                true,
             }}
           />
         ) : null}
