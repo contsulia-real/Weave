@@ -56,6 +56,50 @@ function SnackTriggerHarness() {
   )
 }
 
+function SnackFifoHarness() {
+  const snack =
+    useSnack()
+
+  const push = (
+    text: string,
+  ) => {
+    snack.show({
+      text,
+      persistent: true,
+      placement: 'top-left',
+    })
+  }
+
+  return (
+    <>
+      <Button
+        text="Push A"
+        viewProps={{
+          onClick: () => push('A'),
+        }}
+      />
+      <Button
+        text="Push B"
+        viewProps={{
+          onClick: () => push('B'),
+        }}
+      />
+      <Button
+        text="Push C"
+        viewProps={{
+          onClick: () => push('C'),
+        }}
+      />
+      <Button
+        text="Push D"
+        viewProps={{
+          onClick: () => push('D'),
+        }}
+      />
+    </>
+  )
+}
+
 describe('Snack', () => {
   it('creates a fresh Snack on every queue trigger', () => {
     const {
@@ -148,29 +192,45 @@ describe('Snack', () => {
     ).toBe('success')
   })
 
-  it('keeps the oldest Snacks visible in FIFO order and folds only later items', () => {
-    render(
-      <>
-        <Snack text="One" persistent />
-        <Snack text="Two" persistent />
-        <Snack text="Three" persistent />
-        <Snack text="Four" persistent />
-        <Snack text="Five" persistent />
-      </>,
+  it('evicts the oldest visible Snack with exit motion when FIFO capacity overflows', () => {
+    const {
+      getByRole,
+    } = render(
+      <SnackProvider>
+        <SnackFifoHarness />
+      </SnackProvider>,
+    )
+
+    fireEvent.click(
+      getByRole(
+        'button',
+        { name: 'Push A' },
+      ),
+    )
+    fireEvent.click(
+      getByRole(
+        'button',
+        { name: 'Push B' },
+      ),
+    )
+    fireEvent.click(
+      getByRole(
+        'button',
+        { name: 'Push C' },
+      ),
+    )
+    fireEvent.click(
+      getByRole(
+        'button',
+        { name: 'Push D' },
+      ),
     )
 
     const region =
       document.querySelector(
-        '[data-weave-snack-region="bottom-center"]',
+        '[data-weave-snack-region="top-left"]',
       )
-
-    expect(
-      region?.getAttribute(
-        'data-weave-snack-count',
-      ),
-    ).toBe('5')
-
-    const snacks =
+    const snacksBeforeRemoval =
       Array.from(
         region?.querySelectorAll<HTMLElement>(
           '[data-weave-snack]',
@@ -178,212 +238,71 @@ describe('Snack', () => {
       )
 
     expect(
-      snacks.map(
+      snacksBeforeRemoval.map(
         (snack) =>
           snack.textContent,
       ),
     ).toEqual([
-      'One',
-      'Two',
-      'Three',
-      'Four',
-      'Five',
+      'A',
+      'B',
+      'C',
+      'D',
     ])
 
     expect(
-      snacks[0]?.getAttribute(
-        'data-weave-snack-queue-index',
-      ),
-    ).toBe('0')
-    expect(
-      snacks[1]?.getAttribute(
-        'data-weave-snack-queue-index',
-      ),
-    ).toBe('1')
-    expect(
-      snacks[2]?.getAttribute(
-        'data-weave-snack-queue-index',
-      ),
-    ).toBe('2')
-
-    expect(
-      snacks[0]?.hasAttribute(
-        'data-weave-snack-queue-hidden',
-      ),
-    ).toBe(false)
-    expect(
-      snacks[1]?.hasAttribute(
-        'data-weave-snack-queue-hidden',
-      ),
-    ).toBe(false)
-    expect(
-      snacks[2]?.hasAttribute(
-        'data-weave-snack-queue-hidden',
-      ),
-    ).toBe(false)
-    expect(
-      snacks[3]?.hasAttribute(
-        'data-weave-snack-queue-hidden',
-      ),
-    ).toBe(true)
-    expect(
-      snacks[4]?.hasAttribute(
-        'data-weave-snack-queue-hidden',
-      ),
-    ).toBe(true)
-
-    const overflow =
-      region?.querySelector(
-        '[data-weave-snack-overflow]',
-      )
-
-    expect(
-      overflow?.textContent,
-    ).toBe('+2')
-    expect(
-      overflow?.closest(
-        '[data-weave-theme]',
-      ),
-    ).not.toBeNull()
-
-    const stylesheet =
-      document.querySelector<HTMLStyleElement>(
-        'style[data-weave-snack-styles]',
-      )?.textContent ?? ''
-
-    expect(stylesheet).toContain(
-      'flex-direction: column;',
-    )
-    expect(stylesheet).toContain(
-      'flex-direction: column-reverse;',
-    )
-    expect(stylesheet).toContain(
-      'data-weave-snack-queue-hidden',
-    )
-    expect(stylesheet).not.toContain(
-      'margin-top: -',
-    )
-    expect(stylesheet).not.toContain(
-      'margin-bottom: -',
-    )
-  })
-
-  it('animates folded exits through the overflow indicator', () => {
-    vi.useFakeTimers()
-
-    render(
-      <>
-        <Snack text="One" persistent />
-        <Snack text="Two" persistent />
-        <Snack text="Three" persistent />
-        <Snack
-          text="Four"
-          duration={100}
-        />
-      </>,
-    )
-
-    const region =
-      document.querySelector(
-        '[data-weave-snack-region="bottom-center"]',
-      )
-    const overflow =
-      region?.querySelector<HTMLElement>(
-        '[data-weave-snack-overflow]',
-      )
-
-    expect(
-      overflow?.getAttribute(
-        'data-weave-snack-overflow-state',
-      ),
-    ).toBe('open')
-
-    act(() => {
-      vi.advanceTimersByTime(100)
-    })
-
-    expect(
-      overflow?.getAttribute(
-        'data-weave-snack-overflow-state',
+      snacksBeforeRemoval[0]?.getAttribute(
+        'data-weave-snack-state',
       ),
     ).toBe('closing')
 
-    const hiddenClosing =
-      region?.querySelector<HTMLElement>(
-        '[data-weave-snack-queue-hidden][data-weave-snack-state="closing"]',
+    expect(
+      snacksBeforeRemoval
+        .slice(1)
+        .every(
+          (snack) =>
+            snack.getAttribute(
+              'data-weave-snack-state',
+            ) === 'open',
+        ),
+    ).toBe(true)
+
+    const oldest =
+      snacksBeforeRemoval[0]
+
+    if (oldest !== undefined) {
+      fireEvent.transitionEnd(
+        oldest,
+      )
+    }
+
+    const snacksAfterRemoval =
+      Array.from(
+        region?.querySelectorAll<HTMLElement>(
+          '[data-weave-snack]',
+        ) ?? [],
       )
 
     expect(
-      hiddenClosing,
-    ).not.toBeNull()
-
-    if (hiddenClosing !== null) {
-      fireEvent.transitionEnd(
-        hiddenClosing,
-      )
-    }
+      snacksAfterRemoval.map(
+        (snack) =>
+          snack.textContent,
+      ),
+    ).toEqual([
+      'B',
+      'C',
+      'D',
+    ])
 
     expect(
       region?.querySelector(
         '[data-weave-snack-overflow]',
       ),
     ).toBeNull()
-  })
-
-  it('reveals the next FIFO item when a visible Snack leaves overflow', () => {
-    vi.useFakeTimers()
-
-    render(
-      <>
-        <Snack
-          text="One"
-          duration={100}
-        />
-        <Snack text="Two" persistent />
-        <Snack text="Three" persistent />
-        <Snack text="Four" persistent />
-      </>,
-    )
-
-    act(() => {
-      vi.advanceTimersByTime(100)
-    })
-
-    const closing =
-      document.querySelector<HTMLElement>(
-        '[data-weave-snack-state="closing"]',
-      )
-
-    expect(closing).not.toBeNull()
-
-    if (closing !== null) {
-      fireEvent.transitionEnd(
-        closing,
-      )
-    }
-
-    const four =
-      Array.from(
-        document.querySelectorAll<HTMLElement>(
-          '[data-weave-snack]',
-        ),
-      ).find(
-        (snack) =>
-          snack.textContent?.includes(
-            'Four',
-          ),
-      )
-
     expect(
-      four?.hasAttribute(
-        'data-weave-snack-queue-hidden',
+      region?.querySelector(
+        '[data-weave-snack-queue-hidden]',
       ),
-    ).toBe(false)
-    expect(
-      four?.hasAttribute(
-        'data-weave-snack-queue-revealed',
-      ),
-    ).toBe(true)
+    ).toBeNull()
   })
 
   it('shows linear lifetime progress and pauses it with the Snack timer', () => {
@@ -406,6 +325,11 @@ describe('Snack', () => {
           '[data-weave-snack-lifetime-progress]',
         )
 
+    expect(
+      progress()?.getAttribute(
+        'role',
+      ),
+    ).toBe('progressbar')
     expect(
       Number(
         progress()?.getAttribute(
