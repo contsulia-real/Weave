@@ -78,7 +78,6 @@ function mountHTMLInCanvas(
 
   try {
     root.render(node)
-    mount.requestPaint()
 
     return {
       kind: 'html-in-canvas',
@@ -162,12 +161,6 @@ export function createRoot(
 
       selected.root.render(node)
 
-      if (
-        selected.kind ===
-        'html-in-canvas'
-      ) {
-        selected.mount.requestPaint()
-      }
     },
 
     unmount() {
