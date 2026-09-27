@@ -99,6 +99,59 @@ describe('View renderer-neutral DOM events', () => {
     )
   })
 
+  it('bridges public pointer capture methods to the DOM host', () => {
+    const capture = vi.fn()
+    const release = vi.fn()
+    const onPointerDown = vi.fn((event) => {
+      event.capturePointer()
+      event.releasePointer()
+    })
+
+    const { getByTestId } = render(
+      <View
+        data={{
+          testid: 'capture',
+        }}
+        onPointerDown={onPointerDown}
+      />,
+    )
+
+    const element = getByTestId('capture')
+    Object.defineProperty(
+      element,
+      'setPointerCapture',
+      {
+        configurable: true,
+        value: capture,
+      },
+    )
+    Object.defineProperty(
+      element,
+      'hasPointerCapture',
+      {
+        configurable: true,
+        value: vi.fn(() => true),
+      },
+    )
+    Object.defineProperty(
+      element,
+      'releasePointerCapture',
+      {
+        configurable: true,
+        value: release,
+      },
+    )
+
+    fireEvent.pointerDown(element, {
+      pointerId: 9,
+      pointerType: 'pen',
+      isPrimary: true,
+    })
+
+    expect(capture).toHaveBeenCalledWith(9)
+    expect(release).toHaveBeenCalledWith(9)
+  })
+
   it('normalizes keyboard and focus events without exposing SyntheticEvent', () => {
     const onKeyDown = vi.fn<
       (event: ViewKeyboardEvent) => void
