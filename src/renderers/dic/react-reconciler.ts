@@ -16,6 +16,7 @@ import type { ResolvedTheme } from '../../theme/theme-types'
 import { DiCRendererScope } from '../renderer-context'
 import { compileDiCButton } from './compile-button'
 import { compileDiCImage } from './compile-image'
+import { compileDiCInput } from './compile-input'
 import { compileDiCProgress } from './compile-progress'
 import { compileDiCSwitch } from './compile-switch'
 import { compileDiCText } from './compile-text'
@@ -23,6 +24,7 @@ import { compileDiCView, type DiCViewNode } from './compile-view'
 import {
   DIC_BUTTON_HOST,
   DIC_IMAGE_HOST,
+  DIC_INPUT_HOST,
   DIC_PROGRESS_HOST,
   DIC_SWITCH_HOST,
   DIC_TEXT_HOST,
@@ -31,6 +33,7 @@ import {
   type DiCHostProps,
   type DiCHostType,
   type DiCImageHostProps,
+  type DiCInputHostProps,
   type DiCProgressHostProps,
   type DiCSwitchHostProps,
   type DiCTextHostProps,
@@ -77,6 +80,7 @@ function isHostType(
     type === DIC_VIEW_HOST ||
     type === DIC_TEXT_HOST ||
     type === DIC_IMAGE_HOST ||
+    type === DIC_INPUT_HOST ||
     type === DIC_BUTTON_HOST ||
     type === DIC_PROGRESS_HOST ||
     type === DIC_SWITCH_HOST
@@ -277,6 +281,26 @@ function compileInstance(
           compileDiCImage(
             props.view,
             props.image,
+          ),
+          props.theme,
+        ),
+      )
+    }
+
+    case DIC_INPUT_HOST: {
+      assertNoHostChildren(instance)
+      const props =
+        instance.props as DiCInputHostProps
+
+      return stableNode(
+        instance,
+        withTheme(
+          compileDiCInput(
+            props.view,
+            props.input,
+            props.theme,
+            props.value,
+            props.onChange,
           ),
           props.theme,
         ),
