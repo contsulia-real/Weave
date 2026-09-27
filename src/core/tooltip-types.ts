@@ -4,7 +4,8 @@ import type {
 } from 'react'
 import type {
   Length,
-  ViewProps,
+  ViewCoreProps,
+  ViewDynamicBreakpointProps,
 } from './view-types'
 
 export type ToolTipPlacement =
@@ -13,16 +14,18 @@ export type ToolTipPlacement =
   | 'left'
   | 'right'
 
-export type ToolTipViewProps = Omit<
-  ViewProps<HTMLDivElement>,
-  | 'children'
-  | 'role'
-  | 'position'
-  | 'top'
-  | 'right'
-  | 'bottom'
-  | 'left'
->
+export type ToolTipViewProps =
+  Omit<
+    ViewCoreProps<HTMLDivElement>,
+    | 'children'
+    | 'role'
+    | 'position'
+    | 'top'
+    | 'right'
+    | 'bottom'
+    | 'left'
+  > &
+  ViewDynamicBreakpointProps
 
 export interface ToolTipProps {
   children: ReactElement
