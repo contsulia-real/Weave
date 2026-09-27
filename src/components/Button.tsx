@@ -1,6 +1,8 @@
 import {
+  createElement,
   isValidElement,
   useInsertionEffect,
+  type ReactNode,
 } from 'react'
 import type {
   ButtonIcon,
@@ -8,6 +10,7 @@ import type {
   ButtonResponsiveProps,
 } from '../core/button-types'
 import { resolveButton } from '../core/resolved-button'
+import { resolveView } from '../core/resolved-view'
 import type {
   IconComponent,
   IconSvg,
@@ -17,6 +20,9 @@ import type {
   ViewProps,
 } from '../core/view-types'
 import { breakpointCSSName } from '../renderers/dom/breakpoint-utils'
+import { assertDiCViewPropsSupported } from '../renderers/dic/react-compat'
+import { DIC_BUTTON_HOST } from '../renderers/dic/react-host-types'
+import { useWeaveRenderer } from '../renderers/renderer-context'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { ensureButtonStylesheet } from '../renderers/dom/button-stylesheet'
 import { resolveButtonTheme } from '../renderers/dom/resolve-component-theme'
@@ -78,15 +84,8 @@ function semanticContent(
   )
 }
 
-export function Button<
-  TProps extends ButtonProps,
->(
-  props: TProps &
-    ValidateDynamicBreakpointProps<
-      TProps,
-      ButtonProps,
-      ButtonResponsiveProps
-    >,
+function DOMButton(
+  props: ButtonProps,
 ) {
   const {
     viewProps = {},
@@ -189,3 +188,89 @@ export function Button<
     </button>
   )
 }
+
+function dicButtonContent(
+  props: ButtonProps,
+): ReactNode {
+  if (
+    'children' in props &&
+    props.children !== undefined
+  ) {
+    return props.children
+  }
+
+  if (
+    'icon' in props &&
+    props.icon !== undefined
+  ) {
+    throw new Error(
+      'Button icon content requires the DiC Icon adapter, which is not implemented yet',
+    )
+  }
+
+  return props.text === undefined
+    ? null
+    : <Text>{props.text}</Text>
+}
+
+function DiCButton(
+  props: ButtonProps,
+) {
+  const {
+    viewProps = {},
+  } = props
+  const { theme } = useTheme()
+  const button = resolveButton(
+    props,
+    theme.breakpoints,
+  )
+  const hostProps:
+    ViewProps<HTMLButtonElement> = {
+      ...viewProps,
+      disabled: button.disabled,
+      busy:
+        button.loading ||
+        undefined,
+    }
+
+  assertDiCViewPropsSupported(
+    hostProps as ViewProps<HTMLElement>,
+    theme.breakpoints,
+    'Button.viewProps',
+  )
+
+  const view = resolveView(
+    hostProps,
+    theme.breakpoints,
+  )
+
+  return createElement(
+    DIC_BUTTON_HOST,
+    {
+      view,
+      button,
+      theme,
+    },
+    dicButtonContent(props),
+  )
+}
+
+export function Button<
+  TProps extends ButtonProps,
+>(
+  props: TProps &
+    ValidateDynamicBreakpointProps<
+      TProps,
+      ButtonProps,
+      ButtonResponsiveProps
+    >,
+) {
+  const renderer = useWeaveRenderer()
+  const runtimeProps =
+    props as ButtonProps
+
+  return renderer === 'dic'
+    ? <DiCButton {...runtimeProps} />
+    : <DOMButton {...runtimeProps} />
+}
+
