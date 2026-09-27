@@ -3213,8 +3213,8 @@ theme.components.ToolTip.base
 
 ToolTip 的默认视觉必须遵循 Weave 已有的“材质 + 层级”语言，但必须和 Button 的“可按压实体”语言区分开：
 
-- 默认使用暖色 `surfaceHover`，不使用纯黑背景；
-- 使用 `outline` 建立轻边界；
+- 默认使用主题 `primary` 作为背景、`onPrimary` 作为文字颜色，让辅助信息与普通 surface 内容保持高辨识度；
+- 边界默认跟随 `primary`，避免在主题色气泡上额外引入冲突色；
 - 只使用 ambient shadow 表达浮层层级，不使用 Button 式实体厚度 / 底边 extrusion；
 - 使用 `small` 圆角，而不是与 Button 接近的较大圆角；
 - 默认水平 / 垂直 padding 分别为 `0.5rem / 0.25rem`；
