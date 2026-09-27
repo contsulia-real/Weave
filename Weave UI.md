@@ -5041,7 +5041,7 @@ host measure
 - destroy 必须断开 ResizeObserver / window listener，并取消未执行的 frame；
 - surface 当前仍是 renderer 内部能力，不增加新的公开组件 API。
 
-当前尚未完成的是 Input 等剩余组件级 DiC adapter、Input/IME/selection 等编辑桥、复杂 composite widget 的专用键盘语义、live region 等动态辅助技术能力、double-click / scroll / wheel / drag-drop 等后续事件 backend、完整 grid / wrap / advanced flex、Image 的 DiC lazy-loading / load-event bridge、任意 React child tree 到 DiC tree 的 renderer bridge，以及 React View 默认切换到 DiC surface。这些能力继续在同一 View tree contract 上扩展。
+当前尚未完成的是 Icon / Scrollbar 等剩余 DiC backend、复杂 composite widget 的专用键盘语义、live region 等动态辅助技术能力、double-click / wheel / drag-drop 等后续事件 backend、完整 grid / wrap / advanced flex、Image 的 DiC lazy-loading / load-event bridge，以及部分组件的 motion / shadow 视觉 parity。这些能力继续在同一 View tree contract 上扩展。
 
 ## 27.7 DiC Text
 
@@ -5428,17 +5428,120 @@ semantic mirror：
 
 当前 semantic mirror 仍不等于“所有可访问性工作完成”。
 
+Input / textarea 已经接入真实 native editor：
+
+```text
+DiC Input node
+→ semantic mirror
+→ hidden native <input> / <textarea>
+→ browser editing / IME / selection / clipboard
+→ value + selection + scroll state
+→ same DiC node
+→ Canvas redraw
+```
+
+mirror 的 native editor 会消费已经完成的 DiC `contentFrame` 与 typography 来匹配编辑宽高、字体和滚动几何，但这些 DOM 尺寸**不得反向参与 DiC layout**。
+
+受控 Input 更新时：
+
+- React host node identity 保持不变；
+- mirror 复用同一个 native editor；
+- editor value 只有实际不同才写回，避免无意义 caret reset；
+- selection / scroll / focused runtime state 在 host recompile 后保留。
+
 尚未覆盖：
 
 ```text
-Input / textarea editing semantics
-IME / selection / clipboard bridge
 live region / announcements
 复杂 composite widget 的 roving focus / aria-activedescendant
 任意 ReactNode child tree 的完整 semantic projection
+Input Canvas visual 的复杂 bidi / grapheme / browser soft-wrap 像素级 parity
+multiline DiC visible Weave Scrollbar
 ```
 
-## 27.11 DiC Button / Switch semantic adapters
+## 27.11 DiC Input / Progress
+
+### Input
+
+Input 已建立：
+
+```text
+Input props
+→ ResolvedInput
+├─ DOM native input / textarea
+└─ DiC Input adapter
+   ├─ Canvas control / text visual
+   └─ semantic mirror native editor
+```
+
+DiC Input 当前支持：
+
+- single-line / multiline；
+- controlled / uncontrolled value；
+- text / password / email / number / search / tel / url；
+- placeholder；
+- readOnly / required / disabled；
+- name / autoComplete；
+- minLength / maxLength / pattern；
+- rows；
+- Input theme background / foreground / border / radius / padding / body-large typo；
+- focus-visible border / outline；
+- disabled opacity / cursor；
+- Canvas value / placeholder；
+- password masking；
+- caret / selection visual；
+- horizontal / vertical editor scroll state；
+- native IME / clipboard / selection / keyboard editing。
+
+Input 的 browser-native editor 是编辑语义真值；Canvas 不实现第二套输入法或文本编辑器。
+
+当前 Input DiC 视觉 parity 缺口：
+
+```text
+multiline soft-wrap 对复杂 Unicode / bidi 的像素级一致性
+caret blink timing
+visible Weave Scrollbar for multiline overflow
+selection geometry for advanced grapheme shaping
+```
+
+这些缺口不得通过读取 DOM layout 再反喂 DiC tree 来“修正”。
+
+### Progress
+
+Progress 已进入 DiC custom renderer：
+
+```text
+Progress props
+→ ResolvedProgress
+├─ DOM Progress
+└─ DiC Progress
+```
+
+当前 DiC Progress 支持：
+
+- spin / linear；
+- determined / undetermined；
+- tracked；
+- small / medium / large；
+- color；
+- semantic speed / numeric milliseconds；
+- progress clamp 0…1；
+- undetermined spin 固定 96°弧段匀速旋转；
+- undetermined linear 双运动段；
+- `prefers-reduced-motion` 静止替代；
+- surface 只在存在 undetermined Progress 且未启用 reduced motion 时持续请求下一帧。
+
+speed 与 DOM 使用同一 motion token 与倍率：
+
+```text
+slow   → duration.slow × 6
+normal → duration.normal × 8
+fast   → duration.fast × 9
+```
+
+determined 状态使用当前 progress 直接绘制；其跨值 interpolation / easing 仍待统一 motion backend。Progress 的 recessed track / raised value shadow 当前依赖尚未结构化的 inset / multi-layer shadow，也继续作为明确 parity gap。
+
+## 27.12 DiC Button / Switch semantic adapters
 
 Button 与 Switch 已建立组件级 renderer-neutral IR：
 
@@ -5578,18 +5681,20 @@ Switch → onChange
 
 当前 event bridge 已覆盖 click / pointer / keyboard / focus。React child tree 已有 custom reconciler，Tab / 基础 accessibility 已由 semantic mirror 接入浏览器原生 focus / ARIA；React 默认切换到 DiC surface 现在主要剩下公开入口 / fallback 策略、剩余组件 adapter 与尚未实现的 renderer 能力。
 
-## 27.12 React custom reconciler / React surface
+## 27.13 React custom reconciler / React surface
 
 DiC 已建立 React custom renderer，而不是让 React DOM renderer 直接创建 `weave:*` DOM 元素。
 
 组件在 DiC renderer scope 中输出内部 host：
 
 ```text
-View   → weave:view
-Text   → weave:text
-Image  → weave:image
-Button → weave:button
-Switch → weave:switch
+View     → weave:view
+Text     → weave:text
+Image    → weave:image
+Input    → weave:input
+Button   → weave:button
+Switch   → weave:switch
+Progress → weave:progress
 ```
 
 这些 host 只由 `react-reconciler` 消费：
@@ -5609,7 +5714,7 @@ React component tree
 - create / update / remove host instance；
 - raw text instance；
 - React Fragment / function component / context / Hooks；
-- View / Text / Image / Button / Switch host；
+- View / Text / Image / Input / Button / Switch / Progress host；
 - Text primitive children；
 - Button 普通 Weave child tree；
 - host hide / unhide；
@@ -5620,7 +5725,7 @@ React component tree
 
 ```text
 Text rich inline host children
-Image / Switch host children
+Image / Input / Switch / Progress host children
 raw text 作为整个 DiC React root
 未知非 Weave host element
 ```
@@ -5715,7 +5820,7 @@ unmount()
 
 内部 `createDiCReactRoot()`、`createDiCReactSurface()`、`DiCRendererScope` 继续保持 renderer internal，不从 package root 导出。
 
-## 27.13 组件结构
+## 27.14 组件结构
 
 ```text
 React
@@ -5832,7 +5937,7 @@ View
 74. mirror 内部 DOM id 必须与用户 logical View id 隔离；同一 DiC tree 内的 labelledBy / describedBy / controls / owns 引用必须重写到 mirror-owned id。
 75. semantic mirror 的辅助技术 click / keyboard activation 必须重新进入同一个 DiC interaction / component adapter 管线，不能直接旁路调用业务 callback。
 76. 非 primitive Button children / icon-only accessible name 不得由 renderer 猜测；在完整 child semantic projection 可用前必须由显式 label / labelledBy 提供。
-77. semantic mirror 完成不等于 Input / IME / live region / composite-widget accessibility 已完成；这些能力必须按真实 backend 状态分别声明。
+77. semantic mirror 完成不等于 live region / composite-widget accessibility 已完成；Input / textarea editing 已由 native editor bridge 承担，但其它辅助技术能力仍必须按真实 backend 状态分别声明。
 78. DiC React renderer 必须使用 React custom reconciler materialize 内部 host；不得让 React DOM renderer 把 `weave:*` host 当作真实 DOM 组件。
 79. React custom renderer 只负责 host backend；Hooks / state / context / reconciliation 继续由 React 负责，不得在 Weave 内重做第二套 React。
 80. 每个 DiC host node 必须保留自身 resolved theme；nested ThemeProvider 不得被 surface root theme 覆盖。
@@ -5843,4 +5948,11 @@ View
 85. root renderer 一旦在首次 render 中选定，后续 render / state update 不得自动切 backend，避免整棵 React tree remount 和 state 丢失。
 86. DOM fallback 必须是整棵 root fallback；在定义明确的跨 renderer composition 语义前，不得做隐式 Canvas / DOM 混合树。
 87. `createDiCReactRoot()`、`createDiCReactSurface()`、`DiCRendererScope` 继续保持 renderer internal；公开 root 不泄漏这些实现细节。
-88. API 的目标是：AI 易写易读，同时人类易读。
+88. DiC Input 的编辑、IME、selection 与 clipboard 必须由 semantic mirror 中的真实 native `<input> / <textarea>` 承担；Canvas 不得重做第二套文本编辑器。
+89. semantic mirror 可以消费已经完成的 DiC layout / typography 来配置隐藏 editor 的编辑几何，但 DOM measurement 不得反向参与 DiC layout 决策。
+90. controlled Input 的普通 React commit 必须保持 DiC host node 与 native editor identity；value 未变化时不得无意义重写 editor value 破坏 caret。
+91. Input native editor 的 input / selection / scroll / focus runtime state 必须同步回同一个 DiC node 并只通过 invalidate 驱动 Canvas visual。
+92. Progress DOM / DiC 必须消费同一个 ResolvedProgress clamp / mode / size / speed 语义；不得各自重新解释。
+93. undetermined Progress 只有在实际存在于当前 tree 且未启用 reduced motion 时才能驱动持续 frame scheduling；普通静态 UI 不得因此常驻 RAF。
+94. Progress 尚未结构化的 inset / multi-layer shadow 与 determined interpolation 必须保持明确 parity gap，不能静默近似为已完成。
+95. API 的目标是：AI 易写易读，同时人类易读。
