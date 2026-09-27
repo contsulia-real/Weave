@@ -23,6 +23,7 @@ import {
   Text,
   ThemeProvider,
   createTheme,
+  defaultTheme,
 } from '../src'
 
 afterEach(cleanup)
@@ -617,6 +618,33 @@ describe('List', () => {
       .toContain(
         'scale(',
       )
+  })
+
+  it('keeps the default List borderless and selected rows clearly emphasized', () => {
+    expect(
+      defaultTheme.components?.List?.base
+        ?.borderWidth,
+    ).toBe(0)
+    expect(
+      defaultTheme.components?.List?.base
+        ?.borderColor,
+    ).toBeUndefined()
+    expect(
+      defaultTheme.components?.ListItem?.base
+        ?.selectedBackground,
+    ).toBe(
+      'color-mix(in srgb, var(--weave-color-primary) 14%, var(--weave-color-surface))',
+    )
+    expect(
+      defaultTheme.components?.ListItem?.base
+        ?.selectedHoverBackground,
+    ).toBe(
+      'color-mix(in srgb, var(--weave-color-primary) 20%, var(--weave-color-surface))',
+    )
+    expect(
+      defaultTheme.components?.ListItem?.base
+        ?.selectedColor,
+    ).toBe('primary')
   })
 
   it('keeps List and ListItem fully themeable', () => {

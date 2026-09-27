@@ -482,8 +482,7 @@ export const defaultTheme: ResolvedTheme = {
     List: {
       base: {
         background: 'surface',
-        borderColor: 'outline',
-        borderWidth: 0.0625,
+        borderWidth: 0,
         radius: 'medium',
         padding: 0.25,
         gap: 0,
@@ -496,12 +495,12 @@ export const defaultTheme: ResolvedTheme = {
         activeBackground:
           'color-mix(in srgb, var(--weave-color-outline) 44%, var(--weave-color-surface))',
         selectedBackground:
-          'color-mix(in srgb, var(--weave-color-primary) 8%, var(--weave-color-surface))',
+          'color-mix(in srgb, var(--weave-color-primary) 14%, var(--weave-color-surface))',
         selectedHoverBackground:
-          'color-mix(in srgb, var(--weave-color-primary) 12%, var(--weave-color-surface))',
+          'color-mix(in srgb, var(--weave-color-primary) 20%, var(--weave-color-surface))',
         color: 'tertiary',
         secondaryColor: 'secondary',
-        selectedColor: 'tertiary',
+        selectedColor: 'primary',
         radius: 'small',
         paddingX: 0.75,
         paddingY: 0.5625,

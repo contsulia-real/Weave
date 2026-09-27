@@ -3971,12 +3971,12 @@ ListItem 是“列表行 / 可选择项”，不是 Button。
 
 默认视觉：
 
-- List 自身是一个轻量 surface 容器，使用细 outline、统一圆角和小幅内边距，把多行组织成一个明确的列表整体；
+- List 自身是一个轻量 surface 容器，默认不预设边框；统一圆角和小幅内边距用于组织多行，若产品需要外框再通过 `theme.components.List.base` 显式配置；
 - ListItem 是连续 row，不是彼此独立的卡片或大胶囊；默认行圆角必须明显小于外层 List；
 - flat surface，不使用 Button 的 depth / hoverLift / pressDepth；
 - hover 只改变行 surface；
 - active 只表达当前直接操作；
-- selected 使用轻量 primary tonal surface，强调选择但不能把 row 变成 Button / Chip；
+- selected 使用清晰但克制的 primary tonal surface，并将主要前景切到 primary；强调选择但不能把 row 变成 Button / Chip；
 - focus-visible 使用统一 focus outline；
 - disabled 降低强调并从键盘移动序列中排除；
 - 不使用 scale、弹跳或实体底边。
