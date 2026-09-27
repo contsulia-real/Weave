@@ -9,6 +9,7 @@ export { Button } from './components/Button'
 export { Input } from './components/Input'
 export { Switch } from './components/Switch'
 export { Progress } from './components/Progress'
+export { ToolTip } from './components/ToolTip'
 export type {
   BackgroundValue,
   BlendMode,
@@ -127,3 +128,9 @@ export type {
   ProgressSpeed,
   ProgressViewProps,
 } from './core/progress-types'
+
+export type {
+  ToolTipPlacement,
+  ToolTipProps,
+  ToolTipViewProps,
+} from './core/tooltip-types'
