@@ -10,17 +10,19 @@
 }
 
 html,
-body {
-  min-height: 100%;
+body,
+#root {
+  height: 100%;
   margin: 0;
+}
+
+html,
+body {
+  overflow: hidden;
 }
 
 body {
   min-width: 320px;
-}
-
-#root {
-  min-height: 100vh;
 }
 
 .container-demo {
