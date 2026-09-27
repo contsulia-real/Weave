@@ -228,6 +228,7 @@ export interface DiCViewNode {
   responsive: readonly DiCViewBreakpoint[]
   semantics: Readonly<ViewSemanticProps>
   eventTarget: Readonly<ViewEventTarget>
+  theme?: ResolvedTheme
   container?: string
   children: readonly DiCViewNode[]
   content?: DiCViewContent
