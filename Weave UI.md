@@ -3251,7 +3251,7 @@ typo
 
 `Snack` 是组合组件。
 
-可能依赖：
+依赖：
 
 ```text
 View
@@ -3275,7 +3275,7 @@ Button?
 ```tsx
 <Snack
   text="网络连接已断开"
-  icon="wifi-off"
+  icon={IconWifiOff}
   variant="warning"
 />
 ```
@@ -3312,20 +3312,42 @@ open
 defaultOpen
 onOpenChange
 children
+viewProps
+```
+
+默认值：
+
+```text
+variant     = default
+duration    = 4000ms
+persistent  = false
+placement   = bottom-center
+defaultOpen = true
+layer       = snack
 ```
 
 ### icon
 
-接受：
+快捷模式中的 `icon` 与当前 Weave Icon / Button 图标输入一致：
 
 ```text
-Tabler name
-SVG
+IconComponent
+SVG ReactElement
 ```
+
+不在 Snack 内部维护第二套图标名称注册表。
 
 ### duration
 
 时间裸数字按毫秒（`ms`）解释。
+
+自动关闭规则：
+
+- `open=true` 且 `persistent=false` 时启动计时；
+- pointer 停留在 Snack 上时暂停自动关闭；
+- focus 位于 Snack 或其 action 内时暂停自动关闭；
+- 离开后重新开始自动关闭计时；
+- `persistent=true` 时完全禁用自动关闭。
 
 ### persistent
 
@@ -3338,22 +3360,38 @@ SVG
 
 表示不自动消失。
 
-### 完整组合
+### action
+
+`action` 与 `onAction` 必须成对出现：
+
+```tsx
+<Snack
+  text="文件已删除"
+  action="撤销"
+  onAction={undo}
+/>
+```
+
+执行 action 后 Snack 同时请求关闭。
+
+## 20.3 完整组合
 
 ```tsx
 <Snack>
-  <Icon name="cloud-off" />
-  <Text>同步暂时不可用</Text>
-  <Button text="重试" />
+  <View>
+    <Icon icon={IconCloudOff} />
+    <Text>同步暂时不可用</Text>
+    <Button text="重试" />
+  </View>
 </Snack>
 ```
 
 快捷内容与完整组合互斥：
 
 - 使用 `children` 时，不再同时使用 `text`、`icon`、`action`、`onAction`。
-- `variant`、`duration`、`persistent`、`placement`、受控状态等仍可用于两种模式。
+- `variant`、`duration`、`persistent`、`placement`、受控状态和 `viewProps` 仍可用于两种模式。
 
-### placement
+## 20.4 placement 与堆叠
 
 当前：
 
@@ -3366,7 +3404,117 @@ bottom-center
 bottom-right
 ```
 
-多个 Snack 同时存在时，框架负责在对应位置堆叠，不要求用户手算坐标。
+每个 placement 在 `document.body` 中由框架内部维护一个共享 region：
+
+```text
+Snack A ─┐
+Snack B ─┼→ same placement region → automatic vertical stack
+Snack C ─┘
+```
+
+业务不创建 portal host，不计算 index，也不手工计算坐标。
+
+同一 placement 的多个 Snack 自动按 DOM 顺序垂直堆叠，间距由框架样式统一控制。region 本身 `pointer-events: none`，Snack 卡片恢复 `pointer-events: auto`。
+
+## 20.5 默认视觉
+
+Snack 与 ToolTip、Button 必须保持不同视觉角色：
+
+```text
+Button
+→ 可按压实体
+
+ToolTip
+→ 主题色紧凑辅助标签
+
+Snack
+→ 稳定的 surface 状态通知卡片
+```
+
+默认：
+
+- 背景使用 `surface`；
+- 文字使用 `tertiary`；
+- 使用 `outline` 边界和 `medium` shadow；
+- 左侧使用 variant accent 条表达状态，不把整张卡片染成高饱和状态色；
+- `default / success / warning / danger / info` 分别使用 `secondary / success / warning / danger / primary` accent；
+- 默认 typo 为 `body-medium`；
+- action 使用紧凑 ghost Button，并继承当前 variant accent；
+- 默认宽度约束由 `minWidth / maxWidth` 控制，同时不得溢出 viewport。
+
+当前组件主题入口：
+
+```text
+theme.components.Snack.base
+theme.components.Snack.variants
+```
+
+base 当前字段：
+
+```text
+background
+color
+borderColor
+borderWidth
+accentWidth
+radius
+paddingX
+paddingY
+gap
+minWidth
+maxWidth
+shadow
+typo
+motionOffset
+```
+
+variant 当前字段：
+
+```text
+accentColor
+```
+
+实例通用覆盖继续通过 `viewProps` 使用。
+
+## 20.6 动效与生命周期
+
+进入：
+
+```text
+placement 对应方向轻微位移
++ opacity 0 → 1
++ scale 0.985 → 1
+```
+
+退出：
+
+```text
+向 placement 外侧轻微收回
++ opacity 1 → 0
++ scale 1 → 0.99
+→ transition 完成后才卸载
+```
+
+进入使用 `motion.duration.normal + emphasized`，透明度使用较短的 `fast + enter`；退出使用 `fast + exit`。
+
+`prefers-reduced-motion: reduce` 下取消位移 / 缩放动画，并直接完成退出。
+
+## 20.7 可访问性
+
+语义按紧急程度区分：
+
+```text
+default / success / info
+→ role="status"
+
+warning / danger
+→ role="alert"
+```
+
+Snack root 使用 `aria-atomic="true"`。
+
+进入 closing 状态后设置 `aria-hidden="true"`，视觉退出仍可完成，但不会继续作为有效通知暴露给辅助技术。
+
 
 ---
 
