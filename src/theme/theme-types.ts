@@ -218,6 +218,7 @@ export interface ToolTipThemeBase {
   maxWidth?: ThemeScaleValue
   shadow?: string
   arrowSize?: ThemeScaleValue
+  motionOffset?: ThemeScaleValue
   typo?: TextTypo
 }
 
