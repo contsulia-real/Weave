@@ -3502,11 +3502,14 @@ B
 C
 
 D 到达
+→ D 进入 pending，不渲染
 → A 立即进入 closing
-→ A 播放正常退出动效
-→ D 进入队尾
+→ A 播放完整退出动效
+→ 退出期间视觉上仍然只有 A / B / C 三条
 
 A 退出完成后：
+→ B / C 使用 layout motion 向 FIFO 前方补位
+→ D 此时才渲染并进入队尾
 
 B
 C
@@ -3518,10 +3521,11 @@ D
 - 最早进入的可见 Snack 永远最先因容量溢出而退出；
 - 被驱逐项必须播放和正常关闭相同的 exit motion，不能瞬间消失；
 - 新 Snack 不能覆盖旧 Snack；
-- 不存在隐藏等待队列；
+- 超出可见容量的新项只允许作为短暂 pending 等待当前 FIFO 头完成退出；pending 不渲染、不占视觉位置，也不提前启动 lifetime；
+- 任意时刻同一 placement 最多渲染 3 条 Snack；
 - 不存在 `+N` overflow 指示；
 - 不允许卡片重叠、负 margin、scale 堆叠或 z-index 模拟栈；
-- 每条 Snack 自己的 duration 仍从自己的创建 / 打开时刻计算；
+- 每条 Snack 的 duration 从它真正进入可见 FIFO 并挂载时开始计算；
 - 新增 Snack 不得重置其他 Snack 的 timer。
 
 
@@ -3555,7 +3559,8 @@ layer
 - 图标与 action 可以使用 variant accent，但正文仍遵循正常信息层级；
 - typography 来自统一 type scale；
 - spacing、radius、shadow、motion 必须来自 theme token / component theme；
-- 卡片不得溢出 viewport。
+- 卡片不得溢出 viewport；
+- lifetime Progress 必须位于 Snack 自己的底部 padding 内部，与左右内容边界对齐，不得贴到或穿过外层 border radius。
 
 组件主题入口：
 
