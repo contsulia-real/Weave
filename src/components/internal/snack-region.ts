@@ -2,8 +2,6 @@ import type {
   SnackPlacement,
 } from '../../core/snack-types'
 
-const MAX_VISIBLE_SNACKS = 3
-
 interface RegionEntry {
   element: HTMLDivElement
   count: number
@@ -25,146 +23,31 @@ function snackElements(
   )
 }
 
-function overflowElement(
-  element: HTMLDivElement,
-): HTMLSpanElement | null {
-  return element.querySelector<HTMLSpanElement>(
-    '[data-weave-snack-overflow]',
-  )
-}
-
-function syncOverflow(
-  element: HTMLDivElement,
-  snacks: HTMLElement[],
-  hiddenCount: number,
-  hiddenClosing: boolean,
-): void {
-  const existing =
-    overflowElement(element)
-
-  if (hiddenCount <= 0) {
-    existing?.remove()
-    return
-  }
-
-  const lastVisibleSnack =
-    snacks[
-      Math.min(
-        MAX_VISIBLE_SNACKS,
-        snacks.length,
-      ) - 1
-    ]
-  const host =
-    lastVisibleSnack
-      ?.closest<HTMLElement>(
-        '[data-weave-theme]',
-      )
-
-  if (host === undefined || host === null) {
-    existing?.remove()
-    return
-  }
-
-  const overflow =
-    existing ??
-    element.ownerDocument.createElement(
-      'span',
-    )
-
-  if (existing === null) {
-    overflow.className =
-      'weave-snack-overflow'
-    overflow.dataset.weaveSnackOverflow =
-      ''
-    overflow.setAttribute(
-      'aria-hidden',
-      'true',
-    )
-  }
-
-  if (overflow.parentElement !== host) {
-    host.append(overflow)
-  }
-
-  overflow.textContent =
-    `+${hiddenCount}`
-  overflow.dataset.weaveSnackOverflowState =
-    hiddenClosing
-      ? 'closing'
-      : 'open'
-}
-
 export function syncSnackRegion(
   element: HTMLDivElement,
 ): void {
   const snacks =
     snackElements(element)
-  const total =
-    snacks.length
-  const hiddenCount =
-    Math.max(
-      0,
-      total -
-        MAX_VISIBLE_SNACKS,
-    )
 
   element.dataset.weaveSnackCount =
-    String(total)
+    String(snacks.length)
 
-  let hiddenClosing = false
+  let queueIndex = 0
 
-  for (
-    let index = 0;
-    index < total;
-    index += 1
-  ) {
-    const snack =
-      snacks[index]
+  for (const snack of snacks) {
+    if (
+      snack.dataset.weaveSnackState ===
+      'closing'
+    ) {
+      delete snack.dataset
+        .weaveSnackQueueIndex
+      continue
+    }
 
     snack.dataset.weaveSnackQueueIndex =
-      String(index)
-
-    if (
-      index >=
-      MAX_VISIBLE_SNACKS
-    ) {
-      snack.dataset.weaveSnackQueueHidden =
-        ''
-      delete snack.dataset
-        .weaveSnackQueueRevealed
-
-      if (
-        snack.dataset.weaveSnackState ===
-          'closing'
-      ) {
-        hiddenClosing = true
-      }
-    } else {
-      const wasHidden =
-        snack.hasAttribute(
-          'data-weave-snack-queue-hidden',
-        )
-
-      delete snack.dataset
-        .weaveSnackQueueHidden
-
-      if (
-        wasHidden &&
-        snack.dataset.weaveSnackState ===
-          'open'
-      ) {
-        snack.dataset.weaveSnackQueueRevealed =
-          ''
-      }
-    }
+      String(queueIndex)
+    queueIndex += 1
   }
-
-  syncOverflow(
-    element,
-    snacks,
-    hiddenCount,
-    hiddenClosing,
-  )
 }
 
 function scheduleSync(
