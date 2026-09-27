@@ -5653,19 +5653,67 @@ React 后续 render / state commit 会更新同一个 surface，不重新创建 
 
 多顶层 sibling 当前不能被 renderer 私自包装成 column / stack 等布局，因为那会凭空创造用户没有声明的布局语义。
 
-### 当前仍未决定的公开入口
+### 公开 root mounting / fallback
 
-`createDiCReactRoot()`、`createDiCReactSurface()`、`DiCRendererScope` 当前仍是 renderer internal，不从 package root 导出。
+公开入口已经冻结为：
 
-设计目标仍是“DiC 默认主路径，不需要逐组件显式开启”，但公开 root mounting / capability fallback API 在正式冻结前不能通过临时内部函数泄漏出去。
+```tsx
+import { createRoot } from "weave"
 
-因此当前代码状态是：
+const root = createRoot(container)
+root.render(<App />)
+```
+
+业务只提供普通 `HTMLElement` 容器，不创建 Canvas，也不接触 `DiC` renderer 名称。
+
+默认首次 render 流程：
 
 ```text
-内部 React → DiC → Canvas 链路已闭环
-≠
-公开默认 mounting API 已冻结
+createRoot(container)
+→ first render
+→ try DiC
+   ├─ success
+   │  → 创建并持有内部 canvas
+   │  → React custom reconciler
+   │  → DiC surface
+   │  → semantic mirror
+   │
+   └─ explicit DiC capability failure
+      → 整棵 root 切到 React DOM fallback
 ```
+
+默认 `fallback="dom"`。需要严格暴露 DiC capability gap 时可写：
+
+```tsx
+createRoot(container, {
+  fallback: "none",
+})
+```
+
+fallback 只响应 `DiCCapabilityError`，普通应用异常、业务异常和框架 invariant 不允许被 DOM fallback 吞掉。
+
+renderer 只在第一次 render 时选择一次：
+
+```text
+first render → DiC
+后续 render → 一直 DiC
+
+first render → DOM fallback
+后续 render → 一直 DOM
+```
+
+不允许在后续 state / Hooks update 中因为新 capability gap 自动切 renderer，因为整 root backend 切换会 remount React tree、破坏 state 连续性。
+
+DOM fallback 是**整棵 root fallback**，不是一部分 Canvas、一部分 DOM 的隐式混合渲染。
+
+公开 `Root` 当前只提供：
+
+```text
+render(node)
+unmount()
+```
+
+内部 `createDiCReactRoot()`、`createDiCReactSurface()`、`DiCRendererScope` 继续保持 renderer internal，不从 package root 导出。
 
 ## 27.13 组件结构
 
@@ -5790,5 +5838,9 @@ View
 80. 每个 DiC host node 必须保留自身 resolved theme；nested ThemeProvider 不得被 surface root theme 覆盖。
 81. 当前多顶层 DiC React node 必须显式失败；在正式定义 fragment root layout 语义前，不得私自包装成 column / row / stack。
 82. React reconciler commit 与 Canvas surface 必须共享同一持续生命周期；普通 state update 不得通过销毁并重建整个 surface 实现。
-83. React custom reconciler / surface / renderer scope 在公开 mounting API 冻结前保持 internal，不能提前从 package root 泄漏临时接口。
-84. API 的目标是：AI 易写易读，同时人类易读。
+83. 公开默认 mounting API 只有 `createRoot(container)`；业务不得被要求创建 Canvas 或显式开启 DiC。
+84. 首次 renderer 选择默认优先 DiC；只有明确的 `DiCCapabilityError` 可以触发整 root DOM fallback，普通异常不得被 fallback 吞掉。
+85. root renderer 一旦在首次 render 中选定，后续 render / state update 不得自动切 backend，避免整棵 React tree remount 和 state 丢失。
+86. DOM fallback 必须是整棵 root fallback；在定义明确的跨 renderer composition 语义前，不得做隐式 Canvas / DOM 混合树。
+87. `createDiCReactRoot()`、`createDiCReactSurface()`、`DiCRendererScope` 继续保持 renderer internal；公开 root 不泄漏这些实现细节。
+88. API 的目标是：AI 易写易读，同时人类易读。
