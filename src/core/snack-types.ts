@@ -24,6 +24,12 @@ export type SnackPlacement =
   | 'bottom-center'
   | 'bottom-right'
 
+export type SnackDirection =
+  | 'up'
+  | 'down'
+  | 'left'
+  | 'right'
+
 export type SnackIcon = ButtonIcon
 
 export type SnackViewProps =
@@ -35,16 +41,12 @@ export type SnackViewProps =
   > &
   ViewDynamicBreakpointProps
 
-interface SnackBaseProps {
+interface SnackRequestBase {
   variant?: SnackVariant
   duration?: number
   persistent?: boolean
   placement?: SnackPlacement
-  open?: boolean
-  defaultOpen?: boolean
-  onOpenChange?: (
-    open: boolean,
-  ) => void
+  direction?: SnackDirection
   viewProps?: SnackViewProps
 }
 
@@ -72,9 +74,27 @@ type SnackCustomContent = {
   onAction?: never
 }
 
-export type SnackProps =
-  SnackBaseProps &
+export type SnackRequest =
+  SnackRequestBase &
   (
     | SnackShortcutContent
     | SnackCustomContent
   )
+
+export type SnackProps =
+  SnackRequest & {
+    open?: boolean
+    defaultOpen?: boolean
+    onOpenChange?: (
+      open: boolean,
+    ) => void
+    onDismissed?: () => void
+  }
+
+export interface SnackController {
+  show(
+    request: SnackRequest,
+  ): string
+  dismiss(id: string): void
+  dismissAll(): void
+}
