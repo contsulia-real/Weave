@@ -77,7 +77,8 @@ const stylesheet = `
   --weave-component-position: relative;
   --weave-component-overflow: hidden;
 
-  --weave-snack-motion-y: 0rem;
+  --weave-snack-enter-y: 0rem;
+  --weave-snack-exit-y: 0rem;
 
   opacity: 1;
   translate: 0 0;
@@ -91,25 +92,29 @@ const stylesheet = `
 }
 
 :where(.weave-snack[data-weave-snack-placement^="top-"]) {
-  --weave-snack-motion-y:
+  --weave-snack-enter-y:
+    var(--weave-snack-motion-offset);
+  --weave-snack-exit-y:
     calc(-1 * var(--weave-snack-motion-offset));
 }
 
 :where(.weave-snack[data-weave-snack-placement^="bottom-"]) {
-  --weave-snack-motion-y:
+  --weave-snack-enter-y:
+    calc(-1 * var(--weave-snack-motion-offset));
+  --weave-snack-exit-y:
     var(--weave-snack-motion-offset);
 }
 
 @starting-style {
   :where(.weave-snack[data-weave-snack-state="open"]) {
     opacity: 0;
-    translate: 0 var(--weave-snack-motion-y);
+    translate: 0 var(--weave-snack-enter-y);
   }
 }
 
 :where(.weave-snack[data-weave-snack-state="closing"]) {
   opacity: 0;
-  translate: 0 var(--weave-snack-motion-y);
+  translate: 0 var(--weave-snack-exit-y);
   transition:
     opacity var(--weave-motion-duration-fast)
       var(--weave-motion-curve-exit),
