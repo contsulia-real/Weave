@@ -239,6 +239,7 @@ export interface SnackThemeBase {
   maxWidth?: ThemeScaleValue
   shadow?: string
   iconSize?: ThemeScaleValue
+  progressHeight?: ThemeScaleValue
   typo?: TextTypo
   motionOffset?: ThemeScaleValue
 }
