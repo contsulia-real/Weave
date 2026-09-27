@@ -28,6 +28,7 @@ export type TextTypo =
   | 'body-large'
   | 'body-medium'
   | 'body-small'
+  | 'body-xsmall'
   | 'label-large'
   | 'label-medium'
   | 'label-small'
