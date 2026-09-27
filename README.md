@@ -20,15 +20,9 @@ root.render(
 )
 ```
 
-Weave uses the browser-native [HTML-in-Canvas](https://wicg.github.io/html-in-canvas/) API as its primary rendering path when the API is available. React still renders real HTML elements with normal CSS, layout, events, form behavior and accessibility semantics. The canvas opts its HTML descendants into drawable layout with the native HTML-in-Canvas attributes and the 2D context paints the real HTML subtree with `drawElementImage()`. During the current experimental API transition, Weave emits both `layoutsubtree` (required by current Chromium builds) and `content="drawable"` (used by the latest WICG explainer).
+Weave renders ordinary React DOM and CSS. Layout, text rendering, events, form controls, focus, scrolling, animation and accessibility remain browser-native.
 
-If the browser does not expose HTML-in-Canvas, `createRoot(container)` falls back to ordinary DOM + CSS rendering. Pass `{ fallback: 'none' }` to make missing native support an explicit error.
-
-Applications do not create or manage the internal canvas.
-
-## HTML-in-Canvas status
-
-HTML-in-Canvas is currently an experimental Web Platform API implemented behind a Chromium flag. Weave feature-detects the API at runtime; it does not emulate HTML-in-Canvas by reimplementing browser layout, text rendering, hit testing, input editing or accessibility in JavaScript.
+`createRoot(container)` creates a normal React DOM root. Weave does not maintain an alternate Canvas renderer or rendering fallback.
 
 ## Development
 
@@ -52,4 +46,4 @@ pnpm build
 
 ## Status
 
-The component system and DOM/CSS implementation are the semantic source used by both paths. Native HTML-in-Canvas is the primary path; ordinary DOM + CSS is the compatibility fallback.
+The component system is implemented with real DOM elements and CSS, using the browser as the single rendering and interaction engine.
