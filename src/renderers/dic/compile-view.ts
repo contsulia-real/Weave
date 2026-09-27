@@ -90,6 +90,11 @@ export interface DiCInputContent {
   input: ResolvedInput
   value: string
   onChange?: (value: string) => void
+  selectionStart?: number
+  selectionEnd?: number
+  scrollLeft?: number
+  scrollTop?: number
+  focused?: boolean
 }
 
 export type DiCViewContent =
