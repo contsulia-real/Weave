@@ -366,6 +366,26 @@ Canvas backing store 的尺寸变化会清空当前 bitmap。Weave 在实时 res
 
 Weave 不允许为这些能力平行维护第二套 JavaScript 实现。
 
+#### Canvas 合成优先移出主线程
+
+HTML-in-Canvas 的 DOM / CSS layout 与 snapshot 仍由浏览器负责；Weave 不复制或重建 DOM rendering。浏览器同时提供 `captureElementImage()`、transferable `ElementImage`、`OffscreenCanvas` 与 Worker 2D `drawElementImage()` 时，Weave 使用原生 Worker 路径：
+
+```text
+浏览器 update-the-rendering
+→ paint event
+→ captureElementImage(drawable host)
+→ transferable ElementImage
+→ dedicated Worker
+→ OffscreenCanvas 2D
+→ drawElementImage(ElementImage)
+```
+
+这一层只把 Canvas composition 从 document main thread 移开，不改变 React、DOM、CSS、事件、焦点或可访问性语义。Worker 2D 的 geometry 更新仍使用 HTML-in-Canvas 原生机制异步回到主线程。
+
+Worker 渲染必须有背压：同一时间只允许一帧正在 Worker 中处理；若处理期间产生多个新 snapshot，只保留最新 snapshot，并关闭被覆盖的旧 `ElementImage`。禁止让过时帧在消息队列中无限积压。
+
+若当前浏览器不具备完整 Worker HTML-in-Canvas 能力，则回退到同一套 HTML-in-Canvas 的主线程 2D composition，而不是回退到自研 renderer。
+
 ### 3.3 React 仍然只渲染真实 DOM
 
 Weave 不提供 React custom renderer，不使用 `react-reconciler` 构造私有 Canvas host tree。
