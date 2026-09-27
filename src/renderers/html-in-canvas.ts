@@ -28,7 +28,7 @@ interface HTMLInCanvasElement extends HTMLCanvasElement {
   ) => void
 }
 
-interface LegacyCanvasTransformElement extends HTMLElement {
+interface LegacyCanvasTransformElement extends HTMLDivElement {
   setCanvasTransform?: (
     matrix?: DOMMatrixInit,
   ) => void
