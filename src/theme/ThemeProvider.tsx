@@ -90,6 +90,9 @@ export function ThemeProvider({
   const variables = useMemo(
     () => ({
       display: 'contents',
+      color:
+        'var(--weave-color-tertiary)',
+      'color-scheme': activeMode,
       'font-family': 'var(--weave-typography-family-body)',
       'font-size': 'var(--weave-typography-style-body-large-font-size)',
       'font-weight': 'var(--weave-typography-style-body-large-font-weight)',
@@ -98,7 +101,7 @@ export function ThemeProvider({
         'var(--weave-typography-style-body-large-letter-spacing)',
       ...themeVariables(resolvedTheme),
     }),
-    [resolvedTheme],
+    [activeMode, resolvedTheme],
   )
 
   const className = useRuntimeStyleClass('theme', variables)

@@ -4323,7 +4323,27 @@ letter-spacing = typography.styles.body-large.letterSpacing
 
 ## 22.5 深色模式
 
-主题本身拥有模式：
+Weave 默认主题内置完整 light / dark 配色。`ThemeProvider` 未显式传 `mode` 时默认继承 `system`，跟随 `prefers-color-scheme`；也可以显式固定为 `light` 或 `dark`。
+
+默认深色模式不是对浅色值做滤镜或简单反相，而是提供独立的语义 token：深色 surface、提高亮度的 primary、适配深色背景的正文 / 次级文字、outline、状态色、focus 色与阴影。组件继续只消费语义 token，不需要知道当前模式。
+
+默认深色核心颜色：
+
+```text
+primary       #a99cff
+onPrimary     #1b1633
+secondary     #aaa3b5
+tertiary      #e9e5ef
+surface       #18161b
+surfaceHover  #242129
+outline       #3b3542
+focus         #b8adff
+success       #55d792
+warning       #f4b44c
+danger        #ff7272
+```
+
+主题本身也可以继续定义自己的模式覆盖：
 
 ```ts
 const theme = {
@@ -4355,7 +4375,9 @@ dark
 system
 ```
 
-组件本身不需要知道当前是否深色。
+组件本身不需要知道当前是否深色。默认 dark override 先应用，再应用主题的基础覆盖，最后应用主题自己的 `modes.dark` 覆盖；因此品牌在基础主题中声明的颜色会自然延续到 dark，除非品牌显式提供暗色版本。
+
+`ThemeProvider` 同时建立当前主题的继承文字色与 CSS `color-scheme`，让使用 `inherit` 的组件与浏览器原生 UI 都能跟随有效模式。
 
 ---
 

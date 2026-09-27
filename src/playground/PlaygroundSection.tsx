@@ -56,7 +56,7 @@ export function DemoBox({
     <View
       padding={1}
       radius="medium"
-      background="#f4f4f5"
+      background="surfaceHover"
     >
       <Text typo="label-medium">
         {label}

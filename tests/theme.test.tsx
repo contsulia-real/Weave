@@ -294,6 +294,95 @@ describe('Theme', () => {
     )
   })
 
+  it('ships a complete default dark palette and dark color scheme', () => {
+    const { getByTestId } = render(
+      <ThemeProvider mode="dark">
+        <View
+          data={{
+            testid: 'default-dark',
+          }}
+        />
+      </ThemeProvider>,
+    )
+
+    const scope =
+      getByTestId('default-dark')
+        .parentElement as HTMLElement
+    const rule =
+      runtimeRule(
+        scope,
+        'weave-theme-',
+      )
+
+    expect(rule).toContain(
+      '--weave-color-primary:#a99cff;',
+    )
+    expect(rule).toContain(
+      '--weave-color-onPrimary:#1b1633;',
+    )
+    expect(rule).toContain(
+      '--weave-color-surface:#18161b;',
+    )
+    expect(rule).toContain(
+      '--weave-color-surfaceHover:#242129;',
+    )
+    expect(rule).toContain(
+      '--weave-color-tertiary:#e9e5ef;',
+    )
+    expect(rule).toContain(
+      '--weave-color-outline:#3b3542;',
+    )
+    expect(rule).toContain(
+      'color:var(--weave-color-tertiary);',
+    )
+    expect(rule).toContain(
+      'color-scheme:dark;',
+    )
+    expect(
+      scope.getAttribute(
+        'data-weave-theme-mode',
+      ),
+    ).toBe('dark')
+  })
+
+  it('keeps base brand colors authoritative while inheriting other dark defaults', () => {
+    const branded = createTheme({
+      tokens: {
+        color: {
+          primary: '#ff4f87',
+        },
+      },
+    })
+    const { getByTestId } = render(
+      <ThemeProvider
+        theme={branded}
+        mode="dark"
+      >
+        <View
+          data={{
+            testid: 'branded-dark',
+          }}
+        />
+      </ThemeProvider>,
+    )
+
+    const scope =
+      getByTestId('branded-dark')
+        .parentElement as HTMLElement
+    const rule =
+      runtimeRule(
+        scope,
+        'weave-theme-',
+      )
+
+    expect(rule).toContain(
+      '--weave-color-primary:#ff4f87;',
+    )
+    expect(rule).toContain(
+      '--weave-color-surface:#18161b;',
+    )
+  })
+
   it('inherits the parent mode when a nested provider omits mode', () => {
     const { container } = render(
       <ThemeProvider mode="dark">

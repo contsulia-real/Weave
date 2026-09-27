@@ -73,10 +73,11 @@ export function FoundationPlayground() {
           gap={0.75}
           padding={1}
           radius="medium"
-          background="#fef2f2"
+          background="color-mix(in srgb, var(--weave-color-danger) 8%, var(--weave-color-surface))"
           md={{
             direction: 'row',
-            background: '#eff6ff',
+            background:
+              'color-mix(in srgb, var(--weave-color-primary) 8%, var(--weave-color-surface))',
             padding: 1.5,
           }}
         >
@@ -120,7 +121,7 @@ export function FoundationPlayground() {
               padding={1}
               radius="medium"
               background="primary"
-              color="#18181b"
+              color="onPrimary"
             >
               <Text typo="label-large">
                 Dark primary

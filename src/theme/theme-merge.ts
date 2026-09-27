@@ -1,4 +1,7 @@
-import { defaultTheme } from './default-theme'
+import {
+  defaultDarkTheme,
+  defaultTheme,
+} from './default-theme'
 import type {
   ResolvedTheme,
   ThemeDefinition,
@@ -44,8 +47,19 @@ export function resolveTheme(
   definition: ThemeDefinition,
   activeMode: Exclude<ThemeMode, 'system'>,
 ): ResolvedTheme {
-  const base = mergeValue(defaultTheme, withoutModes(definition))
-  const modeOverride = definition.modes?.[activeMode]
+  const defaultForMode =
+    activeMode === 'dark'
+      ? mergeValue(
+          defaultTheme,
+          defaultDarkTheme,
+        )
+      : defaultTheme
+  const base = mergeValue(
+    defaultForMode,
+    withoutModes(definition),
+  )
+  const modeOverride =
+    definition.modes?.[activeMode]
 
   return modeOverride === undefined
     ? base

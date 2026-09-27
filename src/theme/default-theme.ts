@@ -1,4 +1,7 @@
-import type { ResolvedTheme } from './theme-types'
+import type {
+  ResolvedTheme,
+  ThemeOverride,
+} from './theme-types'
 
 const controlBaseline = {
   radius: 0.75,
@@ -21,6 +24,74 @@ export const defaultBreakpoints = {
 } as const
 
 export type DefaultBreakpointName = keyof typeof defaultBreakpoints
+
+export const defaultDarkTheme: ThemeOverride = {
+  tokens: {
+    color: {
+      primary: '#a99cff',
+      onPrimary: '#1b1633',
+      primaryHover: '#b8adff',
+      primaryActive: '#9283f0',
+      secondary: '#aaa3b5',
+      tertiary: '#e9e5ef',
+      disabled: '#716b78',
+      surface: '#18161b',
+      surfaceHover: '#242129',
+      success: '#55d792',
+      warning: '#f4b44c',
+      danger: '#ff7272',
+      outline: '#3b3542',
+      focus: '#b8adff',
+    },
+    shadow: {
+      small:
+        '0 0.125rem 0.5rem rgb(0 0 0 / 0.32)',
+      medium:
+        '0 0.5rem 1.75rem rgb(0 0 0 / 0.42)',
+      large:
+        '0 1rem 3.5rem rgb(0 0 0 / 0.52)',
+    },
+  },
+  components: {
+    Button: {
+      variants: {
+        primary: {
+          depthColor:
+            'color-mix(in srgb, var(--weave-color-primary) 55%, black)',
+        },
+        secondary: {
+          depthColor:
+            'color-mix(in srgb, var(--weave-color-outline) 72%, black)',
+        },
+        tertiary: {
+          depthColor:
+            'color-mix(in srgb, var(--weave-color-outline) 66%, black)',
+        },
+        danger: {
+          depthColor:
+            'color-mix(in srgb, var(--weave-color-danger) 38%, black)',
+        },
+      },
+    },
+    Switch: {
+      base: {
+        trackShadow:
+          'inset 0 0.0625rem 0.125rem rgb(0 0 0 / 0.45), inset 0 0 0 0.0625rem rgb(255 255 255 / 0.04)',
+        thumbBackground: 'tertiary',
+        thumbShadow:
+          '0 0.0625rem 0.125rem rgb(0 0 0 / 0.42), 0 0.125rem 0.3rem rgb(0 0 0 / 0.24)',
+      },
+    },
+    Progress: {
+      base: {
+        trackShadow:
+          'inset 0 0.0625rem 0.125rem rgb(0 0 0 / 0.42), inset 0 0 0 0.0625rem rgb(255 255 255 / 0.035)',
+        valueShadow:
+          '0 0.0625rem 0.125rem rgb(0 0 0 / 0.32), 0 0.125rem 0.25rem rgb(0 0 0 / 0.18)',
+      },
+    },
+  },
+}
 
 export const defaultTheme: ResolvedTheme = {
   tokens: {
