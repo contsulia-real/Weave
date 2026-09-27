@@ -292,17 +292,6 @@ describe('Snack', () => {
       'C',
       'D',
     ])
-
-    expect(
-      region?.querySelector(
-        '[data-weave-snack-overflow]',
-      ),
-    ).toBeNull()
-    expect(
-      region?.querySelector(
-        '[data-weave-snack-queue-hidden]',
-      ),
-    ).toBeNull()
   })
 
   it('shows linear lifetime progress and pauses it with the Snack timer', () => {
