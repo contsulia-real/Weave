@@ -26,15 +26,21 @@ describe('DiC semantic mirror', () => {
     const activate = vi.fn()
     const toggle = vi.fn()
 
-    const label = compileDiCText(
+    const labelText = compileDiCText(
+      resolveView({}, defaultBreakpoints),
+      resolveText({}, defaultBreakpoints),
+      'Notifications',
+    )
+    const label = compileDiCView(
       resolveView(
         {
           id: 'switch-label',
         },
         defaultBreakpoints,
       ),
-      resolveText({}, defaultBreakpoints),
-      'Notifications',
+      {
+        children: [labelText],
+      },
     )
     const button = compileDiCButton(
       resolveView(
@@ -134,6 +140,9 @@ describe('DiC semantic mirror', () => {
     expect(rootElement?.getAttribute('aria-label')).toBe('Settings')
 
     expect(labelElement?.textContent).toBe('Notifications')
+    expect(mirror.getElement(labelText)?.textContent).toBe(
+      'Notifications',
+    )
     expect(labelElement?.id).not.toBe('switch-label')
     expect(
       labelElement?.getAttribute(
