@@ -318,6 +318,12 @@ export function resolveSnackTheme(
       length(base?.iconSize),
     '--weave-snack-motion-offset':
       length(base?.motionOffset),
+    '--weave-snack-stack-offset':
+      length(base?.stackOffset),
+    '--weave-snack-stack-scale-step':
+      base?.stackScaleStep,
+    '--weave-snack-stack-opacity-step':
+      base?.stackOpacityStep,
   }
 
   for (const variant of SNACK_VARIANTS) {
