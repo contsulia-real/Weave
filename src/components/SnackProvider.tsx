@@ -1,7 +1,5 @@
 import {
-  createContext,
   useCallback,
-  useContext,
   useMemo,
   useRef,
   useState,
@@ -15,6 +13,9 @@ import type {
   SnackRequest,
 } from '../core/snack-types'
 import {
+  SnackContext,
+} from './internal/snack-context'
+import {
   captureSnackRegionLayout,
 } from './internal/snack-region'
 import { Snack } from './Snack'
@@ -27,11 +28,6 @@ interface SnackQueueItem {
   open: boolean
   visible: boolean
 }
-
-const SnackContext =
-  createContext<SnackController | null>(
-    null,
-  )
 
 export interface SnackProviderProps {
   children?: ReactNode
@@ -380,17 +376,4 @@ export function SnackProvider({
         )}
     </SnackContext.Provider>
   )
-}
-
-export function useSnack(): SnackController {
-  const context =
-    useContext(SnackContext)
-
-  if (context === null) {
-    throw new Error(
-      'useSnack() requires a SnackProvider',
-    )
-  }
-
-  return context
 }
