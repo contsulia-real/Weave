@@ -3281,6 +3281,53 @@ Progress
 </ThemeProvider>
 ```
 
+不传 `container` 时，Snack region 挂到 `document.body`，placement 相对 viewport。
+
+需要把 Snack 限定在某个组件内部时，在 `SnackProvider` 指定容器：
+
+```tsx
+const panelRef =
+  useRef<HTMLDivElement>(null)
+
+<View ref={panelRef}>
+  <SnackProvider
+    container={panelRef}
+  >
+    <PanelContent />
+  </SnackProvider>
+</View>
+```
+
+也支持直接 HTMLElement 或 getter：
+
+```tsx
+<SnackProvider
+  container={panelElement}
+/>
+
+<SnackProvider
+  container={() => panelRef.current}
+/>
+```
+
+`container` 类型：
+
+```text
+HTMLElement
+RefObject<HTMLElement | null>
+() => HTMLElement | null
+null
+```
+
+语义：
+
+- 未传 `container`：挂到 `document.body`，region 使用 viewport 定位；
+- 指定容器：region 作为该容器子节点挂载，placement 相对该容器；
+- 指定容器 region 使用 `position: absolute`；
+- 如果容器当前是 `position: static`，框架在 region 存活期间自动建立 `position: relative` 定位上下文，并在最后一个 region 移除后恢复原 inline position；
+- `container=null` 或 ref/getter 当前返回 `null` 时不挂载 Snack region；
+- 不同 `SnackProvider` 即使使用同一个 container 和 placement，也必须维护独立 region / FIFO 队列，不得串队列。
+
 业务侧：
 
 ```tsx
@@ -3461,9 +3508,24 @@ bottom-* → 从底部边缘进入 / 向底部边缘退出
 
 ## 20.6 placement、视觉 FIFO 与容量溢出
 
-每个 placement 在 `document.body` 中由框架维护一个共享 region。
+每个 `SnackProvider` 在自己的 mount scope 中按 placement 维护独立 region：
+
+```text
+SnackProvider
+→ container / document.body
+  → top-left region
+  → top-center region
+  → top-right region
+  → bottom-left region
+  → bottom-center region
+  → bottom-right region
+```
+
+不传 `container` 时 mount scope 是 `document.body`；指定 `container` 时 mount scope 是该 HTMLElement。
 
 业务不创建 portal host、不计算坐标、不维护队列 index。
+
+FIFO 容量与驱逐只在**同一个 provider scope + placement** 内计算；不同 provider、不同 container、不同 placement 互不影响。
 
 同一 placement 的**可见容量固定为 3**。
 
@@ -3564,7 +3626,8 @@ layer
 - 图标与 action 可以使用 variant accent，但正文仍遵循正常信息层级；
 - typography 来自统一 type scale；
 - spacing、radius、shadow、motion 必须来自 theme token / component theme；
-- 卡片不得溢出 viewport；
+- 页面级 Snack 不得溢出 viewport；
+- container-scoped Snack 不得溢出指定容器的可用宽度；
 - lifetime Progress 必须位于 Snack 自己的底部 padding 内部，与左右内容边界对齐，不得贴到或穿过外层 border radius。
 
 组件主题入口：
