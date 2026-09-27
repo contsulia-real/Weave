@@ -30,6 +30,16 @@ const stylesheet = `
     var(--weave-tooltip-shadow);
 
   isolation: isolate;
+  scale: 1;
+  transition:
+    scale var(--weave-motion-duration-fast)
+      var(--weave-motion-curve-enter);
+}
+
+@starting-style {
+  :where(.weave-tooltip) {
+    scale: 0.94;
+  }
 }
 
 :where(.weave-tooltip)::before {
@@ -43,10 +53,18 @@ const stylesheet = `
   z-index: -1;
 }
 
+:where(.weave-tooltip[data-placement="top"]) {
+  transform-origin: center bottom;
+}
+
 :where(.weave-tooltip[data-placement="top"])::before {
   left: 50%;
   bottom: calc(-0.5 * var(--weave-tooltip-arrow-size));
   transform: translateX(-50%) rotate(45deg);
+}
+
+:where(.weave-tooltip[data-placement="bottom"]) {
+  transform-origin: center top;
 }
 
 :where(.weave-tooltip[data-placement="bottom"])::before {
@@ -55,10 +73,18 @@ const stylesheet = `
   transform: translateX(-50%) rotate(45deg);
 }
 
+:where(.weave-tooltip[data-placement="left"]) {
+  transform-origin: right center;
+}
+
 :where(.weave-tooltip[data-placement="left"])::before {
   top: 50%;
   right: calc(-0.5 * var(--weave-tooltip-arrow-size));
   transform: translateY(-50%) rotate(45deg);
+}
+
+:where(.weave-tooltip[data-placement="right"]) {
+  transform-origin: left center;
 }
 
 :where(.weave-tooltip[data-placement="right"])::before {
@@ -66,6 +92,12 @@ const stylesheet = `
   left: calc(-0.5 * var(--weave-tooltip-arrow-size));
   transform: translateY(-50%) rotate(45deg);
 }
+@media (prefers-reduced-motion: reduce) {
+  :where(.weave-tooltip) {
+    transition: none;
+  }
+}
+
 `
 
 export function ensureToolTipStylesheet(): void {
