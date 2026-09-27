@@ -96,6 +96,14 @@ function progressColor(
   progress: ResolvedProgress,
   environment: DiCProgressDrawEnvironment,
 ): string {
+  if (progress.color === 'inherit') {
+    return (
+      environment.color ??
+      environment.theme.tokens.color?.text ??
+      '#18181b'
+    )
+  }
+
   return resolveDiCColor(
     progress.color,
     environment.theme,
