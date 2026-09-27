@@ -65,21 +65,24 @@ interface ListDescriptor {
   disabled: boolean
 }
 
-type SingleListProps =
-  Extract<
-    ListProps,
-    {
-      selection: 'single'
-    }
-  >
+interface SingleListSelectionState {
+  selection: 'single'
+  selected?: string | null
+  defaultSelected?: string | null
+  onSelect?: (
+    selected: string | null,
+  ) => void
+}
 
-type MultipleListProps =
-  Extract<
-    ListProps,
-    {
-      selection: 'multiple'
-    }
-  >
+interface MultipleListSelectionState {
+  selection: 'multiple'
+  selected?: readonly string[]
+  defaultSelected?: readonly string[]
+  onSelect?: (
+    selected:
+      readonly string[],
+  ) => void
+}
 
 function assignRef<T>(
   ref: Ref<T> | undefined,
@@ -391,14 +394,14 @@ export function List(
     selection === 'single'
       ? (
           props as
-            SingleListProps
+            SingleListSelectionState
         )
       : undefined
   const multipleProps =
     selection === 'multiple'
       ? (
           props as
-            MultipleListProps
+            MultipleListSelectionState
         )
       : undefined
 
@@ -512,7 +515,7 @@ export function List(
         ) {
           const selectionProps =
             props as
-              SingleListProps
+              SingleListSelectionState
 
           if (
             currentSingle === id
@@ -540,7 +543,7 @@ export function List(
         ) {
           const selectionProps =
             props as
-              MultipleListProps
+              MultipleListSelectionState
           const next =
             currentMultiple.includes(
               id,
