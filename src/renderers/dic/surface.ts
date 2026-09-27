@@ -44,6 +44,7 @@ export interface DiCSurfaceOptions {
   devicePixelRatio?: () => number
   imageResources?: DiCImageResourceManager
   semanticMirror?: boolean
+  reducedMotion?: () => boolean
 }
 
 export interface DiCSurface {
@@ -92,6 +93,31 @@ function finiteSize(value: number): number {
     : 0
 }
 
+function hasAnimatedProgress(
+  node: DiCViewNode,
+): boolean {
+  if (
+    node.content?.kind === 'progress' &&
+    node.content.progress.undetermined
+  ) {
+    return true
+  }
+
+  return node.children.some(
+    hasAnimatedProgress,
+  )
+}
+
+function defaultReducedMotion(): boolean {
+  return (
+    typeof window !== 'undefined' &&
+    typeof window.matchMedia === 'function' &&
+    window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches
+  )
+}
+
 function collectImageSources(
   node: DiCViewNode,
   output: Set<ImageSource>,
@@ -119,6 +145,8 @@ export function createDiCSurface(
 
   const scheduler = options.scheduler ?? defaultScheduler()
   const getDpr = options.devicePixelRatio ?? defaultDpr
+  const getReducedMotion =
+    options.reducedMotion ?? defaultReducedMotion
   const ownsImageResources =
     options.imageResources === undefined
   const imageResources =
@@ -176,7 +204,7 @@ export function createDiCSurface(
       ) ?? ''
   }
 
-  const render = () => {
+  const render = (time: number) => {
     frameRequest = undefined
     if (destroyed) return
 
@@ -252,10 +280,20 @@ export function createDiCSurface(
         rem,
         viewportWidth: width,
         imageResources,
+        time,
+        reducedMotion:
+          getReducedMotion(),
       },
     )
 
     updateCursor()
+
+    if (
+      !getReducedMotion() &&
+      hasAnimatedProgress(scene.node)
+    ) {
+      invalidate()
+    }
   }
 
   const invalidate = () => {
