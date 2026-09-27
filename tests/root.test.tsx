@@ -222,6 +222,184 @@ describe('public Weave root', () => {
     ).toHaveLength(0)
   })
 
+  it('moves supported HTML-in-Canvas composition to a worker', async () => {
+    const originalWorker =
+      globalThis.Worker
+    const originalOffscreenCanvas =
+      globalThis.OffscreenCanvas
+    const posted:
+      Array<unknown> = []
+    const terminate =
+      vi.fn()
+    const captureElementImage =
+      vi.fn(() => ({
+        close: vi.fn(),
+      }))
+
+    class TestWorker {
+      postMessage(message: unknown): void {
+        posted.push(message)
+      }
+
+      terminate(): void {
+        terminate()
+      }
+    }
+
+    class TestOffscreenCanvas {
+      width: number
+      height: number
+
+      constructor(
+        width: number,
+        height: number,
+      ) {
+        this.width = width
+        this.height = height
+      }
+
+      getContext(): unknown {
+        return {
+          drawElementImage: vi.fn(),
+        }
+      }
+    }
+
+    Object.defineProperty(
+      globalThis,
+      'Worker',
+      {
+        configurable: true,
+        value: TestWorker,
+      },
+    )
+    Object.defineProperty(
+      globalThis,
+      'OffscreenCanvas',
+      {
+        configurable: true,
+        value: TestOffscreenCanvas,
+      },
+    )
+    Object.defineProperty(
+      HTMLCanvasElement.prototype,
+      'captureElementImage',
+      {
+        configurable: true,
+        value: captureElementImage,
+      },
+    )
+    Object.defineProperty(
+      HTMLCanvasElement.prototype,
+      'transferControlToOffscreen',
+      {
+        configurable: true,
+        value: () => ({
+          width: 0,
+          height: 0,
+        }),
+      },
+    )
+
+    try {
+      const container =
+        document.createElement('div')
+      document.body.appendChild(
+        container,
+      )
+
+      const root =
+        createRoot(container)
+
+      await act(async () => {
+        root.render(
+          <View>
+            <Text>Worker</Text>
+          </View>,
+        )
+      })
+
+      const canvas =
+        container.querySelector(
+          'canvas[data-weave-root-canvas]',
+        )
+      const host =
+        container.querySelector(
+          '[data-weave-root-host]',
+        )
+
+      expect(
+        canvas?.getAttribute(
+          'data-weave-canvas-thread',
+        ),
+      ).toBe('worker')
+
+      canvas?.dispatchEvent(
+        new Event('paint'),
+      )
+
+      expect(
+        captureElementImage,
+      ).toHaveBeenCalledWith(
+        host,
+      )
+      expect(
+        drawElementImage,
+      ).not.toHaveBeenCalled()
+      expect(
+        posted.some(
+          (message) =>
+            (
+              message as {
+                type?: string
+              }
+            ).type === 'frame',
+        ),
+      ).toBe(true)
+
+      root.unmount()
+      expect(
+        terminate,
+      ).toHaveBeenCalled()
+    } finally {
+      delete (
+        HTMLCanvasElement.prototype as
+          HTMLCanvasElement & {
+            captureElementImage?: (
+              element: Element,
+            ) => unknown
+            transferControlToOffscreen?: (
+            ) => unknown
+          }
+      ).captureElementImage
+      delete (
+        HTMLCanvasElement.prototype as
+          HTMLCanvasElement & {
+            transferControlToOffscreen?: (
+            ) => unknown
+          }
+      ).transferControlToOffscreen
+
+      Object.defineProperty(
+        globalThis,
+        'Worker',
+        {
+          configurable: true,
+          value: originalWorker,
+        },
+      )
+      Object.defineProperty(
+        globalThis,
+        'OffscreenCanvas',
+        {
+          configurable: true,
+          value:
+            originalOffscreenCanvas,
+        },
+      )
+    }
+  })
+
   it('registers a returned draw matrix through the canvas geometry API', async () => {
     const matrix = {
       toString: () =>
@@ -582,6 +760,41 @@ describe('public Weave root', () => {
     ).toBeInstanceOf(
       HTMLDivElement,
     )
+
+    root.unmount()
+  })
+
+  it('does not force an extra paint after later React renders', async () => {
+    const container =
+      document.createElement('div')
+    document.body.appendChild(
+      container,
+    )
+
+    const root =
+      createRoot(container)
+
+    await act(async () => {
+      root.render(
+        <View>
+          <Text>First</Text>
+        </View>,
+      )
+    })
+
+    requestPaint?.mockClear()
+
+    await act(async () => {
+      root.render(
+        <View>
+          <Text>Second</Text>
+        </View>,
+      )
+    })
+
+    expect(
+      requestPaint,
+    ).not.toHaveBeenCalled()
 
     root.unmount()
   })
