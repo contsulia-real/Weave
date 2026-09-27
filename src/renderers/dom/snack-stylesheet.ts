@@ -2,7 +2,6 @@ const stylesheet = `
 :where(.weave-snack-region) {
   position: fixed;
   display: flex;
-  flex-direction: column;
   gap: 0.5rem;
   max-width: calc(100vw - 2rem);
   pointer-events: none;
@@ -11,10 +10,12 @@ const stylesheet = `
 
 :where(.weave-snack-region[data-weave-snack-region^="top-"]) {
   top: 1rem;
+  flex-direction: column-reverse;
 }
 
 :where(.weave-snack-region[data-weave-snack-region^="bottom-"]) {
   bottom: 1rem;
+  flex-direction: column;
 }
 
 :where(.weave-snack-region[data-weave-snack-region$="-left"]) {
@@ -48,18 +49,43 @@ const stylesheet = `
     calc(100vw - 2rem)
   );
 
-  --weave-component-background: var(--weave-snack-background);
+  --weave-component-background:
+    color-mix(
+      in srgb,
+      var(--weave-snack-accent) 7%,
+      var(--weave-snack-background)
+    );
   --weave-component-color: var(--weave-snack-color);
 
   --weave-component-border-top-width: var(--weave-snack-border-width);
   --weave-component-border-right-width: var(--weave-snack-border-width);
   --weave-component-border-bottom-width: var(--weave-snack-border-width);
-  --weave-component-border-left-width: var(--weave-snack-accent-width);
+  --weave-component-border-left-width: var(--weave-snack-border-width);
   --weave-component-border-style: solid;
-  --weave-component-border-top-color: var(--weave-snack-border-color);
-  --weave-component-border-right-color: var(--weave-snack-border-color);
-  --weave-component-border-bottom-color: var(--weave-snack-border-color);
-  --weave-component-border-left-color: var(--weave-snack-accent);
+  --weave-component-border-top-color:
+    color-mix(
+      in srgb,
+      var(--weave-snack-accent) 28%,
+      var(--weave-snack-border-color)
+    );
+  --weave-component-border-right-color:
+    color-mix(
+      in srgb,
+      var(--weave-snack-accent) 28%,
+      var(--weave-snack-border-color)
+    );
+  --weave-component-border-bottom-color:
+    color-mix(
+      in srgb,
+      var(--weave-snack-accent) 28%,
+      var(--weave-snack-border-color)
+    );
+  --weave-component-border-left-color:
+    color-mix(
+      in srgb,
+      var(--weave-snack-accent) 28%,
+      var(--weave-snack-border-color)
+    );
 
   --weave-component-border-top-left-radius: var(--weave-snack-radius);
   --weave-component-border-top-right-radius: var(--weave-snack-radius);
@@ -73,6 +99,9 @@ const stylesheet = `
 
   --weave-component-box-shadow: var(--weave-snack-shadow);
   --weave-component-pointer-events: auto;
+
+  --weave-snack-motion-x: 0rem;
+  --weave-snack-motion-y: 0rem;
 
   opacity: 1;
   translate: 0 0;
@@ -88,27 +117,41 @@ const stylesheet = `
       var(--weave-motion-curve-emphasized);
 }
 
-:where(.weave-snack[data-weave-snack-placement^="top-"]) {
+:where(.weave-snack[data-weave-snack-direction="up"]) {
   --weave-snack-motion-y:
     calc(-1 * var(--weave-snack-motion-offset));
 }
 
-:where(.weave-snack[data-weave-snack-placement^="bottom-"]) {
+:where(.weave-snack[data-weave-snack-direction="down"]) {
   --weave-snack-motion-y:
+    var(--weave-snack-motion-offset);
+}
+
+:where(.weave-snack[data-weave-snack-direction="left"]) {
+  --weave-snack-motion-x:
+    calc(-1 * var(--weave-snack-motion-offset));
+}
+
+:where(.weave-snack[data-weave-snack-direction="right"]) {
+  --weave-snack-motion-x:
     var(--weave-snack-motion-offset);
 }
 
 @starting-style {
   :where(.weave-snack[data-weave-snack-state="open"]) {
     opacity: 0;
-    translate: 0 var(--weave-snack-motion-y);
+    translate:
+      var(--weave-snack-motion-x)
+      var(--weave-snack-motion-y);
     scale: 0.985;
   }
 }
 
 :where(.weave-snack[data-weave-snack-state="closing"]) {
   opacity: 0;
-  translate: 0 var(--weave-snack-motion-y);
+  translate:
+    var(--weave-snack-motion-x)
+    var(--weave-snack-motion-y);
   scale: 0.99;
   transition:
     opacity var(--weave-motion-duration-fast)
@@ -139,9 +182,41 @@ const stylesheet = `
   --weave-snack-accent: var(--weave-snack-info-accent);
 }
 
-:where(.weave-snack__icon) {
-  flex: 0 0 auto;
+:where(.weave-snack__icon-shell) {
+  --weave-component-display: grid;
+  --weave-component-align-items: center;
+  --weave-component-justify-content: center;
+  --weave-component-width: var(--weave-snack-icon-size);
+  --weave-component-height: var(--weave-snack-icon-size);
+  --weave-component-flex-shrink: 0;
+  --weave-component-background:
+    color-mix(
+      in srgb,
+      var(--weave-snack-accent) 14%,
+      transparent
+    );
+  --weave-component-border-top-width: var(--weave-snack-border-width);
+  --weave-component-border-right-width: var(--weave-snack-border-width);
+  --weave-component-border-bottom-width: var(--weave-snack-border-width);
+  --weave-component-border-left-width: var(--weave-snack-border-width);
+  --weave-component-border-style: solid;
+  --weave-component-border-top-color:
+    color-mix(in srgb, var(--weave-snack-accent) 26%, transparent);
+  --weave-component-border-right-color:
+    color-mix(in srgb, var(--weave-snack-accent) 26%, transparent);
+  --weave-component-border-bottom-color:
+    color-mix(in srgb, var(--weave-snack-accent) 26%, transparent);
+  --weave-component-border-left-color:
+    color-mix(in srgb, var(--weave-snack-accent) 26%, transparent);
+  --weave-component-border-top-left-radius: 9999px;
+  --weave-component-border-top-right-radius: 9999px;
+  --weave-component-border-bottom-right-radius: 9999px;
+  --weave-component-border-bottom-left-radius: 9999px;
   color: var(--weave-snack-accent);
+}
+
+:where(.weave-snack__icon) {
+  color: inherit;
 }
 
 :where(.weave-snack__message) {
