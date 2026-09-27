@@ -5,9 +5,14 @@ import type {
   SnackContainer,
 } from '../../core/snack-types'
 
+export interface SnackHostContextValue {
+  target: SnackContainer | undefined
+  scopeId: string
+}
+
 export const SnackHostContext =
   createContext<
-    SnackContainer | undefined
+    SnackHostContextValue | undefined
   >(undefined)
 
 export function resolveSnackHost(
