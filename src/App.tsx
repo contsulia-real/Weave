@@ -540,17 +540,23 @@ function App() {
             <Button
               text="Success snack"
               variant="secondary"
-              onClick={() => setShowSavedSnack(true)}
+              viewProps={{
+                onClick: () => setShowSavedSnack(true),
+              }}
             />
             <Button
               text="Warning snack"
               variant="secondary"
-              onClick={() => setShowWarningSnack(true)}
+              viewProps={{
+                onClick: () => setShowWarningSnack(true),
+              }}
             />
             <Button
               text="Action snack"
               variant="secondary"
-              onClick={() => setShowActionSnack(true)}
+              viewProps={{
+                onClick: () => setShowActionSnack(true),
+              }}
             />
           </View>
 
