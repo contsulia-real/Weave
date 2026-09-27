@@ -310,6 +310,29 @@ export function createDiCSemanticMirror(
     node: DiCViewNode,
     layout?: DiCViewTreeLayout,
   ) => {
+    const activeInputRuntime =
+      node.content?.kind === 'input' &&
+      document.activeElement === element
+        ? {
+            selectionStart:
+              (
+                element as
+                  | HTMLInputElement
+                  | HTMLTextAreaElement
+              ).selectionStart,
+            selectionEnd:
+              (
+                element as
+                  | HTMLInputElement
+                  | HTMLTextAreaElement
+              ).selectionEnd,
+            scrollLeft:
+              element.scrollLeft,
+            scrollTop:
+              element.scrollTop,
+          }
+        : undefined
+
     clearOwnedAttributes(element)
 
     element.setAttribute(
@@ -475,9 +498,27 @@ export function createDiCSemanticMirror(
       }
 
       if (
-        document.activeElement ===
-        editor
+        activeInputRuntime !== undefined
       ) {
+        try {
+          if (
+            activeInputRuntime.selectionStart !== null &&
+            activeInputRuntime.selectionEnd !== null
+          ) {
+            editor.setSelectionRange(
+              activeInputRuntime.selectionStart,
+              activeInputRuntime.selectionEnd,
+            )
+          }
+        } catch {
+          // Some input types do not expose text selection.
+        }
+
+        editor.scrollLeft =
+          activeInputRuntime.scrollLeft
+        editor.scrollTop =
+          activeInputRuntime.scrollTop
+
         syncInputRuntime(
           node,
           element,
