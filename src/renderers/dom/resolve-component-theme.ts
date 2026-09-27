@@ -14,12 +14,20 @@ import {
   color,
   length,
   radius,
-  shadow,
 } from '../../core/values'
 import type {
   RuntimeStyleDeclarations,
   RuntimeStyleValue,
 } from './runtime-class'
+
+function shadowToken(
+  value: string | undefined,
+): string | undefined {
+  if (value === undefined) return undefined
+  if (value === 'none') return 'none'
+
+  return `var(--weave-shadow-${value})`
+}
 
 const BUTTON_VARIANTS: readonly ButtonVariant[] = [
   'primary',
@@ -255,7 +263,7 @@ export function resolveToolTipTheme(
     '--weave-tooltip-max-width':
       length(base?.maxWidth),
     '--weave-tooltip-shadow':
-      shadow(base?.shadow),
+      shadowToken(base?.shadow),
     '--weave-tooltip-depth':
       length(base?.depth),
     '--weave-tooltip-depth-color':
