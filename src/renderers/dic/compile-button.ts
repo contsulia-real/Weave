@@ -314,6 +314,9 @@ export function compileDiCButton(
         role:
           view.semantics.role ??
           'button',
+        label:
+          view.semantics.label ??
+          button.label,
         disabled: button.disabled,
         busy:
           button.loading ||
