@@ -220,10 +220,37 @@ function stableNode(
     return next
   }
 
+  const inputRuntime =
+    current.content?.kind === 'input' &&
+    next.content?.kind === 'input'
+      ? {
+          selectionStart:
+            current.content.selectionStart,
+          selectionEnd:
+            current.content.selectionEnd,
+          scrollLeft:
+            current.content.scrollLeft,
+          scrollTop:
+            current.content.scrollTop,
+          focused:
+            current.content.focused,
+        }
+      : undefined
+
   Object.assign(
     current,
     next,
   )
+
+  if (
+    inputRuntime !== undefined &&
+    current.content?.kind === 'input'
+  ) {
+    Object.assign(
+      current.content,
+      inputRuntime,
+    )
+  }
 
   return current
 }
