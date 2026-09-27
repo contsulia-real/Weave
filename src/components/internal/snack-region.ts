@@ -1,16 +1,30 @@
 import type {
   SnackPlacement,
 } from '../../core/snack-types'
+import {
+  durationMilliseconds,
+} from './motion-duration'
 
 interface RegionEntry {
   element: HTMLDivElement
   count: number
 }
 
+interface SnackPosition {
+  left: number
+  top: number
+}
+
 const regions =
   new WeakMap<
     Document,
     Map<SnackPlacement, RegionEntry>
+  >()
+
+const capturedLayouts =
+  new WeakMap<
+    HTMLDivElement,
+    Map<HTMLElement, SnackPosition>
   >()
 
 function snackElements(
@@ -21,6 +35,149 @@ function snackElements(
       '[data-weave-snack]',
     ),
   )
+}
+
+function openSnackElements(
+  element: HTMLDivElement,
+): HTMLElement[] {
+  return snackElements(
+    element,
+  ).filter(
+    (snack) =>
+      snack.dataset.weaveSnackState !==
+        'closing',
+  )
+}
+
+export function captureSnackRegionLayout(
+  element: HTMLDivElement,
+): void {
+  const positions =
+    new Map<
+      HTMLElement,
+      SnackPosition
+    >()
+
+  for (
+    const snack of
+      openSnackElements(element)
+  ) {
+    const rect =
+      snack.getBoundingClientRect()
+
+    positions.set(
+      snack,
+      {
+        left: rect.left,
+        top: rect.top,
+      },
+    )
+  }
+
+  capturedLayouts.set(
+    element,
+    positions,
+  )
+}
+
+function animateCapturedLayout(
+  element: HTMLDivElement,
+): void {
+  const previous =
+    capturedLayouts.get(
+      element,
+    )
+
+  if (previous === undefined) {
+    return
+  }
+
+  capturedLayouts.delete(element)
+
+  const view =
+    element.ownerDocument.defaultView
+
+  if (
+    view === null ||
+    view.matchMedia?.(
+      '(prefers-reduced-motion: reduce)',
+    ).matches
+  ) {
+    return
+  }
+
+  for (
+    const snack of
+      openSnackElements(element)
+  ) {
+    const before =
+      previous.get(snack)
+
+    if (before === undefined) {
+      continue
+    }
+
+    const after =
+      snack.getBoundingClientRect()
+    const deltaX =
+      before.left -
+      after.left
+    const deltaY =
+      before.top -
+      after.top
+
+    if (
+      Math.abs(deltaX) < 0.5 &&
+      Math.abs(deltaY) < 0.5
+    ) {
+      continue
+    }
+
+    if (
+      typeof snack.animate !==
+        'function'
+    ) {
+      continue
+    }
+
+    const computed =
+      view.getComputedStyle(
+        snack,
+      )
+    const duration =
+      durationMilliseconds(
+        computed
+          .getPropertyValue(
+            '--weave-motion-duration-normal',
+          )
+          .trim(),
+        220,
+      )
+    const easing =
+      computed
+        .getPropertyValue(
+          '--weave-motion-curve-emphasized',
+        )
+        .trim() ||
+      'ease'
+
+    snack.animate(
+      [
+        {
+          transform:
+            `translate(${deltaX}px, ${deltaY}px)`,
+        },
+        {
+          transform:
+            'translate(0px, 0px)',
+        },
+      ],
+      {
+        duration,
+        easing,
+      },
+    )
+  }
 }
 
 export function syncSnackRegion(
@@ -48,6 +205,10 @@ export function syncSnackRegion(
       String(queueIndex)
     queueIndex += 1
   }
+
+  animateCapturedLayout(
+    element,
+  )
 }
 
 function scheduleSync(
