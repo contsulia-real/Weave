@@ -5,6 +5,7 @@ import {
   cleanup,
   fireEvent,
   render,
+  waitFor,
 } from '@testing-library/react'
 import {
   afterEach,
@@ -264,7 +265,7 @@ describe('ToolTip', () => {
     ).not.toBeNull()
   })
 
-  it('positions each placement from the target rectangle and applies rem offset', () => {
+  it('positions each placement from the target rectangle and applies rem offset', async () => {
     const {
       getByRole,
     } = render(
@@ -300,12 +301,14 @@ describe('ToolTip', () => {
     const tooltip =
       getByRole('tooltip')
 
-    expect(
-      tooltip.style.left,
-    ).toBe('120px')
-    expect(
-      tooltip.style.top,
-    ).toBe('70px')
+    await waitFor(() => {
+      expect(
+        tooltip.style.left,
+      ).toBe('120px')
+      expect(
+        tooltip.style.top,
+      ).toBe('70px')
+    })
     expect(
       tooltip.style.transform,
     ).toBe(
