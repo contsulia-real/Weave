@@ -106,9 +106,16 @@ function syncElementGeometry(
   element: LegacyCanvasTransformElement,
   drawResult: DrawElementImageResult,
 ): void {
-  // Current Chromium automatically updates hit-test geometry from
-  // drawElementImage(), but updateElementGeometry() makes the contract
-  // explicit and also covers transitional builds.
+  // Current Chromium automatically updates element geometry as part of
+  // drawElementImage(). Do not overwrite that transform with an identity
+  // matrix: the browser-calculated transform also captures canvas scale,
+  // destination position and other geometry details.
+  if (drawResult === undefined) {
+    return
+  }
+
+  // Transitional Chromium builds returned the CSS-space draw matrix.
+  // Prefer the canvas-owned geometry API when that build exposes it.
   if (
     typeof canvas.updateElementGeometry ===
     'function'
@@ -117,26 +124,16 @@ function syncElementGeometry(
       element,
       {
         preserveHitTestOrder: true,
-        canvasTransform:
-          drawResult ?? {
-            a: 1,
-            b: 0,
-            c: 0,
-            d: 1,
-            e: 0,
-            f: 0,
-          },
+        canvasTransform: drawResult,
       },
     )
     return
   }
 
-  // Older Chromium returned the CSS-space draw matrix and required
-  // callers to register it on the element for hit testing.
+  // Older builds registered that returned matrix directly on the element.
   if (
-    drawResult !== undefined &&
     typeof element.setCanvasTransform ===
-      'function'
+    'function'
   ) {
     element.setCanvasTransform(
       drawResult,
@@ -144,12 +141,9 @@ function syncElementGeometry(
     return
   }
 
-  // Very early experimental builds predate setCanvasTransform().
-  // Their published usage applied the returned matrix as CSS transform.
-  if (drawResult !== undefined) {
-    element.style.transform =
-      drawResult.toString()
-  }
+  // Earliest experimental builds used the returned matrix as CSS transform.
+  element.style.transform =
+    drawResult.toString()
 }
 
 function devicePixelRatioFor(
