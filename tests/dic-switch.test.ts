@@ -1,7 +1,10 @@
 import { describe, expect, it, vi } from 'vitest'
 import { resolveSwitch } from '../src/core/resolved-switch'
 import { resolveView } from '../src/core/resolved-view'
-import type { ViewClickEvent } from '../src/core/view-types'
+import type {
+  ViewClickEvent,
+  ViewPointerEvent,
+} from '../src/core/view-types'
 import { compileDiCSwitch } from '../src/renderers/dic/compile-switch'
 import { createDiCInteractionController } from '../src/renderers/dic/interaction'
 import { layoutDiCViewTree } from '../src/renderers/dic/layout-tree'
@@ -217,6 +220,80 @@ describe('DiC Switch adapter', () => {
       },
       defaultPrevented: true,
     })
+  })
+
+  it('lets public pointer handlers cancel Switch drag start', () => {
+    const onChange = vi.fn()
+    const capture = vi.fn()
+    const onPointerDown = vi.fn(
+      (event: ViewPointerEvent) => {
+        event.preventDefault()
+      },
+    )
+    const node = compileDiCSwitch(
+      resolveView(
+        {
+          onPointerDown,
+        },
+        defaultBreakpoints,
+      ),
+      resolveSwitch({
+        checked: false,
+      }),
+      defaultTheme,
+      {
+        onChange,
+      },
+    )
+    const layout = layoutDiCViewTree(
+      node,
+      {
+        width: 100,
+        height: 100,
+        root: false,
+      },
+      {
+        viewportWidth: 100,
+        rem: 16,
+        theme: defaultTheme,
+      },
+    )
+    const controller = createDiCInteractionController({
+      getLayout: () => layout,
+      invalidate: vi.fn(),
+    })
+    const thumb = node.children[0]
+
+    controller.dispatchPointer({
+      type: 'pointerdown',
+      x: 10,
+      y: 10,
+      pointerId: 11,
+      pointerType: 'mouse',
+      isPrimary: true,
+      button: 0,
+      buttons: 1,
+      capture,
+    })
+
+    expect(onPointerDown).toHaveBeenCalledTimes(1)
+    expect(
+      onPointerDown.mock.calls[0]?.[0].defaultPrevented,
+    ).toBe(true)
+    expect(capture).not.toHaveBeenCalled()
+    expect(thumb?.paint).toMatchObject({
+      width: 1.25,
+      height: 1.25,
+      transform: [
+        {
+          translate: [
+            '2px',
+            '2px',
+          ],
+        },
+      ],
+    })
+    expect(onChange).not.toHaveBeenCalled()
   })
 
   it('drags the thumb without layout reads and commits once past midpoint', () => {
