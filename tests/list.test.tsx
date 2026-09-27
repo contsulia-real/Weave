@@ -2,6 +2,7 @@ import {
   cleanup,
   fireEvent,
   render,
+  waitFor,
 } from '@testing-library/react'
 import {
   IconUser,
@@ -643,6 +644,108 @@ describe('List', () => {
     ).toContain(
       '--weave-list-item-selected-background:var(--weave-color-primary)',
     )
+  })
+
+  it('window-renders virtualized data instead of mounting every item', async () => {
+    const items =
+      Array.from(
+        {
+          length: 100,
+        },
+        (_, index) => ({
+          id:
+            `item-${index}`,
+          text:
+            `Item ${index}`,
+        }),
+      )
+
+    const {
+      getByRole,
+    } = render(
+      <List
+        items={items}
+        virtualized
+        viewProps={{
+          height: 12,
+          overflow: 'auto',
+        }}
+      />,
+    )
+
+    const list =
+      getByRole('list')
+
+    await waitFor(() => {
+      const rendered =
+        list.querySelectorAll(
+          '[data-weave-list-item]',
+        )
+
+      expect(
+        rendered.length,
+      ).toBeGreaterThan(0)
+      expect(
+        rendered.length,
+      ).toBeLessThan(
+        items.length,
+      )
+    })
+
+    expect(
+      list.querySelector(
+        '[data-weave-list-virtual-spacer]',
+      ),
+    ).not.toBeNull()
+  })
+
+  it('keeps the active selected item mounted even when it starts outside the virtual window', async () => {
+    const items =
+      Array.from(
+        {
+          length: 100,
+        },
+        (_, index) => ({
+          id:
+            `item-${index}`,
+          text:
+            `Item ${index}`,
+        }),
+      )
+
+    const {
+      getByRole,
+    } = render(
+      <List
+        items={items}
+        virtualized
+        selection="single"
+        selected="item-99"
+        viewProps={{
+          height: 12,
+          overflow: 'auto',
+        }}
+      />,
+    )
+
+    const list =
+      getByRole('listbox')
+
+    await waitFor(() => {
+      const selected =
+        list.querySelector<HTMLElement>(
+          '[data-weave-list-item-id="item-99"]',
+        )
+
+      expect(
+        selected,
+      ).not.toBeNull()
+      expect(
+        selected?.getAttribute(
+          'aria-selected',
+        ),
+      ).toBe('true')
+    })
   })
 
   it('rejects duplicate item ids', () => {
