@@ -1,7 +1,10 @@
 import { useState } from 'react'
 import {
+  IconAlertTriangle,
   IconArrowRight,
   IconBell,
+  IconCheck,
+  IconTrash,
   IconPlus,
   IconSearch,
   IconSearchFilled,
@@ -14,6 +17,7 @@ import {
   Image,
   Input,
   Progress,
+  Snack,
   Switch,
   Text,
   ThemeProvider,
@@ -75,6 +79,9 @@ function DemoBox({ label }: { label: string }) {
 
 function App() {
   const [progressHigh, setProgressHigh] = useState(false)
+  const [showSavedSnack, setShowSavedSnack] = useState(false)
+  const [showWarningSnack, setShowWarningSnack] = useState(false)
+  const [showActionSnack, setShowActionSnack] = useState(false)
   const progress = progressHigh ? 0.82 : 0.28
 
   return (
@@ -513,6 +520,71 @@ function App() {
               <Button text="Right / complex" variant="secondary" />
             </ToolTip>
           </View>
+        </View>
+
+        <View layout="flex" direction="column" gap={0.75}>
+          <Text
+            typo="headline-small"
+            viewProps={{
+              role: 'heading',
+              level: 2,
+            }}
+          >
+            Snack
+          </Text>
+          <Text typo="body-medium" color="secondary">
+            点击后进入 bottom-right 共享区域；连续打开多个实例会自动堆叠，hover / focus 会暂停自动关闭。
+          </Text>
+
+          <View layout="flex" direction="row" gap={0.75} wrap>
+            <Button
+              text="Success snack"
+              variant="secondary"
+              onClick={() => setShowSavedSnack(true)}
+            />
+            <Button
+              text="Warning snack"
+              variant="secondary"
+              onClick={() => setShowWarningSnack(true)}
+            />
+            <Button
+              text="Action snack"
+              variant="secondary"
+              onClick={() => setShowActionSnack(true)}
+            />
+          </View>
+
+          <Snack
+            text="Changes saved"
+            icon={IconCheck}
+            variant="success"
+            placement="bottom-right"
+            duration={3200}
+            open={showSavedSnack}
+            onOpenChange={setShowSavedSnack}
+          />
+
+          <Snack
+            text="Connection is unstable"
+            icon={IconAlertTriangle}
+            variant="warning"
+            placement="bottom-right"
+            duration={4200}
+            open={showWarningSnack}
+            onOpenChange={setShowWarningSnack}
+          />
+
+          <Snack
+            text="File deleted"
+            icon={IconTrash}
+            variant="danger"
+            action="Undo"
+            onAction={() => {}}
+            placement="bottom-right"
+            duration={5000}
+            open={showActionSnack}
+            onOpenChange={setShowActionSnack}
+          />
         </View>
 
         <View layout="flex" direction="column" gap={0.75}>
