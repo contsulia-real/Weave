@@ -264,10 +264,6 @@ export function resolveToolTipTheme(
       length(base?.maxWidth),
     '--weave-tooltip-shadow':
       shadowToken(base?.shadow),
-    '--weave-tooltip-depth':
-      length(base?.depth),
-    '--weave-tooltip-depth-color':
-      color(base?.depthColor),
     '--weave-tooltip-arrow-size':
       length(base?.arrowSize),
   }
