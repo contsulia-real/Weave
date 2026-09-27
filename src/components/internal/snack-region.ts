@@ -25,7 +25,10 @@ interface HostPositionEntry {
 const regions =
   new WeakMap<
     HTMLElement,
-    Map<SnackPlacement, RegionEntry>
+    Map<
+      string,
+      Map<SnackPlacement, RegionEntry>
+    >
   >()
 
 const hostPositions =
@@ -395,11 +398,13 @@ function scheduleSync(
 
 export function getSnackRegion(
   host: HTMLElement,
+  scopeId: string,
   placement: SnackPlacement,
 ): HTMLDivElement | null {
   return (
     regions
       .get(host)
+      ?.get(scopeId)
       ?.get(placement)
       ?.element ??
     null
@@ -413,15 +418,27 @@ export interface SnackRegionHandle {
 
 export function retainSnackRegion(
   host: HTMLElement,
+  scopeId: string,
   placement: SnackPlacement,
 ): SnackRegionHandle {
-  let byPlacement =
+  let byScope =
     regions.get(host)
+
+  if (byScope === undefined) {
+    byScope = new Map()
+    regions.set(
+      host,
+      byScope,
+    )
+  }
+
+  let byPlacement =
+    byScope.get(scopeId)
 
   if (byPlacement === undefined) {
     byPlacement = new Map()
-    regions.set(
-      host,
+    byScope.set(
+      scopeId,
       byPlacement,
     )
   }
@@ -444,6 +461,14 @@ export function retainSnackRegion(
           byPlacement?.delete(
             placement,
           )
+
+          if (
+            byPlacement?.size === 0
+          ) {
+            byScope?.delete(
+              scopeId,
+            )
+          }
           return
         }
 
@@ -470,6 +495,8 @@ export function retainSnackRegion(
     scoped
       ? 'container'
       : 'viewport'
+  element.dataset.weaveSnackProviderScope =
+    scopeId
 
   const releaseHostPosition =
     retainHostPosition(host)
@@ -500,6 +527,14 @@ export function retainSnackRegion(
         byPlacement?.delete(
           placement,
         )
+
+        if (
+          byPlacement?.size === 0
+        ) {
+          byScope?.delete(
+            scopeId,
+          )
+        }
         return
       }
 
