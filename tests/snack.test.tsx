@@ -183,13 +183,50 @@ describe('Snack', () => {
       ),
     ).toBe('2')
 
+    const snacks =
+      Array.from(
+        region?.querySelectorAll<HTMLElement>(
+          '[data-weave-snack]',
+        ) ?? [],
+      )
+
+    expect(
+      snacks[0]?.hasAttribute(
+        'data-weave-snack-stack-hidden',
+      ),
+    ).toBe(true)
+    expect(
+      snacks[1]?.hasAttribute(
+        'data-weave-snack-stack-hidden',
+      ),
+    ).toBe(true)
+
+    expect(
+      snacks[2]?.getAttribute(
+        'data-weave-snack-stack-rank',
+      ),
+    ).toBe('2')
+    expect(
+      snacks[3]?.getAttribute(
+        'data-weave-snack-stack-rank',
+      ),
+    ).toBe('1')
+    expect(
+      snacks[4]?.getAttribute(
+        'data-weave-snack-stack-rank',
+      ),
+    ).toBe('0')
+
     const stylesheet =
       document.querySelector<HTMLStyleElement>(
         'style[data-weave-snack-styles]',
       )?.textContent ?? ''
 
     expect(stylesheet).toContain(
-      'nth-last-child(n + 4)',
+      'data-weave-snack-stack-hidden',
+    )
+    expect(stylesheet).toContain(
+      'data-weave-snack-stack-rank="1"',
     )
     expect(stylesheet).toContain(
       'data-weave-snack-folded',
