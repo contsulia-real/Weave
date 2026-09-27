@@ -1,13 +1,21 @@
-import type { CSSProperties } from 'react'
+import {
+  createElement,
+  type CSSProperties,
+} from 'react'
 import type {
   ValidateDynamicBreakpointProps,
   ViewProps,
   ViewResponsiveStyle,
 } from '../core/view-types'
-import type {
-  ResolvedView,
-  ResolvedViewStyle,
+import {
+  resolveView,
+  type ResolvedView,
+  type ResolvedViewStyle,
 } from '../core/resolved-view'
+import { useWeaveRenderer } from '../renderers/renderer-context'
+import { assertDiCViewPropsSupported } from '../renderers/dic/react-compat'
+import { DIC_VIEW_HOST } from '../renderers/dic/react-host-types'
+import { useTheme } from '../theme/theme-context'
 import { AutoScrollbar } from './internal/AutoScrollbar'
 import { useViewHost } from './internal/use-view-host'
 
@@ -47,8 +55,14 @@ function scrollOverflowClass(
 ): string | undefined {
   if (!scrollableOverflow(value)) return undefined
 
-  const suffix = value === 'scroll' ? 'scroll' : 'auto'
-  const axisPart = axis.length === 0 ? '' : `-${axis}`
+  const suffix =
+    value === 'scroll'
+      ? 'scroll'
+      : 'auto'
+  const axisPart =
+    axis.length === 0
+      ? ''
+      : `-${axis}`
 
   return `weave-scroll-host--overflow${axisPart}-${suffix}`
 }
@@ -56,16 +70,24 @@ function scrollOverflowClass(
 function cssString(
   value: CSSProperties['overflow'] | undefined,
 ): string | undefined {
-  return typeof value === 'string' ? value : undefined
+  return typeof value === 'string'
+    ? value
+    : undefined
 }
 
 function overflowIntent(
   props: ViewProps<HTMLDivElement>,
 ) {
   return {
-    styleOverflow: cssString(props.style?.overflow),
-    styleOverflowX: cssString(props.style?.overflowX),
-    styleOverflowY: cssString(props.style?.overflowY),
+    styleOverflow: cssString(
+      props.style?.overflow,
+    ),
+    styleOverflowX: cssString(
+      props.style?.overflowX,
+    ),
+    styleOverflowY: cssString(
+      props.style?.overflowY,
+    ),
   }
 }
 
@@ -88,15 +110,8 @@ function viewMayScroll(
   )
 }
 
-export function View<
-  TProps extends ViewProps<HTMLDivElement>,
->(
-  props: TProps &
-    ValidateDynamicBreakpointProps<
-      TProps,
-      ViewProps<HTMLDivElement>,
-      ViewResponsiveStyle
-    >,
+function DOMView(
+  props: ViewProps<HTMLDivElement>,
 ) {
   const { children } = props
   const {
@@ -113,10 +128,21 @@ export function View<
     props.scrollbar !== undefined,
   )
   const resolvedClassName = [
-    mountsScrollbar ? 'weave-scroll-host' : undefined,
-    scrollOverflowClass('', props.overflow),
-    scrollOverflowClass('x', props.overflowX),
-    scrollOverflowClass('y', props.overflowY),
+    mountsScrollbar
+      ? 'weave-scroll-host'
+      : undefined,
+    scrollOverflowClass(
+      '',
+      props.overflow,
+    ),
+    scrollOverflowClass(
+      'x',
+      props.overflowX,
+    ),
+    scrollOverflowClass(
+      'y',
+      props.overflowY,
+    ),
     className,
   ]
     .filter(Boolean)
@@ -129,7 +155,11 @@ export function View<
         ref={elementRef}
         data-weave-view=""
         data-weave-layout={resolved.layout}
-        data-weave-scroll-host={mountsScrollbar ? '' : undefined}
+        data-weave-scroll-host={
+          mountsScrollbar
+            ? ''
+            : undefined
+        }
         className={resolvedClassName}
         style={inlineStyle}
       >
@@ -140,9 +170,56 @@ export function View<
         <AutoScrollbar
           targetRef={elementRef}
           config={props.scrollbar}
-          overflowIntent={overflowIntent(props)}
+          overflowIntent={
+            overflowIntent(props)
+          }
         />
       ) : null}
     </>
   )
+}
+
+function DiCView(
+  props: ViewProps<HTMLDivElement>,
+) {
+  const { theme } = useTheme()
+
+  assertDiCViewPropsSupported(
+    props as ViewProps<HTMLElement>,
+    theme.breakpoints,
+    'View',
+  )
+
+  const view = resolveView(
+    props,
+    theme.breakpoints,
+  )
+
+  return createElement(
+    DIC_VIEW_HOST,
+    {
+      view,
+      theme,
+    },
+    props.children,
+  )
+}
+
+export function View<
+  TProps extends ViewProps<HTMLDivElement>,
+>(
+  props: TProps &
+    ValidateDynamicBreakpointProps<
+      TProps,
+      ViewProps<HTMLDivElement>,
+      ViewResponsiveStyle
+    >,
+) {
+  const renderer = useWeaveRenderer()
+  const runtimeProps =
+    props as ViewProps<HTMLDivElement>
+
+  return renderer === 'dic'
+    ? <DiCView {...runtimeProps} />
+    : <DOMView {...runtimeProps} />
 }
