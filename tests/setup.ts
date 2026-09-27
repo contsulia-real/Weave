@@ -1,10 +1,7 @@
-declare global {
-  var IS_REACT_ACT_ENVIRONMENT:
-    | boolean
-    | undefined
-}
+const reactTestGlobal =
+  globalThis as typeof globalThis & {
+    IS_REACT_ACT_ENVIRONMENT?: boolean
+  }
 
-globalThis.IS_REACT_ACT_ENVIRONMENT =
+reactTestGlobal.IS_REACT_ACT_ENVIRONMENT =
   true
-
-export {}
