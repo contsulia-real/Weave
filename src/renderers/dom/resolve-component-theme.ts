@@ -266,5 +266,7 @@ export function resolveToolTipTheme(
       shadowToken(base?.shadow),
     '--weave-tooltip-arrow-size':
       length(base?.arrowSize),
+    '--weave-tooltip-motion-offset':
+      length(base?.motionOffset),
   }
 }
