@@ -3745,12 +3745,12 @@ List
     {
       id: "profile",
       text: "个人资料",
-      icon: "user",
+      icon: IconUser,
     },
     {
       id: "settings",
       text: "设置",
-      icon: "settings",
+      icon: IconSettings,
     },
   ]}
 />
@@ -3764,7 +3764,7 @@ List
     {
       id: "wifi",
       text: "Wi-Fi",
-      icon: "wifi",
+      icon: IconWifi,
       trailing: <Switch checked={wifi} />,
     },
   ]}
@@ -3805,9 +3805,26 @@ disabled?
 
 ## 21.4 选择
 
+不需要选择时：
+
 ```tsx
 <List
   items={items}
+/>
+```
+
+默认：
+
+```text
+selection = none
+```
+
+单选：
+
+```tsx
+<List
+  items={items}
+  selection="single"
   selected={selected}
   onSelect={setSelected}
 />
@@ -3832,6 +3849,23 @@ single
 multiple
 ```
 
+选择值：
+
+```text
+none
+→ 不存在 selected / defaultSelected / onSelect
+
+single
+→ string | null
+
+multiple
+→ readonly string[]
+```
+
+`selected` 存在时为受控模式；否则使用 `defaultSelected` 建立非受控初值。
+
+single 模式再次激活已经选中的项不会自动清空选择；multiple 模式再次激活已选项会取消该项。
+
 ## 21.5 方向与间距
 
 ```text
@@ -3846,7 +3880,42 @@ orientation
 
 `gap={0.5}` 表示 `0.5rem`。
 
-## 21.6 滚动
+## 21.6 键盘、焦点与可访问性
+
+`selection="none"`：
+
+```text
+List     → role="list"
+ListItem → role="listitem"
+```
+
+`selection="single" | "multiple"`：
+
+```text
+List     → role="listbox"
+ListItem → role="option"
+```
+
+multiple 额外暴露：
+
+```text
+aria-multiselectable="true"
+```
+
+可选择 List 使用 roving focus：
+
+- 当前 active item 为 `tabIndex=0`；
+- 其他可选择项为 `tabIndex=-1`；
+- disabled item 不进入键盘移动序列；
+- vertical：`ArrowUp / ArrowDown`；
+- horizontal：`ArrowLeft / ArrowRight`；
+- `Home / End` 移动到首个 / 最后一个可用项；
+- `Enter / Space` 激活当前项；
+- 鼠标 / focus 进入某项后，该项成为新的 active item。
+
+ListItem 内部的 Button / Switch / input / link 等交互控件拥有自己的交互语义；操作这些 trailing 控件时，不得同时触发行选择。
+
+## 21.7 滚动
 
 List 不重新发明滚动 API。
 
@@ -3862,7 +3931,7 @@ List 不重新发明滚动 API。
 
 需要滚动时框架自动挂载 Scrollbar。
 
-## 21.7 虚拟化
+## 21.8 虚拟化
 
 虚拟化是 List 自己的自然能力：
 
@@ -3875,7 +3944,72 @@ List 不重新发明滚动 API。
 
 不另造 `VirtualList`。
 
-## 21.8 List 当前 API
+`virtualized` 使用真正的窗口化渲染：
+
+- 只挂载 viewport + overscan 范围内的 ListItem；
+- 使用内部估算建立初始窗口；
+- 项挂载后通过真实尺寸测量修正后续 offset；
+- vertical / horizontal 使用各自主轴尺寸；
+- 当前 active item 即使暂时位于窗口外，也必须保留挂载，保证 roving focus 和辅助技术状态连续；
+- 键盘移动到尚未挂载的项时，先让该项进入渲染窗口，再 focus；
+- 滚动容器仍然是 List 自身的 `viewProps`，继续复用 Weave Scrollbar；
+- 不增加 `VirtualList`、`itemHeight` 或另一套滚动 API。
+
+## 21.9 视觉与反馈
+
+ListItem 是“列表行 / 可选择项”，不是 Button。
+
+默认视觉：
+
+- flat surface，不使用 Button 的 depth / hoverLift / pressDepth；
+- hover 只改变行 surface；
+- active 只表达当前直接操作；
+- selected 使用轻量 primary tonal surface；
+- focus-visible 使用统一 focus outline；
+- disabled 降低强调并从键盘移动序列中排除；
+- 不使用 scale、弹跳或实体底边。
+
+共享设计词汇仍来自主题的 color / typography / spacing / radius / feedback / motion，但按 ListItem 自己的语义组合。
+
+主题入口：
+
+```text
+theme.components.List.base
+theme.components.ListItem.base
+```
+
+`List.base`：
+
+```text
+gap
+```
+
+`ListItem.base`：
+
+```text
+background
+hoverBackground
+activeBackground
+selectedBackground
+selectedHoverBackground
+color
+secondaryColor
+selectedColor
+radius
+paddingX
+paddingY
+gap
+iconSize
+primaryTypo
+secondaryTypo
+focusOutlineWidth
+focusOutlineColor
+focusOutlineStyle
+focusOutlineOffset
+disabledOpacity
+```
+
+## 21.10 List 当前 API
 
 ```text
 items
@@ -3887,7 +4021,19 @@ orientation
 gap
 virtualized
 children
+viewProps
 ```
+
+`ListItem`：
+
+```text
+id
+children
+disabled
+viewProps
+```
+
+数据模式和组合模式中的 `id` 都要求在同一个 List 内唯一；重复 id 直接视为配置错误。
 
 ---
 
