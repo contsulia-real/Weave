@@ -654,6 +654,12 @@ export function Snack({
                 'var(--weave-snack-progress-height)',
               pointerEvents:
                 'none',
+              data: {
+                'weave-snack-lifetime-progress':
+                  lifetimeProgress.toFixed(
+                    4,
+                  ),
+              },
               'aria-hidden':
                 true,
             }}
