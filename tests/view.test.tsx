@@ -98,6 +98,45 @@ describe('View DOM backend', () => {
     )
   })
 
+  it('maps semantic layer to the theme z-index and lets zIndex override it', () => {
+    const { getByTestId, rerender } = render(
+      <View
+        layer="tooltip"
+        data={{ testid: 'layered' }}
+      />,
+    )
+
+    const element = getByTestId('layered')
+    expect(
+      runtimeRule(
+        element,
+        'weave-props-',
+      ),
+    ).toContain(
+      '--weave-z-index:var(--weave-layer-tooltip);',
+    )
+    expect(
+      element.getAttribute('layer'),
+    ).toBeNull()
+
+    rerender(
+      <View
+        layer="tooltip"
+        zIndex={777}
+        data={{ testid: 'layered' }}
+      />,
+    )
+
+    expect(
+      runtimeRule(
+        element,
+        'weave-props-',
+      ),
+    ).toContain(
+      '--weave-z-index:777;',
+    )
+  })
+
   it('forwards React events and high-level semantics', () => {
     const onClick = vi.fn()
 
