@@ -47,5 +47,8 @@
   },
   "engines": {
     "node": "^22.22.2 || ^24.15.0 || >=26"
+  },
+  "dependencies": {
+    "react-reconciler": "0.34.0"
   }
 }
