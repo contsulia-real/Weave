@@ -48,13 +48,21 @@ interface SnackBaseProps {
   viewProps?: SnackViewProps
 }
 
+type SnackAction =
+  | {
+      action?: never
+      onAction?: never
+    }
+  | {
+      action: ReactNode
+      onAction: () => void
+    }
+
 type SnackShortcutContent = {
   children?: never
   text: ReactNode
   icon?: SnackIcon
-  action?: ReactNode
-  onAction?: () => void
-}
+} & SnackAction
 
 type SnackCustomContent = {
   children: ReactNode
