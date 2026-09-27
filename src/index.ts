@@ -1,3 +1,10 @@
+export { createRoot } from './root'
+export type {
+  Root,
+  RootFallback,
+  RootOptions,
+} from './root'
+
 export { View } from './components/View'
 export { Text } from './components/Text'
 export { Image } from './components/Image'
