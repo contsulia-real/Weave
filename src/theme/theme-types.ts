@@ -231,7 +231,6 @@ export interface SnackThemeBase {
   color?: string
   borderColor?: string
   borderWidth?: ThemeScaleValue
-  accentWidth?: ThemeScaleValue
   radius?: ThemeScaleValue
   paddingX?: ThemeScaleValue
   paddingY?: ThemeScaleValue
@@ -239,6 +238,7 @@ export interface SnackThemeBase {
   minWidth?: ThemeScaleValue
   maxWidth?: ThemeScaleValue
   shadow?: string
+  iconSize?: ThemeScaleValue
   typo?: TextTypo
   motionOffset?: ThemeScaleValue
 }
