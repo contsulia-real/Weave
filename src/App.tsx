@@ -24,7 +24,6 @@ import {
   View,
   createTheme,
   useSnack,
-  type SnackDirection,
   type SnackPlacement,
 } from './index'
 
@@ -75,13 +74,6 @@ const snackPlacements: readonly SnackPlacement[] = [
   'bottom-right',
 ]
 
-const snackDirections: readonly SnackDirection[] = [
-  'up',
-  'down',
-  'left',
-  'right',
-]
-
 
 function DemoBox({ label }: { label: string }) {
   return (
@@ -102,10 +94,6 @@ function App() {
     snackPlacement,
     setSnackPlacement,
   ] = useState<SnackPlacement>('bottom-right')
-  const [
-    snackDirection,
-    setSnackDirection,
-  ] = useState<SnackDirection>('down')
   const progress = progressHigh ? 0.82 : 0.28
 
   return (
@@ -557,7 +545,7 @@ function App() {
             Snack
           </Text>
           <Text typo="body-medium" color="secondary">
-            每次点击都会创建新的 Snack 实例。placement 控制出现位置，direction 独立控制进入 / 退出方向；同一位置的多个实例自动堆叠。
+            每次点击都会创建新的 Snack 实例。placement 控制出现位置与自然进入方向；同一位置超过三条时自动折叠。
           </Text>
 
           <View layout="flex" direction="column" gap={0.5}>
@@ -585,31 +573,6 @@ function App() {
             </View>
           </View>
 
-          <View layout="flex" direction="column" gap={0.5}>
-            <Text typo="label-small" color="secondary">
-              Direction
-            </Text>
-            <View layout="flex" direction="row" gap={0.5} wrap>
-              {snackDirections.map((direction) => (
-                <Button
-                  key={direction}
-                  text={direction}
-                  size="small"
-                  variant={
-                    snackDirection === direction
-                      ? 'primary'
-                      : 'secondary'
-                  }
-                  viewProps={{
-                    onClick: () => {
-                      setSnackDirection(direction)
-                    },
-                  }}
-                />
-              ))}
-            </View>
-          </View>
-
           <View layout="flex" direction="row" gap={0.75} wrap>
             <Button
               text="Success snack"
@@ -621,7 +584,6 @@ function App() {
                     icon: IconCheck,
                     variant: 'success',
                     placement: snackPlacement,
-                    direction: snackDirection,
                     duration: 3200,
                   })
                 },
@@ -638,7 +600,6 @@ function App() {
                     icon: IconAlertTriangle,
                     variant: 'warning',
                     placement: snackPlacement,
-                    direction: snackDirection,
                     duration: 4200,
                   })
                 },
@@ -657,7 +618,6 @@ function App() {
                     action: 'Undo',
                     onAction: () => {},
                     placement: snackPlacement,
-                    direction: snackDirection,
                     duration: 5000,
                   })
                 },
@@ -674,7 +634,6 @@ function App() {
                     icon: IconCheck,
                     variant: 'success',
                     placement: snackPlacement,
-                    direction: snackDirection,
                     duration: 5000,
                   })
                   snack.show({
@@ -682,7 +641,6 @@ function App() {
                     icon: IconBell,
                     variant: 'info',
                     placement: snackPlacement,
-                    direction: snackDirection,
                     duration: 5000,
                   })
                   snack.show({
@@ -690,7 +648,6 @@ function App() {
                     icon: IconAlertTriangle,
                     variant: 'warning',
                     placement: snackPlacement,
-                    direction: snackDirection,
                     duration: 5000,
                   })
                 },
