@@ -167,6 +167,7 @@ const CUSTOM_PROP_KEYS = new Set<string>([
   'outlineColor',
   'outlineStyle',
   'outlineOffset',
+  'layer',
   'zIndex',
   'pointerEvents',
   'cursor',
@@ -437,7 +438,15 @@ function resolveStyleProps(
   setVariable(output, 'outlineStyle', props.outlineStyle, state)
   setVariable(output, 'outlineOffset', length(props.outlineOffset), state)
 
-  setVariable(output, 'zIndex', props.zIndex, state)
+  setVariable(
+    output,
+    'zIndex',
+    props.zIndex ??
+      (props.layer === undefined
+        ? undefined
+        : `var(--weave-layer-${props.layer})`),
+    state,
+  )
   setVariable(output, 'pointerEvents', props.pointerEvents, state)
   setVariable(output, 'cursor', props.cursor, state)
   setVariable(
