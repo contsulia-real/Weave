@@ -8,6 +8,7 @@ import type {
   ReactNode,
 } from 'react'
 import type {
+  SnackContainer,
   SnackController,
   SnackPlacement,
   SnackRequest,
@@ -16,7 +17,12 @@ import {
   SnackContext,
 } from './internal/snack-context'
 import {
+  SnackHostContext,
+  resolveSnackHost,
+} from './internal/snack-host-context'
+import {
   captureSnackRegionLayout,
+  getSnackRegion,
 } from './internal/snack-region'
 import { Snack } from './Snack'
 
@@ -31,6 +37,7 @@ interface SnackQueueItem {
 
 export interface SnackProviderProps {
   children?: ReactNode
+  container?: SnackContainer
 }
 
 function itemPlacement(
@@ -124,6 +131,7 @@ function rebalancePlacement(
 
 function capturePlacementLayout(
   placement: SnackPlacement,
+  container: SnackContainer | undefined,
 ): void {
   if (
     typeof document ===
@@ -132,9 +140,20 @@ function capturePlacementLayout(
     return
   }
 
+  const host =
+    resolveSnackHost(
+      container,
+      document,
+    )
+
+  if (host === null) {
+    return
+  }
+
   const region =
-    document.querySelector<HTMLDivElement>(
-      `[data-weave-snack-region="${placement}"]`,
+    getSnackRegion(
+      host,
+      placement,
     )
 
   if (region !== null) {
@@ -146,6 +165,7 @@ function capturePlacementLayout(
 
 export function SnackProvider({
   children,
+  container,
 }: SnackProviderProps) {
   const [
     items,
@@ -324,9 +344,12 @@ export function SnackProvider({
     <SnackContext.Provider
       value={controller}
     >
-      {children}
+      <SnackHostContext.Provider
+        value={container}
+      >
+        {children}
 
-      {items
+        {items
         .filter(
           (item) =>
             item.visible,
@@ -356,6 +379,7 @@ export function SnackProvider({
                 onDismissed={() => {
                   capturePlacementLayout(
                     placement,
+                    container,
                   )
 
                   setItems(
@@ -374,6 +398,7 @@ export function SnackProvider({
             )
           },
         )}
+      </SnackHostContext.Provider>
     </SnackContext.Provider>
   )
 }
