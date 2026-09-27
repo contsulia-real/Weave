@@ -15,6 +15,8 @@ import type {
 } from '../core/snack-types'
 import { Snack } from './Snack'
 
+const MAX_VISIBLE_SNACKS_PER_PLACEMENT = 3
+
 interface SnackQueueItem {
   id: string
   request: SnackRequest
@@ -51,14 +53,51 @@ export function SnackProvider({
           `weave-snack-${nextId.current}`
 
         setItems(
-          (current) => [
-            ...current,
-            {
-              id,
-              request,
-              open: true,
-            },
-          ],
+          (current) => {
+            const placement =
+              request.placement ??
+              'bottom-center'
+            const active =
+              current.filter(
+                (item) =>
+                  item.open &&
+                  (
+                    item.request
+                      .placement ??
+                    'bottom-center'
+                  ) === placement,
+              )
+
+            const overflowId =
+              active.length >=
+              MAX_VISIBLE_SNACKS_PER_PLACEMENT
+                ? active[0]?.id
+                : undefined
+
+            const next =
+              overflowId ===
+              undefined
+                ? current
+                : current.map(
+                    (item) =>
+                      item.id ===
+                      overflowId
+                        ? {
+                            ...item,
+                            open: false,
+                          }
+                        : item,
+                  )
+
+            return [
+              ...next,
+              {
+                id,
+                request,
+                open: true,
+              },
+            ]
+          },
         )
 
         return id
