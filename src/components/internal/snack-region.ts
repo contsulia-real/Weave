@@ -37,6 +37,7 @@ function syncOverflow(
   element: HTMLDivElement,
   snacks: HTMLElement[],
   hiddenCount: number,
+  hiddenClosing: boolean,
 ): void {
   const existing =
     overflowElement(element)
@@ -87,6 +88,10 @@ function syncOverflow(
 
   overflow.textContent =
     `+${hiddenCount}`
+  overflow.dataset.weaveSnackOverflowState =
+    hiddenClosing
+      ? 'closing'
+      : 'open'
 }
 
 export function syncSnackRegion(
@@ -106,6 +111,8 @@ export function syncSnackRegion(
   element.dataset.weaveSnackCount =
     String(total)
 
+  let hiddenClosing = false
+
   for (
     let index = 0;
     index < total;
@@ -123,6 +130,13 @@ export function syncSnackRegion(
     ) {
       snack.dataset.weaveSnackQueueHidden =
         ''
+
+      if (
+        snack.dataset.weaveSnackState ===
+          'closing'
+      ) {
+        hiddenClosing = true
+      }
     } else {
       delete snack.dataset
         .weaveSnackQueueHidden
@@ -133,6 +147,7 @@ export function syncSnackRegion(
     element,
     snacks,
     hiddenCount,
+    hiddenClosing,
   )
 }
 
