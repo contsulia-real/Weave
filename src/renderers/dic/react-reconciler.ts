@@ -49,6 +49,7 @@ interface DiCHostInstance {
   props: DiCHostProps
   children: DiCChild[]
   hidden: boolean
+  node?: DiCViewNode
 }
 
 type DiCChild =
@@ -204,6 +205,25 @@ function compileChildren(
   return output
 }
 
+function stableNode(
+  instance: DiCHostInstance,
+  next: DiCViewNode,
+): DiCViewNode {
+  const current = instance.node
+
+  if (current === undefined) {
+    instance.node = next
+    return next
+  }
+
+  Object.assign(
+    current,
+    next,
+  )
+
+  return current
+}
+
 function compileInstance(
   instance: DiCHostInstance,
 ): DiCViewNode {
@@ -212,17 +232,20 @@ function compileInstance(
       const props =
         instance.props as DiCViewHostProps
 
-      return withTheme(
-        compileDiCView(
-          props.view,
-          {
-            children: compileChildren(
-              instance,
-              props.theme,
-            ),
-          },
+      return stableNode(
+        instance,
+        withTheme(
+          compileDiCView(
+            props.view,
+            {
+              children: compileChildren(
+                instance,
+                props.theme,
+              ),
+            },
+          ),
+          props.theme,
         ),
-        props.theme,
       )
     }
 
@@ -230,13 +253,16 @@ function compileInstance(
       const props =
         instance.props as DiCTextHostProps
 
-      return withTheme(
-        compileDiCText(
-          props.view,
-          props.text,
-          textValue(instance),
+      return stableNode(
+        instance,
+        withTheme(
+          compileDiCText(
+            props.view,
+            props.text,
+            textValue(instance),
+          ),
+          props.theme,
         ),
-        props.theme,
       )
     }
 
@@ -245,12 +271,15 @@ function compileInstance(
       const props =
         instance.props as DiCImageHostProps
 
-      return withTheme(
-        compileDiCImage(
-          props.view,
-          props.image,
+      return stableNode(
+        instance,
+        withTheme(
+          compileDiCImage(
+            props.view,
+            props.image,
+          ),
+          props.theme,
         ),
-        props.theme,
       )
     }
 
@@ -258,19 +287,22 @@ function compileInstance(
       const props =
         instance.props as DiCButtonHostProps
 
-      return withTheme(
-        compileDiCButton(
-          props.view,
-          props.button,
+      return stableNode(
+        instance,
+        withTheme(
+          compileDiCButton(
+            props.view,
+            props.button,
+            props.theme,
+            {
+              children: compileChildren(
+                instance,
+                props.theme,
+              ),
+            },
+          ),
           props.theme,
-          {
-            children: compileChildren(
-              instance,
-              props.theme,
-            ),
-          },
         ),
-        props.theme,
       )
     }
 
@@ -279,16 +311,19 @@ function compileInstance(
       const props =
         instance.props as DiCSwitchHostProps
 
-      return withTheme(
-        compileDiCSwitch(
-          props.view,
-          props.value,
+      return stableNode(
+        instance,
+        withTheme(
+          compileDiCSwitch(
+            props.view,
+            props.value,
+            props.theme,
+            {
+              onChange: props.onChange,
+            },
+          ),
           props.theme,
-          {
-            onChange: props.onChange,
-          },
         ),
-        props.theme,
       )
     }
 
@@ -297,13 +332,16 @@ function compileInstance(
       const props =
         instance.props as DiCProgressHostProps
 
-      return withTheme(
-        compileDiCProgress(
-          props.view,
-          props.progress,
+      return stableNode(
+        instance,
+        withTheme(
+          compileDiCProgress(
+            props.view,
+            props.progress,
+            props.theme,
+          ),
           props.theme,
         ),
-        props.theme,
       )
     }
   }
@@ -380,6 +418,7 @@ const hostConfig: Record<string, unknown> = {
       props,
       children: [],
       hidden: false,
+      node: undefined,
     }
   },
   createTextInstance(
