@@ -146,7 +146,7 @@ export function SnackProvider({
             }}
           />
         ),
-      )}()}
+      )}
     </SnackContext.Provider>
   )
 }
