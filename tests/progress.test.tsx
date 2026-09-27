@@ -214,6 +214,9 @@ describe('Progress', () => {
     let callback:
       | IntersectionObserverCallback
       | undefined
+    let observerInstance:
+      | IntersectionObserver
+      | undefined
 
     class TestIntersectionObserver {
       constructor(
@@ -221,6 +224,8 @@ describe('Progress', () => {
           IntersectionObserverCallback,
       ) {
         callback = observerCallback
+        observerInstance =
+          this as unknown as IntersectionObserver
       }
 
       disconnect(): void {}
@@ -257,9 +262,7 @@ describe('Progress', () => {
             target: element,
           } as IntersectionObserverEntry,
         ],
-        new TestIntersectionObserver(
-          () => {},
-        ) as unknown as IntersectionObserver,
+        observerInstance as IntersectionObserver,
       )
 
       expect(
@@ -275,9 +278,7 @@ describe('Progress', () => {
             target: element,
           } as IntersectionObserverEntry,
         ],
-        new TestIntersectionObserver(
-          () => {},
-        ) as unknown as IntersectionObserver,
+        observerInstance as IntersectionObserver,
       )
 
       expect(
