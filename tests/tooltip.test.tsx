@@ -16,8 +16,10 @@ import {
 import {
   Button,
   Text,
+  ThemeProvider,
   ToolTip,
   View,
+  createTheme,
 } from '../src'
 
 afterEach(() => {
@@ -247,6 +249,77 @@ describe('ToolTip', () => {
       tooltip.style.transform,
     ).toBe(
       'translate(-50%, 1rem)',
+    )
+  })
+
+  it('uses the Weave material language and keeps it themeable', () => {
+    const theme =
+      createTheme({
+        components: {
+          ToolTip: {
+            base: {
+              background: 'primary',
+              color: 'onPrimary',
+              borderColor: 'primary',
+              depthColor: 'primary',
+            },
+          },
+        },
+      })
+
+    const {
+      getByRole,
+    } = render(
+      <ThemeProvider
+        theme={theme}
+        mode="light"
+      >
+        <ToolTip
+          content="Themed"
+          defaultOpen
+        >
+          <Button text="Target" />
+        </ToolTip>
+      </ThemeProvider>,
+    )
+
+    const tooltip =
+      getByRole('tooltip')
+    const themeClass =
+      [...tooltip.classList].find(
+        (name) =>
+          name.startsWith(
+            'weave-tooltip-theme-',
+          ),
+      )
+
+    expect(themeClass).toBeDefined()
+
+    const runtimeStyle =
+      document.querySelector<HTMLStyleElement>(
+        `style[data-weave-runtime-class="${themeClass}"]`,
+      )?.textContent ?? ''
+
+    expect(runtimeStyle).toContain(
+      '--weave-tooltip-background:',
+    )
+    expect(runtimeStyle).toContain(
+      '--weave-color-primary',
+    )
+
+    const stylesheet =
+      document.querySelector<HTMLStyleElement>(
+        'style[data-weave-tooltip-styles]',
+      )?.textContent ?? ''
+
+    expect(stylesheet).toContain(
+      '--weave-tooltip-depth',
+    )
+    expect(stylesheet).toContain(
+      '::before',
+    )
+    expect(stylesheet).toContain(
+      '@starting-style',
     )
   })
 
