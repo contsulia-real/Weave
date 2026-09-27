@@ -48,7 +48,6 @@ function SnackTriggerHarness() {
           snack.show({
             text: 'Queued',
             placement: 'top-left',
-            direction: 'right',
             persistent: true,
           })
         },
@@ -90,34 +89,7 @@ describe('Snack', () => {
     ).toHaveLength(2)
   })
 
-  it('keeps placement and motion direction independent', () => {
-    render(
-      <Snack
-        text="Directional"
-        placement="top-right"
-        direction="left"
-        persistent
-      />,
-    )
-
-    const snack =
-      document.querySelector(
-        '[data-weave-snack]',
-      )
-
-    expect(
-      snack?.getAttribute(
-        'data-weave-snack-placement',
-      ),
-    ).toBe('top-right')
-    expect(
-      snack?.getAttribute(
-        'data-weave-snack-direction',
-      ),
-    ).toBe('left')
-  })
-
-  it('uses tonal material instead of the old accent stripe', () => {
+  it('uses the shared Weave surface material instead of a tinted toast card', () => {
     render(
       <Snack
         text="Material"
@@ -132,10 +104,13 @@ describe('Snack', () => {
       )?.textContent ?? ''
 
     expect(stylesheet).toContain(
-      'color-mix',
+      '--weave-component-background: var(--weave-snack-background);',
     )
     expect(stylesheet).toContain(
       '.weave-snack__icon-shell',
+    )
+    expect(stylesheet).toContain(
+      '0 0.125rem 0',
     )
     expect(stylesheet).not.toContain(
       '--weave-snack-accent-width',
@@ -174,6 +149,119 @@ describe('Snack', () => {
         'data-variant',
       ),
     ).toBe('success')
+  })
+
+  it('folds overflowing regions after three visible Snacks', () => {
+    render(
+      <>
+        <Snack text="One" persistent />
+        <Snack text="Two" persistent />
+        <Snack text="Three" persistent />
+        <Snack text="Four" persistent />
+        <Snack text="Five" persistent />
+      </>,
+    )
+
+    const region =
+      document.querySelector(
+        '[data-weave-snack-region="bottom-center"]',
+      )
+
+    expect(
+      region?.getAttribute(
+        'data-weave-snack-count',
+      ),
+    ).toBe('5')
+    expect(
+      region?.hasAttribute(
+        'data-weave-snack-folded',
+      ),
+    ).toBe(true)
+    expect(
+      region?.getAttribute(
+        'data-weave-snack-hidden-count',
+      ),
+    ).toBe('2')
+
+    const stylesheet =
+      document.querySelector<HTMLStyleElement>(
+        'style[data-weave-snack-styles]',
+      )?.textContent ?? ''
+
+    expect(stylesheet).toContain(
+      'nth-last-child(n + 4)',
+    )
+    expect(stylesheet).toContain(
+      'data-weave-snack-folded',
+    )
+  })
+
+  it('keeps each queued Snack on its own creation-time timer', () => {
+    vi.useFakeTimers()
+
+    function TimedHarness() {
+      const snack =
+        useSnack()
+
+      return (
+        <Button
+          text="Timed"
+          viewProps={{
+            onClick: () => {
+              snack.show({
+                text: 'Timed snack',
+                duration: 1000,
+              })
+            },
+          }}
+        />
+      )
+    }
+
+    const {
+      getByRole,
+    } = render(
+      <SnackProvider>
+        <TimedHarness />
+      </SnackProvider>,
+    )
+
+    const trigger =
+      getByRole(
+        'button',
+        {
+          name: 'Timed',
+        },
+      )
+
+    fireEvent.click(trigger)
+
+    act(() => {
+      vi.advanceTimersByTime(500)
+    })
+
+    fireEvent.click(trigger)
+
+    act(() => {
+      vi.advanceTimersByTime(500)
+    })
+
+    const snacks =
+      document.querySelectorAll(
+        '[data-weave-snack]',
+      )
+
+    expect(snacks).toHaveLength(2)
+    expect(
+      snacks[0]?.getAttribute(
+        'data-weave-snack-state',
+      ),
+    ).toBe('closing')
+    expect(
+      snacks[1]?.getAttribute(
+        'data-weave-snack-state',
+      ),
+    ).toBe('open')
   })
 
   it('stacks multiple snacks in one region', () => {
