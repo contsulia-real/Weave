@@ -28,6 +28,9 @@ describe('public Weave root', () => {
   let drawElementImage:
     | ReturnType<typeof vi.fn>
     | undefined
+  let drawImage:
+    | ReturnType<typeof vi.fn>
+    | undefined
   let updateElementGeometry:
     | ReturnType<typeof vi.fn>
     | undefined
@@ -39,6 +42,7 @@ describe('public Weave root', () => {
     requestPaint = vi.fn()
     reset = vi.fn()
     drawElementImage = vi.fn()
+    drawImage = vi.fn()
     updateElementGeometry = vi.fn()
     clearElementGeometry = vi.fn()
 
@@ -79,6 +83,7 @@ describe('public Weave root', () => {
           ({
             reset,
             drawElementImage,
+            drawImage,
             setTransform: vi.fn(),
             clearRect: vi.fn(),
           }) as unknown as
@@ -334,6 +339,111 @@ describe('public Weave root', () => {
     )
 
     root.unmount()
+  })
+
+  it('preserves the previous canvas frame while resizing', async () => {
+    const originalResizeObserver =
+      globalThis.ResizeObserver
+    const originalGetBoundingClientRect =
+      HTMLCanvasElement.prototype
+        .getBoundingClientRect
+
+    let width = 200
+    let height = 100
+
+    Object.defineProperty(
+      globalThis,
+      'ResizeObserver',
+      {
+        configurable: true,
+        value: undefined,
+      },
+    )
+
+    HTMLCanvasElement.prototype.getBoundingClientRect =
+      () =>
+        ({
+          x: 0,
+          y: 0,
+          top: 0,
+          right: width,
+          bottom: height,
+          left: 0,
+          width,
+          height,
+          toJSON: () => ({}),
+        }) as DOMRect
+
+    try {
+      const container =
+        document.createElement('div')
+      document.body.appendChild(
+        container,
+      )
+
+      const root =
+        createRoot(container)
+
+      await act(async () => {
+        root.render(
+          <View>
+            <Text>Resize</Text>
+          </View>,
+        )
+      })
+
+      const canvas =
+        container.querySelector(
+          'canvas[data-weave-root-canvas]',
+        ) as HTMLCanvasElement | null
+
+      canvas?.dispatchEvent(
+        new Event('paint'),
+      )
+
+      drawImage?.mockClear()
+      requestPaint?.mockClear()
+
+      width = 260
+      height = 140
+
+      window.dispatchEvent(
+        new Event('resize'),
+      )
+
+      expect(drawImage).toHaveBeenCalledTimes(
+        2,
+      )
+      expect(
+        requestPaint,
+      ).toHaveBeenCalled()
+      expect(canvas?.width).toBe(
+        Math.round(
+          width *
+            window.devicePixelRatio,
+        ),
+      )
+      expect(canvas?.height).toBe(
+        Math.round(
+          height *
+            window.devicePixelRatio,
+        ),
+      )
+
+      root.unmount()
+    } finally {
+      HTMLCanvasElement.prototype.getBoundingClientRect =
+        originalGetBoundingClientRect
+
+      Object.defineProperty(
+        globalThis,
+        'ResizeObserver',
+        {
+          configurable: true,
+          value: originalResizeObserver,
+        },
+      )
+    }
   })
 
   it('falls back to ordinary DOM when HTML-in-Canvas is unavailable', async () => {
