@@ -245,6 +245,9 @@ export function Snack({
       [],
     )
 
+  // Controlled visibility is mirrored into presence so the
+  // exit transition can finish before the portal unmounts.
+  /* oxlint-disable react/set-state-in-effect */
   useEffect(() => {
     if (resolvedOpen) {
       dismissedRef.current = false
@@ -292,6 +295,7 @@ export function Snack({
     present,
     resolvedOpen,
   ])
+  /* oxlint-enable react/set-state-in-effect */
 
   useEffect(() => {
     if (
@@ -397,6 +401,9 @@ export function Snack({
     resolvedOpen,
   ])
 
+  // The shared portal region is external DOM state. React
+  // needs one synchronization render after retaining it.
+  /* oxlint-disable react/set-state-in-effect */
   useLayoutEffect(() => {
     if (
       !present ||
@@ -422,6 +429,7 @@ export function Snack({
     placement,
     present,
   ])
+  /* oxlint-enable react/set-state-in-effect */
 
   useLayoutEffect(() => {
     if (region === null) {
