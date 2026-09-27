@@ -256,11 +256,11 @@ export function Snack({
 
     const reducedMotion =
       typeof window !== 'undefined' &&
-      typeof window.matchMedia ===
+        typeof window.matchMedia ===
         'function'
         ? window.matchMedia(
-            '(prefers-reduced-motion: reduce)',
-          ).matches
+          '(prefers-reduced-motion: reduce)',
+        ).matches
         : false
 
     if (reducedMotion) {
@@ -315,13 +315,13 @@ export function Snack({
         Math.max(
           0,
           Date.now() -
-            startedAt,
+          startedAt,
         )
       const nextRemaining =
         Math.max(
           0,
           startRemaining -
-            elapsed,
+          elapsed,
         )
 
       setRemainingMs(
@@ -368,13 +368,13 @@ export function Snack({
         Math.max(
           0,
           Date.now() -
-            startedAt,
+          startedAt,
         )
       const nextRemaining =
         Math.max(
           0,
           startRemaining -
-            elapsed,
+          elapsed,
         )
 
       remainingMsRef.current =
@@ -396,7 +396,7 @@ export function Snack({
     if (
       !present ||
       typeof document ===
-        'undefined'
+      'undefined'
     ) {
       setRegion(null)
       return
@@ -494,7 +494,7 @@ export function Snack({
 
     if (
       event.target !==
-        event.currentTarget ||
+      event.currentTarget ||
       resolvedOpen ||
       visualState !== 'closing'
     ) {
@@ -514,68 +514,68 @@ export function Snack({
   const customContent =
     'children' in contentProps &&
     contentProps.children !==
-      undefined
+    undefined
 
   const content = customContent
     ? contentProps.children
     : (
-        <>
-          {contentProps.icon ===
+      <>
+        {contentProps.icon ===
           undefined
-            ? null
-            : iconContent(
-                contentProps.icon,
-              )}
+          ? null
+          : iconContent(
+            contentProps.icon,
+          )}
 
-          <Text
-            typo={
-              base?.typo ??
-              'body-medium'
-            }
-            viewProps={{
-              className:
-                'weave-snack__message',
-            }}
-          >
-            {contentProps.text}
-          </Text>
+        <Text
+          typo={
+            base?.typo ??
+            'body-medium'
+          }
+          viewProps={{
+            className:
+              'weave-snack__message',
+          }}
+        >
+          {contentProps.text}
+        </Text>
 
-          {contentProps.action ===
+        {contentProps.action ===
           undefined
-            ? null
-            : (
-                <Button
-                  text={
-                    contentProps.action
-                  }
-                  size="small"
-                  variant="ghost"
-                  viewProps={{
-                    className:
-                      'weave-snack__action',
-                    color:
-                      'var(--weave-snack-accent)',
-                    onClick: () => {
-                      contentProps.onAction()
-                      requestOpen(false)
-                    },
-                  }}
-                />
-              )}
-        </>
-      )
+          ? null
+          : (
+            <Button
+              text={
+                contentProps.action
+              }
+              size="small"
+              variant="ghost"
+              viewProps={{
+                className:
+                  'weave-snack__action',
+                color:
+                  'var(--weave-snack-accent)',
+                onClick: () => {
+                  contentProps.onAction()
+                  requestOpen(false)
+                },
+              }}
+            />
+          )}
+      </>
+    )
 
   const lifetimeProgress =
     durationMs <= 0
       ? 0
       : Math.min(
-          1,
-          Math.max(
-            0,
-            remainingMs /
-              durationMs,
-          ),
-        )
+        1,
+        Math.max(
+          0,
+          remainingMs /
+          durationMs,
+        ),
+      )
 
   return createPortal(
     <ThemeProvider
@@ -633,14 +633,13 @@ export function Snack({
         {content}
 
         {!persistent &&
-        resolvedOpen &&
-        durationMs > 0 ? (
+          resolvedOpen &&
+          durationMs > 0 ? (
           <Progress
             progress={
               lifetimeProgress
             }
             mode="linear"
-            tracked
             size="small"
             color="var(--weave-snack-accent)"
             speed={
@@ -657,9 +656,7 @@ export function Snack({
                 'var(--weave-snack-padding-x)',
               width: 'auto',
               bottom:
-                'calc(var(--weave-snack-padding-y) * 0.35)',
-              height:
-                'var(--weave-snack-progress-height)',
+                0,
               pointerEvents:
                 'none',
               data: {
