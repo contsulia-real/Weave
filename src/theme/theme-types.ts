@@ -235,8 +235,6 @@ export interface SnackThemeBase {
   paddingX?: ThemeScaleValue
   paddingY?: ThemeScaleValue
   gap?: ThemeScaleValue
-  minWidth?: ThemeScaleValue
-  maxWidth?: ThemeScaleValue
   shadow?: string
   iconSize?: ThemeScaleValue
   progressHeight?: ThemeScaleValue
