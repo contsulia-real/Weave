@@ -12,6 +12,7 @@ import type {
   ViewClickEvent,
   ViewKeyboardEvent,
   ViewPointerEvent,
+  ViewProps,
 } from '../core/view-types'
 import { resolveSwitch } from '../core/resolved-switch'
 import { resolveView } from '../core/resolved-view'
@@ -478,7 +479,7 @@ function DiCSwitch({
   })
 
   assertDiCViewPropsSupported(
-    viewProps as ViewProps<HTMLElement>,
+    viewProps as unknown as ViewProps<HTMLElement>,
     theme.breakpoints,
     'Switch.viewProps',
   )
