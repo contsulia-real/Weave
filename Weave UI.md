@@ -3447,9 +3447,12 @@ bottom-* → 从底部边缘进入 / 向底部边缘退出
 规则：
 
 - `persistent=false` 时按自己的 `duration` 自动关闭；
-- pointer 停留在当前 Snack 上时暂停该实例；
-- focus 位于当前 Snack 或其 action 内时暂停该实例；
-- `persistent=true` 时完全禁用自动关闭；
+- 每个自动关闭 Snack 底部显示一条线性 lifetime Progress，从 1 线性下降到 0；
+- Progress 与自动关闭计时必须共享同一份剩余时间状态，不允许视觉进度和真实关闭时刻分离；
+- pointer 停留在当前 Snack 上时暂停该实例，同时暂停 lifetime Progress；
+- focus 位于当前 Snack 或其 action 内时暂停该实例，同时暂停 lifetime Progress；
+- 离开后从真实剩余时间继续，不得重新获得完整 `duration`；
+- `persistent=true` 时完全禁用自动关闭，并且不显示 lifetime Progress；
 - 关闭进入 exit transition，transition 完成后才从队列移除。
 
 ## 20.6 placement、视觉 FIFO 与自动折叠
@@ -3532,7 +3535,10 @@ D
 - 不改变任何 Snack 自己的 duration；
 - 不暂停、重启或同步其他 Snack 的 timer；
 - 折叠计数使用当前主题 typography / color token；
-- 折叠计数独立占位，不覆盖任何 Snack。
+- 折叠计数独立占位，不覆盖任何 Snack；
+- 折叠中的 Snack 自己关闭时，不能因为 `display: none` 而完全没有视觉退出反馈；对应的 overflow 指示必须进入 closing 动效后再更新计数；
+- 当前面可见 Snack 离开、折叠中的下一条补入可见区时，该 Snack 使用一次短的 reveal 动效进入自己的 FIFO 位置；
+- overflow exit / reveal 都只使用 opacity + placement 对应轻微位移，不允许卡片重叠、scale 堆叠或改变 FIFO 顺序。
 
 ## 20.7 默认视觉语言
 
@@ -3588,6 +3594,7 @@ minWidth
 maxWidth
 shadow
 iconSize
+progressHeight
 typo
 motionOffset
 ```
@@ -3605,6 +3612,8 @@ Snack 的动效只表达：
 ```text
 出现
 退出
+折叠 overflow 的出栈反馈
+折叠项补入可见区
 FIFO 队列中某一项被移除后的自然布局补位
 ```
 
