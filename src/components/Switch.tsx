@@ -1,4 +1,5 @@
 import {
+  createElement,
   useEffect,
   useImperativeHandle,
   useInsertionEffect,
@@ -13,7 +14,11 @@ import type {
   ViewPointerEvent,
 } from '../core/view-types'
 import { resolveSwitch } from '../core/resolved-switch'
+import { resolveView } from '../core/resolved-view'
 import { resolveSwitchTheme } from '../renderers/dom/resolve-component-theme'
+import { assertDiCViewPropsSupported } from '../renderers/dic/react-compat'
+import { DIC_SWITCH_HOST } from '../renderers/dic/react-host-types'
+import { useWeaveRenderer } from '../renderers/renderer-context'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { ensureSwitchStylesheet } from '../renderers/dom/switch-stylesheet'
 import { useTheme } from '../theme/theme-context'
@@ -82,7 +87,7 @@ function clearDragShape(thumb: HTMLDivElement): void {
   thumb.style.removeProperty('transform')
 }
 
-export function Switch({
+function DOMSwitch({
   checked,
   defaultChecked = false,
   onChange,
@@ -447,4 +452,71 @@ export function Switch({
       />
     </View>
   )
+}
+
+
+function DiCSwitch({
+  checked,
+  defaultChecked = false,
+  onChange,
+  size = 'medium',
+  viewProps = {},
+}: SwitchProps) {
+  const { theme } = useTheme()
+  const [
+    uncontrolledChecked,
+    setUncontrolledChecked,
+  ] = useState(defaultChecked)
+  const isControlled =
+    checked !== undefined
+  const currentChecked =
+    checked ?? uncontrolledChecked
+  const value = resolveSwitch({
+    size,
+    checked: currentChecked,
+    disabled: viewProps.disabled,
+  })
+
+  assertDiCViewPropsSupported(
+    viewProps as ViewProps<HTMLElement>,
+    theme.breakpoints,
+    'Switch.viewProps',
+  )
+
+  const view = resolveView(
+    viewProps,
+    theme.breakpoints,
+  )
+
+  const commit = (
+    nextChecked: boolean,
+  ) => {
+    if (!isControlled) {
+      setUncontrolledChecked(
+        nextChecked,
+      )
+    }
+
+    onChange?.(nextChecked)
+  }
+
+  return createElement(
+    DIC_SWITCH_HOST,
+    {
+      view,
+      value,
+      theme,
+      onChange: commit,
+    },
+  )
+}
+
+export function Switch(
+  props: SwitchProps,
+) {
+  const renderer = useWeaveRenderer()
+
+  return renderer === 'dic'
+    ? <DiCSwitch {...props} />
+    : <DOMSwitch {...props} />
 }
