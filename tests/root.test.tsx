@@ -130,6 +130,52 @@ describe('public Weave root', () => {
     expect(container.childNodes).toHaveLength(0)
   })
 
+  it('keeps Input on the default DiC backend', async () => {
+    const container =
+      document.createElement('div')
+    document.body.appendChild(container)
+
+    Object.defineProperty(
+      container,
+      'getBoundingClientRect',
+      {
+        configurable: true,
+        value: () => ({
+          left: 0,
+          top: 0,
+          right: 320,
+          bottom: 180,
+          x: 0,
+          y: 0,
+          width: 320,
+          height: 180,
+          toJSON: () => ({}),
+        }),
+      },
+    )
+
+    const root = createRoot(container)
+
+    await act(async () => {
+      root.render(
+        <Input
+          value="first"
+          onChange={() => {}}
+        />,
+      )
+    })
+
+    expect(
+      container.querySelector(
+        'canvas[data-weave-root-canvas]',
+      ),
+    ).toBeInstanceOf(
+      HTMLCanvasElement,
+    )
+
+    root.unmount()
+  })
+
   it('falls the whole root back to DOM on an explicit DiC capability gap', async () => {
     const container =
       document.createElement('div')
