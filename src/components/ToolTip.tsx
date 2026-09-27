@@ -192,6 +192,9 @@ export function ToolTip({
       resolvedOpen
   }, [resolvedOpen])
 
+  // Controlled visibility is mirrored into presence so the
+  // exit transition can finish before the portal unmounts.
+  /* oxlint-disable react/set-state-in-effect */
   useEffect(() => {
     if (resolvedOpen) {
       setPresent(true)
@@ -237,6 +240,7 @@ export function ToolTip({
     present,
     resolvedOpen,
   ])
+  /* oxlint-enable react/set-state-in-effect */
 
   const clearOpenTimer =
     useCallback(() => {
