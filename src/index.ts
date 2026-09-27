@@ -146,6 +146,7 @@ export type {
 } from './core/tooltip-types'
 
 export type {
+  SnackContainer,
   SnackController,
   SnackIcon,
   SnackPlacement,
