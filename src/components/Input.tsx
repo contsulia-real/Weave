@@ -286,7 +286,7 @@ function DiCInput(
       disabled: input.disabled,
       readOnly: input.readOnly,
       required: input.required,
-    } as ViewProps<HTMLElement>
+    } as unknown as ViewProps<HTMLElement>
 
   assertDiCViewPropsSupported(
     hostProps,
