@@ -33,15 +33,67 @@ function hasSemanticValue(
 
 function shouldMirror(
   node: DiCViewNode,
+  referencedIds?: ReadonlySet<string>,
 ): boolean {
+  const logicalId = node.eventTarget.id
+
   return (
     node.content?.kind === 'text' ||
     node.content?.kind === 'image' ||
     hasSemanticValue(node.semantics) ||
     node.interaction?.focusable === true ||
     node.interaction?.autoFocus === true ||
-    node.interaction?.tabIndex !== undefined
+    node.interaction?.tabIndex !== undefined ||
+    (
+      logicalId !== undefined &&
+      referencedIds?.has(logicalId) === true
+    )
   )
+}
+
+function addReferences(
+  value: string | undefined,
+  output: Set<string>,
+): void {
+  if (value === undefined) return
+
+  for (const id of value.split(/\s+/)) {
+    if (id.length > 0) {
+      output.add(id)
+    }
+  }
+}
+
+function referencedLogicalIds(
+  node: DiCViewNode,
+): Set<string> {
+  const output = new Set<string>()
+
+  const visit = (current: DiCViewNode) => {
+    addReferences(
+      current.semantics.labelledBy,
+      output,
+    )
+    addReferences(
+      current.semantics.describedBy,
+      output,
+    )
+    addReferences(
+      current.semantics.controls,
+      output,
+    )
+    addReferences(
+      current.semantics.owns,
+      output,
+    )
+
+    for (const child of current.children) {
+      visit(child)
+    }
+  }
+
+  visit(node)
+  return output
 }
 
 function semanticForNode(
@@ -246,6 +298,8 @@ export function createDiCSemanticMirror(
       new Set<DiCViewNode>()
     const nextLogicalIds =
       new Map<string, string>()
+    const referencedIds =
+      referencedLogicalIds(node)
 
     const collectIds = (
       current: DiCViewNode,
@@ -254,7 +308,10 @@ export function createDiCSemanticMirror(
         current.eventTarget.id
       if (
         logicalId !== undefined &&
-        shouldMirror(current)
+        shouldMirror(
+          current,
+          referencedIds,
+        )
       ) {
         nextLogicalIds.set(
           logicalId,
@@ -276,7 +333,12 @@ export function createDiCSemanticMirror(
     ) => {
       let nextParent = domParent
 
-      if (shouldMirror(current)) {
+      if (
+        shouldMirror(
+          current,
+          referencedIds,
+        )
+      ) {
         nextNodes.add(current)
 
         let element =
