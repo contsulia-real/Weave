@@ -671,6 +671,12 @@ export function List(
             ? undefined
             : orientation
         }
+        layout="flex"
+        direction={
+          orientation === 'vertical'
+            ? 'column'
+            : 'row'
+        }
         gap={gap}
         className={[
           'weave-list',
