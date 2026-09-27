@@ -101,6 +101,220 @@ function SnackFifoHarness() {
 }
 
 describe('Snack', () => {
+  it('mounts provider Snacks into an explicit container', () => {
+    const host =
+      document.createElement('div')
+    const root =
+      document.createElement('div')
+
+    document.body.append(
+      host,
+      root,
+    )
+
+    const {
+      getByRole,
+      unmount,
+    } = render(
+      <SnackProvider
+        container={host}
+      >
+        <SnackTriggerHarness />
+      </SnackProvider>,
+      {
+        container: root,
+      },
+    )
+
+    fireEvent.click(
+      getByRole(
+        'button',
+        {
+          name: 'Trigger',
+        },
+      ),
+    )
+
+    const region =
+      host.querySelector<HTMLElement>(
+        '[data-weave-snack-region="top-left"]',
+      )
+
+    expect(region).not.toBeNull()
+    expect(
+      region?.parentElement,
+    ).toBe(host)
+    expect(
+      region?.getAttribute(
+        'data-weave-snack-scope',
+      ),
+    ).toBe('container')
+    expect(
+      host.style.position,
+    ).toBe('relative')
+
+    unmount()
+
+    expect(
+      host.querySelector(
+        '[data-weave-snack-region]',
+      ),
+    ).toBeNull()
+    expect(
+      host.style.position,
+    ).toBe('')
+
+    host.remove()
+    root.remove()
+  })
+
+  it('accepts a ref object as the provider container', () => {
+    const host =
+      document.createElement('div')
+    const root =
+      document.createElement('div')
+    const hostRef = {
+      current: host,
+    }
+
+    document.body.append(
+      host,
+      root,
+    )
+
+    const {
+      getByRole,
+      unmount,
+    } = render(
+      <SnackProvider
+        container={hostRef}
+      >
+        <SnackTriggerHarness />
+      </SnackProvider>,
+      {
+        container: root,
+      },
+    )
+
+    fireEvent.click(
+      getByRole(
+        'button',
+        {
+          name: 'Trigger',
+        },
+      ),
+    )
+
+    expect(
+      host.querySelector(
+        '[data-weave-snack-region="top-left"]',
+      ),
+    ).not.toBeNull()
+
+    unmount()
+    host.remove()
+    root.remove()
+  })
+
+  it('isolates providers sharing the same container and placement', () => {
+    const host =
+      document.createElement('div')
+    const root =
+      document.createElement('div')
+
+    document.body.append(
+      host,
+      root,
+    )
+
+    function ProviderTrigger({
+      label,
+    }: {
+      label: string
+    }) {
+      const snack =
+        useSnack()
+
+      return (
+        <Button
+          text={label}
+          viewProps={{
+            onClick: () => {
+              snack.show({
+                text: label,
+                placement: 'top-left',
+                persistent: true,
+              })
+            },
+          }}
+        />
+      )
+    }
+
+    const {
+      getByRole,
+      unmount,
+    } = render(
+      <>
+        <SnackProvider
+          container={host}
+        >
+          <ProviderTrigger
+            label="First provider"
+          />
+        </SnackProvider>
+
+        <SnackProvider
+          container={host}
+        >
+          <ProviderTrigger
+            label="Second provider"
+          />
+        </SnackProvider>
+      </>,
+      {
+        container: root,
+      },
+    )
+
+    fireEvent.click(
+      getByRole(
+        'button',
+        {
+          name: 'First provider',
+        },
+      ),
+    )
+    fireEvent.click(
+      getByRole(
+        'button',
+        {
+          name: 'Second provider',
+        },
+      ),
+    )
+
+    const regions =
+      host.querySelectorAll(
+        '[data-weave-snack-region="top-left"]',
+      )
+
+    expect(regions).toHaveLength(2)
+    expect(
+      regions[0]?.getAttribute(
+        'data-weave-snack-provider-scope',
+      ),
+    ).not.toBe(
+      regions[1]?.getAttribute(
+        'data-weave-snack-provider-scope',
+      ),
+    )
+
+    unmount()
+    host.remove()
+    root.remove()
+  })
+
   it('creates a fresh Snack on every queue trigger', () => {
     const {
       getByRole,
