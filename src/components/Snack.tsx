@@ -28,6 +28,7 @@ import { useTheme } from '../theme/theme-context'
 import { ThemeProvider } from '../theme/ThemeProvider'
 import { Button } from './Button'
 import { Icon } from './Icon'
+import { ProgressVisual } from './Progress'
 import { Text } from './Text'
 import { View } from './View'
 import { durationMilliseconds } from './internal/motion-duration'
@@ -35,6 +36,8 @@ import {
   retainSnackRegion,
   syncSnackRegion,
 } from './internal/snack-region'
+
+const PROGRESS_TICK_MS = 50
 
 type SnackVisualState =
   | 'open'
@@ -107,6 +110,8 @@ export function Snack({
   ] = useState(defaultOpen)
   const resolvedOpen =
     open ?? uncontrolledOpen
+  const durationMs =
+    Math.max(0, duration)
 
   const [
     present,
@@ -123,6 +128,10 @@ export function Snack({
     setPaused,
   ] = useState(false)
   const [
+    remainingMs,
+    setRemainingMs,
+  ] = useState(durationMs)
+  const [
     region,
     setRegion,
   ] = useState<HTMLDivElement | null>(
@@ -131,6 +140,12 @@ export function Snack({
 
   const requestedOpenRef =
     useRef(resolvedOpen)
+  const previousOpenRef =
+    useRef(resolvedOpen)
+  const remainingMsRef =
+    useRef(durationMs)
+  const activeStartedAtRef =
+    useRef<number | null>(null)
   const controlledRef =
     useRef(controlled)
   const onOpenChangeRef =
@@ -163,6 +178,27 @@ export function Snack({
     requestedOpenRef.current =
       resolvedOpen
   }, [resolvedOpen])
+
+  useEffect(() => {
+    const wasOpen =
+      previousOpenRef.current
+    previousOpenRef.current =
+      resolvedOpen
+
+    if (
+      resolvedOpen &&
+      !wasOpen
+    ) {
+      remainingMsRef.current =
+        durationMs
+      activeStartedAtRef.current =
+        null
+      setRemainingMs(durationMs)
+    }
+  }, [
+    durationMs,
+    resolvedOpen,
+  ])
 
   controlledRef.current =
     controlled
@@ -261,24 +297,95 @@ export function Snack({
       return
     }
 
-    const wait =
-      Math.max(0, duration)
+    const startRemaining =
+      remainingMsRef.current
 
-    const timer =
+    if (startRemaining <= 0) {
+      requestOpen(false)
+      return
+    }
+
+    const startedAt =
+      Date.now()
+    activeStartedAtRef.current =
+      startedAt
+
+    const updateRemaining = () => {
+      const elapsed =
+        Math.max(
+          0,
+          Date.now() -
+            startedAt,
+        )
+      const nextRemaining =
+        Math.max(
+          0,
+          startRemaining -
+            elapsed,
+        )
+
+      setRemainingMs(
+        nextRemaining,
+      )
+    }
+
+    updateRemaining()
+
+    const progressTimer =
+      globalThis.setInterval(
+        updateRemaining,
+        PROGRESS_TICK_MS,
+      )
+
+    const closeTimer =
       globalThis.setTimeout(
         () => {
+          remainingMsRef.current = 0
+          activeStartedAtRef.current =
+            null
+          setRemainingMs(0)
           requestOpen(false)
         },
-        wait,
+        startRemaining,
       )
 
     return () => {
+      globalThis.clearInterval(
+        progressTimer,
+      )
       globalThis.clearTimeout(
-        timer,
+        closeTimer,
+      )
+
+      if (
+        activeStartedAtRef.current !==
+        startedAt
+      ) {
+        return
+      }
+
+      const elapsed =
+        Math.max(
+          0,
+          Date.now() -
+            startedAt,
+        )
+      const nextRemaining =
+        Math.max(
+          0,
+          startRemaining -
+            elapsed,
+        )
+
+      activeStartedAtRef.current =
+        null
+      remainingMsRef.current =
+        nextRemaining
+      setRemainingMs(
+        nextRemaining,
       )
     }
   }, [
-    duration,
     paused,
     persistent,
     requestOpen,
@@ -458,6 +565,18 @@ export function Snack({
         </>
       )
 
+  const lifetimeProgress =
+    durationMs <= 0
+      ? 0
+      : Math.min(
+          1,
+          Math.max(
+            0,
+            remainingMs /
+              durationMs,
+          ),
+        )
+
   return createPortal(
     <ThemeProvider
       theme={theme}
@@ -508,6 +627,38 @@ export function Snack({
         }}
       >
         {content}
+
+        {!persistent &&
+        resolvedOpen ? (
+          <ProgressVisual
+            undetermined={false}
+            progress={
+              lifetimeProgress
+            }
+            mode="linear"
+            tracked={false}
+            size="small"
+            color="var(--weave-snack-accent)"
+            speed={
+              PROGRESS_TICK_MS
+            }
+            viewProps={{
+              className:
+                'weave-snack__lifetime',
+              position:
+                'absolute',
+              left: 0,
+              bottom: 0,
+              width: '100%',
+              height:
+                'var(--weave-snack-progress-height)',
+              pointerEvents:
+                'none',
+              'aria-hidden':
+                true,
+            }}
+          />
+        ) : null}
       </View>
     </ThemeProvider>,
     region,
