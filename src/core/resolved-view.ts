@@ -243,7 +243,7 @@ function resolvedState(
 }
 
 function semantics<TElement extends HTMLElement>(
-  props: ViewProps<TElement, string>,
+  props: ViewProps<TElement>,
 ): Readonly<ViewSemanticProps> {
   return {
     role: props.role,
@@ -271,7 +271,7 @@ function semantics<TElement extends HTMLElement>(
 }
 
 export function resolveView<TElement extends HTMLElement>(
-  props: ViewProps<TElement, string>,
+  props: ViewProps<TElement>,
   breakpoints: Readonly<Record<string, number>>,
 ): ResolvedView {
   const record = props as Record<string, unknown>
