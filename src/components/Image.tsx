@@ -135,7 +135,7 @@ function DiCImage({
       viewProps
 
   assertDiCViewPropsSupported(
-    hostProps as ViewProps<HTMLElement>,
+    hostProps as unknown as ViewProps<HTMLElement>,
     theme.breakpoints,
     'Image.viewProps',
   )
