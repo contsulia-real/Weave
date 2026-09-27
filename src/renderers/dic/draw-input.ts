@@ -363,17 +363,15 @@ export function drawDiCInput(
       ),
     }
 
-    if (!empty) {
-      drawSelection(
-        context,
-        line,
-        textX,
-        textY,
-        typography.lineHeight,
-        content,
-        environment,
-      )
-    }
+    drawSelection(
+      context,
+      line,
+      textX,
+      textY,
+      typography.lineHeight,
+      content,
+      environment,
+    )
 
     drawLineText(
       context,
@@ -421,17 +419,15 @@ export function drawDiCInput(
       frame.x -
       scrollLeft
 
-    if (!empty) {
-      drawSelection(
-        context,
-        line,
-        x,
-        y,
-        typography.lineHeight,
-        content,
-        environment,
-      )
-    }
+    drawSelection(
+      context,
+      line,
+      x,
+      y,
+      typography.lineHeight,
+      content,
+      environment,
+    )
 
     drawLineText(
       context,
