@@ -664,6 +664,8 @@ export function Snack({
                     4,
                   ),
               },
+              'aria-hidden':
+                true,
             }}
           />
         ) : null}
