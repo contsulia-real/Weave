@@ -10,6 +10,7 @@ import {
   NoEventPriority,
 } from 'react-reconciler/constants'
 import { resolveText } from '../../core/resolved-text'
+import { DiCCapabilityError } from './capability-error'
 import { resolveView } from '../../core/resolved-view'
 import type { ResolvedTheme } from '../../theme/theme-types'
 import { DiCRendererScope } from '../renderer-context'
@@ -124,7 +125,7 @@ function assertNoHostChildren(
         ),
     )
   ) {
-    throw new Error(
+    throw new DiCCapabilityError(
       `${instance.type} does not accept DiC children`,
     )
   }
@@ -349,7 +350,7 @@ const hostConfig: Record<string, unknown> = {
     props: DiCHostProps,
   ): DiCHostInstance {
     if (!isHostType(type)) {
-      throw new Error(
+      throw new DiCCapabilityError(
         `Unsupported DiC React host "${type}"`,
       )
     }
