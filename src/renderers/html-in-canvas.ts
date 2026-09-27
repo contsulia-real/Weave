@@ -391,6 +391,61 @@ function createWorkerRenderer(
 
   let width = -1
   let height = -1
+  let frameInFlight = false
+  let pendingImage:
+    | ElementImageHandle
+    | undefined
+
+  const sendFrame = (
+    image: ElementImageHandle,
+  ) => {
+    frameInFlight = true
+
+    worker.postMessage(
+      {
+        type: 'frame',
+        image,
+      },
+      [
+        image as unknown as
+          Transferable,
+      ],
+    )
+  }
+
+  const handleWorkerMessage = (
+    event: MessageEvent<unknown>,
+  ) => {
+    const message =
+      event.data as {
+        type?: string
+      }
+
+    if (
+      message.type !==
+        'frame-drawn'
+    ) {
+      return
+    }
+
+    frameInFlight = false
+
+    if (
+      pendingImage === undefined
+    ) {
+      return
+    }
+
+    const nextImage =
+      pendingImage
+    pendingImage = undefined
+    sendFrame(nextImage)
+  }
+
+  worker.addEventListener(
+    'message',
+    handleWorkerMessage,
+  )
 
   canvas.setAttribute(
     'data-weave-canvas-thread',
@@ -412,16 +467,13 @@ function createWorkerRenderer(
           host,
         )
 
-      worker.postMessage(
-        {
-          type: 'frame',
-          image,
-        },
-        [
-          image as unknown as
-            Transferable,
-        ],
-      )
+      if (frameInFlight) {
+        pendingImage?.close()
+        pendingImage = image
+        return
+      }
+
+      sendFrame(image)
     },
 
     resize(
@@ -459,6 +511,13 @@ function createWorkerRenderer(
     },
 
     destroy() {
+      pendingImage?.close()
+      pendingImage = undefined
+
+      worker.removeEventListener(
+        'message',
+        handleWorkerMessage,
+      )
       worker.terminate()
     },
   }
