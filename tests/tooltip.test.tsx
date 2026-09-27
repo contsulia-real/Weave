@@ -157,6 +157,62 @@ describe('ToolTip', () => {
     ).toHaveBeenCalledWith(false)
   })
 
+  it('keeps the tooltip mounted through its exit transition', () => {
+    const {
+      getByRole,
+    } = render(
+      <ToolTip
+        content="Animated"
+        delay={0}
+      >
+        <Button text="Animated target" />
+      </ToolTip>,
+    )
+
+    const target =
+      getByRole('button')
+
+    fireEvent.pointerEnter(target)
+
+    const tooltip =
+      document.querySelector<HTMLElement>(
+        '[data-weave-tooltip]',
+      )
+
+    expect(tooltip).not.toBeNull()
+    expect(
+      tooltip?.getAttribute(
+        'data-weave-tooltip-state',
+      ),
+    ).toBe('open')
+
+    fireEvent.pointerLeave(target)
+
+    const closing =
+      document.querySelector<HTMLElement>(
+        '[data-weave-tooltip-state="closing"]',
+      )
+
+    expect(closing).not.toBeNull()
+    expect(
+      closing?.getAttribute(
+        'aria-hidden',
+      ),
+    ).toBe('true')
+
+    if (closing !== null) {
+      fireEvent.transitionEnd(
+        closing,
+      )
+    }
+
+    expect(
+      document.querySelector(
+        '[data-weave-tooltip]',
+      ),
+    ).toBeNull()
+  })
+
   it('supports controlled open state', () => {
     const onOpenChange =
       vi.fn()
@@ -332,6 +388,15 @@ describe('ToolTip', () => {
     )
     expect(stylesheet).toContain(
       '@starting-style',
+    )
+    expect(stylesheet).toContain(
+      '--weave-tooltip-motion-offset',
+    )
+    expect(stylesheet).toContain(
+      'data-weave-tooltip-state="closing"',
+    )
+    expect(stylesheet).toContain(
+      'translate',
     )
   })
 
