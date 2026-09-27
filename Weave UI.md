@@ -349,11 +349,12 @@ HTML-in-Canvas 仍处于实验 API 迁移期。Weave 必须兼容 Chromium 已�
 ```text
 新接口
 → drawElementImage() 自动更新 geometry
-→ 必要时显式 updateElementGeometry()
+→ 不再额外覆盖浏览器计算出的 transform
 
 过渡接口
 → drawElementImage() 返回 DOMMatrix
-→ setCanvasTransform(matrix)
+→ 若存在 updateElementGeometry()，用返回矩阵登记 geometry
+→ 否则 setCanvasTransform(matrix)
 
 更早实验接口
 → 返回的 DOMMatrix 作为元素 CSS transform
