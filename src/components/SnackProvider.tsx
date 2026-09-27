@@ -220,7 +220,7 @@ export function SnackProvider({
                 oldest !==
                 undefined
               ) {
-                oldest = {
+                const closingOldest = {
                   ...oldest,
                   open: false,
                 }
@@ -229,8 +229,8 @@ export function SnackProvider({
                   next.map(
                     (item) =>
                       item.id ===
-                      oldest?.id
-                        ? oldest
+                      closingOldest.id
+                        ? closingOldest
                         : item,
                   )
               }
