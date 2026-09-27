@@ -2,6 +2,8 @@ import type {
   SnackPlacement,
 } from '../../core/snack-types'
 
+const MAX_VISIBLE_SNACKS = 3
+
 interface RegionEntry {
   element: HTMLDivElement
   count: number
@@ -12,6 +14,33 @@ const regions =
     Document,
     Map<SnackPlacement, RegionEntry>
   >()
+
+function syncRegionState(
+  entry: RegionEntry,
+): void {
+  const hiddenCount =
+    Math.max(
+      0,
+      entry.count -
+        MAX_VISIBLE_SNACKS,
+    )
+
+  entry.element.dataset.weaveSnackCount =
+    String(entry.count)
+
+  if (hiddenCount > 0) {
+    entry.element.dataset.weaveSnackFolded =
+      ''
+    entry.element.dataset.weaveSnackHiddenCount =
+      String(hiddenCount)
+    return
+  }
+
+  delete entry.element.dataset
+    .weaveSnackFolded
+  delete entry.element.dataset
+    .weaveSnackHiddenCount
+}
 
 export interface SnackRegionHandle {
   element: HTMLDivElement
@@ -38,6 +67,7 @@ export function retainSnackRegion(
 
   if (existing !== undefined) {
     existing.count += 1
+    syncRegionState(existing)
 
     return {
       element: existing.element,
@@ -49,7 +79,10 @@ export function retainSnackRegion(
           byPlacement?.delete(
             placement,
           )
+          return
         }
+
+        syncRegionState(existing)
       },
     }
   }
@@ -61,12 +94,14 @@ export function retainSnackRegion(
     'weave-snack-region'
   element.dataset.weaveSnackRegion =
     placement
-  document.body.append(element)
 
   const entry: RegionEntry = {
     element,
     count: 1,
   }
+
+  syncRegionState(entry)
+  document.body.append(element)
 
   byPlacement.set(
     placement,
@@ -83,7 +118,10 @@ export function retainSnackRegion(
         byPlacement?.delete(
           placement,
         )
+        return
       }
+
+      syncRegionState(entry)
     },
   }
 }
