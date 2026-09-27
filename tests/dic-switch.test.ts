@@ -344,6 +344,7 @@ describe('DiC Switch adapter', () => {
     })
 
     expect(onChange).not.toHaveBeenCalled()
+    expect(node.interaction?.focusable).toBe(false)
     expect(
       resolveDiCViewPaint(
         node,
