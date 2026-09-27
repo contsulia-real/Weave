@@ -1,0 +1,274 @@
+import {
+  useContext,
+  useInsertionEffect,
+} from 'react'
+import type {
+  FocusEvent,
+  KeyboardEvent,
+  MouseEvent,
+} from 'react'
+import type {
+  ListItemProps,
+} from '../core/list-types'
+import {
+  resolveListItemTheme,
+} from '../renderers/dom/resolve-component-theme'
+import {
+  ensureListStylesheet,
+} from '../renderers/dom/list-stylesheet'
+import {
+  useRuntimeStyleClass,
+} from '../renderers/dom/runtime-class'
+import {
+  useTheme,
+} from '../theme/theme-context'
+import {
+  ListContext,
+} from './internal/list-context'
+import {
+  View,
+} from './View'
+
+const interactiveSelector = [
+  'a[href]',
+  'button',
+  'input',
+  'select',
+  'textarea',
+  '[contenteditable="true"]',
+  '[role="button"]',
+  '[role="checkbox"]',
+  '[role="link"]',
+  '[role="radio"]',
+  '[role="slider"]',
+  '[role="spinbutton"]',
+  '[role="switch"]',
+  '[role="textbox"]',
+].join(',')
+
+function fromInteractiveDescendant(
+  eventTarget: EventTarget | null,
+  currentTarget: HTMLElement,
+): boolean {
+  if (
+    !(eventTarget instanceof Element) ||
+    eventTarget === currentTarget
+  ) {
+    return false
+  }
+
+  const interactive =
+    eventTarget.closest(
+      interactiveSelector,
+    )
+
+  return (
+    interactive !== null &&
+    interactive !== currentTarget
+  )
+}
+
+export function ListItem({
+  id,
+  children,
+  disabled = false,
+  viewProps = {},
+}: ListItemProps) {
+  const context =
+    useContext(ListContext)
+  const { theme } =
+    useTheme()
+
+  useInsertionEffect(
+    ensureListStylesheet,
+    [],
+  )
+
+  const themeClassName =
+    useRuntimeStyleClass(
+      'list-item-theme',
+      resolveListItemTheme(theme),
+    )
+
+  const selectable =
+    context !== null &&
+    context.selection !== 'none'
+  const selected =
+    selectable &&
+    context.selectedIds.has(id)
+  const active =
+    selectable &&
+    context.activeId === id
+
+  const handleClick = (
+    event:
+      MouseEvent<HTMLDivElement>,
+  ) => {
+    viewProps.onClick?.(event)
+
+    if (
+      event.defaultPrevented ||
+      disabled ||
+      !selectable ||
+      context === null ||
+      fromInteractiveDescendant(
+        event.target,
+        event.currentTarget,
+      )
+    ) {
+      return
+    }
+
+    context.setActiveId(id)
+    context.selectItem(id)
+  }
+
+  const handleFocus = (
+    event:
+      FocusEvent<HTMLDivElement>,
+  ) => {
+    viewProps.onFocus?.(event)
+
+    if (
+      event.defaultPrevented ||
+      disabled ||
+      !selectable ||
+      context === null ||
+      event.target !==
+        event.currentTarget
+    ) {
+      return
+    }
+
+    context.setActiveId(id)
+  }
+
+  const handleKeyDown = (
+    event:
+      KeyboardEvent<HTMLDivElement>,
+  ) => {
+    viewProps.onKeyDown?.(event)
+
+    if (
+      event.defaultPrevented ||
+      disabled ||
+      !selectable ||
+      context === null ||
+      fromInteractiveDescendant(
+        event.target,
+        event.currentTarget,
+      )
+    ) {
+      return
+    }
+
+    const previousKey =
+      context.orientation ===
+        'vertical'
+        ? 'ArrowUp'
+        : 'ArrowLeft'
+    const nextKey =
+      context.orientation ===
+        'vertical'
+        ? 'ArrowDown'
+        : 'ArrowRight'
+
+    if (
+      event.key === 'Enter' ||
+      event.key === ' '
+    ) {
+      event.preventDefault()
+      context.selectItem(id)
+      return
+    }
+
+    if (
+      event.key === previousKey
+    ) {
+      event.preventDefault()
+      context.moveFocus(
+        id,
+        'previous',
+      )
+      return
+    }
+
+    if (event.key === nextKey) {
+      event.preventDefault()
+      context.moveFocus(
+        id,
+        'next',
+      )
+      return
+    }
+
+    if (event.key === 'Home') {
+      event.preventDefault()
+      context.moveFocus(
+        id,
+        'first',
+      )
+      return
+    }
+
+    if (event.key === 'End') {
+      event.preventDefault()
+      context.moveFocus(
+        id,
+        'last',
+      )
+    }
+  }
+
+  return (
+    <View
+      {...viewProps}
+      role={
+        selectable
+          ? 'option'
+          : 'listitem'
+      }
+      selected={
+        selectable
+          ? selected
+          : undefined
+      }
+      disabled={
+        disabled
+          ? true
+          : undefined
+      }
+      tabIndex={
+        selectable
+          ? (
+              viewProps.tabIndex ??
+              (active ? 0 : -1)
+            )
+          : viewProps.tabIndex
+      }
+      onClick={handleClick}
+      onFocus={handleFocus}
+      onKeyDown={handleKeyDown}
+      className={[
+        'weave-list-item',
+        themeClassName,
+        viewProps.className,
+      ].filter(Boolean).join(' ')}
+      data={{
+        ...viewProps.data,
+        'weave-list-item': '',
+        'weave-list-item-id': id,
+        'weave-list-item-selectable':
+          selectable
+            ? 'true'
+            : 'false',
+        'weave-list-item-selected':
+          selected
+            ? 'true'
+            : 'false',
+      }}
+    >
+      {children}
+    </View>
+  )
+}
