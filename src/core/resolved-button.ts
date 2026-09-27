@@ -19,6 +19,7 @@ export interface ResolvedButton {
   loading: boolean
   disabled: boolean
   iconOnly: boolean
+  label?: string
   responsive: readonly ResolvedButtonBreakpoint[]
 }
 
@@ -57,6 +58,15 @@ export function resolveButton(
     'icon' in props &&
     props.icon !== undefined &&
     props.text === undefined
+  const label =
+    'text' in props &&
+    (
+      typeof props.text === 'string' ||
+      typeof props.text === 'number' ||
+      typeof props.text === 'bigint'
+    )
+      ? String(props.text)
+      : undefined
 
   return {
     variant: props.variant ?? 'primary',
@@ -64,6 +74,7 @@ export function resolveButton(
     loading,
     disabled,
     iconOnly,
+    label,
     responsive,
   }
 }
