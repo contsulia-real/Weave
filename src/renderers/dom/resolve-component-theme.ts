@@ -300,8 +300,6 @@ export function resolveSnackTheme(
       color(base?.borderColor),
     '--weave-snack-border-width':
       length(base?.borderWidth),
-    '--weave-snack-accent-width':
-      length(base?.accentWidth),
     '--weave-snack-radius':
       radius(base?.radius),
     '--weave-snack-padding-x':
@@ -316,6 +314,8 @@ export function resolveSnackTheme(
       length(base?.maxWidth),
     '--weave-snack-shadow':
       shadowToken(base?.shadow),
+    '--weave-snack-icon-size':
+      length(base?.iconSize),
     '--weave-snack-motion-offset':
       length(base?.motionOffset),
   }
