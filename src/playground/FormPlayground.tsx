@@ -3,12 +3,13 @@ import {
 } from 'react'
 import {
   Checkbox,
+  Column,
   Input,
   Progress,
   Radio,
+  Row,
   Switch,
   Text,
-  View,
 } from '../index'
 import {
   PlaygroundSection,
@@ -30,9 +31,7 @@ export function FormPlayground() {
         title="Input"
         description="单行和多行共用同一个 Input；默认视觉来自 Input theme，multiline 内部滚动统一使用 Weave Scrollbar。"
       >
-        <View
-          layout="flex"
-          direction="column"
+        <Column
           gap={0.75}
           maxWidth={32}
         >
@@ -68,16 +67,14 @@ export function FormPlayground() {
               width: 'fill',
             }}
           />
-        </View>
+        </Column>
       </PlaygroundSection>
 
       <PlaygroundSection
         title="Switch"
         description="三档语义尺寸；hover 时 thumb 轻微增强，拖动时产生抓取反馈并直接跟手，释放后 spring 归位。"
       >
-        <View
-          layout="flex"
-          direction="row"
+        <Row
           gap={1.5}
           align="center"
           wrap
@@ -102,35 +99,29 @@ export function FormPlayground() {
             disabled
             label="Disabled"
           />
-        </View>
+        </Row>
       </PlaygroundSection>
 
       <PlaygroundSection
         title="Radio / Checkbox"
         description="三档尺寸明确展示；group 直接建立原生分组：同 group Radio 互斥，同 group Checkbox 共享组名但仍可独立勾选。"
       >
-        <View
-          layout="flex"
-          direction="column"
+        <Column
           gap={1.25}
         >
-          <View
-            layout="flex"
-            direction="column"
+          <Column
             gap={0.625}
           >
             <Text typo="label-medium">
               Sizes · checked
             </Text>
 
-            <View
-              layout="flex"
-              direction="row"
+            <Row
               gap={1.5}
               align="center"
               wrap
             >
-              <View layout="flex" direction="row" gap={0.5} align="center">
+              <Row gap={0.5} align="center">
                 <Radio
                   size="small"
                   defaultChecked
@@ -142,9 +133,9 @@ export function FormPlayground() {
                   label="Checkbox"
                 />
                 <Text typo="body-medium">Small · 18px</Text>
-              </View>
+              </Row>
 
-              <View layout="flex" direction="row" gap={0.5} align="center">
+              <Row gap={0.5} align="center">
                 <Radio
                   size="medium"
                   defaultChecked
@@ -156,9 +147,9 @@ export function FormPlayground() {
                   label="Checkbox"
                 />
                 <Text typo="body-medium">Medium · 22px</Text>
-              </View>
+              </Row>
 
-              <View layout="flex" direction="row" gap={0.5} align="center">
+              <Row gap={0.5} align="center">
                 <Radio
                   size="large"
                   defaultChecked
@@ -170,111 +161,99 @@ export function FormPlayground() {
                   label="Checkbox"
                 />
                 <Text typo="body-medium">Large · 26px</Text>
-              </View>
-            </View>
-          </View>
+              </Row>
+            </Row>
+          </Column>
 
-          <View
-            layout="flex"
-            direction="row"
+          <Row
             gap={2}
             align="start"
             wrap
           >
-            <View
-              layout="flex"
-              direction="column"
+            <Column
               gap={0.625}
             >
               <Text typo="label-medium">
                 Radio group · theme
               </Text>
 
-              <View layout="flex" direction="row" gap={0.5} align="center">
+              <Row gap={0.5} align="center">
                 <Radio
                   group="theme-demo"
                   value="light"
                   defaultChecked
                   label="Light"
                 />
-              </View>
+              </Row>
 
-              <View layout="flex" direction="row" gap={0.5} align="center">
+              <Row gap={0.5} align="center">
                 <Radio
                   group="theme-demo"
                   value="dark"
                   label="Dark"
                 />
-              </View>
+              </Row>
 
-              <View layout="flex" direction="row" gap={0.5} align="center">
+              <Row gap={0.5} align="center">
                 <Radio
                   group="theme-demo"
                   value="system"
                   disabled
                   label="System · disabled"
                 />
-              </View>
-            </View>
+              </Row>
+            </Column>
 
-            <View
-              layout="flex"
-              direction="column"
+            <Column
               gap={0.625}
             >
               <Text typo="label-medium">
                 Checkbox group · permissions
               </Text>
 
-              <View layout="flex" direction="row" gap={0.5} align="center">
+              <Row gap={0.5} align="center">
                 <Checkbox
                   group="permissions-demo"
                   value="read"
                   defaultChecked
                   label="Read"
                 />
-              </View>
+              </Row>
 
-              <View layout="flex" direction="row" gap={0.5} align="center">
+              <Row gap={0.5} align="center">
                 <Checkbox
                   group="permissions-demo"
                   value="write"
                   label="Write"
                 />
-              </View>
+              </Row>
 
-              <View layout="flex" direction="row" gap={0.5} align="center">
+              <Row gap={0.5} align="center">
                 <Checkbox
                   group="permissions-demo"
                   value="admin"
                   disabled
                   label="Admin · disabled"
                 />
-              </View>
-            </View>
-          </View>
-        </View>
+              </Row>
+            </Column>
+          </Row>
+        </Column>
       </PlaygroundSection>
 
       <PlaygroundSection
         title="Progress"
         description="mode 决定 spin / linear；tracked 只控制浅色连续轨道。"
       >
-        <View
-          layout="flex"
-          direction="column"
+        <Column
           gap={1}
         >
-          <View
-            layout="flex"
-            direction="row"
+          <Row
             gap={1.5}
             align="center"
             wrap
           >
-            <View
-              layout="flex"
-              direction="row"
+            <Row
               gap={0.5}
               align="center"
             >
@@ -287,11 +266,9 @@ export function FormPlayground() {
               <Text typo="body-medium">
                 Spin
               </Text>
-            </View>
+            </Row>
 
-            <View
-              layout="flex"
-              direction="row"
+            <Row
               gap={0.5}
               align="center"
             >
@@ -305,11 +282,9 @@ export function FormPlayground() {
               <Text typo="body-medium">
                 Spin tracked
               </Text>
-            </View>
+            </Row>
 
-            <View
-              layout="flex"
-              direction="row"
+            <Row
               gap={0.5}
               align="center"
             >
@@ -322,11 +297,9 @@ export function FormPlayground() {
               <Text typo="body-medium">
                 Linear
               </Text>
-            </View>
+            </Row>
 
-            <View
-              layout="flex"
-              direction="row"
+            <Row
               gap={0.5}
               align="center"
             >
@@ -340,12 +313,10 @@ export function FormPlayground() {
               <Text typo="body-medium">
                 Linear tracked
               </Text>
-            </View>
-          </View>
+            </Row>
+          </Row>
 
-          <View
-            layout="flex"
-            direction="row"
+          <Row
             gap={1.5}
             align="center"
             wrap
@@ -380,8 +351,8 @@ export function FormPlayground() {
               )}
               %
             </Text>
-          </View>
-        </View>
+          </Row>
+        </Column>
       </PlaygroundSection>
     </>
   )

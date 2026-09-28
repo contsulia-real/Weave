@@ -626,6 +626,8 @@ Absolute  → View layout="absolute"
 
 `View layout="..."` 仍然可用，但不再是一般业务布局的首选写法。
 
+Weave 自身必须 dogfood 正式布局组件：Playground、示例页以及组合组件中的一般布局应使用 `Flex / Row / Column / Grid / Stack / Absolute`。裸 `View layout="flex|grid|stack|absolute"` 只允许保留在这六个布局组件自己的实现边界，或确有底层实现理由且无法用正式布局组件表达的内部基础设施中；不能为了省事在业务/示例代码里继续回退到裸布局 View。
+
 组件是否能够实际承载子项布局，遵循其对应 DOM 元素的内容模型。
 
 当前底层公开模型：

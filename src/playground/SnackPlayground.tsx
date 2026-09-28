@@ -10,6 +10,8 @@ import {
 } from '@tabler/icons-react'
 import {
   Button,
+  Column,
+  Row,
   SnackProvider,
   Text,
   View,
@@ -39,9 +41,7 @@ function PlacementPicker({
   ) => void
 }) {
   return (
-    <View
-      layout="flex"
-      direction="column"
+    <Column
       gap={0.5}
     >
       <Text
@@ -51,9 +51,7 @@ function PlacementPicker({
         Placement
       </Text>
 
-      <View
-        layout="flex"
-        direction="row"
+      <Row
         gap={0.5}
         wrap
       >
@@ -78,8 +76,8 @@ function PlacementPicker({
             />
           ),
         )}
-      </View>
-    </View>
+      </Row>
+    </Column>
   )
 }
 
@@ -92,9 +90,7 @@ function SnackTriggerButtons({
     useSnack()
 
   return (
-    <View
-      layout="flex"
-      direction="row"
+    <Row
       gap={0.75}
       wrap
     >
@@ -192,7 +188,7 @@ function SnackTriggerButtons({
           },
         }}
       />
-    </View>
+    </Row>
   )
 }
 
@@ -205,9 +201,7 @@ function ScopedSnackControls() {
   )
 
   return (
-    <View
-      layout="flex"
-      direction="column"
+    <Column
       gap={0.75}
       width="fill"
     >
@@ -232,7 +226,7 @@ function ScopedSnackControls() {
       <SnackTriggerButtons
         placement={placement}
       />
-    </View>
+    </Column>
   )
 }
 
@@ -274,14 +268,10 @@ export function SnackPlayground() {
       title="Snack"
       description="页面级与容器级 Snack 使用同一套 API。FIFO、placement、可选 lifetime Progress 和挂载作用域都由各自的 SnackProvider 管理。"
     >
-      <View
-        layout="flex"
-        direction="column"
+      <Column
         gap={1.25}
       >
-        <View
-          layout="flex"
-          direction="column"
+        <Column
           gap={0.75}
         >
           <Text
@@ -305,7 +295,7 @@ export function SnackPlayground() {
           <SnackTriggerButtons
             placement={placement}
           />
-        </View>
+        </Column>
 
         <View
           height={0.0625}
@@ -313,9 +303,7 @@ export function SnackPlayground() {
           width="fill"
         />
 
-        <View
-          layout="flex"
-          direction="column"
+        <Column
           gap={0.75}
         >
           <Text
@@ -332,8 +320,8 @@ export function SnackPlayground() {
           </Text>
 
           <ScopedSnackExample />
-        </View>
-      </View>
+        </Column>
+      </Column>
     </PlaygroundSection>
   )
 }

@@ -9,10 +9,10 @@ import {
   IconWifi,
 } from '@tabler/icons-react'
 import {
+  Column,
   List,
   Switch,
   Text,
-  View,
 } from '../index'
 import {
   PlaygroundSection,
@@ -58,14 +58,10 @@ export function ListPlayground() {
       title="List / ListItem"
       description="List 管理数据、选择、方向键、焦点与虚拟化；ListItem 只表达单项内容和状态。"
     >
-      <View
-        layout="flex"
-        direction="column"
+      <Column
         gap={1.5}
       >
-        <View
-          layout="flex"
-          direction="column"
+        <Column
           gap={0.5}
         >
           <Text typo="label-medium">
@@ -116,11 +112,9 @@ export function ListPlayground() {
           >
             selected: {selected ?? 'none'}
           </Text>
-        </View>
+        </Column>
 
-        <View
-          layout="flex"
-          direction="column"
+        <Column
           gap={0.5}
         >
           <Text typo="label-medium">
@@ -157,11 +151,9 @@ export function ListPlayground() {
               },
             ]}
           />
-        </View>
+        </Column>
 
-        <View
-          layout="flex"
-          direction="column"
+        <Column
           gap={0.5}
         >
           <Text typo="label-medium">
@@ -204,11 +196,9 @@ export function ListPlayground() {
                 : multiple.join(', ')
             }
           </Text>
-        </View>
+        </Column>
 
-        <View
-          layout="flex"
-          direction="column"
+        <Column
           gap={0.5}
         >
           <Text typo="label-medium">
@@ -239,8 +229,8 @@ export function ListPlayground() {
               },
             }}
           />
-        </View>
-      </View>
+        </Column>
+      </Column>
     </PlaygroundSection>
   )
 }

@@ -234,9 +234,7 @@ export function FoundationPlayground() {
         title="Theme inheritance"
         description='两块都使用 background="primary"；右侧只通过 mode="dark" 改变同一 token。'
       >
-        <View
-          layout="flex"
-          direction="row"
+        <Row
           gap={0.75}
           wrap
         >
@@ -271,16 +269,14 @@ export function FoundationPlayground() {
               </Text>
             </View>
           </ThemeProvider>
-        </View>
+        </Row>
       </PlaygroundSection>
 
       <PlaygroundSection
         title="Global typography"
         description="ThemeProvider 默认建立 body-large 排版上下文；Text、Button、Input 都从同一套 typography.styles / typo 取完整字号、字重、行高与字距。"
       >
-        <View
-          layout="flex"
-          direction="column"
+        <Column
           gap={0.75}
         >
           <Text typo="display-large">
@@ -339,16 +335,14 @@ export function FoundationPlayground() {
           >
             Mono family token — 0123456789
           </Text>
-        </View>
+        </Column>
       </PlaygroundSection>
 
       <PlaygroundSection
         title="Image"
         description="方形源图放进横向容器：contain 应完整显示并留空，cover 应填满并裁切；尺寸和圆角来自 viewProps。"
       >
-        <View
-          layout="flex"
-          direction="row"
+        <Row
           gap={1}
           wrap
         >
@@ -373,28 +367,22 @@ export function FoundationPlayground() {
               height: 8,
             }}
           />
-        </View>
+        </Row>
       </PlaygroundSection>
 
       <PlaygroundSection
         title="Icon"
         description="Outline / Filled 由调用方传入的 Tabler 图标组件决定；size / stroke 由 Weave 统一，颜色和其他通用视觉继续走 viewProps。"
       >
-        <View
-          layout="flex"
-          direction="column"
+        <Column
           gap={1}
         >
-          <View
-            layout="flex"
-            direction="row"
+          <Row
             gap={1.5}
             align="center"
             wrap
           >
-            <View
-              layout="flex"
-              direction="row"
+            <Row
               gap={0.75}
               align="center"
             >
@@ -409,11 +397,9 @@ export function FoundationPlayground() {
               <Text typo="body-medium">
                 Outline
               </Text>
-            </View>
+            </Row>
 
-            <View
-              layout="flex"
-              direction="row"
+            <Row
               gap={0.75}
               align="center"
             >
@@ -428,19 +414,15 @@ export function FoundationPlayground() {
               <Text typo="body-medium">
                 Filled
               </Text>
-            </View>
-          </View>
+            </Row>
+          </Row>
 
-          <View
-            layout="flex"
-            direction="row"
+          <Row
             gap={1.5}
             align="center"
             wrap
           >
-            <View
-              layout="flex"
-              direction="row"
+            <Row
               gap={0.5}
               align="center"
             >
@@ -455,11 +437,9 @@ export function FoundationPlayground() {
               <Text typo="body-medium">
                 Small / thin
               </Text>
-            </View>
+            </Row>
 
-            <View
-              layout="flex"
-              direction="row"
+            <Row
               gap={0.5}
               align="center"
             >
@@ -474,11 +454,9 @@ export function FoundationPlayground() {
               <Text typo="body-medium">
                 Medium / regular
               </Text>
-            </View>
+            </Row>
 
-            <View
-              layout="flex"
-              direction="row"
+            <Row
               gap={0.5}
               align="center"
             >
@@ -493,11 +471,9 @@ export function FoundationPlayground() {
               <Text typo="body-medium">
                 Large / bold
               </Text>
-            </View>
+            </Row>
 
-            <View
-              layout="flex"
-              direction="row"
+            <Row
               gap={0.5}
               align="center"
             >
@@ -513,12 +489,10 @@ export function FoundationPlayground() {
               <Text typo="body-medium">
                 Xlarge / labelled
               </Text>
-            </View>
-          </View>
+            </Row>
+          </Row>
 
-          <View
-            layout="flex"
-            direction="row"
+          <Row
             gap={0.75}
             align="center"
           >
@@ -550,22 +524,18 @@ export function FoundationPlayground() {
             <Text typo="body-medium">
               Custom SVG
             </Text>
-          </View>
-        </View>
+          </Row>
+        </Column>
       </PlaygroundSection>
 
       <PlaygroundSection
         title="Button"
         description="Weave 的 tactile control 基准：hover 会抬起，按住会下沉并压缩，释放使用 spring 回弹；variant / size 仍可由主题和 breakpoint 覆盖。"
       >
-        <View
-          layout="flex"
-          direction="column"
+        <Column
           gap={1}
         >
-          <View
-            layout="flex"
-            direction="row"
+          <Row
             gap={0.75}
             align="center"
             wrap
@@ -590,11 +560,9 @@ export function FoundationPlayground() {
               text="Danger"
               variant="danger"
             />
-          </View>
+          </Row>
 
-          <View
-            layout="flex"
-            direction="row"
+          <Row
             gap={0.75}
             align="center"
             wrap
@@ -611,11 +579,9 @@ export function FoundationPlayground() {
               text="Large"
               size="large"
             />
-          </View>
+          </Row>
 
-          <View
-            layout="flex"
-            direction="row"
+          <Row
             gap={0.75}
             align="center"
             wrap
@@ -665,7 +631,7 @@ export function FoundationPlayground() {
                 Custom children
               </Text>
             </Button>
-          </View>
+          </Row>
 
           <Button
             text="Responsive button"
@@ -679,16 +645,14 @@ export function FoundationPlayground() {
               width: 'fit',
             }}
           />
-        </View>
+        </Column>
       </PlaygroundSection>
 
       <PlaygroundSection
         title="Badge"
         description="相对包裹内容定位；默认 top-right。正常模式显示 text，dot 模式只显示小圆点。"
       >
-        <View
-          layout="flex"
-          direction="row"
+        <Row
           gap={2}
           align="center"
           wrap
@@ -708,16 +672,14 @@ export function FoundationPlayground() {
           <Badge dot placement="right">
             <Button text="Status" variant="secondary" />
           </Badge>
-        </View>
+        </Row>
       </PlaygroundSection>
 
       <PlaygroundSection
         title="Link"
         description="真实 <a> 语义；text 可覆盖显示内容，默认末尾带 link icon；底部链接线按 45% → 60% → 80% 响应 rest / hover / active。"
       >
-        <View
-          layout="flex"
-          direction="column"
+        <Column
           gap={1}
           align="start"
         >
@@ -743,16 +705,14 @@ export function FoundationPlayground() {
             hideUnderline
             target="_top"
           />
-        </View>
+        </Column>
       </PlaygroundSection>
 
       <PlaygroundSection
         title="ToolTip"
         description="hover 或 focus 后自动显示；定位和 tooltip layer 由框架处理，业务不创建 portal。"
       >
-        <View
-          layout="flex"
-          direction="row"
+        <Row
           gap={1}
           align="center"
           wrap
@@ -791,9 +751,7 @@ export function FoundationPlayground() {
           <ToolTip
             placement="right"
             content={
-              <View
-                layout="flex"
-                direction="column"
+              <Column
                 gap={0.25}
               >
                 <Text typo="label-small">
@@ -802,7 +760,7 @@ export function FoundationPlayground() {
                 <Text typo="body-xsmall">
                   View + Text content
                 </Text>
-              </View>
+              </Column>
             }
           >
             <Button
@@ -810,7 +768,7 @@ export function FoundationPlayground() {
               variant="secondary"
             />
           </ToolTip>
-        </View>
+        </Row>
       </PlaygroundSection>
     </>
   )

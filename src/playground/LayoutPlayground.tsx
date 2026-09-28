@@ -1,4 +1,6 @@
 import {
+  Column,
+  Flex,
   Text,
   View,
 } from '../index'
@@ -28,10 +30,8 @@ export function LayoutPlayground() {
             opacity: 0.9,
           }}
         >
-          <View
+          <Column
             width={44}
-            layout="flex"
-            direction="column"
             gap={0.5}
             padding={1}
           >
@@ -60,7 +60,7 @@ export function LayoutPlayground() {
                 </View>
               ),
             )}
-          </View>
+          </Column>
         </View>
       </PlaygroundSection>
 
@@ -76,8 +76,7 @@ export function LayoutPlayground() {
           border={0.0625}
           borderColor="outline"
         >
-          <View
-            layout="flex"
+          <Flex
             direction="column"
             gap={0.75}
             containerMd={{
@@ -88,7 +87,7 @@ export function LayoutPlayground() {
             <DemoBox label="1" />
             <DemoBox label="2" />
             <DemoBox label="3" />
-          </View>
+          </Flex>
         </View>
       </PlaygroundSection>
     </>
