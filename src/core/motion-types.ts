@@ -23,6 +23,27 @@ export type ReducedMotionPreference =
   | 'reduce'
   | 'no-preference'
 
+export interface MotionStyle {
+  opacity?: number
+  background?: string
+  color?: string
+  translateX?: number | string
+  translateY?: number | string
+  scale?: number
+  scaleX?: number
+  scaleY?: number
+  rotate?: number | string
+  skewX?: number | string
+  skewY?: number | string
+  blur?: number | string
+  brightness?: number
+  contrast?: number
+  saturate?: number
+  grayscale?: number
+  sepia?: number
+  hueRotate?: number | string
+}
+
 export interface ViewTransitionConfig {
   properties?: readonly string[]
   duration?: MotionDuration
@@ -34,6 +55,26 @@ export type ViewTransition =
   | MotionDuration
   | ViewTransitionConfig
 
+export type ViewMotionPreset =
+  | 'fade'
+  | 'fade-up'
+  | 'fade-down'
+  | 'scale'
+
+export interface ViewEnterExitConfig {
+  from?: MotionStyle
+  to?: MotionStyle
+  duration?: MotionDuration
+  delay?: MotionDuration
+  curve?: MotionCurve
+}
+
+export type ViewEnterExit =
+  | ViewMotionPreset
+  | ViewEnterExitConfig
+
 export interface ViewMotionProps {
   transition?: ViewTransition
+  enter?: ViewEnterExit
+  exit?: ViewEnterExit
 }

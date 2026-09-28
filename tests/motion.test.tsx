@@ -1,4 +1,5 @@
 import {
+  act,
   cleanup,
   render,
 } from '@testing-library/react'
@@ -7,9 +8,11 @@ import {
   describe,
   expect,
   it,
+  vi,
 } from 'vitest'
 import {
   Button,
+  Presence,
   ThemeProvider,
   View,
 } from '../src'
@@ -17,8 +20,24 @@ import {
 afterEach(cleanup)
 
 function motionRule(element: Element): string {
+  const className = [...element.classList].find(
+    (name) =>
+      name.startsWith('weave-motion-') &&
+      !name.startsWith('weave-motion-frames-'),
+  )
+
+  expect(className).toBeDefined()
+
+  return (
+    document.querySelector<HTMLStyleElement>(
+      `style[data-weave-runtime-class="${className}"]`,
+    )?.textContent ?? ''
+  ).replace(/\s+/g, '')
+}
+
+function motionFramesRule(element: Element): string {
   const className = [...element.classList].find((name) =>
-    name.startsWith('weave-motion-'),
+    name.startsWith('weave-motion-frames-'),
   )
 
   expect(className).toBeDefined()
@@ -218,6 +237,247 @@ describe('View motion', () => {
     expect(viewStyles).toContain(
       '--weave-component-transition-property, none',
     )
+  })
+
+  it('runs enter presets from initial frame to steady state', () => {
+    vi.useFakeTimers()
+
+    try {
+      const { getByTestId } = render(
+        <View
+          enter="fade-up"
+          data={{ testid: 'enter-view' }}
+        />,
+      )
+
+      const element = getByTestId('enter-view')
+      const frames = motionFramesRule(element)
+      const transition = motionRule(element)
+
+      expect(element.dataset.weaveMotionState).toBe('enter-from')
+      expect(frames).toContain('--weave-motion-enter-from-opacity:0;')
+      expect(frames).toContain(
+        '--weave-motion-enter-from-transform:translate(0rem,0.5rem);',
+      )
+      expect(frames).toContain('--weave-motion-enter-to-opacity:1;')
+      expect(transition).toContain(
+        '--weave-transition-timing-function:var(--weave-motion-curve-enter);',
+      )
+
+      act(() => {
+        vi.advanceTimersByTime(16)
+      })
+      expect(element.dataset.weaveMotionState).toBe('enter-to')
+
+      act(() => {
+        vi.advanceTimersByTime(240)
+      })
+      expect(element.dataset.weaveMotionState).toBeUndefined()
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('supports exact enter frame timing and curve configuration', () => {
+    const { getByTestId } = render(
+      <View
+        enter={{
+          from: {
+            opacity: 0,
+            translateY: 1,
+            scale: 0.96,
+          },
+          to: {
+            opacity: 1,
+            translateY: 0,
+            scale: 1,
+          },
+          duration: 260,
+          delay: 40,
+          curve: [0.22, 1, 0.36, 1],
+        }}
+        data={{ testid: 'exact-enter' }}
+      />,
+    )
+
+    const element = getByTestId('exact-enter')
+    const frames = motionFramesRule(element)
+    const transition = motionRule(element)
+
+    expect(frames).toContain('--weave-motion-enter-from-opacity:0;')
+    expect(frames).toContain(
+      '--weave-motion-enter-from-transform:translate(0rem,1rem)scale(0.96);',
+    )
+    expect(frames).toContain('--weave-motion-enter-to-opacity:1;')
+    expect(transition).toContain('--weave-transition-duration:260ms;')
+    expect(transition).toContain('--weave-transition-delay:40ms;')
+    expect(transition).toContain(
+      '--weave-transition-timing-function:cubic-bezier(0.22,1,0.36,1);',
+    )
+  })
+
+  it('keeps Presence content mounted until exit completes', () => {
+    vi.useFakeTimers()
+
+    try {
+      const { queryByTestId, rerender } = render(
+        <Presence present>
+          <View
+            exit="fade-down"
+            data={{ testid: 'presence-view' }}
+          />
+        </Presence>,
+      )
+
+      rerender(
+        <Presence present={false}>
+          <View
+            exit="fade-down"
+            data={{ testid: 'presence-view' }}
+          />
+        </Presence>,
+      )
+
+      const exiting = queryByTestId('presence-view')
+      expect(exiting).not.toBeNull()
+      expect(exiting?.dataset.weaveMotionState).toBe('exit-from')
+
+      act(() => {
+        vi.advanceTimersByTime(16)
+      })
+      expect(
+        queryByTestId('presence-view')?.dataset.weaveMotionState,
+      ).toBe('exit-to')
+
+      act(() => {
+        vi.advanceTimersByTime(240)
+      })
+      expect(queryByTestId('presence-view')).toBeNull()
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('lets non-View components exit through viewProps inside Presence', () => {
+    vi.useFakeTimers()
+
+    try {
+      const { queryByRole, rerender } = render(
+        <Presence present>
+          <Button
+            text="Presence button"
+            viewProps={{ exit: 'scale' }}
+          />
+        </Presence>,
+      )
+
+      rerender(
+        <Presence present={false}>
+          <Button
+            text="Presence button"
+            viewProps={{ exit: 'scale' }}
+          />
+        </Presence>,
+      )
+
+      expect(
+        queryByRole('button', { name: 'Presence button' }),
+      ).not.toBeNull()
+
+      act(() => {
+        vi.advanceTimersByTime(280)
+      })
+
+      expect(
+        queryByRole('button', { name: 'Presence button' }),
+      ).toBeNull()
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('waits for every exiting host inside one Presence', () => {
+    vi.useFakeTimers()
+
+    try {
+      const { queryByTestId, rerender } = render(
+        <Presence present>
+          <View
+            exit={{
+              to: { opacity: 0 },
+              duration: 80,
+            }}
+            data={{ testid: 'short-exit' }}
+          />
+          <View
+            exit={{
+              to: { opacity: 0 },
+              duration: 260,
+            }}
+            data={{ testid: 'long-exit' }}
+          />
+        </Presence>,
+      )
+
+      rerender(
+        <Presence present={false}>
+          <View
+            exit={{
+              to: { opacity: 0 },
+              duration: 80,
+            }}
+            data={{ testid: 'short-exit' }}
+          />
+          <View
+            exit={{
+              to: { opacity: 0 },
+              duration: 260,
+            }}
+            data={{ testid: 'long-exit' }}
+          />
+        </Presence>,
+      )
+
+      act(() => {
+        vi.advanceTimersByTime(160)
+      })
+      expect(queryByTestId('short-exit')).not.toBeNull()
+      expect(queryByTestId('long-exit')).not.toBeNull()
+
+      act(() => {
+        vi.advanceTimersByTime(180)
+      })
+      expect(queryByTestId('short-exit')).toBeNull()
+      expect(queryByTestId('long-exit')).toBeNull()
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('does not wait for exit when reduced motion is active', () => {
+    const { queryByTestId, rerender } = render(
+      <ThemeProvider reducedMotion="reduce">
+        <Presence present>
+          <View
+            exit="fade"
+            data={{ testid: 'reduced-exit' }}
+          />
+        </Presence>
+      </ThemeProvider>,
+    )
+
+    rerender(
+      <ThemeProvider reducedMotion="reduce">
+        <Presence present={false}>
+          <View
+            exit="fade"
+            data={{ testid: 'reduced-exit' }}
+          />
+        </Presence>
+      </ThemeProvider>,
+    )
+
+    expect(queryByTestId('reduced-exit')).toBeNull()
   })
 
   it('registers motion variables as non-inheriting', () => {

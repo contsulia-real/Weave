@@ -34,6 +34,7 @@ const expectedRuntimeExports = [
   'List',
   'ListItem',
   'Link',
+  'Presence',
   'Progress',
   'Radio',
   'Row',
@@ -65,6 +66,8 @@ assert(
   'Built declarations are missing the ListItem export',
 )
 assert(typeSource.includes('ViewTransition'), 'Built declarations are missing ViewTransition')
+assert(typeSource.includes('ViewEnterExit'), 'Built declarations are missing ViewEnterExit')
+assert(typeSource.includes('PresenceProps'), 'Built declarations are missing PresenceProps')
 assert(typeSource.includes('ReducedMotionPreference'), 'Built declarations are missing ReducedMotionPreference')
 assert(typeSource.includes('AbsoluteProps'), 'Built declarations are missing AbsoluteProps')
 assert(typeSource.includes('FlexProps'), 'Built declarations are missing FlexProps')

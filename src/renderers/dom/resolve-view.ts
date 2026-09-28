@@ -65,6 +65,8 @@ const CUSTOM_PROP_KEYS = new Set<string>([
   'container',
   'scrollbar',
   'transition',
+  'enter',
+  'exit',
   'sm',
   'md',
   'lg',

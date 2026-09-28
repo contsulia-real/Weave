@@ -2,6 +2,7 @@ export { createRoot } from './root'
 export type { Root } from './root'
 
 export { View } from './components/View'
+export { Presence } from './components/Presence'
 export { Flex } from './components/Flex'
 export { Row } from './components/Row'
 export { Column } from './components/Column'
@@ -86,13 +87,18 @@ export type {
 export type {
   MotionCurve,
   MotionCurveSteps,
+  MotionStyle,
   MotionCurveStepsPosition,
   MotionDuration,
   ReducedMotionPreference,
+  ViewEnterExit,
+  ViewEnterExitConfig,
+  ViewMotionPreset,
   ViewMotionProps,
   ViewTransition,
   ViewTransitionConfig,
 } from './core/motion-types'
+export type { PresenceProps } from './components/Presence'
 
 export type {
   AbsoluteProps,

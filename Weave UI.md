@@ -4938,6 +4938,15 @@ Motion
 />
 ```
 
+内置 preset：
+
+```text
+fade
+fade-up
+fade-down
+scale
+```
+
 完整定义：
 
 ```tsx
@@ -4952,9 +4961,33 @@ Motion
       translateY: 0,
     },
     duration: "normal",
+    delay: 0,
+    curve: "enter",
   }}
 />
 ```
+
+当前 `MotionStyle` 支持视觉型属性：`opacity / background / color / translateX / translateY / scale / scaleX / scaleY / rotate / skewX / skewY / blur / brightness / contrast / saturate / grayscale / sepia / hueRotate`。尺寸和布局变化不塞进 enter/exit；它们由后续 `layoutAnimation` 负责。
+
+`enter` 不需要额外容器：宿主第一次挂载时从 `from` 进入 `to`，结束后恢复普通 View 样式层。若 `to` 某个值需要在动画结束后持续存在，同一个最终值也应由普通 View props 表达；`to` 不是永久覆盖层。
+
+React 条件卸载需要 Presence，否则组件已经从 React tree 移除，任何 CSS 都没有机会执行 exit：
+
+```tsx
+<Presence present={open}>
+  <Button
+    text="Save"
+    viewProps={{
+      enter: "fade-up",
+      exit: "fade-down",
+    }}
+  />
+</Presence>
+```
+
+`Presence` 本身不产生 DOM。`present=false` 后，它会保留子树，并等待其中所有声明了 `exit` 的 ViewHost 完成后再真正卸载；因此一个 Presence 内可以有多个需要同步离场的宿主。没有声明 `exit` 的子树直接卸载。
+
+`ThemeProvider reducedMotion="reduce"` 下 enter 不播放，Presence exit 也不等待动画，直接完成最终挂载/卸载状态。
 
 ---
 

@@ -14,8 +14,8 @@ import {
   type ResolvedDOMView,
 } from '../../renderers/dom/resolve-view'
 import { useBreakpointStylesheet } from '../../renderers/dom/breakpoint-stylesheet'
-import { resolveViewTransition } from '../../renderers/dom/resolve-motion'
 import { useRuntimeStyleClass } from '../../renderers/dom/runtime-class'
+import { useViewMotion } from './use-view-motion'
 import { ensureViewStylesheet } from '../../renderers/dom/view-stylesheet'
 import { useTheme } from '../../theme/theme-context'
 
@@ -50,9 +50,13 @@ export function useViewHost<TElement extends HTMLElement>(
   const { theme, reducedMotion } = useTheme()
   const breakpointClassName = useBreakpointStylesheet(theme.breakpoints)
   const resolved = resolveDOMView(props, theme.breakpoints)
+  const motion = useViewMotion(props, theme, reducedMotion)
   ;(resolved.domProps as Record<string, unknown>)[
     'data-weave-reduced-motion'
   ] = reducedMotion ? 'reduce' : 'no-preference'
+  ;(resolved.domProps as Record<string, unknown>)[
+    'data-weave-motion-state'
+  ] = motion.state
   const componentClassName = useRuntimeStyleClass(
     componentName === undefined
       ? 'component-props'
@@ -63,21 +67,12 @@ export function useViewHost<TElement extends HTMLElement>(
     'props',
     resolved.attributeStyle,
   )
-  const motionClassName = useRuntimeStyleClass(
-    'motion',
-    resolveViewTransition(
-      props.transition,
-      theme,
-      reducedMotion,
-    ),
-  )
-
   const resolvedClassName = [
     'weave-view',
     breakpointClassName,
     componentClassName,
     attributeClassName,
-    motionClassName,
+    motion.className,
     className,
   ]
     .filter(Boolean)

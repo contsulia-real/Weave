@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import {
   IconArrowRight,
   IconBell,
@@ -17,6 +18,7 @@ import {
   Icon,
   Image,
   Link,
+  Presence,
   Row,
   Stack,
   Text,
@@ -67,6 +69,50 @@ const diagnosticTheme = createTheme({
     },
   },
 })
+
+function EnterExitPlayground() {
+  const [present, setPresent] = useState(true)
+
+  return (
+    <Column gap={0.75} align="start">
+      <Button
+        text={present ? 'Run exit' : 'Run enter'}
+        variant="secondary"
+        viewProps={{
+          onClick: () => setPresent((current) => !current),
+        }}
+      />
+
+      <Column
+        width={16}
+        height={7}
+        align="center"
+        justify="center"
+        outlineWidth={0.0625}
+        outlineColor="outline"
+        outlineStyle="dashed"
+        radius="medium"
+      >
+        <Presence present={present}>
+          <Column
+            width={11}
+            height={4}
+            align="center"
+            justify="center"
+            radius="medium"
+            background="primary"
+            color="onPrimary"
+            shadow="small"
+            enter="fade-up"
+            exit="fade-down"
+          >
+            <Text typo="label-medium">Presence child</Text>
+          </Column>
+        </Presence>
+      </Column>
+    </Column>
+  )
+}
 
 export function FoundationPlayground() {
   return (
@@ -293,6 +339,13 @@ export function FoundationPlayground() {
             </Column>
           </ThemeProvider>
         </Row>
+      </PlaygroundSection>
+
+      <PlaygroundSection
+        title="Motion · enter / exit"
+        description="enter 直接在挂载时运行；Presence 不增加 DOM，并在 present=false 后保留子树直到 exit 完成再真正卸载。"
+      >
+        <EnterExitPlayground />
       </PlaygroundSection>
 
       <PlaygroundSection

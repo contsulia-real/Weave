@@ -88,6 +88,13 @@ const VIEW_STYLE_STATES = [
   'disabled',
 ] as const
 
+const VIEW_MOTION_STATES = [
+  'motion-enter-from',
+  'motion-enter-to',
+  'motion-exit-from',
+  'motion-exit-to',
+] as const
+
 const toKebab = (value: string) =>
   value.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)
 
@@ -133,6 +140,7 @@ const propertyRegistrationBlock = () =>
     componentVariableName(property),
     variableName(property),
     ...VIEW_STYLE_STATES.map((state) => variableName(property, state)),
+    ...VIEW_MOTION_STATES.map((state) => variableName(property, state)),
     responsiveVariableName('viewport', property),
     responsiveVariableName('container', property),
   ])
@@ -215,6 +223,22 @@ ${motionPropertyRegistrationBlock()}
 
 :where([data-weave-view][aria-disabled="true"]) {
   ${declarationBlock('disabled')}
+}
+
+:where([data-weave-view][data-weave-motion-state="enter-from"]) {
+  ${declarationBlock('motion-enter-from')}
+}
+
+:where([data-weave-view][data-weave-motion-state="enter-to"]) {
+  ${declarationBlock('motion-enter-to')}
+}
+
+:where([data-weave-view][data-weave-motion-state="exit-from"]) {
+  ${declarationBlock('motion-exit-from')}
+}
+
+:where([data-weave-view][data-weave-motion-state="exit-to"]) {
+  ${declarationBlock('motion-exit-to')}
 }
 
 :where(.weave-scroll-host--overflow-auto) {

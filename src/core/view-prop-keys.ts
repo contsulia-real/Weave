@@ -160,6 +160,8 @@ export const VIEW_CONTROL_PROP_KEYS = [
   'container',
   'scrollbar',
   'transition',
+  'enter',
+  'exit',
 ] as const
 
 export const VIEW_INTERNAL_PROP_KEYS = new Set<string>([
