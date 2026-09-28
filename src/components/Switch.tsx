@@ -1,13 +1,9 @@
 import {
-  useEffect,
-  useInsertionEffect,
   useId,
+  useInsertionEffect,
   useMemo,
   useRef,
   useState,
-  type KeyboardEvent,
-  type MouseEvent,
-  type PointerEvent as ReactPointerEvent,
 } from 'react'
 import type { SwitchProps } from '../core/switch-types'
 import type { ViewProps } from '../core/view-types'
@@ -15,99 +11,11 @@ import { resolveSwitchTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { ensureSwitchStylesheet } from '../renderers/dom/switch-stylesheet'
 import { useTheme } from '../theme/theme-context'
-import { View } from './View'
+import { durationMilliseconds } from './internal/motion-duration'
+import { useSwitchInteraction } from './internal/use-switch-interaction'
 import { useViewHost } from './internal/use-view-host'
 
-interface SwitchDragState {
-  pointerId: number
-  startX: number
-  startOffset: number
-  maxOffset: number
-  currentOffset: number
-  thumbSize: number
-  moved: boolean
-}
-
-const DRAG_THRESHOLD = 3
 const DEFAULT_AUTO_DRAG_DURATION = 200
-
-function durationMs(
-  value: number | string | undefined,
-): number {
-  if (typeof value === 'number') {
-    return Math.max(1, value)
-  }
-
-  if (typeof value !== 'string') {
-    return DEFAULT_AUTO_DRAG_DURATION
-  }
-
-  const normalized = value.trim().toLowerCase()
-  const parsed = Number.parseFloat(normalized)
-  if (!Number.isFinite(parsed)) {
-    return DEFAULT_AUTO_DRAG_DURATION
-  }
-
-  if (normalized.endsWith('ms')) {
-    return Math.max(1, parsed)
-  }
-
-  if (normalized.endsWith('s')) {
-    return Math.max(1, parsed * 1000)
-  }
-
-  return Math.max(1, parsed)
-}
-
-function dragProgress(
-  offset: number,
-  startOffset: number,
-  maxOffset: number,
-): number {
-  const thresholdDistance = maxOffset / 2
-  if (thresholdDistance <= 0) return 0
-
-  return Math.min(
-    1,
-    Math.abs(offset - startOffset) / thresholdDistance,
-  )
-}
-
-function applyDragShape(
-  thumb: HTMLDivElement,
-  drag: SwitchDragState,
-  offset: number,
-  shrink: number,
-  maxWidth: number,
-): void {
-  const progress = dragProgress(
-    offset,
-    drag.startOffset,
-    drag.maxOffset,
-  )
-  const height = drag.thumbSize * shrink
-  const widthScale =
-    shrink + (maxWidth - shrink) * progress
-  const width = drag.thumbSize * widthScale
-
-  const centeredX = offset + (drag.thumbSize - width) / 2
-  const maxX = Math.max(
-    0,
-    drag.maxOffset + drag.thumbSize - width,
-  )
-  const x = Math.min(maxX, Math.max(0, centeredX))
-
-  thumb.style.width = `${width}px`
-  thumb.style.height = `${height}px`
-  thumb.style.transform =
-    `translate(${x}px, -50%)`
-}
-
-function clearDragShape(thumb: HTMLDivElement): void {
-  thumb.style.removeProperty('width')
-  thumb.style.removeProperty('height')
-  thumb.style.removeProperty('transform')
-}
 
 export function Switch({
   checked,
@@ -135,7 +43,8 @@ export function Switch({
   const isControlled = checked !== undefined
   const currentChecked = checked ?? uncontrolledChecked
   const generatedId = useId()
-  const switchId = viewProps.id ?? `weave-switch-${generatedId}`
+  const switchId =
+    viewProps.id ?? `weave-switch-${generatedId}`
   const labelId = `${switchId}-label`
   const labelledBy =
     label === undefined
@@ -143,6 +52,7 @@ export function Switch({
       : [viewProps.labelledBy, labelId]
           .filter(Boolean)
           .join(' ')
+
   const hostProps: ViewProps<HTMLButtonElement> = {
     ...viewProps,
     id: switchId,
@@ -161,36 +71,19 @@ export function Switch({
   } = useViewHost(hostProps)
 
   const switchBase = theme.components.Switch?.base
-  const dragShrink = switchBase?.thumbDragShrink ?? 0.68
-  const dragMaxWidth = switchBase?.thumbDragMaxWidth ?? 1.35
+  const dragShrink =
+    switchBase?.thumbDragShrink ?? 0.68
+  const dragMaxWidth =
+    switchBase?.thumbDragMaxWidth ?? 1.35
+  const autoDragDuration = Math.max(
+    1,
+    durationMilliseconds(
+      theme.tokens.motion?.duration?.normal,
+      DEFAULT_AUTO_DRAG_DURATION,
+    ),
+  )
 
   const thumbRef = useRef<HTMLDivElement>(null)
-  const dragRef = useRef<SwitchDragState | null>(null)
-  const nativeDragCleanupRef = useRef<(() => void) | null>(null)
-  const autoDragFrameRef = useRef<number | null>(null)
-  const suppressClickRef = useRef(false)
-  const suppressClickTimerRef = useRef<number | null>(null)
-
-  useEffect(
-    () => () => {
-      nativeDragCleanupRef.current?.()
-
-      if (
-        autoDragFrameRef.current !== null &&
-        typeof window !== 'undefined'
-      ) {
-        window.cancelAnimationFrame(autoDragFrameRef.current)
-      }
-
-      if (
-        suppressClickTimerRef.current !== null &&
-        typeof window !== 'undefined'
-      ) {
-        window.clearTimeout(suppressClickTimerRef.current)
-      }
-    },
-    [],
-  )
 
   const commit = (nextChecked: boolean) => {
     if (!isControlled) {
@@ -200,398 +93,24 @@ export function Switch({
     onChange?.(nextChecked)
   }
 
-  const stopAutoDrag = () => {
-    const root = elementRef.current
-    const thumb = thumbRef.current
-
-    if (
-      autoDragFrameRef.current !== null &&
-      typeof window !== 'undefined'
-    ) {
-      window.cancelAnimationFrame(autoDragFrameRef.current)
-      autoDragFrameRef.current = null
-    }
-
-    if (thumb !== null) {
-      clearDragShape(thumb)
-    }
-
-    if (root !== null && dragRef.current === null) {
-      delete root.dataset.weaveSwitchDragging
-    }
-  }
-
-  const playAutoDrag = (nextChecked: boolean) => {
-    const root = elementRef.current
-    const thumb = thumbRef.current
-
-    if (
-      root === null ||
-      thumb === null ||
-      dragRef.current !== null ||
-      typeof window === 'undefined'
-    ) {
-      return
-    }
-
-    const rootRect = root.getBoundingClientRect()
-    const thumbRect = thumb.getBoundingClientRect()
-    const inset = currentChecked
-      ? Math.max(0, rootRect.right - thumbRect.right)
-      : Math.max(0, thumbRect.left - rootRect.left)
-    const maxOffset = Math.max(
-      0,
-      rootRect.width - thumbRect.width - inset * 2,
-    )
-
-    if (maxOffset <= 0 || thumbRect.width <= 0) return
-
-    stopAutoDrag()
-
-    const startOffset = currentChecked ? maxOffset : 0
-    const endOffset = nextChecked ? maxOffset : 0
-    const drag: SwitchDragState = {
-      pointerId: -1,
-      startX: 0,
-      startOffset,
-      maxOffset,
-      currentOffset: startOffset,
-      thumbSize: thumbRect.width,
-      moved: true,
-    }
-    const duration = durationMs(
-      theme.tokens.motion?.duration?.normal,
-    )
-    let startedAt: number | null = null
-
-    root.dataset.weaveSwitchDragging = 'true'
-    applyDragShape(
-      thumb,
-      drag,
-      startOffset,
-      dragShrink,
-      dragMaxWidth,
-    )
-
-    const frame = (time: number) => {
-      if (startedAt === null) startedAt = time
-
-      const linear = Math.min(
-        1,
-        Math.max(0, (time - startedAt) / duration),
-      )
-      const progress = 1 - Math.pow(1 - linear, 3)
-      const offset =
-        startOffset + (endOffset - startOffset) * progress
-
-      drag.currentOffset = offset
-      applyDragShape(
-        thumb,
-        drag,
-        offset,
-        dragShrink,
-        dragMaxWidth,
-      )
-
-      if (linear < 1) {
-        autoDragFrameRef.current = window.requestAnimationFrame(frame)
-        return
-      }
-
-      autoDragFrameRef.current = null
-      clearDragShape(thumb)
-      if (dragRef.current === null) {
-        delete root.dataset.weaveSwitchDragging
-      }
-    }
-
-    autoDragFrameRef.current = window.requestAnimationFrame(frame)
-  }
-
-  const toggle = () => {
-    if (disabled) return
-    const nextChecked = !currentChecked
-    playAutoDrag(nextChecked)
-    commit(nextChecked)
-  }
-
-  const suppressFollowUpClick = () => {
-    suppressClickRef.current = true
-
-    if (
-      suppressClickTimerRef.current !== null &&
-      typeof window !== 'undefined'
-    ) {
-      window.clearTimeout(suppressClickTimerRef.current)
-    }
-
-    if (typeof window !== 'undefined') {
-      suppressClickTimerRef.current = window.setTimeout(() => {
-        suppressClickRef.current = false
-        suppressClickTimerRef.current = null
-      }, 0)
-    }
-  }
-
-  const moveDrag = (
-    pointerId: number,
-    clientX: number,
-  ): boolean => {
-    const drag = dragRef.current
-    const thumb = thumbRef.current
-
-    if (
-      drag === null ||
-      thumb === null ||
-      drag.pointerId !== pointerId
-    ) {
-      return false
-    }
-
-    const delta = clientX - drag.startX
-    const nextOffset = Math.min(
-      drag.maxOffset,
-      Math.max(0, drag.startOffset + delta),
-    )
-
-    drag.currentOffset = nextOffset
-
-    if (!drag.moved && Math.abs(delta) >= DRAG_THRESHOLD) {
-      drag.moved = true
-    }
-
-    applyDragShape(
-      thumb,
-      drag,
-      nextOffset,
-      dragShrink,
-      dragMaxWidth,
-    )
-
-    return true
-  }
-
-  const finishDrag = (
-    root: HTMLButtonElement,
-    pointerId: number,
-    applyValue: boolean,
-    preventDefault?: () => void,
-  ) => {
-    const drag = dragRef.current
-    const thumb = thumbRef.current
-
-    if (
-      drag === null ||
-      thumb === null ||
-      drag.pointerId !== pointerId
-    ) {
-      return
-    }
-
-    nativeDragCleanupRef.current?.()
-    nativeDragCleanupRef.current = null
-
-    const nextChecked =
-      drag.maxOffset > 0
-        ? drag.currentOffset >= drag.maxOffset / 2
-        : currentChecked
-
-    clearDragShape(thumb)
-    delete root.dataset.weaveSwitchDragging
-
-    if (root.hasPointerCapture?.(pointerId)) {
-      root.releasePointerCapture(pointerId)
-    }
-
-    dragRef.current = null
-
-    if (drag.moved) {
-      suppressFollowUpClick()
-      preventDefault?.()
-    }
-
-    if (
-      applyValue &&
-      drag.moved &&
-      nextChecked !== currentChecked
-    ) {
-      commit(nextChecked)
-    }
-  }
-
-  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
-    if (disabled) {
-      event.preventDefault()
-      return
-    }
-
-    viewProps.onClick?.(event)
-    if (event.defaultPrevented) return
-
-    if (suppressClickRef.current) {
-      suppressClickRef.current = false
-      return
-    }
-
-    toggle()
-  }
-
-  const handleKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
-    if (disabled) {
-      event.preventDefault()
-      return
-    }
-
-    viewProps.onKeyDown?.(event)
-    if (event.defaultPrevented) return
-
-    if (event.key === ' ' || event.key === 'Enter') {
-      event.preventDefault()
-      toggle()
-    }
-  }
-
-  const handlePointerDown = (
-    event: ReactPointerEvent<HTMLButtonElement>,
-  ) => {
-    if (disabled) {
-      event.preventDefault()
-      return
-    }
-
-    viewProps.onPointerDown?.(event)
-
-    if (
-      event.defaultPrevented ||
-      event.button !== 0
-    ) {
-      return
-    }
-
-    const root = event.currentTarget
-    const thumb = thumbRef.current
-
-    if (thumb === null) return
-
-    stopAutoDrag()
-
-    const rootRect = root.getBoundingClientRect()
-    const thumbRect = thumb.getBoundingClientRect()
-    const inset = currentChecked
-      ? Math.max(0, rootRect.right - thumbRect.right)
-      : Math.max(0, thumbRect.left - rootRect.left)
-    const maxOffset = Math.max(
-      0,
-      rootRect.width - thumbRect.width - inset * 2,
-    )
-    const startOffset = currentChecked ? maxOffset : 0
-
-    const drag: SwitchDragState = {
-      pointerId: event.pointerId,
-      startX: event.clientX,
-      startOffset,
-      maxOffset,
-      currentOffset: startOffset,
-      thumbSize: thumbRect.width,
-      moved: false,
-    }
-
-    dragRef.current = drag
-    root.focus()
-    root.dataset.weaveSwitchDragging = 'true'
-
-    applyDragShape(
-      thumb,
-      drag,
-      startOffset,
-      dragShrink,
-      dragMaxWidth,
-    )
-
-    root.setPointerCapture?.(event.pointerId)
-
-    nativeDragCleanupRef.current?.()
-    nativeDragCleanupRef.current = null
-
-    const usesReactDragHandlers =
-      viewProps.onPointerMove !== undefined ||
-      viewProps.onPointerUp !== undefined ||
-      viewProps.onPointerCancel !== undefined
-
-    if (!usesReactDragHandlers) {
-      const pointerId = event.pointerId
-
-      const onMove = (nativeEvent: globalThis.PointerEvent) => {
-        if (nativeEvent.pointerId !== pointerId) return
-
-        if (moveDrag(pointerId, nativeEvent.clientX)) {
-          nativeEvent.preventDefault()
-        }
-      }
-
-      const onUp = (nativeEvent: globalThis.PointerEvent) => {
-        if (nativeEvent.pointerId !== pointerId) return
-
-        finishDrag(
-          root,
-          pointerId,
-          true,
-          () => nativeEvent.preventDefault(),
-        )
-      }
-
-      const onCancel = (nativeEvent: globalThis.PointerEvent) => {
-        if (nativeEvent.pointerId !== pointerId) return
-        finishDrag(root, pointerId, false)
-      }
-
-      root.addEventListener('pointermove', onMove)
-      root.addEventListener('pointerup', onUp)
-      root.addEventListener('pointercancel', onCancel)
-
-      nativeDragCleanupRef.current = () => {
-        root.removeEventListener('pointermove', onMove)
-        root.removeEventListener('pointerup', onUp)
-        root.removeEventListener('pointercancel', onCancel)
-      }
-    }
-  }
-
-  const handlePointerMove = (
-    event: ReactPointerEvent<HTMLButtonElement>,
-  ) => {
-    viewProps.onPointerMove?.(event)
-    if (event.defaultPrevented) return
-
-    if (moveDrag(event.pointerId, event.clientX)) {
-      event.preventDefault()
-    }
-  }
-
-  const handlePointerUp = (
-    event: ReactPointerEvent<HTMLButtonElement>,
-  ) => {
-    viewProps.onPointerUp?.(event)
-
-    finishDrag(
-      event.currentTarget,
-      event.pointerId,
-      !event.defaultPrevented,
-      () => event.preventDefault(),
-    )
-  }
-
-  const handlePointerCancel = (
-    event: ReactPointerEvent<HTMLButtonElement>,
-  ) => {
-    viewProps.onPointerCancel?.(event)
-    finishDrag(event.currentTarget, event.pointerId, false)
-  }
-
-  const usesReactDragHandlers =
-    viewProps.onPointerMove !== undefined ||
-    viewProps.onPointerUp !== undefined ||
-    viewProps.onPointerCancel !== undefined
+  const interaction = useSwitchInteraction({
+    rootRef: elementRef,
+    thumbRef,
+    checked: currentChecked,
+    disabled,
+    dragShrink,
+    dragMaxWidth,
+    autoDragDuration,
+    callbacks: {
+      onClick: viewProps.onClick,
+      onKeyDown: viewProps.onKeyDown,
+      onPointerDown: viewProps.onPointerDown,
+      onPointerMove: viewProps.onPointerMove,
+      onPointerUp: viewProps.onPointerUp,
+      onPointerCancel: viewProps.onPointerCancel,
+    },
+    onCommit: commit,
+  })
 
   const control = (
     <button
@@ -611,25 +130,18 @@ export function Switch({
         className,
       ].filter(Boolean).join(' ')}
       style={inlineStyle}
-      onClick={handleClick}
-      onKeyDown={handleKeyDown}
-      onPointerDown={handlePointerDown}
-      onPointerMove={
-        usesReactDragHandlers ? handlePointerMove : undefined
-      }
-      onPointerUp={
-        usesReactDragHandlers ? handlePointerUp : undefined
-      }
-      onPointerCancel={
-        usesReactDragHandlers ? handlePointerCancel : undefined
-      }
+      onClick={interaction.handleClick}
+      onKeyDown={interaction.handleKeyDown}
+      onPointerDown={interaction.handlePointerDown}
+      onPointerMove={interaction.handlePointerMove}
+      onPointerUp={interaction.handlePointerUp}
+      onPointerCancel={interaction.handlePointerCancel}
     >
-      <View
+      <div
         ref={thumbRef}
-        className="weave-switch__thumb"
-        data={{
-          'weave-switch-thumb': '',
-        }}
+        data-weave-view=""
+        data-weave-switch-thumb=""
+        className="weave-view weave-switch__thumb"
       />
     </button>
   )

@@ -2424,16 +2424,16 @@ suffix
 
 `Switch` 是基础组件。
 
-Switch 的视觉仍由 Weave View 样式系统驱动，但语义宿主使用真实 labelable button：
+Switch 的视觉仍由 Weave ViewHost 样式变量体系驱动，但作为基础组件不依赖公开 `View` 组件；语义宿主使用真实 labelable button，thumb 是 Switch 自己的内部视觉 DOM：
 
 ```text
 Switch
-├─ <button type="button" role="switch">  // track + 可绑定语义宿主
-│  └─ View                                // thumb
+├─ <button type="button" role="switch">  // useViewHost；track + 可绑定语义宿主
+│  └─ <div class="weave-view weave-switch__thumb"> // 内部视觉节点，不是公开 View 组件依赖
 └─ <label> + visible label                // 仅传 label 时出现
 ```
 
-这样既保留 track / thumb 的 Weave 视觉与拖动行为，又让 `label` 使用浏览器原生 label activation，而不是额外模拟一次点击。
+这样既满足基础组件不依赖其他基础组件的约束，又保留 track / thumb 的 Weave 视觉变量体系与拖动行为；`label` 继续使用浏览器原生 label activation，而不是额外模拟一次点击。
 
 ## 15.1 API
 
