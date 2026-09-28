@@ -79,6 +79,61 @@ describe('View DOM backend', () => {
     ).toContain('mask-image: var(--weave-container-responsive-mask-image')
   })
 
+  it('applies mask across state and responsive style paths', () => {
+    const { getByTestId } = render(
+      <View
+        mask={'url("/mask.svg#shape")'}
+        hover={{
+          mask: {
+            type: 'radial',
+            stops: [
+              ['black', 0],
+              ['transparent', 1],
+            ],
+          },
+        }}
+        sm={{
+          mask: {
+            type: 'linear',
+            angle: 180,
+            stops: [
+              ['black', 0],
+              ['transparent', 1],
+            ],
+          },
+        }}
+        containerSm={{
+          mask: 'url("/container-mask.svg")',
+        }}
+        data={{ testid: 'responsive-mask' }}
+      />,
+    )
+
+    const element = getByTestId('responsive-mask')
+    const rule = runtimeRule(element, 'weave-props-')
+    const responsiveRule = breakpointStyles(element)
+
+    expect(rule).toContain(
+      '--weave-mask-image:url("/mask.svg#shape");',
+    )
+    expect(rule).toContain(
+      '--weave-hover-mask-image:radial-gradient(',
+    )
+    expect(rule).toContain(
+      '--weave-sm-mask-image:linear-gradient(180deg',
+    )
+    expect(rule).toContain(
+      '--weave-container-sm-mask-image:url("/container-mask.svg")',
+    )
+    expect(responsiveRule).toContain(
+      '--weave-viewport-responsive-mask-image:var(--weave-sm-mask-image)',
+    )
+    expect(responsiveRule).toContain(
+      '--weave-container-responsive-mask-image:var(--weave-container-sm-mask-image)',
+    )
+    expect(element.getAttribute('mask')).toBeNull()
+  })
+
   it('keeps style above className above generated property classes', () => {
     const { getByTestId } = render(
       <View

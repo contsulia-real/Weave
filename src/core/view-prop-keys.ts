@@ -142,6 +142,12 @@ export const VIEW_DEFAULT_BREAKPOINT_PROP_KEYS = [
   'containerXl',
 ] as const
 
+export const VIEW_NATIVE_NORMALIZED_PROP_KEYS = [
+  'hidden',
+  'draggable',
+  'tabIndex',
+] as const
+
 export const VIEW_CONTROL_PROP_KEYS = [
   'children',
   'ref',
@@ -150,9 +156,6 @@ export const VIEW_CONTROL_PROP_KEYS = [
   'data',
   'focusable',
   'autoFocus',
-  'hidden',
-  'draggable',
-  'tabIndex',
   'hover',
   'active',
   'focus',
@@ -171,5 +174,22 @@ export const VIEW_INTERNAL_PROP_KEYS = new Set<string>([
   ...VIEW_STYLE_PROP_KEYS,
   ...VIEW_SEMANTIC_PROP_KEYS,
   ...VIEW_DEFAULT_BREAKPOINT_PROP_KEYS,
+  ...VIEW_NATIVE_NORMALIZED_PROP_KEYS,
   ...VIEW_CONTROL_PROP_KEYS,
 ])
+
+type AssertNoMissingKeys<T extends never> = T
+
+export type ViewStylePropKeyCoverage = AssertNoMissingKeys<
+  Exclude<
+    keyof ViewStyleProps,
+    (typeof VIEW_STYLE_PROP_KEYS)[number]
+  >
+>
+
+export type ViewSemanticPropKeyCoverage = AssertNoMissingKeys<
+  Exclude<
+    keyof ViewSemanticProps,
+    (typeof VIEW_SEMANTIC_PROP_KEYS)[number]
+  >
+>
