@@ -5,6 +5,7 @@ describe('Weave built package entry', () => {
     const weave = await import('../dist/weave.js')
 
     expect(weave).toBeDefined()
+    expect(weave.Badge).toBeTypeOf('function')
     expect(weave.List).toBeTypeOf('function')
     expect(weave.ListItem).toBeTypeOf('function')
     expect(weave.Link).toBeTypeOf('function')

@@ -168,6 +168,23 @@ export interface ChoiceControlTheme {
   }
 }
 
+export interface BadgeThemeBase {
+  background?: string
+  color?: string
+  borderColor?: string
+  borderWidth?: ThemeScaleValue
+  radius?: ThemeScaleValue
+  minHeight?: ThemeScaleValue
+  paddingX?: ThemeScaleValue
+  dotSize?: ThemeScaleValue
+  shadow?: string
+  typo?: TextTypo
+}
+
+export interface BadgeTheme {
+  base?: BadgeThemeBase
+}
+
 export interface LinkThemeBase {
   color?: string
   gap?: ThemeScaleValue
@@ -363,6 +380,7 @@ export interface ListItemTheme {
 }
 
 export interface ThemeComponents {
+  Badge?: BadgeTheme
   Link?: LinkTheme
   Button?: ButtonTheme
   Input?: InputTheme

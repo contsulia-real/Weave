@@ -8,6 +8,7 @@ import {
   IconUser,
 } from '@tabler/icons-react'
 import {
+  Badge,
   Button,
   Icon,
   Image,
@@ -541,6 +542,35 @@ export function FoundationPlayground() {
       </PlaygroundSection>
 
       <PlaygroundSection
+        title="Badge"
+        description="相对包裹内容定位；默认 top-right。正常模式显示 text，dot 模式只显示小圆点。"
+      >
+        <View
+          layout="flex"
+          direction="row"
+          gap={2}
+          align="center"
+          wrap
+        >
+          <Badge text="8">
+            <Button text="Inbox" variant="secondary" />
+          </Badge>
+
+          <Badge text="New" placement="top-left">
+            <Button text="Updates" variant="secondary" />
+          </Badge>
+
+          <Badge dot placement="bottom-right">
+            <Button text="Online" variant="secondary" />
+          </Badge>
+
+          <Badge dot placement="right">
+            <Button text="Status" variant="secondary" />
+          </Badge>
+        </View>
+      </PlaygroundSection>
+
+      <PlaygroundSection
         title="Link"
         description="真实 <a> 语义；text 可覆盖显示内容，默认末尾带 link icon；底部链接线按 45% → 60% → 80% 响应 rest / hover / active。"
       >
@@ -550,7 +580,7 @@ export function FoundationPlayground() {
           gap={1}
           align="start"
         >
-          <Link href="https://example.com/docs" />
+          <Link href="https://example.com/docs" target="_blank" />
 
           <Link
             href="https://example.com/docs"
@@ -562,6 +592,14 @@ export function FoundationPlayground() {
             href="https://example.com/changelog"
             text="Changelog without icon"
             hideIcon
+            target="_parent"
+          />
+
+          <Link
+            href="https://example.com/changelog"
+            text="Changelog on _top"
+            hideIcon
+            target="_top"
           />
         </View>
       </PlaygroundSection>

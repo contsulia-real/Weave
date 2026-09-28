@@ -316,6 +316,20 @@ export const defaultTheme: ResolvedTheme = {
     },
   },
   components: {
+    Badge: {
+      base: {
+        background: 'primary',
+        color: 'onPrimary',
+        borderColor: 'surface',
+        borderWidth: 0.125,
+        radius: 'full',
+        minHeight: 1.25,
+        paddingX: 0.375,
+        dotSize: 0.625,
+        shadow: '0 0.0625rem 0.1875rem rgb(0 0 0 / 0.24)',
+        typo: 'label-small',
+      },
+    },
     Link: {
       base: {
         color: 'primary',

@@ -85,6 +85,32 @@ export function resolveInputTheme(
   }
 }
 
+export function resolveBadgeTheme(
+  theme: ResolvedTheme,
+): RuntimeStyleDeclarations {
+  const base = theme.components.Badge?.base
+
+  return {
+    '--weave-badge-theme-background': color(base?.background),
+    '--weave-badge-theme-color': color(base?.color),
+    '--weave-badge-theme-border-color': color(base?.borderColor),
+    '--weave-badge-theme-border-width': length(base?.borderWidth),
+    '--weave-badge-theme-radius': radius(base?.radius),
+    '--weave-badge-theme-min-height': length(base?.minHeight),
+    '--weave-badge-theme-padding-x': length(base?.paddingX),
+    '--weave-badge-theme-dot-size': length(base?.dotSize),
+    '--weave-badge-theme-shadow': base?.shadow,
+    '--weave-badge-theme-font-size':
+      typographyStyleVariableReference(base?.typo, 'fontSize'),
+    '--weave-badge-theme-font-weight':
+      typographyStyleVariableReference(base?.typo, 'fontWeight'),
+    '--weave-badge-theme-line-height':
+      typographyStyleVariableReference(base?.typo, 'lineHeight'),
+    '--weave-badge-theme-letter-spacing':
+      typographyStyleVariableReference(base?.typo, 'letterSpacing'),
+  }
+}
+
 export function resolveLinkTheme(
   theme: ResolvedTheme,
 ): RuntimeStyleDeclarations {
