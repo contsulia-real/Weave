@@ -89,6 +89,14 @@ describe('Badge', () => {
       )?.textContent ?? ''
     expect(stylesheet).toContain('@keyframes weave-badge-pop')
     expect(stylesheet).toContain('@keyframes weave-badge-dismiss')
+    expect(stylesheet).toContain('var(--weave-badge-motion-x)')
+    expect(stylesheet).toContain('var(--weave-badge-motion-y)')
+    expect(stylesheet).toContain(
+      'var(--weave-badge-target-center-x, 0px) -',
+    )
+    expect(stylesheet).toContain(
+      'var(--weave-badge-target-right, 0px)',
+    )
 
     rerender(
       <Badge text="8" visible={false}>

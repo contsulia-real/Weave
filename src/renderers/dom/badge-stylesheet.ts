@@ -28,10 +28,13 @@ const stylesheet = `
   letter-spacing: var(--weave-badge-theme-letter-spacing);
   white-space: nowrap;
   pointer-events: none;
+  --weave-badge-motion-x: 0px;
+  --weave-badge-motion-y: 0px;
   opacity: 1;
   scale: 1;
+  translate: 0 0;
   transform-origin: center;
-  will-change: opacity, scale;
+  will-change: opacity, scale, translate;
 }
 
 :where(.weave-badge[data-weave-badge-state="open"]) {
@@ -58,6 +61,9 @@ const stylesheet = `
   0% {
     opacity: 0;
     scale: 0.65;
+    translate:
+      var(--weave-badge-motion-x)
+      var(--weave-badge-motion-y);
   }
 
   72% {
@@ -68,6 +74,7 @@ const stylesheet = `
   100% {
     opacity: 1;
     scale: 1;
+    translate: 0 0;
   }
 }
 
@@ -75,11 +82,15 @@ const stylesheet = `
   from {
     opacity: 1;
     scale: 1;
+    translate: 0 0;
   }
 
   to {
     opacity: 0;
     scale: 0.72;
+    translate:
+      var(--weave-badge-motion-x)
+      var(--weave-badge-motion-y);
   }
 }
 
@@ -94,6 +105,14 @@ const stylesheet = `
   > :where(.weave-badge) {
   top: var(--weave-badge-target-top, 0px);
   left: var(--weave-badge-target-left, 0px);
+  --weave-badge-motion-x: calc(
+    var(--weave-badge-target-center-x, 0px) -
+    var(--weave-badge-target-left, 0px)
+  );
+  --weave-badge-motion-y: calc(
+    var(--weave-badge-target-center-y, 0px) -
+    var(--weave-badge-target-top, 0px)
+  );
   transform: translate(-50%, -50%);
 }
 
@@ -101,6 +120,10 @@ const stylesheet = `
   > :where(.weave-badge) {
   top: var(--weave-badge-target-top, 0px);
   left: var(--weave-badge-target-center-x, 50%);
+  --weave-badge-motion-y: calc(
+    var(--weave-badge-target-center-y, 0px) -
+    var(--weave-badge-target-top, 0px)
+  );
   transform: translate(-50%, -50%);
 }
 
@@ -108,6 +131,14 @@ const stylesheet = `
   > :where(.weave-badge) {
   top: var(--weave-badge-target-top, 0px);
   left: var(--weave-badge-target-right, 100%);
+  --weave-badge-motion-x: calc(
+    var(--weave-badge-target-center-x, 0px) -
+    var(--weave-badge-target-right, 0px)
+  );
+  --weave-badge-motion-y: calc(
+    var(--weave-badge-target-center-y, 0px) -
+    var(--weave-badge-target-top, 0px)
+  );
   transform: translate(-50%, -50%);
 }
 
@@ -115,6 +146,10 @@ const stylesheet = `
   > :where(.weave-badge) {
   top: var(--weave-badge-target-center-y, 50%);
   left: var(--weave-badge-target-right, 100%);
+  --weave-badge-motion-x: calc(
+    var(--weave-badge-target-center-x, 0px) -
+    var(--weave-badge-target-right, 0px)
+  );
   transform: translate(-50%, -50%);
 }
 
@@ -122,6 +157,14 @@ const stylesheet = `
   > :where(.weave-badge) {
   top: var(--weave-badge-target-bottom, 100%);
   left: var(--weave-badge-target-right, 100%);
+  --weave-badge-motion-x: calc(
+    var(--weave-badge-target-center-x, 0px) -
+    var(--weave-badge-target-right, 0px)
+  );
+  --weave-badge-motion-y: calc(
+    var(--weave-badge-target-center-y, 0px) -
+    var(--weave-badge-target-bottom, 0px)
+  );
   transform: translate(-50%, -50%);
 }
 
@@ -129,6 +172,10 @@ const stylesheet = `
   > :where(.weave-badge) {
   top: var(--weave-badge-target-bottom, 100%);
   left: var(--weave-badge-target-center-x, 50%);
+  --weave-badge-motion-y: calc(
+    var(--weave-badge-target-center-y, 0px) -
+    var(--weave-badge-target-bottom, 0px)
+  );
   transform: translate(-50%, -50%);
 }
 
@@ -136,6 +183,14 @@ const stylesheet = `
   > :where(.weave-badge) {
   top: var(--weave-badge-target-bottom, 100%);
   left: var(--weave-badge-target-left, 0px);
+  --weave-badge-motion-x: calc(
+    var(--weave-badge-target-center-x, 0px) -
+    var(--weave-badge-target-left, 0px)
+  );
+  --weave-badge-motion-y: calc(
+    var(--weave-badge-target-center-y, 0px) -
+    var(--weave-badge-target-bottom, 0px)
+  );
   transform: translate(-50%, -50%);
 }
 
@@ -143,6 +198,10 @@ const stylesheet = `
   > :where(.weave-badge) {
   top: var(--weave-badge-target-center-y, 50%);
   left: var(--weave-badge-target-left, 0px);
+  --weave-badge-motion-x: calc(
+    var(--weave-badge-target-center-x, 0px) -
+    var(--weave-badge-target-left, 0px)
+  );
   transform: translate(-50%, -50%);
 }
 `

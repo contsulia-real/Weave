@@ -1135,7 +1135,7 @@ export function FoundationPlayground() {
 
         <Column gap={0.75}>
           <Text typo="label-medium" color="secondary">
-            Popup / dismiss
+            Popup: center → placement · dismiss: placement → center
           </Text>
           <BadgeMotionPlayground />
         </Column>
