@@ -105,6 +105,36 @@ describe('Image', () => {
     expect(onError).toHaveBeenCalledTimes(1)
   })
 
+  it('applies View mask semantics through Image viewProps', () => {
+    const { getByTestId } = render(
+      <Image
+        src="/cover.webp"
+        alt="Masked cover"
+        viewProps={{
+          mask: {
+            type: 'linear',
+            angle: 90,
+            stops: [
+              ['transparent', 0],
+              ['black', 1],
+            ],
+          },
+          data: {
+            testid: 'masked-image',
+          },
+        }}
+      />,
+    )
+
+    const element = getByTestId('masked-image')
+    const viewRule = runtimeRule(element, 'weave-props-')
+
+    expect(viewRule).toContain(
+      '--weave-mask-image:linear-gradient(90deg',
+    )
+    expect(element.getAttribute('mask')).toBeNull()
+  })
+
   it('keeps viewProps className and style above Image semantic props', () => {
     const { getByTestId } = render(
       <Image

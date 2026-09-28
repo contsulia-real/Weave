@@ -734,6 +734,76 @@ export function FoundationPlayground() {
       </PlaygroundSection>
 
       <PlaygroundSection
+        title="Mask"
+        description="Mask 是 ViewProps 通用视觉能力。左侧保留原图作为对照；中间用结构化 Gradient 从透明渐入；右侧直接使用原生 CSS mask-image 字符串形成径向遮罩。"
+      >
+        <Row
+          gap={1}
+          wrap
+          align="start"
+        >
+          <Column gap={0.5}>
+            <Text typo="label-medium" color="secondary">
+              Original
+            </Text>
+            <Image
+              src={diagnosticImage}
+              alt="Unmasked Weave diagnostic"
+              fit="cover"
+              viewProps={{
+                width: 14,
+                height: 8,
+                radius: 'medium',
+              }}
+            />
+          </Column>
+
+          <Column gap={0.5}>
+            <Text typo="label-medium" color="secondary">
+              Gradient object
+            </Text>
+            <Image
+              src={diagnosticImage}
+              alt="Weave diagnostic with linear gradient mask"
+              fit="cover"
+              viewProps={{
+                width: 14,
+                height: 8,
+                radius: 'medium',
+                mask: {
+                  type: 'linear',
+                  angle: 90,
+                  stops: [
+                    ['transparent', 0],
+                    ['black', 0.45],
+                    ['black', 1],
+                  ],
+                },
+              }}
+            />
+          </Column>
+
+          <Column gap={0.5}>
+            <Text typo="label-medium" color="secondary">
+              CSS radial mask
+            </Text>
+            <Image
+              src={diagnosticImage}
+              alt="Weave diagnostic with radial CSS mask"
+              fit="cover"
+              viewProps={{
+                width: 14,
+                height: 8,
+                radius: 'medium',
+                mask:
+                  'radial-gradient(circle at center, black 0 42%, transparent 72%)',
+              }}
+            />
+          </Column>
+        </Row>
+      </PlaygroundSection>
+
+      <PlaygroundSection
         title="Icon"
         description="Outline / Filled 由调用方传入的 Tabler 图标组件决定；size / stroke 由 Weave 统一，颜色和其他通用视觉继续走 viewProps。"
       >
