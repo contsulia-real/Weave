@@ -15,9 +15,10 @@ export type ListFocusMove =
 export interface ListContextValue {
   selection: ListSelection
   orientation: ListOrientation
+  disabled: boolean
   selectedIds: ReadonlySet<string>
-  activeId: string | null
-  setActiveId(id: string): void
+  focusId: string | null
+  setFocusId(id: string): void
   selectItem(id: string): void
   moveFocus(
     id: string,

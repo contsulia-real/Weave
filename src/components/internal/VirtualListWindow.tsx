@@ -37,7 +37,7 @@ interface VirtualListWindowProps {
     ListOrientation
   rootRef:
     RefObject<HTMLDivElement | null>
-  activeId:
+  focusId:
     string | null
 }
 
@@ -265,7 +265,7 @@ export function VirtualListWindow({
   entries,
   orientation,
   rootRef,
-  activeId,
+  focusId,
 }: VirtualListWindowProps) {
   const [
     measurements,
@@ -512,12 +512,12 @@ export function VirtualListWindow({
         }
 
         const activeIndex =
-          activeId === null
+          focusId === null
             ? -1
             : entries.findIndex(
                 (entry) =>
                   entry.id ===
-                  activeId,
+                  focusId,
               )
 
         if (
@@ -616,7 +616,7 @@ export function VirtualListWindow({
         return indices
       },
       [
-        activeId,
+        focusId,
         entries,
         layout,
         viewport.offset,

@@ -308,7 +308,7 @@ function dataItemContent(
   )
 }
 
-function findInitialActiveId(
+function findInitialFocusId(
   enabledIds:
     readonly string[],
   selectedIds:
@@ -327,6 +327,7 @@ export function List(
   props: ListProps,
 ) {
   const {
+    disabled = false,
     orientation = 'vertical',
     gap,
     noDividers = false,
@@ -385,12 +386,13 @@ export function List(
         descriptors
           .filter(
             (item) =>
+              !disabled &&
               !item.disabled,
           )
           .map(
             (item) => item.id,
           ),
-      [descriptors],
+      [descriptors, disabled],
     )
 
   const singleProps =
@@ -471,34 +473,34 @@ export function List(
     )
 
   const [
-    storedActiveId,
-    setStoredActiveId,
+    storedFocusId,
+    setStoredFocusId,
   ] = useState<string | null>(
     () =>
-      findInitialActiveId(
+      findInitialFocusId(
         enabledIds,
         selectedIds,
       ),
   )
 
-  const activeId =
-    storedActiveId !== null &&
+  const focusId =
+    storedFocusId !== null &&
     enabledIds.includes(
-      storedActiveId,
+      storedFocusId,
     )
-      ? storedActiveId
-      : findInitialActiveId(
+      ? storedFocusId
+      : findInitialFocusId(
           enabledIds,
           selectedIds,
         )
 
-  const setActiveId =
+  const setFocusId =
     useCallback(
       (id: string) => {
         if (
           enabledIds.includes(id)
         ) {
-          setStoredActiveId(id)
+          setStoredFocusId(id)
         }
       },
       [enabledIds],
@@ -633,7 +635,7 @@ export function List(
           return
         }
 
-        setStoredActiveId(nextId)
+        setStoredFocusId(nextId)
 
         const focusItem = () => {
           const items =
@@ -693,20 +695,22 @@ export function List(
       () => ({
         selection,
         orientation,
+        disabled,
         selectedIds,
-        activeId,
-        setActiveId,
+        focusId,
+        setFocusId,
         selectItem,
         moveFocus,
       }),
       [
-        activeId,
+        focusId,
+        disabled,
         moveFocus,
         orientation,
         selectItem,
         selectedIds,
         selection,
-        setActiveId,
+        setFocusId,
       ],
     )
 
@@ -741,6 +745,7 @@ export function List(
                 key={item.id}
                 id={item.id}
                 disabled={
+                  disabled ||
                   item.disabled
                 }
               >
@@ -775,8 +780,8 @@ export function List(
             rootRef={
               rootRef
             }
-            activeId={
-              activeId
+            focusId={
+              focusId
             }
           />
         )
@@ -797,6 +802,11 @@ export function List(
       <View
         {...viewProps}
         ref={setRootRef}
+        disabled={
+          disabled
+            ? true
+            : undefined
+        }
         role={
           selection === 'none'
             ? 'list'

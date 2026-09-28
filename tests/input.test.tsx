@@ -80,6 +80,42 @@ describe('Input', () => {
     expect(onChange).toHaveBeenCalledWith('world')
   })
 
+  it('maps disabled to the real input and textarea controls', () => {
+    const { getByTestId } = render(
+      <>
+        <Input
+          disabled
+          viewProps={{
+            data: {
+              testid: 'disabled-input',
+            },
+          }}
+        />
+        <Input
+          multiline
+          disabled
+          viewProps={{
+            data: {
+              testid: 'disabled-textarea',
+            },
+          }}
+        />
+      </>,
+    )
+
+    const input = getByTestId(
+      'disabled-input',
+    ) as HTMLInputElement
+    const textarea = getByTestId(
+      'disabled-textarea',
+    ) as HTMLTextAreaElement
+
+    expect(input.disabled).toBe(true)
+    expect(textarea.disabled).toBe(true)
+    expect(input.getAttribute('aria-disabled')).toBe('true')
+    expect(textarea.getAttribute('aria-disabled')).toBe('true')
+  })
+
   it('renders multiline mode as a textarea', () => {
     const onChange = vi.fn()
 

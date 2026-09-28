@@ -43,6 +43,14 @@ export function FormPlayground() {
           />
 
           <Input
+            disabled
+            defaultValue="Disabled input"
+            viewProps={{
+              width: 'fill',
+            }}
+          />
+
+          <Input
             multiline
             rows={4}
             defaultValue={[
@@ -108,6 +116,18 @@ export function FormPlayground() {
             <Switch size="large" />
             <Text typo="body-medium">
               Large
+            </Text>
+          </View>
+
+          <View
+            layout="flex"
+            direction="row"
+            gap={0.5}
+            align="center"
+          >
+            <Switch disabled />
+            <Text typo="body-medium">
+              Disabled
             </Text>
           </View>
         </View>

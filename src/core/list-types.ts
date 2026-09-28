@@ -37,6 +37,7 @@ export type ListViewProps =
     | 'children'
     | 'role'
     | 'selected'
+    | 'disabled'
   > &
   ViewDynamicBreakpointProps
 
@@ -58,6 +59,7 @@ export interface ListItemProps {
 }
 
 interface ListBaseProps {
+  disabled?: boolean
   orientation?: ListOrientation
   gap?: ViewStyleProps['gap']
   noDividers?: boolean

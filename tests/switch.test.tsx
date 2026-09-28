@@ -215,12 +215,16 @@ describe('Switch', () => {
     expect(element.getAttribute('aria-checked')).toBe('false')
   })
 
-  it('does not toggle while disabled', () => {
+  it('does not toggle or dispatch interaction callbacks while disabled', () => {
     const onChange = vi.fn()
+    const onClick = vi.fn()
     const { getByRole } = render(
       <Switch
         onChange={onChange}
-        viewProps={{ disabled: true }}
+        disabled
+        viewProps={{
+          onClick,
+        }}
       />,
     )
 
@@ -228,6 +232,9 @@ describe('Switch', () => {
     const thumb = element.querySelector(
       '[data-weave-switch-thumb]',
     ) as HTMLDivElement
+
+    expect(element.getAttribute('aria-disabled')).toBe('true')
+    expect(element.tabIndex).toBe(-1)
 
     fireEvent.click(element)
     fireEvent.keyDown(element, { key: ' ' })
@@ -238,6 +245,7 @@ describe('Switch', () => {
     })
 
     expect(onChange).not.toHaveBeenCalled()
+    expect(onClick).not.toHaveBeenCalled()
   })
 
   it('does no layout reads during pointermove after the initial geometry read', () => {

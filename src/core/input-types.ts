@@ -14,7 +14,7 @@ export type InputValue = string | number
 
 type InputViewProps<TElement extends HTMLElement> = Omit<
   ViewCoreProps<TElement>,
-  'children' | 'onChange' | 'readOnly' | 'required'
+  'children' | 'onChange' | 'readOnly' | 'required' | 'disabled'
 > &
   ViewDynamicBreakpointProps & {
     ref?: Ref<TElement>
@@ -25,6 +25,7 @@ interface InputCommonProps {
   defaultValue?: InputValue
   onChange?: (value: string) => void
   placeholder?: string
+  disabled?: boolean
   readOnly?: boolean
   required?: boolean
   name?: string

@@ -19,7 +19,6 @@ import { resolveButtonTheme } from '../renderers/dom/resolve-component-theme'
 import { useTheme } from '../theme/theme-context'
 import { Icon } from './Icon'
 import { Text } from './Text'
-import { ProgressVisual } from './Progress'
 import { useViewHost } from './internal/use-view-host'
 
 function iconContent(icon: ButtonIcon) {
@@ -76,7 +75,7 @@ export function Button(props: ButtonProps) {
   const {
     variant = 'primary',
     size = 'medium',
-    loading = false,
+    disabled = false,
     viewProps = {},
   } = props
 
@@ -88,8 +87,7 @@ export function Button(props: ButtonProps) {
 
   const hostProps: ViewProps<HTMLButtonElement> = {
     ...viewProps,
-    disabled: loading || viewProps.disabled,
-    busy: loading || undefined,
+    disabled,
   }
 
   const {
@@ -122,7 +120,6 @@ export function Button(props: ButtonProps) {
     }
   }
 
-  const disabled = loading || viewProps.disabled === true
   const iconOnly =
     'icon' in props &&
     props.icon !== undefined &&
@@ -139,13 +136,11 @@ export function Button(props: ButtonProps) {
       data-weave-button=""
       data-weave-button-variant={variant}
       data-weave-button-size={size}
-      data-weave-button-loading={loading ? '' : undefined}
       data-weave-layout={resolved.layout}
       className={[
         'weave-button',
         `weave-button--${variant}`,
         `weave-button--${size}`,
-        loading ? 'weave-button--loading' : undefined,
         iconOnly ? 'weave-button--icon-only' : undefined,
         themeClassName,
         className,
@@ -155,21 +150,6 @@ export function Button(props: ButtonProps) {
       <span className="weave-button__content">
         {semanticContent(props)}
       </span>
-
-      {loading ? (
-        <span className="weave-button__loader" aria-hidden="true">
-          <ProgressVisual
-            undetermined
-            mode="spin"
-            size="small"
-            color="inherit"
-            viewProps={{
-              className: 'weave-button__progress',
-              'aria-hidden': true,
-            }}
-          />
-        </span>
-      ) : null}
     </button>
   )
 }

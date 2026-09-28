@@ -47,6 +47,7 @@ interface SingleLineInputHostProps {
   defaultValue?: string | number
   onChange?: (value: string) => void
   placeholder?: string
+  disabled?: boolean
   type?: InputType
   readOnly?: boolean
   required?: boolean
@@ -63,6 +64,7 @@ function SingleLineInput({
   defaultValue,
   onChange,
   placeholder,
+  disabled,
   type,
   readOnly,
   required,
@@ -73,7 +75,10 @@ function SingleLineInput({
   pattern,
   viewProps = {},
 }: SingleLineInputHostProps) {
-  const hostProps: ViewProps<HTMLInputElement> = viewProps
+  const hostProps: ViewProps<HTMLInputElement> = {
+    ...viewProps,
+    disabled,
+  }
   const themeClassName = useInputThemeClassName()
   const {
     elementRef,
@@ -94,6 +99,7 @@ function SingleLineInput({
       defaultValue={defaultValue}
       onChange={handleChange}
       placeholder={placeholder}
+      disabled={disabled}
       type={type}
       readOnly={readOnly}
       required={required}
@@ -120,6 +126,7 @@ interface MultilineInputHostProps {
   defaultValue?: string | number
   onChange?: (value: string) => void
   placeholder?: string
+  disabled?: boolean
   rows?: number
   readOnly?: boolean
   required?: boolean
@@ -135,6 +142,7 @@ function MultilineInput({
   defaultValue,
   onChange,
   placeholder,
+  disabled,
   rows,
   readOnly,
   required,
@@ -144,7 +152,10 @@ function MultilineInput({
   maxLength,
   viewProps = {},
 }: MultilineInputHostProps) {
-  const hostProps: ViewProps<HTMLTextAreaElement> = viewProps
+  const hostProps: ViewProps<HTMLTextAreaElement> = {
+    ...viewProps,
+    disabled,
+  }
   const themeClassName = useInputThemeClassName()
   const {
     elementRef,
@@ -166,6 +177,7 @@ function MultilineInput({
         defaultValue={defaultValue}
         onChange={handleChange}
         placeholder={placeholder}
+        disabled={disabled}
         rows={rows}
         readOnly={readOnly}
         required={required}
@@ -207,6 +219,7 @@ export function Input(props: InputProps) {
         defaultValue={props.defaultValue}
         onChange={props.onChange}
         placeholder={props.placeholder}
+        disabled={props.disabled}
         rows={props.rows}
         readOnly={props.readOnly}
         required={props.required}
@@ -225,6 +238,7 @@ export function Input(props: InputProps) {
       defaultValue={props.defaultValue}
       onChange={props.onChange}
       placeholder={props.placeholder}
+      disabled={props.disabled}
       type={props.type}
       readOnly={props.readOnly}
       required={props.required}

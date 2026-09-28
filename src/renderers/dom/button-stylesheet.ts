@@ -225,23 +225,6 @@ const stylesheet = `
   gap: var(--weave-button-gap);
 }
 
-:where(.weave-button--loading) > :where(.weave-button__content) {
-  opacity: 0;
-}
-
-:where(.weave-button__loader) {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-}
-
-:where(.weave-button__progress) {
-  pointer-events: none;
-}
-
 @media (prefers-reduced-motion: reduce) {
   :where(.weave-button) {
     transition:

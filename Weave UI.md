@@ -2219,6 +2219,7 @@ value
 defaultValue
 onChange
 placeholder
+disabled
 type
 multiline
 rows
@@ -2299,7 +2300,7 @@ input value、textarea value 与 placeholder 共享该 typo 的 `fontSize / font
 - focus
 - disabled visual state
 
-实例 `viewProps` 仍然按统一优先级覆盖组件主题。
+`disabled`、`required`、`readOnly` 等语义状态由 Input 自己的高层属性提供，不在 `viewProps` 中重复建立第二真值。其他实例 `viewProps` 仍然按统一优先级覆盖组件主题。
 
 ## 14.4 Input 与 `viewProps`
 
@@ -2380,6 +2381,7 @@ Switch
 checked
 defaultChecked
 onChange
+disabled
 size
 ```
 
@@ -2769,7 +2771,7 @@ Button
 
 DOM 使用真实 `<button type="button">`，不使用 `div role="button"`。
 
-loading 状态不单独实现另一套 spinner。Button 与公开 `Progress` 复用同一个 Progress 视觉内核；公开 `Progress` 负责 `progressbar` 语义，而 Button loading 只复用其不确定 spin 视觉，并将该视觉节点设为 `aria-hidden`。Button 自身通过 `busy` / `aria-busy` 表达加载状态，因此不会在 Button 内重复暴露一个独立 `progressbar` 语义。Progress 的 DOM 视觉宿主使用合法的内联结构，使该视觉内核可以安全用于 Button 内容模型。
+Button 不内建 `loading` 状态。需要阻止重复提交或暂时不可操作时直接使用 `disabled`；需要展示任务进度时，由调用方在布局中组合公开 `Progress`。这样 Button 不再维护一套只服务于“加载中”的特殊内容与状态。
 
 ## 18.1 快捷语义 API
 
@@ -2781,7 +2783,7 @@ import { IconDeviceFloppy } from "@tabler/icons-react"
   icon={IconDeviceFloppy}
   variant="primary"
   size="medium"
-  loading={false}
+  disabled={false}
   viewProps={{
     onClick: save,
   }}
@@ -2839,7 +2841,7 @@ import {
 两种内容入口互斥：
 
 - 使用 `children` 时，不再同时使用 `text`、`icon`、`iconPosition`。
-- `variant`、`size`、`loading`、`viewProps` 等不属于内容入口，可用于两种模式。
+- `variant`、`size`、`disabled`、`viewProps` 等不属于内容入口，可用于两种模式。
 
 ## 18.3 variant
 
@@ -2912,24 +2914,16 @@ iconPosition = start
 
 只有 `icon`、没有 `text` 的快捷入口属于 icon-only Button。icon-only Button 使用当前 size 的 control height 作为最小宽度并清除水平 padding，因此形成稳定的方形点击区域，而不是只留下一个漂浮图标。
 
-## 18.6 loading
+## 18.6 disabled
 
 ```tsx
 <Button
   text="提交"
-  loading
+  disabled
 />
 ```
 
-loading 规则：
-
-- 真实 `button.disabled = true`
-- 同时暴露 `aria-disabled="true"`
-- Button 自身暴露 `aria-busy="true"`
-- 阻止重复点击
-- 原内容仍然保留在布局和可访问名称中，只做视觉隐藏，因此 Button 尺寸不跳变
-- loading spinner 为 `aria-hidden` 的装饰层
-- `prefers-reduced-motion: reduce` 下停止旋转
+`disabled` 是 Button 自己的高层属性，不放在 `viewProps` 中重复暴露。框架同时映射真实 `button.disabled = true` 与 `aria-disabled="true"`，阻止点击与键盘激活，并使用统一 disabled 主题状态。
 
 ## 18.7 默认交互反馈
 
@@ -2944,7 +2938,7 @@ rest
 hover
 → 轻微抬起并增加深度
 
-active / pointer press
+pointer press (`:active`)
 → 向下位移
 → 深度明显收缩
 → 轻微缩放
@@ -2964,7 +2958,7 @@ theme.tokens.motion
 
 因此 Button 只解释全局 feedback token，不拥有另一套孤立的物理系统。
 
-实例 `viewProps.active` 等用户状态样式仍然高于组件默认 active 表现。
+`viewProps.active` 只表示 `:active` 样式覆盖，不是 Button 的持久“激活值”。Button 的按压态由 pointer / keyboard 交互瞬时产生。实例状态样式仍然高于组件默认 press 表现。
 
 `prefers-reduced-motion: reduce` 下保留颜色、阴影等可辨识状态变化，但移除自动位移 / 缩放动画。
 
@@ -3914,14 +3908,14 @@ aria-multiselectable="true"
 
 可选择 List 使用 roving focus：
 
-- 当前 active item 为 `tabIndex=0`；
+- 当前 roving focus target 为 `tabIndex=0`；
 - 其他可选择项为 `tabIndex=-1`；
 - disabled item 不进入键盘移动序列；
 - vertical：`ArrowUp / ArrowDown`；
 - horizontal：`ArrowLeft / ArrowRight`；
 - `Home / End` 移动到首个 / 最后一个可用项；
 - `Enter / Space` 激活当前项；
-- 鼠标 / focus 进入某项后，该项成为新的 active item。
+- 鼠标 / focus 进入某项后，该项成为新的 roving focus target。
 
 ListItem 内部的 Button / Switch / input / link 等交互控件拥有自己的交互语义；操作这些 trailing 控件时，不得同时触发行选择。
 
@@ -3960,7 +3954,7 @@ List 不重新发明滚动 API。
 - 使用内部估算建立初始窗口；
 - 项挂载后通过真实尺寸测量修正后续 offset；
 - vertical / horizontal 使用各自主轴尺寸；
-- 当前 active item 即使暂时位于窗口外，也必须保留挂载，保证 roving focus 和辅助技术状态连续；
+- 当前 roving focus target 即使暂时位于窗口外，也必须保留挂载，保证焦点和辅助技术状态连续；
 - 键盘移动到尚未挂载的项时，先让该项进入渲染窗口，再 focus；
 - 滚动容器仍然是 List 自身的 `viewProps`，继续复用 Weave Scrollbar；
 - 不增加 `VirtualList`、`itemHeight` 或另一套滚动 API。
@@ -4030,6 +4024,7 @@ disabledOpacity
 
 ```text
 items
+disabled
 selection
 selected
 defaultSelected
@@ -5061,6 +5056,13 @@ valueText
 例如：
 
 ```text
+Button.disabled
+Input.disabled
+Switch.disabled
+List.disabled
+ListItem.disabled
+→ 都是组件自己的高层属性，不再同时提供 viewProps.disabled
+
 Switch.checked
 → 不再同时提供 viewProps.checked
 
@@ -5177,9 +5179,11 @@ Space
 
 可以正确激活。
 
-`Switch` 自己保证切换语义。
+`Switch` 自己保证切换语义。其持久状态叫 `checked`，不是 `active`。
 
-`List` 在可选择模式下提供对应键盘导航语义。
+`List` 在可选择模式下提供对应键盘导航语义；持久选择状态叫 `selected`，内部 roving focus target 不作为公开 `active` 状态。
+
+Button 的 `:active` 只表示瞬时按压。Weave 不提供一个跨 Button / Switch / List 的通用 `active: boolean`，因为 press、checked、selected、focus 是不同语义。
 
 公开事件仍然存在，但标准交互不是业务层责任。
 

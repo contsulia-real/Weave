@@ -82,6 +82,7 @@ export function Switch({
   checked,
   defaultChecked = false,
   onChange,
+  disabled = false,
   size = 'medium',
   viewProps = {},
 }: SwitchProps) {
@@ -135,7 +136,7 @@ export function Switch({
   }
 
   const toggle = () => {
-    if (viewProps.disabled) return
+    if (disabled) return
     commit(!currentChecked)
   }
 
@@ -244,6 +245,11 @@ export function Switch({
   }
 
   const handleClick = (event: MouseEvent<HTMLDivElement>) => {
+    if (disabled) {
+      event.preventDefault()
+      return
+    }
+
     viewProps.onClick?.(event)
     if (event.defaultPrevented) return
 
@@ -256,6 +262,11 @@ export function Switch({
   }
 
   const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (disabled) {
+      event.preventDefault()
+      return
+    }
+
     viewProps.onKeyDown?.(event)
     if (event.defaultPrevented) return
 
@@ -268,11 +279,15 @@ export function Switch({
   const handlePointerDown = (
     event: ReactPointerEvent<HTMLDivElement>,
   ) => {
+    if (disabled) {
+      event.preventDefault()
+      return
+    }
+
     viewProps.onPointerDown?.(event)
 
     if (
       event.defaultPrevented ||
-      viewProps.disabled ||
       event.button !== 0
     ) {
       return
@@ -419,7 +434,8 @@ export function Switch({
       ].filter(Boolean).join(' ')}
       role="switch"
       checked={currentChecked}
-      focusable={viewProps.focusable ?? true}
+      disabled={disabled ? true : undefined}
+      focusable={disabled ? false : (viewProps.focusable ?? true)}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
       onPointerDown={handlePointerDown}

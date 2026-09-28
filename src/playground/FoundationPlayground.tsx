@@ -499,8 +499,8 @@ export function FoundationPlayground() {
             />
 
             <Button
-              text="Loading"
-              loading
+              text="Disabled"
+              disabled
             />
 
             <Button variant="secondary">

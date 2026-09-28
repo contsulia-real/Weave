@@ -156,41 +156,14 @@ describe('Button', () => {
     expect(element.textContent).toContain('Custom content')
   })
 
-  it('disables natively while loading without removing its content', () => {
+  it('maps the high-level disabled prop to native and aria disabled state', () => {
     const onClick = vi.fn()
-
-    const { getByRole } = render(
-      <Button
-        text="Submit"
-        loading
-        viewProps={{
-          onClick,
-        }}
-      />,
-    )
-
-    const element = getByRole('button', { name: 'Submit' }) as HTMLButtonElement
-
-    expect(element.disabled).toBe(true)
-    expect(element.getAttribute('aria-disabled')).toBe('true')
-    expect(element.getAttribute('aria-busy')).toBe('true')
-    expect(element.className).toContain('weave-button--loading')
-    expect(element.textContent).toContain('Submit')
-    const indicator = element.querySelector('[data-weave-progress]')
-    expect(indicator).not.toBeNull()
-    expect(indicator?.getAttribute('aria-hidden')).toBe('true')
-    expect(element.querySelector('[role="progressbar"]')).toBeNull()
-
-    fireEvent.click(element)
-    expect(onClick).not.toHaveBeenCalled()
-  })
-
-  it('maps viewProps disabled to both native and aria disabled state', () => {
     const { getByRole } = render(
       <Button
         text="Disabled"
+        disabled
         viewProps={{
-          disabled: true,
+          onClick,
         }}
       />,
     )
@@ -201,6 +174,9 @@ describe('Button', () => {
 
     expect(element.disabled).toBe(true)
     expect(element.getAttribute('aria-disabled')).toBe('true')
+
+    fireEvent.click(element)
+    expect(onClick).not.toHaveBeenCalled()
   })
 
   it('keeps viewProps className and style as the final escape hatches', () => {
@@ -529,24 +505,4 @@ describe('Button', () => {
     )
   })
 
-  it('reuses Progress motion handling for the loading indicator', () => {
-    render(<Button text="Loading" loading />)
-
-    const buttonStylesheet = document.querySelector(
-      'style[data-weave-button-styles]',
-    )
-    const progressStylesheet = document.querySelector(
-      'style[data-weave-progress-styles]',
-    )
-
-    expect(buttonStylesheet?.textContent).not.toContain(
-      'weave-button-spin',
-    )
-    expect(progressStylesheet?.textContent).toContain(
-      '@media (prefers-reduced-motion: reduce)',
-    )
-    expect(progressStylesheet?.textContent).toContain(
-      'weave-progress-spin-rotate',
-    )
-  })
 })

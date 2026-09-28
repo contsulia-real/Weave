@@ -96,19 +96,26 @@ export function ListItem({
   const selected =
     selectable &&
     context.selectedIds.has(id)
-  const active =
+  const effectiveDisabled =
+    disabled ||
+    context?.disabled === true
+  const focusTarget =
     selectable &&
-    context.activeId === id
+    context.focusId === id
 
   const handleClick = (
     event:
       MouseEvent<HTMLDivElement>,
   ) => {
+    if (effectiveDisabled) {
+      event.preventDefault()
+      return
+    }
+
     viewProps.onClick?.(event)
 
     if (
       event.defaultPrevented ||
-      disabled ||
       !selectable ||
       context === null ||
       fromInteractiveDescendant(
@@ -119,7 +126,7 @@ export function ListItem({
       return
     }
 
-    context.setActiveId(id)
+    context.setFocusId(id)
     context.selectItem(id)
   }
 
@@ -127,11 +134,14 @@ export function ListItem({
     event:
       FocusEvent<HTMLDivElement>,
   ) => {
+    if (effectiveDisabled) {
+      return
+    }
+
     viewProps.onFocus?.(event)
 
     if (
       event.defaultPrevented ||
-      disabled ||
       !selectable ||
       context === null ||
       event.target !==
@@ -140,18 +150,22 @@ export function ListItem({
       return
     }
 
-    context.setActiveId(id)
+    context.setFocusId(id)
   }
 
   const handleKeyDown = (
     event:
       KeyboardEvent<HTMLDivElement>,
   ) => {
+    if (effectiveDisabled) {
+      event.preventDefault()
+      return
+    }
+
     viewProps.onKeyDown?.(event)
 
     if (
       event.defaultPrevented ||
-      disabled ||
       !selectable ||
       context === null ||
       fromInteractiveDescendant(
@@ -234,7 +248,7 @@ export function ListItem({
           : undefined
       }
       disabled={
-        disabled
+        effectiveDisabled
           ? true
           : undefined
       }
@@ -242,7 +256,7 @@ export function ListItem({
         selectable
           ? (
               viewProps.tabIndex ??
-              (active ? 0 : -1)
+              (focusTarget ? 0 : -1)
             )
           : viewProps.tabIndex
       }

@@ -510,6 +510,54 @@ describe('List', () => {
       .toHaveBeenCalled()
   })
 
+  it('disables the whole List through the high-level disabled prop', () => {
+    const onSelect = vi.fn()
+    const {
+      getByRole,
+    } = render(
+      <List
+        disabled
+        selection="single"
+        onSelect={onSelect}
+        items={[
+          {
+            id: 'one',
+            text: 'One',
+          },
+        ]}
+      />,
+    )
+
+    const list =
+      getByRole('listbox')
+    const option =
+      getByRole('option')
+
+    expect(
+      list.getAttribute(
+        'aria-disabled',
+      ),
+    ).toBe('true')
+    expect(
+      option.getAttribute(
+        'aria-disabled',
+      ),
+    ).toBe('true')
+    expect(option.tabIndex).toBe(-1)
+
+    fireEvent.click(option)
+    fireEvent.keyDown(
+      option,
+      {
+        key: 'Enter',
+      },
+    )
+
+    expect(onSelect)
+      .not
+      .toHaveBeenCalled()
+  })
+
   it('does not select disabled items', () => {
     const onSelect =
       vi.fn()
@@ -786,7 +834,7 @@ describe('List', () => {
     ).not.toBeNull()
   })
 
-  it('keeps the active selected item mounted even when it starts outside the virtual window', async () => {
+  it('keeps the focus-target selected item mounted even when it starts outside the virtual window', async () => {
     const items =
       Array.from(
         {
