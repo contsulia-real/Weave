@@ -168,6 +168,23 @@ export interface ChoiceControlTheme {
   }
 }
 
+export interface LinkThemeBase {
+  color?: string
+  gap?: ThemeScaleValue
+  iconSize?: ThemeScaleValue
+  underlineColor?: string
+  underlineThickness?: ThemeScaleValue
+  underlineOffset?: ThemeScaleValue
+  focusOutlineWidth?: ThemeScaleValue
+  focusOutlineColor?: string
+  focusOutlineStyle?: string
+  focusOutlineOffset?: ThemeScaleValue
+}
+
+export interface LinkTheme {
+  base?: LinkThemeBase
+}
+
 export interface ButtonThemeBase {
   radius?: ThemeScaleValue
   borderWidth?: ThemeScaleValue
@@ -346,6 +363,7 @@ export interface ListItemTheme {
 }
 
 export interface ThemeComponents {
+  Link?: LinkTheme
   Button?: ButtonTheme
   Input?: InputTheme
   Switch?: SwitchTheme

@@ -28,6 +28,7 @@ const expectedRuntimeExports = [
   'Input',
   'List',
   'ListItem',
+  'Link',
   'Progress',
   'Radio',
   'Snack',
@@ -57,6 +58,7 @@ assert(
   'Built declarations are missing the ListItem export',
 )
 assert(typeSource.includes('ListProps'), 'Built declarations are missing ListProps')
+assert(typeSource.includes('LinkProps'), 'Built declarations are missing LinkProps')
 assert(typeSource.includes('RadioProps'), 'Built declarations are missing RadioProps')
 assert(typeSource.includes('CheckboxProps'), 'Built declarations are missing CheckboxProps')
 

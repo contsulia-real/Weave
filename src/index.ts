@@ -5,6 +5,7 @@ export { View } from './components/View'
 export { Text } from './components/Text'
 export { Image } from './components/Image'
 export { Icon } from './components/Icon'
+export { Link } from './components/Link'
 export { Button } from './components/Button'
 export { Input } from './components/Input'
 export { Switch } from './components/Switch'
@@ -99,6 +100,12 @@ export type {
   IconSvg,
   IconViewProps,
 } from './core/icon-types'
+
+export type {
+  LinkProps,
+  LinkTarget,
+  LinkViewProps,
+} from './core/link-types'
 
 export type {
   ButtonBreakpointProps,

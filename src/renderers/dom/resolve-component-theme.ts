@@ -85,6 +85,38 @@ export function resolveInputTheme(
   }
 }
 
+export function resolveLinkTheme(
+  theme: ResolvedTheme,
+): RuntimeStyleDeclarations {
+  const base = theme.components.Link?.base
+
+  return {
+    '--weave-link-theme-color': color(base?.color),
+    '--weave-link-theme-gap': length(base?.gap),
+    '--weave-link-theme-icon-size': length(base?.iconSize),
+    '--weave-link-theme-underline-color': color(
+      base?.underlineColor,
+    ),
+    '--weave-link-theme-underline-thickness': length(
+      base?.underlineThickness,
+    ),
+    '--weave-link-theme-underline-offset': length(
+      base?.underlineOffset,
+    ),
+    '--weave-link-theme-focus-outline-width': length(
+      base?.focusOutlineWidth,
+    ),
+    '--weave-link-theme-focus-outline-color': color(
+      base?.focusOutlineColor,
+    ),
+    '--weave-link-theme-focus-outline-style':
+      base?.focusOutlineStyle,
+    '--weave-link-theme-focus-outline-offset': length(
+      base?.focusOutlineOffset,
+    ),
+  }
+}
+
 export function resolveButtonTheme(
   theme: ResolvedTheme,
 ): RuntimeStyleDeclarations {

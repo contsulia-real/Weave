@@ -508,6 +508,7 @@ View
 
 ```text
 Button
+Link
 ToolTip
 Snack
 List
@@ -3130,6 +3131,59 @@ style
 
 ---
 
+# 18A. `Link`
+
+`Link` 是组合组件，语义宿主必须是真实 `<a>`，不能用 Button / div 模拟导航。
+
+核心 API：
+
+```text
+href        // required
+text        // optional display text
+hideIcon    // optional, default false
+target      // optional, native anchor target
+viewProps
+```
+
+显示规则：
+
+```tsx
+<Link href="https://example.com/docs" />
+// 显示：https://example.com/docs + link icon
+
+<Link
+  href="https://example.com/docs"
+  text="Documentation"
+/>
+// 显示：Documentation + link icon
+
+<Link
+  href="/docs"
+  text="Docs"
+  hideIcon
+/>
+// 显示：Docs
+```
+
+- `text` 未提供时，直接显示 `href`；提供后只改变可见文字，不改变真实 `href`。
+- 默认在内容末尾追加一个装饰性 link icon；icon 不进入 accessible name。只有 `hideIcon` 才隐藏。
+- `target` 直接写到真实 `<a target>`，例如 `_self`、`_blank`；框架不重写浏览器原生导航行为，也不自动添加或修改 `rel`。
+- 其他通用事件、ARIA、className、style 和布局逃生口继续通过 `viewProps`。
+
+Link 使用一条底部 link marker 表达“这是链接”。由于真实 `border-bottom` 无法只占部分宽度，DOM/CSS 后端使用 `::after` 绘制等价底边线：
+
+```text
+rest    45%
+hover   60%
+active  80%
+```
+
+底边线从左侧起始，并使用 `theme.tokens.motion.duration.normal / curve.standard` 平滑改变宽度。`prefers-reduced-motion: reduce` 下取消宽度 transition，但仍直接切换到对应 45 / 60 / 80% 状态。
+
+默认颜色、icon 尺寸、内容间距、底线颜色 / 厚度 / offset 与 focus outline 来自 `theme.components.Link.base`。默认颜色和底线都使用 `primary` token，因此 Light / Dark 自动沿主题变化。
+
+---
+
 # 19. `ToolTip`
 
 `ToolTip` 是组合组件。
@@ -4182,6 +4236,7 @@ motion
 组件级配置：
 
 ```text
+Link
 Button
 Input
 Switch

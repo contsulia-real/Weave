@@ -11,6 +11,7 @@ import {
   Button,
   Icon,
   Image,
+  Link,
   Text,
   ThemeProvider,
   ToolTip,
@@ -535,6 +536,32 @@ export function FoundationPlayground() {
             viewProps={{
               width: 'fit',
             }}
+          />
+        </View>
+      </PlaygroundSection>
+
+      <PlaygroundSection
+        title="Link"
+        description="真实 <a> 语义；text 可覆盖显示内容，默认末尾带 link icon；底部链接线按 45% → 60% → 80% 响应 rest / hover / active。"
+      >
+        <View
+          layout="flex"
+          direction="column"
+          gap={1}
+          align="start"
+        >
+          <Link href="https://example.com/docs" />
+
+          <Link
+            href="https://example.com/docs"
+            text="Documentation"
+            target="_self"
+          />
+
+          <Link
+            href="https://example.com/changelog"
+            text="Changelog without icon"
+            hideIcon
           />
         </View>
       </PlaygroundSection>

@@ -316,6 +316,20 @@ export const defaultTheme: ResolvedTheme = {
     },
   },
   components: {
+    Link: {
+      base: {
+        color: 'primary',
+        gap: 0.25,
+        iconSize: 0.875,
+        underlineColor: 'primary',
+        underlineThickness: 0.125,
+        underlineOffset: 0.125,
+        focusOutlineWidth: 0.125,
+        focusOutlineColor: 'focus',
+        focusOutlineStyle: 'solid',
+        focusOutlineOffset: controlBaseline.focusOutlineOffset,
+      },
+    },
     Button: {
       base: {
         ...controlBaseline,
