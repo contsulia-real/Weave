@@ -505,19 +505,19 @@ export const defaultTheme: ResolvedTheme = {
           size: 1.125,
           indicatorSize: 0.5,
           markSize: 0.625,
-          stateLayerSize: 1.625,
+          stateLayerSize: 2.125,
         },
         medium: {
           size: 1.375,
           indicatorSize: 0.625,
           markSize: 0.75,
-          stateLayerSize: 1.875,
+          stateLayerSize: 2.375,
         },
         large: {
           size: 1.625,
           indicatorSize: 0.75,
           markSize: 0.875,
-          stateLayerSize: 2.125,
+          stateLayerSize: 2.625,
         },
       },
       states: {
@@ -562,17 +562,17 @@ export const defaultTheme: ResolvedTheme = {
         small: {
           size: 1.125,
           markSize: 0.75,
-          stateLayerSize: 1.625,
+          stateLayerSize: 2.125,
         },
         medium: {
           size: 1.375,
           markSize: 0.9375,
-          stateLayerSize: 1.875,
+          stateLayerSize: 2.375,
         },
         large: {
           size: 1.625,
           markSize: 1.125,
-          stateLayerSize: 2.125,
+          stateLayerSize: 2.625,
         },
       },
       states: {

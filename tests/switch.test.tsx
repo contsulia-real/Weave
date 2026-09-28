@@ -142,6 +142,7 @@ describe('Switch', () => {
 
     expect(parseFloat(thumb.style.height)).toBeCloseTo(13.6)
     expect(parseFloat(thumb.style.width)).toBeCloseTo(13.6)
+    expect(thumb.style.transform).toContain('-50%')
     expect(element.dataset.weaveSwitchDragging).toBe('true')
 
     fireEvent.pointerCancel(element, {
@@ -170,6 +171,7 @@ describe('Switch', () => {
 
     expect(parseFloat(thumb.style.height)).toBeCloseTo(13.6)
     expect(parseFloat(thumb.style.width)).toBeCloseTo(13.6)
+    expect(thumb.style.transform).toContain('-50%')
     expect(element.dataset.weaveSwitchDragging).toBe('true')
 
     frames.shift()?.(0)
@@ -207,6 +209,7 @@ describe('Switch', () => {
 
     expect(parseFloat(thumb.style.height)).toBeCloseTo(13.6)
     expect(parseFloat(thumb.style.width)).toBeCloseTo(13.6)
+    expect(thumb.style.transform).toContain('-50%')
 
     fireEvent.pointerMove(element, {
       pointerId: 7,
@@ -425,6 +428,15 @@ describe('Switch', () => {
     )
     expect(stylesheet).toContain(
       '--weave-switch-thumb-hover-shadow',
+    )
+    expect(stylesheet).toContain(
+      '--weave-component-top: 50%;',
+    )
+    expect(stylesheet).toContain(
+      '--weave-component-transform: translate(0, -50%);',
+    )
+    expect(stylesheet).toContain(
+      '--weave-component-transform: translate(var(--weave-switch-shift), -50%);',
     )
   })
 

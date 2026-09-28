@@ -68,7 +68,7 @@ const stylesheet = `
 
 :where(.weave-switch__thumb) {
   --weave-component-position: absolute;
-  --weave-component-top: var(--weave-switch-thumb-inset);
+  --weave-component-top: 50%;
   --weave-component-left: var(--weave-switch-thumb-inset);
   --weave-component-width: var(--weave-switch-thumb-size);
   --weave-component-height: var(--weave-switch-thumb-size);
@@ -89,7 +89,7 @@ const stylesheet = `
   );
   --weave-component-box-shadow: var(--weave-switch-thumb-shadow);
   --weave-component-pointer-events: auto;
-  --weave-component-transform: translateX(0);
+  --weave-component-transform: translate(0, -50%);
 
   touch-action: none;
   will-change: transform, width, height;
@@ -117,7 +117,7 @@ const stylesheet = `
 
 :where(.weave-switch[aria-checked="true"])
   > :where(.weave-switch__thumb) {
-  --weave-component-transform: translateX(var(--weave-switch-shift));
+  --weave-component-transform: translate(var(--weave-switch-shift), -50%);
 }
 
 :where(.weave-switch[data-weave-switch-dragging="true"])

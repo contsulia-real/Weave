@@ -96,12 +96,11 @@ function applyDragShape(
     drag.maxOffset + drag.thumbSize - width,
   )
   const x = Math.min(maxX, Math.max(0, centeredX))
-  const y = (drag.thumbSize - height) / 2
 
   thumb.style.width = `${width}px`
   thumb.style.height = `${height}px`
   thumb.style.transform =
-    `translate(${x}px, ${y}px)`
+    `translate(${x}px, -50%)`
 }
 
 function clearDragShape(thumb: HTMLDivElement): void {

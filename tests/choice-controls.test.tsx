@@ -118,7 +118,7 @@ describe('Radio and Checkbox', () => {
       '--weave-choice-label-gap:',
     )
     expect(rule).toContain(
-      '--weave-choice-state-layer-size:1.875rem;',
+      '--weave-choice-state-layer-size:2.375rem;',
     )
     expect(
       defaultTheme.components.Radio?.base
@@ -297,15 +297,15 @@ describe('Radio and Checkbox', () => {
     expect(
       defaultTheme.components.Radio?.sizes
         ?.small?.stateLayerSize,
-    ).toBe(1.625)
+    ).toBe(2.125)
     expect(
       defaultTheme.components.Radio?.sizes
         ?.medium?.stateLayerSize,
-    ).toBe(1.875)
+    ).toBe(2.375)
     expect(
       defaultTheme.components.Radio?.sizes
         ?.large?.stateLayerSize,
-    ).toBe(2.125)
+    ).toBe(2.625)
   })
 
   it('fills the checked Checkbox and draws its checkmark path instead of revealing a padded inner square', () => {
