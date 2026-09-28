@@ -70,6 +70,61 @@ const diagnosticTheme = createTheme({
   },
 })
 
+function LayoutAnimationPlayground() {
+  const [alternate, setAlternate] = useState(false)
+  const order = alternate
+    ? ['C', 'B', 'A'] as const
+    : ['A', 'B', 'C'] as const
+
+  return (
+    <Column gap={0.75} align="start">
+      <Button
+        text={alternate ? 'Reset layout' : 'Reorder + resize'}
+        variant="secondary"
+        viewProps={{
+          onClick: () => setAlternate((current) => !current),
+        }}
+      />
+
+      <Row
+        width={26}
+        minHeight={6}
+        gap={0.75}
+        align="center"
+        padding={0.75}
+        outlineWidth={0.0625}
+        outlineColor="outline"
+        outlineStyle="dashed"
+        radius="medium"
+      >
+        {order.map((label) => (
+          <Column
+            key={label}
+            width={
+              label === 'B'
+                ? alternate ? 9 : 5
+                : 5
+            }
+            height={4}
+            align="center"
+            justify="center"
+            radius="medium"
+            background={label === 'B' ? 'primary' : 'surfaceHover'}
+            color={label === 'B' ? 'onPrimary' : 'tertiary'}
+            shadow="small"
+            layoutAnimation={{
+              duration: 'slow',
+              curve: 'emphasized',
+            }}
+          >
+            <Text typo="label-medium">{label}</Text>
+          </Column>
+        ))}
+      </Row>
+    </Column>
+  )
+}
+
 function EnterExitPlayground() {
   const [present, setPresent] = useState(true)
 
@@ -346,6 +401,13 @@ export function FoundationPlayground() {
         description="enter 直接在挂载时运行；Presence 不增加 DOM，并在 present=false 后保留子树直到 exit 完成再真正卸载。"
       >
         <EnterExitPlayground />
+      </PlaygroundSection>
+
+      <PlaygroundSection
+        title="Motion · layout animation"
+        description="三个 keyed 子项都启用 FLIP。切换时 A / C 重排，B 同时改变宽度；连续点击会从当前视觉位置重新接管，不排动画队列。"
+      >
+        <LayoutAnimationPlayground />
       </PlaygroundSection>
 
       <PlaygroundSection

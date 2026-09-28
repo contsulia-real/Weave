@@ -67,6 +67,7 @@ const CUSTOM_PROP_KEYS = new Set<string>([
   'transition',
   'enter',
   'exit',
+  'layoutAnimation',
   'sm',
   'md',
   'lg',

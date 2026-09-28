@@ -241,6 +241,11 @@ ${motionPropertyRegistrationBlock()}
   ${declarationBlock('motion-exit-to')}
 }
 
+:where([data-weave-view][data-weave-layout-animating="true"]) {
+  transform-origin: 0 0;
+  will-change: translate, scale;
+}
+
 :where(.weave-scroll-host--overflow-auto) {
   overflow: auto;
 }

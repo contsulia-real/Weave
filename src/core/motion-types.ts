@@ -73,8 +73,18 @@ export type ViewEnterExit =
   | ViewMotionPreset
   | ViewEnterExitConfig
 
+export interface ViewLayoutAnimationConfig {
+  duration?: MotionDuration
+  curve?: MotionCurve
+}
+
+export type ViewLayoutAnimation =
+  | boolean
+  | ViewLayoutAnimationConfig
+
 export interface ViewMotionProps {
   transition?: ViewTransition
   enter?: ViewEnterExit
   exit?: ViewEnterExit
+  layoutAnimation?: ViewLayoutAnimation
 }

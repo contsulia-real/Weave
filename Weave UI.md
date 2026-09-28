@@ -4867,7 +4867,7 @@ style > className > 实例属性体系 > 当前主题 > defaultTheme
 
 当前动画模型：
 
-> 实现状态：当前代码已经落地框架级 `transition` 与 `ThemeProvider reducedMotion`。下面列出的 `enter / exit / layoutAnimation / spring / repeat / keyframes / stagger / interruption` 仍属于本节冻结的目标模型，尚未全部进入公开实现；后续必须建立在当前 transition / reduced-motion 核心之上逐项完成，不能把组件内部已有动画等同于通用 Motion API。
+> 实现状态：当前代码已经落地框架级 `transition`、`ThemeProvider reducedMotion`、`enter / exit + Presence` 与 `layoutAnimation`。`layoutAnimation` 已支持快速连续更新时从当前视觉几何重新接管。下面列出的 `spring / repeat / repeatDelay / direction / keyframes / stagger` 以及更广义的通用 interruption 仍属于本节冻结的目标模型，尚未全部进入公开实现；后续必须建立在当前 Motion 核心之上逐项完成，不能把组件内部已有动画等同于通用 Motion API。
 
 ```text
 Motion
@@ -4993,24 +4993,15 @@ React 条件卸载需要 Presence，否则组件已经从 React tree 移除，�
 
 ## 24.3 Layout Animation
 
+`layoutAnimation` 动画的是**当前 ViewHost 自身的几何变化**。开启后，框架在每次 React commit 的 layout effect 阶段测量真实 `getBoundingClientRect()`，将新布局反向映射回旧视觉 rect，再通过 FLIP 释放到新布局；不增加 wrapper，也不把真实 layout 本身做逐帧插值。
+
+基础用法：
+
 ```tsx
-<List
-  viewProps={{
-    layoutAnimation: true,
-  }}
->
-  ...
-</List>
+<View layoutAnimation />
 ```
 
-适用于：
-
-- 插入
-- 删除
-- 重排
-- 尺寸变化
-
-也可以：
+精确控制：
 
 ```tsx
 <View
@@ -5019,6 +5010,44 @@ React 条件卸载需要 Presence，否则组件已经从 React tree 移除，�
     curve: "standard",
   }}
 />
+```
+
+`true` 默认使用 `motion.duration.normal` 与 `motion.curve.standard`。`duration` 同其他 Motion API：裸数字按毫秒，字符串优先解析主题 duration token，也接受原生 `ms / s`；`curve` 支持主题 token、cubic-bezier tuple、steps 与原生 CSS easing 字符串。
+
+当前 FLIP 后端规则：
+
+- **位置变化**通过独立 `translate` 层从旧 rect 偏移回新 rect。
+- **尺寸变化**通过独立 `scale` 层从旧宽高比例恢复到新宽高；动画期间 `transform-origin` 使用左上角，结束后恢复普通 View 样式。
+- layoutAnimation 通过 WAAPI 直接动画 CSS 独立属性 `translate / scale`，与 View 原有 `transform` 分层组合，因此 hover / enter / 普通 transform 不需要被 FLIP 覆盖。
+- 动画期间 ViewHost 只增加内部 `data-weave-layout-animating` 状态，由低 specificity 的 View stylesheet 临时设定左上角 `transform-origin` 与 `will-change`；不存在第二个布局 DOM，也不依赖可插值 custom property。
+- 快速连续更新不会排动画队列：旧 WAAPI animation 先采样当前视觉 `getBoundingClientRect()`，新布局 commit 后取消旧 animation，再从该视觉 rect 重新 FLIP 到最新目标。
+- FLIP 使用 viewport rect，因此必须把**滚动造成的 viewport 坐标变化**与真正 layout change 分离：宿主监听 document/ancestor scroll、window resize 与自身 ResizeObserver，在没有 layout animation 运行时只同步 baseline，不播放动画。否则滚动后第一次重排会错误把 scroll delta 当成元素位移，把节点反向送出屏幕。
+- `ThemeProvider reducedMotion="reduce"` 时不创建 layout animation，直接使用最新布局。
+- 浏览器不存在 `Element.animate` 时安全降级为立即布局，不为兼容性注入 JS animation polyfill。
+
+插入 / 删除 / 重排的职责要分开：
+
+- **重排**：对会被移动的稳定 keyed 子项启用 `layoutAnimation`。
+- **插入**：新节点没有旧 rect，自己没有可做的 FLIP；新节点的视觉入场使用 `enter`，已有兄弟项仍可通过 `layoutAnimation` 平滑让位。
+- **删除**：待删除节点使用 `Presence + exit` 保留到离场结束；留下来的稳定兄弟项使用 `layoutAnimation` 从旧位置补到新位置。
+- **尺寸变化**：同一个稳定 ViewHost 的宽高发生变化时直接由 layoutAnimation 的 scale FLIP 处理。
+
+例如重排：
+
+```tsx
+<Row>
+  {items.map((item) => (
+    <View
+      key={item.id}
+      layoutAnimation={{
+        duration: "normal",
+        curve: "emphasized",
+      }}
+    >
+      {item.content}
+    </View>
+  ))}
+</Row>
 ```
 
 ---

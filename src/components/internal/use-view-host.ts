@@ -15,6 +15,7 @@ import {
 } from '../../renderers/dom/resolve-view'
 import { useBreakpointStylesheet } from '../../renderers/dom/breakpoint-stylesheet'
 import { useRuntimeStyleClass } from '../../renderers/dom/runtime-class'
+import { useViewLayoutAnimation } from './use-view-layout-animation'
 import { useViewMotion } from './use-view-motion'
 import { ensureViewStylesheet } from '../../renderers/dom/view-stylesheet'
 import { useTheme } from '../../theme/theme-context'
@@ -51,6 +52,12 @@ export function useViewHost<TElement extends HTMLElement>(
   const breakpointClassName = useBreakpointStylesheet(theme.breakpoints)
   const resolved = resolveDOMView(props, theme.breakpoints)
   const motion = useViewMotion(props, theme, reducedMotion)
+  useViewLayoutAnimation(
+    elementRef,
+    props.layoutAnimation,
+    theme,
+    reducedMotion,
+  )
   ;(resolved.domProps as Record<string, unknown>)[
     'data-weave-reduced-motion'
   ] = reducedMotion ? 'reduce' : 'no-preference'

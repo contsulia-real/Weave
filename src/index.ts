@@ -93,6 +93,8 @@ export type {
   ReducedMotionPreference,
   ViewEnterExit,
   ViewEnterExitConfig,
+  ViewLayoutAnimation,
+  ViewLayoutAnimationConfig,
   ViewMotionPreset,
   ViewMotionProps,
   ViewTransition,
