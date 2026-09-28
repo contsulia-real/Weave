@@ -65,7 +65,12 @@ export function ChoiceControl({
     <label
       data-weave-choice-field=""
       data-weave-choice-disabled={disabled ? 'true' : 'false'}
-      className="weave-choice-field"
+      className={[
+        'weave-choice-field',
+        `weave-choice-field--${kind}`,
+        `weave-choice-field--${size}`,
+        themeClassName,
+      ].join(' ')}
     >
       <span
         data-weave-choice-shell=""
@@ -73,7 +78,6 @@ export function ChoiceControl({
           'weave-choice-shell',
           `weave-choice-shell--${kind}`,
           `weave-choice-shell--${size}`,
-          themeClassName,
         ].join(' ')}
       >
         <input
@@ -95,7 +99,6 @@ export function ChoiceControl({
             'weave-choice-control',
             `weave-${kind}`,
             `weave-choice-control--${size}`,
-            themeClassName,
             className,
           ].filter(Boolean).join(' ')}
           style={inlineStyle}

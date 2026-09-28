@@ -2398,7 +2398,7 @@ size
 - 直接水平拖动 thumb；拖动期间位置连续跟随指针，thumb 使用全局 `feedback.dragScale` 表达被抓取状态；释放时以轨道中点决定最终开关状态
 - 拖动完成后产生的兼容 click 不得再次反向切换
 - disabled 状态下点击、键盘与拖动都不能改变状态
-- `label` 是可见且可点击的真实绑定标签；Switch 宿主使用可 label 的原生 `<button type="button" role="switch">`，点击 label 与点击控件本体等价，同时 label 参与 accessible name
+- `label` 是可见且可点击的真实绑定标签；Switch 宿主使用可 label 的原生 `<button type="button" role="switch">`，点击 label 与点击控件本体等价，同时 label 参与 accessible name；Switch 控件与可见 label 默认保留 `0.5rem`（8px）间距
 
 拖动中的 thumb 位置属于组件内部交互几何，可由渲染后端直接同步；它不是用户显式 `style`，也不改变公开样式优先级。拖动期间不对 pointer movement 做缓动，保证直接跟手；松手后的归位才允许使用主题 motion curve。
 
@@ -2460,7 +2460,8 @@ viewProps
 - Radio checked 后，外壳仍然是凹槽，内部 primary 圆点以 `scale(0) → scale(1)` + spring 方式长出来；unchecked 时同一 transition 反向执行 `scale(1) → scale(0)`，不能直接移除节点或瞬间消失；
 - Checkbox checked 后，**Checkbox 外壳本身整块铺满 primary**，不存在内部 primary 方块、padding 或第二层填充；
 - Checkbox 的 `onPrimary` 对号使用真实 SVG path，并通过 `pathLength + stroke-dasharray + stroke-dashoffset` 从起点到终点画出，而不是整块突然出现；unchecked 时同一 path transition 必须反向把 `stroke-dashoffset` 从 `0` 推回 `1`，同时 checked background 平滑退回未选中 surface；
-- Radio / Checkbox 外围都有独立圆形 state layer：hover 显示轻量圆形提示背景，focus-visible 稍增强，press 再增强；checked 时 state layer 颜色切到 primary。state layer 不参与布局，也不遮挡控件本体；
+- Radio / Checkbox 外围都有独立圆形 state layer：small / medium / large 的交互圆分别为 `2.5rem / 2.75rem / 3rem`（40 / 44 / 48px），实际 shell 就占据这块交互尺寸，控件本体居中其中；hover 显示圆形提示背景，focus-visible 稍增强，press 再增强，checked 时 state layer 颜色切到 primary；hover 只由控件 shell 触发，悬停 label 文本本身不会点亮 halo；
+- 可见 `label` 与 state-layer shell 外缘之间默认保留 `0.5rem`（8px）安全间距；这个 gap 属于 field 级 theme 变量，必须挂在 field 宿主作用域，不能定义在子 input 上让父 label 读取不到；
 - `prefers-reduced-motion: reduce` 下取消 scale、state layer scale 与 path drawing transition，直接显示最终状态；
 - 深色模式保持完全相同的结构，只调整 surface、border 和阴影 token。
 

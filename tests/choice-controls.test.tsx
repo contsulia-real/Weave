@@ -83,6 +83,49 @@ describe('Radio and Checkbox', () => {
     expect(checkbox.checked).toBe(true)
   })
 
+  it('applies the theme at field scope so label spacing and state-layer geometry are real layout values', () => {
+    const { getByText } = render(
+      <Radio
+        label="Scoped option"
+        size="medium"
+      />,
+    )
+
+    const field = getByText('Scoped option').closest(
+      '[data-weave-choice-field]',
+    ) as HTMLElement
+    const shell = field.querySelector(
+      '[data-weave-choice-shell]',
+    ) as HTMLElement
+    const themeClass = [...field.classList].find((name) =>
+      name.startsWith('weave-radio-theme-'),
+    )
+
+    expect(themeClass).toBeDefined()
+    expect(
+      [...shell.classList].some((name) =>
+        name.startsWith('weave-radio-theme-'),
+      ),
+    ).toBe(false)
+
+    const rule = (
+      document.querySelector<HTMLStyleElement>(
+        `style[data-weave-runtime-class="${themeClass}"]`,
+      )?.textContent ?? ''
+    ).replace(/\s+/g, '')
+
+    expect(rule).toContain(
+      '--weave-choice-label-gap:0.5rem;',
+    )
+    expect(rule).toContain(
+      '--weave-choice-state-layer-size:2.75rem;',
+    )
+    expect(
+      defaultTheme.components.Radio?.base
+        ?.stateLayerHoverOpacity,
+    ).toBe(0.14)
+  })
+
   it('treats radios with the same group as one native radio group', () => {
     const { getByRole } = render(
       <>
@@ -238,6 +281,19 @@ describe('Radio and Checkbox', () => {
       defaultTheme.components.Checkbox?.sizes
         ?.large?.size,
     ).toBe(1.625)
+
+    expect(
+      defaultTheme.components.Radio?.sizes
+        ?.small?.stateLayerSize,
+    ).toBe(2.5)
+    expect(
+      defaultTheme.components.Radio?.sizes
+        ?.medium?.stateLayerSize,
+    ).toBe(2.75)
+    expect(
+      defaultTheme.components.Radio?.sizes
+        ?.large?.stateLayerSize,
+    ).toBe(3)
   })
 
   it('fills the checked Checkbox and draws its checkmark path instead of revealing a padded inner square', () => {
