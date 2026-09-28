@@ -141,7 +141,9 @@ const stylesheet = `
       var(--weave-motion-curve-spring);
 }
 
-:where(.weave-button:hover:not([aria-disabled="true"])) {
+:where(
+  .weave-button:hover:not([aria-disabled="true"]):not([aria-pressed="true"])
+) {
   --weave-component-background: var(--weave-button-hover-background);
   --weave-component-transform:
     translateY(calc(-1 * var(--weave-feedback-hover-lift)))
@@ -150,7 +152,8 @@ const stylesheet = `
     0 var(--weave-feedback-hover-depth) 0 var(--weave-button-depth-color);
 }
 
-:where(.weave-button:active:not([aria-disabled="true"])) {
+:where(.weave-button:active:not([aria-disabled="true"])),
+:where(.weave-button[aria-pressed="true"]:not([aria-disabled="true"])) {
   --weave-component-background: var(--weave-button-active-background);
   --weave-component-transform:
     translateY(var(--weave-feedback-press-offset))
@@ -241,7 +244,8 @@ const stylesheet = `
   }
 
   :where(.weave-button:hover:not([aria-disabled="true"])),
-  :where(.weave-button:active:not([aria-disabled="true"])) {
+  :where(.weave-button:active:not([aria-disabled="true"])),
+  :where(.weave-button[aria-pressed="true"]:not([aria-disabled="true"])) {
     --weave-component-transform: none;
   }
 }

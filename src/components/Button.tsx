@@ -76,6 +76,7 @@ export function Button(props: ButtonProps) {
     variant = 'primary',
     size = 'medium',
     disabled = false,
+    pressed,
     viewProps = {},
   } = props
 
@@ -88,6 +89,7 @@ export function Button(props: ButtonProps) {
   const hostProps: ViewProps<HTMLButtonElement> = {
     ...viewProps,
     disabled,
+    pressed,
   }
 
   const {

@@ -503,6 +503,12 @@ export function FoundationPlayground() {
               disabled
             />
 
+            <Button
+              text="Pressed"
+              variant="secondary"
+              pressed
+            />
+
             <Button variant="secondary">
               <Icon
                 icon={IconSettings}

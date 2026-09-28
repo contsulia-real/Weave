@@ -179,6 +179,56 @@ describe('Button', () => {
     expect(onClick).not.toHaveBeenCalled()
   })
 
+  it('supports a persistent pressed toggle state without changing ordinary buttons', () => {
+    const { getByRole, rerender } = render(
+      <Button
+        text="Pin"
+        pressed
+      />,
+    )
+
+    const button = getByRole('button', {
+      name: 'Pin',
+    })
+    const stylesheet = document.querySelector(
+      'style[data-weave-button-styles]',
+    )?.textContent ?? ''
+
+    expect(
+      button.getAttribute('aria-pressed'),
+    ).toBe('true')
+    expect(stylesheet).toContain(
+      '[aria-pressed="true"]',
+    )
+    expect(stylesheet).toContain(
+      'var(--weave-feedback-press-offset)',
+    )
+    expect(stylesheet).toContain(
+      'var(--weave-feedback-press-depth)',
+    )
+
+    rerender(
+      <Button
+        text="Pin"
+        pressed={false}
+      />,
+    )
+    expect(
+      getByRole('button', {
+        name: 'Pin',
+      }).getAttribute('aria-pressed'),
+    ).toBe('false')
+
+    rerender(
+      <Button text="Pin" />,
+    )
+    expect(
+      getByRole('button', {
+        name: 'Pin',
+      }).getAttribute('aria-pressed'),
+    ).toBeNull()
+  })
+
   it('keeps viewProps className and style as the final escape hatches', () => {
     const { getByRole } = render(
       <Button

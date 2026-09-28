@@ -38,7 +38,7 @@ export type ButtonBreakpointProps = Partial<
 
 export type ButtonViewProps = Omit<
   ViewCoreProps<HTMLButtonElement>,
-  'children' | 'busy' | 'disabled'
+  'children' | 'busy' | 'disabled' | 'pressed'
 > &
   ViewDynamicBreakpointProps & {
     ref?: Ref<HTMLButtonElement>
@@ -48,6 +48,7 @@ interface ButtonBaseProps {
   variant?: ButtonVariant
   size?: ButtonSize
   disabled?: boolean
+  pressed?: boolean
   viewProps?: ButtonViewProps
 }
 

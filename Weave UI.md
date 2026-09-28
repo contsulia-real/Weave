@@ -2784,6 +2784,7 @@ import { IconDeviceFloppy } from "@tabler/icons-react"
   variant="primary"
   size="medium"
   disabled={false}
+  pressed={false}
   viewProps={{
     onClick: save,
   }}
@@ -2841,7 +2842,7 @@ import {
 两种内容入口互斥：
 
 - 使用 `children` 时，不再同时使用 `text`、`icon`、`iconPosition`。
-- `variant`、`size`、`disabled`、`viewProps` 等不属于内容入口，可用于两种模式。
+- `variant`、`size`、`disabled`、`pressed`、`viewProps` 等不属于内容入口，可用于两种模式。
 
 ## 18.3 variant
 
@@ -2925,7 +2926,25 @@ iconPosition = start
 
 `disabled` 是 Button 自己的高层属性，不放在 `viewProps` 中重复暴露。框架同时映射真实 `button.disabled = true` 与 `aria-disabled="true"`，阻止点击与键盘激活，并使用统一 disabled 主题状态。
 
-## 18.7 默认交互反馈
+## 18.7 pressed
+
+`pressed` 用于需要维持按下状态的 toggle button：
+
+```tsx
+<Button
+  text="固定"
+  pressed={pinned}
+  viewProps={{
+    onClick: () => setPinned(!pinned),
+  }}
+/>
+```
+
+`pressed` 是受业务控制的持久状态，不是点击事件本身。未传 `pressed` 时 Button 是普通按钮，不生成 `aria-pressed`；显式 `pressed={false}` / `pressed={true}` 时分别映射 `aria-pressed="false"` / `aria-pressed="true"`，表达 toggle button 语义。
+
+视觉上 `pressed=true` 直接维持与瞬时 pointer press 相同的 `activeBackground / pressOffset / pressScale / pressDepth`，不会另造一套 pressed 设计语言；hover 也不会把已按下的 Button 再抬起来。`disabled` 优先于 `pressed`。
+
+## 18.8 默认交互反馈
 
 Button 是 Weave “反馈优先”设计语言的典型组件之一。
 
@@ -2962,7 +2981,7 @@ theme.tokens.motion
 
 `prefers-reduced-motion: reduce` 下保留颜色、阴影等可辨识状态变化，但移除自动位移 / 缩放动画。
 
-## 18.8 ThemeProvider
+## 18.9 ThemeProvider
 
 Button 的默认视觉属于组件主题：
 
@@ -5061,7 +5080,10 @@ Input.disabled
 Switch.disabled
 List.disabled
 ListItem.disabled
-→ 都是组件自己的高层属性，不再同时提供 viewProps.disabled
+→ `disabled` 是对应组件自己的高层属性，不再同时提供 `viewProps.disabled`
+
+Button.pressed
+→ 不再同时提供 viewProps.pressed
 
 Switch.checked
 → 不再同时提供 viewProps.checked
@@ -5183,7 +5205,7 @@ Space
 
 `List` 在可选择模式下提供对应键盘导航语义；持久选择状态叫 `selected`，内部 roving focus target 不作为公开 `active` 状态。
 
-Button 的 `:active` 只表示瞬时按压。Weave 不提供一个跨 Button / Switch / List 的通用 `active: boolean`，因为 press、checked、selected、focus 是不同语义。
+Button 的 `:active` 只表示瞬时按压；需要维持按下状态时使用 Button 自己的 `pressed`。Weave 不提供一个跨 Button / Switch / List 的通用 `active: boolean`，因为瞬时 press、持久 pressed、checked、selected、focus 是不同语义。
 
 公开事件仍然存在，但标准交互不是业务层责任。
 
