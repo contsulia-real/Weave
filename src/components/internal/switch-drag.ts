@@ -52,6 +52,37 @@ function dragProgress(
   )
 }
 
+function applySwitchShape(
+  thumb: HTMLDivElement,
+  drag: SwitchDragState,
+  offset: number,
+  widthScale: number,
+  heightScale: number,
+): void {
+  const width =
+    drag.thumbSize * widthScale
+  const height =
+    drag.thumbSize * heightScale
+  const centeredX =
+    offset +
+    (drag.thumbSize - width) / 2
+  const maxX = Math.max(
+    0,
+    drag.maxOffset +
+      drag.thumbSize -
+      width,
+  )
+  const x = Math.min(
+    maxX,
+    Math.max(0, centeredX),
+  )
+
+  thumb.style.width = `${width}px`
+  thumb.style.height = `${height}px`
+  thumb.style.transform =
+    `translate(${x}px, -50%)`
+}
+
 export function applySwitchDragShape(
   thumb: HTMLDivElement,
   drag: SwitchDragState,
@@ -64,21 +95,66 @@ export function applySwitchDragShape(
     drag.startOffset,
     drag.maxOffset,
   )
-  const height = drag.thumbSize * shrink
   const widthScale =
-    shrink + (maxWidth - shrink) * progress
-  const width = drag.thumbSize * widthScale
+    shrink +
+    (maxWidth - shrink) *
+      progress
 
-  const centeredX = offset + (drag.thumbSize - width) / 2
-  const maxX = Math.max(
-    0,
-    drag.maxOffset + drag.thumbSize - width,
+  applySwitchShape(
+    thumb,
+    drag,
+    offset,
+    widthScale,
+    shrink,
   )
-  const x = Math.min(maxX, Math.max(0, centeredX))
+}
 
-  thumb.style.width = `${width}px`
-  thumb.style.height = `${height}px`
-  thumb.style.transform = `translate(${x}px, -50%)`
+export function applySwitchAutoDragShape(
+  thumb: HTMLDivElement,
+  drag: SwitchDragState,
+  offset: number,
+  progress: number,
+  shrink: number,
+  maxWidth: number,
+): void {
+  const normalized = Math.min(
+    1,
+    Math.max(0, progress),
+  )
+  const secondHalf =
+    Math.max(
+      0,
+      (normalized - 0.5) * 2,
+    )
+
+  const widthScale =
+    normalized <= 0.5
+      ? (
+          shrink +
+          (maxWidth - shrink) *
+            (normalized * 2)
+        )
+      : (
+          maxWidth +
+          (1 - maxWidth) *
+            secondHalf
+        )
+  const heightScale =
+    normalized <= 0.5
+      ? shrink
+      : (
+          shrink +
+          (1 - shrink) *
+            secondHalf
+        )
+
+  applySwitchShape(
+    thumb,
+    drag,
+    offset,
+    widthScale,
+    heightScale,
+  )
 }
 
 export function clearSwitchDragShape(

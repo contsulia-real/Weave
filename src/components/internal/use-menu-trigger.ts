@@ -263,10 +263,73 @@ export function useMenuTrigger(
       closeAll(false)
     }
 
+    const view =
+      document.defaultView
+
+    const dismissForViewportExit = () => {
+      restoreFocusRef.current =
+        false
+      closeAll(false)
+    }
+
+    const checkViewport = () => {
+      if (view === null) {
+        return
+      }
+
+      const rect =
+        target.getBoundingClientRect()
+      const outside =
+        rect.bottom <= 0 ||
+        rect.top >=
+          view.innerHeight ||
+        rect.right <= 0 ||
+        rect.left >=
+          view.innerWidth
+
+      if (outside) {
+        dismissForViewportExit()
+      }
+    }
+
+    const intersectionObserver =
+      typeof IntersectionObserver ===
+      'undefined'
+        ? null
+        : new IntersectionObserver(
+            (entries) => {
+              const entry =
+                entries.find(
+                  (candidate) =>
+                    candidate.target ===
+                    target,
+                )
+
+              if (
+                entry !== undefined &&
+                !entry.isIntersecting
+              ) {
+                dismissForViewportExit()
+              }
+            },
+          )
+
     document.addEventListener(
       'pointerdown',
       pointerDown,
       true,
+    )
+    view?.addEventListener(
+      'scroll',
+      checkViewport,
+      true,
+    )
+    view?.addEventListener(
+      'resize',
+      checkViewport,
+    )
+    intersectionObserver?.observe(
+      target,
     )
 
     return () => {
@@ -275,6 +338,16 @@ export function useMenuTrigger(
         pointerDown,
         true,
       )
+      view?.removeEventListener(
+        'scroll',
+        checkViewport,
+        true,
+      )
+      view?.removeEventListener(
+        'resize',
+        checkViewport,
+      )
+      intersectionObserver?.disconnect()
     }
   }, [
     closeAll,

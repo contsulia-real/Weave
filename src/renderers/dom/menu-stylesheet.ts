@@ -220,19 +220,20 @@ const stylesheet = `
 }
 
 :where(.weave-menu-separator) {
-  --weave-component-height:
-    var(--weave-menu-separator-thickness);
-  --weave-component-background:
-    var(--weave-menu-separator-color);
-  --weave-component-margin-top:
-    var(--weave-menu-separator-margin-y);
-  --weave-component-margin-bottom:
-    var(--weave-menu-separator-margin-y);
-  --weave-component-margin-left:
-    var(--weave-menu-separator-inset);
-  --weave-component-margin-right:
-    var(--weave-menu-separator-inset);
+  --weave-component-position: relative;
+  --weave-component-height: 0rem;
   --weave-component-flex-shrink: 0;
+}
+
+:where(.weave-menu-separator)::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: var(--weave-menu-separator-inset);
+  right: var(--weave-menu-separator-inset);
+  height: var(--weave-menu-separator-thickness);
+  background: var(--weave-menu-separator-color);
+  pointer-events: none;
 }
 `
 

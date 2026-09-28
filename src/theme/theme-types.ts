@@ -373,7 +373,6 @@ export interface MenuThemeItem {
 export interface MenuThemeSeparator {
   color?: string
   thickness?: ThemeScaleValue
-  marginY?: ThemeScaleValue
   inset?: ThemeScaleValue
 }
 

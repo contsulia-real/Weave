@@ -181,6 +181,12 @@ describe('Switch', () => {
     expect(parseFloat(thumb.style.height)).toBeCloseTo(13.6)
     expect(thumb.style.transform).not.toBe('')
 
+    frames.shift()?.(150)
+
+    expect(parseFloat(thumb.style.width)).toBeCloseTo(23.5)
+    expect(parseFloat(thumb.style.height)).toBeCloseTo(16.8)
+    expect(thumb.style.transform).not.toBe('')
+
     frames.shift()?.(200)
 
     expect(thumb.style.width).toBe('')

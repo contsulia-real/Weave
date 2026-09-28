@@ -106,7 +106,6 @@ export function resolveMenuTheme(
     '--weave-menu-item-disabled-opacity': item?.disabledOpacity,
     '--weave-menu-separator-color': color(separator?.color),
     '--weave-menu-separator-thickness': length(separator?.thickness),
-    '--weave-menu-separator-margin-y': length(separator?.marginY),
     '--weave-menu-separator-inset': length(separator?.inset),
   }
 }

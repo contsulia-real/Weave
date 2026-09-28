@@ -8,6 +8,7 @@ import {
 } from 'react'
 import type { ViewProps } from '../../core/view-types'
 import {
+  applySwitchAutoDragShape,
   applySwitchDragShape,
   clearSwitchDragShape,
   moveSwitchDrag,
@@ -150,10 +151,11 @@ export function useSwitchInteraction({
         (endOffset - geometry.startOffset) * progress
 
       drag.currentOffset = offset
-      applySwitchDragShape(
+      applySwitchAutoDragShape(
         thumb,
         drag,
         offset,
+        linear,
         dragShrink,
         dragMaxWidth,
       )

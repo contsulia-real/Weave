@@ -2465,7 +2465,7 @@ size
 
 - 点击 track / thumb 切换
 - Space / Enter 键盘切换
-- Switch 的 thumb drag feedback 是所有切换路径共享的视觉语言：thumb 的纵向基准始终使用 `top: 50% + translateY(-50%)`，静止、checked、自动 drag、手动 drag 都只能改变水平位移和宽高，不能各自计算不同的纵向位置；pointer down 在 thumb 或 track 任意位置都立即进入 `thumbDragShrink` 形变；实际拖动时继续按距离实时拉长并跟手，释放时以轨道中点决定最终状态；普通点击、点击 label、Space / Enter 等没有手动拖动距离的切换，也必须自动播放同一套 shrink → stretch → 到达另一端 → 恢复圆形的完整轨迹，不能退化成普通圆点平移
+- Switch 的 thumb drag feedback 是所有切换路径共享的视觉语言：thumb 的纵向基准始终使用 `top: 50% + translateY(-50%)`，静止、checked、自动 drag、手动 drag 都只能改变水平位移和宽高，不能各自计算不同的纵向位置；pointer down 在 thumb 或 track 任意位置都立即进入 `thumbDragShrink` 形变；实际拖动时继续按距离实时拉长并跟手，释放时以轨道中点决定最终状态；普通点击、点击 label、Space / Enter 等没有手动拖动距离的切换，也必须自动播放同一套 shrink → stretch → 后半程连续收窄并恢复高度 → 以正常圆形到达另一端的完整轨迹。自动轨迹在终点前必须已经回到静止几何，不能在最后一帧靠清除 inline width / height / transform 产生可见跳变，也不能退化成普通圆点平移
 - 拖动完成后产生的兼容 click 不得再次反向切换
 - disabled 状态下点击、键盘与拖动都不能改变状态
 - `label` 是可见且可点击的真实绑定标签；Switch 宿主使用可 label 的原生 `<button type="button" role="switch">`，点击 label 与点击控件本体等价，同时 label 参与 accessible name；Switch 控件与可见 label 默认保留 `0.5rem`（8px）间距
@@ -3688,7 +3688,7 @@ submenu
 viewProps
 ```
 
-`MenuSeparator` 只表示菜单项之间的语义分隔，不参与 focus 顺序。
+`MenuSeparator` 只表示菜单项之间的语义分隔，不参与 focus 顺序。默认 separator 和 List divider 一样绘制在相邻内容的边界上，separator 自身为零布局高度，不额外制造上下 gap；需要额外留白时由调用方通过 `viewProps` 明确添加。
 
 `submenu` 接收普通 ReactNode，因此 `MenuItem` 可以递归包含新的 `MenuItem / MenuSeparator`，框架不限制嵌套层数，也不引入第二套 SubMenu 组件。
 
@@ -3745,7 +3745,7 @@ submenuOffset = 0.25rem
 viewportPadding = 0.5rem
 ```
 
-submenu 使用 side-start 语义：默认从父 item 右侧、顶部对齐展开；右侧空间不足时自动 flip 到左侧，并沿纵轴 shift 保持在 viewport 内。任意祖先 scroll、viewport resize、anchor / panel resize 或视觉动画变化都会重新定位。
+submenu 使用 side-start 语义：默认从父 item 右侧、顶部对齐展开；右侧空间不足时自动 flip 到左侧，并沿纵轴 shift 保持在 viewport 内。任意祖先 scroll、viewport resize、anchor / panel resize 或视觉动画变化都会重新定位。root Menu 打开期间持续观察 trigger；只要 trigger 仍与 viewport 有交集就保持打开，trigger 完全离开 viewport 后自动关闭整棵菜单树，并且不把 focus 强行拉回已经离屏的 trigger。
 
 root 和所有 submenu 都使用同一个 semantic `overlay` layer、ThemeProvider 上下文与 exit-presence 生命周期。collision flip 后 motion 方向跟随最终实际方向。
 
@@ -3759,7 +3759,7 @@ theme.components.Menu.item
 theme.components.Menu.separator
 ```
 
-`base` 控制 surface / border / radius / padding / minWidth / maxWidth / shadow / motionOffset；`item` 控制普通、hover、active、danger、disabled、icon、typography 与 focus ring；`separator` 控制颜色、厚度、垂直间距与 inset。
+`base` 控制 surface / border / radius / padding / minWidth / maxWidth / shadow / motionOffset；`item` 控制普通、hover、active、danger、disabled、icon、typography 与 focus ring；`separator` 控制颜色、厚度与 inset。separator 默认不拥有独立垂直间距。
 
 `viewProps` 仍是通用 escape hatch，但 `role`、fixed positioning、collision 坐标和菜单键盘语义由 Menu 自己拥有。
 

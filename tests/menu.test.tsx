@@ -723,6 +723,117 @@ describe('Menu', () => {
     })
   })
 
+  it('keeps the menu open while its trigger intersects the viewport and closes once the trigger fully leaves it', async () => {
+    const {
+      getByRole,
+    } = render(
+      <Menu
+        trigger={
+          <Button text="Viewport menu" />
+        }
+      >
+        <MenuItem text="Action" />
+      </Menu>,
+    )
+
+    const trigger =
+      getByRole('button', {
+        name: 'Viewport menu',
+      })
+
+    trigger.getBoundingClientRect =
+      () =>
+        ({
+          x: 100,
+          y: 100,
+          left: 100,
+          top: 100,
+          right: 140,
+          bottom: 140,
+          width: 40,
+          height: 40,
+          toJSON: () => ({}),
+        }) as DOMRect
+
+    fireEvent.click(trigger)
+
+    const menu =
+      getByRole('menu')
+
+    await waitFor(() => {
+      expect(
+        menu.style.visibility,
+      ).toBe('visible')
+    })
+
+    const initialTop =
+      menu.style.top
+
+    trigger.getBoundingClientRect =
+      () =>
+        ({
+          x: 100,
+          y: -10,
+          left: 100,
+          top: -10,
+          right: 140,
+          bottom: 10,
+          width: 40,
+          height: 20,
+          toJSON: () => ({}),
+        }) as DOMRect
+
+    fireEvent.scroll(window)
+
+    await waitFor(() => {
+      expect(
+        trigger.getAttribute(
+          'aria-expanded',
+        ),
+      ).toBe('true')
+      expect(
+        menu.style.top,
+      ).not.toBe(initialTop)
+    })
+
+    trigger.getBoundingClientRect =
+      () =>
+        ({
+          x: 100,
+          y: -40,
+          left: 100,
+          top: -40,
+          right: 140,
+          bottom: 0,
+          width: 40,
+          height: 40,
+          toJSON: () => ({}),
+        }) as DOMRect
+
+    fireEvent.scroll(window)
+
+    await waitFor(() => {
+      expect(
+        trigger.getAttribute(
+          'aria-expanded',
+        ),
+      ).toBe('false')
+      expect(
+        document.activeElement,
+      ).not.toBe(trigger)
+    })
+
+    fireEvent.transitionEnd(menu)
+
+    await waitFor(() => {
+      expect(
+        document.querySelector(
+          '[data-weave-menu]',
+        ),
+      ).toBeNull()
+    })
+  })
+
   it('renders separators, danger state and dedicated Menu theme variables', () => {
     const theme =
       createTheme({
@@ -813,6 +924,18 @@ describe('Menu', () => {
     expect(stylesheet)
       .toContain(
         'data-weave-menu-item-danger',
+      )
+    expect(stylesheet)
+      .toContain(
+        '.weave-menu-separator)::before',
+      )
+    expect(stylesheet)
+      .toContain(
+        '--weave-component-height: 0rem;',
+      )
+    expect(runtimeStyle)
+      .not.toContain(
+        '--weave-menu-separator-margin-y',
       )
     expect(stylesheet)
       .toContain(

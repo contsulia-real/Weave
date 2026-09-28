@@ -772,7 +772,6 @@ export const defaultTheme: ResolvedTheme = {
       separator: {
         color: 'outline',
         thickness: 0.0625,
-        marginY: 0.25,
         inset: 0.5,
       },
     },
