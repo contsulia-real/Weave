@@ -463,17 +463,23 @@ delay    = 120ms
 
 ### 5.1 基础原语
 
-基础原语只有一个：
+面向 Weave 使用者的基础原语只有一个：
 
 ```text
 View
 ```
 
+`View` 是用户编写界面时直接使用的公开基础组件。它承载完整的 `ViewProps` 通用能力，并通过内部的 `useViewHost` 落到真实 DOM 宿主。
+
+`useViewHost` 不属于公开组件层，也不是第二个基础原语。它是 Weave 自己实现组件时复用 `View` 通用能力的底层机制。`Text`、`Image`、`Input`、`Button` 等组件可以通过 `useViewHost` 直接把这些通用能力应用到最合适的真实 DOM 元素，而不需要为了复用能力额外包一层 `<View>`。
+
+本文后续所说的 **ViewHost**，指通过这套内部宿主机制承载 `View` 通用能力的真实 DOM 宿主。
+
 ### 5.2 基础组件
 
 基础组件的硬性规则：
 
-> 基础组件只能由 `View` 构建。
+> 基础组件必须通过 `useViewHost` 复用 `View` 的通用能力；它们可以直接承载与自身语义匹配的真实 DOM 元素，不要求在 DOM 中嵌套一个 `<View>`。
 
 不能在内部依赖：
 
@@ -501,11 +507,11 @@ Stack
 Absolute
 ```
 
-其中 `Flex / Row / Column / Grid / Stack / Absolute` 是正式布局组件。它们只依赖 `View`，不增加第二套布局引擎，也不增加额外 DOM 层。
+其中 `Flex / Row / Column / Grid / Stack / Absolute` 是正式布局组件。它们是对公开 `View` 布局能力的约束封装，不增加第二套布局引擎，也不增加额外 DOM 层。
 
 ### 5.3 组合组件
 
-组合组件可以由以下任意组合构建：
+组合组件同样可以通过内部 `useViewHost` 直接承载自己的真实 DOM 宿主，并可以组合以下任意公开组件：
 
 ```text
 View
@@ -533,11 +539,11 @@ ListItem
 
 ```text
 Button
-├─ View
+├─ useViewHost → <button>
 └─ Text
 ```
 
-因为内部真实包含 `Text`，所以它不是基础组件，而是组合组件。
+`Button` 自己通过 `useViewHost` 复用 `View` 的通用宿主能力，同时内部真实依赖 `Text`，所以它不是基础组件，而是组合组件。
 
 同理：
 
@@ -556,9 +562,9 @@ List
 
 `View` 是：
 
-> 整个框架唯一的基础原语，也是统一万能基础节点。
+> 面向 Weave 使用者的唯一公开基础原语，也是编写通用界面节点的统一入口。
 
-所有其他组件最终建立在 `View` 之上。
+Weave 内部通过 `useViewHost` 抽取并复用 `View` 的通用宿主能力。其他组件最终建立在这套共同能力模型之上，但不要求实际渲染一个 `<View>` DOM 包装层。
 
 ## 6.1 `View` 的通用职责
 
@@ -576,16 +582,16 @@ CSS 样式与布局
 视觉效果
 ```
 
-基础组件只增加自身特有能力。
+基础组件只在 ViewHost 通用能力之上增加自身特有能力。
 
 例如：
 
 ```text
-Text   = View + 文本能力
-Image  = View + 图像能力
-Input  = View + 输入能力
-Icon   = View + 图标能力
-Switch = View + 开关行为
+Text   = ViewHost 通用能力 + 文本能力
+Image  = ViewHost 通用能力 + 图像能力
+Input  = ViewHost 通用能力 + 输入能力
+Icon   = ViewHost 通用能力 + 图标能力
+Switch = ViewHost 通用能力 + 开关行为
 ```
 
 ---
@@ -2535,7 +2541,7 @@ viewProps
 
 `Progress` 是基础组件。
 
-它由 `View` 构建，用来表达确定进度与不确定进度。
+它通过 `useViewHost` 复用 `View` 的通用宿主能力，用来表达确定进度与不确定进度。
 
 状态语义与视觉形态分离：
 
@@ -2754,7 +2760,7 @@ style
 
 `Scrollbar` 是一个特殊的基础组件。
 
-## 17.1 它是由 View 构建的基础组件
+## 17.1 它是复用 ViewHost 通用能力的基础组件
 
 不是：
 
@@ -2768,7 +2774,7 @@ style
 
 它是：
 
-> 框架自己的、由 `View` 构建的基础组件。
+> 框架自己的基础组件；内部通过 `useViewHost` 复用 `View` 的通用能力，并直接操作真实滚动宿主，不依赖浏览器私有 scrollbar 伪元素皮肤。
 
 ## 17.2 不需要显式插入
 
@@ -5756,11 +5762,11 @@ View
 2. 当前只支持 Web。
 3. 只支持函数组件。
 4. 组件通过组合构建，不走继承体系。
-5. 基础原语只有 `View`。
-6. `View` 直接使用 `ViewProps`；所有非 `View` 组件通过 `viewProps` 使用 `View` 的通用能力。
+5. 面向用户的基础原语只有 `View`；`useViewHost` 是 Weave 内部复用通用宿主能力的实现机制，不是第二个公开基础原语。
+6. `View` 直接使用 `ViewProps`；直接承载自身 DOM 的组件通过 `viewProps` 暴露通用能力，并在内部使用 `useViewHost` 复用这套能力；正式布局组件可以作为受约束的 `View` 封装直接接受对应布局属性。
 7. 组件是否允许 `children`、允许哪些 `children`，遵循其对应 DOM 元素的内容模型。
-8. 基础组件只能由 `View` 构建；这里描述的是 Weave 组件依赖关系。
-9. 组合组件可以由 `View`、基础组件、组合组件共同构建。
+8. 基础组件不得依赖其他基础组件或组合组件；它们通过 `useViewHost` 复用 `View` 通用能力，并可以直接渲染与自身语义匹配的真实 DOM 元素，不要求额外嵌套 `<View>`。
+9. 组合组件可以通过 `useViewHost` 承载自身宿主，并由 `View`、基础组件、其他组合组件共同构建。
 10. 组件层级判断按真实内部依赖，不靠 children 绕开依赖关系。
 11. 不暴露 `as`、`asChild` 或底层 HTML 标签选择权。
 12. CSS 是内部实现与语义基础，但公开 API 应提供高层、语义化属性。
@@ -5774,7 +5780,7 @@ View
 20. 组件视觉、布局、状态与交互必须以真实 DOM / CSS / 浏览器语义为唯一真值。
 21. 布局、文本、表单、事件、焦点、滚动与可访问性必须继续由浏览器 HTML / CSS / DOM 负责，禁止平行重复实现。
 22. 框架自身不提供 Canvas UI 渲染后端；业务自行使用普通 Web `<canvas>` 不改变 Weave 的 DOM 渲染模型。
-23. Scrollbar 是由 `View` 构建的基础组件，不是伪元素样式。
+23. Scrollbar 是复用 ViewHost 通用能力的基础组件，不是伪元素样式。
 24. Scrollbar 由框架自动插入，不要求开发者显式使用。
 25. `selectable` 是 `ViewProps` 通用能力，不是 Text 专属。
 26. `Image` 不提供 `decorative`，且遵循对应 DOM 内容模型，不接受 `children`。
