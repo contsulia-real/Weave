@@ -3506,7 +3506,7 @@ typo
 
 # 19.5 `Popover`
 
-`Popover` 是交互式锚定浮层组合组件。它和 `ToolTip` 的职责不同：ToolTip 是不可交互的辅助说明；Popover 可以承载 Button、Link、表单控件和后续 Menu / Select 等交互内容。
+`Popover` 是交互式锚定浮层组合组件。它和 `ToolTip` 的职责不同：ToolTip 是不可交互的辅助说明；Popover 可以承载 Button、Link、表单控件等交互内容；正式的命令菜单由 `Menu` 提供，后续 Select 等组件也可以继续复用同一套锚定浮层基础设施。
 
 ## 19.5.1 API
 
@@ -3620,6 +3620,150 @@ Popover 使用 surface / outline / ambient shadow 表达可交互浮层材质；
 
 ---
 
+# 19.6 `Menu`
+
+`Menu` 是命令菜单组件，建立在 Weave 的 overlay / collision 基础设施之上，但拥有独立的 menu 语义、键盘导航与递归子菜单模型。它不是 `List` 的另一种皮肤：List 表示持久数据与 selection；Menu 表示短暂打开的命令集合。
+
+## 19.6.1 组合 API
+
+```tsx
+<Menu
+  trigger={<Button text="Actions" />}
+>
+  <MenuItem
+    text="Edit"
+    onSelect={edit}
+  />
+
+  <MenuItem
+    text="Share"
+    submenu={
+      <>
+        <MenuItem text="Copy link" />
+        <MenuItem
+          text="Export"
+          submenu={
+            <>
+              <MenuItem text="PDF" />
+              <MenuItem text="PNG" />
+            </>
+          }
+        />
+      </>
+    }
+  />
+
+  <MenuSeparator />
+  <MenuItem text="Delete" danger />
+</Menu>
+```
+
+`Menu`：
+
+```text
+trigger
+children
+placement
+offset
+submenuOffset
+viewportPadding
+open
+defaultOpen
+onOpenChange
+closeOnSelect
+viewProps
+```
+
+`MenuItem`：
+
+```text
+text
+secondaryText
+icon
+disabled
+danger
+onSelect
+closeOnSelect
+submenu
+viewProps
+```
+
+`MenuSeparator` 只表示菜单项之间的语义分隔，不参与 focus 顺序。
+
+`submenu` 接收普通 ReactNode，因此 `MenuItem` 可以递归包含新的 `MenuItem / MenuSeparator`，框架不限制嵌套层数，也不引入第二套 SubMenu 组件。
+
+## 19.6.2 语义与 focus
+
+- trigger 使用 `aria-haspopup="menu" / aria-controls / aria-expanded`；
+- 每个菜单 surface 使用 `role="menu"`；
+- 命令项使用 `role="menuitem"`；
+- separator 使用 `role="separator"`；
+- 有子菜单的 item 使用 `aria-haspopup="menu" / aria-controls / aria-expanded`；
+- disabled item 使用 disabled 语义并从键盘导航序列中跳过；
+- focus 使用 roving tabindex：当前聚焦项为 `tabIndex=0`，同 level 其他可用项为 `-1`；
+- root menu 关闭后默认恢复 trigger focus；outside pointer dismiss 不抢走用户刚点中的外部目标 focus。
+
+## 19.6.3 键盘模型
+
+trigger：
+
+```text
+click                 → toggle
+ArrowDown             → open + focus first enabled item
+ArrowUp               → open + focus last enabled item
+Enter / Space         → open + focus first enabled item
+```
+
+菜单项：
+
+```text
+ArrowDown / ArrowUp   → 同 level 循环移动，跳过 disabled
+Home / End            → first / last enabled item
+Enter / Space         → 激活普通项；对子菜单父项则进入 submenu
+ArrowRight            → 打开 submenu 并聚焦第一个可用子项
+ArrowLeft             → 关闭当前 submenu 并把 focus 还给父项
+Escape                → 优先关闭当前 submenu level；root level 再关闭整个 Menu
+```
+
+若父 item 的 submenu 已经打开，而 focus 仍停在父 item，`ArrowLeft / Escape` 只关闭这个 submenu，不会直接关闭整个 root menu。
+
+## 19.6.4 Pointer 与子菜单树
+
+- pointer 进入 submenu parent 时打开对应 submenu；
+- pointer/focus 移到同 level 的普通项或其他 submenu parent 时，之前的 sibling submenu 关闭；
+- submenu 自己 portal 到 `document.body`，但 root Menu 使用同一个 root id 把所有 submenu portal 视为同一棵菜单树；因此在 submenu 内点击不会被 root outside-dismiss 误判成外部点击；
+- 普通 item 激活后默认关闭整棵菜单树；`Menu.closeOnSelect=false` 或单个 `MenuItem.closeOnSelect=false` 可以保留菜单。
+
+## 19.6.5 定位与 collision
+
+root Menu 使用和 Popover 相同的八向 placement / flip / shift 几何；默认：
+
+```text
+placement = bottom-left
+offset = 0.375rem
+submenuOffset = 0.25rem
+viewportPadding = 0.5rem
+```
+
+submenu 使用 side-start 语义：默认从父 item 右侧、顶部对齐展开；右侧空间不足时自动 flip 到左侧，并沿纵轴 shift 保持在 viewport 内。任意祖先 scroll、viewport resize、anchor / panel resize 或视觉动画变化都会重新定位。
+
+root 和所有 submenu 都使用同一个 semantic `overlay` layer、ThemeProvider 上下文与 exit-presence 生命周期。collision flip 后 motion 方向跟随最终实际方向。
+
+## 19.6.6 Theme
+
+默认视觉来自：
+
+```text
+theme.components.Menu.base
+theme.components.Menu.item
+theme.components.Menu.separator
+```
+
+`base` 控制 surface / border / radius / padding / minWidth / maxWidth / shadow / motionOffset；`item` 控制普通、hover、active、danger、disabled、icon、typography 与 focus ring；`separator` 控制颜色、厚度、垂直间距与 inset。
+
+`viewProps` 仍是通用 escape hatch，但 `role`、fixed positioning、collision 坐标和菜单键盘语义由 Menu 自己拥有。
+
+---
 # 20. `Snack`
 
 `Snack` 是组合组件，同时提供：
@@ -4632,6 +4776,7 @@ const theme = {
     Scrollbar: { ... },
     ToolTip: { ... },
     Popover: { ... },
+    Menu: { ... },
     Snack: { ... },
     List: { ... },
   },
@@ -5865,6 +6010,7 @@ Weave 公开 API
 │  ├─ Badge
 │  ├─ ToolTip
 │  ├─ Popover
+│  ├─ Menu / MenuItem / MenuSeparator
 │  ├─ Snack
 │  ├─ List
 │  └─ ListItem
@@ -5915,7 +6061,7 @@ CSS variables + runtime classes + framework stylesheet
 
 其中 `Presence`、Provider 与 Hook 不属于 ViewHost 宿主链路；它们分别负责生命周期编排和 React context / 命令式能力。只有实际承载 DOM 的组件才进入 `useViewHost → DOM + CSS` 这条宿主路径。
 
-内部实现按职责继续拆分而不是形成新的集中式 god-file：静态 framework stylesheet 共享统一安装器；组件主题解析按 controls / actions / progress / overlays / lists 分域；List 的内容归一化、selection、roving focus 与 virtualization layout 分离；Badge / ToolTip / Snack 共用 exit-presence 基础生命周期，Badge / ToolTip 的视觉锚点更新复用统一的 rAF / observer 跟踪基础设施；Snack 的 lifetime、内容渲染、队列策略、region registry / host positioning 与 region FLIP layout animation 分属独立 internal 模块。公开 API 不暴露这些内部 helper。
+内部实现按职责继续拆分而不是形成新的集中式 god-file：静态 framework stylesheet 共享统一安装器；组件主题解析按 controls / actions / progress / overlays / lists 分域；List 的内容归一化、selection、roving focus 与 virtualization layout 分离；Badge / ToolTip / Snack / Menu 共用 exit-presence 基础生命周期，Badge / ToolTip / Popover / Menu 的视觉锚点更新复用统一的 rAF / observer 跟踪基础设施；Snack 的 lifetime、内容渲染、队列策略、region registry / host positioning 与 region FLIP layout animation 分属独立 internal 模块。公开 API 不暴露这些内部 helper。
 
 ---
 

@@ -59,6 +59,58 @@ export function resolvePopoverTheme(
   }
 }
 
+export function resolveMenuTheme(
+  theme: ResolvedTheme,
+): RuntimeStyleDeclarations {
+  const component = theme.components.Menu
+  const base = component?.base
+  const item = component?.item
+  const separator = component?.separator
+
+  return {
+    '--weave-menu-background': color(base?.background),
+    '--weave-menu-color': color(base?.color),
+    '--weave-menu-border-color': color(base?.borderColor),
+    '--weave-menu-border-width': length(base?.borderWidth),
+    '--weave-menu-radius': radius(base?.radius),
+    '--weave-menu-padding': length(base?.padding),
+    '--weave-menu-gap': length(base?.gap),
+    '--weave-menu-min-width': length(base?.minWidth),
+    '--weave-menu-max-width': length(base?.maxWidth),
+    '--weave-menu-shadow': shadowToken(base?.shadow),
+    '--weave-menu-motion-offset': length(base?.motionOffset),
+    '--weave-menu-item-background': color(item?.background),
+    '--weave-menu-item-hover-background': color(item?.hoverBackground),
+    '--weave-menu-item-active-background': color(item?.activeBackground),
+    '--weave-menu-item-color': color(item?.color),
+    '--weave-menu-item-secondary-color': color(item?.secondaryColor),
+    '--weave-menu-item-danger-color': color(item?.dangerColor),
+    '--weave-menu-item-danger-background': color(item?.dangerBackground),
+    '--weave-menu-item-radius': radius(item?.radius),
+    '--weave-menu-item-padding-x': length(item?.paddingX),
+    '--weave-menu-item-padding-y': length(item?.paddingY),
+    '--weave-menu-item-gap': length(item?.gap),
+    '--weave-menu-item-icon-size': length(item?.iconSize),
+    '--weave-menu-item-submenu-icon-size': length(item?.submenuIconSize),
+    '--weave-menu-item-focus-outline-width': length(
+      item?.focusOutlineWidth,
+    ),
+    '--weave-menu-item-focus-outline-color': color(
+      item?.focusOutlineColor,
+    ),
+    '--weave-menu-item-focus-outline-style':
+      item?.focusOutlineStyle,
+    '--weave-menu-item-focus-outline-offset': length(
+      item?.focusOutlineOffset,
+    ),
+    '--weave-menu-item-disabled-opacity': item?.disabledOpacity,
+    '--weave-menu-separator-color': color(separator?.color),
+    '--weave-menu-separator-thickness': length(separator?.thickness),
+    '--weave-menu-separator-margin-y': length(separator?.marginY),
+    '--weave-menu-separator-inset': length(separator?.inset),
+  }
+}
+
 export function resolveSnackTheme(
   theme: ResolvedTheme,
 ): RuntimeStyleDeclarations {

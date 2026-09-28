@@ -4,35 +4,25 @@ import {
   type CSSProperties,
   type RefObject,
 } from 'react'
-import type {
-  PopoverPlacement,
-} from '../../core/popover-types'
 import { cssLengthPixels } from './css-length-pixels'
 import {
-  resolvePopoverPosition,
-} from './popover-position'
+  resolveSubmenuPosition,
+  type SubmenuSide,
+} from './submenu-position'
 import { trackVisualAnchor } from './visual-anchor-tracker'
 
-interface PopoverPositionState {
+interface SubmenuPositionState {
   left: number
   top: number
-  placement: PopoverPlacement
+  side: SubmenuSide
   positioned: boolean
 }
 
-const INTERACTION_EVENTS = [
-  'pointerenter',
-  'pointerleave',
-  'pointerdown',
-  'pointerup',
-  'pointercancel',
-  'focusin',
-  'focusout',
-] as const
-
 function samePosition(
-  current: PopoverPositionState,
-  next: PopoverPositionState,
+  current:
+    SubmenuPositionState,
+  next:
+    SubmenuPositionState,
 ): boolean {
   return (
     Math.abs(
@@ -41,82 +31,82 @@ function samePosition(
     Math.abs(
       current.top - next.top,
     ) < 0.25 &&
-    current.placement ===
-      next.placement &&
+    current.side ===
+      next.side &&
     current.positioned ===
       next.positioned
   )
 }
 
-export function usePopoverPosition(
-  targetRef:
-    RefObject<HTMLElement | null>,
+export function useSubmenuPosition(
+  anchorRef:
+    RefObject<HTMLDivElement | null>,
   panelRef:
     RefObject<HTMLDivElement | null>,
   present: boolean,
-  placement: PopoverPlacement,
   offset: string,
   viewportPadding: string,
 ) {
   const [
     state,
     setState,
-  ] = useState<PopoverPositionState>({
+  ] = useState<SubmenuPositionState>({
     left: 0,
     top: 0,
-    placement,
+    side: 'right',
     positioned: false,
   })
 
   useLayoutEffect(() => {
-    const target =
-      targetRef.current
+    const anchor =
+      anchorRef.current
     const panel =
       panelRef.current
 
     if (
       !present ||
-      target === null ||
+      anchor === null ||
       panel === null
     ) {
-      setState((current) =>
-        current.positioned
-          ? {
-              ...current,
-              positioned: false,
-            }
-          : current,
+      setState(
+        (current) =>
+          current.positioned
+            ? {
+                ...current,
+                positioned: false,
+              }
+            : current,
       )
       return
     }
 
     const view =
-      target.ownerDocument
+      anchor.ownerDocument
         .defaultView
 
     if (view === null) {
       return
     }
 
-    const applyPosition = () => {
+    const update = () => {
       const targetRect =
-        target.getBoundingClientRect()
+        anchor
+          .getBoundingClientRect()
       const panelRect =
-        panel.getBoundingClientRect()
-      const width =
-        panel.offsetWidth ||
-        panelRect.width
-      const height =
-        panel.offsetHeight ||
-        panelRect.height
+        panel
+          .getBoundingClientRect()
       const next =
-        resolvePopoverPosition(
+        resolveSubmenuPosition(
           targetRect,
           {
-            width,
-            height,
+            width:
+              panel.offsetWidth ||
+              panelRect.width,
+            height:
+              panel.offsetHeight ||
+              panelRect.height,
           },
-          placement,
+          'right',
           cssLengthPixels(
             panel,
             offset,
@@ -138,37 +128,41 @@ export function usePopoverPosition(
         positioned: true,
       }
 
-      setState((current) =>
-        samePosition(
-          current,
-          resolved,
-        )
-          ? current
-          : resolved,
+      setState(
+        (current) =>
+          samePosition(
+            current,
+            resolved,
+          )
+            ? current
+            : resolved,
       )
     }
 
     return trackVisualAnchor(
-      target,
-      applyPosition,
+      anchor,
+      update,
       {
         additionalTargets: [
           panel,
         ],
         trackScroll: true,
         trackMutations: true,
-        interactionEvents:
-          INTERACTION_EVENTS,
+        interactionEvents: [
+          'pointerenter',
+          'pointerleave',
+          'focusin',
+          'focusout',
+        ],
         continuousAnimations:
           true,
       },
     )
   }, [
+    anchorRef,
     offset,
     panelRef,
-    placement,
     present,
-    targetRef,
     viewportPadding,
   ])
 
@@ -181,8 +175,7 @@ export function usePopoverPosition(
   return {
     positioned:
       state.positioned,
-    placement:
-      state.placement,
+    side: state.side,
     placementStyle:
       style,
   }

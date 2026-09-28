@@ -18,6 +18,7 @@ export {
 export {
   resolveToolTipTheme,
   resolvePopoverTheme,
+  resolveMenuTheme,
   resolveSnackTheme,
 } from './component-theme/overlays'
 

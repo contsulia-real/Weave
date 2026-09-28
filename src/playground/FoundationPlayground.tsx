@@ -18,6 +18,9 @@ import {
   Icon,
   Image,
   Link,
+  Menu,
+  MenuItem,
+  MenuSeparator,
   Presence,
   Popover,
   Row,
@@ -411,6 +414,99 @@ function PopoverPlayground() {
           </Text>
         </Row>
       </Column>
+    </Column>
+  )
+}
+
+function MenuPlayground() {
+  const [lastAction, setLastAction] =
+    useState('None')
+
+  return (
+    <Column gap={0.75} align="start">
+      <Menu
+        trigger={
+          <Button
+            text="Open menu"
+            variant="secondary"
+          />
+        }
+      >
+        <MenuItem
+          text="Profile"
+          secondaryText="Account details"
+          icon={IconUser}
+          onSelect={() =>
+            setLastAction('Profile')
+          }
+        />
+
+        <MenuItem
+          text="Settings"
+          icon={IconSettings}
+          onSelect={() =>
+            setLastAction('Settings')
+          }
+        />
+
+        <MenuItem
+          text="Unavailable"
+          disabled
+        />
+
+        <MenuSeparator />
+
+        <MenuItem
+          text="Share"
+          submenu={
+            <>
+              <MenuItem
+                text="Copy link"
+                onSelect={() =>
+                  setLastAction('Copy link')
+                }
+              />
+
+              <MenuItem
+                text="Export"
+                submenu={
+                  <>
+                    <MenuItem
+                      text="PDF"
+                      onSelect={() =>
+                        setLastAction('Export PDF')
+                      }
+                    />
+                    <MenuItem
+                      text="PNG"
+                      onSelect={() =>
+                        setLastAction('Export PNG')
+                      }
+                    />
+                  </>
+                }
+              />
+            </>
+          }
+        />
+
+        <MenuSeparator />
+
+        <MenuItem
+          text="Delete"
+          danger
+          onSelect={() =>
+            setLastAction('Delete')
+          }
+        />
+      </Menu>
+
+      <Text
+        typo="body-small"
+        color="secondary"
+      >
+        last action: {lastAction}
+      </Text>
     </Column>
   )
 }
@@ -1344,6 +1440,13 @@ export function FoundationPlayground() {
         description="交互式锚定浮层：click toggle、outside / Escape dismiss、focus restore、8 向 placement，以及 viewport flip / shift collision。"
       >
         <PopoverPlayground />
+      </PlaygroundSection>
+
+      <PlaygroundSection
+        title="Menu"
+        description="命令菜单：ArrowUp / ArrowDown / Home / End 导航，Enter / Space 激活，ArrowRight / ArrowLeft 进入或退出子菜单；支持 disabled、danger、separator 与任意层级递归 submenu。"
+      >
+        <MenuPlayground />
       </PlaygroundSection>
     </>
   )

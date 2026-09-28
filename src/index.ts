@@ -22,6 +22,9 @@ export { Checkbox } from './components/Checkbox'
 export { Progress } from './components/Progress'
 export { ToolTip } from './components/ToolTip'
 export { Popover } from './components/Popover'
+export { Menu } from './components/Menu'
+export { MenuItem } from './components/MenuItem'
+export { MenuSeparator } from './components/MenuSeparator'
 export { Snack } from './components/Snack'
 export { List } from './components/List'
 export { ListItem } from './components/ListItem'
@@ -93,6 +96,10 @@ export type {
   ListItemThemeBase,
   ListTheme,
   ListThemeBase,
+  MenuTheme,
+  MenuThemeBase,
+  MenuThemeItem,
+  MenuThemeSeparator,
   PopoverTheme,
   PopoverThemeBase,
   ProgressTheme,
@@ -261,6 +268,17 @@ export type {
   PopoverProps,
   PopoverViewProps,
 } from './core/popover-types'
+
+export type {
+  MenuItemIcon,
+  MenuItemProps,
+  MenuItemViewProps,
+  MenuPlacement,
+  MenuProps,
+  MenuSeparatorProps,
+  MenuSeparatorViewProps,
+  MenuViewProps,
+} from './core/menu-types'
 
 export type {
   SnackContainer,

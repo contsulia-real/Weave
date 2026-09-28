@@ -34,6 +34,9 @@ const expectedRuntimeExports = [
   'List',
   'ListItem',
   'Link',
+  'Menu',
+  'MenuItem',
+  'MenuSeparator',
   'Presence',
   'Popover',
   'Progress',
@@ -74,6 +77,8 @@ assert(typeSource.includes('MotionSpring'), 'Built declarations are missing Moti
 assert(typeSource.includes('MotionInterruption'), 'Built declarations are missing MotionInterruption')
 assert(typeSource.includes('PresenceProps'), 'Built declarations are missing PresenceProps')
 assert(typeSource.includes('PopoverProps'), 'Built declarations are missing PopoverProps')
+assert(typeSource.includes('MenuProps'), 'Built declarations are missing MenuProps')
+assert(typeSource.includes('MenuItemProps'), 'Built declarations are missing MenuItemProps')
 assert(typeSource.includes('ReducedMotionPreference'), 'Built declarations are missing ReducedMotionPreference')
 assert(typeSource.includes('AbsoluteProps'), 'Built declarations are missing AbsoluteProps')
 assert(typeSource.includes('FlexProps'), 'Built declarations are missing FlexProps')
@@ -97,6 +102,7 @@ const expectedThemeTypeExports = [
   'LinkTheme',
   'ButtonTheme',
   'PopoverTheme',
+  'MenuTheme',
   'ProgressTheme',
   'ScrollbarTheme',
   'ToolTipTheme',

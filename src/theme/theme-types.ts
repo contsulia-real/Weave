@@ -333,6 +333,56 @@ export interface PopoverTheme {
   base?: PopoverThemeBase
 }
 
+export interface MenuThemeBase {
+  background?: string
+  color?: string
+  borderColor?: string
+  borderWidth?: ThemeScaleValue
+  radius?: ThemeScaleValue
+  padding?: ThemeScaleValue
+  gap?: ThemeScaleValue
+  minWidth?: ThemeScaleValue
+  maxWidth?: ThemeScaleValue
+  shadow?: string
+  motionOffset?: ThemeScaleValue
+}
+
+export interface MenuThemeItem {
+  background?: string
+  hoverBackground?: string
+  activeBackground?: string
+  color?: string
+  secondaryColor?: string
+  dangerColor?: string
+  dangerBackground?: string
+  radius?: ThemeScaleValue
+  paddingX?: ThemeScaleValue
+  paddingY?: ThemeScaleValue
+  gap?: ThemeScaleValue
+  iconSize?: ThemeScaleValue
+  submenuIconSize?: ThemeScaleValue
+  primaryTypo?: TextTypo
+  secondaryTypo?: TextTypo
+  focusOutlineWidth?: ThemeScaleValue
+  focusOutlineColor?: string
+  focusOutlineStyle?: string
+  focusOutlineOffset?: ThemeScaleValue
+  disabledOpacity?: number
+}
+
+export interface MenuThemeSeparator {
+  color?: string
+  thickness?: ThemeScaleValue
+  marginY?: ThemeScaleValue
+  inset?: ThemeScaleValue
+}
+
+export interface MenuTheme {
+  base?: MenuThemeBase
+  item?: MenuThemeItem
+  separator?: MenuThemeSeparator
+}
+
 export interface SnackThemeBase {
   background?: string
   color?: string
@@ -415,6 +465,7 @@ export interface ThemeComponents {
   Scrollbar?: ScrollbarTheme
   ToolTip?: ToolTipTheme
   Popover?: PopoverTheme
+  Menu?: MenuTheme
   Snack?: SnackTheme
   List?: ListTheme
   ListItem?: ListItemTheme
