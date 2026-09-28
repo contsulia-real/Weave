@@ -2,6 +2,12 @@ export { createRoot } from './root'
 export type { Root } from './root'
 
 export { View } from './components/View'
+export { Flex } from './components/Flex'
+export { Row } from './components/Row'
+export { Column } from './components/Column'
+export { Grid } from './components/Grid'
+export { Stack } from './components/Stack'
+export { Absolute } from './components/Absolute'
 export { Text } from './components/Text'
 export { Image } from './components/Image'
 export { Icon } from './components/Icon'
@@ -76,6 +82,15 @@ export type {
   ThemeOverride,
   ThemeTokens,
 } from './theme/theme-types'
+
+export type {
+  AbsoluteProps,
+  ColumnProps,
+  FlexProps,
+  GridProps,
+  RowProps,
+  StackProps,
+} from './core/layout-types'
 
 export type {
   TextAlign,

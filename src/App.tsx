@@ -1,7 +1,9 @@
 import {
   Button,
+  Column,
+  Grid,
+  Row,
   Text,
-  View,
   type ThemeMode,
 } from './index'
 import {
@@ -36,8 +38,7 @@ function App({
   ) => void
 }) {
   return (
-    <View
-      layout="grid"
+    <Grid
       width="fill"
       height="100vh"
       overflow="auto"
@@ -46,31 +47,23 @@ function App({
       background="surfaceHover"
       color="tertiary"
     >
-      <View
+      <Column
         width="fill"
         maxWidth={64}
         justifySelf="center"
         padding={2}
         gap={2}
-        layout="flex"
-        direction="column"
         radius="large"
         background="surface"
         shadow="medium"
       >
-        <View
-          layout="flex"
-          direction="row"
+        <Row
           justify="space-between"
           align="start"
           gap={1}
           wrap
         >
-          <View
-            layout="flex"
-            direction="column"
-            gap={0.5}
-          >
+          <Column gap={0.5}>
             <Text
               typo="label-small"
               color="secondary"
@@ -101,11 +94,9 @@ function App({
               React UI framework development
               surface.
             </Text>
-          </View>
+          </Column>
 
-          <View
-            layout="flex"
-            direction="column"
+          <Column
             gap={0.5}
             align="end"
           >
@@ -116,9 +107,7 @@ function App({
               Theme mode
             </Text>
 
-            <View
-              layout="flex"
-              direction="row"
+            <Row
               gap={0.375}
               wrap
               justify="end"
@@ -147,17 +136,17 @@ function App({
                   />
                 ),
               )}
-            </View>
-          </View>
-        </View>
+            </Row>
+          </Column>
+        </Row>
 
         <FoundationPlayground />
         <SnackPlayground />
         <ListPlayground />
         <FormPlayground />
         <LayoutPlayground />
-      </View>
-    </View>
+      </Column>
+    </Grid>
   )
 }
 

@@ -23,6 +23,7 @@ export interface LinkProps {
   href: string
   text?: ReactNode
   hideIcon?: boolean
+  hideUnderline?: boolean
   target?: LinkTarget
   viewProps?: LinkViewProps
 }

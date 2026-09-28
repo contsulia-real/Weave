@@ -21,9 +21,13 @@ const typeSource = await readFile(typeEntry, 'utf8')
 const weave = await import(runtimeEntry.href)
 
 const expectedRuntimeExports = [
+  'Absolute',
   'Badge',
   'Button',
   'Checkbox',
+  'Column',
+  'Flex',
+  'Grid',
   'Icon',
   'Image',
   'Input',
@@ -32,7 +36,9 @@ const expectedRuntimeExports = [
   'Link',
   'Progress',
   'Radio',
+  'Row',
   'Snack',
+  'Stack',
   'SnackProvider',
   'Switch',
   'Text',
@@ -58,6 +64,11 @@ assert(
   /export\s*\{\s*ListItem\s*\}\s*from\s*['"]\.\/components\/ListItem['"]/.test(typeSource),
   'Built declarations are missing the ListItem export',
 )
+assert(typeSource.includes('AbsoluteProps'), 'Built declarations are missing AbsoluteProps')
+assert(typeSource.includes('FlexProps'), 'Built declarations are missing FlexProps')
+assert(typeSource.includes('GridProps'), 'Built declarations are missing GridProps')
+assert(typeSource.includes('RowProps'), 'Built declarations are missing RowProps')
+assert(typeSource.includes('StackProps'), 'Built declarations are missing StackProps')
 assert(typeSource.includes('BadgeProps'), 'Built declarations are missing BadgeProps')
 assert(typeSource.includes('ListProps'), 'Built declarations are missing ListProps')
 assert(typeSource.includes('LinkProps'), 'Built declarations are missing LinkProps')

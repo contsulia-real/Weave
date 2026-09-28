@@ -30,6 +30,10 @@ const stylesheet = `
       var(--weave-motion-curve-standard);
 }
 
+:where(.weave-link[data-weave-link-underline="hidden"])::after {
+  display: none;
+}
+
 :where(.weave-link:hover)::after {
   width: 60%;
 }

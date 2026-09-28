@@ -78,6 +78,37 @@ describe('Link', () => {
     ).toBeNull()
   })
 
+  it('can hide the bottom link marker without changing the anchor or icon', () => {
+    const { getByRole } = render(
+      <Link
+        href="/plain"
+        text="Plain link"
+        hideUnderline
+      />,
+    )
+
+    const link = getByRole('link', {
+      name: 'Plain link',
+    })
+
+    expect(
+      link.getAttribute('data-weave-link-underline'),
+    ).toBe('hidden')
+    expect(
+      link.querySelector('[data-weave-icon]'),
+    ).not.toBeNull()
+
+    const stylesheet =
+      document.querySelector<HTMLStyleElement>(
+        'style[data-weave-link-styles]',
+      )?.textContent ?? ''
+
+    expect(stylesheet).toContain(
+      '[data-weave-link-underline="hidden"]',
+    )
+    expect(stylesheet).toContain('display: none;')
+  })
+
   it('forwards target to the native anchor without rewriting its behavior', () => {
     const { getByRole } = render(
       <Link

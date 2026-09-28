@@ -2,6 +2,7 @@ import type {
   ReactNode,
 } from 'react'
 import {
+  Column,
   Text,
   View,
 } from '../index'
@@ -16,9 +17,7 @@ export function PlaygroundSection({
   children: ReactNode
 }) {
   return (
-    <View
-      layout="flex"
-      direction="column"
+    <Column
       gap={0.75}
     >
       <Text
@@ -43,7 +42,7 @@ export function PlaygroundSection({
           )}
 
       {children}
-    </View>
+    </Column>
   )
 }
 

@@ -5,6 +5,12 @@ describe('Weave built package entry', () => {
     const weave = await import('../dist/weave.js')
 
     expect(weave).toBeDefined()
+    expect(weave.Absolute).toBeTypeOf('function')
+    expect(weave.Flex).toBeTypeOf('function')
+    expect(weave.Row).toBeTypeOf('function')
+    expect(weave.Column).toBeTypeOf('function')
+    expect(weave.Grid).toBeTypeOf('function')
+    expect(weave.Stack).toBeTypeOf('function')
     expect(weave.Badge).toBeTypeOf('function')
     expect(weave.List).toBeTypeOf('function')
     expect(weave.ListItem).toBeTypeOf('function')

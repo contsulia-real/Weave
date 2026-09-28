@@ -27,6 +27,7 @@ export function Link({
   href,
   text,
   hideIcon = false,
+  hideUnderline = false,
   target,
   viewProps = {},
 }: LinkProps) {
@@ -53,6 +54,7 @@ export function Link({
       target={target}
       data-weave-view=""
       data-weave-link=""
+      data-weave-link-underline={hideUnderline ? 'hidden' : 'visible'}
       data-weave-layout={resolved.layout}
       className={[
         'weave-link',

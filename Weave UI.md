@@ -492,7 +492,16 @@ Radio
 Checkbox
 Progress
 Scrollbar
+
+Flex
+Row
+Column
+Grid
+Stack
+Absolute
 ```
+
+其中 `Flex / Row / Column / Grid / Stack / Absolute` 是正式布局组件。它们只依赖 `View`，不增加第二套布局引擎，也不增加额外 DOM 层。
 
 ### 5.3 组合组件
 
@@ -583,11 +592,43 @@ Switch = View + 开关行为
 
 ## 6.2 布局策略
 
-`View` 直接使用布局属性；非 `View` 组件通过 `viewProps` 使用布局属性。
+`View.layout` 仍然是底层布局能力和兼容逃生口，但业务代码的正式布局入口是布局组件：
+
+```text
+Flex      → View layout="flex"
+Row       → View layout="flex" direction="row"
+Column    → View layout="flex" direction="column"
+Grid      → View layout="grid"
+Stack     → View layout="stack"
+Absolute  → View layout="absolute"
+```
+
+这些组件最终都只渲染一个 `View` 对应的 `<div>`，不增加 wrapper。`Row / Column` 锁定自己的方向，`Grid / Stack / Absolute` 锁定自己的 layout；`Flex` 保留完整 direction 能力。响应式、状态、尺寸、间距、事件、ARIA、scrollbar 等其他能力继续直接继承 `View`。
+
+推荐业务代码优先写：
+
+```tsx
+<Row gap={1} align="center" />
+<Column gap={1} />
+<Grid columns={3} gap={1} />
+<Stack align="center" />
+<Absolute />
+```
+
+需要响应式切换 flex 方向时使用 `Flex`：
+
+```tsx
+<Flex
+  direction="column"
+  md={{ direction: 'row' }}
+/>
+```
+
+`View layout="..."` 仍然可用，但不再是一般业务布局的首选写法。
 
 组件是否能够实际承载子项布局，遵循其对应 DOM 元素的内容模型。
 
-当前公开模型：
+当前底层公开模型：
 
 ```text
 layout
@@ -600,14 +641,20 @@ layout
 ### Flex
 
 ```tsx
-<View
-  layout="flex"
+<Flex
   direction="column"
   wrap={false}
   gap={1}
   align="stretch"
   justify="start"
 />
+```
+
+高频固定方向直接使用：
+
+```tsx
+<Row gap={1} />
+<Column gap={1} />
 ```
 
 `direction`：
@@ -657,8 +704,7 @@ space-evenly
 ### Grid
 
 ```tsx
-<View
-  layout="grid"
+<Grid
   columns={3}
   rows="auto"
   gap={1}
@@ -668,8 +714,7 @@ space-evenly
 也允许更精确表达：
 
 ```tsx
-<View
-  layout="grid"
+<Grid
   columns="1fr 2fr 1fr"
   rows="auto 1fr"
 />
@@ -678,10 +723,7 @@ space-evenly
 ### Stack
 
 ```tsx
-<View
-  layout="stack"
-  align="center"
-/>
+<Stack align="center" />
 ```
 
 用于层叠子组件。
@@ -689,14 +731,14 @@ space-evenly
 ### Absolute
 
 ```tsx
-<View layout="absolute">
+<Absolute>
   <View
     top={1}
     right={1}
     width={4}
     height={4}
   />
-</View>
+</Absolute>
 ```
 
 ---
@@ -3142,6 +3184,7 @@ style
 href        // required
 text        // optional display text
 hideIcon    // optional, default false
+hideUnderline // optional, default false
 target      // optional, native anchor target
 viewProps
 ```
@@ -3168,10 +3211,11 @@ viewProps
 
 - `text` 未提供时，直接显示 `href`；提供后只改变可见文字，不改变真实 `href`。
 - 默认在内容末尾追加一个装饰性 link icon；icon 不进入 accessible name。只有 `hideIcon` 才隐藏。
+- `hideUnderline` 为 `true` 时完全隐藏底部 link marker；它不影响文字、icon、focus outline 或原生 `<a>` 导航行为。
 - `target` 直接写到真实 `<a target>`，例如 `_self`、`_blank`；框架不重写浏览器原生导航行为，也不自动添加或修改 `rel`。
 - 其他通用事件、ARIA、className、style 和布局逃生口继续通过 `viewProps`。
 
-Link 使用一条底部 link marker 表达“这是链接”。由于真实 `border-bottom` 无法只占部分宽度，DOM/CSS 后端使用 `::after` 绘制等价底边线：
+Link 默认使用一条底部 link marker 表达“这是链接”。由于真实 `border-bottom` 无法只占部分宽度，DOM/CSS 后端使用 `::after` 绘制等价底边线；传 `hideUnderline` 时该 marker 完全不生成可见结果：
 
 ```text
 rest    45%

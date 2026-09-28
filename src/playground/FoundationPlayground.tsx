@@ -8,11 +8,17 @@ import {
   IconUser,
 } from '@tabler/icons-react'
 import {
+  Absolute,
   Badge,
   Button,
+  Column,
+  Flex,
+  Grid,
   Icon,
   Image,
   Link,
+  Row,
+  Stack,
   Text,
   ThemeProvider,
   ToolTip,
@@ -66,11 +72,60 @@ export function FoundationPlayground() {
   return (
     <>
       <PlaygroundSection
+        title="Layout components"
+        description="正式布局入口仍复用 View 底层：Flex / Row / Column / Grid / Stack / Absolute，不增加额外 DOM。"
+      >
+        <Column gap={1.25}>
+          <Row gap={0.75} wrap>
+            <DemoBox label="Row A" />
+            <DemoBox label="Row B" />
+            <DemoBox label="Row C" />
+          </Row>
+
+          <Grid columns={3} gap={0.75}>
+            <DemoBox label="Grid 1" />
+            <DemoBox label="Grid 2" />
+            <DemoBox label="Grid 3" />
+          </Grid>
+
+          <Stack
+            width={8}
+            height={4}
+            align="center"
+            justify="center"
+          >
+            <View
+              width="fill"
+              height="fill"
+              radius="medium"
+              background="surfaceHover"
+            />
+            <Text typo="label-medium">Stack</Text>
+          </Stack>
+
+          <Absolute
+            width={8}
+            height={4}
+            radius="medium"
+            background="surfaceHover"
+          >
+            <View
+              top={0.5}
+              right={0.5}
+              width={2}
+              height={2}
+              radius="full"
+              background="primary"
+            />
+          </Absolute>
+        </Column>
+      </PlaygroundSection>
+
+      <PlaygroundSection
         title="Viewport breakpoint"
         description="窄窗口为纵向；达到 md（48rem）后变为横向并改变背景。"
       >
-        <View
-          layout="flex"
+        <Flex
           direction="column"
           gap={0.75}
           padding={1}
@@ -86,7 +141,7 @@ export function FoundationPlayground() {
           <DemoBox label="A" />
           <DemoBox label="B" />
           <DemoBox label="C" />
-        </View>
+        </Flex>
       </PlaygroundSection>
 
       <PlaygroundSection
@@ -599,6 +654,7 @@ export function FoundationPlayground() {
             href="https://example.com/changelog"
             text="Changelog on _top"
             hideIcon
+            hideUnderline
             target="_top"
           />
         </View>
