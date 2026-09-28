@@ -58,25 +58,55 @@ describe('formal layout components', () => {
     expect(rule).toContain('--weave-gap:1rem;')
   })
 
-  it('gives Row and Column fixed semantic directions', () => {
+  it('keeps Flex configurable and exposes wrapping through the View flex backend', () => {
+    const { getByTestId } = render(
+      <Flex
+        direction="row-reverse"
+        wrap
+        gap={0.5}
+        width={14}
+        data={{ testid: 'flex-wrap' }}
+      />,
+    )
+
+    const flex = getByTestId('flex-wrap')
+    const rule = runtimeRule(flex)
+
+    expect(flex.dataset.weaveLayout).toBe('flex')
+    expect(rule).toContain('--weave-flex-direction:row-reverse;')
+    expect(rule).toContain('--weave-flex-wrap:wrap;')
+    expect(rule).toContain('--weave-gap:0.5rem;')
+    expect(rule).toContain('--weave-width:14rem;')
+  })
+
+  it('gives Row and Column fixed semantic directions and preserves Column axis alignment', () => {
     const { getByTestId } = render(
       <>
         <Row data={{ testid: 'row' }} />
-        <Column data={{ testid: 'column' }} />
+        <Column
+          width={10}
+          height={14}
+          align="end"
+          justify="space-between"
+          data={{ testid: 'column' }}
+        />
       </>,
     )
 
     const row = getByTestId('row')
     const column = getByTestId('column')
+    const columnRule = runtimeRule(column)
 
     expect(row.dataset.weaveLayout).toBe('flex')
     expect(column.dataset.weaveLayout).toBe('flex')
     expect(runtimeRule(row)).toContain(
       '--weave-flex-direction:row;',
     )
-    expect(runtimeRule(column)).toContain(
-      '--weave-flex-direction:column;',
-    )
+    expect(columnRule).toContain('--weave-flex-direction:column;')
+    expect(columnRule).toContain('--weave-align-items:end;')
+    expect(columnRule).toContain('--weave-justify-content:space-between;')
+    expect(columnRule).toContain('--weave-width:10rem;')
+    expect(columnRule).toContain('--weave-height:14rem;')
   })
 
   it('maps Grid, Stack, and Absolute to the existing View layout engine', () => {

@@ -657,6 +657,10 @@ layout
 <Column gap={1} />
 ```
 
+Playground 对 `Flex` 的验证必须体现它作为通用 flex 容器的可配置性：使用固定宽度、多个固定宽度子项与 `wrap`，让换行行为肉眼可见；不能只做一个与 Row 看起来完全一样的横排示例。
+
+`Column` 则必须明确验证纵向主轴：示例使用足够高的固定容器、`align="end"` 和 `justify="space-between"`，让三个子项从上到下拉开明显距离并沿交叉轴靠右。容器高度必须留下真实剩余空间，不能让三个子项几乎塞满后导致 `space-between` 肉眼不可辨。这样可以直接区分 `Column` 与普通 Row/Flex。
+
 `direction`：
 
 ```text

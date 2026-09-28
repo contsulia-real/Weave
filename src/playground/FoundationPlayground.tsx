@@ -76,6 +76,64 @@ export function FoundationPlayground() {
         description="正式布局入口仍复用 View 底层：Flex / Row / Column / Grid / Stack / Absolute，不增加额外 DOM。"
       >
         <Column gap={1.25}>
+          <Column gap={0.5} align="start">
+            <Text typo="label-medium" color="secondary">
+              Flex · wrap
+            </Text>
+
+            <Flex
+              width={14}
+              gap={0.5}
+              wrap
+              padding={0.5}
+              align="center"
+              outlineWidth={0.0625}
+              outlineColor="outline"
+              outlineStyle="dashed"
+            >
+              {['F1', 'F2', 'F3', 'F4', 'F5'].map((label) => (
+                <View
+                  key={label}
+                  width={4}
+                  padding={0.75}
+                  radius="medium"
+                  background="surfaceHover"
+                >
+                  <Text typo="label-medium">{label}</Text>
+                </View>
+              ))}
+            </Flex>
+          </Column>
+
+          <Column gap={0.5} align="start">
+            <Text typo="label-medium" color="secondary">
+              Column · end / space-between
+            </Text>
+
+            <Column
+              width={10}
+              height={14}
+              padding={0.5}
+              align="end"
+              justify="space-between"
+              outlineWidth={0.0625}
+              outlineColor="outline"
+              outlineStyle="dashed"
+            >
+              {['Top', 'Middle', 'Bottom'].map((label) => (
+                <View
+                  key={label}
+                  width={4.5}
+                  padding={0.75}
+                  radius="medium"
+                  background="color-mix(in srgb, var(--weave-color-primary) 12%, var(--weave-color-surface))"
+                >
+                  <Text typo="label-medium">{label}</Text>
+                </View>
+              ))}
+            </Column>
+          </Column>
+
           <Row gap={0.75} wrap>
             <DemoBox label="Row A" />
             <DemoBox label="Row B" />
