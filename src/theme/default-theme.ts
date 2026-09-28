@@ -83,11 +83,11 @@ export const defaultDarkTheme: ThemeOverride = {
     Radio: {
       base: {
         shadow:
-          'inset 0 0.125rem 0.1875rem rgb(0 0 0 / 0.52), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.05)',
+          '0 0.0625rem 0 rgb(0 0 0 / 0.58), inset 0 0.125rem 0.1875rem rgb(0 0 0 / 0.52), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.05)',
         hoverShadow:
-          'inset 0 0.15625rem 0.21875rem rgb(0 0 0 / 0.60), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.07)',
+          '0 0.09375rem 0 rgb(0 0 0 / 0.64), inset 0 0.15625rem 0.21875rem rgb(0 0 0 / 0.60), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.07)',
         pressShadow:
-          'inset 0 0.1875rem 0.25rem rgb(0 0 0 / 0.68), inset 0 -0.03125rem 0 rgb(255 255 255 / 0.04)',
+          '0 0.03125rem 0 rgb(0 0 0 / 0.52), inset 0 0.1875rem 0.25rem rgb(0 0 0 / 0.68), inset 0 -0.03125rem 0 rgb(255 255 255 / 0.04)',
         indicatorShadow:
           '0 0.0625rem 0.125rem rgb(0 0 0 / 0.46), 0 0.125rem 0.25rem rgb(0 0 0 / 0.28), inset 0 0.0625rem 0 rgb(255 255 255 / 0.18)',
       },
@@ -95,18 +95,18 @@ export const defaultDarkTheme: ThemeOverride = {
     Checkbox: {
       base: {
         shadow:
-          'inset 0 0.125rem 0.1875rem rgb(0 0 0 / 0.52), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.05)',
+          '0 0.0625rem 0 rgb(0 0 0 / 0.58), inset 0 0.125rem 0.1875rem rgb(0 0 0 / 0.52), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.05)',
         hoverShadow:
-          'inset 0 0.15625rem 0.21875rem rgb(0 0 0 / 0.60), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.07)',
+          '0 0.09375rem 0 rgb(0 0 0 / 0.64), inset 0 0.15625rem 0.21875rem rgb(0 0 0 / 0.60), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.07)',
         pressShadow:
-          'inset 0 0.1875rem 0.25rem rgb(0 0 0 / 0.68), inset 0 -0.03125rem 0 rgb(255 255 255 / 0.04)',
+          '0 0.03125rem 0 rgb(0 0 0 / 0.52), inset 0 0.1875rem 0.25rem rgb(0 0 0 / 0.68), inset 0 -0.03125rem 0 rgb(255 255 255 / 0.04)',
         indicatorShadow:
           '0 0.0625rem 0.125rem rgb(0 0 0 / 0.46), 0 0.125rem 0.25rem rgb(0 0 0 / 0.28), inset 0 0.0625rem 0 rgb(255 255 255 / 0.18)',
       },
       states: {
         checked: {
           shadow:
-            'inset 0 0.125rem 0.1875rem rgb(0 0 0 / 0.36), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.12)',
+            '0 0.0625rem 0 rgb(0 0 0 / 0.48), inset 0 0.125rem 0.1875rem rgb(0 0 0 / 0.36), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.12)',
         },
       },
     },
@@ -484,17 +484,17 @@ export const defaultTheme: ResolvedTheme = {
         radius: 'full',
         cursor: 'pointer',
         shadow:
-          'inset 0 0.125rem 0.1875rem rgb(58 48 40 / 0.18), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.48)',
+          '0 0.0625rem 0 color-mix(in srgb, var(--weave-color-outline) 48%, transparent), inset 0 0.125rem 0.1875rem rgb(58 48 40 / 0.18), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.48)',
         hoverShadow:
-          'inset 0 0.125rem 0.1875rem rgb(58 48 40 / 0.22), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.58)',
+          '0 0.09375rem 0 color-mix(in srgb, var(--weave-color-outline) 54%, transparent), inset 0 0.125rem 0.1875rem rgb(58 48 40 / 0.22), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.58)',
         pressShadow:
-          'inset 0 0.1875rem 0.25rem rgb(58 48 40 / 0.28), inset 0 -0.03125rem 0 rgb(255 255 255 / 0.40)',
+          '0 0.03125rem 0 color-mix(in srgb, var(--weave-color-outline) 42%, transparent), inset 0 0.1875rem 0.25rem rgb(58 48 40 / 0.28), inset 0 -0.03125rem 0 rgb(255 255 255 / 0.40)',
         indicatorShadow:
           '0 0.0625rem 0.125rem rgb(58 48 40 / 0.24), 0 0.125rem 0.25rem rgb(58 48 40 / 0.12), inset 0 0.0625rem 0 rgb(255 255 255 / 0.28)',
         stateLayerColor: 'secondary',
-        stateLayerHoverOpacity: 0.14,
-        stateLayerFocusOpacity: 0.18,
-        stateLayerPressOpacity: 0.22,
+        stateLayerHoverOpacity: 0.1,
+        stateLayerFocusOpacity: 0.14,
+        stateLayerPressOpacity: 0.18,
         labelGap: 0.5,
         focusOutlineWidth: 0.125,
         focusOutlineColor: 'focus',
@@ -506,19 +506,19 @@ export const defaultTheme: ResolvedTheme = {
           size: 1.125,
           indicatorSize: 0.5,
           markSize: 0.625,
-          stateLayerSize: 2.5,
+          stateLayerSize: 1.625,
         },
         medium: {
           size: 1.375,
           indicatorSize: 0.625,
           markSize: 0.75,
-          stateLayerSize: 2.75,
+          stateLayerSize: 1.875,
         },
         large: {
           size: 1.625,
           indicatorSize: 0.75,
           markSize: 0.875,
-          stateLayerSize: 3,
+          stateLayerSize: 2.125,
         },
       },
       states: {
@@ -543,17 +543,17 @@ export const defaultTheme: ResolvedTheme = {
         radius: 'small',
         cursor: 'pointer',
         shadow:
-          'inset 0 0.125rem 0.1875rem rgb(58 48 40 / 0.18), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.48)',
+          '0 0.0625rem 0 color-mix(in srgb, var(--weave-color-outline) 48%, transparent), inset 0 0.125rem 0.1875rem rgb(58 48 40 / 0.18), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.48)',
         hoverShadow:
-          'inset 0 0.125rem 0.1875rem rgb(58 48 40 / 0.22), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.58)',
+          '0 0.09375rem 0 color-mix(in srgb, var(--weave-color-outline) 54%, transparent), inset 0 0.125rem 0.1875rem rgb(58 48 40 / 0.22), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.58)',
         pressShadow:
-          'inset 0 0.1875rem 0.25rem rgb(58 48 40 / 0.28), inset 0 -0.03125rem 0 rgb(255 255 255 / 0.40)',
+          '0 0.03125rem 0 color-mix(in srgb, var(--weave-color-outline) 42%, transparent), inset 0 0.1875rem 0.25rem rgb(58 48 40 / 0.28), inset 0 -0.03125rem 0 rgb(255 255 255 / 0.40)',
         indicatorShadow:
           '0 0.0625rem 0.125rem rgb(58 48 40 / 0.24), 0 0.125rem 0.25rem rgb(58 48 40 / 0.12), inset 0 0.0625rem 0 rgb(255 255 255 / 0.28)',
         stateLayerColor: 'secondary',
-        stateLayerHoverOpacity: 0.14,
-        stateLayerFocusOpacity: 0.18,
-        stateLayerPressOpacity: 0.22,
+        stateLayerHoverOpacity: 0.1,
+        stateLayerFocusOpacity: 0.14,
+        stateLayerPressOpacity: 0.18,
         labelGap: 0.5,
         focusOutlineWidth: 0.125,
         focusOutlineColor: 'focus',
@@ -564,17 +564,17 @@ export const defaultTheme: ResolvedTheme = {
         small: {
           size: 1.125,
           markSize: 0.75,
-          stateLayerSize: 2.5,
+          stateLayerSize: 1.625,
         },
         medium: {
           size: 1.375,
           markSize: 0.9375,
-          stateLayerSize: 2.75,
+          stateLayerSize: 1.875,
         },
         large: {
           size: 1.625,
           markSize: 1.125,
-          stateLayerSize: 3,
+          stateLayerSize: 2.125,
         },
       },
       states: {

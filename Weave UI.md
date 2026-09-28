@@ -2457,11 +2457,11 @@ viewProps
 默认视觉继续使用 Weave 的物理层级语言，但 Radio 与 Checkbox 的 checked 形态不同：
 
 - 未选中时，两者都有 `0.125rem` 实体边界与方向性 inset shadow，形成明确凹陷厚度；hover 加深凹槽，press 再下沉并缩放；
-- Radio checked 后，外壳仍然是凹槽，内部 primary 圆点以 `scale(0) → scale(1)` + spring 方式长出来；unchecked 时同一 transition 反向执行 `scale(1) → scale(0)`，不能直接移除节点或瞬间消失；
+- Radio checked 后，外壳仍然是凹槽，内部 primary 圆点以 `scale(0) → scale(1)` + spring 方式长出来；unchecked 时同一 transition 反向执行 `scale(1) → scale(0)`。默认使用 slow motion token（当前 320ms），保证正反过渡肉眼明确可见；
 - Checkbox checked 后，**Checkbox 外壳本身整块铺满 primary**，不存在内部 primary 方块、padding 或第二层填充；
-- Checkbox 的 `onPrimary` 对号使用真实 SVG path，并通过 `pathLength + stroke-dasharray + stroke-dashoffset` 从起点到终点画出，而不是整块突然出现；unchecked 时同一 path transition 必须反向把 `stroke-dashoffset` 从 `0` 推回 `1`，同时 checked background 平滑退回未选中 surface；
-- Radio / Checkbox 外围都有独立圆形 state layer：small / medium / large 的交互圆分别为 `2.5rem / 2.75rem / 3rem`（40 / 44 / 48px），实际 shell 就占据这块交互尺寸，控件本体居中其中；hover 显示圆形提示背景，focus-visible 稍增强，press 再增强，checked 时 state layer 颜色切到 primary；hover 只由控件 shell 触发，悬停 label 文本本身不会点亮 halo；
-- 可见 `label` 与 state-layer shell 外缘之间默认保留 `0.5rem`（8px）安全间距；这个 gap 属于 field 级 theme 变量，必须挂在 field 宿主作用域，不能定义在子 input 上让父 label 读取不到；
+- Checkbox 的 `onPrimary` 对号使用真实 SVG path，并通过 `pathLength + stroke-dasharray + stroke-dashoffset` 从起点到终点画出；unchecked 时同一 320ms path transition 反向把 `stroke-dashoffset` 从 `0` 推回 `1`，同时 checked background 平滑退回未选中 surface；press 时 checkbox 本体与 checkmark 视觉层必须使用完全相同的 `translateY + scale`，禁止再出现长按后勾与方框错位；
+- Radio / Checkbox 外围都有独立圆形 state layer，但它**绝不参与布局尺寸**。small / medium / large 的 halo 分别为 `1.625rem / 1.875rem / 2.125rem`（26 / 30 / 34px），只比 18 / 22 / 26px 控件本体各大 8px；shell 本身仍然只占控件本体尺寸。hover 显示圆形提示背景，focus-visible 稍增强，press 再增强，checked 时 state layer 颜色切到 primary；hover 只由控件 shell 触发，悬停 label 文本本身不会点亮 halo；
+- 可见 `label` 与**控件本体边缘**之间默认保留 `0.5rem`（8px）间距；halo 绝不能拿自己的直径撑大 shell 后再叠加 gap。这个 gap 属于 field 级 theme 变量，必须挂在 field 宿主作用域；
 - `prefers-reduced-motion: reduce` 下取消 scale、state layer scale 与 path drawing transition，直接显示最终状态；
 - 深色模式保持完全相同的结构，只调整 surface、border 和阴影 token。
 

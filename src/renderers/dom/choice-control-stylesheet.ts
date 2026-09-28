@@ -20,8 +20,8 @@ const stylesheet = `
   position: relative;
   display: inline-grid;
   place-items: center;
-  width: var(--weave-choice-state-layer-size);
-  height: var(--weave-choice-state-layer-size);
+  width: var(--weave-choice-size);
+  height: var(--weave-choice-size);
   flex: 0 0 auto;
   line-height: 0;
   vertical-align: middle;
@@ -179,7 +179,7 @@ const stylesheet = `
 
 :where(.weave-choice-control:active:not([aria-disabled="true"]))
   ~ :where(.weave-choice-visual) {
-  transform: scale(0.9);
+  transform: translateY(0.03125rem) scale(0.94);
 }
 
 :where(.weave-radio__dot) {
@@ -191,9 +191,9 @@ const stylesheet = `
   opacity: 0;
   transform: scale(0);
   transition:
-    opacity var(--weave-motion-duration-normal)
+    opacity var(--weave-motion-duration-slow)
       var(--weave-motion-curve-standard),
-    transform var(--weave-motion-duration-normal)
+    transform var(--weave-motion-duration-slow)
       var(--weave-motion-curve-spring);
 }
 
@@ -219,7 +219,7 @@ const stylesheet = `
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
   transition:
-    stroke-dashoffset var(--weave-motion-duration-normal)
+    stroke-dashoffset var(--weave-motion-duration-slow)
       var(--weave-motion-curve-standard);
 }
 

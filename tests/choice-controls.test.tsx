@@ -83,7 +83,7 @@ describe('Radio and Checkbox', () => {
     expect(checkbox.checked).toBe(true)
   })
 
-  it('applies the theme at field scope so label spacing and state-layer geometry are real layout values', () => {
+  it('applies the theme at field scope while keeping halo size out of layout geometry', () => {
     const { getByText } = render(
       <Radio
         label="Scoped option"
@@ -118,12 +118,23 @@ describe('Radio and Checkbox', () => {
       '--weave-choice-label-gap:0.5rem;',
     )
     expect(rule).toContain(
-      '--weave-choice-state-layer-size:2.75rem;',
+      '--weave-choice-state-layer-size:1.875rem;',
     )
     expect(
       defaultTheme.components.Radio?.base
         ?.stateLayerHoverOpacity,
-    ).toBe(0.14)
+    ).toBe(0.1)
+
+    const stylesheet =
+      document.querySelector<HTMLStyleElement>(
+        'style[data-weave-choice-control-styles]',
+      )?.textContent ?? ''
+    expect(stylesheet).toContain(
+      'width: var(--weave-choice-size);',
+    )
+    expect(stylesheet).toContain(
+      'width: var(--weave-choice-state-layer-size);',
+    )
   })
 
   it('treats radios with the same group as one native radio group', () => {
@@ -285,15 +296,15 @@ describe('Radio and Checkbox', () => {
     expect(
       defaultTheme.components.Radio?.sizes
         ?.small?.stateLayerSize,
-    ).toBe(2.5)
+    ).toBe(1.625)
     expect(
       defaultTheme.components.Radio?.sizes
         ?.medium?.stateLayerSize,
-    ).toBe(2.75)
+    ).toBe(1.875)
     expect(
       defaultTheme.components.Radio?.sizes
         ?.large?.stateLayerSize,
-    ).toBe(3)
+    ).toBe(2.125)
   })
 
   it('fills the checked Checkbox and draws its checkmark path instead of revealing a padded inner square', () => {
@@ -352,6 +363,12 @@ describe('Radio and Checkbox', () => {
     )
     expect(stylesheet).toContain(
       ':active:not([aria-disabled="true"])',
+    )
+    expect(stylesheet).toContain(
+      'transform: translateY(0.03125rem) scale(0.94);',
+    )
+    expect(stylesheet).toContain(
+      'var(--weave-motion-duration-slow)',
     )
     expect(stylesheet).toContain(
       '.weave-choice-state-layer',
