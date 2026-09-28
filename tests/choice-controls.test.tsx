@@ -13,6 +13,7 @@ import {
 import {
   Checkbox,
   Radio,
+  defaultTheme,
 } from '../src'
 
 afterEach(cleanup)
@@ -180,36 +181,93 @@ describe('Radio and Checkbox', () => {
     expect(onChange).not.toHaveBeenCalled()
   })
 
-  it('uses one recessed control language with distinct radio and checkbox indicators', () => {
-    render(
-      <>
-        <Radio viewProps={{ label: 'Radio' }} />
-        <Checkbox viewProps={{ label: 'Checkbox' }} />
-      </>,
+  it('ships three visibly distinct sizes with a thicker tactile border', () => {
+    expect(
+      defaultTheme.components.Radio?.base
+        ?.borderWidth,
+    ).toBe(0.125)
+    expect(
+      defaultTheme.components.Checkbox?.base
+        ?.borderWidth,
+    ).toBe(0.125)
+
+    expect(
+      defaultTheme.components.Radio?.sizes
+        ?.small?.size,
+    ).toBe(1.125)
+    expect(
+      defaultTheme.components.Radio?.sizes
+        ?.medium?.size,
+    ).toBe(1.375)
+    expect(
+      defaultTheme.components.Radio?.sizes
+        ?.large?.size,
+    ).toBe(1.625)
+
+    expect(
+      defaultTheme.components.Checkbox?.sizes
+        ?.small?.size,
+    ).toBe(1.125)
+    expect(
+      defaultTheme.components.Checkbox?.sizes
+        ?.medium?.size,
+    ).toBe(1.375)
+    expect(
+      defaultTheme.components.Checkbox?.sizes
+        ?.large?.size,
+    ).toBe(1.625)
+  })
+
+  it('fills the checked Checkbox and draws its checkmark path instead of revealing a padded inner square', () => {
+    const { getByRole } = render(
+      <Checkbox
+        defaultChecked
+        viewProps={{ label: 'Checked checkbox' }}
+      />,
     )
 
+    const checkbox = getByRole('checkbox', {
+      name: 'Checked checkbox',
+    })
+    const shell = checkbox.parentElement as HTMLElement
+    const visual = checkbox.nextElementSibling as HTMLElement
+    const path = shell.querySelector(
+      '[data-weave-checkbox-check]',
+    )
     const stylesheet =
       document.querySelector<HTMLStyleElement>(
         'style[data-weave-choice-control-styles]',
       )?.textContent ?? ''
 
+    expect(shell.getAttribute('aria-hidden')).toBeNull()
+    expect(visual.getAttribute('aria-hidden')).toBe('true')
+    expect(path?.getAttribute('pathLength')).toBe('1')
+    expect(
+      defaultTheme.components.Checkbox?.states
+        ?.checked?.background,
+    ).toBe('primary')
+    expect(
+      defaultTheme.components.Checkbox?.states
+        ?.checked?.indicatorBackground,
+    ).toBeUndefined()
+
     expect(stylesheet).toContain(
-      '.weave-choice-control:checked',
+      '--weave-component-background: var(--weave-choice-checked-background)',
     )
     expect(stylesheet).toContain(
-      '.weave-radio)::before',
+      'stroke-dasharray: 1;',
     )
     expect(stylesheet).toContain(
-      '.weave-checkbox)::before',
+      'stroke-dashoffset: 1;',
     )
     expect(stylesheet).toContain(
-      '.weave-checkbox)::after',
+      'stroke-dashoffset: 0;',
     )
     expect(stylesheet).toContain(
-      '--weave-choice-indicator-shadow',
+      'var(--weave-motion-duration-normal)',
     )
     expect(stylesheet).toContain(
-      'clip-path: polygon(',
+      ':active:not([aria-disabled="true"])',
     )
   })
 })

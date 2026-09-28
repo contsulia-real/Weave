@@ -86,6 +86,8 @@ export const defaultDarkTheme: ThemeOverride = {
           'inset 0 0.125rem 0.1875rem rgb(0 0 0 / 0.52), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.05)',
         hoverShadow:
           'inset 0 0.15625rem 0.21875rem rgb(0 0 0 / 0.60), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.07)',
+        pressShadow:
+          'inset 0 0.1875rem 0.25rem rgb(0 0 0 / 0.68), inset 0 -0.03125rem 0 rgb(255 255 255 / 0.04)',
         indicatorShadow:
           '0 0.0625rem 0.125rem rgb(0 0 0 / 0.46), 0 0.125rem 0.25rem rgb(0 0 0 / 0.28), inset 0 0.0625rem 0 rgb(255 255 255 / 0.18)',
       },
@@ -96,8 +98,16 @@ export const defaultDarkTheme: ThemeOverride = {
           'inset 0 0.125rem 0.1875rem rgb(0 0 0 / 0.52), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.05)',
         hoverShadow:
           'inset 0 0.15625rem 0.21875rem rgb(0 0 0 / 0.60), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.07)',
+        pressShadow:
+          'inset 0 0.1875rem 0.25rem rgb(0 0 0 / 0.68), inset 0 -0.03125rem 0 rgb(255 255 255 / 0.04)',
         indicatorShadow:
           '0 0.0625rem 0.125rem rgb(0 0 0 / 0.46), 0 0.125rem 0.25rem rgb(0 0 0 / 0.28), inset 0 0.0625rem 0 rgb(255 255 255 / 0.18)',
+      },
+      states: {
+        checked: {
+          shadow:
+            'inset 0 0.125rem 0.1875rem rgb(0 0 0 / 0.36), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.12)',
+        },
       },
     },
     Progress: {
@@ -470,15 +480,17 @@ export const defaultTheme: ResolvedTheme = {
       base: {
         background: 'surface',
         borderColor: 'outline',
-        borderWidth: 0.0625,
+        borderWidth: 0.125,
         radius: 'full',
         cursor: 'pointer',
         shadow:
-          'inset 0 0.0625rem 0.125rem rgb(58 48 40 / 0.14), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.44)',
+          'inset 0 0.125rem 0.1875rem rgb(58 48 40 / 0.18), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.48)',
         hoverShadow:
-          'inset 0 0.09375rem 0.15625rem rgb(58 48 40 / 0.18), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.52)',
+          'inset 0 0.125rem 0.1875rem rgb(58 48 40 / 0.22), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.58)',
+        pressShadow:
+          'inset 0 0.1875rem 0.25rem rgb(58 48 40 / 0.28), inset 0 -0.03125rem 0 rgb(255 255 255 / 0.40)',
         indicatorShadow:
-          '0 0.0625rem 0.125rem rgb(58 48 40 / 0.20), 0 0.125rem 0.25rem rgb(58 48 40 / 0.10), inset 0 0.0625rem 0 rgb(255 255 255 / 0.26)',
+          '0 0.0625rem 0.125rem rgb(58 48 40 / 0.24), 0 0.125rem 0.25rem rgb(58 48 40 / 0.12), inset 0 0.0625rem 0 rgb(255 255 255 / 0.28)',
         focusOutlineWidth: 0.125,
         focusOutlineColor: 'focus',
         focusOutlineStyle: 'solid',
@@ -486,23 +498,24 @@ export const defaultTheme: ResolvedTheme = {
       },
       sizes: {
         small: {
-          size: 0.875,
-          indicatorSize: 0.375,
-          markSize: 0.25,
-        },
-        medium: {
           size: 1.125,
           indicatorSize: 0.5,
-          markSize: 0.3125,
+          markSize: 0.625,
         },
-        large: {
+        medium: {
           size: 1.375,
           indicatorSize: 0.625,
-          markSize: 0.375,
+          markSize: 0.75,
+        },
+        large: {
+          size: 1.625,
+          indicatorSize: 0.75,
+          markSize: 0.875,
         },
       },
       states: {
         checked: {
+          background: 'surface',
           borderColor: 'primary',
           indicatorBackground: 'primary',
           indicatorColor: 'primary',
@@ -517,15 +530,17 @@ export const defaultTheme: ResolvedTheme = {
       base: {
         background: 'surface',
         borderColor: 'outline',
-        borderWidth: 0.0625,
+        borderWidth: 0.125,
         radius: 'small',
         cursor: 'pointer',
         shadow:
-          'inset 0 0.0625rem 0.125rem rgb(58 48 40 / 0.14), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.44)',
+          'inset 0 0.125rem 0.1875rem rgb(58 48 40 / 0.18), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.48)',
         hoverShadow:
-          'inset 0 0.09375rem 0.15625rem rgb(58 48 40 / 0.18), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.52)',
+          'inset 0 0.125rem 0.1875rem rgb(58 48 40 / 0.22), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.58)',
+        pressShadow:
+          'inset 0 0.1875rem 0.25rem rgb(58 48 40 / 0.28), inset 0 -0.03125rem 0 rgb(255 255 255 / 0.40)',
         indicatorShadow:
-          '0 0.0625rem 0.125rem rgb(58 48 40 / 0.20), 0 0.125rem 0.25rem rgb(58 48 40 / 0.10), inset 0 0.0625rem 0 rgb(255 255 255 / 0.26)',
+          '0 0.0625rem 0.125rem rgb(58 48 40 / 0.24), 0 0.125rem 0.25rem rgb(58 48 40 / 0.12), inset 0 0.0625rem 0 rgb(255 255 255 / 0.28)',
         focusOutlineWidth: 0.125,
         focusOutlineColor: 'focus',
         focusOutlineStyle: 'solid',
@@ -533,25 +548,24 @@ export const defaultTheme: ResolvedTheme = {
       },
       sizes: {
         small: {
-          size: 0.875,
-          indicatorSize: 0.6875,
-          markSize: 0.4375,
+          size: 1.125,
+          markSize: 0.75,
         },
         medium: {
-          size: 1.125,
-          indicatorSize: 0.875,
-          markSize: 0.5625,
+          size: 1.375,
+          markSize: 0.9375,
         },
         large: {
-          size: 1.375,
-          indicatorSize: 1.0625,
-          markSize: 0.6875,
+          size: 1.625,
+          markSize: 1.125,
         },
       },
       states: {
         checked: {
-          borderColor: 'primary',
-          indicatorBackground: 'primary',
+          background: 'primary',
+          borderColor: 'primaryActive',
+          shadow:
+            'inset 0 0.125rem 0.1875rem color-mix(in srgb, var(--weave-color-primaryActive) 28%, transparent), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.18)',
           indicatorColor: 'onPrimary',
         },
         disabled: {

@@ -128,6 +128,7 @@ export interface ChoiceControlThemeBase {
   cursor?: string
   shadow?: string
   hoverShadow?: string
+  pressShadow?: string
   indicatorShadow?: string
   focusOutlineWidth?: ThemeScaleValue
   focusOutlineColor?: string
@@ -148,7 +149,9 @@ export interface ChoiceControlTheme {
   >
   states?: {
     checked?: {
+      background?: string
       borderColor?: string
+      shadow?: string
       indicatorBackground?: string
       indicatorColor?: string
     }

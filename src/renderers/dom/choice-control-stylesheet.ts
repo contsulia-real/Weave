@@ -1,4 +1,13 @@
 const stylesheet = `
+:where(.weave-choice-shell) {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  line-height: 0;
+  vertical-align: middle;
+}
+
 :where(.weave-choice-control) {
   --weave-component-position: relative;
   --weave-component-display: inline-block;
@@ -22,31 +31,52 @@ const stylesheet = `
   --weave-component-cursor: var(--weave-choice-cursor);
   --weave-component-outline-width: 0;
 
+  grid-area: 1 / 1;
   appearance: none;
   -webkit-appearance: none;
   box-sizing: border-box;
-  flex: 0 0 auto;
   margin: 0;
   padding: 0;
   vertical-align: middle;
+  transform: translateY(0) scale(1);
+  transform-origin: center;
   transition:
+    background-color var(--weave-motion-duration-fast)
+      var(--weave-motion-curve-standard),
     border-color var(--weave-motion-duration-fast)
       var(--weave-motion-curve-standard),
     box-shadow var(--weave-motion-duration-fast)
       var(--weave-motion-curve-standard),
     opacity var(--weave-motion-duration-fast)
-      var(--weave-motion-curve-standard);
+      var(--weave-motion-curve-standard),
+    transform var(--weave-motion-duration-fast)
+      var(--weave-motion-curve-spring);
 }
 
 :where(.weave-choice-control:hover:not([aria-disabled="true"])) {
   --weave-component-box-shadow: var(--weave-choice-hover-shadow);
 }
 
+:where(.weave-choice-control:active:not([aria-disabled="true"])) {
+  --weave-component-box-shadow: var(--weave-choice-press-shadow);
+  transform: translateY(0.03125rem) scale(0.94);
+}
+
 :where(.weave-choice-control:checked) {
+  --weave-component-background: var(--weave-choice-checked-background);
   --weave-component-border-top-color: var(--weave-choice-checked-border-color);
   --weave-component-border-right-color: var(--weave-choice-checked-border-color);
   --weave-component-border-bottom-color: var(--weave-choice-checked-border-color);
   --weave-component-border-left-color: var(--weave-choice-checked-border-color);
+  --weave-component-box-shadow: var(--weave-choice-checked-shadow);
+}
+
+:where(.weave-choice-control:checked:hover:not([aria-disabled="true"])) {
+  --weave-component-box-shadow: var(--weave-choice-checked-shadow);
+}
+
+:where(.weave-choice-control:checked:active:not([aria-disabled="true"])) {
+  --weave-component-box-shadow: var(--weave-choice-press-shadow);
 }
 
 :where(.weave-choice-control:focus-visible) {
@@ -61,15 +91,13 @@ const stylesheet = `
   --weave-component-cursor: var(--weave-choice-disabled-cursor);
 }
 
-:where(.weave-choice-control)::before,
-:where(.weave-choice-control)::after {
-  content: '';
+:where(.weave-choice-visual) {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  inset: 0;
+  display: grid;
+  place-items: center;
   pointer-events: none;
-  opacity: 0;
-  transform: translate(-50%, -50%) scale(0.58);
+  transform: scale(1);
   transition:
     opacity var(--weave-motion-duration-fast)
       var(--weave-motion-curve-standard),
@@ -77,49 +105,69 @@ const stylesheet = `
       var(--weave-motion-curve-spring);
 }
 
-:where(.weave-choice-control)::before {
+:where(.weave-choice-control[aria-disabled="true"])
+  + :where(.weave-choice-visual) {
+  opacity: var(--weave-choice-disabled-opacity);
+}
+
+:where(.weave-choice-control:active:not([aria-disabled="true"]))
+  + :where(.weave-choice-visual) {
+  transform: scale(0.9);
+}
+
+:where(.weave-radio__dot) {
   width: var(--weave-choice-indicator-size);
   height: var(--weave-choice-indicator-size);
+  border-radius: 9999px;
   background: var(--weave-choice-checked-indicator-background);
   box-shadow: var(--weave-choice-indicator-shadow);
+  opacity: 0;
+  transform: scale(0.3);
+  transition:
+    opacity var(--weave-motion-duration-fast)
+      var(--weave-motion-curve-standard),
+    transform var(--weave-motion-duration-fast)
+      var(--weave-motion-curve-spring);
 }
 
-:where(.weave-radio)::before {
-  border-radius: 9999px;
+:where(.weave-radio:checked)
+  + :where(.weave-choice-visual)
+  > :where(.weave-radio__dot) {
+  opacity: 1;
+  transform: scale(1);
 }
 
-:where(.weave-radio)::after {
-  display: none;
-}
-
-:where(.weave-checkbox)::before {
-  border-radius: calc(var(--weave-choice-size) * 0.18);
-}
-
-:where(.weave-checkbox)::after {
+:where(.weave-checkbox__mark) {
   width: var(--weave-choice-mark-size);
   height: var(--weave-choice-mark-size);
-  background: var(--weave-choice-checked-indicator-color);
-  clip-path: polygon(
-    12% 48%,
-    0 62%,
-    38% 100%,
-    100% 20%,
-    82% 4%,
-    36% 70%
-  );
+  overflow: visible;
 }
 
-:where(.weave-choice-control:checked)::before,
-:where(.weave-checkbox:checked)::after {
-  opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
+:where(.weave-checkbox__mark-path) {
+  fill: none;
+  stroke: var(--weave-choice-checked-indicator-color);
+  stroke-width: 3.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition:
+    stroke-dashoffset var(--weave-motion-duration-normal)
+      var(--weave-motion-curve-standard);
+}
+
+:where(.weave-checkbox:checked)
+  + :where(.weave-choice-visual)
+  :where(.weave-checkbox__mark-path) {
+  stroke-dashoffset: 0;
+  transition-delay: calc(var(--weave-motion-duration-fast) * 0.18);
 }
 
 @media (prefers-reduced-motion: reduce) {
   :where(.weave-choice-control),
-  :where(.weave-choice-control)::before,
-  :where(.weave-choice-control)::after {
+  :where(.weave-choice-visual),
+  :where(.weave-radio__dot),
+  :where(.weave-checkbox__mark-path) {
     transition: none;
   }
 }

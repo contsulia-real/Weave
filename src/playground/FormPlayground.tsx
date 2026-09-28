@@ -137,14 +137,12 @@ export function FormPlayground() {
 
       <PlaygroundSection
         title="Radio / Checkbox"
-        description="group 直接建立原生分组：同 group Radio 互斥；同 group Checkbox 共享组名但仍可独立勾选。"
+        description="三档尺寸明确展示；group 直接建立原生分组：同 group Radio 互斥，同 group Checkbox 共享组名但仍可独立勾选。"
       >
         <View
           layout="flex"
-          direction="row"
-          gap={2}
-          align="start"
-          wrap
+          direction="column"
+          gap={1.25}
         >
           <View
             layout="flex"
@@ -152,75 +150,143 @@ export function FormPlayground() {
             gap={0.625}
           >
             <Text typo="label-medium">
-              Radio group · theme
+              Sizes · checked
             </Text>
 
-            <View layout="flex" direction="row" gap={0.5} align="center">
-              <Radio
-                group="theme-demo"
-                value="light"
-                defaultChecked
-                viewProps={{ label: 'Light theme' }}
-              />
-              <Text typo="body-medium">Light</Text>
-            </View>
+            <View
+              layout="flex"
+              direction="row"
+              gap={1.5}
+              align="center"
+              wrap
+            >
+              <View layout="flex" direction="row" gap={0.5} align="center">
+                <Radio
+                  size="small"
+                  defaultChecked
+                  viewProps={{ label: 'Small radio' }}
+                />
+                <Checkbox
+                  size="small"
+                  defaultChecked
+                  viewProps={{ label: 'Small checkbox' }}
+                />
+                <Text typo="body-medium">Small · 18px</Text>
+              </View>
 
-            <View layout="flex" direction="row" gap={0.5} align="center">
-              <Radio
-                group="theme-demo"
-                value="dark"
-                viewProps={{ label: 'Dark theme' }}
-              />
-              <Text typo="body-medium">Dark</Text>
-            </View>
+              <View layout="flex" direction="row" gap={0.5} align="center">
+                <Radio
+                  size="medium"
+                  defaultChecked
+                  viewProps={{ label: 'Medium radio' }}
+                />
+                <Checkbox
+                  size="medium"
+                  defaultChecked
+                  viewProps={{ label: 'Medium checkbox' }}
+                />
+                <Text typo="body-medium">Medium · 22px</Text>
+              </View>
 
-            <View layout="flex" direction="row" gap={0.5} align="center">
-              <Radio
-                group="theme-demo"
-                value="system"
-                disabled
-                viewProps={{ label: 'System theme disabled' }}
-              />
-              <Text typo="body-medium">System · disabled</Text>
+              <View layout="flex" direction="row" gap={0.5} align="center">
+                <Radio
+                  size="large"
+                  defaultChecked
+                  viewProps={{ label: 'Large radio' }}
+                />
+                <Checkbox
+                  size="large"
+                  defaultChecked
+                  viewProps={{ label: 'Large checkbox' }}
+                />
+                <Text typo="body-medium">Large · 26px</Text>
+              </View>
             </View>
           </View>
 
           <View
             layout="flex"
-            direction="column"
-            gap={0.625}
+            direction="row"
+            gap={2}
+            align="start"
+            wrap
           >
-            <Text typo="label-medium">
-              Checkbox group · permissions
-            </Text>
+            <View
+              layout="flex"
+              direction="column"
+              gap={0.625}
+            >
+              <Text typo="label-medium">
+                Radio group · theme
+              </Text>
 
-            <View layout="flex" direction="row" gap={0.5} align="center">
-              <Checkbox
-                group="permissions-demo"
-                value="read"
-                defaultChecked
-                viewProps={{ label: 'Read permission' }}
-              />
-              <Text typo="body-medium">Read</Text>
+              <View layout="flex" direction="row" gap={0.5} align="center">
+                <Radio
+                  group="theme-demo"
+                  value="light"
+                  defaultChecked
+                  viewProps={{ label: 'Light theme' }}
+                />
+                <Text typo="body-medium">Light</Text>
+              </View>
+
+              <View layout="flex" direction="row" gap={0.5} align="center">
+                <Radio
+                  group="theme-demo"
+                  value="dark"
+                  viewProps={{ label: 'Dark theme' }}
+                />
+                <Text typo="body-medium">Dark</Text>
+              </View>
+
+              <View layout="flex" direction="row" gap={0.5} align="center">
+                <Radio
+                  group="theme-demo"
+                  value="system"
+                  disabled
+                  viewProps={{ label: 'System theme disabled' }}
+                />
+                <Text typo="body-medium">System · disabled</Text>
+              </View>
             </View>
 
-            <View layout="flex" direction="row" gap={0.5} align="center">
-              <Checkbox
-                group="permissions-demo"
-                value="write"
-                viewProps={{ label: 'Write permission' }}
-              />
-              <Text typo="body-medium">Write</Text>
-            </View>
+            <View
+              layout="flex"
+              direction="column"
+              gap={0.625}
+            >
+              <Text typo="label-medium">
+                Checkbox group · permissions
+              </Text>
 
-            <View layout="flex" direction="row" gap={0.5} align="center">
-              <Checkbox
-                group="permissions-demo"
-                value="admin"
-                disabled
-                viewProps={{ label: 'Admin permission disabled' }}
-              />
-              <Text typo="body-medium">Admin · disabled</Text>
+              <View layout="flex" direction="row" gap={0.5} align="center">
+                <Checkbox
+                  group="permissions-demo"
+                  value="read"
+                  defaultChecked
+                  viewProps={{ label: 'Read permission' }}
+                />
+                <Text typo="body-medium">Read</Text>
+              </View>
+
+              <View layout="flex" direction="row" gap={0.5} align="center">
+                <Checkbox
+                  group="permissions-demo"
+                  value="write"
+                  viewProps={{ label: 'Write permission' }}
+                />
+                <Text typo="body-medium">Write</Text>
+              </View>
+
+              <View layout="flex" direction="row" gap={0.5} align="center">
+                <Checkbox
+                  group="permissions-demo"
+                  value="admin"
+                  disabled
+                  viewProps={{ label: 'Admin permission disabled' }}
+                />
+                <Text typo="body-medium">Admin · disabled</Text>
+              </View>
             </View>
           </View>
         </View>

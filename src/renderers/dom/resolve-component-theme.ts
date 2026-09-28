@@ -213,6 +213,7 @@ export function resolveChoiceControlTheme(
     '--weave-choice-cursor': base?.cursor,
     '--weave-choice-shadow': base?.shadow,
     '--weave-choice-hover-shadow': base?.hoverShadow,
+    '--weave-choice-press-shadow': base?.pressShadow,
     '--weave-choice-indicator-shadow': base?.indicatorShadow,
     '--weave-choice-focus-outline-width': length(
       base?.focusOutlineWidth,
@@ -225,9 +226,14 @@ export function resolveChoiceControlTheme(
     '--weave-choice-focus-outline-offset': length(
       base?.focusOutlineOffset,
     ),
+    '--weave-choice-checked-background': color(
+      checked?.background ?? base?.background,
+    ),
     '--weave-choice-checked-border-color': color(
       checked?.borderColor ?? base?.borderColor,
     ),
+    '--weave-choice-checked-shadow':
+      checked?.shadow ?? base?.shadow,
     '--weave-choice-checked-indicator-background': color(
       checked?.indicatorBackground,
     ),

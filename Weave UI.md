@@ -2445,9 +2445,18 @@ viewProps
 - `group` 不创建额外包装 DOM，也不引入单独的 `RadioGroup` / `CheckboxGroup` 组件；
 - `checked / defaultChecked / onChange` 延续 Switch 的受控 / 非受控布尔状态模型；
 - `disabled` 是组件自己的高层属性，并落到真实原生 input；
-- `small / medium / large` 三档尺寸由 `theme.components.Radio / Checkbox.sizes` 提供。
+- `small / medium / large` 三档默认尺寸分别为 `1.125rem / 1.375rem / 1.625rem`（18 / 22 / 26px），由 `theme.components.Radio / Checkbox.sizes` 提供；Playground 必须同时展示三档，不能只展示默认 medium。
 
-默认视觉继续使用 Weave 的物理层级语言：Radio / Checkbox 的外壳始终是轻微内凹槽，checked 不会把凹槽本体抹平成一块颜色。Radio checked 后在凹槽内部出现带轻微凸起阴影的 primary 圆点；Checkbox checked 后在凹槽内部出现带轻微凸起阴影的 primary 小方块，并在其上显示 `onPrimary` 勾号。这个关系与 Switch 的“track 凹陷、thumb 凸起”和 Progress 的“track 凹陷、前景抬起”保持一致。深色模式只调整 token、凹槽阴影和凸起阴影，不另造一套描边式设计。
+默认视觉继续使用 Weave 的物理层级语言，但 Radio 与 Checkbox 的 checked 形态不同：
+
+- 未选中时，两者都有 `0.125rem` 实体边界与方向性 inset shadow，形成明确凹陷厚度；hover 加深凹槽，press 再下沉并缩放；
+- Radio checked 后，外壳仍然是凹槽，内部 primary 圆点以 scale + spring 方式凸起；
+- Checkbox checked 后，**Checkbox 外壳本身整块铺满 primary**，不存在内部 primary 方块、padding 或第二层填充；
+- Checkbox 的 `onPrimary` 对号使用真实 SVG path，并通过 `pathLength + stroke-dasharray + stroke-dashoffset` 从起点到终点画出，而不是整块突然出现；
+- `prefers-reduced-motion: reduce` 下取消 scale 与 path drawing transition，直接显示最终状态；
+- 深色模式保持完全相同的结构，只调整 surface、border 和阴影 token。
+
+因此 Checkbox checked 与 Radio checked 不强求同一种几何结构，但都必须保持 Weave 的 tactile depth、press feedback 与状态动效。
 
 ---
 

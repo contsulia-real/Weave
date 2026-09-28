@@ -61,29 +61,63 @@ export function ChoiceControl({
   }
 
   return (
-    <input
-      {...resolved.domProps}
-      ref={elementRef}
-      type={kind}
-      name={group}
-      value={value}
-      checked={checked}
-      defaultChecked={defaultChecked}
-      onChange={handleChange}
-      disabled={disabled}
-      data-weave-view=""
-      data-weave-choice-control=""
-      data-weave-choice-kind={kind}
-      data-weave-choice-group={group}
-      data-weave-layout={resolved.layout}
+    <span
+      data-weave-choice-shell=""
       className={[
-        'weave-choice-control',
-        `weave-${kind}`,
-        `weave-choice-control--${size}`,
+        'weave-choice-shell',
+        `weave-choice-shell--${kind}`,
+        `weave-choice-shell--${size}`,
         themeClassName,
-        className,
-      ].filter(Boolean).join(' ')}
-      style={inlineStyle}
-    />
+      ].join(' ')}
+    >
+      <input
+        {...resolved.domProps}
+        ref={elementRef}
+        type={kind}
+        name={group}
+        value={value}
+        checked={checked}
+        defaultChecked={defaultChecked}
+        onChange={handleChange}
+        disabled={disabled}
+        data-weave-view=""
+        data-weave-choice-control=""
+        data-weave-choice-kind={kind}
+        data-weave-choice-group={group}
+        data-weave-layout={resolved.layout}
+        className={[
+          'weave-choice-control',
+          `weave-${kind}`,
+          `weave-choice-control--${size}`,
+          themeClassName,
+          className,
+        ].filter(Boolean).join(' ')}
+        style={inlineStyle}
+      />
+
+      <span
+        className="weave-choice-visual"
+        aria-hidden="true"
+      >
+        {kind === 'radio' ? (
+          <span
+            className="weave-radio__dot"
+          />
+        ) : (
+          <svg
+            className="weave-checkbox__mark"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              className="weave-checkbox__mark-path"
+              data-weave-checkbox-check=""
+              pathLength="1"
+              d="M4.5 12.5 9.5 17.5 19.5 6.5"
+            />
+          </svg>
+        )}
+      </span>
+    </span>
   )
 }
