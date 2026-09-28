@@ -723,8 +723,20 @@ space-evenly
 ### Stack
 
 ```tsx
-<Stack align="center" />
+<Stack
+  width={8}
+  height={4}
+  align="center"
+  justify="center"
+>
+  <View width="fill" height="fill" />
+  <Text>Overlay</Text>
+</Stack>
 ```
+
+`Stack` 必须建立一个覆盖自身完整尺寸的单一 stacking plane：DOM/CSS 后端固定使用 `grid-template-columns: minmax(0, 1fr)` 与 `grid-template-rows: minmax(0, 1fr)`，所有直接子项进入 `grid-area: 1 / 1`。因此显式 `width / height` 不得被内容尺寸压缩。
+
+在 `Stack` 中，`align` 控制子项在 stacking plane 内的纵向 `align-items`，`justify` 控制子项的横向 `justify-items`；它不能复用普通 Grid 的 `justify-content` 语义去移动或压缩整个 grid track。响应式和交互状态下的 `justify` 也遵循同一 item-alignment 语义。
 
 用于层叠子组件。
 

@@ -105,6 +105,51 @@ describe('formal layout components', () => {
     )
   })
 
+  it('keeps Stack as a full-size stacking plane and maps justify to item alignment', () => {
+    const { getByTestId } = render(
+      <Stack
+        width={8}
+        height={4}
+        align="center"
+        justify="center"
+        data={{ testid: 'stack-plane' }}
+      >
+        <div data-testid="stack-background" />
+        <span data-testid="stack-label">Stack</span>
+      </Stack>,
+    )
+
+    const stack = getByTestId('stack-plane')
+    const rule = runtimeRule(stack)
+    const stylesheet =
+      document.querySelector<HTMLStyleElement>(
+        'style[data-weave-view-styles]',
+      )?.textContent ?? ''
+
+    expect(rule).toContain('--weave-width:8rem;')
+    expect(rule).toContain('--weave-height:4rem;')
+    expect(rule).toContain('--weave-align-items:center;')
+    expect(rule).toContain('--weave-justify-content:center;')
+
+    expect(stylesheet).toContain(
+      'grid-template-columns: minmax(0, 1fr);',
+    )
+    expect(stylesheet).toContain(
+      'grid-template-rows: minmax(0, 1fr);',
+    )
+    expect(stylesheet).toContain('justify-content: stretch;')
+    expect(stylesheet).toContain('justify-items: var(')
+    expect(stylesheet).toContain(
+      '--weave-justify-content,',
+    )
+    expect(stylesheet).toContain('grid-area: 1 / 1;')
+
+    expect(getByTestId('stack-background').parentElement).toBe(
+      stack,
+    )
+    expect(getByTestId('stack-label').parentElement).toBe(stack)
+  })
+
   it('keeps responsive View layout styles available through Flex', () => {
     const { getByTestId } = render(
       <Flex

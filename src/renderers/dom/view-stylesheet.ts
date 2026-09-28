@@ -208,6 +208,102 @@ ${propertyRegistrationBlock()}
   overflow-y: scroll;
 }
 
+:where([data-weave-layout="stack"]) {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  justify-content: stretch;
+  justify-items: var(
+    --weave-container-responsive-justify-content,
+    var(
+      --weave-viewport-responsive-justify-content,
+      var(
+        --weave-justify-content,
+        var(--weave-component-justify-content, stretch)
+      )
+    )
+  );
+}
+
+:where([data-weave-layout="stack"]:hover) {
+  justify-items: var(
+    --weave-container-responsive-justify-content,
+    var(
+      --weave-viewport-responsive-justify-content,
+      var(
+        --weave-hover-justify-content,
+        var(
+          --weave-justify-content,
+          var(--weave-component-justify-content, stretch)
+        )
+      )
+    )
+  );
+}
+
+:where([data-weave-layout="stack"]:active) {
+  justify-items: var(
+    --weave-container-responsive-justify-content,
+    var(
+      --weave-viewport-responsive-justify-content,
+      var(
+        --weave-active-justify-content,
+        var(
+          --weave-justify-content,
+          var(--weave-component-justify-content, stretch)
+        )
+      )
+    )
+  );
+}
+
+:where([data-weave-layout="stack"]:focus) {
+  justify-items: var(
+    --weave-container-responsive-justify-content,
+    var(
+      --weave-viewport-responsive-justify-content,
+      var(
+        --weave-focus-justify-content,
+        var(
+          --weave-justify-content,
+          var(--weave-component-justify-content, stretch)
+        )
+      )
+    )
+  );
+}
+
+:where([data-weave-layout="stack"]:focus-visible) {
+  justify-items: var(
+    --weave-container-responsive-justify-content,
+    var(
+      --weave-viewport-responsive-justify-content,
+      var(
+        --weave-focus-visible-justify-content,
+        var(
+          --weave-justify-content,
+          var(--weave-component-justify-content, stretch)
+        )
+      )
+    )
+  );
+}
+
+:where([data-weave-layout="stack"][aria-disabled="true"]) {
+  justify-items: var(
+    --weave-container-responsive-justify-content,
+    var(
+      --weave-viewport-responsive-justify-content,
+      var(
+        --weave-disabled-justify-content,
+        var(
+          --weave-justify-content,
+          var(--weave-component-justify-content, stretch)
+        )
+      )
+    )
+  );
+}
+
 :where([data-weave-layout="stack"]) > :where(*) {
   grid-area: 1 / 1;
 }
