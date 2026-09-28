@@ -61,6 +61,28 @@ describe('Radio and Checkbox', () => {
     ).toBe('permissions')
   })
 
+  it('binds visible labels so clicking label text toggles the native controls', () => {
+    const { getByRole, getByText } = render(
+      <>
+        <Radio label="Radio label" />
+        <Checkbox label="Checkbox label" />
+      </>,
+    )
+
+    const radio = getByRole('radio', {
+      name: 'Radio label',
+    }) as HTMLInputElement
+    const checkbox = getByRole('checkbox', {
+      name: 'Checkbox label',
+    }) as HTMLInputElement
+
+    fireEvent.click(getByText('Radio label'))
+    fireEvent.click(getByText('Checkbox label'))
+
+    expect(radio.checked).toBe(true)
+    expect(checkbox.checked).toBe(true)
+  })
+
   it('treats radios with the same group as one native radio group', () => {
     const { getByRole } = render(
       <>
@@ -264,10 +286,25 @@ describe('Radio and Checkbox', () => {
       'stroke-dashoffset: 0;',
     )
     expect(stylesheet).toContain(
+      'transform: scale(0);',
+    )
+    expect(stylesheet).toContain(
+      'transform: scale(1);',
+    )
+    expect(stylesheet).toContain(
       'var(--weave-motion-duration-normal)',
     )
     expect(stylesheet).toContain(
       ':active:not([aria-disabled="true"])',
+    )
+    expect(stylesheet).toContain(
+      '.weave-choice-state-layer',
+    )
+    expect(stylesheet).toContain(
+      '--weave-choice-state-layer-hover-opacity',
+    )
+    expect(stylesheet).toContain(
+      '--weave-choice-state-layer-press-opacity',
     )
   })
 })

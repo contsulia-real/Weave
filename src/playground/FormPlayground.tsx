@@ -82,56 +82,26 @@ export function FormPlayground() {
           align="center"
           wrap
         >
-          <View
-            layout="flex"
-            direction="row"
-            gap={0.5}
-            align="center"
-          >
-            <Switch size="small" />
-            <Text typo="body-medium">
-              Small
-            </Text>
-          </View>
+          <Switch
+            size="small"
+            label="Small"
+          />
 
-          <View
-            layout="flex"
-            direction="row"
-            gap={0.5}
-            align="center"
-          >
-            <Switch
-              size="medium"
-              defaultChecked
-            />
-            <Text typo="body-medium">
-              Medium
-            </Text>
-          </View>
+          <Switch
+            size="medium"
+            defaultChecked
+            label="Medium"
+          />
 
-          <View
-            layout="flex"
-            direction="row"
-            gap={0.5}
-            align="center"
-          >
-            <Switch size="large" />
-            <Text typo="body-medium">
-              Large
-            </Text>
-          </View>
+          <Switch
+            size="large"
+            label="Large"
+          />
 
-          <View
-            layout="flex"
-            direction="row"
-            gap={0.5}
-            align="center"
-          >
-            <Switch disabled />
-            <Text typo="body-medium">
-              Disabled
-            </Text>
-          </View>
+          <Switch
+            disabled
+            label="Disabled"
+          />
         </View>
       </PlaygroundSection>
 
@@ -164,12 +134,12 @@ export function FormPlayground() {
                 <Radio
                   size="small"
                   defaultChecked
-                  viewProps={{ label: 'Small radio' }}
+                  label="Radio"
                 />
                 <Checkbox
                   size="small"
                   defaultChecked
-                  viewProps={{ label: 'Small checkbox' }}
+                  label="Checkbox"
                 />
                 <Text typo="body-medium">Small · 18px</Text>
               </View>
@@ -178,12 +148,12 @@ export function FormPlayground() {
                 <Radio
                   size="medium"
                   defaultChecked
-                  viewProps={{ label: 'Medium radio' }}
+                  label="Radio"
                 />
                 <Checkbox
                   size="medium"
                   defaultChecked
-                  viewProps={{ label: 'Medium checkbox' }}
+                  label="Checkbox"
                 />
                 <Text typo="body-medium">Medium · 22px</Text>
               </View>
@@ -192,12 +162,12 @@ export function FormPlayground() {
                 <Radio
                   size="large"
                   defaultChecked
-                  viewProps={{ label: 'Large radio' }}
+                  label="Radio"
                 />
                 <Checkbox
                   size="large"
                   defaultChecked
-                  viewProps={{ label: 'Large checkbox' }}
+                  label="Checkbox"
                 />
                 <Text typo="body-medium">Large · 26px</Text>
               </View>
@@ -225,18 +195,16 @@ export function FormPlayground() {
                   group="theme-demo"
                   value="light"
                   defaultChecked
-                  viewProps={{ label: 'Light theme' }}
+                  label="Light"
                 />
-                <Text typo="body-medium">Light</Text>
               </View>
 
               <View layout="flex" direction="row" gap={0.5} align="center">
                 <Radio
                   group="theme-demo"
                   value="dark"
-                  viewProps={{ label: 'Dark theme' }}
+                  label="Dark"
                 />
-                <Text typo="body-medium">Dark</Text>
               </View>
 
               <View layout="flex" direction="row" gap={0.5} align="center">
@@ -244,9 +212,8 @@ export function FormPlayground() {
                   group="theme-demo"
                   value="system"
                   disabled
-                  viewProps={{ label: 'System theme disabled' }}
+                  label="System · disabled"
                 />
-                <Text typo="body-medium">System · disabled</Text>
               </View>
             </View>
 
@@ -264,18 +231,16 @@ export function FormPlayground() {
                   group="permissions-demo"
                   value="read"
                   defaultChecked
-                  viewProps={{ label: 'Read permission' }}
+                  label="Read"
                 />
-                <Text typo="body-medium">Read</Text>
               </View>
 
               <View layout="flex" direction="row" gap={0.5} align="center">
                 <Checkbox
                   group="permissions-demo"
                   value="write"
-                  viewProps={{ label: 'Write permission' }}
+                  label="Write"
                 />
-                <Text typo="body-medium">Write</Text>
               </View>
 
               <View layout="flex" direction="row" gap={0.5} align="center">
@@ -283,9 +248,8 @@ export function FormPlayground() {
                   group="permissions-demo"
                   value="admin"
                   disabled
-                  viewProps={{ label: 'Admin permission disabled' }}
+                  label="Admin · disabled"
                 />
-                <Text typo="body-medium">Admin · disabled</Text>
               </View>
             </View>
           </View>

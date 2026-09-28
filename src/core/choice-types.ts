@@ -1,4 +1,4 @@
-import type { Ref } from 'react'
+import type { ReactNode, Ref } from 'react'
 import type {
   ViewCoreProps,
   ViewDynamicBreakpointProps,
@@ -34,6 +34,7 @@ interface ChoiceControlProps {
   defaultChecked?: boolean
   onChange?: (checked: boolean) => void
   disabled?: boolean
+  label?: ReactNode
   group?: string
   value?: ChoiceControlValue
   size?: ChoiceControlSize

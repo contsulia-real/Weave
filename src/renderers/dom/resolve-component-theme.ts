@@ -206,6 +206,9 @@ export function resolveChoiceControlTheme(
     '--weave-choice-mark-size': length(
       sized?.markSize,
     ),
+    '--weave-choice-state-layer-size': length(
+      sized?.stateLayerSize,
+    ),
     '--weave-choice-background': color(base?.background),
     '--weave-choice-border-color': color(base?.borderColor),
     '--weave-choice-border-width': length(base?.borderWidth),
@@ -215,6 +218,16 @@ export function resolveChoiceControlTheme(
     '--weave-choice-hover-shadow': base?.hoverShadow,
     '--weave-choice-press-shadow': base?.pressShadow,
     '--weave-choice-indicator-shadow': base?.indicatorShadow,
+    '--weave-choice-state-layer-color': color(
+      base?.stateLayerColor,
+    ),
+    '--weave-choice-state-layer-hover-opacity':
+      base?.stateLayerHoverOpacity,
+    '--weave-choice-state-layer-focus-opacity':
+      base?.stateLayerFocusOpacity,
+    '--weave-choice-state-layer-press-opacity':
+      base?.stateLayerPressOpacity,
+    '--weave-choice-label-gap': length(base?.labelGap),
     '--weave-choice-focus-outline-width': length(
       base?.focusOutlineWidth,
     ),
@@ -239,6 +252,9 @@ export function resolveChoiceControlTheme(
     ),
     '--weave-choice-checked-indicator-color': color(
       checked?.indicatorColor,
+    ),
+    '--weave-choice-checked-state-layer-color': color(
+      checked?.stateLayerColor ?? base?.stateLayerColor,
     ),
     '--weave-choice-disabled-opacity': disabled?.opacity,
     '--weave-choice-disabled-cursor': disabled?.cursor,

@@ -130,6 +130,11 @@ export interface ChoiceControlThemeBase {
   hoverShadow?: string
   pressShadow?: string
   indicatorShadow?: string
+  stateLayerColor?: string
+  stateLayerHoverOpacity?: number
+  stateLayerFocusOpacity?: number
+  stateLayerPressOpacity?: number
+  labelGap?: ThemeScaleValue
   focusOutlineWidth?: ThemeScaleValue
   focusOutlineColor?: string
   focusOutlineStyle?: string
@@ -140,6 +145,7 @@ export interface ChoiceControlThemeSize {
   size?: ThemeScaleValue
   indicatorSize?: ThemeScaleValue
   markSize?: ThemeScaleValue
+  stateLayerSize?: ThemeScaleValue
 }
 
 export interface ChoiceControlTheme {
@@ -154,6 +160,7 @@ export interface ChoiceControlTheme {
       shadow?: string
       indicatorBackground?: string
       indicatorColor?: string
+      stateLayerColor?: string
     }
     disabled?: {
       opacity?: number

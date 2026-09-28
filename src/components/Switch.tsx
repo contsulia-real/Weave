@@ -1,6 +1,7 @@
 import {
   useEffect,
   useInsertionEffect,
+  useId,
   useMemo,
   useRef,
   useState,
@@ -9,11 +10,13 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from 'react'
 import type { SwitchProps } from '../core/switch-types'
+import type { ViewProps } from '../core/view-types'
 import { resolveSwitchTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { ensureSwitchStylesheet } from '../renderers/dom/switch-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { View } from './View'
+import { useViewHost } from './internal/use-view-host'
 
 interface SwitchDragState {
   pointerId: number
@@ -83,6 +86,7 @@ export function Switch({
   defaultChecked = false,
   onChange,
   disabled = false,
+  label,
   size = 'medium',
   viewProps = {},
 }: SwitchProps) {
@@ -102,6 +106,31 @@ export function Switch({
     useState(defaultChecked)
   const isControlled = checked !== undefined
   const currentChecked = checked ?? uncontrolledChecked
+  const generatedId = useId()
+  const switchId = viewProps.id ?? `weave-switch-${generatedId}`
+  const labelId = `${switchId}-label`
+  const labelledBy =
+    label === undefined
+      ? viewProps.labelledBy
+      : [viewProps.labelledBy, labelId]
+          .filter(Boolean)
+          .join(' ')
+  const hostProps: ViewProps<HTMLButtonElement> = {
+    ...viewProps,
+    id: switchId,
+    checked: currentChecked,
+    disabled,
+    focusable: disabled
+      ? false
+      : (viewProps.focusable ?? true),
+    labelledBy,
+  }
+  const {
+    elementRef,
+    className,
+    inlineStyle,
+    resolved,
+  } = useViewHost(hostProps)
 
   const switchBase = theme.components.Switch?.base
   const dragShrink = switchBase?.thumbDragShrink ?? 0.68
@@ -197,7 +226,7 @@ export function Switch({
   }
 
   const finishDrag = (
-    root: HTMLDivElement,
+    root: HTMLButtonElement,
     pointerId: number,
     applyValue: boolean,
     preventDefault?: () => void,
@@ -244,7 +273,7 @@ export function Switch({
     }
   }
 
-  const handleClick = (event: MouseEvent<HTMLDivElement>) => {
+  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
     if (disabled) {
       event.preventDefault()
       return
@@ -261,7 +290,7 @@ export function Switch({
     toggle()
   }
 
-  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+  const handleKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
     if (disabled) {
       event.preventDefault()
       return
@@ -277,7 +306,7 @@ export function Switch({
   }
 
   const handlePointerDown = (
-    event: ReactPointerEvent<HTMLDivElement>,
+    event: ReactPointerEvent<HTMLButtonElement>,
   ) => {
     if (disabled) {
       event.preventDefault()
@@ -388,7 +417,7 @@ export function Switch({
   }
 
   const handlePointerMove = (
-    event: ReactPointerEvent<HTMLDivElement>,
+    event: ReactPointerEvent<HTMLButtonElement>,
   ) => {
     viewProps.onPointerMove?.(event)
     if (event.defaultPrevented) return
@@ -399,7 +428,7 @@ export function Switch({
   }
 
   const handlePointerUp = (
-    event: ReactPointerEvent<HTMLDivElement>,
+    event: ReactPointerEvent<HTMLButtonElement>,
   ) => {
     viewProps.onPointerUp?.(event)
 
@@ -412,7 +441,7 @@ export function Switch({
   }
 
   const handlePointerCancel = (
-    event: ReactPointerEvent<HTMLDivElement>,
+    event: ReactPointerEvent<HTMLButtonElement>,
   ) => {
     viewProps.onPointerCancel?.(event)
     finishDrag(event.currentTarget, event.pointerId, false)
@@ -423,19 +452,24 @@ export function Switch({
     viewProps.onPointerUp !== undefined ||
     viewProps.onPointerCancel !== undefined
 
-  return (
-    <View
-      {...viewProps}
+  const control = (
+    <button
+      {...resolved.domProps}
+      ref={elementRef}
+      type="button"
+      disabled={disabled}
+      role="switch"
+      data-weave-view=""
+      data-weave-switch=""
+      data-weave-switch-size={size}
+      data-weave-layout={resolved.layout}
       className={[
         'weave-switch',
         `weave-switch--${size}`,
         themeClassName,
-        viewProps.className,
+        className,
       ].filter(Boolean).join(' ')}
-      role="switch"
-      checked={currentChecked}
-      disabled={disabled ? true : undefined}
-      focusable={disabled ? false : (viewProps.focusable ?? true)}
+      style={inlineStyle}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
       onPointerDown={handlePointerDown}
@@ -448,11 +482,6 @@ export function Switch({
       onPointerCancel={
         usesReactDragHandlers ? handlePointerCancel : undefined
       }
-      data={{
-        ...viewProps.data,
-        'weave-switch': '',
-        'weave-switch-size': size,
-      }}
     >
       <View
         ref={thumbRef}
@@ -461,6 +490,28 @@ export function Switch({
           'weave-switch-thumb': '',
         }}
       />
-    </View>
+    </button>
+  )
+
+  if (label === undefined) {
+    return control
+  }
+
+  return (
+    <label
+      className="weave-switch-field"
+      data-weave-switch-field=""
+      data-weave-switch-disabled={disabled ? 'true' : 'false'}
+      htmlFor={switchId}
+    >
+      {control}
+      <span
+        id={labelId}
+        className="weave-switch__label"
+        data-weave-switch-label=""
+      >
+        {label}
+      </span>
+    </label>
   )
 }

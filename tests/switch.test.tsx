@@ -23,7 +23,7 @@ function runtimeRule(
 }
 
 function setupGeometry(
-  element: HTMLDivElement,
+  element: HTMLButtonElement,
   thumb: HTMLDivElement,
   checked = false,
 ) {
@@ -66,6 +66,30 @@ describe('Switch', () => {
     expect(element.getAttribute('aria-checked')).toBe('false')
   })
 
+  it('binds a visible label that toggles and names the native button host', () => {
+    const onChange = vi.fn()
+    const { getByRole, getByText } = render(
+      <Switch
+        label="Wi-Fi"
+        onChange={onChange}
+      />,
+    )
+
+    const element = getByRole('switch', {
+      name: 'Wi-Fi',
+    }) as HTMLButtonElement
+
+    expect(element.tagName).toBe('BUTTON')
+    expect(element.type).toBe('button')
+
+    fireEvent.click(getByText('Wi-Fi'))
+
+    expect(onChange).toHaveBeenCalledWith(true)
+    expect(
+      element.getAttribute('aria-checked'),
+    ).toBe('true')
+  })
+
   it('supports controlled state without mutating its own value', () => {
     const onChange = vi.fn()
     const { getByRole, rerender } = render(
@@ -84,7 +108,7 @@ describe('Switch', () => {
 
   it('keeps user click cancellation semantics', () => {
     const onChange = vi.fn()
-    const onClick = vi.fn((event: MouseEvent<HTMLDivElement>) => {
+    const onClick = vi.fn((event: MouseEvent<HTMLButtonElement>) => {
       event.preventDefault()
     })
 
@@ -104,7 +128,7 @@ describe('Switch', () => {
   it('shrinks first, lengthens with drag distance, caps at midpoint, and restores on release', () => {
     const onChange = vi.fn()
     const { getByRole } = render(<Switch onChange={onChange} />)
-    const element = getByRole('switch') as HTMLDivElement
+    const element = getByRole('switch') as HTMLButtonElement
     const thumb = element.querySelector(
       '[data-weave-switch-thumb]',
     ) as HTMLDivElement
@@ -162,7 +186,7 @@ describe('Switch', () => {
     const { getByRole } = render(
       <Switch defaultChecked onChange={onChange} />,
     )
-    const element = getByRole('switch') as HTMLDivElement
+    const element = getByRole('switch') as HTMLButtonElement
     const thumb = element.querySelector(
       '[data-weave-switch-thumb]',
     ) as HTMLDivElement
@@ -190,7 +214,7 @@ describe('Switch', () => {
   it('does not toggle when drag stays before the threshold', () => {
     const onChange = vi.fn()
     const { getByRole } = render(<Switch onChange={onChange} />)
-    const element = getByRole('switch') as HTMLDivElement
+    const element = getByRole('switch') as HTMLButtonElement
     const thumb = element.querySelector(
       '[data-weave-switch-thumb]',
     ) as HTMLDivElement
@@ -228,13 +252,13 @@ describe('Switch', () => {
       />,
     )
 
-    const element = getByRole('switch') as HTMLDivElement
+    const element = getByRole('switch') as HTMLButtonElement
     const thumb = element.querySelector(
       '[data-weave-switch-thumb]',
     ) as HTMLDivElement
 
     expect(element.getAttribute('aria-disabled')).toBe('true')
-    expect(element.tabIndex).toBe(-1)
+    expect(element.disabled).toBe(true)
 
     fireEvent.click(element)
     fireEvent.keyDown(element, { key: ' ' })
@@ -250,7 +274,7 @@ describe('Switch', () => {
 
   it('does no layout reads during pointermove after the initial geometry read', () => {
     const { getByRole } = render(<Switch />)
-    const element = getByRole('switch') as HTMLDivElement
+    const element = getByRole('switch') as HTMLButtonElement
     const thumb = element.querySelector(
       '[data-weave-switch-thumb]',
     ) as HTMLDivElement

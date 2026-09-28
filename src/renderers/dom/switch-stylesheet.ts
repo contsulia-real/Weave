@@ -1,4 +1,20 @@
 const stylesheet = `
+:where(.weave-switch-field) {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  line-height: 1.35;
+}
+
+:where(.weave-switch-field[data-weave-switch-disabled="true"]) {
+  cursor: default;
+}
+
+:where(.weave-switch__label) {
+  user-select: none;
+}
+
 :where(.weave-switch) {
   --weave-component-position: relative;
   --weave-component-width: var(--weave-switch-width);
@@ -11,6 +27,13 @@ const stylesheet = `
   --weave-component-cursor: var(--weave-switch-cursor);
   --weave-component-outline-width: 0;
   --weave-component-box-shadow: var(--weave-switch-track-shadow);
+
+  appearance: none;
+  -webkit-appearance: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  text-align: inherit;
 
   transition:
     background-color var(--weave-motion-duration-fast)

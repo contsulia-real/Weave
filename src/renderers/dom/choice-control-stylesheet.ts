@@ -1,4 +1,21 @@
 const stylesheet = `
+:where(.weave-choice-field) {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--weave-choice-label-gap);
+  position: relative;
+  cursor: pointer;
+  line-height: 1.35;
+}
+
+:where(.weave-choice-field[data-weave-choice-disabled="true"]) {
+  cursor: default;
+}
+
+:where(.weave-choice-label) {
+  user-select: none;
+}
+
 :where(.weave-choice-shell) {
   position: relative;
   display: inline-grid;
@@ -6,6 +23,7 @@ const stylesheet = `
   flex: 0 0 auto;
   line-height: 0;
   vertical-align: middle;
+  isolation: isolate;
 }
 
 :where(.weave-choice-control) {
@@ -32,6 +50,7 @@ const stylesheet = `
   --weave-component-outline-width: 0;
 
   grid-area: 1 / 1;
+  z-index: 1;
   appearance: none;
   -webkit-appearance: none;
   box-sizing: border-box;
@@ -91,9 +110,55 @@ const stylesheet = `
   --weave-component-cursor: var(--weave-choice-disabled-cursor);
 }
 
+:where(.weave-choice-state-layer) {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 0;
+  width: var(--weave-choice-state-layer-size);
+  height: var(--weave-choice-state-layer-size);
+  border-radius: 9999px;
+  background: var(--weave-choice-state-layer-color);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(0.72);
+  transition:
+    opacity var(--weave-motion-duration-fast)
+      var(--weave-motion-curve-standard),
+    transform var(--weave-motion-duration-fast)
+      var(--weave-motion-curve-spring),
+    background-color var(--weave-motion-duration-fast)
+      var(--weave-motion-curve-standard);
+}
+
+:where(.weave-choice-control:checked)
+  ~ :where(.weave-choice-state-layer) {
+  background: var(--weave-choice-checked-state-layer-color);
+}
+
+:where(.weave-choice-field:hover)
+  :where(.weave-choice-control:not([aria-disabled="true"]))
+  ~ :where(.weave-choice-state-layer) {
+  opacity: var(--weave-choice-state-layer-hover-opacity);
+  transform: translate(-50%, -50%) scale(1);
+}
+
+:where(.weave-choice-control:focus-visible)
+  ~ :where(.weave-choice-state-layer) {
+  opacity: var(--weave-choice-state-layer-focus-opacity);
+  transform: translate(-50%, -50%) scale(1);
+}
+
+:where(.weave-choice-control:active:not([aria-disabled="true"]))
+  ~ :where(.weave-choice-state-layer) {
+  opacity: var(--weave-choice-state-layer-press-opacity);
+  transform: translate(-50%, -50%) scale(1);
+}
+
 :where(.weave-choice-visual) {
   position: absolute;
   inset: 0;
+  z-index: 2;
   display: grid;
   place-items: center;
   pointer-events: none;
@@ -106,12 +171,12 @@ const stylesheet = `
 }
 
 :where(.weave-choice-control[aria-disabled="true"])
-  + :where(.weave-choice-visual) {
+  ~ :where(.weave-choice-visual) {
   opacity: var(--weave-choice-disabled-opacity);
 }
 
 :where(.weave-choice-control:active:not([aria-disabled="true"]))
-  + :where(.weave-choice-visual) {
+  ~ :where(.weave-choice-visual) {
   transform: scale(0.9);
 }
 
@@ -122,7 +187,7 @@ const stylesheet = `
   background: var(--weave-choice-checked-indicator-background);
   box-shadow: var(--weave-choice-indicator-shadow);
   opacity: 0;
-  transform: scale(0.3);
+  transform: scale(0);
   transition:
     opacity var(--weave-motion-duration-fast)
       var(--weave-motion-curve-standard),
@@ -131,7 +196,7 @@ const stylesheet = `
 }
 
 :where(.weave-radio:checked)
-  + :where(.weave-choice-visual)
+  ~ :where(.weave-choice-visual)
   > :where(.weave-radio__dot) {
   opacity: 1;
   transform: scale(1);
@@ -157,7 +222,7 @@ const stylesheet = `
 }
 
 :where(.weave-checkbox:checked)
-  + :where(.weave-choice-visual)
+  ~ :where(.weave-choice-visual)
   :where(.weave-checkbox__mark-path) {
   stroke-dashoffset: 0;
   transition-delay: calc(var(--weave-motion-duration-fast) * 0.18);
@@ -165,6 +230,7 @@ const stylesheet = `
 
 @media (prefers-reduced-motion: reduce) {
   :where(.weave-choice-control),
+  :where(.weave-choice-state-layer),
   :where(.weave-choice-visual),
   :where(.weave-radio__dot),
   :where(.weave-checkbox__mark-path) {

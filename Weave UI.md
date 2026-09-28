@@ -2354,13 +2354,16 @@ suffix
 
 `Switch` 是基础组件。
 
-内部只需要 `View`：
+Switch 的视觉仍由 Weave View 样式系统驱动，但语义宿主使用真实 labelable button：
 
 ```text
 Switch
-├─ View  // track
-└─ View  // thumb
+├─ <button type="button" role="switch">  // track + 可绑定语义宿主
+│  └─ View                                // thumb
+└─ <label> + visible label                // 仅传 label 时出现
 ```
+
+这样既保留 track / thumb 的 Weave 视觉与拖动行为，又让 `label` 使用浏览器原生 label activation，而不是额外模拟一次点击。
 
 ## 15.1 API
 
@@ -2384,6 +2387,7 @@ checked
 defaultChecked
 onChange
 disabled
+label
 size
 ```
 
@@ -2394,6 +2398,7 @@ size
 - 直接水平拖动 thumb；拖动期间位置连续跟随指针，thumb 使用全局 `feedback.dragScale` 表达被抓取状态；释放时以轨道中点决定最终开关状态
 - 拖动完成后产生的兼容 click 不得再次反向切换
 - disabled 状态下点击、键盘与拖动都不能改变状态
+- `label` 是可见且可点击的真实绑定标签；Switch 宿主使用可 label 的原生 `<button type="button" role="switch">`，点击 label 与点击控件本体等价，同时 label 参与 accessible name
 
 拖动中的 thumb 位置属于组件内部交互几何，可由渲染后端直接同步；它不是用户显式 `style`，也不改变公开样式优先级。拖动期间不对 pointer movement 做缓动，保证直接跟手；松手后的归位才允许使用主题 motion curve。
 
@@ -2421,6 +2426,7 @@ checked
 defaultChecked
 onChange
 disabled
+label
 group
 value
 size
@@ -2445,15 +2451,17 @@ viewProps
 - `group` 不创建额外包装 DOM，也不引入单独的 `RadioGroup` / `CheckboxGroup` 组件；
 - `checked / defaultChecked / onChange` 延续 Switch 的受控 / 非受控布尔状态模型；
 - `disabled` 是组件自己的高层属性，并落到真实原生 input；
+- `label` 是可见的原生 `<label>` 绑定内容；点击 label 文本必须直接触发对应 Radio / Checkbox 状态变化，不能依赖调用方自己补 `onClick`；
 - `small / medium / large` 三档默认尺寸分别为 `1.125rem / 1.375rem / 1.625rem`（18 / 22 / 26px），由 `theme.components.Radio / Checkbox.sizes` 提供；Playground 必须同时展示三档，不能只展示默认 medium。
 
 默认视觉继续使用 Weave 的物理层级语言，但 Radio 与 Checkbox 的 checked 形态不同：
 
 - 未选中时，两者都有 `0.125rem` 实体边界与方向性 inset shadow，形成明确凹陷厚度；hover 加深凹槽，press 再下沉并缩放；
-- Radio checked 后，外壳仍然是凹槽，内部 primary 圆点以 scale + spring 方式凸起；
+- Radio checked 后，外壳仍然是凹槽，内部 primary 圆点以 `scale(0) → scale(1)` + spring 方式长出来；unchecked 时同一 transition 反向执行 `scale(1) → scale(0)`，不能直接移除节点或瞬间消失；
 - Checkbox checked 后，**Checkbox 外壳本身整块铺满 primary**，不存在内部 primary 方块、padding 或第二层填充；
-- Checkbox 的 `onPrimary` 对号使用真实 SVG path，并通过 `pathLength + stroke-dasharray + stroke-dashoffset` 从起点到终点画出，而不是整块突然出现；
-- `prefers-reduced-motion: reduce` 下取消 scale 与 path drawing transition，直接显示最终状态；
+- Checkbox 的 `onPrimary` 对号使用真实 SVG path，并通过 `pathLength + stroke-dasharray + stroke-dashoffset` 从起点到终点画出，而不是整块突然出现；unchecked 时同一 path transition 必须反向把 `stroke-dashoffset` 从 `0` 推回 `1`，同时 checked background 平滑退回未选中 surface；
+- Radio / Checkbox 外围都有独立圆形 state layer：hover 显示轻量圆形提示背景，focus-visible 稍增强，press 再增强；checked 时 state layer 颜色切到 primary。state layer 不参与布局，也不遮挡控件本体；
+- `prefers-reduced-motion: reduce` 下取消 scale、state layer scale 与 path drawing transition，直接显示最终状态；
 - 深色模式保持完全相同的结构，只调整 surface、border 和阴影 token。
 
 因此 Checkbox checked 与 Radio checked 不强求同一种几何结构，但都必须保持 Weave 的 tactile depth、press feedback 与状态动效。

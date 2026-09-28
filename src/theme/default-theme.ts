@@ -491,6 +491,11 @@ export const defaultTheme: ResolvedTheme = {
           'inset 0 0.1875rem 0.25rem rgb(58 48 40 / 0.28), inset 0 -0.03125rem 0 rgb(255 255 255 / 0.40)',
         indicatorShadow:
           '0 0.0625rem 0.125rem rgb(58 48 40 / 0.24), 0 0.125rem 0.25rem rgb(58 48 40 / 0.12), inset 0 0.0625rem 0 rgb(255 255 255 / 0.28)',
+        stateLayerColor: 'secondary',
+        stateLayerHoverOpacity: 0.1,
+        stateLayerFocusOpacity: 0.12,
+        stateLayerPressOpacity: 0.16,
+        labelGap: 0.5,
         focusOutlineWidth: 0.125,
         focusOutlineColor: 'focus',
         focusOutlineStyle: 'solid',
@@ -501,16 +506,19 @@ export const defaultTheme: ResolvedTheme = {
           size: 1.125,
           indicatorSize: 0.5,
           markSize: 0.625,
+          stateLayerSize: 2.25,
         },
         medium: {
           size: 1.375,
           indicatorSize: 0.625,
           markSize: 0.75,
+          stateLayerSize: 2.5,
         },
         large: {
           size: 1.625,
           indicatorSize: 0.75,
           markSize: 0.875,
+          stateLayerSize: 2.75,
         },
       },
       states: {
@@ -519,6 +527,7 @@ export const defaultTheme: ResolvedTheme = {
           borderColor: 'primary',
           indicatorBackground: 'primary',
           indicatorColor: 'primary',
+          stateLayerColor: 'primary',
         },
         disabled: {
           opacity: 0.5,
@@ -541,6 +550,11 @@ export const defaultTheme: ResolvedTheme = {
           'inset 0 0.1875rem 0.25rem rgb(58 48 40 / 0.28), inset 0 -0.03125rem 0 rgb(255 255 255 / 0.40)',
         indicatorShadow:
           '0 0.0625rem 0.125rem rgb(58 48 40 / 0.24), 0 0.125rem 0.25rem rgb(58 48 40 / 0.12), inset 0 0.0625rem 0 rgb(255 255 255 / 0.28)',
+        stateLayerColor: 'secondary',
+        stateLayerHoverOpacity: 0.1,
+        stateLayerFocusOpacity: 0.12,
+        stateLayerPressOpacity: 0.16,
+        labelGap: 0.5,
         focusOutlineWidth: 0.125,
         focusOutlineColor: 'focus',
         focusOutlineStyle: 'solid',
@@ -550,14 +564,17 @@ export const defaultTheme: ResolvedTheme = {
         small: {
           size: 1.125,
           markSize: 0.75,
+          stateLayerSize: 2.25,
         },
         medium: {
           size: 1.375,
           markSize: 0.9375,
+          stateLayerSize: 2.5,
         },
         large: {
           size: 1.625,
           markSize: 1.125,
+          stateLayerSize: 2.75,
         },
       },
       states: {
@@ -567,6 +584,7 @@ export const defaultTheme: ResolvedTheme = {
           shadow:
             'inset 0 0.125rem 0.1875rem color-mix(in srgb, var(--weave-color-primaryActive) 28%, transparent), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.18)',
           indicatorColor: 'onPrimary',
+          stateLayerColor: 'primary',
         },
         disabled: {
           opacity: 0.5,
