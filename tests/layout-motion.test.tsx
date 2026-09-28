@@ -62,6 +62,7 @@ function setupAnimationEnvironment(box: MutableRect) {
     ) => {
       const animation = {
         cancel: vi.fn(),
+        finish: vi.fn(),
         onfinish: null,
       } as unknown as FakeAnimation
       animations.push(animation)
@@ -217,6 +218,27 @@ describe('View layoutAnimation', () => {
     })
   })
 
+  it('supports physical spring timing for FLIP', () => {
+    const box = {
+      left: 0,
+      top: 0,
+      width: 100,
+      height: 50,
+    }
+    const { animate } = setupAnimationEnvironment(box)
+
+    const { rerender } = render(
+      <View layoutAnimation={{ spring: 'snappy' }} />,
+    )
+
+    box.left = 80
+    rerender(<View layoutAnimation={{ spring: 'snappy' }} />)
+
+    const options = animate.mock.calls[0][1] as KeyframeAnimationOptions
+    expect(options.duration).toBeGreaterThan(100)
+    expect(options.easing).toMatch(/^linear\(/)
+  })
+
   it('retargets an interrupted animation from the sampled visual rect', () => {
     const box = {
       left: 0,
@@ -252,6 +274,67 @@ describe('View layoutAnimation', () => {
       expect.objectContaining({
         translate: '0px 0px',
       }),
+    ])
+  })
+
+  it('restarts interrupted FLIP from the previous logical target', () => {
+    const box = {
+      left: 0,
+      top: 0,
+      width: 100,
+      height: 50,
+    }
+    const {
+      animate,
+      animations,
+      runOneFrame,
+    } = setupAnimationEnvironment(box)
+
+    const config = {
+      duration: 300,
+      interruption: 'restart' as const,
+    }
+    const { rerender } = render(<View layoutAnimation={config} />)
+
+    box.left = 100
+    rerender(<View layoutAnimation={config} />)
+    box.left = 40
+    runOneFrame()
+
+    box.left = 200
+    rerender(<View layoutAnimation={config} />)
+
+    expect(animations[0].cancel).toHaveBeenCalled()
+    expect(animate.mock.calls[1][0]).toEqual([
+      expect.objectContaining({ translate: '-100px 0px' }),
+      expect.objectContaining({ translate: '0px 0px' }),
+    ])
+  })
+
+  it('finishes the interrupted FLIP before starting the latest target', () => {
+    const box = {
+      left: 0,
+      top: 0,
+      width: 100,
+      height: 50,
+    }
+    const { animate, animations } = setupAnimationEnvironment(box)
+    const config = {
+      duration: 300,
+      interruption: 'finish' as const,
+    }
+    const { rerender } = render(<View layoutAnimation={config} />)
+
+    box.left = 100
+    rerender(<View layoutAnimation={config} />)
+    box.left = 200
+    rerender(<View layoutAnimation={config} />)
+
+    expect(animations[0].finish).toHaveBeenCalledTimes(1)
+    expect(animations[0].cancel).toHaveBeenCalled()
+    expect(animate.mock.calls[1][0]).toEqual([
+      expect.objectContaining({ translate: '-100px 0px' }),
+      expect.objectContaining({ translate: '0px 0px' }),
     ])
   })
 

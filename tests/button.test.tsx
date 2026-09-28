@@ -315,7 +315,10 @@ describe('Button', () => {
       '--weave-feedback-press-scale',
     )
     expect(stylesheet).toContain(
-      'var(--weave-motion-curve-spring)',
+      'var(--weave-motion-spring-snappy-duration)',
+    )
+    expect(stylesheet).toContain(
+      'var(--weave-motion-spring-snappy-easing)',
     )
     expect(stylesheet).toContain(
       ':where(.weave-button:active:not([aria-disabled="true"]))',
@@ -551,7 +554,10 @@ describe('Button', () => {
       'var(--weave-feedback-press-scale)',
     )
     expect(stylesheet).toContain(
-      'var(--weave-motion-curve-spring)',
+      'var(--weave-motion-spring-snappy-duration)',
+    )
+    expect(stylesheet).toContain(
+      'var(--weave-motion-spring-snappy-easing)',
     )
   })
 

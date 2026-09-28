@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react'
+import { solveSpring } from '../core/spring'
 import type {
   ResolvedTheme,
   ThemeTypographyStyle,
@@ -143,6 +144,15 @@ export function themeTokenVariables(tokens: ThemeTokens): ThemeVariableStyle {
   if (tokens.motion?.curve !== undefined) {
     for (const [name, value] of Object.entries(tokens.motion.curve)) {
       output[`--weave-motion-curve-${name}`] = toCurve(value)
+    }
+  }
+
+  if (tokens.motion?.spring !== undefined) {
+    for (const [name, value] of Object.entries(tokens.motion.spring)) {
+      const spring = solveSpring(value)
+      output[`--weave-motion-spring-${name}-duration`] =
+        `${spring.durationMs}ms`
+      output[`--weave-motion-spring-${name}-easing`] = spring.easing
     }
   }
 

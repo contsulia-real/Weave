@@ -86,6 +86,7 @@ export function useViewMotion<TElement extends HTMLElement>(
         ? 'enter-from'
         : undefined,
   )
+  const stateRef = useRef<ViewMotionState | undefined>(state)
 
   const framesClassName = useRuntimeStyleClass(
     'motion-frames',
@@ -151,26 +152,24 @@ export function useViewMotion<TElement extends HTMLElement>(
       }
 
       if (reducedMotion) {
+        stateRef.current = undefined
         setState(undefined)
         completeExit?.(exitId)
         return clearTimers
       }
 
-      setState('exit-from')
+      stateRef.current = 'exit-to'
+      setState('exit-to')
       watchdogTimer = globalThis.setTimeout(() => {
         if (!cancelled) completeExit?.(exitId)
       }, exitMilliseconds + 250)
-      cancelPaintBarrier = scheduleAfterPaint(() => {
+      completionTimer = globalThis.setTimeout(() => {
         if (cancelled) return
-        setState('exit-to')
-        completionTimer = globalThis.setTimeout(() => {
-          if (cancelled) return
-          if (watchdogTimer !== undefined) {
-            globalThis.clearTimeout(watchdogTimer)
-          }
-          completeExit?.(exitId)
-        }, exitMilliseconds + 20)
-      })
+        if (watchdogTimer !== undefined) {
+          globalThis.clearTimeout(watchdogTimer)
+        }
+        completeExit?.(exitId)
+      }, exitMilliseconds + 20)
 
       return () => {
         cancelled = true
@@ -179,30 +178,49 @@ export function useViewMotion<TElement extends HTMLElement>(
     }
 
     if (enterCommitted.current) {
+      if (stateRef.current?.startsWith('exit') === true) {
+        if (hasEnterMotion && !reducedMotion) {
+          stateRef.current = 'enter-to'
+          setState('enter-to')
+          completionTimer = globalThis.setTimeout(() => {
+            if (cancelled) return
+            stateRef.current = undefined
+            setState(undefined)
+          }, enterMilliseconds + 20)
+        } else {
+          stateRef.current = undefined
+          setState(undefined)
+        }
+      }
       return clearTimers
     }
 
     if (!hasEnterMotion || reducedMotion) {
       enterCommitted.current = true
+      stateRef.current = undefined
       setState(undefined)
       return clearTimers
     }
 
+    stateRef.current = 'enter-from'
     setState('enter-from')
     watchdogTimer = globalThis.setTimeout(() => {
       if (cancelled) return
       enterCommitted.current = true
+      stateRef.current = undefined
       setState(undefined)
     }, enterMilliseconds + 250)
     cancelPaintBarrier = scheduleAfterPaint(() => {
       if (cancelled) return
       enterCommitted.current = true
+      stateRef.current = 'enter-to'
       setState('enter-to')
       completionTimer = globalThis.setTimeout(() => {
         if (cancelled) return
         if (watchdogTimer !== undefined) {
           globalThis.clearTimeout(watchdogTimer)
         }
+        stateRef.current = undefined
         setState(undefined)
       }, enterMilliseconds + 20)
     })

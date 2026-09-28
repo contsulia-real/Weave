@@ -62,8 +62,8 @@ const stylesheet = `
   scale: 1;
   transform-origin: center;
   transition:
-    scale var(--weave-motion-duration-fast)
-      var(--weave-motion-curve-spring),
+    scale var(--weave-motion-spring-snappy-duration)
+      var(--weave-motion-spring-snappy-easing),
     background-color var(--weave-motion-duration-fast)
       var(--weave-motion-curve-standard),
     opacity var(--weave-motion-duration-fast)

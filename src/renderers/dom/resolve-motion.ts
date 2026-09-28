@@ -1,6 +1,4 @@
 import type {
-  MotionCurve,
-  MotionDuration,
   MotionStyle,
   ViewEnterExit,
   ViewEnterExitConfig,
@@ -14,6 +12,13 @@ import {
   transformValue,
 } from '../../core/values'
 import type { ResolvedTheme } from '../../theme/theme-types'
+import {
+  kebab,
+  resolveMotionCurveCss,
+  resolveMotionDurationCss,
+  resolveMotionDurationMs,
+  resolveMotionTiming,
+} from './motion-runtime'
 import type { RuntimeStyleDeclarations } from './runtime-class'
 
 export type ViewMotionState =
@@ -28,109 +33,15 @@ export interface ResolvedViewEnterExit {
   totalMilliseconds: number
 }
 
-function kebab(value: string): string {
-  return value.replace(/[A-Z]/g, (letter) =>
-    `-${letter.toLowerCase()}`,
-  )
-}
-
-function duration(
-  value: MotionDuration | undefined,
-  theme: ResolvedTheme,
-  fallback: string,
-): string {
-  if (value === undefined) {
-    return `var(--weave-motion-duration-${fallback})`
-  }
-
-  if (typeof value === 'number') {
-    return `${value}ms`
-  }
-
-  if (
-    Object.prototype.hasOwnProperty.call(
-      theme.tokens.motion?.duration ?? {},
-      value,
-    )
-  ) {
-    return `var(--weave-motion-duration-${value})`
-  }
-
-  return value
-}
-
-function durationMilliseconds(
-  value: MotionDuration | undefined,
-  theme: ResolvedTheme,
-  fallback: string,
-): number {
-  const resolved =
-    value === undefined
-      ? theme.tokens.motion?.duration?.[fallback]
-      : typeof value === 'string' &&
-          Object.prototype.hasOwnProperty.call(
-            theme.tokens.motion?.duration ?? {},
-            value,
-          )
-        ? theme.tokens.motion?.duration?.[value]
-        : value
-
-  if (typeof resolved === 'number') {
-    return Math.max(0, resolved)
-  }
-
-  if (typeof resolved !== 'string') return 0
-
-  const trimmed = resolved.trim()
-  if (trimmed.endsWith('ms')) {
-    return Math.max(0, Number.parseFloat(trimmed) || 0)
-  }
-  if (trimmed.endsWith('s')) {
-    return Math.max(0, (Number.parseFloat(trimmed) || 0) * 1000)
-  }
-
-  return Math.max(0, Number.parseFloat(trimmed) || 0)
-}
-
-function curve(
-  value: MotionCurve | undefined,
-  theme: ResolvedTheme,
-  fallback: string,
-): string {
-  const resolvedValue = value ?? fallback
-
-  if (typeof resolvedValue === 'string') {
-    if (
-      Object.prototype.hasOwnProperty.call(
-        theme.tokens.motion?.curve ?? {},
-        resolvedValue,
-      )
-    ) {
-      return `var(--weave-motion-curve-${resolvedValue})`
-    }
-    return resolvedValue
-  }
-
-  if (Array.isArray(resolvedValue)) {
-    return `cubic-bezier(${resolvedValue.join(', ')})`
-  }
-
-  const steps = resolvedValue as Exclude<
-    MotionCurve,
-    string | readonly number[]
-  >
-  return `steps(${steps.steps}, ${steps.position ?? 'end'})`
-}
-
 function properties(values: readonly string[] | undefined): string {
   if (values === undefined || values.length === 0) return 'all'
   return values.map(kebab).join(', ')
 }
 
 function preset(
-  value: Exclude<ViewEnterExit, ViewEnterExitConfig>,
+  value: string,
   phase: 'enter' | 'exit',
-): ViewEnterExitConfig {
+): ViewEnterExitConfig | undefined {
   const entering = phase === 'enter'
 
   switch (value) {
@@ -168,16 +79,29 @@ function preset(
             from: { opacity: 1, scale: 1 },
             to: { opacity: 0, scale: 0.96 },
           }
+    default:
+      return undefined
   }
 }
 
-function resolvedDefinition(
+export function resolveViewEnterExitDefinition(
   value: ViewEnterExit,
   phase: 'enter' | 'exit',
 ): ViewEnterExitConfig {
-  return typeof value === 'string'
-    ? preset(value, phase)
-    : value
+  if (typeof value === 'string') {
+    return preset(value, phase) ?? {}
+  }
+
+  const animation = value.animation === undefined
+    ? undefined
+    : preset(value.animation, phase)
+
+  return {
+    ...animation,
+    ...value,
+    from: value.from ?? animation?.from,
+    to: value.to ?? animation?.to,
+  } as ViewEnterExitConfig
 }
 
 const TRANSFORM_KEYS = new Set<keyof MotionStyle>([
@@ -260,19 +184,25 @@ export function resolveViewEnterExit(
 ): ResolvedViewEnterExit | undefined {
   if (value === undefined) return undefined
 
-  const definition = resolvedDefinition(value, phase)
-  const fromState = `${phase}-from`
-  const toState = `${phase}-to`
-  const durationValue = duration(definition.duration, theme, 'normal')
-  const delayValue =
-    definition.delay === undefined
-      ? '0ms'
-      : duration(definition.delay, theme, 'instant')
+  const definition = resolveViewEnterExitDefinition(value, phase)
+  const timing = resolveMotionTiming(
+    definition,
+    theme,
+    'normal',
+    phase,
+    true,
+  )
+  const delayCss = definition.delay === undefined
+    ? '0ms'
+    : resolveMotionDurationCss(definition.delay, theme, 'instant')
+  const delayMs = definition.delay === undefined
+    ? 0
+    : resolveMotionDurationMs(definition.delay, theme, 'instant')
 
   return {
     frames: {
-      ...motionStyle(definition.from, fromState),
-      ...motionStyle(definition.to, toState),
+      ...motionStyle(definition.from, `${phase}-from`),
+      ...motionStyle(definition.to, `${phase}-to`),
     },
     transition: reduceMotion
       ? {
@@ -286,20 +216,13 @@ export function resolveViewEnterExit(
             definition.from,
             definition.to,
           ),
-          '--weave-transition-duration': durationValue,
-          '--weave-transition-timing-function': curve(
-            definition.curve,
-            theme,
-            phase,
-          ),
-          '--weave-transition-delay': delayValue,
+          '--weave-transition-duration': timing.durationCss,
+          '--weave-transition-timing-function': timing.easing,
+          '--weave-transition-delay': delayCss,
         },
     totalMilliseconds: reduceMotion
       ? 0
-      : durationMilliseconds(definition.duration, theme, 'normal') +
-        (definition.delay === undefined
-          ? 0
-          : durationMilliseconds(definition.delay, theme, 'instant')),
+      : timing.durationMs + delayMs,
   }
 }
 
@@ -325,31 +248,36 @@ export function resolveViewTransition(
   ) {
     return {
       '--weave-transition-property': 'all',
-      '--weave-transition-duration': duration(transition, theme, 'normal'),
-      '--weave-transition-timing-function': curve(
+      '--weave-transition-duration': resolveMotionDurationCss(
+        transition,
+        theme,
+        'normal',
+      ),
+      '--weave-transition-timing-function': resolveMotionCurveCss(
         undefined,
         theme,
         'standard',
+        true,
       ),
       '--weave-transition-delay': '0ms',
     }
   }
 
+  const timing = resolveMotionTiming(
+    transition,
+    theme,
+    'normal',
+    'standard',
+    true,
+  )
+
   return {
     '--weave-transition-property': properties(transition.properties),
-    '--weave-transition-duration': duration(
-      transition.duration,
-      theme,
-      'normal',
-    ),
-    '--weave-transition-timing-function': curve(
-      transition.curve,
-      theme,
-      'standard',
-    ),
+    '--weave-transition-duration': timing.durationCss,
+    '--weave-transition-timing-function': timing.easing,
     '--weave-transition-delay':
       transition.delay === undefined
         ? '0ms'
-        : duration(transition.delay, theme, 'instant'),
+        : resolveMotionDurationCss(transition.delay, theme, 'instant'),
   }
 }

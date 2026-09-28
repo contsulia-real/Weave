@@ -1,3 +1,7 @@
+import type {
+  MotionSpring,
+  ViewAnimationConfig,
+} from '../core/motion-types'
 import type { TextTypo } from '../core/text-types'
 
 export type ThemeMode = 'light' | 'dark' | 'system'
@@ -49,6 +53,8 @@ export interface ThemeTokens {
     curve?: Readonly<
       Record<string, string | readonly [number, number, number, number]>
     >
+    spring?: Readonly<Record<string, MotionSpring>>
+    animation?: Readonly<Record<string, ViewAnimationConfig>>
   }
 }
 

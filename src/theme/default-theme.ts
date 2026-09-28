@@ -313,6 +313,34 @@ export const defaultTheme: ResolvedTheme = {
         enter: [0, 0, 0, 1],
         exit: [0.3, 0, 1, 1],
       },
+      spring: {
+        standard: {
+          stiffness: 280,
+          damping: 24,
+          mass: 1,
+        },
+        snappy: {
+          stiffness: 420,
+          damping: 30,
+          mass: 0.9,
+        },
+        gentle: {
+          stiffness: 180,
+          damping: 22,
+          mass: 1.1,
+        },
+      },
+      animation: {
+        pulse: {
+          keyframes: [
+            { at: 0, scale: 1, opacity: 1 },
+            { at: 0.5, scale: 1.06, opacity: 0.82 },
+            { at: 1, scale: 1, opacity: 1 },
+          ],
+          duration: 600,
+          curve: 'standard',
+        },
+      },
     },
   },
   components: {

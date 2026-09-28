@@ -133,15 +133,15 @@ const stylesheet = `
     var(--weave-motion-duration-fast),
     var(--weave-motion-duration-fast),
     var(--weave-motion-duration-fast),
-    var(--weave-motion-duration-fast),
+    var(--weave-motion-spring-snappy-duration),
     var(--weave-motion-duration-fast);
   --weave-component-transition-timing-function:
     var(--weave-motion-curve-standard),
     var(--weave-motion-curve-standard),
     var(--weave-motion-curve-standard),
     var(--weave-motion-curve-standard),
-    var(--weave-motion-curve-spring),
-    var(--weave-motion-curve-spring);
+    var(--weave-motion-spring-snappy-easing),
+    var(--weave-motion-curve-standard);
   --weave-component-transition-delay: 0ms;
 }
 

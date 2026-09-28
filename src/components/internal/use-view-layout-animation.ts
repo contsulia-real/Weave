@@ -5,12 +5,12 @@ import {
 } from 'react'
 import type { RefObject } from 'react'
 import type {
-  MotionCurve,
+  MotionInterruption,
   ViewLayoutAnimation,
   ViewLayoutAnimationConfig,
 } from '../../core/motion-types'
+import { resolveMotionTiming } from '../../renderers/dom/motion-runtime'
 import type { ResolvedTheme } from '../../theme/theme-types'
-import { durationMilliseconds } from './motion-duration'
 
 interface LayoutRect {
   left: number
@@ -36,49 +36,6 @@ function config(
   value: Exclude<ViewLayoutAnimation, false>,
 ): ViewLayoutAnimationConfig {
   return value === true ? {} : value
-}
-
-function resolveDuration(
-  value: ViewLayoutAnimationConfig['duration'],
-  theme: ResolvedTheme,
-): number {
-  const fallback = durationMilliseconds(
-    theme.tokens.motion?.duration?.normal,
-    200,
-  )
-
-  if (value === undefined) return fallback
-  if (typeof value === 'number') return Math.max(0, value)
-
-  const token = theme.tokens.motion?.duration?.[value]
-  return durationMilliseconds(token ?? value, fallback)
-}
-
-function curveString(value: MotionCurve): string {
-  if (typeof value === 'string') return value
-  if (Array.isArray(value)) {
-    return `cubic-bezier(${value.join(', ')})`
-  }
-
-  const steps = value as Exclude<
-    MotionCurve,
-    string | readonly number[]
-  >
-  return `steps(${steps.steps}, ${steps.position ?? 'end'})`
-}
-
-function resolveCurve(
-  value: ViewLayoutAnimationConfig['curve'],
-  theme: ResolvedTheme,
-): string {
-  const requested = value ?? 'standard'
-
-  if (typeof requested !== 'string') {
-    return curveString(requested)
-  }
-
-  const token = theme.tokens.motion?.curve?.[requested]
-  return curveString(token ?? requested)
 }
 
 function scheduleFrame(callback: FrameRequestCallback): () => void {
@@ -165,12 +122,28 @@ export function useViewLayoutAnimation<TElement extends HTMLElement>(
     if (element === null) return
 
     const running = animation.current
+    const resolved =
+      value === undefined || value === false
+        ? undefined
+        : config(value)
+    const interruption: MotionInterruption =
+      resolved?.interruption ?? 'continue'
+    const logicalPrevious = targetRect.current
     const previous =
       running === undefined
-        ? targetRect.current
-        : visualRect.current ?? targetRect.current
+        ? logicalPrevious
+        : interruption === 'continue'
+          ? visualRect.current ?? logicalPrevious
+          : logicalPrevious
 
     if (running !== undefined) {
+      if (interruption === 'finish') {
+        try {
+          running.finish()
+        } catch {
+          // A detached or already-finished animation can be cancelled safely.
+        }
+      }
       cancelAnimation()
       delete element.dataset.weaveLayoutAnimating
     }
@@ -179,8 +152,7 @@ export function useViewLayoutAnimation<TElement extends HTMLElement>(
     targetRect.current = next
 
     if (
-      value === undefined ||
-      value === false ||
+      resolved === undefined ||
       reducedMotion ||
       previous === undefined ||
       nearlyEqual(previous, next) ||
@@ -190,15 +162,20 @@ export function useViewLayoutAnimation<TElement extends HTMLElement>(
       return
     }
 
-    const resolved = config(value)
+    const timing = resolveMotionTiming(
+      resolved,
+      theme,
+      'normal',
+      'standard',
+    )
     element.dataset.weaveLayoutAnimating = 'true'
     visualRect.current = previous
 
     const current = element.animate(
       layoutKeyframes(previous, next),
       {
-        duration: resolveDuration(resolved.duration, theme),
-        easing: resolveCurve(resolved.curve, theme),
+        duration: timing.durationMs,
+        easing: timing.easing,
         fill: 'both',
       },
     )

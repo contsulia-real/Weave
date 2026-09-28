@@ -68,13 +68,13 @@ const stylesheet = `
     var(--weave-motion-duration-normal),
     var(--weave-motion-duration-fast),
     var(--weave-motion-duration-fast),
-    var(--weave-motion-duration-fast);
+    var(--weave-motion-spring-snappy-duration);
   --weave-component-transition-timing-function:
     var(--weave-motion-curve-standard),
     var(--weave-motion-curve-standard),
     var(--weave-motion-curve-standard),
     var(--weave-motion-curve-standard),
-    var(--weave-motion-curve-spring);
+    var(--weave-motion-spring-snappy-easing);
   --weave-component-transition-delay: 0ms;
 }
 
@@ -131,8 +131,8 @@ const stylesheet = `
   transition:
     opacity var(--weave-motion-duration-fast)
       var(--weave-motion-curve-standard),
-    transform var(--weave-motion-duration-fast)
-      var(--weave-motion-curve-spring),
+    transform var(--weave-motion-spring-snappy-duration)
+      var(--weave-motion-spring-snappy-easing),
     background-color var(--weave-motion-duration-fast)
       var(--weave-motion-curve-standard);
 }
@@ -172,8 +172,8 @@ const stylesheet = `
   transition:
     opacity var(--weave-motion-duration-fast)
       var(--weave-motion-curve-standard),
-    transform var(--weave-motion-duration-fast)
-      var(--weave-motion-curve-spring);
+    transform var(--weave-motion-spring-snappy-duration)
+      var(--weave-motion-spring-snappy-easing);
 }
 
 :where(.weave-choice-control[aria-disabled="true"])
@@ -197,8 +197,8 @@ const stylesheet = `
   transition:
     opacity var(--weave-motion-duration-slow)
       var(--weave-motion-curve-standard),
-    transform var(--weave-motion-duration-slow)
-      var(--weave-motion-curve-spring);
+    transform var(--weave-motion-spring-standard-duration)
+      var(--weave-motion-spring-standard-easing);
 }
 
 :where(.weave-radio:checked)

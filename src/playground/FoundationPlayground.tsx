@@ -113,14 +113,176 @@ function LayoutAnimationPlayground() {
             color={label === 'B' ? 'onPrimary' : 'tertiary'}
             shadow="small"
             layoutAnimation={{
-              duration: 'slow',
-              curve: 'emphasized',
+              spring: 'snappy',
+              interruption: 'continue',
             }}
           >
             <Text typo="label-medium">{label}</Text>
           </Column>
         ))}
       </Row>
+    </Column>
+  )
+}
+
+function AdvancedMotionPlayground() {
+  return (
+    <Row gap={1.25} wrap align="center">
+      <Column
+        width={10}
+        height={5}
+        align="center"
+        justify="center"
+        radius="medium"
+        background="surfaceHover"
+        transition={{
+          properties: ['transform'],
+          spring: 'snappy',
+        }}
+        hover={{ scale: 1.14, translateY: -0.25 }}
+      >
+        <Text typo="label-medium">Hover · spring</Text>
+      </Column>
+
+      <Column
+        width={10}
+        height={5}
+        align="center"
+        justify="center"
+        radius="medium"
+        background="primary"
+        color="onPrimary"
+        animation={{
+          keyframes: [
+            { at: 0, scale: 0.94, opacity: 0.65 },
+            { at: 0.55, scale: 1.08, opacity: 1 },
+            { at: 1, scale: 1, opacity: 0.82 },
+          ],
+          duration: 700,
+          repeat: 'infinite',
+          repeatDelay: 180,
+          direction: 'alternate',
+          curve: 'emphasized',
+        }}
+      >
+        <Text typo="label-medium">Keyframes · repeat</Text>
+      </Column>
+
+      <Column
+        width={10}
+        height={5}
+        align="center"
+        justify="center"
+        radius="medium"
+        background="surfaceHover"
+        animation="pulse"
+      >
+        <Text typo="label-medium">Theme · pulse</Text>
+      </Column>
+    </Row>
+  )
+}
+
+function StaggerPlayground() {
+  const [run, setRun] = useState(0)
+
+  return (
+    <Column gap={0.75} align="start">
+      <Button
+        text="Replay stagger"
+        variant="secondary"
+        viewProps={{ onClick: () => setRun((value) => value + 1) }}
+      />
+
+      <Row
+        key={run}
+        gap={0.75}
+        padding={0.75}
+        radius="medium"
+        outlineWidth={0.0625}
+        outlineColor="outline"
+        outlineStyle="dashed"
+        enter={{
+          animation: 'fade-up',
+          children: {
+            stagger: 90,
+            delay: 80,
+            from: 'first',
+          },
+          spring: 'snappy',
+        }}
+      >
+        {['A', 'B', 'C', 'D'].map((label) => (
+          <Column
+            key={label}
+            width={4}
+            height={3}
+            align="center"
+            justify="center"
+            radius="medium"
+            background={label === 'C' ? 'primary' : 'surfaceHover'}
+            color={label === 'C' ? 'onPrimary' : 'tertiary'}
+          >
+            <Text typo="label-medium">{label}</Text>
+          </Column>
+        ))}
+      </Row>
+    </Column>
+  )
+}
+
+function InterruptionPlayground() {
+  const [alternate, setAlternate] = useState(false)
+  const target = alternate ? 8 : 0
+
+  return (
+    <Column gap={0.75} align="start">
+      <Button
+        text="Retarget all"
+        variant="secondary"
+        viewProps={{
+          onClick: () => setAlternate((current) => !current),
+        }}
+      />
+
+      <Column gap={0.75}>
+        {(['continue', 'restart', 'finish'] as const).map((mode) => (
+          <Row key={mode} gap={0.75} align="center">
+            <Text typo="label-medium" viewProps={{ width: 5.5 }}>
+              {mode}
+            </Text>
+            <Row
+              width={18}
+              height={3.5}
+              align="center"
+              paddingX={0.5}
+              radius="medium"
+              background="surfaceHover"
+            >
+              <Column
+                width={3}
+                height={2.25}
+                align="center"
+                justify="center"
+                radius="medium"
+                background={mode === 'continue' ? 'primary' : 'tertiary'}
+                color={mode === 'continue' ? 'onPrimary' : 'surface'}
+                animation={{
+                  keyframes: [
+                    { translateX: target === 0 ? 8 : 0, scale: 0.94 },
+                    { translateX: target, scale: 1 },
+                  ],
+                  duration: 1100,
+                  curve: 'emphasized',
+                  interruption: mode,
+                }}
+              >
+                <Text typo="label-small">{mode[0].toUpperCase()}</Text>
+              </Column>
+            </Row>
+          </Row>
+        ))}
+      </Column>
     </Column>
   )
 }
@@ -408,6 +570,27 @@ export function FoundationPlayground() {
         description="三个 keyed 子项都启用 FLIP。切换时 A / C 重排，B 同时改变宽度；连续点击会从当前视觉位置重新接管，不排动画队列。"
       >
         <LayoutAnimationPlayground />
+      </PlaygroundSection>
+
+      <PlaygroundSection
+        title="Motion · spring / keyframes / repeat"
+        description="物理 spring 使用求解后的 natural duration + linear()；keyframes 支持 at、repeat、repeatDelay、direction，也可以直接读取主题 animation preset。"
+      >
+        <AdvancedMotionPlayground />
+      </PlaygroundSection>
+
+      <PlaygroundSection
+        title="Motion · stagger"
+        description="父 ViewHost 直接编排 direct ViewHost children。Replay 后 A → B → C → D 按 spring fade-up 依次入场。"
+      >
+        <StaggerPlayground />
+      </PlaygroundSection>
+
+      <PlaygroundSection
+        title="Motion · interruption"
+        description="连续点击 Retarget all：continue 从当前视觉值接管；restart 从新动画起点重来；finish 先完成当前 cycle，再只执行最新目标。"
+      >
+        <InterruptionPlayground />
       </PlaygroundSection>
 
       <PlaygroundSection

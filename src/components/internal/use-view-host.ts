@@ -15,8 +15,10 @@ import {
 } from '../../renderers/dom/resolve-view'
 import { useBreakpointStylesheet } from '../../renderers/dom/breakpoint-stylesheet'
 import { useRuntimeStyleClass } from '../../renderers/dom/runtime-class'
+import { useViewAnimation } from './use-view-animation'
 import { useViewLayoutAnimation } from './use-view-layout-animation'
 import { useViewMotion } from './use-view-motion'
+import { useViewEnterStagger } from './use-view-stagger'
 import { ensureViewStylesheet } from '../../renderers/dom/view-stylesheet'
 import { useTheme } from '../../theme/theme-context'
 
@@ -52,6 +54,18 @@ export function useViewHost<TElement extends HTMLElement>(
   const breakpointClassName = useBreakpointStylesheet(theme.breakpoints)
   const resolved = resolveDOMView(props, theme.breakpoints)
   const motion = useViewMotion(props, theme, reducedMotion)
+  useViewAnimation(
+    elementRef,
+    props.animation,
+    theme,
+    reducedMotion,
+  )
+  useViewEnterStagger(
+    elementRef,
+    props.enter,
+    theme,
+    reducedMotion,
+  )
   useViewLayoutAnimation(
     elementRef,
     props.layoutAnimation,

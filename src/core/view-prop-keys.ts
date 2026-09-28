@@ -162,6 +162,7 @@ export const VIEW_CONTROL_PROP_KEYS = [
   'transition',
   'enter',
   'exit',
+  'animation',
   'layoutAnimation',
 ] as const
 

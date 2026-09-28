@@ -4867,7 +4867,7 @@ style > className > 实例属性体系 > 当前主题 > defaultTheme
 
 当前动画模型：
 
-> 实现状态：当前代码已经落地框架级 `transition`、`ThemeProvider reducedMotion`、`enter / exit + Presence` 与 `layoutAnimation`。`layoutAnimation` 已支持快速连续更新时从当前视觉几何重新接管。下面列出的 `spring / repeat / repeatDelay / direction / keyframes / stagger` 以及更广义的通用 interruption 仍属于本节冻结的目标模型，尚未全部进入公开实现；后续必须建立在当前 Motion 核心之上逐项完成，不能把组件内部已有动画等同于通用 Motion API。
+> 实现状态：本章公开 Motion 模型已经全部落地：`transition`、`enter / exit + Presence`、`layoutAnimation`、物理 `spring`、`keyframes`、`repeat / repeatDelay / direction`、`stagger`、受管动画 interruption，以及统一 `reducedMotion`。CSS transition / Presence 与 WAAPI animation / layoutAnimation 使用各自适合的执行后端，但共享同一套 duration / curve / spring token 与 reduced-motion policy。
 
 ```text
 Motion
@@ -5012,7 +5012,7 @@ React 条件卸载需要 Presence，否则组件已经从 React tree 移除，�
 />
 ```
 
-`true` 默认使用 `motion.duration.normal` 与 `motion.curve.standard`。`duration` 同其他 Motion API：裸数字按毫秒，字符串优先解析主题 duration token，也接受原生 `ms / s`；`curve` 支持主题 token、cubic-bezier tuple、steps 与原生 CSS easing 字符串。
+`true` 默认使用 `motion.duration.normal` 与 `motion.curve.standard`。`duration` 同其他 Motion API：裸数字按毫秒，字符串优先解析主题 duration token，也接受原生 `ms / s`；`curve` 支持主题 token、cubic-bezier tuple、steps 与原生 CSS easing 字符串。也可以改用 `spring: "standard|snappy|gentle"` 或直接传物理 spring 参数；spring 自己求解 natural duration，因此与 `duration / curve` 互斥。`layoutAnimation.interruption` 支持 `continue / restart / finish`，默认 `continue`。
 
 当前 FLIP 后端规则：
 
@@ -5124,81 +5124,89 @@ motion: {
 
 ## 24.5 Spring
 
-弹簧不是普通时间曲线，不硬塞进 `curve`。
+Spring 是真实二阶阻尼系统，不把“弹簧感”伪装成 cubic-bezier。框架根据 `stiffness / damping / mass / velocity` 求解位移与速度，按 `restDelta / restSpeed` 自动求 natural duration，再采样为浏览器原生 CSS `linear(...)` easing。
+
+直接参数：
 
 ```tsx
 <View
   transition={{
+    properties: ["transform"],
     spring: {
       stiffness: 280,
       damping: 24,
       mass: 1,
+      velocity: 0,
     },
   }}
 />
 ```
 
-`curve` 与 `spring` 互斥。
-
----
-
-## 24.6 延迟与重复
+主题 preset：
 
 ```tsx
 <View
   transition={{
-    duration: "normal",
-    delay: 120,
+    properties: ["transform"],
+    spring: "snappy",
+  }}
+/>
+```
+
+默认主题提供 `standard / snappy / gentle`。主题 spring 是结构化 JS token；ThemeProvider 同时把每个 preset 求解成 `--weave-motion-spring-*-duration` 与 `--weave-motion-spring-*-easing`，供 Button / Switch / Radio / Checkbox / Scrollbar 等内部触觉动画复用。因此框架内部不再把旧 `motion.curve.spring` 当成物理弹簧使用；旧 curve token 只保留兼容。
+
+Spring 可以用于：
+
+- `transition`
+- `enter / exit`
+- `animation` keyframes
+- `layoutAnimation`
+- stagger child enter
+
+`spring` 与 `duration / curve` 在类型层互斥：spring 自己决定自然结束时间；`delay`、repeat 编排等外层时间仍可独立存在。
+
+---
+
+## 24.6 延迟、重复与方向
+
+`delay` 继续适用于 transition / enter / exit / animation；裸数字按毫秒解释。
+
+循环属于 `animation`：
+
+```tsx
+<View
+  animation={{
+    keyframes: [
+      { opacity: 0.5, scale: 0.96 },
+      { opacity: 1, scale: 1.04 },
+    ],
+    duration: 700,
+    repeat: 2,
+    repeatDelay: 120,
+    direction: "alternate",
     curve: "standard",
   }}
 />
 ```
 
-循环：
+规则：
 
-```tsx
-<Progress
-  animation="spin"
-  viewProps={{
-    animation: {
-      duration: 800,
-      repeat: "infinite",
-      curve: "linear",
-    },
-  }}
-/>
-```
+- `repeat: 0` 或省略：只执行一次。
+- `repeat: 2`：初始 cycle 之后再重复 2 次，总共 3 个 cycle。
+- `repeat: "infinite"`：持续循环直到 props 改变或卸载。
+- `repeatDelay`：cycle 之间等待时间，裸数字按毫秒。
+- `direction: "normal"`：每个 cycle 正向。
+- `reverse`：每个 cycle 反向。
+- `alternate`：正向 / 反向交替。
+- `alternate-reverse`：反向 / 正向交替。
 
-统一能力：
-
-```text
-delay
-repeat
-repeatDelay
-direction
-```
-
-其中 `delay`、`repeatDelay` 以及其他时间裸数字统一按毫秒（`ms`）解释。
-
-`repeat`：
-
-```text
-number
-"infinite"
-```
-
-`direction`：
-
-```text
-normal
-reverse
-alternate
-alternate-reverse
-```
+repeat/repeatDelay 由 Weave sequence runner 编排，而不是依赖一个永久占用的 CSS animation，因此 interruption 可以在 cycle 边界正确接管。
 
 ---
 
 ## 24.7 Keyframes
+
+`ViewProps.animation` 是受管 WAAPI keyframe 入口：
 
 ```tsx
 <View
@@ -5214,78 +5222,113 @@ alternate-reverse
 />
 ```
 
-`at`：
+`at` 范围固定为 `0 ~ 1`；超界值会 clamp。首尾未提供时分别补 0 / 1，中间缺失 offset 在相邻显式锚点之间等距插值。
 
-```text
-0 ~ 1
+Keyframe 使用同一 `MotionStyle` 视觉属性集合，因此支持 opacity / color / background / transform / filter 家族，不把 width/height 等真实 layout 字段混进来。
+
+也可使用物理 Spring：
+
+```tsx
+<View
+  animation={{
+    keyframes: [
+      { scale: 0.8 },
+      { scale: 1 },
+    ],
+    spring: "snappy",
+  }}
+/>
 ```
 
-主题可以提供动画预设：
+主题可提供结构化 animation preset：
 
 ```tsx
 <View animation="pulse" />
 ```
 
+默认主题内置 `pulse` 作为基础诊断 preset；产品主题可覆盖或增加同名/新名称 preset。
+
 ---
 
-## 24.8 动画编排
+## 24.8 动画编排 / Stagger
 
-支持 stagger：
+Stagger 属于父 ViewHost 的 enter 编排。父宿主读取自己的 direct ViewHost children，并按实际 DOM 顺序分配 delay，不增加 wrapper：
 
 ```tsx
-<List
-  viewProps={{
-    enter: {
-      animation: "fade-up",
-      stagger: 40,
+<Row
+  enter={{
+    animation: "fade-up",
+    children: {
+      stagger: 50,
+      delay: 100,
+      from: "first",
     },
+    spring: "snappy",
   }}
-/>
+>
+  <View />
+  <View />
+  <View />
+</Row>
 ```
 
-或者：
+简写：
 
 ```tsx
 <View
   enter={{
-    animation: "fade-in",
-    children: {
-      stagger: 50,
-      delay: 100,
-    },
+    animation: "fade-up",
+    stagger: 40,
   }}
->
-  ...
-</View>
+/>
 ```
+
+`from` 支持：
+
+```text
+first   // 0 → n
+last    // n → 0
+center  // 从中间向两侧
+```
+
+父 ViewHost 自己仍执行同一 enter 定义；children 获得相同 from/to/timing，只增加各自 delay。Stagger 只编排**直接** ViewHost children，避免隐式穿透复杂组件树。若 child 同时对同一 transform/filter 属性运行独立 `animation`，两套 WAAPI 会竞争同一属性，业务应明确选择一套编排来源。
+
+StrictMode effect replay 不得重复启动 stagger；`reducedMotion="reduce"` 下不创建 stagger child animation。
 
 ---
 
 ## 24.9 动画中断
 
-状态快速变化时不能让动画一直排队。
+状态快速变化不能无限排队。Weave 对**受管 WAAPI 动画**统一提供：
 
-默认规则：
+```text
+continue   // 默认，从当前视觉状态接管
+restart    // 取消旧动画，从新动画声明起点重来
+finish     // 先结束当前 cycle / FLIP，再执行最新目标
+```
 
-> 新状态立即接管当前动画，并从当前视觉值继续过渡。
-
-可配置：
+Keyframe animation：
 
 ```tsx
 <View
-  transition={{
+  animation={{
+    keyframes: [
+      { translateX: 0 },
+      { translateX: 8 },
+    ],
+    duration: 900,
     interruption: "continue",
   }}
 />
 ```
 
-候选：
+- `continue`：读取当前 computed opacity/background/color/transform/filter，把当前视觉值注入新 animation 的逻辑起点，然后取消旧 WAAPI。
+- `restart`：取消旧 animation，直接从新 keyframe 声明起点开始。
+- `finish`：当前 cycle 自然完成后才接管；等待期间如果目标继续变化，只保留**最新** pending target，不形成动画队列。若正处于 `repeatDelay`，直接跳过剩余等待并执行最新目标。
 
-```text
-continue   // 默认，从当前值继续
-restart    // 从新动画起点重来
-finish     // 先完成旧动画
-```
+`layoutAnimation.interruption` 同样支持三种策略：`continue` 使用采样到的当前视觉 rect；`restart` 从上一逻辑 layout target 重新 FLIP；`finish` 先把当前 WAAPI FLIP 推到旧 target，再从旧 target FLIP 到最新布局。
+
+普通 CSS `transition` 与 Presence enter/exit 不暴露 `restart / finish`：浏览器 CSS cascade 本身采用 continue 语义。Presence 在 exit 中途重新 `present=true` 时，不先卸载/重挂，也不先跑完 exit；它直接从当前视觉状态反向过渡到 `enter-to`。
 
 ---
 
@@ -5313,7 +5356,9 @@ system
 
 - `system` 由主题层唯一的 `(prefers-reduced-motion: reduce)` 订阅解析；组件、renderer 和布局动画辅助代码不得再次自行调用 `matchMedia`。
 - 每个使用 ViewHost 的真实宿主都会得到最终的 `data-weave-reduced-motion="reduce|no-preference"`，组件内部 thumb、marker、progress animation、tooltip/snack presence 等都服从这个最终 policy。
-- `reduce` 会把框架宿主 transition 解析成 `property: none / duration: 0ms / delay: 0ms`，内部持续动画或位移动画也必须进入静态最终状态。
+- `reduce` 会把框架宿主 transition 解析成 `property: none / duration: 0ms / delay: 0ms`；enter 不播放，Presence exit 不等待，layoutAnimation 不创建 WAAPI，stagger 不启动 child animation。
+- 有限 keyframe animation 在 reduced motion 下用 0ms 固定到**最后一个逻辑 cycle 的终点**，因此 alternate / reverse 仍有确定语义；`repeat: "infinite"` 没有逻辑终点，固定到第一帧/rest frame，不保留持续运动。
+- Spring 在 reduced motion 下同样不播放物理振荡；不会因为 spring natural duration 而延迟最终状态。
 - `no-preference` 是显式覆盖，因此嵌套在外层 `reduce` Provider 中时必须能够重新启用 motion；不能再靠组件自己的 `@media` 把它强制关闭。
 - 未显式传 `ThemeProvider` 时仍默认按 `system` 解析，而不是默认假设允许动画。
 

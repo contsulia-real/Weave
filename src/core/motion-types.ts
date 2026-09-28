@@ -18,6 +18,30 @@ export type MotionCurve =
   | readonly [number, number, number, number]
   | MotionCurveSteps
 
+export interface MotionSpring {
+  stiffness?: number
+  damping?: number
+  mass?: number
+  velocity?: number
+  restDelta?: number
+  restSpeed?: number
+}
+
+export type MotionSpringValue = MotionSpring | string
+
+export type MotionInterruption =
+  | 'continue'
+  | 'restart'
+  | 'finish'
+
+export type MotionRepeat = number | 'infinite'
+
+export type MotionDirection =
+  | 'normal'
+  | 'reverse'
+  | 'alternate'
+  | 'alternate-reverse'
+
 export type ReducedMotionPreference =
   | 'system'
   | 'reduce'
@@ -44,12 +68,37 @@ export interface MotionStyle {
   hueRotate?: number | string
 }
 
-export interface ViewTransitionConfig {
-  properties?: readonly string[]
-  duration?: MotionDuration
-  delay?: MotionDuration
-  curve?: MotionCurve
+export interface MotionKeyframe extends MotionStyle {
+  at?: number
 }
+
+export interface MotionStaggerConfig {
+  stagger: MotionDuration
+  delay?: MotionDuration
+  from?: 'first' | 'last' | 'center'
+}
+
+type MotionCurveTiming = {
+  duration?: MotionDuration
+  curve?: MotionCurve
+  spring?: never
+}
+
+type MotionSpringTiming = {
+  spring: MotionSpringValue
+  duration?: never
+  curve?: never
+}
+
+export type MotionTiming = MotionCurveTiming | MotionSpringTiming
+
+type ViewTransitionBase = {
+  properties?: readonly string[]
+  delay?: MotionDuration
+}
+
+export type ViewTransitionConfig =
+  ViewTransitionBase & MotionTiming
 
 export type ViewTransition =
   | MotionDuration
@@ -61,30 +110,51 @@ export type ViewMotionPreset =
   | 'fade-down'
   | 'scale'
 
-export interface ViewEnterExitConfig {
+type ViewEnterExitBase = {
   from?: MotionStyle
   to?: MotionStyle
-  duration?: MotionDuration
+  animation?: ViewMotionPreset | string
   delay?: MotionDuration
-  curve?: MotionCurve
+  stagger?: MotionDuration
+  children?: MotionStaggerConfig
 }
+
+export type ViewEnterExitConfig =
+  ViewEnterExitBase & MotionTiming
 
 export type ViewEnterExit =
   | ViewMotionPreset
   | ViewEnterExitConfig
 
-export interface ViewLayoutAnimationConfig {
-  duration?: MotionDuration
-  curve?: MotionCurve
+type ViewLayoutAnimationBase = {
+  interruption?: MotionInterruption
 }
+
+export type ViewLayoutAnimationConfig =
+  ViewLayoutAnimationBase & MotionTiming
 
 export type ViewLayoutAnimation =
   | boolean
   | ViewLayoutAnimationConfig
 
+type ViewAnimationBase = {
+  keyframes: readonly MotionKeyframe[]
+  delay?: MotionDuration
+  repeat?: MotionRepeat
+  repeatDelay?: MotionDuration
+  direction?: MotionDirection
+  interruption?: MotionInterruption
+}
+
+export type ViewAnimationConfig =
+  ViewAnimationBase & MotionTiming
+
+export type ViewAnimation = string | ViewAnimationConfig
+
 export interface ViewMotionProps {
   transition?: ViewTransition
   enter?: ViewEnterExit
   exit?: ViewEnterExit
+  animation?: ViewAnimation
   layoutAnimation?: ViewLayoutAnimation
 }

@@ -97,12 +97,12 @@ const stylesheet = `
   will-change: transform, width, height;
 
   transition:
-    transform var(--weave-motion-duration-fast)
-      var(--weave-motion-curve-spring),
-    width var(--weave-motion-duration-fast)
-      var(--weave-motion-curve-spring),
-    height var(--weave-motion-duration-fast)
-      var(--weave-motion-curve-spring),
+    transform var(--weave-motion-spring-snappy-duration)
+      var(--weave-motion-spring-snappy-easing),
+    width var(--weave-motion-spring-snappy-duration)
+      var(--weave-motion-spring-snappy-easing),
+    height var(--weave-motion-spring-snappy-duration)
+      var(--weave-motion-spring-snappy-easing),
     box-shadow var(--weave-motion-duration-fast)
       var(--weave-motion-curve-standard);
 }

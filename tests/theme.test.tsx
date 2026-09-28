@@ -88,6 +88,13 @@ describe('Theme', () => {
         duration: {
           fast: 120,
         },
+        spring: {
+          snappy: {
+            stiffness: 420,
+            damping: 30,
+            mass: 0.9,
+          },
+        },
       },
     })
 
@@ -119,6 +126,15 @@ describe('Theme', () => {
     expect(variables['--weave-feedback-press-offset']).toBe('0.125rem')
     expect(variables['--weave-feedback-press-scale']).toBe(0.985)
     expect(variables['--weave-motion-duration-fast']).toBe('120ms')
+    expect(
+      variables['--weave-motion-spring-snappy-duration'],
+    ).toMatch(/^\d+ms$/)
+    expect(
+      variables['--weave-motion-spring-snappy-easing'],
+    ).toMatch(/^linear\(/)
+    expect(
+      String(variables['--weave-motion-spring-snappy-easing']),
+    ).toContain('100%')
   })
 
   it('keeps component typography mapped to typo instead of private font fields', () => {

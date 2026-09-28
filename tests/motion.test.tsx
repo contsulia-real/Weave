@@ -101,6 +101,25 @@ describe('View motion', () => {
     )
   })
 
+  it('uses a physical spring for CSS transitions', () => {
+    const { getByTestId } = render(
+      <View
+        transition={{
+          properties: ['transform'],
+          spring: 'snappy',
+        }}
+        hover={{ scale: 1.08 }}
+        data={{ testid: 'spring-transition' }}
+      />,
+    )
+
+    const rule = motionRule(getByTestId('spring-transition'))
+    expect(rule).toContain('--weave-transition-property:transform;')
+    expect(rule).toMatch(/--weave-transition-duration:\d+ms;/)
+    expect(rule).toContain('--weave-transition-timing-function:linear(')
+    expect(rule).toContain('100%')
+  })
+
   it('supports native CSS curves and steps', () => {
     const { getByTestId, rerender } = render(
       <View
@@ -399,26 +418,60 @@ describe('View motion', () => {
 
       const exiting = queryByTestId('presence-view')
       expect(exiting).not.toBeNull()
-      expect(exiting?.dataset.weaveMotionState).toBe('exit-from')
-
-      act(() => {
-        vi.advanceTimersByTime(16)
-      })
-      expect(
-        queryByTestId('presence-view')?.dataset.weaveMotionState,
-      ).toBe('exit-from')
-
-      act(() => {
-        vi.advanceTimersByTime(18)
-      })
-      expect(
-        queryByTestId('presence-view')?.dataset.weaveMotionState,
-      ).toBe('exit-to')
+      expect(exiting?.dataset.weaveMotionState).toBe('exit-to')
 
       act(() => {
         vi.advanceTimersByTime(240)
       })
       expect(queryByTestId('presence-view')).toBeNull()
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('reverses an in-flight Presence exit from the current visual state', () => {
+    vi.useFakeTimers()
+
+    try {
+      const base = (
+        <View
+          enter="fade-up"
+          exit="fade-down"
+          data={{ testid: 'reversible-presence' }}
+        />
+      )
+      const { queryByTestId, rerender } = render(
+        <Presence present>
+          <View
+            exit="fade-down"
+            data={{ testid: 'reversible-presence' }}
+          />
+        </Presence>,
+      )
+
+      rerender(<Presence present>{base}</Presence>)
+      rerender(<Presence present={false}>{base}</Presence>)
+      expect(
+        queryByTestId('reversible-presence')?.dataset.weaveMotionState,
+      ).toBe('exit-to')
+
+      act(() => {
+        vi.advanceTimersByTime(80)
+      })
+      rerender(<Presence present>{base}</Presence>)
+
+      expect(queryByTestId('reversible-presence')).not.toBeNull()
+      expect(
+        queryByTestId('reversible-presence')?.dataset.weaveMotionState,
+      ).toBe('enter-to')
+
+      act(() => {
+        vi.advanceTimersByTime(240)
+      })
+      expect(queryByTestId('reversible-presence')).not.toBeNull()
+      expect(
+        queryByTestId('reversible-presence')?.dataset.weaveMotionState,
+      ).toBeUndefined()
     } finally {
       vi.useRealTimers()
     }
