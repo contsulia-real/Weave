@@ -5710,49 +5710,89 @@ React
 └─ React 生态
     │
     ▼
-View
+Weave 公开 API
 │
-│  唯一基础原语
-│  直接使用 ViewProps
+├─ 应用挂载
+│  └─ createRoot
 │
-├─ Text
-├─ Image
-├─ Input
-├─ Icon
-├─ Switch
-├─ Progress
-└─ Scrollbar
+├─ View
+│  ├─ 面向用户的唯一基础原语
+│  └─ 直接使用 ViewProps
+│
+├─ 正式布局组件
+│  ├─ Flex
+│  ├─ Row
+│  ├─ Column
+│  ├─ Grid
+│  ├─ Stack
+│  └─ Absolute
+│      └─ 对 View 布局能力的受约束封装，不增加额外 DOM
+│
+├─ 基础组件
+│  ├─ Text
+│  ├─ Image
+│  ├─ Input
+│  ├─ Icon
+│  ├─ Switch
+│  ├─ Radio
+│  ├─ Checkbox
+│  ├─ Progress
+│  └─ Scrollbar
+│
+├─ 组合组件
+│  ├─ Button
+│  ├─ Link
+│  ├─ Badge
+│  ├─ ToolTip
+│  ├─ Snack
+│  ├─ List
+│  └─ ListItem
+│
+├─ Motion 生命周期控制
+│  └─ Presence
+│      └─ 自身不产生 DOM，只负责 enter / exit 卸载时序
+│
+└─ Context / 配置 / 命令式支撑 API
+   ├─ ThemeProvider / useTheme
+   ├─ createTheme / defaultTheme
+   └─ SnackProvider / useSnack
+
+真实 DOM 宿主组件
+│
+├─ View
+└─ 需要承载自身 DOM 的基础 / 组合组件
     │
     ▼
-组合组件
-├─ Button
-├─ ToolTip
-├─ Snack
-├─ List
-└─ ListItem    │
-    ▼
-非 View 组件
-├─ 自身语义属性
-└─ viewProps: ViewProps
+内部 useViewHost
+│
+│  复用 View 的通用宿主能力，不是公开基础原语
+│
+├─ ViewProps 通用能力
+│  ├─ 布局 / 尺寸 / 间距
+│  ├─ 视觉 / Mask / Clip / Transform
+│  ├─ 状态样式
+│  ├─ 响应式
+│  ├─ Motion
+│  ├─ 可访问性
+│  ├─ 事件 / 焦点 / data
+│  ├─ layer / scrollbar
+│  └─ style / className 逃生口
+│
+└─ 组件自身语义能力
     │
     ▼
-统一组件公开 API
-├─ 语义化高层属性
-├─ 布局
-├─ 视觉
-├─ 状态样式
-├─ 响应式
-├─ 动画
-├─ 可访问性
-├─ 层级
-├─ 主题
-└─ ViewProps 中的 style / className 逃生口
+内部 Theme / responsive / state / motion 解析
+    │
+    ▼
+CSS variables + runtime classes + framework stylesheet
     │
     ▼
 单一渲染路径：React DOM + CSS
     │
-    └── 浏览器原生 layout / paint / compositing
+    └── 浏览器原生 layout / paint / input / focus / scroll / compositing
 ```
+
+其中 `Presence`、Provider 与 Hook 不属于 ViewHost 宿主链路；它们分别负责生命周期编排和 React context / 命令式能力。只有实际承载 DOM 的组件才进入 `useViewHost → DOM + CSS` 这条宿主路径。
 
 ---
 
