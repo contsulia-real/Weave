@@ -1,4 +1,7 @@
 import {
+  StrictMode,
+} from 'react'
+import {
   act,
   cleanup,
   render,
@@ -273,6 +276,50 @@ describe('View motion', () => {
         '--weave-transition-timing-function:var(--weave-motion-curve-enter);',
       )
       expect(frames).toHaveLength(1)
+
+      act(() => {
+        frames.shift()?.(16)
+      })
+      expect(element.dataset.weaveMotionState).toBe('enter-from')
+      expect(frames).toHaveLength(1)
+
+      act(() => {
+        frames.shift()?.(32)
+      })
+      expect(element.dataset.weaveMotionState).toBe('enter-to')
+    } finally {
+      requestFrame.mockRestore()
+      cancelFrame.mockRestore()
+    }
+  })
+
+  it('survives StrictMode effect replay without consuming enter', () => {
+    const frames: FrameRequestCallback[] = []
+    const requestFrame = vi
+      .spyOn(window, 'requestAnimationFrame')
+      .mockImplementation((callback) => {
+        frames.push(callback)
+        return frames.length
+      })
+    const cancelFrame = vi
+      .spyOn(window, 'cancelAnimationFrame')
+      .mockImplementation(() => {})
+
+    try {
+      const { getByTestId } = render(
+        <StrictMode>
+          <View
+            enter="fade-up"
+            data={{ testid: 'strict-enter' }}
+          />
+        </StrictMode>,
+      )
+
+      const element = getByTestId('strict-enter')
+      expect(element.dataset.weaveMotionState).toBe('enter-from')
+      expect(frames.length).toBeGreaterThanOrEqual(1)
+
+      while (frames.length > 1) frames.shift()
 
       act(() => {
         frames.shift()?.(16)

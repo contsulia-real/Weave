@@ -4969,7 +4969,7 @@ scale
 
 当前 `MotionStyle` 支持视觉型属性：`opacity / background / color / translateX / translateY / scale / scaleX / scaleY / rotate / skewX / skewY / blur / brightness / contrast / saturate / grayscale / sepia / hueRotate`。尺寸和布局变化不塞进 enter/exit；它们由后续 `layoutAnimation` 负责。
 
-`enter` 不需要额外容器：宿主第一次挂载时从 `from` 进入 `to`，结束后恢复普通 View 样式层。浏览器时序必须使用双 `requestAnimationFrame` paint barrier：首次提交保持 `enter-from`，第一帧让浏览器真正 paint 起始样式，下一帧才切到 `enter-to`；禁止用固定 `16ms setTimeout` 猜测 paint 时机，否则挂载与目标状态可能在首次绘制前被合并，导致 enter 看起来直接跳到最终状态。enter / exit 同时保留独立 timeout watchdog，防止后台标签页暂停 rAF 时 Presence 永久停留在退出中间态。若 `to` 某个值需要在动画结束后持续存在，同一个最终值也应由普通 View props 表达；`to` 不是永久覆盖层。
+`enter` 不需要额外容器：宿主第一次挂载时从 `from` 进入 `to`，结束后恢复普通 View 样式层。浏览器时序必须使用双 `requestAnimationFrame` paint barrier：首次提交保持 `enter-from`，第一帧让浏览器真正 paint 起始样式，下一帧才切到 `enter-to`；禁止用固定 `16ms setTimeout` 猜测 paint 时机，否则挂载与目标状态可能在首次绘制前被合并，导致 enter 看起来直接跳到最终状态。enter / exit 同时保留独立 timeout watchdog，防止后台标签页暂停 rAF 时 Presence 永久停留在退出中间态。enter 生命周期还必须兼容 React StrictMode 的开发期 effect setup → cleanup → setup 重放：第一次 setup 被模拟 cleanup 取消时不得把 enter 标记为已经消费；只有真正跨过 paint barrier、切到 `enter-to` 后才算本次 enter 已启动。若 `to` 某个值需要在动画结束后持续存在，同一个最终值也应由普通 View props 表达；`to` 不是永久覆盖层。
 
 React 条件卸载需要 Presence，否则组件已经从 React tree 移除，任何 CSS 都没有机会执行 exit：
 

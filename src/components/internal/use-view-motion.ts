@@ -64,7 +64,7 @@ export function useViewMotion<TElement extends HTMLElement>(
 ): ViewMotionHostResult {
   const presence = useContext(PresenceContext)
   const [exitId] = useState(() => Symbol('weave-motion-exit'))
-  const entered = useRef(false)
+  const enterCommitted = useRef(false)
   const exitKey = definitionKey(props.exit)
 
   const enterMotion = resolveViewEnterExit(
@@ -178,23 +178,25 @@ export function useViewMotion<TElement extends HTMLElement>(
       }
     }
 
-    if (entered.current) {
-      setState(undefined)
+    if (enterCommitted.current) {
       return clearTimers
     }
-    entered.current = true
 
     if (!hasEnterMotion || reducedMotion) {
+      enterCommitted.current = true
       setState(undefined)
       return clearTimers
     }
 
     setState('enter-from')
     watchdogTimer = globalThis.setTimeout(() => {
-      if (!cancelled) setState(undefined)
+      if (cancelled) return
+      enterCommitted.current = true
+      setState(undefined)
     }, enterMilliseconds + 250)
     cancelPaintBarrier = scheduleAfterPaint(() => {
       if (cancelled) return
+      enterCommitted.current = true
       setState('enter-to')
       completionTimer = globalThis.setTimeout(() => {
         if (cancelled) return
