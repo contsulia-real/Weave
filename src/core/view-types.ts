@@ -57,6 +57,7 @@ export interface RadialGradient {
 
 export type Gradient = LinearGradient | RadialGradient
 export type BackgroundValue = ColorValue | Gradient
+export type MaskValue = string | Gradient
 
 export interface ShadowDefinition {
   x?: Length
@@ -231,6 +232,7 @@ export interface ViewStyleProps {
   transform?: readonly TransformOperation[]
   transformOrigin?: TransformOriginValue
 
+  mask?: MaskValue
   clip?: ClipValue
   blend?: BlendMode
 

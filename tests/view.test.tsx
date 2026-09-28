@@ -48,6 +48,14 @@ describe('View DOM backend', () => {
         padding={1}
         paddingTop={2}
         background="primary"
+        mask={{
+          type: 'linear',
+          angle: 90,
+          stops: [
+            ['transparent', 0],
+            ['black', 1],
+          ],
+        }}
         radius="medium"
         data={{ testid: 'view', state: 'open' }}
       />,
@@ -64,6 +72,11 @@ describe('View DOM backend', () => {
     expect(rule).toContain('--weave-padding-top:2rem;')
     expect(rule).toContain('--weave-padding-right:1rem;')
     expect(rule).toContain('--weave-background:var(--weave-color-primary')
+    expect(rule).toContain('--weave-mask-image:linear-gradient(90deg')
+    expect(element.getAttribute('mask')).toBeNull()
+    expect(
+      document.querySelector('style[data-weave-view-styles]')?.textContent,
+    ).toContain('mask-image: var(--weave-container-responsive-mask-image')
   })
 
   it('keeps style above className above generated property classes', () => {
@@ -157,6 +170,24 @@ describe('View DOM backend', () => {
     expect(element.tabIndex).toBe(0)
     expect(element.getAttribute('aria-disabled')).toBe('true')
     expect(element.getAttribute('aria-label')).toBe('Sidebar')
+  })
+
+  it('keeps normalized native host props when internal props are filtered', () => {
+    const { getByTestId } = render(
+      <View
+        role="region"
+        hidden
+        draggable
+        tabIndex={3}
+        data={{ testid: 'native-host-props' }}
+      />,
+    )
+
+    const element = getByTestId('native-host-props')
+    expect(element.getAttribute('role')).toBe('region')
+    expect(element.hidden).toBe(true)
+    expect(element.draggable).toBe(true)
+    expect(element.tabIndex).toBe(3)
   })
 
   it('maps heading levels through the semantic layer', () => {

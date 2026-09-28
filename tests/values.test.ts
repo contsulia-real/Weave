@@ -5,6 +5,7 @@ import {
   color,
   dimension,
   length,
+  maskImage,
   time,
   transformValue,
 } from '../src/core/values'
@@ -30,6 +31,22 @@ describe('Weave value normalization', () => {
     expect(color('primary')).toBe('var(--weave-color-primary, primary)')
     expect(color('red')).toBe('var(--weave-color-red, red)')
     expect(color('#ff0000')).toBe('#ff0000')
+  })
+
+  it('normalizes mask images without treating resource URLs as colors', () => {
+    expect(maskImage('url("/mask.svg#shape")')).toBe(
+      'url("/mask.svg#shape")',
+    )
+    expect(
+      maskImage({
+        type: 'linear',
+        angle: 90,
+        stops: [
+          ['transparent', 0],
+          ['black', 1],
+        ],
+      }),
+    ).toContain('linear-gradient(90deg')
   })
 
   it('maps semantic dimensions to CSS', () => {

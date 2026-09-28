@@ -64,6 +64,7 @@ const VIEW_STYLE_PROPERTIES = [
   'backdropFilter',
   'transform',
   'transformOrigin',
+  'maskImage',
   'clipPath',
   'mixBlendMode',
   'outlineWidth',

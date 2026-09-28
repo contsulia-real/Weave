@@ -1291,6 +1291,8 @@ hueRotate   → 角度
 SVG
 ```
 
+结构化 `Gradient` 直接使用 Weave 的渐变对象；图像和 SVG 使用合法的 CSS `mask-image` 字符串（例如 `url(...)`，包括 SVG fragment / data URL）。
+
 例如：
 
 ```tsx

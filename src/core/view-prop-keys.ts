@@ -93,6 +93,7 @@ export const VIEW_STYLE_PROP_KEYS = [
   'skewY',
   'transform',
   'transformOrigin',
+  'mask',
   'clip',
   'blend',
   'outlineWidth',

@@ -5,6 +5,7 @@ import type {
   Dimension,
   Gradient,
   Length,
+  MaskValue,
   RadiusValue,
   ShadowDefinition,
   ShadowValue,
@@ -89,6 +90,13 @@ export function background(
 ): string | undefined {
   if (value === undefined) return undefined
   return typeof value === 'string' ? color(value) : gradient(value)
+}
+
+export function maskImage(
+  value: MaskValue | undefined,
+): string | undefined {
+  if (value === undefined) return undefined
+  return typeof value === 'string' ? value : gradient(value)
 }
 
 function shadowPart(value: ShadowDefinition): string {

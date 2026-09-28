@@ -42,6 +42,7 @@ export type {
   Gradient,
   Length,
   LinearGradient,
+  MaskValue,
   RadialGradient,
   RadiusValue,
   ShadowDefinition,
