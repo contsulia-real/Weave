@@ -1,3 +1,4 @@
+import { act } from 'react'
 import {
   cleanup,
   fireEvent,
@@ -8,6 +9,7 @@ import {
   describe,
   expect,
   it,
+  vi,
 } from 'vitest'
 import {
   Badge,
@@ -16,7 +18,10 @@ import {
   defaultTheme,
 } from '../src'
 
-afterEach(cleanup)
+afterEach(() => {
+  cleanup()
+  vi.useRealTimers()
+})
 
 describe('Badge', () => {
   it('renders normal text by default at top-right', () => {
@@ -60,6 +65,57 @@ describe('Badge', () => {
     expect(badge.dataset.weaveBadgeDot).toBe('true')
     expect(badge.getAttribute('aria-hidden')).toBe('true')
     expect(badge.textContent).toBe('')
+  })
+
+  it('plays popup and dismiss motion while preserving the wrapped target', () => {
+    vi.useFakeTimers()
+
+    const {
+      getByRole,
+      queryByText,
+      rerender,
+    } = render(
+      <Badge text="8" visible>
+        <Button text="Inbox" />
+      </Badge>,
+    )
+
+    const badge = queryByText('8') as HTMLElement
+    expect(badge.dataset.weaveBadgeState).toBe('open')
+
+    const stylesheet =
+      document.querySelector<HTMLStyleElement>(
+        'style[data-weave-badge-styles]',
+      )?.textContent ?? ''
+    expect(stylesheet).toContain('@keyframes weave-badge-pop')
+    expect(stylesheet).toContain('@keyframes weave-badge-dismiss')
+
+    rerender(
+      <Badge text="8" visible={false}>
+        <Button text="Inbox" />
+      </Badge>,
+    )
+
+    const closing = queryByText('8') as HTMLElement
+    expect(closing.dataset.weaveBadgeState).toBe('closing')
+    expect(getByRole('button').textContent).toContain('Inbox')
+
+    act(() => {
+      vi.advanceTimersByTime(1000)
+    })
+
+    expect(queryByText('8')).toBeNull()
+    expect(getByRole('button').textContent).toContain('Inbox')
+
+    rerender(
+      <Badge text="8" visible>
+        <Button text="Inbox" />
+      </Badge>,
+    )
+
+    expect(
+      (queryByText('8') as HTMLElement).dataset.weaveBadgeState,
+    ).toBe('open')
   })
 
   it('tracks the wrapped component visual box instead of the static wrapper box', () => {

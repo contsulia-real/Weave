@@ -287,6 +287,32 @@ function InterruptionPlayground() {
   )
 }
 
+function BadgeMotionPlayground() {
+  const [visible, setVisible] = useState(true)
+
+  return (
+    <Column gap={0.75} align="start">
+      <Button
+        text={visible ? 'Hide badges' : 'Show badges'}
+        variant="secondary"
+        viewProps={{
+          onClick: () => setVisible((current) => !current),
+        }}
+      />
+
+      <Row gap={2} align="center" wrap>
+        <Badge text="8" visible={visible}>
+          <Button text="Animated inbox" variant="secondary" />
+        </Badge>
+
+        <Badge dot placement="bottom-right" visible={visible}>
+          <Button text="Animated status" variant="secondary" />
+        </Badge>
+      </Row>
+    </Column>
+  )
+}
+
 function EnterExitPlayground() {
   const [present, setPresent] = useState(true)
 
@@ -1106,6 +1132,13 @@ export function FoundationPlayground() {
             <Button text="Status" variant="secondary" />
           </Badge>
         </Row>
+
+        <Column gap={0.75}>
+          <Text typo="label-medium" color="secondary">
+            Popup / dismiss
+          </Text>
+          <BadgeMotionPlayground />
+        </Column>
       </PlaygroundSection>
 
       <PlaygroundSection

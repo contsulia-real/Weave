@@ -28,6 +28,7 @@ export type BadgeViewProps = Omit<
 interface BadgeBaseProps {
   children: ReactNode
   placement?: BadgePlacement
+  visible?: boolean
   viewProps?: BadgeViewProps
 }
 

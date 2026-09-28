@@ -28,6 +28,59 @@ const stylesheet = `
   letter-spacing: var(--weave-badge-theme-letter-spacing);
   white-space: nowrap;
   pointer-events: none;
+  opacity: 1;
+  scale: 1;
+  transform-origin: center;
+  will-change: opacity, scale;
+}
+
+:where(.weave-badge[data-weave-badge-state="open"]) {
+  animation:
+    weave-badge-pop
+    var(--weave-motion-duration-normal)
+    var(--weave-motion-curve-emphasized)
+    both;
+}
+
+:where(.weave-badge[data-weave-badge-state="closing"]) {
+  animation:
+    weave-badge-dismiss
+    var(--weave-motion-duration-fast)
+    var(--weave-motion-curve-exit)
+    both;
+}
+
+:where(.weave-badge[data-weave-reduced-motion="reduce"]) {
+  animation: none;
+}
+
+@keyframes weave-badge-pop {
+  0% {
+    opacity: 0;
+    scale: 0.65;
+  }
+
+  72% {
+    opacity: 1;
+    scale: 1.08;
+  }
+
+  100% {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+@keyframes weave-badge-dismiss {
+  from {
+    opacity: 1;
+    scale: 1;
+  }
+
+  to {
+    opacity: 0;
+    scale: 0.72;
+  }
 }
 
 :where(.weave-badge--dot) {

@@ -3264,6 +3264,7 @@ active  80%
 ```text
 children     // required, 被 Badge 附着的内容
 placement    // optional, default top-right
+visible      // optional, default true；控制 Badge 本体显隐并保留 children
 text         // normal 模式 required
 dot          // optional; true 时只显示小圆点
 viewProps
@@ -3301,6 +3302,8 @@ bottom-left  bottom  bottom-right
 - `dot` 为 `true` 时只显示小圆点，不显示文字；类型层不允许同时传 `text`。
 - dot 是纯视觉状态点，因此自身 `aria-hidden=true`；正常文本 Badge 保留可读文本。
 - Badge 默认 `pointer-events: none`，不会盖住或拦截被附着控件的点击、hover、focus、drag。
+- `visible` 默认为 `true`。设为 `false` 只隐藏 Badge 本体，不卸载或隐藏被包裹的 `children`。
+- Badge 出现时默认播放 popup（opacity + scale，带轻微 overshoot）；消失时先播放 dismiss（fade + shrink），完成后再卸载 Badge DOM。`reducedMotion=reduce` 时跳过这两段动画。
 - Badge 不使用 ToolTip / Snack 的 portal 或 layer region；它仍在本地包装容器内做定位，但锚点坐标来自被包裹目标的实时视觉边界。
 
 默认主题来自 `theme.components.Badge.base`：正常 Badge 使用 `primary / onPrimary`，并用 `surface` 边界把角标与复杂背景分离；默认高度 `1.25rem`，dot 直径 `0.625rem`。背景、文字、边界、圆角、padding、dot 尺寸、shadow 与 typography 均可由主题覆盖。
