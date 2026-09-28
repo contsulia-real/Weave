@@ -23,6 +23,40 @@ function definitionKey(value: unknown): string {
   return JSON.stringify(value ?? null)
 }
 
+function scheduleAnimationFrame(
+  callback: FrameRequestCallback,
+): () => void {
+  if (
+    typeof window !== 'undefined' &&
+    typeof window.requestAnimationFrame === 'function'
+  ) {
+    const id = window.requestAnimationFrame(callback)
+    return () => window.cancelAnimationFrame(id)
+  }
+
+  const id = globalThis.setTimeout(
+    () => callback(Date.now()),
+    16,
+  )
+  return () => globalThis.clearTimeout(id)
+}
+
+function scheduleAfterPaint(
+  callback: () => void,
+): () => void {
+  let cancelSecond: (() => void) | undefined
+  const cancelFirst = scheduleAnimationFrame(() => {
+    cancelSecond = scheduleAnimationFrame(() => {
+      callback()
+    })
+  })
+
+  return () => {
+    cancelFirst()
+    cancelSecond?.()
+  }
+}
+
 export function useViewMotion<TElement extends HTMLElement>(
   props: ViewProps<TElement>,
   theme: ResolvedTheme,
@@ -95,16 +129,18 @@ export function useViewMotion<TElement extends HTMLElement>(
 
   /* oxlint-disable react/set-state-in-effect */
   useEffect(() => {
-    let targetTimer: ReturnType<typeof setTimeout> | undefined
+    let cancelPaintBarrier: (() => void) | undefined
     let completionTimer: ReturnType<typeof setTimeout> | undefined
+    let watchdogTimer: ReturnType<typeof setTimeout> | undefined
     let cancelled = false
 
     const clearTimers = () => {
-      if (targetTimer !== undefined) {
-        globalThis.clearTimeout(targetTimer)
-      }
+      cancelPaintBarrier?.()
       if (completionTimer !== undefined) {
         globalThis.clearTimeout(completionTimer)
+      }
+      if (watchdogTimer !== undefined) {
+        globalThis.clearTimeout(watchdogTimer)
       }
     }
 
@@ -121,13 +157,20 @@ export function useViewMotion<TElement extends HTMLElement>(
       }
 
       setState('exit-from')
-      targetTimer = globalThis.setTimeout(() => {
+      watchdogTimer = globalThis.setTimeout(() => {
+        if (!cancelled) completeExit?.(exitId)
+      }, exitMilliseconds + 250)
+      cancelPaintBarrier = scheduleAfterPaint(() => {
         if (cancelled) return
         setState('exit-to')
         completionTimer = globalThis.setTimeout(() => {
-          if (!cancelled) completeExit?.(exitId)
+          if (cancelled) return
+          if (watchdogTimer !== undefined) {
+            globalThis.clearTimeout(watchdogTimer)
+          }
+          completeExit?.(exitId)
         }, exitMilliseconds + 20)
-      }, 16)
+      })
 
       return () => {
         cancelled = true
@@ -147,13 +190,20 @@ export function useViewMotion<TElement extends HTMLElement>(
     }
 
     setState('enter-from')
-    targetTimer = globalThis.setTimeout(() => {
+    watchdogTimer = globalThis.setTimeout(() => {
+      if (!cancelled) setState(undefined)
+    }, enterMilliseconds + 250)
+    cancelPaintBarrier = scheduleAfterPaint(() => {
       if (cancelled) return
       setState('enter-to')
       completionTimer = globalThis.setTimeout(() => {
-        if (!cancelled) setState(undefined)
+        if (cancelled) return
+        if (watchdogTimer !== undefined) {
+          globalThis.clearTimeout(watchdogTimer)
+        }
+        setState(undefined)
       }, enterMilliseconds + 20)
-    }, 16)
+    })
 
     return () => {
       cancelled = true

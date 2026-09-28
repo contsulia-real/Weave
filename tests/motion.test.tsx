@@ -239,8 +239,17 @@ describe('View motion', () => {
     )
   })
 
-  it('runs enter presets from initial frame to steady state', () => {
-    vi.useFakeTimers()
+  it('keeps enter-from painted for one frame before switching to enter-to', () => {
+    const frames: FrameRequestCallback[] = []
+    const requestFrame = vi
+      .spyOn(window, 'requestAnimationFrame')
+      .mockImplementation((callback) => {
+        frames.push(callback)
+        return frames.length
+      })
+    const cancelFrame = vi
+      .spyOn(window, 'cancelAnimationFrame')
+      .mockImplementation(() => {})
 
     try {
       const { getByTestId } = render(
@@ -251,30 +260,33 @@ describe('View motion', () => {
       )
 
       const element = getByTestId('enter-view')
-      const frames = motionFramesRule(element)
+      const motionFrames = motionFramesRule(element)
       const transition = motionRule(element)
 
       expect(element.dataset.weaveMotionState).toBe('enter-from')
-      expect(frames).toContain('--weave-motion-enter-from-opacity:0;')
-      expect(frames).toContain(
+      expect(motionFrames).toContain('--weave-motion-enter-from-opacity:0;')
+      expect(motionFrames).toContain(
         '--weave-motion-enter-from-transform:translate(0rem,0.5rem);',
       )
-      expect(frames).toContain('--weave-motion-enter-to-opacity:1;')
+      expect(motionFrames).toContain('--weave-motion-enter-to-opacity:1;')
       expect(transition).toContain(
         '--weave-transition-timing-function:var(--weave-motion-curve-enter);',
       )
+      expect(frames).toHaveLength(1)
 
       act(() => {
-        vi.advanceTimersByTime(16)
+        frames.shift()?.(16)
+      })
+      expect(element.dataset.weaveMotionState).toBe('enter-from')
+      expect(frames).toHaveLength(1)
+
+      act(() => {
+        frames.shift()?.(32)
       })
       expect(element.dataset.weaveMotionState).toBe('enter-to')
-
-      act(() => {
-        vi.advanceTimersByTime(240)
-      })
-      expect(element.dataset.weaveMotionState).toBeUndefined()
     } finally {
-      vi.useRealTimers()
+      requestFrame.mockRestore()
+      cancelFrame.mockRestore()
     }
   })
 
@@ -344,6 +356,13 @@ describe('View motion', () => {
 
       act(() => {
         vi.advanceTimersByTime(16)
+      })
+      expect(
+        queryByTestId('presence-view')?.dataset.weaveMotionState,
+      ).toBe('exit-from')
+
+      act(() => {
+        vi.advanceTimersByTime(18)
       })
       expect(
         queryByTestId('presence-view')?.dataset.weaveMotionState,
