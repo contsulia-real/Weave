@@ -488,6 +488,8 @@ Image
 Input
 Icon
 Switch
+Radio
+Checkbox
 Progress
 Scrollbar
 ```
@@ -2403,6 +2405,50 @@ medium
 large
 ```
 
+## 15.2 `Radio` 与 `Checkbox`
+
+`Radio` 与 `Checkbox` 都是基础组件，并使用真实原生输入控件，而不是用 `div role=...` 模拟：
+
+```text
+Radio    → <input type="radio">
+Checkbox → <input type="checkbox">
+```
+
+公开 API：
+
+```text
+checked
+defaultChecked
+onChange
+disabled
+group
+value
+size
+viewProps
+```
+
+`group` 是框架级分组键，并直接映射到原生 `name`：
+
+```tsx
+<Radio group="theme" value="light" />
+<Radio group="theme" value="dark" />
+
+<Checkbox group="permissions" value="read" />
+<Checkbox group="permissions" value="write" />
+```
+
+规则：
+
+- 相同 `group` 的 Radio 属于同一个原生 radio group，由浏览器负责互斥、键盘与表单语义；
+- 不同 `group` 的 Radio 相互独立；
+- 相同 `group` 的 Checkbox 属于同一个 checkbox group，原生 `name` 相同，但每一项的 checked 状态仍然独立；
+- `group` 不创建额外包装 DOM，也不引入单独的 `RadioGroup` / `CheckboxGroup` 组件；
+- `checked / defaultChecked / onChange` 延续 Switch 的受控 / 非受控布尔状态模型；
+- `disabled` 是组件自己的高层属性，并落到真实原生 input；
+- `small / medium / large` 三档尺寸由 `theme.components.Radio / Checkbox.sizes` 提供。
+
+默认视觉继续使用 Weave 的物理层级语言：Radio / Checkbox 的外壳始终是轻微内凹槽，checked 不会把凹槽本体抹平成一块颜色。Radio checked 后在凹槽内部出现带轻微凸起阴影的 primary 圆点；Checkbox checked 后在凹槽内部出现带轻微凸起阴影的 primary 小方块，并在其上显示 `onPrimary` 勾号。这个关系与 Switch 的“track 凹陷、thumb 凸起”和 Progress 的“track 凹陷、前景抬起”保持一致。深色模式只调整 token、凹槽阴影和凸起阴影，不另造一套描边式设计。
+
 ---
 
 # 16. `Progress`
@@ -4121,6 +4167,8 @@ motion
 Button
 Input
 Switch
+Radio
+Checkbox
 Progress
 Scrollbar
 ToolTip
@@ -5086,6 +5134,8 @@ Button.pressed
 → 不再同时提供 viewProps.pressed
 
 Switch.checked
+Radio.checked
+Checkbox.checked
 → 不再同时提供 viewProps.checked
 
 Input.required

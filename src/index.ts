@@ -8,6 +8,8 @@ export { Icon } from './components/Icon'
 export { Button } from './components/Button'
 export { Input } from './components/Input'
 export { Switch } from './components/Switch'
+export { Radio } from './components/Radio'
+export { Checkbox } from './components/Checkbox'
 export { Progress } from './components/Progress'
 export { ToolTip } from './components/ToolTip'
 export { Snack } from './components/Snack'
@@ -131,6 +133,16 @@ export type {
   SwitchSize,
   SwitchViewProps,
 } from './core/switch-types'
+
+export type {
+  CheckboxProps,
+  CheckboxViewProps,
+  ChoiceControlKind,
+  ChoiceControlSize,
+  ChoiceControlValue,
+  RadioProps,
+  RadioViewProps,
+} from './core/choice-types'
 
 export type {
   ProgressColor,

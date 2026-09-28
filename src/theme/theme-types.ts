@@ -120,6 +120,45 @@ export interface SwitchTheme {
   }
 }
 
+export interface ChoiceControlThemeBase {
+  background?: string
+  borderColor?: string
+  borderWidth?: ThemeScaleValue
+  radius?: ThemeScaleValue
+  cursor?: string
+  shadow?: string
+  hoverShadow?: string
+  indicatorShadow?: string
+  focusOutlineWidth?: ThemeScaleValue
+  focusOutlineColor?: string
+  focusOutlineStyle?: string
+  focusOutlineOffset?: ThemeScaleValue
+}
+
+export interface ChoiceControlThemeSize {
+  size?: ThemeScaleValue
+  indicatorSize?: ThemeScaleValue
+  markSize?: ThemeScaleValue
+}
+
+export interface ChoiceControlTheme {
+  base?: ChoiceControlThemeBase
+  sizes?: Partial<
+    Record<'small' | 'medium' | 'large', ChoiceControlThemeSize>
+  >
+  states?: {
+    checked?: {
+      borderColor?: string
+      indicatorBackground?: string
+      indicatorColor?: string
+    }
+    disabled?: {
+      opacity?: number
+      cursor?: string
+    }
+  }
+}
+
 export interface ButtonThemeBase {
   radius?: ThemeScaleValue
   borderWidth?: ThemeScaleValue
@@ -301,6 +340,8 @@ export interface ThemeComponents {
   Button?: ButtonTheme
   Input?: InputTheme
   Switch?: SwitchTheme
+  Radio?: ChoiceControlTheme
+  Checkbox?: ChoiceControlTheme
   Progress?: ProgressTheme
   Scrollbar?: ScrollbarTheme
   ToolTip?: ToolTipTheme

@@ -80,6 +80,26 @@ export const defaultDarkTheme: ThemeOverride = {
           '0 0.0625rem 0.125rem rgb(0 0 0 / 0.58), 0 0.25rem 0.5rem rgb(0 0 0 / 0.42), inset 0 0.0625rem 0 rgb(255 255 255 / 0.22)',
       },
     },
+    Radio: {
+      base: {
+        shadow:
+          'inset 0 0.125rem 0.1875rem rgb(0 0 0 / 0.52), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.05)',
+        hoverShadow:
+          'inset 0 0.15625rem 0.21875rem rgb(0 0 0 / 0.60), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.07)',
+        indicatorShadow:
+          '0 0.0625rem 0.125rem rgb(0 0 0 / 0.46), 0 0.125rem 0.25rem rgb(0 0 0 / 0.28), inset 0 0.0625rem 0 rgb(255 255 255 / 0.18)',
+      },
+    },
+    Checkbox: {
+      base: {
+        shadow:
+          'inset 0 0.125rem 0.1875rem rgb(0 0 0 / 0.52), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.05)',
+        hoverShadow:
+          'inset 0 0.15625rem 0.21875rem rgb(0 0 0 / 0.60), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.07)',
+        indicatorShadow:
+          '0 0.0625rem 0.125rem rgb(0 0 0 / 0.46), 0 0.125rem 0.25rem rgb(0 0 0 / 0.28), inset 0 0.0625rem 0 rgb(255 255 255 / 0.18)',
+      },
+    },
     Progress: {
       base: {
         trackShadow:
@@ -439,6 +459,100 @@ export const defaultTheme: ResolvedTheme = {
       states: {
         checked: {
           background: 'primary',
+        },
+        disabled: {
+          opacity: 0.5,
+          cursor: 'default',
+        },
+      },
+    },
+    Radio: {
+      base: {
+        background: 'surface',
+        borderColor: 'outline',
+        borderWidth: 0.0625,
+        radius: 'full',
+        cursor: 'pointer',
+        shadow:
+          'inset 0 0.0625rem 0.125rem rgb(58 48 40 / 0.14), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.44)',
+        hoverShadow:
+          'inset 0 0.09375rem 0.15625rem rgb(58 48 40 / 0.18), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.52)',
+        indicatorShadow:
+          '0 0.0625rem 0.125rem rgb(58 48 40 / 0.20), 0 0.125rem 0.25rem rgb(58 48 40 / 0.10), inset 0 0.0625rem 0 rgb(255 255 255 / 0.26)',
+        focusOutlineWidth: 0.125,
+        focusOutlineColor: 'focus',
+        focusOutlineStyle: 'solid',
+        focusOutlineOffset: controlBaseline.focusOutlineOffset,
+      },
+      sizes: {
+        small: {
+          size: 0.875,
+          indicatorSize: 0.375,
+          markSize: 0.25,
+        },
+        medium: {
+          size: 1.125,
+          indicatorSize: 0.5,
+          markSize: 0.3125,
+        },
+        large: {
+          size: 1.375,
+          indicatorSize: 0.625,
+          markSize: 0.375,
+        },
+      },
+      states: {
+        checked: {
+          borderColor: 'primary',
+          indicatorBackground: 'primary',
+          indicatorColor: 'primary',
+        },
+        disabled: {
+          opacity: 0.5,
+          cursor: 'default',
+        },
+      },
+    },
+    Checkbox: {
+      base: {
+        background: 'surface',
+        borderColor: 'outline',
+        borderWidth: 0.0625,
+        radius: 'small',
+        cursor: 'pointer',
+        shadow:
+          'inset 0 0.0625rem 0.125rem rgb(58 48 40 / 0.14), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.44)',
+        hoverShadow:
+          'inset 0 0.09375rem 0.15625rem rgb(58 48 40 / 0.18), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.52)',
+        indicatorShadow:
+          '0 0.0625rem 0.125rem rgb(58 48 40 / 0.20), 0 0.125rem 0.25rem rgb(58 48 40 / 0.10), inset 0 0.0625rem 0 rgb(255 255 255 / 0.26)',
+        focusOutlineWidth: 0.125,
+        focusOutlineColor: 'focus',
+        focusOutlineStyle: 'solid',
+        focusOutlineOffset: controlBaseline.focusOutlineOffset,
+      },
+      sizes: {
+        small: {
+          size: 0.875,
+          indicatorSize: 0.6875,
+          markSize: 0.4375,
+        },
+        medium: {
+          size: 1.125,
+          indicatorSize: 0.875,
+          markSize: 0.5625,
+        },
+        large: {
+          size: 1.375,
+          indicatorSize: 1.0625,
+          markSize: 0.6875,
+        },
+      },
+      states: {
+        checked: {
+          borderColor: 'primary',
+          indicatorBackground: 'primary',
+          indicatorColor: 'onPrimary',
         },
         disabled: {
           opacity: 0.5,

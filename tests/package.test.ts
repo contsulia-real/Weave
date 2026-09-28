@@ -7,6 +7,8 @@ describe('Weave built package entry', () => {
     expect(weave).toBeDefined()
     expect(weave.List).toBeTypeOf('function')
     expect(weave.ListItem).toBeTypeOf('function')
+    expect(weave.Radio).toBeTypeOf('function')
+    expect(weave.Checkbox).toBeTypeOf('function')
     expect(weave.createRoot).toBeTypeOf('function')
   })
 })

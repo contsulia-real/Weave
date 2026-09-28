@@ -22,12 +22,14 @@ const weave = await import(runtimeEntry.href)
 
 const expectedRuntimeExports = [
   'Button',
+  'Checkbox',
   'Icon',
   'Image',
   'Input',
   'List',
   'ListItem',
   'Progress',
+  'Radio',
   'Snack',
   'SnackProvider',
   'Switch',
@@ -55,6 +57,8 @@ assert(
   'Built declarations are missing the ListItem export',
 )
 assert(typeSource.includes('ListProps'), 'Built declarations are missing ListProps')
+assert(typeSource.includes('RadioProps'), 'Built declarations are missing RadioProps')
+assert(typeSource.includes('CheckboxProps'), 'Built declarations are missing CheckboxProps')
 
 assert(
   /from\s*["']react-dom\/client["']/.test(runtimeSource),

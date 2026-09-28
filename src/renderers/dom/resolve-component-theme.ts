@@ -10,6 +10,10 @@ import type {
 import type { ButtonVariant } from '../../core/button-types'
 import type { ProgressMode, ProgressSize } from '../../core/progress-types'
 import type { SwitchSize } from '../../core/switch-types'
+import type {
+  ChoiceControlKind,
+  ChoiceControlSize,
+} from '../../core/choice-types'
 import type { SnackVariant } from '../../core/snack-types'
 import {
   color,
@@ -177,6 +181,61 @@ export function resolveSwitchTheme(
     '--weave-switch-checked-background': color(checked?.background),
     '--weave-switch-disabled-opacity': disabled?.opacity,
     '--weave-switch-disabled-cursor': disabled?.cursor,
+  }
+}
+
+export function resolveChoiceControlTheme(
+  theme: ResolvedTheme,
+  kind: ChoiceControlKind,
+  size: ChoiceControlSize,
+): RuntimeStyleDeclarations {
+  const component =
+    kind === 'radio'
+      ? theme.components.Radio
+      : theme.components.Checkbox
+  const base = component?.base
+  const sized = component?.sizes?.[size]
+  const checked = component?.states?.checked
+  const disabled = component?.states?.disabled
+
+  return {
+    '--weave-choice-size': length(sized?.size),
+    '--weave-choice-indicator-size': length(
+      sized?.indicatorSize,
+    ),
+    '--weave-choice-mark-size': length(
+      sized?.markSize,
+    ),
+    '--weave-choice-background': color(base?.background),
+    '--weave-choice-border-color': color(base?.borderColor),
+    '--weave-choice-border-width': length(base?.borderWidth),
+    '--weave-choice-radius': radius(base?.radius),
+    '--weave-choice-cursor': base?.cursor,
+    '--weave-choice-shadow': base?.shadow,
+    '--weave-choice-hover-shadow': base?.hoverShadow,
+    '--weave-choice-indicator-shadow': base?.indicatorShadow,
+    '--weave-choice-focus-outline-width': length(
+      base?.focusOutlineWidth,
+    ),
+    '--weave-choice-focus-outline-color': color(
+      base?.focusOutlineColor,
+    ),
+    '--weave-choice-focus-outline-style':
+      base?.focusOutlineStyle,
+    '--weave-choice-focus-outline-offset': length(
+      base?.focusOutlineOffset,
+    ),
+    '--weave-choice-checked-border-color': color(
+      checked?.borderColor ?? base?.borderColor,
+    ),
+    '--weave-choice-checked-indicator-background': color(
+      checked?.indicatorBackground,
+    ),
+    '--weave-choice-checked-indicator-color': color(
+      checked?.indicatorColor,
+    ),
+    '--weave-choice-disabled-opacity': disabled?.opacity,
+    '--weave-choice-disabled-cursor': disabled?.cursor,
   }
 }
 

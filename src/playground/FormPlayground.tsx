@@ -2,8 +2,10 @@ import {
   useState,
 } from 'react'
 import {
+  Checkbox,
   Input,
   Progress,
+  Radio,
   Switch,
   Text,
   View,
@@ -129,6 +131,97 @@ export function FormPlayground() {
             <Text typo="body-medium">
               Disabled
             </Text>
+          </View>
+        </View>
+      </PlaygroundSection>
+
+      <PlaygroundSection
+        title="Radio / Checkbox"
+        description="group 直接建立原生分组：同 group Radio 互斥；同 group Checkbox 共享组名但仍可独立勾选。"
+      >
+        <View
+          layout="flex"
+          direction="row"
+          gap={2}
+          align="start"
+          wrap
+        >
+          <View
+            layout="flex"
+            direction="column"
+            gap={0.625}
+          >
+            <Text typo="label-medium">
+              Radio group · theme
+            </Text>
+
+            <View layout="flex" direction="row" gap={0.5} align="center">
+              <Radio
+                group="theme-demo"
+                value="light"
+                defaultChecked
+                viewProps={{ label: 'Light theme' }}
+              />
+              <Text typo="body-medium">Light</Text>
+            </View>
+
+            <View layout="flex" direction="row" gap={0.5} align="center">
+              <Radio
+                group="theme-demo"
+                value="dark"
+                viewProps={{ label: 'Dark theme' }}
+              />
+              <Text typo="body-medium">Dark</Text>
+            </View>
+
+            <View layout="flex" direction="row" gap={0.5} align="center">
+              <Radio
+                group="theme-demo"
+                value="system"
+                disabled
+                viewProps={{ label: 'System theme disabled' }}
+              />
+              <Text typo="body-medium">System · disabled</Text>
+            </View>
+          </View>
+
+          <View
+            layout="flex"
+            direction="column"
+            gap={0.625}
+          >
+            <Text typo="label-medium">
+              Checkbox group · permissions
+            </Text>
+
+            <View layout="flex" direction="row" gap={0.5} align="center">
+              <Checkbox
+                group="permissions-demo"
+                value="read"
+                defaultChecked
+                viewProps={{ label: 'Read permission' }}
+              />
+              <Text typo="body-medium">Read</Text>
+            </View>
+
+            <View layout="flex" direction="row" gap={0.5} align="center">
+              <Checkbox
+                group="permissions-demo"
+                value="write"
+                viewProps={{ label: 'Write permission' }}
+              />
+              <Text typo="body-medium">Write</Text>
+            </View>
+
+            <View layout="flex" direction="row" gap={0.5} align="center">
+              <Checkbox
+                group="permissions-demo"
+                value="admin"
+                disabled
+                viewProps={{ label: 'Admin permission disabled' }}
+              />
+              <Text typo="body-medium">Admin · disabled</Text>
+            </View>
           </View>
         </View>
       </PlaygroundSection>
