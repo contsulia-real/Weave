@@ -15,6 +15,7 @@ import {
   Grid,
   Row,
   Stack,
+  View,
 } from '../src'
 
 afterEach(cleanup)
@@ -114,7 +115,18 @@ describe('formal layout components', () => {
         justify="center"
         data={{ testid: 'stack-plane' }}
       >
-        <div data-testid="stack-background" />
+        <View
+          width="fill"
+          height="fill"
+          data={{ testid: 'stack-background' }}
+        />
+        <View
+          width={4}
+          height={2}
+          alignSelf="center"
+          justifySelf="center"
+          data={{ testid: 'stack-middle' }}
+        />
         <span data-testid="stack-label">Stack</span>
       </Stack>,
     )
@@ -144,10 +156,19 @@ describe('formal layout components', () => {
     )
     expect(stylesheet).toContain('grid-area: 1 / 1;')
 
-    expect(getByTestId('stack-background').parentElement).toBe(
-      stack,
-    )
+    const background = getByTestId('stack-background')
+    const middle = getByTestId('stack-middle')
+
+    expect(background.parentElement).toBe(stack)
+    expect(middle.parentElement).toBe(stack)
     expect(getByTestId('stack-label').parentElement).toBe(stack)
+
+    expect(runtimeRule(background)).toContain('--weave-width:100%;')
+    expect(runtimeRule(background)).toContain('--weave-height:100%;')
+    expect(runtimeRule(middle)).toContain('--weave-width:4rem;')
+    expect(runtimeRule(middle)).toContain('--weave-height:2rem;')
+    expect(runtimeRule(middle)).toContain('--weave-align-self:center;')
+    expect(runtimeRule(middle)).toContain('--weave-justify-self:center;')
   })
 
   it('keeps responsive View layout styles available through Flex', () => {

@@ -93,14 +93,42 @@ export function FoundationPlayground() {
             height={4}
             align="center"
             justify="center"
+            outlineWidth={0.0625}
+            outlineColor="outline"
+            outlineStyle="dashed"
           >
             <View
               width="fill"
               height="fill"
               radius="medium"
-              background="surfaceHover"
+              background="color-mix(in srgb, var(--weave-color-primary) 10%, var(--weave-color-surface))"
+              data={{ testid: 'stack-fill-layer' }}
             />
-            <Text typo="label-medium">Stack</Text>
+
+            <View
+              width={4}
+              height={2}
+              alignSelf="center"
+              justifySelf="center"
+              radius="medium"
+              background="primary"
+              shadow="small"
+              data={{ testid: 'stack-middle-layer' }}
+            />
+
+            <Text
+              typo="label-medium"
+              color="onPrimary"
+              viewProps={{
+                alignSelf: 'center',
+                justifySelf: 'center',
+                data: {
+                  testid: 'stack-top-layer',
+                },
+              }}
+            >
+              Stack
+            </Text>
           </Stack>
 
           <Absolute
