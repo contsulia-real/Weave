@@ -3303,7 +3303,7 @@ bottom-left  bottom  bottom-right
 - dot 是纯视觉状态点，因此自身 `aria-hidden=true`；正常文本 Badge 保留可读文本。
 - Badge 默认 `pointer-events: none`，不会盖住或拦截被附着控件的点击、hover、focus、drag。
 - `visible` 默认为 `true`。设为 `false` 只隐藏 Badge 本体，不卸载或隐藏被包裹的 `children`。
-- Badge 的动画方向由 `placement` 决定：popup 从被包裹目标的**实时视觉中心**移动到对应 placement，同时完成 opacity + scale 的出现；dismiss 沿相反路径从 placement 返回目标视觉中心并 fade + shrink，完成后再卸载 Badge DOM。八个 placement 都使用同一套实时视觉边界计算，不做组件类型特判。`reducedMotion=reduce` 时跳过这两段动画。
+- Badge 的动画**方向**由 `placement` 决定，而不是使用目标中心到 placement 的真实距离：popup 以“组件中心 → placement”为朝向，从最终位置内侧的一小段固定距离滑入并完成 opacity + scale；dismiss 沿相反方向退回同样的短距离后 fade + shrink。八个 placement 只决定方向，实际 motion 距离保持短且稳定，不随目标尺寸变化。`reducedMotion=reduce` 时跳过这两段动画。
 - Badge 不使用 ToolTip / Snack 的 portal 或 layer region；它仍在本地包装容器内做定位，但锚点坐标来自被包裹目标的实时视觉边界。
 
 默认主题来自 `theme.components.Badge.base`：正常 Badge 使用 `primary / onPrimary`，并用 `surface` 边界把角标与复杂背景分离；默认高度 `1.25rem`，dot 直径 `0.625rem`。背景、文字、边界、圆角、padding、dot 尺寸、shadow 与 typography 均可由主题覆盖。

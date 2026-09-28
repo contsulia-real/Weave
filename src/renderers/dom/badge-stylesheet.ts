@@ -28,6 +28,8 @@ const stylesheet = `
   letter-spacing: var(--weave-badge-theme-letter-spacing);
   white-space: nowrap;
   pointer-events: none;
+  --weave-badge-motion-distance: 0.5rem;
+  --weave-badge-motion-diagonal: 0.35rem;
   --weave-badge-motion-x: 0px;
   --weave-badge-motion-y: 0px;
   opacity: 1;
@@ -105,14 +107,8 @@ const stylesheet = `
   > :where(.weave-badge) {
   top: var(--weave-badge-target-top, 0px);
   left: var(--weave-badge-target-left, 0px);
-  --weave-badge-motion-x: calc(
-    var(--weave-badge-target-center-x, 0px) -
-    var(--weave-badge-target-left, 0px)
-  );
-  --weave-badge-motion-y: calc(
-    var(--weave-badge-target-center-y, 0px) -
-    var(--weave-badge-target-top, 0px)
-  );
+  --weave-badge-motion-x: var(--weave-badge-motion-diagonal);
+  --weave-badge-motion-y: var(--weave-badge-motion-diagonal);
   transform: translate(-50%, -50%);
 }
 
@@ -120,10 +116,7 @@ const stylesheet = `
   > :where(.weave-badge) {
   top: var(--weave-badge-target-top, 0px);
   left: var(--weave-badge-target-center-x, 50%);
-  --weave-badge-motion-y: calc(
-    var(--weave-badge-target-center-y, 0px) -
-    var(--weave-badge-target-top, 0px)
-  );
+  --weave-badge-motion-y: var(--weave-badge-motion-distance);
   transform: translate(-50%, -50%);
 }
 
@@ -131,14 +124,9 @@ const stylesheet = `
   > :where(.weave-badge) {
   top: var(--weave-badge-target-top, 0px);
   left: var(--weave-badge-target-right, 100%);
-  --weave-badge-motion-x: calc(
-    var(--weave-badge-target-center-x, 0px) -
-    var(--weave-badge-target-right, 0px)
-  );
-  --weave-badge-motion-y: calc(
-    var(--weave-badge-target-center-y, 0px) -
-    var(--weave-badge-target-top, 0px)
-  );
+  --weave-badge-motion-x:
+    calc(-1 * var(--weave-badge-motion-diagonal));
+  --weave-badge-motion-y: var(--weave-badge-motion-diagonal);
   transform: translate(-50%, -50%);
 }
 
@@ -146,10 +134,8 @@ const stylesheet = `
   > :where(.weave-badge) {
   top: var(--weave-badge-target-center-y, 50%);
   left: var(--weave-badge-target-right, 100%);
-  --weave-badge-motion-x: calc(
-    var(--weave-badge-target-center-x, 0px) -
-    var(--weave-badge-target-right, 0px)
-  );
+  --weave-badge-motion-x:
+    calc(-1 * var(--weave-badge-motion-distance));
   transform: translate(-50%, -50%);
 }
 
@@ -157,14 +143,10 @@ const stylesheet = `
   > :where(.weave-badge) {
   top: var(--weave-badge-target-bottom, 100%);
   left: var(--weave-badge-target-right, 100%);
-  --weave-badge-motion-x: calc(
-    var(--weave-badge-target-center-x, 0px) -
-    var(--weave-badge-target-right, 0px)
-  );
-  --weave-badge-motion-y: calc(
-    var(--weave-badge-target-center-y, 0px) -
-    var(--weave-badge-target-bottom, 0px)
-  );
+  --weave-badge-motion-x:
+    calc(-1 * var(--weave-badge-motion-diagonal));
+  --weave-badge-motion-y:
+    calc(-1 * var(--weave-badge-motion-diagonal));
   transform: translate(-50%, -50%);
 }
 
@@ -172,10 +154,8 @@ const stylesheet = `
   > :where(.weave-badge) {
   top: var(--weave-badge-target-bottom, 100%);
   left: var(--weave-badge-target-center-x, 50%);
-  --weave-badge-motion-y: calc(
-    var(--weave-badge-target-center-y, 0px) -
-    var(--weave-badge-target-bottom, 0px)
-  );
+  --weave-badge-motion-y:
+    calc(-1 * var(--weave-badge-motion-distance));
   transform: translate(-50%, -50%);
 }
 
@@ -183,14 +163,9 @@ const stylesheet = `
   > :where(.weave-badge) {
   top: var(--weave-badge-target-bottom, 100%);
   left: var(--weave-badge-target-left, 0px);
-  --weave-badge-motion-x: calc(
-    var(--weave-badge-target-center-x, 0px) -
-    var(--weave-badge-target-left, 0px)
-  );
-  --weave-badge-motion-y: calc(
-    var(--weave-badge-target-center-y, 0px) -
-    var(--weave-badge-target-bottom, 0px)
-  );
+  --weave-badge-motion-x: var(--weave-badge-motion-diagonal);
+  --weave-badge-motion-y:
+    calc(-1 * var(--weave-badge-motion-diagonal));
   transform: translate(-50%, -50%);
 }
 
@@ -198,10 +173,7 @@ const stylesheet = `
   > :where(.weave-badge) {
   top: var(--weave-badge-target-center-y, 50%);
   left: var(--weave-badge-target-left, 0px);
-  --weave-badge-motion-x: calc(
-    var(--weave-badge-target-center-x, 0px) -
-    var(--weave-badge-target-left, 0px)
-  );
+  --weave-badge-motion-x: var(--weave-badge-motion-distance);
   transform: translate(-50%, -50%);
 }
 `
