@@ -31,17 +31,21 @@ const stylesheet = `
   font-weight: var(--weave-input-theme-font-weight);
   line-height: var(--weave-input-theme-line-height);
   letter-spacing: var(--weave-input-theme-letter-spacing);
-  transition:
-    background-color var(--weave-motion-duration-fast)
-      var(--weave-motion-curve-standard),
-    border-color var(--weave-motion-duration-fast)
-      var(--weave-motion-curve-standard),
-    color var(--weave-motion-duration-fast)
-      var(--weave-motion-curve-standard),
-    opacity var(--weave-motion-duration-fast)
-      var(--weave-motion-curve-standard),
-    box-shadow var(--weave-motion-duration-fast)
-      var(--weave-motion-curve-standard);
+  --weave-component-transition-property:
+    background-color, border-color, color, opacity, box-shadow;
+  --weave-component-transition-duration:
+    var(--weave-motion-duration-fast),
+    var(--weave-motion-duration-fast),
+    var(--weave-motion-duration-fast),
+    var(--weave-motion-duration-fast),
+    var(--weave-motion-duration-fast);
+  --weave-component-transition-timing-function:
+    var(--weave-motion-curve-standard),
+    var(--weave-motion-curve-standard),
+    var(--weave-motion-curve-standard),
+    var(--weave-motion-curve-standard),
+    var(--weave-motion-curve-standard);
+  --weave-component-transition-delay: 0ms;
 }
 
 :where(.weave-input::placeholder) {

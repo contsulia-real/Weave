@@ -65,11 +65,14 @@ const stylesheet = `
 
   min-width: 0;
 
-  transition:
-    background var(--weave-motion-duration-fast)
-      var(--weave-motion-curve-standard),
-    color var(--weave-motion-duration-fast)
-      var(--weave-motion-curve-standard);
+  --weave-component-transition-property: background, color;
+  --weave-component-transition-duration:
+    var(--weave-motion-duration-fast),
+    var(--weave-motion-duration-fast);
+  --weave-component-transition-timing-function:
+    var(--weave-motion-curve-standard),
+    var(--weave-motion-curve-standard);
+  --weave-component-transition-delay: 0ms;
 }
 
 :where(
@@ -223,11 +226,6 @@ const stylesheet = `
   margin-inline-start: auto;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  :where(.weave-list-item) {
-    transition: none;
-  }
-}
 `
 
 export function ensureListStylesheet(): void {

@@ -5,8 +5,10 @@ import {
   useState,
   type ReactNode,
 } from 'react'
+import type { ReducedMotionPreference } from '../core/motion-types'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { ThemeContext } from './theme-context'
+import { useResolvedReducedMotion } from './reduced-motion'
 import {
   mergeThemeDefinitions,
   resolveTheme,
@@ -55,17 +57,24 @@ function useResolvedMode(mode: ThemeMode): 'light' | 'dark' {
 export interface ThemeProviderProps {
   theme?: ThemeDefinition
   mode?: ThemeMode
+  reducedMotion?: ReducedMotionPreference
   children?: ReactNode
 }
 
 export function ThemeProvider({
   theme = {},
   mode,
+  reducedMotion,
   children,
 }: ThemeProviderProps) {
   const parent = useContext(ThemeContext)
   const requestedMode = mode ?? parent.requestedMode
   const activeMode = useResolvedMode(requestedMode)
+  const requestedReducedMotion =
+    reducedMotion ?? parent.requestedReducedMotion
+  const activeReducedMotion = useResolvedReducedMotion(
+    requestedReducedMotion,
+  )
 
   const definition = useMemo(
     () => mergeThemeDefinitions(parent.definition, theme),
@@ -83,8 +92,15 @@ export function ThemeProvider({
       theme: resolvedTheme,
       mode: activeMode,
       requestedMode,
+      requestedReducedMotion,
     }),
-    [activeMode, definition, requestedMode, resolvedTheme],
+    [
+      activeMode,
+      definition,
+      requestedMode,
+      requestedReducedMotion,
+      resolvedTheme,
+    ],
   )
 
   const variables = useMemo(
@@ -111,6 +127,9 @@ export function ThemeProvider({
       <span
         data-weave-theme=""
         data-weave-theme-mode={activeMode}
+        data-weave-reduced-motion={
+          activeReducedMotion ? 'reduce' : 'no-preference'
+        }
         className={['weave-theme', className].filter(Boolean).join(' ')}
       >
         {children}

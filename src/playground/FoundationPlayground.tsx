@@ -231,6 +231,71 @@ export function FoundationPlayground() {
       </PlaygroundSection>
 
       <PlaygroundSection
+        title="Motion · transition"
+        description="ViewProps transition 使用主题 motion token；hover 状态由浏览器原生 CSS transition 插值。右侧 reducedMotion=reduce 直接跳到最终状态。"
+      >
+        <Row gap={1.5} wrap align="center">
+          <Column
+            width={9}
+            height={5}
+            align="center"
+            justify="center"
+            radius="medium"
+            background="surfaceHover"
+            transition="slow"
+            hover={{
+              scale: 1.08,
+              background: 'primary',
+              color: 'onPrimary',
+            }}
+          >
+            <Text typo="label-medium">Hover · slow</Text>
+          </Column>
+
+          <Column
+            width={9}
+            height={5}
+            align="center"
+            justify="center"
+            radius="medium"
+            background="surfaceHover"
+            transition={{
+              properties: ['transform', 'opacity'],
+              duration: 240,
+              delay: 40,
+              curve: [0.22, 1, 0.36, 1],
+            }}
+            hover={{
+              translateY: -0.25,
+              scale: 1.04,
+              opacity: 0.72,
+            }}
+          >
+            <Text typo="label-medium">Precise · 240ms</Text>
+          </Column>
+
+          <ThemeProvider reducedMotion="reduce">
+            <Column
+              width={9}
+              height={5}
+              align="center"
+              justify="center"
+              radius="medium"
+              background="surfaceHover"
+              transition="slow"
+              hover={{
+                scale: 1.08,
+                background: 'primary',
+                color: 'onPrimary',
+              }}
+            >
+              <Text typo="label-medium">Reduced · instant</Text>
+            </Column>
+          </ThemeProvider>
+        </Row>
+      </PlaygroundSection>
+
+      <PlaygroundSection
         title="Theme inheritance"
         description='两块都使用 background="primary"；右侧只通过 mode="dark" 改变同一 token。'
       >

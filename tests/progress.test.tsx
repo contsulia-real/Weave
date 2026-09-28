@@ -336,14 +336,23 @@ describe('Progress', () => {
     expect(element.getAttribute('style')).toContain('width: 18px')
   })
 
-  it('installs reduced-motion handling in its stylesheet', () => {
-    render(<Progress undetermined mode="spin" />)
+  it('uses the resolved framework reduced-motion policy', () => {
+    const { getByRole } = render(
+      <ThemeProvider reducedMotion="reduce">
+        <Progress undetermined mode="spin" />
+      </ThemeProvider>,
+    )
 
+    const progress = getByRole('progressbar')
     const stylesheet = document.querySelector(
       'style[data-weave-progress-styles]',
     )
 
+    expect(progress.dataset.weaveReducedMotion).toBe('reduce')
     expect(stylesheet?.textContent).toContain(
+      'data-weave-reduced-motion="reduce"',
+    )
+    expect(stylesheet?.textContent).not.toContain(
       '@media (prefers-reduced-motion: reduce)',
     )
   })

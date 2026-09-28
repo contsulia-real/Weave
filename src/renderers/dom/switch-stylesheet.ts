@@ -35,9 +35,11 @@ const stylesheet = `
   font: inherit;
   text-align: inherit;
 
-  transition:
-    background-color var(--weave-motion-duration-fast)
-      var(--weave-motion-curve-standard);
+  --weave-component-transition-property: background-color;
+  --weave-component-transition-duration: var(--weave-motion-duration-fast);
+  --weave-component-transition-timing-function:
+    var(--weave-motion-curve-standard);
+  --weave-component-transition-delay: 0ms;
 }
 
 :where(.weave-switch:focus-visible) {
@@ -126,11 +128,9 @@ const stylesheet = `
   transition: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  :where(.weave-switch),
-  :where(.weave-switch__thumb) {
-    transition: none;
-  }
+:where(.weave-switch[data-weave-reduced-motion="reduce"])
+  > :where(.weave-switch__thumb) {
+  transition: none;
 }
 `
 

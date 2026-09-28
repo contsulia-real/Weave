@@ -61,17 +61,21 @@ const stylesheet = `
   vertical-align: middle;
   transform: translateY(0) scale(1);
   transform-origin: center;
-  transition:
-    background-color var(--weave-motion-duration-normal)
-      var(--weave-motion-curve-standard),
-    border-color var(--weave-motion-duration-normal)
-      var(--weave-motion-curve-standard),
-    box-shadow var(--weave-motion-duration-fast)
-      var(--weave-motion-curve-standard),
-    opacity var(--weave-motion-duration-fast)
-      var(--weave-motion-curve-standard),
-    transform var(--weave-motion-duration-fast)
-      var(--weave-motion-curve-spring);
+  --weave-component-transition-property:
+    background-color, border-color, box-shadow, opacity, transform;
+  --weave-component-transition-duration:
+    var(--weave-motion-duration-normal),
+    var(--weave-motion-duration-normal),
+    var(--weave-motion-duration-fast),
+    var(--weave-motion-duration-fast),
+    var(--weave-motion-duration-fast);
+  --weave-component-transition-timing-function:
+    var(--weave-motion-curve-standard),
+    var(--weave-motion-curve-standard),
+    var(--weave-motion-curve-standard),
+    var(--weave-motion-curve-standard),
+    var(--weave-motion-curve-spring);
+  --weave-component-transition-delay: 0ms;
 }
 
 :where(.weave-choice-control:hover:not([aria-disabled="true"])) {
@@ -230,14 +234,15 @@ const stylesheet = `
   transition-delay: calc(var(--weave-motion-duration-fast) * 0.18);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  :where(.weave-choice-control),
+:where(.weave-choice-field[data-weave-reduced-motion="reduce"])
   :where(.weave-choice-state-layer),
+:where(.weave-choice-field[data-weave-reduced-motion="reduce"])
   :where(.weave-choice-visual),
+:where(.weave-choice-field[data-weave-reduced-motion="reduce"])
   :where(.weave-radio__dot),
+:where(.weave-choice-field[data-weave-reduced-motion="reduce"])
   :where(.weave-checkbox__mark-path) {
-    transition: none;
-  }
+  transition: none;
 }
 `
 

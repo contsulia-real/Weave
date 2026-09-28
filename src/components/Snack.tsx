@@ -166,7 +166,7 @@ export function Snack({
   const snackHostScopeId =
     snackHostContext?.scopeId ??
     'standalone'
-  const { theme, mode } =
+  const { theme, mode, reducedMotion } =
     useTheme()
   const base =
     theme.components.Snack?.base
@@ -275,15 +275,6 @@ export function Snack({
 
     setVisualState('closing')
 
-    const reducedMotion =
-      typeof window !== 'undefined' &&
-        typeof window.matchMedia ===
-        'function'
-        ? window.matchMedia(
-          '(prefers-reduced-motion: reduce)',
-        ).matches
-        : false
-
     if (reducedMotion) {
       completeDismiss()
       return
@@ -306,6 +297,7 @@ export function Snack({
     completeDismiss,
     exitDuration,
     present,
+    reducedMotion,
     resolvedOpen,
   ])
   /* oxlint-enable react/set-state-in-effect */

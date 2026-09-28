@@ -64,6 +64,8 @@ assert(
   /export\s*\{\s*ListItem\s*\}\s*from\s*['"]\.\/components\/ListItem['"]/.test(typeSource),
   'Built declarations are missing the ListItem export',
 )
+assert(typeSource.includes('ViewTransition'), 'Built declarations are missing ViewTransition')
+assert(typeSource.includes('ReducedMotionPreference'), 'Built declarations are missing ReducedMotionPreference')
 assert(typeSource.includes('AbsoluteProps'), 'Built declarations are missing AbsoluteProps')
 assert(typeSource.includes('FlexProps'), 'Built declarations are missing FlexProps')
 assert(typeSource.includes('GridProps'), 'Built declarations are missing GridProps')

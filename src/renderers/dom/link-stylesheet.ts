@@ -57,10 +57,8 @@ const stylesheet = `
   flex: 0 0 auto;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  :where(.weave-link)::after {
-    transition: none;
-  }
+:where(.weave-link[data-weave-reduced-motion="reduce"])::after {
+  transition: none;
 }
 `
 

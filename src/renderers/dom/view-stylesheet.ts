@@ -142,8 +142,25 @@ const propertyRegistrationBlock = () =>
     )
     .join('')
 
+const motionPropertyRegistrationBlock = () => [
+  '--weave-component-transition-property',
+  '--weave-component-transition-duration',
+  '--weave-component-transition-timing-function',
+  '--weave-component-transition-delay',
+  '--weave-transition-property',
+  '--weave-transition-duration',
+  '--weave-transition-timing-function',
+  '--weave-transition-delay',
+]
+  .map(
+    (variable) =>
+      `@property ${variable} { syntax: "*"; inherits: false; }`,
+  )
+  .join('')
+
 const stylesheet = `
 ${propertyRegistrationBlock()}
+${motionPropertyRegistrationBlock()}
 
 :root {
   ${themeVariableDeclarations(defaultTheme)}
@@ -162,6 +179,22 @@ ${propertyRegistrationBlock()}
   line-height: inherit;
   letter-spacing: inherit;
   ${declarationBlock()}
+  transition-property: var(
+    --weave-transition-property,
+    var(--weave-component-transition-property, none)
+  );
+  transition-duration: var(
+    --weave-transition-duration,
+    var(--weave-component-transition-duration, 0ms)
+  );
+  transition-timing-function: var(
+    --weave-transition-timing-function,
+    var(--weave-component-transition-timing-function, ease)
+  );
+  transition-delay: var(
+    --weave-transition-delay,
+    var(--weave-component-transition-delay, 0ms)
+  );
 }
 
 :where([data-weave-view]:hover) {

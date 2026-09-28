@@ -126,19 +126,23 @@ const stylesheet = `
   line-height: var(--weave-button-line-height);
   letter-spacing: var(--weave-button-letter-spacing);
   text-decoration: none;
-  transition:
-    background-color var(--weave-motion-duration-fast)
-      var(--weave-motion-curve-standard),
-    border-color var(--weave-motion-duration-fast)
-      var(--weave-motion-curve-standard),
-    color var(--weave-motion-duration-fast)
-      var(--weave-motion-curve-standard),
-    opacity var(--weave-motion-duration-fast)
-      var(--weave-motion-curve-standard),
-    transform var(--weave-motion-duration-fast)
-      var(--weave-motion-curve-spring),
-    box-shadow var(--weave-motion-duration-fast)
-      var(--weave-motion-curve-spring);
+  --weave-component-transition-property:
+    background-color, border-color, color, opacity, transform, box-shadow;
+  --weave-component-transition-duration:
+    var(--weave-motion-duration-fast),
+    var(--weave-motion-duration-fast),
+    var(--weave-motion-duration-fast),
+    var(--weave-motion-duration-fast),
+    var(--weave-motion-duration-fast),
+    var(--weave-motion-duration-fast);
+  --weave-component-transition-timing-function:
+    var(--weave-motion-curve-standard),
+    var(--weave-motion-curve-standard),
+    var(--weave-motion-curve-standard),
+    var(--weave-motion-curve-standard),
+    var(--weave-motion-curve-spring),
+    var(--weave-motion-curve-spring);
+  --weave-component-transition-delay: 0ms;
 }
 
 :where(
@@ -228,26 +232,16 @@ const stylesheet = `
   gap: var(--weave-button-gap);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  :where(.weave-button) {
-    transition:
-      background-color var(--weave-motion-duration-fast)
-        var(--weave-motion-curve-standard),
-      border-color var(--weave-motion-duration-fast)
-        var(--weave-motion-curve-standard),
-      color var(--weave-motion-duration-fast)
-        var(--weave-motion-curve-standard),
-      opacity var(--weave-motion-duration-fast)
-        var(--weave-motion-curve-standard),
-      box-shadow var(--weave-motion-duration-fast)
-        var(--weave-motion-curve-standard);
-  }
-
-  :where(.weave-button:hover:not([aria-disabled="true"])),
-  :where(.weave-button:active:not([aria-disabled="true"])),
-  :where(.weave-button[aria-pressed="true"]:not([aria-disabled="true"])) {
-    --weave-component-transform: none;
-  }
+:where(
+  .weave-button[data-weave-reduced-motion="reduce"]:hover:not([aria-disabled="true"])
+),
+:where(
+  .weave-button[data-weave-reduced-motion="reduce"]:active:not([aria-disabled="true"])
+),
+:where(
+  .weave-button[data-weave-reduced-motion="reduce"][aria-pressed="true"]:not([aria-disabled="true"])
+) {
+  --weave-component-transform: none;
 }
 `
 

@@ -84,6 +84,17 @@ export type {
 } from './theme/theme-types'
 
 export type {
+  MotionCurve,
+  MotionCurveSteps,
+  MotionCurveStepsPosition,
+  MotionDuration,
+  ReducedMotionPreference,
+  ViewMotionProps,
+  ViewTransition,
+  ViewTransitionConfig,
+} from './core/motion-types'
+
+export type {
   AbsoluteProps,
   ColumnProps,
   FlexProps,

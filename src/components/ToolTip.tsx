@@ -166,7 +166,7 @@ export function ToolTip({
     viewProps.id ??
     `weave-tooltip-${reactId}`
 
-  const { theme, mode } =
+  const { theme, mode, reducedMotion } =
     useTheme()
   const base =
     theme.components.ToolTip?.base
@@ -208,15 +208,6 @@ export function ToolTip({
 
     setVisualState('closing')
 
-    const view =
-      targetRef.current
-        ?.ownerDocument
-        .defaultView
-    const reducedMotion =
-      view?.matchMedia?.(
-        '(prefers-reduced-motion: reduce)',
-      ).matches ?? false
-
     if (reducedMotion) {
       setPresent(false)
       return
@@ -238,6 +229,7 @@ export function ToolTip({
   }, [
     exitDuration,
     present,
+    reducedMotion,
     resolvedOpen,
   ])
   /* oxlint-enable react/set-state-in-effect */

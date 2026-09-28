@@ -222,39 +222,41 @@ const stylesheet = `
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  :where(.weave-progress--spin.weave-progress--determined)
-    > :where(.weave-progress__value) {
-    transition: none;
-  }
+:where(
+  .weave-progress[data-weave-reduced-motion="reduce"].weave-progress--spin.weave-progress--determined
+) > :where(.weave-progress__value),
+:where(
+  .weave-progress[data-weave-reduced-motion="reduce"].weave-progress--linear.weave-progress--determined
+) > :where(.weave-progress__value) {
+  transition: none;
+}
 
-  :where(.weave-progress--linear.weave-progress--determined)
-    > :where(.weave-progress__value) {
-    transition: none;
-  }
+:where(
+  .weave-progress[data-weave-reduced-motion="reduce"].weave-progress--spin.weave-progress--undetermined
+) > :where(.weave-progress__value) {
+  animation: none;
+  transform: rotate(0deg);
+}
 
-  :where(.weave-progress--spin.weave-progress--undetermined)
-    > :where(.weave-progress__value) {
-    animation: none;
-    transform: rotate(0deg);
-  }
+:where(
+  .weave-progress[data-weave-reduced-motion="reduce"].weave-progress--linear.weave-progress--undetermined
+) > :where(.weave-progress__value)::before,
+:where(
+  .weave-progress[data-weave-reduced-motion="reduce"].weave-progress--linear.weave-progress--undetermined
+) > :where(.weave-progress__value)::after {
+  animation: none;
+}
 
-  :where(.weave-progress--linear.weave-progress--undetermined)
-    > :where(.weave-progress__value)::before,
-  :where(.weave-progress--linear.weave-progress--undetermined)
-    > :where(.weave-progress__value)::after {
-    animation: none;
-  }
+:where(
+  .weave-progress[data-weave-reduced-motion="reduce"].weave-progress--linear.weave-progress--undetermined
+) > :where(.weave-progress__value)::before {
+  transform: translateX(70%);
+}
 
-  :where(.weave-progress--linear.weave-progress--undetermined)
-    > :where(.weave-progress__value)::before {
-    transform: translateX(70%);
-  }
-
-  :where(.weave-progress--linear.weave-progress--undetermined)
-    > :where(.weave-progress__value)::after {
-    display: none;
-  }
+:where(
+  .weave-progress[data-weave-reduced-motion="reduce"].weave-progress--linear.weave-progress--undetermined
+) > :where(.weave-progress__value)::after {
+  display: none;
 }
 `
 

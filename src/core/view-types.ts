@@ -1,3 +1,4 @@
+import type { ViewMotionProps } from './motion-types'
 import type {
   CSSProperties,
   HTMLAttributes,
@@ -310,6 +311,7 @@ export type ViewCoreProps<
   NativeElementProps<TElement> &
   ViewStyleProps &
   ViewSemanticProps &
+  ViewMotionProps &
   ViewBreakpointProps & {
   children?: ReactNode
   ref?: Ref<TElement>

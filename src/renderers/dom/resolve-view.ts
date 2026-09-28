@@ -64,6 +64,7 @@ const CUSTOM_PROP_KEYS = new Set<string>([
   'disabledStyle',
   'container',
   'scrollbar',
+  'transition',
   'sm',
   'md',
   'lg',

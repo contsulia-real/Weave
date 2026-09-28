@@ -78,11 +78,14 @@ const stylesheet = `
   translate: 0 0;
   will-change: opacity, translate;
 
-  transition:
-    opacity var(--weave-motion-duration-fast)
-      var(--weave-motion-curve-enter),
-    translate var(--weave-motion-duration-normal)
-      var(--weave-motion-curve-emphasized);
+  --weave-component-transition-property: opacity, translate;
+  --weave-component-transition-duration:
+    var(--weave-motion-duration-fast),
+    var(--weave-motion-duration-normal);
+  --weave-component-transition-timing-function:
+    var(--weave-motion-curve-enter),
+    var(--weave-motion-curve-emphasized);
+  --weave-component-transition-delay: 0ms;
 }
 
 :where(.weave-snack[data-weave-snack-placement^="top-"]) {
@@ -109,11 +112,14 @@ const stylesheet = `
 :where(.weave-snack[data-weave-snack-state="closing"]) {
   opacity: 0;
   translate: 0 var(--weave-snack-exit-y);
-  transition:
-    opacity var(--weave-motion-duration-fast)
-      var(--weave-motion-curve-exit),
-    translate var(--weave-motion-duration-fast)
-      var(--weave-motion-curve-exit);
+  --weave-component-transition-property: opacity, translate;
+  --weave-component-transition-duration:
+    var(--weave-motion-duration-fast),
+    var(--weave-motion-duration-fast);
+  --weave-component-transition-timing-function:
+    var(--weave-motion-curve-exit),
+    var(--weave-motion-curve-exit);
+  --weave-component-transition-delay: 0ms;
 }
 
 :where(.weave-snack__lifetime) {
@@ -187,13 +193,11 @@ const stylesheet = `
   flex: 0 0 auto;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  :where(.weave-snack),
-  :where(.weave-snack[data-weave-snack-state="closing"]) {
-    transition: none;
-    translate: 0 0;
-  }
-
+:where(.weave-snack[data-weave-reduced-motion="reduce"]),
+:where(
+  .weave-snack[data-weave-reduced-motion="reduce"][data-weave-snack-state="closing"]
+) {
+  translate: 0 0;
 }
 `
 

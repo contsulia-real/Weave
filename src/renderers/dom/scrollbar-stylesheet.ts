@@ -104,25 +104,24 @@ const stylesheet = `
   scale: 1 var(--weave-feedback-drag-scale);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  :where(.weave-scrollbar__thumb) {
-    transition:
-      background-color var(--weave-motion-duration-fast)
-        var(--weave-motion-curve-standard),
-      opacity var(--weave-motion-duration-fast)
-        var(--weave-motion-curve-standard);
-  }
+:where(.weave-scrollbar[data-weave-reduced-motion="reduce"])
+  > :where(.weave-scrollbar__thumb) {
+  transition:
+    background-color var(--weave-motion-duration-fast)
+      var(--weave-motion-curve-standard),
+    opacity var(--weave-motion-duration-fast)
+      var(--weave-motion-curve-standard);
+}
 
-  :where(.weave-scrollbar--vertical:hover)
-    > :where(.weave-scrollbar__thumb),
-  :where(.weave-scrollbar--vertical[data-weave-scrollbar-dragging="true"])
-    > :where(.weave-scrollbar__thumb),
-  :where(.weave-scrollbar--horizontal:hover)
-    > :where(.weave-scrollbar__thumb),
-  :where(.weave-scrollbar--horizontal[data-weave-scrollbar-dragging="true"])
-    > :where(.weave-scrollbar__thumb) {
-    scale: 1;
-  }
+:where(.weave-scrollbar[data-weave-reduced-motion="reduce"].weave-scrollbar--vertical:hover)
+  > :where(.weave-scrollbar__thumb),
+:where(.weave-scrollbar[data-weave-reduced-motion="reduce"].weave-scrollbar--vertical[data-weave-scrollbar-dragging="true"])
+  > :where(.weave-scrollbar__thumb),
+:where(.weave-scrollbar[data-weave-reduced-motion="reduce"].weave-scrollbar--horizontal:hover)
+  > :where(.weave-scrollbar__thumb),
+:where(.weave-scrollbar[data-weave-reduced-motion="reduce"].weave-scrollbar--horizontal[data-weave-scrollbar-dragging="true"])
+  > :where(.weave-scrollbar__thumb) {
+  scale: 1;
 }
 `
 

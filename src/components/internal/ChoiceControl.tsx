@@ -30,7 +30,7 @@ export function ChoiceControl({
   size = 'medium',
   viewProps = {},
 }: ChoiceControlProps) {
-  const { theme } = useTheme()
+  const { theme, reducedMotion } = useTheme()
   const themeClassName = useRuntimeStyleClass(
     `${kind}-theme`,
     resolveChoiceControlTheme(
@@ -65,6 +65,9 @@ export function ChoiceControl({
     <label
       data-weave-choice-field=""
       data-weave-choice-disabled={disabled ? 'true' : 'false'}
+      data-weave-reduced-motion={
+        reducedMotion ? 'reduce' : 'no-preference'
+      }
       className={[
         'weave-choice-field',
         `weave-choice-field--${kind}`,

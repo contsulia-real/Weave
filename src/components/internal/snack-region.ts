@@ -59,14 +59,11 @@ function snackElements(
 function reducedMotion(
   element: HTMLElement,
 ): boolean {
-  const view =
-    element.ownerDocument.defaultView
-
-  return (
-    view?.matchMedia?.(
-      '(prefers-reduced-motion: reduce)',
-    ).matches ?? false
+  const motionHost = element.querySelector<HTMLElement>(
+    '[data-weave-reduced-motion]',
   )
+
+  return motionHost?.dataset.weaveReducedMotion === 'reduce'
 }
 
 function motionDuration(

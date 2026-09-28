@@ -4867,6 +4867,8 @@ style > className > 实例属性体系 > 当前主题 > defaultTheme
 
 当前动画模型：
 
+> 实现状态：当前代码已经落地框架级 `transition` 与 `ThemeProvider reducedMotion`。下面列出的 `enter / exit / layoutAnimation / spring / repeat / keyframes / stagger / interruption` 仍属于本节冻结的目标模型，尚未全部进入公开实现；后续必须建立在当前 transition / reduced-motion 核心之上逐项完成，不能把组件内部已有动画等同于通用 Motion API。
+
 ```text
 Motion
 ├─ transition
@@ -4913,6 +4915,15 @@ Motion
   }}
 />
 ```
+
+当前实现规则：
+
+- `transition="fast"` 这类简写默认作用于 `all`，时长优先解析当前主题的 `motion.duration.fast`。
+- `properties` 可以使用 React 风格 camelCase，例如 `backgroundColor`，DOM/CSS 后端统一输出 `background-color`。
+- `duration / delay` 裸数字按毫秒解释；精确配置未提供 `delay` 时必须是 `0ms`，不能偷偷继承 `instant` token。
+- `curve` 的字符串若命中当前主题曲线名则解析为主题变量；否则按原生 CSS timing-function 字符串处理。tuple 转为 `cubic-bezier(...)`，steps 对象转为 `steps(...)`。
+- View stylesheet 是宿主 `transition-*` 的唯一输出层。组件默认动效只能写 `--weave-component-transition-*` fallback，公开 `viewProps.transition` 写 `--weave-transition-*` 实例变量，因此公共优先级保持 `style > className > viewProps Motion > 组件默认 Motion`。
+- Motion 变量与其他 View 实例变量一样使用 `@property ... inherits: false`，禁止父组件 transition 无意泄漏到子 View。
 
 ---
 
@@ -5235,6 +5246,14 @@ no-preference
 ```text
 system
 ```
+
+当前实现规则：
+
+- `system` 由主题层唯一的 `(prefers-reduced-motion: reduce)` 订阅解析；组件、renderer 和布局动画辅助代码不得再次自行调用 `matchMedia`。
+- 每个使用 ViewHost 的真实宿主都会得到最终的 `data-weave-reduced-motion="reduce|no-preference"`，组件内部 thumb、marker、progress animation、tooltip/snack presence 等都服从这个最终 policy。
+- `reduce` 会把框架宿主 transition 解析成 `property: none / duration: 0ms / delay: 0ms`，内部持续动画或位移动画也必须进入静态最终状态。
+- `no-preference` 是显式覆盖，因此嵌套在外层 `reduce` Provider 中时必须能够重新启用 motion；不能再靠组件自己的 `@media` 把它强制关闭。
+- 未显式传 `ThemeProvider` 时仍默认按 `system` 解析，而不是默认假设允许动画。
 
 ---
 

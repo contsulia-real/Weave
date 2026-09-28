@@ -35,13 +35,16 @@ const stylesheet = `
   translate: 0 0;
   scale: 1;
   will-change: opacity, translate, scale;
-  transition:
-    opacity var(--weave-motion-duration-fast)
-      var(--weave-motion-curve-enter),
-    translate var(--weave-motion-duration-normal)
-      var(--weave-motion-curve-emphasized),
-    scale var(--weave-motion-duration-normal)
-      var(--weave-motion-curve-emphasized);
+  --weave-component-transition-property: opacity, translate, scale;
+  --weave-component-transition-duration:
+    var(--weave-motion-duration-fast),
+    var(--weave-motion-duration-normal),
+    var(--weave-motion-duration-normal);
+  --weave-component-transition-timing-function:
+    var(--weave-motion-curve-enter),
+    var(--weave-motion-curve-emphasized),
+    var(--weave-motion-curve-emphasized);
+  --weave-component-transition-delay: 0ms;
 }
 
 @starting-style {
@@ -60,13 +63,16 @@ const stylesheet = `
     var(--weave-tooltip-motion-x)
     var(--weave-tooltip-motion-y);
   scale: 0.99;
-  transition:
-    opacity var(--weave-motion-duration-fast)
-      var(--weave-motion-curve-exit),
-    translate var(--weave-motion-duration-fast)
-      var(--weave-motion-curve-exit),
-    scale var(--weave-motion-duration-fast)
-      var(--weave-motion-curve-exit);
+  --weave-component-transition-property: opacity, translate, scale;
+  --weave-component-transition-duration:
+    var(--weave-motion-duration-fast),
+    var(--weave-motion-duration-fast),
+    var(--weave-motion-duration-fast);
+  --weave-component-transition-timing-function:
+    var(--weave-motion-curve-exit),
+    var(--weave-motion-curve-exit),
+    var(--weave-motion-curve-exit);
+  --weave-component-transition-delay: 0ms;
 }
 
 :where(.weave-tooltip)::before {
@@ -135,13 +141,12 @@ const stylesheet = `
   border-bottom-width: var(--weave-tooltip-border-width);
   transform: translateY(-50%) rotate(45deg);
 }
-@media (prefers-reduced-motion: reduce) {
-  :where(.weave-tooltip),
-  :where(.weave-tooltip[data-weave-tooltip-state="closing"]) {
-    transition: none;
-    translate: 0 0;
-    scale: 1;
-  }
+:where(.weave-tooltip[data-weave-reduced-motion="reduce"]),
+:where(
+  .weave-tooltip[data-weave-reduced-motion="reduce"][data-weave-tooltip-state="closing"]
+) {
+  translate: 0 0;
+  scale: 1;
 }
 
 `
