@@ -3568,7 +3568,7 @@ offset = 0.5rem
 viewportPadding = 0.5rem
 ```
 
-定位使用 trigger 的实时 `getBoundingClientRect()` 与 panel 实际尺寸；viewport resize、任意祖先 scroll、trigger resize / mutation / interaction transition，以及 panel ResizeObserver 都会触发重新定位。业务代码不提供 left / top 坐标。
+定位使用 trigger 的实时 `getBoundingClientRect()` 与 panel 实际尺寸；viewport resize、任意祖先 scroll、trigger resize / mutation / interaction transition，以及 panel ResizeObserver 都会触发重新定位。相同的 anchor tracker 同时提供 viewport-exit dismiss，因此定位与“anchor 是否仍可见”不是两套监听系统。业务代码不提供 left / top 坐标。
 
 ## 19.5.2 打开、关闭与 focus
 
@@ -3582,6 +3582,7 @@ viewportPadding = 0.5rem
 - 默认 `autoFocus=true`，打开后聚焦 panel 内第一个可聚焦元素；若没有，则聚焦 panel 本身；
 - 默认 `restoreFocus=true`；Escape、程序化关闭等场景下，如果 focus 仍在 panel / body，关闭后恢复到 trigger；
 - outside pointer dismiss 不抢回 focus，让用户刚点击的外部目标正常获得 focus；
+- anchored-overlay 基础规则：anchor 只要仍与 viewport 有交集就保持打开；anchor 完全离开 viewport 后自动 dismiss，并且不把 focus 强行恢复到已经离屏的 anchor；
 - controlled `open / onOpenChange` 与 uncontrolled `defaultOpen` 都支持；
 - exit transition 完成前 panel 保留在 DOM 中，随后才卸载；
 - `prefers-reduced-motion: reduce` 时跳过退出等待与位移 / scale motion。
@@ -3745,7 +3746,7 @@ submenuOffset = 0.25rem
 viewportPadding = 0.5rem
 ```
 
-submenu 使用 side-start 语义：默认从父 item 右侧、顶部对齐展开；右侧空间不足时自动 flip 到左侧，并沿纵轴 shift 保持在 viewport 内。任意祖先 scroll、viewport resize、anchor / panel resize 或视觉动画变化都会重新定位。root Menu 打开期间持续观察 trigger；只要 trigger 仍与 viewport 有交集就保持打开，trigger 完全离开 viewport 后自动关闭整棵菜单树，并且不把 focus 强行拉回已经离屏的 trigger。
+submenu 使用 side-start 语义：默认从父 item 右侧、顶部对齐展开；右侧空间不足时自动 flip 到左侧，并沿纵轴 shift 保持在 viewport 内。任意祖先 scroll、viewport resize、anchor / panel resize 或视觉动画变化都会重新定位。root Menu 不自己实现 viewport-exit 判断，而是继承 anchored-overlay 的统一 anchor-hidden dismiss：trigger 仍与 viewport 有交集时保持打开，完全离开 viewport 后关闭整棵菜单树，并且不把 focus 强行拉回已经离屏的 trigger。
 
 root 和所有 submenu 都使用同一个 semantic `overlay` layer、ThemeProvider 上下文与 exit-presence 生命周期。collision flip 后 motion 方向跟随最终实际方向。
 
@@ -6061,7 +6062,7 @@ CSS variables + runtime classes + framework stylesheet
 
 其中 `Presence`、Provider 与 Hook 不属于 ViewHost 宿主链路；它们分别负责生命周期编排和 React context / 命令式能力。只有实际承载 DOM 的组件才进入 `useViewHost → DOM + CSS` 这条宿主路径。
 
-内部实现按职责继续拆分而不是形成新的集中式 god-file：静态 framework stylesheet 共享统一安装器；组件主题解析按 controls / actions / progress / overlays / lists 分域；List 的内容归一化、selection、roving focus 与 virtualization layout 分离；Badge / ToolTip / Snack / Menu 共用 exit-presence 基础生命周期，Badge / ToolTip / Popover / Menu 的视觉锚点更新复用统一的 rAF / observer 跟踪基础设施；Snack 的 lifetime、内容渲染、队列策略、region registry / host positioning 与 region FLIP layout animation 分属独立 internal 模块。公开 API 不暴露这些内部 helper。
+内部实现按职责继续拆分而不是形成新的集中式 god-file：静态 framework stylesheet 共享统一安装器；组件主题解析按 controls / actions / progress / overlays / lists 分域；List 的内容归一化、selection、roving focus 与 virtualization layout 分离；Badge / ToolTip / Snack / Menu 共用 exit-presence 基础生命周期，Badge / ToolTip / Popover / Menu 的视觉锚点更新复用统一的 rAF / observer 跟踪基础设施；Popover / Menu root 进一步共用 anchored-overlay 的 viewport-exit dismiss helper，组件层只决定 dismiss 后的 focus 语义，不重复判断 anchor visibility；Snack 的 lifetime、内容渲染、队列策略、region registry / host positioning 与 region FLIP layout animation 分属独立 internal 模块。公开 API 不暴露这些内部 helper。
 
 ---
 

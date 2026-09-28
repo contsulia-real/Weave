@@ -464,6 +464,117 @@ describe('Popover', () => {
     })
   })
 
+  it('stays open while its anchor intersects the viewport and dismisses once the anchor fully leaves it', async () => {
+    const {
+      getByRole,
+    } = render(
+      <Popover
+        content="Viewport popover"
+      >
+        <Button text="Viewport trigger" />
+      </Popover>,
+    )
+
+    const trigger =
+      getByRole('button', {
+        name: 'Viewport trigger',
+      })
+
+    trigger.getBoundingClientRect =
+      () =>
+        ({
+          x: 100,
+          y: 100,
+          left: 100,
+          top: 100,
+          right: 140,
+          bottom: 140,
+          width: 40,
+          height: 40,
+          toJSON: () => ({}),
+        }) as DOMRect
+
+    fireEvent.click(trigger)
+
+    const dialog =
+      getByRole('dialog')
+
+    await waitFor(() => {
+      expect(
+        dialog.style.visibility,
+      ).toBe('visible')
+    })
+
+    const initialTop =
+      dialog.style.top
+
+    trigger.getBoundingClientRect =
+      () =>
+        ({
+          x: 100,
+          y: -10,
+          left: 100,
+          top: -10,
+          right: 140,
+          bottom: 10,
+          width: 40,
+          height: 20,
+          toJSON: () => ({}),
+        }) as DOMRect
+
+    fireEvent.scroll(window)
+
+    await waitFor(() => {
+      expect(
+        trigger.getAttribute(
+          'aria-expanded',
+        ),
+      ).toBe('true')
+      expect(
+        dialog.style.top,
+      ).not.toBe(initialTop)
+    })
+
+    trigger.getBoundingClientRect =
+      () =>
+        ({
+          x: 100,
+          y: -40,
+          left: 100,
+          top: -40,
+          right: 140,
+          bottom: 0,
+          width: 40,
+          height: 40,
+          toJSON: () => ({}),
+        }) as DOMRect
+
+    fireEvent.scroll(window)
+
+    await waitFor(() => {
+      expect(
+        trigger.getAttribute(
+          'aria-expanded',
+        ),
+      ).toBe('false')
+      expect(
+        document.activeElement,
+      ).not.toBe(trigger)
+    })
+
+    fireEvent.transitionEnd(
+      dialog,
+    )
+
+    await waitFor(() => {
+      expect(
+        document.querySelector(
+          '[data-weave-popover]',
+        ),
+      ).toBeNull()
+    })
+  })
+
   it('uses a dedicated theme surface and directional enter/exit motion', () => {
     const theme =
       createTheme({

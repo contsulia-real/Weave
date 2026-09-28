@@ -1,9 +1,13 @@
 import {
+  useCallback,
   useEffect,
   useLayoutEffect,
   useRef,
   type RefObject,
 } from 'react'
+import {
+  useAnchorViewportDismiss,
+} from './use-anchor-viewport-dismiss'
 
 function restoreAttribute(
   target: HTMLElement,
@@ -45,6 +49,18 @@ export function useMenuTrigger(
     useRef(false)
   const restoreFocusRef =
     useRef(true)
+  const dismissForAnchorExit =
+    useCallback(() => {
+      restoreFocusRef.current =
+        false
+      closeAll(false)
+    }, [closeAll])
+
+  useAnchorViewportDismiss(
+    targetRef,
+    open,
+    dismissForAnchorExit,
+  )
 
   useLayoutEffect(() => {
     const wrapper =
@@ -263,91 +279,17 @@ export function useMenuTrigger(
       closeAll(false)
     }
 
-    const view =
-      document.defaultView
-
-    const dismissForViewportExit = () => {
-      restoreFocusRef.current =
-        false
-      closeAll(false)
-    }
-
-    const checkViewport = () => {
-      if (view === null) {
-        return
-      }
-
-      const rect =
-        target.getBoundingClientRect()
-      const outside =
-        rect.bottom <= 0 ||
-        rect.top >=
-          view.innerHeight ||
-        rect.right <= 0 ||
-        rect.left >=
-          view.innerWidth
-
-      if (outside) {
-        dismissForViewportExit()
-      }
-    }
-
-    const intersectionObserver =
-      typeof IntersectionObserver ===
-      'undefined'
-        ? null
-        : new IntersectionObserver(
-            (entries) => {
-              const entry =
-                entries.find(
-                  (candidate) =>
-                    candidate.target ===
-                    target,
-                )
-
-              if (
-                entry !== undefined &&
-                !entry.isIntersecting
-              ) {
-                dismissForViewportExit()
-              }
-            },
-          )
-
     document.addEventListener(
       'pointerdown',
       pointerDown,
       true,
     )
-    view?.addEventListener(
-      'scroll',
-      checkViewport,
-      true,
-    )
-    view?.addEventListener(
-      'resize',
-      checkViewport,
-    )
-    intersectionObserver?.observe(
-      target,
-    )
-
     return () => {
       document.removeEventListener(
         'pointerdown',
         pointerDown,
         true,
       )
-      view?.removeEventListener(
-        'scroll',
-        checkViewport,
-        true,
-      )
-      view?.removeEventListener(
-        'resize',
-        checkViewport,
-      )
-      intersectionObserver?.disconnect()
     }
   }, [
     closeAll,

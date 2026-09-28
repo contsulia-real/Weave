@@ -1,9 +1,13 @@
 import {
+  useCallback,
   useEffect,
   useLayoutEffect,
   useRef,
   type RefObject,
 } from 'react'
+import {
+  useAnchorViewportDismiss,
+} from './use-anchor-viewport-dismiss'
 
 const FOCUSABLE_SELECTOR = [
   'button:not([disabled])',
@@ -49,6 +53,18 @@ export function usePopoverInteraction(
     useRef(false)
   const previousOpenRef =
     useRef(false)
+  const dismissForAnchorExit =
+    useCallback(() => {
+      skipRestoreRef.current =
+        true
+      close()
+    }, [close])
+
+  useAnchorViewportDismiss(
+    targetRef,
+    open,
+    dismissForAnchorExit,
+  )
 
   useLayoutEffect(() => {
     const wrapper =
