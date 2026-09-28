@@ -1,9 +1,9 @@
 import {
   useLayoutEffect,
-  useRef,
   type ReactNode,
   type RefObject,
 } from 'react'
+import { trackVisualAnchor } from './visual-anchor-tracker'
 
 interface VisualRect {
   left: number
@@ -12,31 +12,27 @@ interface VisualRect {
   bottom: number
 }
 
-function sameRect(
-  first: VisualRect | undefined,
-  second: VisualRect,
-): boolean {
-  if (first === undefined) return false
-
-  return (
-    Math.abs(first.left - second.left) < 0.01 &&
-    Math.abs(first.top - second.top) < 0.01 &&
-    Math.abs(first.right - second.right) < 0.01 &&
-    Math.abs(first.bottom - second.bottom) < 0.01
-  )
-}
-
 function setAnchorVariables(
   wrapper: HTMLElement,
   target: HTMLElement,
 ): VisualRect {
-  const wrapperRect = wrapper.getBoundingClientRect()
-  const targetRect = target.getBoundingClientRect()
+  const wrapperRect =
+    wrapper.getBoundingClientRect()
+  const targetRect =
+    target.getBoundingClientRect()
   const rect = {
-    left: targetRect.left - wrapperRect.left,
-    top: targetRect.top - wrapperRect.top,
-    right: targetRect.right - wrapperRect.left,
-    bottom: targetRect.bottom - wrapperRect.top,
+    left:
+      targetRect.left -
+      wrapperRect.left,
+    top:
+      targetRect.top -
+      wrapperRect.top,
+    right:
+      targetRect.right -
+      wrapperRect.left,
+    bottom:
+      targetRect.bottom -
+      wrapperRect.top,
   }
 
   wrapper.style.setProperty(
@@ -67,15 +63,26 @@ function setAnchorVariables(
   return rect
 }
 
+const INTERACTION_EVENTS = [
+  'pointerenter',
+  'pointerleave',
+  'pointerdown',
+  'pointerup',
+  'pointercancel',
+  'focusin',
+  'focusout',
+] as const
+
 export function useBadgeAnchor(
-  wrapperRef: RefObject<HTMLSpanElement | null>,
+  wrapperRef:
+    RefObject<HTMLSpanElement | null>,
   children: ReactNode,
 ): void {
-  const frameRef = useRef<number | undefined>(undefined)
-
   useLayoutEffect(() => {
-    const wrapper = wrapperRef.current
-    const target = wrapper?.firstElementChild
+    const wrapper =
+      wrapperRef.current
+    const target =
+      wrapper?.firstElementChild
 
     if (
       wrapper === null ||
@@ -85,140 +92,24 @@ export function useBadgeAnchor(
       return
     }
 
-    const view = target.ownerDocument.defaultView
-    let lastRect: VisualRect | undefined
-    let stableFrames = 0
-    let visualEffects = 0
-
-    const hasRunningAnimation = () =>
-      typeof target.getAnimations === 'function' &&
-      target
-        .getAnimations({ subtree: true })
-        .some((animation) =>
-          animation.playState === 'running' ||
-          animation.pending,
+    return trackVisualAnchor(
+      target,
+      () => {
+        setAnchorVariables(
+          wrapper,
+          target,
         )
-
-    const sync = () => {
-      const nextRect = setAnchorVariables(wrapper, target)
-      stableFrames = sameRect(lastRect, nextRect)
-        ? stableFrames + 1
-        : 0
-      lastRect = nextRect
-    }
-
-    const queueFrame = () => {
-      if (
-        frameRef.current !== undefined ||
-        view === null ||
-        typeof view.requestAnimationFrame !== 'function'
-      ) {
-        return
-      }
-
-      frameRef.current = view.requestAnimationFrame(() => {
-        frameRef.current = undefined
-        sync()
-
-        if (
-          visualEffects > 0 ||
-          hasRunningAnimation() ||
-          stableFrames < 2
-        ) {
-          queueFrame()
-        }
-      })
-    }
-
-    const startTracking = () => {
-      stableFrames = 0
-      sync()
-      queueFrame()
-    }
-
-    const beginVisualEffect = () => {
-      visualEffects += 1
-      startTracking()
-    }
-
-    const endVisualEffect = () => {
-      visualEffects = Math.max(0, visualEffects - 1)
-      startTracking()
-    }
-
-    const resizeObserver =
-      typeof ResizeObserver === 'undefined'
-        ? null
-        : new ResizeObserver(startTracking)
-
-    resizeObserver?.observe(wrapper)
-    resizeObserver?.observe(target)
-
-    const mutationObserver =
-      typeof MutationObserver === 'undefined'
-        ? null
-        : new MutationObserver(startTracking)
-
-    mutationObserver?.observe(target, {
-      attributes: true,
-      childList: true,
-      subtree: true,
-    })
-
-    for (const eventName of [
-      'pointerenter',
-      'pointerleave',
-      'pointerdown',
-      'pointerup',
-      'pointercancel',
-      'focusin',
-      'focusout',
-    ]) {
-      target.addEventListener(eventName, startTracking)
-    }
-
-    target.addEventListener('transitionrun', beginVisualEffect)
-    target.addEventListener('transitionend', endVisualEffect)
-    target.addEventListener('transitioncancel', endVisualEffect)
-    target.addEventListener('animationstart', beginVisualEffect)
-    target.addEventListener('animationend', endVisualEffect)
-    target.addEventListener('animationcancel', endVisualEffect)
-    view?.addEventListener('resize', startTracking)
-
-    startTracking()
-
-    return () => {
-      resizeObserver?.disconnect()
-      mutationObserver?.disconnect()
-
-      for (const eventName of [
-        'pointerenter',
-        'pointerleave',
-        'pointerdown',
-        'pointerup',
-        'pointercancel',
-        'focusin',
-        'focusout',
-      ]) {
-        target.removeEventListener(eventName, startTracking)
-      }
-
-      target.removeEventListener('transitionrun', beginVisualEffect)
-      target.removeEventListener('transitionend', endVisualEffect)
-      target.removeEventListener('transitioncancel', endVisualEffect)
-      target.removeEventListener('animationstart', beginVisualEffect)
-      target.removeEventListener('animationend', endVisualEffect)
-      target.removeEventListener('animationcancel', endVisualEffect)
-      view?.removeEventListener('resize', startTracking)
-
-      if (
-        frameRef.current !== undefined &&
-        view !== null &&
-        typeof view.cancelAnimationFrame === 'function'
-      ) {
-        view.cancelAnimationFrame(frameRef.current)
-      }
-      frameRef.current = undefined
-    }
-  }, [children, wrapperRef])
+      },
+      {
+        additionalTargets: [wrapper],
+        trackMutations: true,
+        interactionEvents:
+          INTERACTION_EVENTS,
+        continuousAnimations: true,
+      },
+    )
+  }, [
+    children,
+    wrapperRef,
+  ])
 }

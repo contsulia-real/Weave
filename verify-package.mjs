@@ -84,6 +84,31 @@ assert(typeSource.includes('LinkProps'), 'Built declarations are missing LinkPro
 assert(typeSource.includes('RadioProps'), 'Built declarations are missing RadioProps')
 assert(typeSource.includes('CheckboxProps'), 'Built declarations are missing CheckboxProps')
 
+const expectedThemeTypeExports = [
+  'UseThemeResult',
+  'ThemeComponents',
+  'ThemeScaleValue',
+  'InputTheme',
+  'SwitchTheme',
+  'ChoiceControlTheme',
+  'BadgeTheme',
+  'LinkTheme',
+  'ButtonTheme',
+  'ProgressTheme',
+  'ScrollbarTheme',
+  'ToolTipTheme',
+  'SnackTheme',
+  'ListTheme',
+  'ListItemTheme',
+]
+
+for (const name of expectedThemeTypeExports) {
+  assert(
+    typeSource.includes(name),
+    `Built declarations are missing theme type export: ${name}`,
+  )
+}
+
 assert(
   /from\s*["']react-dom\/client["']/.test(runtimeSource),
   'Built package must keep react-dom/client external',

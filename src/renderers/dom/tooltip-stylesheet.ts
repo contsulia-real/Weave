@@ -1,3 +1,5 @@
+import { ensureStaticStylesheet } from './static-stylesheet'
+
 const stylesheet = `
 :where(.weave-tooltip) {
   --weave-component-width: max-content;
@@ -152,23 +154,5 @@ const stylesheet = `
 `
 
 export function ensureToolTipStylesheet(): void {
-  if (typeof document === 'undefined') return
-
-  const existing =
-    document.querySelector<HTMLStyleElement>(
-      'style[data-weave-tooltip-styles]',
-    )
-
-  if (existing !== null) {
-    if (existing.textContent !== stylesheet) {
-      existing.textContent = stylesheet
-    }
-    return
-  }
-
-  const element =
-    document.createElement('style')
-  element.dataset.weaveTooltipStyles = ''
-  element.textContent = stylesheet
-  document.head.append(element)
+  ensureStaticStylesheet('tooltip', stylesheet)
 }

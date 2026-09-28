@@ -1,3 +1,5 @@
+import { ensureStaticStylesheet } from './static-stylesheet'
+
 const stylesheet = `
 :where(.weave-choice-field) {
   display: inline-flex;
@@ -247,21 +249,5 @@ const stylesheet = `
 `
 
 export function ensureChoiceControlStylesheet(): void {
-  if (typeof document === 'undefined') return
-
-  const existing = document.querySelector<HTMLStyleElement>(
-    'style[data-weave-choice-control-styles]',
-  )
-
-  if (existing !== null) {
-    if (existing.textContent !== stylesheet) {
-      existing.textContent = stylesheet
-    }
-    return
-  }
-
-  const element = document.createElement('style')
-  element.dataset.weaveChoiceControlStyles = ''
-  element.textContent = stylesheet
-  document.head.append(element)
+  ensureStaticStylesheet('choice-control', stylesheet)
 }

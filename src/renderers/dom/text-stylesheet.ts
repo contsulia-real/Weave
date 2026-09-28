@@ -65,6 +65,8 @@ const declarationBlock = () =>
       `${cssProperty(property)}: ${sourceChain(property)};`,
   ).join('')
 
+import { ensureStaticStylesheet } from './static-stylesheet'
+
 const stylesheet = `
 ${propertyRegistrationBlock()}
 
@@ -84,23 +86,7 @@ ${propertyRegistrationBlock()}
 `
 
 export function ensureTextStylesheet(): void {
-  if (typeof document === 'undefined') return
-
-  const existing = document.querySelector<HTMLStyleElement>(
-    'style[data-weave-text-styles]',
-  )
-
-  if (existing !== null) {
-    if (existing.textContent !== stylesheet) {
-      existing.textContent = stylesheet
-    }
-    return
-  }
-
-  const element = document.createElement('style')
-  element.dataset.weaveTextStyles = ''
-  element.textContent = stylesheet
-  document.head.append(element)
+  ensureStaticStylesheet('text', stylesheet)
 }
 
 export {

@@ -167,6 +167,8 @@ const motionPropertyRegistrationBlock = () => [
   )
   .join('')
 
+import { ensureStaticStylesheet } from './static-stylesheet'
+
 const stylesheet = `
 ${propertyRegistrationBlock()}
 ${motionPropertyRegistrationBlock()}
@@ -381,23 +383,7 @@ ${motionPropertyRegistrationBlock()}
 `
 
 export function ensureViewStylesheet(): void {
-  if (typeof document === 'undefined') return
-
-  const existing = document.querySelector<HTMLStyleElement>(
-    'style[data-weave-view-styles]',
-  )
-
-  if (existing !== null) {
-    if (existing.textContent !== stylesheet) {
-      existing.textContent = stylesheet
-    }
-    return
-  }
-
-  const element = document.createElement('style')
-  element.dataset.weaveViewStyles = ''
-  element.textContent = stylesheet
-  document.head.append(element)
+  ensureStaticStylesheet('view', stylesheet)
 }
 
 export {

@@ -90,6 +90,8 @@ const sizeDeclarations: Readonly<Record<ButtonSize, string>> = {
   `,
 }
 
+import { ensureStaticStylesheet } from './static-stylesheet'
+
 const stylesheet = `
 :where(.weave-button) {
   --weave-component-display: inline-flex;
@@ -256,21 +258,5 @@ export function buttonSizeDeclarations(size: ButtonSize): string {
 }
 
 export function ensureButtonStylesheet(): void {
-  if (typeof document === 'undefined') return
-
-  const existing = document.querySelector<HTMLStyleElement>(
-    'style[data-weave-button-styles]',
-  )
-
-  if (existing !== null) {
-    if (existing.textContent !== stylesheet) {
-      existing.textContent = stylesheet
-    }
-    return
-  }
-
-  const element = document.createElement('style')
-  element.dataset.weaveButtonStyles = ''
-  element.textContent = stylesheet
-  document.head.append(element)
+  ensureStaticStylesheet('button', stylesheet)
 }

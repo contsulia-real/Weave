@@ -70,19 +70,55 @@ export type {
 
 export { ThemeProvider } from './theme/ThemeProvider'
 export { useTheme } from './theme/theme-context'
+export type { UseThemeResult } from './theme/theme-context'
 export type { ThemeProviderProps } from './theme/ThemeProvider'
 export { createTheme } from './theme/create-theme'
 export { defaultTheme } from './theme/default-theme'
 export type {
+  BadgeTheme,
+  BadgeThemeBase,
+  ButtonTheme,
+  ButtonThemeBase,
+  ButtonThemeSize,
+  ButtonThemeVariant,
+  ChoiceControlTheme,
+  ChoiceControlThemeBase,
+  ChoiceControlThemeSize,
+  InputTheme,
+  InputThemeBase,
+  LinkTheme,
+  LinkThemeBase,
+  ListItemTheme,
+  ListItemThemeBase,
+  ListTheme,
+  ListThemeBase,
+  ProgressTheme,
+  ProgressThemeBase,
+  ProgressThemeSize,
   ResolvedTheme,
+  ScrollbarTheme,
+  ScrollbarThemeBase,
+  ScrollbarThemeSize,
+  SnackTheme,
+  SnackThemeBase,
+  SnackThemeVariant,
+  SwitchTheme,
+  SwitchThemeBase,
+  SwitchThemeSize,
+  ThemeComponents,
   ThemeDefinition,
   ThemeFeedbackTokens,
   ThemeInput,
-  ThemeTypographyStyle,
-  ThemeTypographyTokens,
   ThemeMode,
   ThemeOverride,
+  ThemeScaleValue,
+  ThemeTokenGroup,
+  ThemeTokenScalar,
   ThemeTokens,
+  ThemeTypographyStyle,
+  ThemeTypographyTokens,
+  ToolTipTheme,
+  ToolTipThemeBase,
 } from './theme/theme-types'
 
 export type {

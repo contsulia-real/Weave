@@ -1,3 +1,5 @@
+import { ensureStaticStylesheet } from './static-stylesheet'
+
 const stylesheet = `
 :where(.weave-list) {
   --weave-component-display: flex;
@@ -229,32 +231,5 @@ const stylesheet = `
 `
 
 export function ensureListStylesheet(): void {
-  if (typeof document === 'undefined') {
-    return
-  }
-
-  const existing =
-    document.querySelector<HTMLStyleElement>(
-      'style[data-weave-list-styles]',
-    )
-
-  if (existing !== null) {
-    if (
-      existing.textContent !==
-      stylesheet
-    ) {
-      existing.textContent =
-        stylesheet
-    }
-    return
-  }
-
-  const element =
-    document.createElement('style')
-
-  element.dataset.weaveListStyles =
-    ''
-  element.textContent =
-    stylesheet
-  document.head.append(element)
+  ensureStaticStylesheet('list', stylesheet)
 }

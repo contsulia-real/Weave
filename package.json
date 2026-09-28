@@ -1,7 +1,24 @@
 {
   "name": "weave",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0-alpha.0",
+  "description": "A browser-native React UI framework built on semantic components, DOM and CSS.",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/contsulia-real/Weave.git"
+  },
+  "homepage": "https://github.com/contsulia-real/Weave#readme",
+  "bugs": {
+    "url": "https://github.com/contsulia-real/Weave/issues"
+  },
+  "keywords": [
+    "react",
+    "ui",
+    "components",
+    "design-system",
+    "web"
+  ],
   "type": "module",
   "main": "./dist/weave.js",
   "module": "./dist/weave.js",

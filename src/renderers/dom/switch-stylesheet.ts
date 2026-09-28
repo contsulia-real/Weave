@@ -1,3 +1,5 @@
+import { ensureStaticStylesheet } from './static-stylesheet'
+
 const stylesheet = `
 :where(.weave-switch-field) {
   display: inline-flex;
@@ -135,21 +137,5 @@ const stylesheet = `
 `
 
 export function ensureSwitchStylesheet(): void {
-  if (typeof document === 'undefined') return
-
-  const existing = document.querySelector<HTMLStyleElement>(
-    'style[data-weave-switch-styles]',
-  )
-
-  if (existing !== null) {
-    if (existing.textContent !== stylesheet) {
-      existing.textContent = stylesheet
-    }
-    return
-  }
-
-  const element = document.createElement('style')
-  element.dataset.weaveSwitchStyles = ''
-  element.textContent = stylesheet
-  document.head.append(element)
+  ensureStaticStylesheet('switch', stylesheet)
 }

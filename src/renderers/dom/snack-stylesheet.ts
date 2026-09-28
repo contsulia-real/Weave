@@ -1,3 +1,5 @@
+import { ensureStaticStylesheet } from './static-stylesheet'
+
 const stylesheet = `
 :where(.weave-snack-region) {
   position: fixed;
@@ -202,23 +204,5 @@ const stylesheet = `
 `
 
 export function ensureSnackStylesheet(): void {
-  if (typeof document === 'undefined') return
-
-  const existing =
-    document.querySelector<HTMLStyleElement>(
-      'style[data-weave-snack-styles]',
-    )
-
-  if (existing !== null) {
-    if (existing.textContent !== stylesheet) {
-      existing.textContent = stylesheet
-    }
-    return
-  }
-
-  const element =
-    document.createElement('style')
-  element.dataset.weaveSnackStyles = ''
-  element.textContent = stylesheet
-  document.head.append(element)
+  ensureStaticStylesheet('snack', stylesheet)
 }

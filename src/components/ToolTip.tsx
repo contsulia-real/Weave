@@ -8,12 +8,10 @@ import {
   useState,
 } from 'react'
 import type {
-  CSSProperties,
   TransitionEvent as ReactTransitionEvent,
 } from 'react'
 import { createPortal } from 'react-dom'
 import type {
-  ToolTipPlacement,
   ToolTipProps,
 } from '../core/tooltip-types'
 import { length } from '../core/values'
@@ -23,90 +21,10 @@ import { ensureToolTipStylesheet } from '../renderers/dom/tooltip-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { ThemeProvider } from '../theme/ThemeProvider'
 import { durationMilliseconds } from './internal/motion-duration'
+import { useExitPresence } from './internal/use-exit-presence'
+import { useToolTipPosition } from './internal/use-tooltip-position'
 import { Text } from './Text'
 import { View } from './View'
-
-interface AnchorPosition {
-  left: number
-  top: number
-}
-
-type ToolTipVisualState =
-  | 'open'
-  | 'closing'
-
-function positionedStyle(
-  position: AnchorPosition,
-  placement: ToolTipPlacement,
-  offset: string,
-): CSSProperties {
-  switch (placement) {
-    case 'top':
-      return {
-        left: position.left,
-        top: position.top,
-        transform:
-          `translate(-50%, calc(-100% - ${offset}))`,
-      }
-
-    case 'bottom':
-      return {
-        left: position.left,
-        top: position.top,
-        transform:
-          `translate(-50%, ${offset})`,
-      }
-
-    case 'left':
-      return {
-        left: position.left,
-        top: position.top,
-        transform:
-          `translate(calc(-100% - ${offset}), -50%)`,
-      }
-
-    case 'right':
-      return {
-        left: position.left,
-        top: position.top,
-        transform:
-          `translate(${offset}, -50%)`,
-      }
-  }
-}
-
-function anchorPosition(
-  target: HTMLElement,
-  placement: ToolTipPlacement,
-): AnchorPosition {
-  const rect =
-    target.getBoundingClientRect()
-
-  if (
-    placement === 'top' ||
-    placement === 'bottom'
-  ) {
-    return {
-      left:
-        rect.left +
-        rect.width / 2,
-      top:
-        placement === 'top'
-          ? rect.top
-          : rect.bottom,
-    }
-  }
-
-  return {
-    left:
-      placement === 'left'
-        ? rect.left
-        : rect.right,
-    top:
-      rect.top +
-      rect.height / 2,
-  }
-}
 
 export function ToolTip({
   children,
@@ -127,16 +45,6 @@ export function ToolTip({
   ] = useState(defaultOpen)
   const resolvedOpen =
     open ?? uncontrolledOpen
-  const [
-    present,
-    setPresent,
-  ] = useState(resolvedOpen)
-  const [
-    visualState,
-    setVisualState,
-  ] = useState<ToolTipVisualState>(
-    'open',
-  )
 
   const wrapperRef =
     useRef<HTMLSpanElement>(null)
@@ -155,14 +63,6 @@ export function ToolTip({
   const requestedOpenRef =
     useRef(resolvedOpen)
 
-  const [position, setPosition] =
-    useState<AnchorPosition>({
-      left: 0,
-      top: 0,
-    })
-  const [positioned, setPositioned] =
-    useState(false)
-
   const reactId = useId()
   const tooltipId =
     viewProps.id ??
@@ -178,6 +78,15 @@ export function ToolTip({
         ?.duration?.fast,
       120,
     )
+  const {
+    present,
+    visualState,
+    finishExit,
+  } = useExitPresence(
+    resolvedOpen,
+    reducedMotion,
+    exitDuration,
+  )
   const themeClassName =
     useRuntimeStyleClass(
       'tooltip-theme',
@@ -193,48 +102,6 @@ export function ToolTip({
     requestedOpenRef.current =
       resolvedOpen
   }, [resolvedOpen])
-
-  // Controlled visibility is mirrored into presence so the
-  // exit transition can finish before the portal unmounts.
-  /* oxlint-disable react/set-state-in-effect */
-  useEffect(() => {
-    if (resolvedOpen) {
-      setPresent(true)
-      setVisualState('open')
-      return
-    }
-
-    if (!present) {
-      return
-    }
-
-    setVisualState('closing')
-
-    if (reducedMotion) {
-      setPresent(false)
-      return
-    }
-
-    const timer =
-      globalThis.setTimeout(
-        () => {
-          setPresent(false)
-        },
-        exitDuration + 32,
-      )
-
-    return () => {
-      globalThis.clearTimeout(
-        timer,
-      )
-    }
-  }, [
-    exitDuration,
-    present,
-    reducedMotion,
-    resolvedOpen,
-  ])
-  /* oxlint-enable react/set-state-in-effect */
 
   const clearOpenTimer =
     useCallback(() => {
@@ -534,108 +401,6 @@ export function ToolTip({
     tooltipId,
   ])
 
-  useLayoutEffect(() => {
-    const target =
-      targetRef.current
-
-    if (
-      !present ||
-      target === null
-    ) {
-      setPositioned(false)
-      return
-    }
-
-    const view =
-      target.ownerDocument.defaultView
-    let frame:
-      | number
-      | undefined
-
-    const applyPosition = () => {
-      setPosition(
-        anchorPosition(
-          target,
-          placement,
-        ),
-      )
-      setPositioned(true)
-    }
-
-    const update = () => {
-      if (
-        view === null ||
-        typeof view.requestAnimationFrame !==
-          'function'
-      ) {
-        applyPosition()
-        return
-      }
-
-      if (frame !== undefined) {
-        return
-      }
-
-      frame =
-        view.requestAnimationFrame(
-          () => {
-            frame = undefined
-            applyPosition()
-          },
-        )
-    }
-
-    applyPosition()
-
-    const resizeObserver =
-      typeof ResizeObserver ===
-        'undefined'
-        ? undefined
-        : new ResizeObserver(
-            update,
-          )
-
-    resizeObserver?.observe(target)
-
-    view?.addEventListener(
-      'resize',
-      update,
-    )
-    view?.addEventListener(
-      'scroll',
-      update,
-      true,
-    )
-
-    return () => {
-      if (
-        frame !== undefined &&
-        view !== null &&
-        typeof view.cancelAnimationFrame ===
-          'function'
-      ) {
-        view.cancelAnimationFrame(
-          frame,
-        )
-      }
-
-      resizeObserver?.disconnect()
-
-      view?.removeEventListener(
-        'resize',
-        update,
-      )
-      view?.removeEventListener(
-        'scroll',
-        update,
-        true,
-      )
-    }
-  }, [
-    placement,
-    present,
-  ])
-
   const handleTransitionEnd = (
     event:
       ReactTransitionEvent<HTMLDivElement>,
@@ -653,18 +418,21 @@ export function ToolTip({
       return
     }
 
-    setPresent(false)
+    finishExit()
   }
 
   const offsetValue =
     length(offset) ??
     '0rem'
-  const placementStyle =
-    positionedStyle(
-      position,
-      placement,
-      offsetValue,
-    )
+  const {
+    positioned,
+    placementStyle,
+  } = useToolTipPosition(
+    targetRef,
+    present,
+    placement,
+    offsetValue,
+  )
 
   const tooltip = present
     ? createPortal(

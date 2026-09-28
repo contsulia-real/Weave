@@ -1,23 +1,15 @@
 import {
-  isValidElement,
   useCallback,
   useContext,
   useEffect,
   useInsertionEffect,
-  useLayoutEffect,
   useRef,
   useState,
-} from 'react'
-import type {
-  TransitionEvent as ReactTransitionEvent,
+  type ReactNode,
+  type TransitionEvent as ReactTransitionEvent,
 } from 'react'
 import { createPortal } from 'react-dom'
 import type {
-  IconComponent,
-  IconSvg,
-} from '../core/icon-types'
-import type {
-  SnackIcon,
   SnackProps,
   SnackVariant,
   SnackViewProps,
@@ -27,26 +19,19 @@ import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { ensureSnackStylesheet } from '../renderers/dom/snack-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { ThemeProvider } from '../theme/ThemeProvider'
-import { Button } from './Button'
-import { Icon } from './Icon'
 import { Progress } from './Progress'
-import { Text } from './Text'
 import { View } from './View'
 import { durationMilliseconds } from './internal/motion-duration'
+import { SnackBody } from './internal/SnackBody'
+import { useExitPresence } from './internal/use-exit-presence'
 import {
   SnackHostContext,
-  resolveSnackHost,
 } from './internal/snack-host-context'
 import {
-  retainSnackRegion,
-  syncSnackRegion,
-} from './internal/snack-region'
-
-const PROGRESS_UPDATE_MS = 50
-
-type SnackVisualState =
-  | 'open'
-  | 'closing'
+  SNACK_PROGRESS_UPDATE_MS,
+  useSnackLifetime,
+} from './internal/use-snack-lifetime'
+import { useSnackRegion } from './internal/use-snack-region'
 
 function urgentVariant(
   variant: SnackVariant,
@@ -54,44 +39,6 @@ function urgentVariant(
   return (
     variant === 'warning' ||
     variant === 'danger'
-  )
-}
-
-function iconContent(
-  icon: SnackIcon,
-) {
-  const renderedIcon =
-    isValidElement(icon) ? (
-      <Icon
-        svg={icon as IconSvg}
-        size="small"
-        stroke="regular"
-        viewProps={{
-          className:
-            'weave-snack__icon',
-          'aria-hidden': true,
-        }}
-      />
-    ) : (
-      <Icon
-        icon={icon as IconComponent}
-        size="small"
-        stroke="regular"
-        viewProps={{
-          className:
-            'weave-snack__icon',
-          'aria-hidden': true,
-        }}
-      />
-    )
-
-  return (
-    <View
-      className="weave-snack__icon-shell"
-      aria-hidden="true"
-    >
-      {renderedIcon}
-    </View>
   )
 }
 
@@ -119,45 +66,12 @@ export function Snack({
   const durationMs =
     Math.max(0, duration)
 
-  const [
-    present,
-    setPresent,
-  ] = useState(resolvedOpen)
-  const [
-    visualState,
-    setVisualState,
-  ] = useState<SnackVisualState>(
-    'open',
-  )
-  const [
-    paused,
-    setPaused,
-  ] = useState(false)
-  const [
-    remainingMs,
-    setRemainingMs,
-  ] = useState(durationMs)
-  const [
-    region,
-    setRegion,
-  ] = useState<HTMLDivElement | null>(
-    null,
-  )
-
   const requestedOpenRef =
     useRef(resolvedOpen)
-  const previousOpenRef =
-    useRef(resolvedOpen)
-  const remainingMsRef =
-    useRef(durationMs)
-  const activeStartedAtRef =
-    useRef<number | null>(null)
   const controlledRef =
     useRef(controlled)
   const onOpenChangeRef =
     useRef(onOpenChange)
-  const dismissedRef =
-    useRef(!resolvedOpen)
 
   const snackHostContext =
     useContext(SnackHostContext)
@@ -166,8 +80,12 @@ export function Snack({
   const snackHostScopeId =
     snackHostContext?.scopeId ??
     'standalone'
-  const { theme, mode, reducedMotion } =
-    useTheme()
+
+  const {
+    theme,
+    mode,
+    reducedMotion,
+  } = useTheme()
   const base =
     theme.components.Snack?.base
   const themeClassName =
@@ -181,6 +99,16 @@ export function Snack({
         ?.duration?.fast,
       120,
     )
+  const {
+    present,
+    visualState,
+    finishExit,
+  } = useExitPresence(
+    resolvedOpen,
+    reducedMotion,
+    exitDuration,
+    onDismissed,
+  )
 
   useInsertionEffect(
     ensureSnackStylesheet,
@@ -201,38 +129,6 @@ export function Snack({
     controlled,
     onOpenChange,
   ])
-
-  useEffect(() => {
-    const wasOpen =
-      previousOpenRef.current
-    previousOpenRef.current =
-      resolvedOpen
-
-    if (
-      resolvedOpen &&
-      !wasOpen
-    ) {
-      remainingMsRef.current =
-        durationMs
-      activeStartedAtRef.current =
-        null
-      setRemainingMs(durationMs)
-    }
-  }, [
-    durationMs,
-    resolvedOpen,
-  ])
-
-  const completeDismiss =
-    useCallback(() => {
-      if (dismissedRef.current) {
-        return
-      }
-
-      dismissedRef.current = true
-      setPresent(false)
-      onDismissed?.()
-    }, [onDismissed])
 
   const requestOpen =
     useCallback(
@@ -258,217 +154,25 @@ export function Snack({
       [],
     )
 
-  // Controlled visibility is mirrored into presence so the
-  // exit transition can finish before the portal unmounts.
-  /* oxlint-disable react/set-state-in-effect */
-  useEffect(() => {
-    if (resolvedOpen) {
-      dismissedRef.current = false
-      setPresent(true)
-      setVisualState('open')
-      return
-    }
-
-    if (!present) {
-      return
-    }
-
-    setVisualState('closing')
-
-    if (reducedMotion) {
-      completeDismiss()
-      return
-    }
-
-    const timer =
-      globalThis.setTimeout(
-        () => {
-          completeDismiss()
-        },
-        exitDuration + 32,
-      )
-
-    return () => {
-      globalThis.clearTimeout(
-        timer,
-      )
-    }
-  }, [
-    completeDismiss,
-    exitDuration,
-    present,
-    reducedMotion,
-    resolvedOpen,
-  ])
-  /* oxlint-enable react/set-state-in-effect */
-
-  useEffect(() => {
-    if (
-      !resolvedOpen ||
-      persistent ||
-      paused
-    ) {
-      return
-    }
-
-    const startRemaining =
-      remainingMsRef.current
-
-    if (startRemaining <= 0) {
-      requestOpen(false)
-      return
-    }
-
-    const startedAt =
-      Date.now()
-    activeStartedAtRef.current =
-      startedAt
-
-    const updateProgress = () => {
-      const elapsed =
-        Math.max(
-          0,
-          Date.now() -
-          startedAt,
-        )
-      const nextRemaining =
-        Math.max(
-          0,
-          startRemaining -
-          elapsed,
-        )
-
-      setRemainingMs(
-        nextRemaining,
-      )
-    }
-
-    if (progress) {
-      updateProgress()
-    }
-
-    const progressTimer =
-      progress
-        ? globalThis.setInterval(
-            updateProgress,
-            PROGRESS_UPDATE_MS,
-          )
-        : undefined
-
-    const closeTimer =
-      globalThis.setTimeout(
-        () => {
-          remainingMsRef.current = 0
-          activeStartedAtRef.current =
-            null
-          setRemainingMs(0)
-          requestOpen(false)
-        },
-        startRemaining,
-      )
-
-    return () => {
-      if (
-        progressTimer !== undefined
-      ) {
-        globalThis.clearInterval(
-          progressTimer,
-        )
-      }
-      globalThis.clearTimeout(
-        closeTimer,
-      )
-
-      if (
-        activeStartedAtRef.current !==
-        startedAt
-      ) {
-        return
-      }
-
-      const elapsed =
-        Math.max(
-          0,
-          Date.now() -
-          startedAt,
-        )
-      const nextRemaining =
-        Math.max(
-          0,
-          startRemaining -
-          elapsed,
-        )
-
-      remainingMsRef.current =
-        nextRemaining
-      activeStartedAtRef.current =
-        null
-      setRemainingMs(
-        nextRemaining,
-      )
-    }
-  }, [
+  const {
     paused,
+    setPaused,
+    lifetimeProgress,
+  } = useSnackLifetime(
+    resolvedOpen,
+    durationMs,
     persistent,
     progress,
-    requestOpen,
-    resolvedOpen,
-  ])
+    () => requestOpen(false),
+  )
 
-  // The shared portal region is external DOM state. React
-  // needs one synchronization render after retaining it.
-  /* oxlint-disable react/set-state-in-effect */
-  useLayoutEffect(() => {
-    if (
-      !present ||
-      typeof document ===
-        'undefined'
-    ) {
-      setRegion(null)
-      return
-    }
-
-    const host =
-      resolveSnackHost(
-        snackHostTarget,
-        document,
-      )
-
-    if (host === null) {
-      setRegion(null)
-      return
-    }
-
-    const handle =
-      retainSnackRegion(
-        host,
-        snackHostScopeId,
-        placement,
-      )
-
-    setRegion(handle.element)
-
-    return () => {
-      handle.release()
-    }
-  }, [
-    placement,
+  const region = useSnackRegion(
     present,
-    snackHostScopeId,
     snackHostTarget,
-  ])
-  /* oxlint-enable react/set-state-in-effect */
-
-  useLayoutEffect(() => {
-    if (region === null) {
-      return
-    }
-
-    syncSnackRegion(region)
-  }, [
-    region,
+    snackHostScopeId,
+    placement,
     visualState,
-  ])
+  )
 
   const handlePointerEnter:
     NonNullable<
@@ -535,14 +239,14 @@ export function Snack({
 
     if (
       event.target !==
-      event.currentTarget ||
+        event.currentTarget ||
       resolvedOpen ||
       visualState !== 'closing'
     ) {
       return
     }
 
-    completeDismiss()
+    finishExit()
   }
 
   if (
@@ -552,71 +256,30 @@ export function Snack({
     return null
   }
 
-  const customContent =
+  let content: ReactNode = null
+
+  if (
     'children' in contentProps &&
-    contentProps.children !==
-    undefined
-
-  const content = customContent
-    ? contentProps.children
-    : (
-      <>
-        {contentProps.icon ===
-          undefined
-          ? null
-          : iconContent(
-            contentProps.icon,
-          )}
-
-        <Text
-          typo={
-            base?.typo ??
-            'body-medium'
-          }
-          viewProps={{
-            className:
-              'weave-snack__message',
-          }}
-        >
-          {contentProps.text}
-        </Text>
-
-        {contentProps.action ===
-          undefined
-          ? null
-          : (
-            <Button
-              text={
-                contentProps.action
-              }
-              size="small"
-              variant="ghost"
-              viewProps={{
-                className:
-                  'weave-snack__action',
-                color:
-                  'var(--weave-snack-accent)',
-                onClick: () => {
-                  contentProps.onAction()
-                  requestOpen(false)
-                },
-              }}
-            />
-          )}
-      </>
+    contentProps.children !== undefined
+  ) {
+    content =
+      contentProps.children
+  } else if (
+    'text' in contentProps
+  ) {
+    content = (
+      <SnackBody
+        text={contentProps.text}
+        icon={contentProps.icon}
+        action={contentProps.action}
+        onAction={contentProps.onAction}
+        typo={base?.typo}
+        onRequestClose={() => {
+          requestOpen(false)
+        }}
+      />
     )
-
-  const lifetimeProgress =
-    durationMs <= 0
-      ? 0
-      : Math.min(
-        1,
-        Math.max(
-          0,
-          remainingMs /
-          durationMs,
-        ),
-      )
+  }
 
   return createPortal(
     <ThemeProvider
@@ -685,7 +348,7 @@ export function Snack({
             size="small"
             color="var(--weave-snack-accent)"
             speed={
-              PROGRESS_UPDATE_MS
+              SNACK_PROGRESS_UPDATE_MS
             }
             viewProps={{
               className:
@@ -697,8 +360,7 @@ export function Snack({
               right:
                 'var(--weave-snack-padding-x)',
               width: 'auto',
-              bottom:
-                0,
+              bottom: 0,
               pointerEvents:
                 'none',
               data: {
