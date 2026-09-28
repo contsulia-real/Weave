@@ -90,6 +90,19 @@ export function useViewAnimation<TElement extends HTMLElement>(
 
     const config = resolveViewAnimation(value, theme)
     const key = animationKey(config, theme, reducedMotion)
+
+    // A finish interruption may already have a queued target. If the newest
+    // render returns to the animation that is currently active, that active
+    // animation is now the latest target and the old queued retarget is stale.
+    if (
+      waitingForFinish.current &&
+      activeKey.current === key
+    ) {
+      pendingKey.current = undefined
+      pendingStart.current = undefined
+      return
+    }
+
     if (activeKey.current === key || pendingKey.current === key) return
 
     const start = (
@@ -139,7 +152,10 @@ export function useViewAnimation<TElement extends HTMLElement>(
         waitingForFinish.current = true
         current.finishCurrentCycle(() => {
           waitingForFinish.current = false
-          pendingStart.current?.()
+          const next = pendingStart.current
+          if (next === undefined) return false
+          next()
+          return true
         })
       }
       return

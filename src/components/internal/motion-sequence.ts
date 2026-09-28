@@ -12,7 +12,7 @@ import {
 
 export interface MotionSequence {
   cancel: () => void
-  finishCurrentCycle: (callback: () => void) => void
+  finishCurrentCycle: (callback: () => boolean | void) => void
   currentAnimation: () => Animation | undefined
 }
 
@@ -71,7 +71,7 @@ export function createMotionSequence(
   let animation: Animation | undefined
   let repeatTimer: ReturnType<typeof setTimeout> | undefined
   let cancelled = false
-  let finishCallback: (() => void) | undefined
+  let finishCallback: (() => boolean | void) | undefined
 
   const clearRepeatTimer = () => {
     if (repeatTimer !== undefined) {
@@ -121,9 +121,12 @@ export function createMotionSequence(
       if (finishCallback !== undefined) {
         const callback = finishCallback
         finishCallback = undefined
-        current.cancel()
-        animation = undefined
-        callback()
+        const releaseCurrent = callback() !== false
+
+        if (releaseCurrent) {
+          current.cancel()
+          if (animation === current) animation = undefined
+        }
         return
       }
 

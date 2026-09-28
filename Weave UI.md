@@ -3277,7 +3277,7 @@ left                  right
 bottom-left  bottom  bottom-right
 ```
 
-默认是 `top-right`。Badge 相对自己的包装内容定位，并以目标边缘为锚点向外偏移自身的一半，因此不占用被包裹内容的正常布局空间。
+默认是 `top-right`。Badge 以被包裹目标的**实时视觉边界**为锚点，并以目标边缘向外偏移自身的一半，因此不占用被包裹内容的正常布局空间。目标因 hover、press、transition、animation 或其他 transform 发生视觉位移 / 缩放时，Badge 必须继续跟随实际目标边界，而不是停在外层包装容器的静态 layout box 上。
 
 正常文本模式：
 
@@ -3301,7 +3301,7 @@ bottom-left  bottom  bottom-right
 - `dot` 为 `true` 时只显示小圆点，不显示文字；类型层不允许同时传 `text`。
 - dot 是纯视觉状态点，因此自身 `aria-hidden=true`；正常文本 Badge 保留可读文本。
 - Badge 默认 `pointer-events: none`，不会盖住或拦截被附着控件的点击、hover、focus、drag。
-- Badge 不使用 ToolTip / Snack 的 portal 或 layer region；它只在本地包装容器内做 relative + absolute 定位。
+- Badge 不使用 ToolTip / Snack 的 portal 或 layer region；它仍在本地包装容器内做定位，但锚点坐标来自被包裹目标的实时视觉边界。
 
 默认主题来自 `theme.components.Badge.base`：正常 Badge 使用 `primary / onPrimary`，并用 `surface` 边界把角标与复杂背景分离；默认高度 `1.25rem`，dot 直径 `0.625rem`。背景、文字、边界、圆角、padding、dot 尺寸、shadow 与 typography 均可由主题覆盖。
 

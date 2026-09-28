@@ -39,57 +39,57 @@ const stylesheet = `
 
 :where(.weave-badge-anchor[data-weave-badge-placement="top-left"])
   > :where(.weave-badge) {
-  top: 0;
-  left: 0;
+  top: var(--weave-badge-target-top, 0px);
+  left: var(--weave-badge-target-left, 0px);
   transform: translate(-50%, -50%);
 }
 
 :where(.weave-badge-anchor[data-weave-badge-placement="top"])
   > :where(.weave-badge) {
-  top: 0;
-  left: 50%;
+  top: var(--weave-badge-target-top, 0px);
+  left: var(--weave-badge-target-center-x, 50%);
   transform: translate(-50%, -50%);
 }
 
 :where(.weave-badge-anchor[data-weave-badge-placement="top-right"])
   > :where(.weave-badge) {
-  top: 0;
-  right: 0;
-  transform: translate(50%, -50%);
+  top: var(--weave-badge-target-top, 0px);
+  left: var(--weave-badge-target-right, 100%);
+  transform: translate(-50%, -50%);
 }
 
 :where(.weave-badge-anchor[data-weave-badge-placement="right"])
   > :where(.weave-badge) {
-  top: 50%;
-  right: 0;
-  transform: translate(50%, -50%);
+  top: var(--weave-badge-target-center-y, 50%);
+  left: var(--weave-badge-target-right, 100%);
+  transform: translate(-50%, -50%);
 }
 
 :where(.weave-badge-anchor[data-weave-badge-placement="bottom-right"])
   > :where(.weave-badge) {
-  right: 0;
-  bottom: 0;
-  transform: translate(50%, 50%);
+  top: var(--weave-badge-target-bottom, 100%);
+  left: var(--weave-badge-target-right, 100%);
+  transform: translate(-50%, -50%);
 }
 
 :where(.weave-badge-anchor[data-weave-badge-placement="bottom"])
   > :where(.weave-badge) {
-  bottom: 0;
-  left: 50%;
-  transform: translate(-50%, 50%);
+  top: var(--weave-badge-target-bottom, 100%);
+  left: var(--weave-badge-target-center-x, 50%);
+  transform: translate(-50%, -50%);
 }
 
 :where(.weave-badge-anchor[data-weave-badge-placement="bottom-left"])
   > :where(.weave-badge) {
-  bottom: 0;
-  left: 0;
-  transform: translate(-50%, 50%);
+  top: var(--weave-badge-target-bottom, 100%);
+  left: var(--weave-badge-target-left, 0px);
+  transform: translate(-50%, -50%);
 }
 
 :where(.weave-badge-anchor[data-weave-badge-placement="left"])
   > :where(.weave-badge) {
-  top: 50%;
-  left: 0;
+  top: var(--weave-badge-target-center-y, 50%);
+  left: var(--weave-badge-target-left, 0px);
   transform: translate(-50%, -50%);
 }
 `

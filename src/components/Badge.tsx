@@ -5,6 +5,7 @@ import { ensureBadgeStylesheet } from '../renderers/dom/badge-stylesheet'
 import { resolveBadgeTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { useTheme } from '../theme/theme-context'
+import { useBadgeAnchor } from './internal/use-badge-anchor'
 import { useViewHost } from './internal/use-view-host'
 
 export function Badge({
@@ -27,6 +28,7 @@ export function Badge({
   } = useViewHost(hostProps)
   const dot = content.dot === true
 
+  useBadgeAnchor(elementRef, children)
   useInsertionEffect(ensureBadgeStylesheet, [])
 
   return (

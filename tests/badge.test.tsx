@@ -1,5 +1,6 @@
 import {
   cleanup,
+  fireEvent,
   render,
 } from '@testing-library/react'
 import {
@@ -11,6 +12,7 @@ import {
 import {
   Badge,
   Button,
+  View,
   defaultTheme,
 } from '../src'
 
@@ -58,6 +60,55 @@ describe('Badge', () => {
     expect(badge.dataset.weaveBadgeDot).toBe('true')
     expect(badge.getAttribute('aria-hidden')).toBe('true')
     expect(badge.textContent).toBe('')
+  })
+
+  it('tracks the wrapped component visual box instead of the static wrapper box', () => {
+    const { getByTestId } = render(
+      <Badge text="8">
+        <View data={{ testid: 'badge-target' }} />
+      </Badge>,
+    )
+
+    const target = getByTestId('badge-target')
+    const anchor = target.closest(
+      '[data-weave-badge-anchor]',
+    ) as HTMLElement
+
+    anchor.getBoundingClientRect = () => ({
+      x: 100,
+      y: 50,
+      top: 50,
+      right: 200,
+      bottom: 90,
+      left: 100,
+      width: 100,
+      height: 40,
+      toJSON: () => ({}),
+    })
+
+    target.getBoundingClientRect = () => ({
+      x: 105,
+      y: 54,
+      top: 54,
+      right: 195,
+      bottom: 88,
+      left: 105,
+      width: 90,
+      height: 34,
+      toJSON: () => ({}),
+    })
+
+    fireEvent.transitionRun(target)
+
+    expect(
+      anchor.style.getPropertyValue('--weave-badge-target-top'),
+    ).toBe('4px')
+    expect(
+      anchor.style.getPropertyValue('--weave-badge-target-right'),
+    ).toBe('95px')
+    expect(
+      anchor.style.getPropertyValue('--weave-badge-target-center-x'),
+    ).toBe('50px')
   })
 
   it('supports all eight edge placements in the stylesheet', () => {

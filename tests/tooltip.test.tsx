@@ -113,6 +113,32 @@ describe('ToolTip', () => {
     ).toBeNull()
   })
 
+  it('does not let pointer-driven focus pin the tooltip open', () => {
+    const {
+      getByRole,
+      queryByRole,
+    } = render(
+      <ToolTip
+        content="Pointer focus"
+        delay={0}
+      >
+        <Button text="Clickable target" />
+      </ToolTip>,
+    )
+
+    const target = getByRole('button')
+
+    fireEvent.pointerEnter(target)
+    expect(queryByRole('tooltip')).not.toBeNull()
+
+    fireEvent.pointerDown(target)
+    fireEvent.focusIn(target)
+    fireEvent.pointerUp(window)
+    fireEvent.pointerLeave(target)
+
+    expect(queryByRole('tooltip')).toBeNull()
+  })
+
   it('opens from focus and closes with Escape', () => {
     const onOpenChange =
       vi.fn()

@@ -150,6 +150,8 @@ export function ToolTip({
     useRef(false)
   const focusInsideRef =
     useRef(false)
+  const pointerFocusRef =
+    useRef(false)
   const requestedOpenRef =
     useRef(resolvedOpen)
 
@@ -335,12 +337,24 @@ export function ToolTip({
       scheduleOpen()
     }
 
+    const handlePointerDown = () => {
+      // Pointer activation can focus interactive targets. That focus should
+      // not turn a hover tooltip into a pinned tooltip after pointer leave.
+      pointerFocusRef.current = true
+      focusInsideRef.current = false
+    }
+
+    const clearPointerFocus = () => {
+      pointerFocusRef.current = false
+    }
+
     const handlePointerLeave = () => {
       pointerInsideRef.current = false
       closeIfInactive()
     }
 
     const handleFocusIn = () => {
+      if (pointerFocusRef.current) return
       focusInsideRef.current = true
       scheduleOpen()
     }
@@ -378,8 +392,20 @@ export function ToolTip({
       handlePointerEnter,
     )
     target.addEventListener(
+      'pointerdown',
+      handlePointerDown,
+    )
+    target.addEventListener(
       'pointerleave',
       handlePointerLeave,
+    )
+    target.ownerDocument.defaultView?.addEventListener(
+      'pointerup',
+      clearPointerFocus,
+    )
+    target.ownerDocument.defaultView?.addEventListener(
+      'pointercancel',
+      clearPointerFocus,
     )
     target.addEventListener(
       'focusin',
@@ -400,8 +426,20 @@ export function ToolTip({
         handlePointerEnter,
       )
       target.removeEventListener(
+        'pointerdown',
+        handlePointerDown,
+      )
+      target.removeEventListener(
         'pointerleave',
         handlePointerLeave,
+      )
+      target.ownerDocument.defaultView?.removeEventListener(
+        'pointerup',
+        clearPointerFocus,
+      )
+      target.ownerDocument.defaultView?.removeEventListener(
+        'pointercancel',
+        clearPointerFocus,
       )
       target.removeEventListener(
         'focusin',

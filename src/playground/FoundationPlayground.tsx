@@ -1083,7 +1083,7 @@ export function FoundationPlayground() {
 
       <PlaygroundSection
         title="Badge"
-        description="相对包裹内容定位；默认 top-right。正常模式显示 text，dot 模式只显示小圆点。"
+        description="跟随被包裹组件的实际视觉边界定位，包括 hover / press / transform；默认 top-right。正常模式显示 text，dot 模式只显示小圆点。"
       >
         <Row
           gap={2}

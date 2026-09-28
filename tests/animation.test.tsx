@@ -344,6 +344,37 @@ describe('View keyframe animation', () => {
     ])
   })
 
+  it('drops a stale finish target when the latest target returns to the active animation', () => {
+    const { animate, animations } = installAnimationStub()
+    const first = {
+      keyframes: [{ opacity: 0 }, { opacity: 1 }],
+      duration: 1000,
+      interruption: 'finish' as const,
+    }
+    const second = {
+      keyframes: [{ opacity: 1 }, { opacity: 0 }],
+      duration: 1000,
+      interruption: 'finish' as const,
+    }
+
+    const { rerender } = render(
+      <View animation={first} />,
+    )
+
+    rerender(<View animation={second} />)
+    finish(animations[0])
+
+    expect(animate).toHaveBeenCalledTimes(2)
+
+    rerender(<View animation={first} />)
+    rerender(<View animation={second} />)
+
+    finish(animations[1])
+
+    expect(animate).toHaveBeenCalledTimes(2)
+    expect(animations[1].cancel).not.toHaveBeenCalled()
+  })
+
   it('reduces repeating motion to a zero-duration final frame', () => {
     const { animate } = installAnimationStub()
 
