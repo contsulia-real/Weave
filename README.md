@@ -36,7 +36,7 @@ The main layers are:
 
 ### Forms and status
 
-`Input`, `Switch`, `Radio`, `Checkbox`, `Progress`.
+`Input`, `Select`, `SelectOption`, `Switch`, `Radio`, `Checkbox`, `Progress`.
 
 ### Composite UI
 
@@ -46,7 +46,7 @@ The main layers are:
 
 `ThemeProvider`, `useTheme`, `createTheme`, `defaultTheme`, `createRoot`.
 
-The root package also exports the public prop, motion and theme customization types, including component-level theme interfaces such as `ButtonTheme`, `SwitchTheme`, `ToolTipTheme`, `PopoverTheme`, `MenuTheme`, `SnackTheme` and `ThemeComponents`.
+The root package also exports the public prop, motion and theme customization types, including component-level theme interfaces such as `ButtonTheme`, `SelectTheme`, `SwitchTheme`, `ToolTipTheme`, `PopoverTheme`, `MenuTheme`, `SnackTheme` and `ThemeComponents`.
 
 ## Basic usage
 
@@ -119,7 +119,7 @@ Theme definitions support tokens, component themes, dynamic breakpoints, light/d
 
 ## Playground
 
-The Vite application is the development playground for the framework. It dogfoods the public Weave API and contains interactive examples for layout, responsive behavior, motion, masks, form controls, Badge, ToolTip, Popover, Menu with nested submenus, Snack, List, Scrollbar and other implemented capabilities.
+The Vite application is the development playground for the framework. It dogfoods the public Weave API and contains interactive examples for layout, responsive behavior, motion, masks, form controls, Select, Badge, ToolTip, Popover, Menu with nested submenus, Snack, List, Scrollbar and other implemented capabilities.
 
 ```bash
 pnpm install

@@ -12,6 +12,7 @@ import {
   length,
   radius,
 } from '../../../core/values'
+import { shadowToken } from './shared'
 import type { RuntimeStyleDeclarations } from '../runtime-class'
 
 export function resolveInputTheme(
@@ -54,6 +55,90 @@ export function resolveInputTheme(
     ),
     '--weave-input-theme-disabled-opacity': disabled?.opacity,
     '--weave-input-theme-disabled-cursor': disabled?.cursor,
+  }
+}
+
+export function resolveSelectTheme(
+  theme: ResolvedTheme,
+): RuntimeStyleDeclarations {
+  const component = theme.components.Select
+  const base = component?.base
+  const listbox = component?.listbox
+  const option = component?.option
+
+  return {
+    '--weave-select-background': color(base?.background),
+    '--weave-select-color': color(base?.color),
+    '--weave-select-placeholder-color': color(base?.placeholderColor),
+    '--weave-select-border-color': color(base?.borderColor),
+    '--weave-select-border-width': length(base?.borderWidth),
+    '--weave-select-radius': radius(base?.radius),
+    '--weave-select-min-height': length(base?.minHeight),
+    '--weave-select-min-width': length(base?.minWidth),
+    '--weave-select-padding-x': length(base?.paddingX),
+    '--weave-select-gap': length(base?.gap),
+    '--weave-select-icon-size': length(base?.iconSize),
+    '--weave-select-font-size':
+      typographyStyleVariableReference(base?.typo, 'fontSize'),
+    '--weave-select-font-weight':
+      typographyStyleVariableReference(base?.typo, 'fontWeight'),
+    '--weave-select-line-height':
+      typographyStyleVariableReference(base?.typo, 'lineHeight'),
+    '--weave-select-letter-spacing':
+      typographyStyleVariableReference(base?.typo, 'letterSpacing'),
+    '--weave-select-focus-outline-width': length(
+      base?.focusOutlineWidth,
+    ),
+    '--weave-select-focus-outline-color': color(
+      base?.focusOutlineColor,
+    ),
+    '--weave-select-focus-outline-style':
+      base?.focusOutlineStyle,
+    '--weave-select-focus-outline-offset': length(
+      base?.focusOutlineOffset,
+    ),
+    '--weave-select-disabled-opacity':
+      base?.disabledOpacity,
+    '--weave-select-disabled-cursor':
+      base?.disabledCursor,
+
+    '--weave-select-listbox-background': color(listbox?.background),
+    '--weave-select-listbox-color': color(listbox?.color),
+    '--weave-select-listbox-border-color': color(listbox?.borderColor),
+    '--weave-select-listbox-border-width': length(listbox?.borderWidth),
+    '--weave-select-listbox-radius': radius(listbox?.radius),
+    '--weave-select-listbox-padding': length(listbox?.padding),
+    '--weave-select-listbox-gap': length(listbox?.gap),
+    '--weave-select-listbox-min-width': length(listbox?.minWidth),
+    '--weave-select-listbox-max-width': length(listbox?.maxWidth),
+    '--weave-select-listbox-max-height': length(listbox?.maxHeight),
+    '--weave-select-listbox-shadow': shadowToken(listbox?.shadow),
+    '--weave-select-listbox-motion-offset': length(
+      listbox?.motionOffset,
+    ),
+
+    '--weave-select-option-background': color(option?.background),
+    '--weave-select-option-active-background': color(
+      option?.activeBackground,
+    ),
+    '--weave-select-option-selected-background': color(
+      option?.selectedBackground,
+    ),
+    '--weave-select-option-color': color(option?.color),
+    '--weave-select-option-selected-color': color(
+      option?.selectedColor,
+    ),
+    '--weave-select-option-secondary-color': color(
+      option?.secondaryColor,
+    ),
+    '--weave-select-option-radius': radius(option?.radius),
+    '--weave-select-option-padding-x': length(option?.paddingX),
+    '--weave-select-option-padding-y': length(option?.paddingY),
+    '--weave-select-option-gap': length(option?.gap),
+    '--weave-select-option-icon-size': length(option?.iconSize),
+    '--weave-select-option-check-size': length(option?.checkSize),
+    '--weave-select-option-disabled-opacity':
+      option?.disabledOpacity,
   }
 }
 

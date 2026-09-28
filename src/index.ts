@@ -16,6 +16,8 @@ export { Link } from './components/Link'
 export { Badge } from './components/Badge'
 export { Button } from './components/Button'
 export { Input } from './components/Input'
+export { Select } from './components/Select'
+export { SelectOption } from './components/SelectOption'
 export { Switch } from './components/Switch'
 export { Radio } from './components/Radio'
 export { Checkbox } from './components/Checkbox'
@@ -90,6 +92,10 @@ export type {
   ChoiceControlThemeSize,
   InputTheme,
   InputThemeBase,
+  SelectTheme,
+  SelectThemeBase,
+  SelectThemeListbox,
+  SelectThemeOption,
   LinkTheme,
   LinkThemeBase,
   ListItemTheme,
@@ -231,6 +237,17 @@ export type {
   MultilineInputViewProps,
   SingleLineInputViewProps,
 } from './core/input-types'
+
+export type {
+  SelectIcon,
+  SelectListboxViewProps,
+  SelectOptionProps,
+  SelectOptionViewProps,
+  SelectPlacement,
+  SelectProps,
+  SelectValue,
+  SelectViewProps,
+} from './core/select-types'
 
 export type {
   SwitchProps,

@@ -2420,6 +2420,188 @@ suffix
 
 ---
 
+# 14A. `Select`
+
+`Select` 是非可输入的单选组合控件。它不是 `Menu`，也不是 `Input`；它使用 select-only combobox 语义，并把 popup 选择面板实现为 anchored listbox。
+
+## 14A.1 组合 API
+
+```tsx
+<Select
+  value={workspace}
+  onValueChange={setWorkspace}
+  placeholder="Choose workspace"
+>
+  <SelectOption
+    value="design"
+    text="Design"
+    secondaryText="UI and visual work"
+    icon={IconPalette}
+  />
+
+  <SelectOption
+    value="archive"
+    text="Archive"
+    disabled
+  />
+</Select>
+```
+
+`Select`：
+
+```text
+children
+value
+defaultValue
+onValueChange
+placeholder
+disabled
+placement
+offset
+viewportPadding
+open
+defaultOpen
+onOpenChange
+viewProps
+listboxViewProps
+```
+
+`value` 为 `string | null`。`value !== undefined` 时为受控值模式；否则使用 `defaultValue` 建立非受控状态。`null` 表示没有选择。
+
+`SelectOption`：
+
+```text
+value
+text
+textValue
+secondaryText
+icon
+disabled
+viewProps
+```
+
+`value` 在同一个 Select 内必须唯一；重复 value 直接报错。`textValue` 只在 `text` 不是可直接转换为字符串的复杂 ReactNode 时提供，用于 typeahead 匹配。
+
+## 14A.2 语义模型
+
+Select 使用 select-only combobox 模型：
+
+```text
+trigger  → <button role="combobox">
+popup    → role="listbox"
+option   → role="option"
+```
+
+trigger 提供：
+
+```text
+aria-haspopup="listbox"
+aria-expanded
+aria-controls
+aria-activedescendant
+aria-autocomplete="none"
+```
+
+Option 使用 `aria-selected`，disabled option 使用 disabled 语义并从键盘导航和 typeahead 中跳过。
+
+与 Menu 不同，打开 Select 后 DOM focus **始终留在 combobox trigger 上**；当前键盘目标通过 `aria-activedescendant` 指向 listbox 内的 active option。Option 本身不进入 Tab 顺序。
+
+## 14A.3 打开与键盘导航
+
+默认打开时：
+
+- 如果当前 selected option 可用，则 active option 从当前 selected 开始；
+- 否则 active option 为第一个 enabled option；
+- trigger click / Enter / Space 打开；
+- `ArrowDown / ArrowUp` 在关闭状态打开；
+- `Home / End` 在关闭状态打开并定位到 first / last enabled option。
+
+打开后：
+
+```text
+ArrowDown / ArrowUp   → 循环移动 active option
+Home / End            → first / last enabled option
+Enter / Space         → 提交 active option 并关闭
+Escape                → 关闭，不改变 value
+printable characters  → typeahead
+```
+
+键盘移动 active option 不会立即提交 value；只有 Enter / Space 或 pointer 选择才调用 `onValueChange`。这样“浏览候选项”和“已提交选择”保持不同语义。
+
+## 14A.4 Typeahead
+
+trigger 聚焦时输入可打印字符会进行前缀匹配：
+
+- disabled option 不参与匹配；
+- 连续字符在短时间内组成查询串；
+- 若组合字符串没有匹配，会退回当前字符重新查找；
+- 关闭状态下命中 typeahead 会打开 listbox，并把命中项设为 active；
+- typeahead 只移动 active option，不自动提交 value。
+
+普通字符串 `text` 自动作为匹配文本；复杂 `text` 通过显式 `textValue` 提供稳定搜索文本。
+
+## 14A.5 Anchored overlay
+
+Select 不实现第二套 popup 系统。listbox 复用 anchored-overlay infrastructure：
+
+- placement 支持与 Popover 相同的八向位置；默认 `bottom-left`；
+- 默认 `offset = 0.375rem`；
+- 默认 `viewportPadding = 0.5rem`；
+- 使用实时 anchor rect + panel 尺寸执行 flip / shift；
+- scroll / resize / transform / mutation 后重新定位；
+- trigger 只要仍与 viewport 相交就保持打开；完全离开 viewport 后自动 dismiss；
+- anchor-hidden dismiss 不额外把 focus 拉回已经离屏的 trigger；
+- outside pointer dismiss 关闭 listbox；
+- exit motion 完成后才卸载 listbox；
+- reduced motion 下跳过位移 / scale motion。
+
+Select 只复用 anchored-overlay 的几何与生命周期基础设施，不复用 Popover 的 `role="dialog"`，也不复用 Menu 的 `menu/menuitem` focus 模型。
+
+## 14A.6 Option 内容与 trigger 回显
+
+`SelectOption` 支持：
+
+```text
+text
+secondaryText
+icon
+disabled
+```
+
+trigger 回显当前 selected option 的 `text` 与可选 `icon`；`secondaryText` 只属于 listbox option，不塞进 trigger。没有 selected option 时显示 `placeholder`。
+
+listbox option 默认保留 selected check affordance；selected 与 active 是不同状态，可以同时存在。
+
+## 14A.7 Theme
+
+默认视觉来自：
+
+```text
+theme.components.Select.base
+theme.components.Select.listbox
+theme.components.Select.option
+```
+
+`base` 控制 trigger surface / typography / border / focus / disabled；`listbox` 控制 popup surface / 尺寸 / shadow / motion；`option` 控制 active / selected / disabled、icon、check 与 typography。
+
+`viewProps` 作用于 trigger；`listboxViewProps` 作用于 popup listbox。Select 自己拥有 combobox role、listbox role、fixed positioning、collision 坐标和 selection 语义，调用方不能通过这些 escape hatch 把它改成另一种控件。
+
+## 14A.8 与 Combobox 的边界
+
+Select 是**非可输入、固定候选集、单选**控件。以下能力不塞进 Select：
+
+```text
+editable text
+filtering
+free-form value
+async suggestions
+create option
+multi-select
+```
+
+可输入 / 可过滤的候选输入属于后续 `Combobox`。Select 不通过不断增加布尔属性演化成 Combobox。
+
+---
 # 15. `Switch`
 
 `Switch` 是基础组件。
@@ -4627,12 +4809,15 @@ Badge
 Link
 Button
 Input
+Select
 Switch
 Radio
 Checkbox
 Progress
 Scrollbar
 ToolTip
+Popover
+Menu
 Snack
 List
 ...
@@ -4772,6 +4957,7 @@ const theme = {
   components: {
     Button: { ... },
     Input: { ... },
+    Select: { ... },
     Switch: { ... },
     Progress: { ... },
     Scrollbar: { ... },
@@ -5818,6 +6004,7 @@ ref.current.blur()
 ```text
 Button  默认 focusable
 Input   默认 focusable
+Select  默认 focusable（focus 保持在 combobox trigger）
 Switch  默认 focusable
 
 Text    默认不 focusable
@@ -5843,6 +6030,8 @@ Space
 `Switch` 自己保证切换语义。其持久状态叫 `checked`，不是 `active`。
 
 `List` 在可选择模式下提供对应键盘导航语义；持久选择状态叫 `selected`，内部 roving focus target 不作为公开 `active` 状态。
+
+`Select` 自己保证 select-only combobox 键盘模型；DOM focus 保持在 trigger，候选浏览状态通过 `aria-activedescendant` 表达，只有提交 option 才改变 `value`。
 
 Button 的 `:active` 只表示瞬时按压；需要维持按下状态时使用 Button 自己的 `pressed`。Weave 不提供一个跨 Button / Switch / List 的通用 `active: boolean`，因为瞬时 press、持久 pressed、checked、selected、focus 是不同语义。
 
@@ -6011,6 +6200,7 @@ Weave 公开 API
 │  ├─ Badge
 │  ├─ ToolTip
 │  ├─ Popover
+│  ├─ Select / SelectOption
 │  ├─ Menu / MenuItem / MenuSeparator
 │  ├─ Snack
 │  ├─ List
@@ -6062,7 +6252,7 @@ CSS variables + runtime classes + framework stylesheet
 
 其中 `Presence`、Provider 与 Hook 不属于 ViewHost 宿主链路；它们分别负责生命周期编排和 React context / 命令式能力。只有实际承载 DOM 的组件才进入 `useViewHost → DOM + CSS` 这条宿主路径。
 
-内部实现按职责继续拆分而不是形成新的集中式 god-file：静态 framework stylesheet 共享统一安装器；组件主题解析按 controls / actions / progress / overlays / lists 分域；List 的内容归一化、selection、roving focus 与 virtualization layout 分离；Badge / ToolTip / Snack / Menu 共用 exit-presence 基础生命周期，Badge / ToolTip / Popover / Menu 的视觉锚点更新复用统一的 rAF / observer 跟踪基础设施；Popover / Menu root 进一步共用 anchored-overlay 的 viewport-exit dismiss helper，组件层只决定 dismiss 后的 focus 语义，不重复判断 anchor visibility；Snack 的 lifetime、内容渲染、队列策略、region registry / host positioning 与 region FLIP layout animation 分属独立 internal 模块。公开 API 不暴露这些内部 helper。
+内部实现按职责继续拆分而不是形成新的集中式 god-file：静态 framework stylesheet 共享统一安装器；组件主题解析按 controls / actions / progress / overlays / lists 分域；List 的内容归一化、selection、roving focus 与 virtualization layout 分离；Badge / ToolTip / Popover / Snack / Menu / Select 共用 exit-presence 基础生命周期，Badge / ToolTip / Popover / Menu / Select 的视觉锚点更新复用统一的 rAF / observer 跟踪基础设施；Popover / Menu root / Select 进一步共用 anchored-overlay 的 viewport-exit dismiss helper，组件层只决定 dismiss 后的 focus / selection 语义，不重复判断 anchor visibility；Snack 的 lifetime、内容渲染、队列策略、region registry / host positioning 与 region FLIP layout animation 分属独立 internal 模块。公开 API 不暴露这些内部 helper。
 
 ---
 

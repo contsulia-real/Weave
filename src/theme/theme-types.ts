@@ -85,6 +85,66 @@ export interface InputTheme {
   }
 }
 
+export interface SelectThemeBase {
+  background?: string
+  color?: string
+  placeholderColor?: string
+  borderColor?: string
+  borderWidth?: ThemeScaleValue
+  radius?: ThemeScaleValue
+  minHeight?: ThemeScaleValue
+  minWidth?: ThemeScaleValue
+  paddingX?: ThemeScaleValue
+  gap?: ThemeScaleValue
+  iconSize?: ThemeScaleValue
+  typo?: TextTypo
+  focusOutlineWidth?: ThemeScaleValue
+  focusOutlineColor?: string
+  focusOutlineStyle?: string
+  focusOutlineOffset?: ThemeScaleValue
+  disabledOpacity?: number
+  disabledCursor?: string
+}
+
+export interface SelectThemeListbox {
+  background?: string
+  color?: string
+  borderColor?: string
+  borderWidth?: ThemeScaleValue
+  radius?: ThemeScaleValue
+  padding?: ThemeScaleValue
+  gap?: ThemeScaleValue
+  minWidth?: ThemeScaleValue
+  maxWidth?: ThemeScaleValue
+  maxHeight?: ThemeScaleValue
+  shadow?: string
+  motionOffset?: ThemeScaleValue
+}
+
+export interface SelectThemeOption {
+  background?: string
+  activeBackground?: string
+  selectedBackground?: string
+  color?: string
+  selectedColor?: string
+  secondaryColor?: string
+  radius?: ThemeScaleValue
+  paddingX?: ThemeScaleValue
+  paddingY?: ThemeScaleValue
+  gap?: ThemeScaleValue
+  iconSize?: ThemeScaleValue
+  checkSize?: ThemeScaleValue
+  primaryTypo?: TextTypo
+  secondaryTypo?: TextTypo
+  disabledOpacity?: number
+}
+
+export interface SelectTheme {
+  base?: SelectThemeBase
+  listbox?: SelectThemeListbox
+  option?: SelectThemeOption
+}
+
 export interface SwitchThemeBase {
   background?: string
   radius?: ThemeScaleValue
@@ -457,6 +517,7 @@ export interface ThemeComponents {
   Link?: LinkTheme
   Button?: ButtonTheme
   Input?: InputTheme
+  Select?: SelectTheme
   Switch?: SwitchTheme
   Radio?: ChoiceControlTheme
   Checkbox?: ChoiceControlTheme

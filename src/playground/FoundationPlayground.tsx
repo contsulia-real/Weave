@@ -24,6 +24,8 @@ import {
   Presence,
   Popover,
   Row,
+  Select,
+  SelectOption,
   Stack,
   Text,
   ThemeProvider,
@@ -414,6 +416,62 @@ function PopoverPlayground() {
           </Text>
         </Row>
       </Column>
+    </Column>
+  )
+}
+
+function SelectPlayground() {
+  const [value, setValue] =
+    useState('design')
+
+  return (
+    <Column gap={0.75} align="start">
+      <Select
+        value={value}
+        onValueChange={setValue}
+        placeholder="Choose workspace"
+      >
+        <SelectOption
+          value="design"
+          text="Design"
+          secondaryText="UI and visual work"
+          icon={IconSettings}
+        />
+        <SelectOption
+          value="profile"
+          text="Profile"
+          secondaryText="Identity and account"
+          icon={IconUser}
+        />
+        <SelectOption
+          value="search"
+          text="Search"
+          secondaryText="Find indexed content"
+          icon={IconSearch}
+        />
+        <SelectOption
+          value="disabled"
+          text="Unavailable"
+          disabled
+        />
+      </Select>
+
+      <Text
+        typo="body-small"
+        color="secondary"
+      >
+        value: {value} · type letters while focused to jump
+      </Text>
+
+      <Select
+        disabled
+        placeholder="Disabled select"
+      >
+        <SelectOption
+          value="one"
+          text="One"
+        />
+      </Select>
     </Column>
   )
 }
@@ -1440,6 +1498,13 @@ export function FoundationPlayground() {
         description="交互式锚定浮层：click toggle、outside / Escape dismiss、focus restore、8 向 placement，以及 viewport flip / shift collision。"
       >
         <PopoverPlayground />
+      </PlaygroundSection>
+
+      <PlaygroundSection
+        title="Select"
+        description="select-only combobox：focus 保持在 trigger；ArrowUp / ArrowDown / Home / End 改变 active option，Enter / Space 提交，支持 typeahead、disabled option 与 anchored overlay collision。"
+      >
+        <SelectPlayground />
       </PlaygroundSection>
 
       <PlaygroundSection
