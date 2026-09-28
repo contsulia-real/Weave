@@ -2,7 +2,7 @@ const stylesheet = `
 :where(.weave-choice-field) {
   display: inline-flex;
   align-items: center;
-  gap: var(--weave-choice-label-gap, 0.5rem);
+  gap: 0;
   position: relative;
   cursor: pointer;
   line-height: 1.35;
@@ -20,8 +20,8 @@ const stylesheet = `
   position: relative;
   display: inline-grid;
   place-items: center;
-  width: var(--weave-choice-size);
-  height: var(--weave-choice-size);
+  width: var(--weave-choice-state-layer-size);
+  height: var(--weave-choice-state-layer-size);
   flex: 0 0 auto;
   line-height: 0;
   vertical-align: middle;
@@ -138,8 +138,8 @@ const stylesheet = `
   background: var(--weave-choice-checked-state-layer-color);
 }
 
-:where(.weave-choice-shell:hover)
-  > :where(.weave-choice-control:not([aria-disabled="true"]))
+:where(.weave-choice-field:hover)
+  :where(.weave-choice-control:not([aria-disabled="true"]))
   ~ :where(.weave-choice-state-layer) {
   opacity: var(--weave-choice-state-layer-hover-opacity);
   transform: translate(-50%, -50%) scale(1);

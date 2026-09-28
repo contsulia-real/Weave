@@ -134,7 +134,6 @@ export interface ChoiceControlThemeBase {
   stateLayerHoverOpacity?: number
   stateLayerFocusOpacity?: number
   stateLayerPressOpacity?: number
-  labelGap?: ThemeScaleValue
   focusOutlineWidth?: ThemeScaleValue
   focusOutlineColor?: string
   focusOutlineStyle?: string

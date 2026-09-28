@@ -125,6 +125,70 @@ describe('Switch', () => {
     expect(onChange).not.toHaveBeenCalled()
   })
 
+  it('starts the manual drag shape from the track as well as the thumb', () => {
+    const { getByRole } = render(<Switch />)
+    const element = getByRole('switch') as HTMLButtonElement
+    const thumb = element.querySelector(
+      '[data-weave-switch-thumb]',
+    ) as HTMLDivElement
+
+    setupGeometry(element, thumb)
+
+    fireEvent.pointerDown(element, {
+      pointerId: 71,
+      button: 0,
+      clientX: 8,
+    })
+
+    expect(parseFloat(thumb.style.height)).toBeCloseTo(13.6)
+    expect(parseFloat(thumb.style.width)).toBeCloseTo(13.6)
+    expect(element.dataset.weaveSwitchDragging).toBe('true')
+
+    fireEvent.pointerCancel(element, {
+      pointerId: 71,
+      clientX: 8,
+    })
+  })
+
+  it('plays the full drag-shape trajectory for ordinary click toggles', () => {
+    const frames: FrameRequestCallback[] = []
+    const requestFrame = vi
+      .spyOn(window, 'requestAnimationFrame')
+      .mockImplementation((callback) => {
+        frames.push(callback)
+        return frames.length
+      })
+
+    const { getByRole } = render(<Switch />)
+    const element = getByRole('switch') as HTMLButtonElement
+    const thumb = element.querySelector(
+      '[data-weave-switch-thumb]',
+    ) as HTMLDivElement
+
+    setupGeometry(element, thumb)
+    fireEvent.click(element)
+
+    expect(parseFloat(thumb.style.height)).toBeCloseTo(13.6)
+    expect(parseFloat(thumb.style.width)).toBeCloseTo(13.6)
+    expect(element.dataset.weaveSwitchDragging).toBe('true')
+
+    frames.shift()?.(0)
+    frames.shift()?.(100)
+
+    expect(parseFloat(thumb.style.width)).toBeCloseTo(27)
+    expect(parseFloat(thumb.style.height)).toBeCloseTo(13.6)
+    expect(thumb.style.transform).not.toBe('')
+
+    frames.shift()?.(200)
+
+    expect(thumb.style.width).toBe('')
+    expect(thumb.style.height).toBe('')
+    expect(thumb.style.transform).toBe('')
+    expect(element.dataset.weaveSwitchDragging).toBeUndefined()
+
+    requestFrame.mockRestore()
+  })
+
   it('shrinks first, lengthens with drag distance, caps at midpoint, and restores on release', () => {
     const onChange = vi.fn()
     const { getByRole } = render(<Switch onChange={onChange} />)

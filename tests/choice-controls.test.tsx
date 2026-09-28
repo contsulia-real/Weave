@@ -83,7 +83,7 @@ describe('Radio and Checkbox', () => {
     expect(checkbox.checked).toBe(true)
   })
 
-  it('applies the theme at field scope while keeping halo size out of layout geometry', () => {
+  it('lets the halo itself provide label spacing and keeps label hover inside the same state layer', () => {
     const { getByText } = render(
       <Radio
         label="Scoped option"
@@ -114,8 +114,8 @@ describe('Radio and Checkbox', () => {
       )?.textContent ?? ''
     ).replace(/\s+/g, '')
 
-    expect(rule).toContain(
-      '--weave-choice-label-gap:0.5rem;',
+    expect(rule).not.toContain(
+      '--weave-choice-label-gap:',
     )
     expect(rule).toContain(
       '--weave-choice-state-layer-size:1.875rem;',
@@ -129,11 +129,12 @@ describe('Radio and Checkbox', () => {
       document.querySelector<HTMLStyleElement>(
         'style[data-weave-choice-control-styles]',
       )?.textContent ?? ''
-    expect(stylesheet).toContain(
-      'width: var(--weave-choice-size);',
-    )
+    expect(stylesheet).toContain('gap: 0;')
     expect(stylesheet).toContain(
       'width: var(--weave-choice-state-layer-size);',
+    )
+    expect(stylesheet).toContain(
+      '.weave-choice-field:hover',
     )
   })
 

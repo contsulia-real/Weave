@@ -227,7 +227,6 @@ export function resolveChoiceControlTheme(
       base?.stateLayerFocusOpacity,
     '--weave-choice-state-layer-press-opacity':
       base?.stateLayerPressOpacity,
-    '--weave-choice-label-gap': length(base?.labelGap),
     '--weave-choice-focus-outline-width': length(
       base?.focusOutlineWidth,
     ),

@@ -2395,7 +2395,7 @@ size
 
 - 点击 track / thumb 切换
 - Space / Enter 键盘切换
-- 直接水平拖动 thumb；拖动期间位置连续跟随指针，thumb 使用全局 `feedback.dragScale` 表达被抓取状态；释放时以轨道中点决定最终开关状态
+- Switch 的 thumb drag feedback 是所有切换路径共享的视觉语言：pointer down 在 thumb 或 track 任意位置都立即进入 `thumbDragShrink` 形变；实际拖动时继续按距离实时拉长并跟手，释放时以轨道中点决定最终状态；普通点击、点击 label、Space / Enter 等没有手动拖动距离的切换，也必须自动播放同一套 shrink → stretch → 到达另一端 → 恢复圆形的完整轨迹，不能退化成普通圆点平移
 - 拖动完成后产生的兼容 click 不得再次反向切换
 - disabled 状态下点击、键盘与拖动都不能改变状态
 - `label` 是可见且可点击的真实绑定标签；Switch 宿主使用可 label 的原生 `<button type="button" role="switch">`，点击 label 与点击控件本体等价，同时 label 参与 accessible name；Switch 控件与可见 label 默认保留 `0.5rem`（8px）间距
@@ -2460,8 +2460,8 @@ viewProps
 - Radio checked 后，外壳仍然是凹槽，内部 primary 圆点以 `scale(0) → scale(1)` + spring 方式长出来；unchecked 时同一 transition 反向执行 `scale(1) → scale(0)`。默认使用 slow motion token（当前 320ms），保证正反过渡肉眼明确可见；
 - Checkbox checked 后，**Checkbox 外壳本身整块铺满 primary**，不存在内部 primary 方块、padding 或第二层填充；
 - Checkbox 的 `onPrimary` 对号使用真实 SVG path，并通过 `pathLength + stroke-dasharray + stroke-dashoffset` 从起点到终点画出；unchecked 时同一 320ms path transition 反向把 `stroke-dashoffset` 从 `0` 推回 `1`，同时 checked background 平滑退回未选中 surface；press 时 checkbox 本体与 checkmark 视觉层必须使用完全相同的 `translateY + scale`，禁止再出现长按后勾与方框错位；
-- Radio / Checkbox 外围都有独立圆形 state layer，但它**绝不参与布局尺寸**。small / medium / large 的 halo 分别为 `1.625rem / 1.875rem / 2.125rem`（26 / 30 / 34px），只比 18 / 22 / 26px 控件本体各大 8px；shell 本身仍然只占控件本体尺寸。hover 显示圆形提示背景，focus-visible 稍增强，press 再增强，checked 时 state layer 颜色切到 primary；hover 只由控件 shell 触发，悬停 label 文本本身不会点亮 halo；
-- 可见 `label` 与**控件本体边缘**之间默认保留 `0.5rem`（8px）间距；halo 绝不能拿自己的直径撑大 shell 后再叠加 gap。这个 gap 属于 field 级 theme 变量，必须挂在 field 宿主作用域；
+- Radio / Checkbox 外围都有独立圆形 state layer。small / medium / large 的 halo 分别为 `1.625rem / 1.875rem / 2.125rem`（26 / 30 / 34px），只比 18 / 22 / 26px 控件本体各大 8px。**halo 自己就是 spacing**：shell 的布局尺寸等于 halo 直径，控件居中其中，field 的额外 `gap` 固定为 `0`，因此控件本体到 label 的可见距离只来自 halo 多出来的一侧（当前 4px），禁止再叠加第二份 label gap；
+- halo 的 hover 命中属于整个 field：鼠标位于控件、halo 区域或可见 label 文字上时都保持同一个圆形 halo；focus-visible 与 press 继续提高 state layer 强度，checked 时 halo 颜色切到 primary；
 - `prefers-reduced-motion: reduce` 下取消 scale、state layer scale 与 path drawing transition，直接显示最终状态；
 - 深色模式保持完全相同的结构，只调整 surface、border 和阴影 token。
 

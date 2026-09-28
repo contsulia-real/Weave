@@ -29,6 +29,35 @@ interface SwitchDragState {
 }
 
 const DRAG_THRESHOLD = 3
+const DEFAULT_AUTO_DRAG_DURATION = 200
+
+function durationMs(
+  value: number | string | undefined,
+): number {
+  if (typeof value === 'number') {
+    return Math.max(1, value)
+  }
+
+  if (typeof value !== 'string') {
+    return DEFAULT_AUTO_DRAG_DURATION
+  }
+
+  const normalized = value.trim().toLowerCase()
+  const parsed = Number.parseFloat(normalized)
+  if (!Number.isFinite(parsed)) {
+    return DEFAULT_AUTO_DRAG_DURATION
+  }
+
+  if (normalized.endsWith('ms')) {
+    return Math.max(1, parsed)
+  }
+
+  if (normalized.endsWith('s')) {
+    return Math.max(1, parsed * 1000)
+  }
+
+  return Math.max(1, parsed)
+}
 
 function dragProgress(
   offset: number,
@@ -139,12 +168,20 @@ export function Switch({
   const thumbRef = useRef<HTMLDivElement>(null)
   const dragRef = useRef<SwitchDragState | null>(null)
   const nativeDragCleanupRef = useRef<(() => void) | null>(null)
+  const autoDragFrameRef = useRef<number | null>(null)
   const suppressClickRef = useRef(false)
   const suppressClickTimerRef = useRef<number | null>(null)
 
   useEffect(
     () => () => {
       nativeDragCleanupRef.current?.()
+
+      if (
+        autoDragFrameRef.current !== null &&
+        typeof window !== 'undefined'
+      ) {
+        window.cancelAnimationFrame(autoDragFrameRef.current)
+      }
 
       if (
         suppressClickTimerRef.current !== null &&
@@ -164,9 +201,119 @@ export function Switch({
     onChange?.(nextChecked)
   }
 
+  const stopAutoDrag = () => {
+    const root = elementRef.current
+    const thumb = thumbRef.current
+
+    if (
+      autoDragFrameRef.current !== null &&
+      typeof window !== 'undefined'
+    ) {
+      window.cancelAnimationFrame(autoDragFrameRef.current)
+      autoDragFrameRef.current = null
+    }
+
+    if (thumb !== null) {
+      clearDragShape(thumb)
+    }
+
+    if (root !== null && dragRef.current === null) {
+      delete root.dataset.weaveSwitchDragging
+    }
+  }
+
+  const playAutoDrag = (nextChecked: boolean) => {
+    const root = elementRef.current
+    const thumb = thumbRef.current
+
+    if (
+      root === null ||
+      thumb === null ||
+      dragRef.current !== null ||
+      typeof window === 'undefined'
+    ) {
+      return
+    }
+
+    const rootRect = root.getBoundingClientRect()
+    const thumbRect = thumb.getBoundingClientRect()
+    const inset = currentChecked
+      ? Math.max(0, rootRect.right - thumbRect.right)
+      : Math.max(0, thumbRect.left - rootRect.left)
+    const maxOffset = Math.max(
+      0,
+      rootRect.width - thumbRect.width - inset * 2,
+    )
+
+    if (maxOffset <= 0 || thumbRect.width <= 0) return
+
+    stopAutoDrag()
+
+    const startOffset = currentChecked ? maxOffset : 0
+    const endOffset = nextChecked ? maxOffset : 0
+    const drag: SwitchDragState = {
+      pointerId: -1,
+      startX: 0,
+      startOffset,
+      maxOffset,
+      currentOffset: startOffset,
+      thumbSize: thumbRect.width,
+      moved: true,
+    }
+    const duration = durationMs(
+      theme.tokens.motion?.duration?.normal,
+    )
+    let startedAt: number | null = null
+
+    root.dataset.weaveSwitchDragging = 'true'
+    applyDragShape(
+      thumb,
+      drag,
+      startOffset,
+      dragShrink,
+      dragMaxWidth,
+    )
+
+    const frame = (time: number) => {
+      if (startedAt === null) startedAt = time
+
+      const linear = Math.min(
+        1,
+        Math.max(0, (time - startedAt) / duration),
+      )
+      const progress = 1 - Math.pow(1 - linear, 3)
+      const offset =
+        startOffset + (endOffset - startOffset) * progress
+
+      drag.currentOffset = offset
+      applyDragShape(
+        thumb,
+        drag,
+        offset,
+        dragShrink,
+        dragMaxWidth,
+      )
+
+      if (linear < 1) {
+        autoDragFrameRef.current = window.requestAnimationFrame(frame)
+        return
+      }
+
+      autoDragFrameRef.current = null
+      clearDragShape(thumb)
+      if (dragRef.current === null) {
+        delete root.dataset.weaveSwitchDragging
+      }
+    }
+
+    autoDragFrameRef.current = window.requestAnimationFrame(frame)
+  }
+
   const toggle = () => {
     if (disabled) return
-    commit(!currentChecked)
+    const nextChecked = !currentChecked
+    playAutoDrag(nextChecked)
+    commit(nextChecked)
   }
 
   const suppressFollowUpClick = () => {
@@ -324,15 +471,10 @@ export function Switch({
 
     const root = event.currentTarget
     const thumb = thumbRef.current
-    const target = event.target
 
-    if (
-      thumb === null ||
-      !(target instanceof Node) ||
-      !thumb.contains(target)
-    ) {
-      return
-    }
+    if (thumb === null) return
+
+    stopAutoDrag()
 
     const rootRect = root.getBoundingClientRect()
     const thumbRect = thumb.getBoundingClientRect()
