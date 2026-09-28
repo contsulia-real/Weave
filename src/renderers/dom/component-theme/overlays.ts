@@ -39,6 +39,26 @@ export function resolveToolTipTheme(
   }
 }
 
+export function resolvePopoverTheme(
+  theme: ResolvedTheme,
+): RuntimeStyleDeclarations {
+  const base = theme.components.Popover?.base
+
+  return {
+    '--weave-popover-background': color(base?.background),
+    '--weave-popover-color': color(base?.color),
+    '--weave-popover-border-color': color(base?.borderColor),
+    '--weave-popover-border-width': length(base?.borderWidth),
+    '--weave-popover-radius': radius(base?.radius),
+    '--weave-popover-padding-x': length(base?.paddingX),
+    '--weave-popover-padding-y': length(base?.paddingY),
+    '--weave-popover-min-width': length(base?.minWidth),
+    '--weave-popover-max-width': length(base?.maxWidth),
+    '--weave-popover-shadow': shadowToken(base?.shadow),
+    '--weave-popover-motion-offset': length(base?.motionOffset),
+  }
+}
+
 export function resolveSnackTheme(
   theme: ResolvedTheme,
 ): RuntimeStyleDeclarations {

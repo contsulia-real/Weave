@@ -315,6 +315,24 @@ export interface ToolTipTheme {
   base?: ToolTipThemeBase
 }
 
+export interface PopoverThemeBase {
+  background?: string
+  color?: string
+  borderColor?: string
+  borderWidth?: ThemeScaleValue
+  radius?: ThemeScaleValue
+  paddingX?: ThemeScaleValue
+  paddingY?: ThemeScaleValue
+  minWidth?: ThemeScaleValue
+  maxWidth?: ThemeScaleValue
+  shadow?: string
+  motionOffset?: ThemeScaleValue
+}
+
+export interface PopoverTheme {
+  base?: PopoverThemeBase
+}
+
 export interface SnackThemeBase {
   background?: string
   color?: string
@@ -396,6 +414,7 @@ export interface ThemeComponents {
   Progress?: ProgressTheme
   Scrollbar?: ScrollbarTheme
   ToolTip?: ToolTipTheme
+  Popover?: PopoverTheme
   Snack?: SnackTheme
   List?: ListTheme
   ListItem?: ListItemTheme

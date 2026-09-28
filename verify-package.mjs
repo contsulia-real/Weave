@@ -35,6 +35,7 @@ const expectedRuntimeExports = [
   'ListItem',
   'Link',
   'Presence',
+  'Popover',
   'Progress',
   'Radio',
   'Row',
@@ -72,6 +73,7 @@ assert(typeSource.includes('ViewAnimationConfig'), 'Built declarations are missi
 assert(typeSource.includes('MotionSpring'), 'Built declarations are missing MotionSpring')
 assert(typeSource.includes('MotionInterruption'), 'Built declarations are missing MotionInterruption')
 assert(typeSource.includes('PresenceProps'), 'Built declarations are missing PresenceProps')
+assert(typeSource.includes('PopoverProps'), 'Built declarations are missing PopoverProps')
 assert(typeSource.includes('ReducedMotionPreference'), 'Built declarations are missing ReducedMotionPreference')
 assert(typeSource.includes('AbsoluteProps'), 'Built declarations are missing AbsoluteProps')
 assert(typeSource.includes('FlexProps'), 'Built declarations are missing FlexProps')
@@ -94,6 +96,7 @@ const expectedThemeTypeExports = [
   'BadgeTheme',
   'LinkTheme',
   'ButtonTheme',
+  'PopoverTheme',
   'ProgressTheme',
   'ScrollbarTheme',
   'ToolTipTheme',

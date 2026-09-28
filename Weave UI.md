@@ -3504,6 +3504,122 @@ typo
 
 ---
 
+# 19.5 `Popover`
+
+`Popover` 是交互式锚定浮层组合组件。它和 `ToolTip` 的职责不同：ToolTip 是不可交互的辅助说明；Popover 可以承载 Button、Link、表单控件和后续 Menu / Select 等交互内容。
+
+## 19.5.1 API
+
+```tsx
+<Popover
+  placement="bottom-left"
+  content={
+    <Column gap={0.5}>
+      <Text typo="label-medium">Account</Text>
+      <Button text="Settings" />
+    </Column>
+  }
+>
+  <Button text="Open" />
+</Popover>
+```
+
+当前公开属性：
+
+```text
+children
+content
+placement
+offset
+viewportPadding
+open
+defaultOpen
+onOpenChange
+autoFocus
+restoreFocus
+viewProps
+```
+
+`children` 是唯一 trigger；`content` 是 portal 内的交互式浮层内容。
+
+### placement
+
+支持八个方向：
+
+```text
+top-left
+top
+top-right
+right
+bottom-right
+bottom
+bottom-left
+left
+```
+
+默认 `bottom`。
+
+`placement` 是首选方向，不是绝对保证。框架在主轴发生 viewport collision 时会比较相反方向的可用空间；相反方向明显更好时自动 flip。最终位置随后执行 shift，确保 panel 尽量保持在 viewport 的 `viewportPadding` 范围内。
+
+默认：
+
+```text
+offset = 0.5rem
+viewportPadding = 0.5rem
+```
+
+定位使用 trigger 的实时 `getBoundingClientRect()` 与 panel 实际尺寸；viewport resize、任意祖先 scroll、trigger resize / mutation / interaction transition，以及 panel ResizeObserver 都会触发重新定位。业务代码不提供 left / top 坐标。
+
+## 19.5.2 打开、关闭与 focus
+
+默认行为：
+
+- click trigger 切换 open；
+- trigger 使用 `aria-haspopup="dialog"`、`aria-controls` 与 `aria-expanded`；
+- panel 使用 `role="dialog"`；
+- 点击 / pointer down 到 trigger 与 panel 之外时关闭；
+- `Escape` 关闭；
+- 默认 `autoFocus=true`，打开后聚焦 panel 内第一个可聚焦元素；若没有，则聚焦 panel 本身；
+- 默认 `restoreFocus=true`；Escape、程序化关闭等场景下，如果 focus 仍在 panel / body，关闭后恢复到 trigger；
+- outside pointer dismiss 不抢回 focus，让用户刚点击的外部目标正常获得 focus；
+- controlled `open / onOpenChange` 与 uncontrolled `defaultOpen` 都支持；
+- exit transition 完成前 panel 保留在 DOM 中，随后才卸载；
+- `prefers-reduced-motion: reduce` 时跳过退出等待与位移 / scale motion。
+
+Popover 不实现 focus trap，也不是 modal。需要阻断背景交互和强制 focus containment 的场景应由后续 Dialog / Modal 组件负责。
+
+## 19.5.3 Portal、collision 与视觉
+
+Popover portal 到 `document.body`，并在 portal 内重新建立当前 ThemeProvider，因此局部主题不会丢失。默认 semantic layer 为 `overlay`，不是 `tooltip` 或 `modal`。
+
+Popover enter / exit motion 按**最终 resolved placement** 决定方向：从靠近 trigger 的方向轻微展开，关闭时沿相反过程收回。collision 导致 flip 后，motion 方向也跟随实际 placement。
+
+默认视觉来自：
+
+```text
+theme.components.Popover.base
+```
+
+当前可主题化字段：
+
+```text
+background
+color
+borderColor
+borderWidth
+radius
+paddingX
+paddingY
+minWidth
+maxWidth
+shadow
+motionOffset
+```
+
+Popover 使用 surface / outline / ambient shadow 表达可交互浮层材质；不复用 ToolTip 的 primary 气泡造型，也不使用 Button 的实体按压深度。通用视觉覆盖继续通过 `viewProps` 使用，但 fixed positioning、dialog role 与 collision 坐标由 Popover 自己拥有。
+
+---
+
 # 20. `Snack`
 
 `Snack` 是组合组件，同时提供：
@@ -4515,6 +4631,7 @@ const theme = {
     Progress: { ... },
     Scrollbar: { ... },
     ToolTip: { ... },
+    Popover: { ... },
     Snack: { ... },
     List: { ... },
   },
@@ -5747,6 +5864,7 @@ Weave 公开 API
 │  ├─ Link
 │  ├─ Badge
 │  ├─ ToolTip
+│  ├─ Popover
 │  ├─ Snack
 │  ├─ List
 │  └─ ListItem

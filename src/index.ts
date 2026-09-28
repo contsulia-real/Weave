@@ -21,6 +21,7 @@ export { Radio } from './components/Radio'
 export { Checkbox } from './components/Checkbox'
 export { Progress } from './components/Progress'
 export { ToolTip } from './components/ToolTip'
+export { Popover } from './components/Popover'
 export { Snack } from './components/Snack'
 export { List } from './components/List'
 export { ListItem } from './components/ListItem'
@@ -92,6 +93,8 @@ export type {
   ListItemThemeBase,
   ListTheme,
   ListThemeBase,
+  PopoverTheme,
+  PopoverThemeBase,
   ProgressTheme,
   ProgressThemeBase,
   ProgressThemeSize,
@@ -252,6 +255,12 @@ export type {
   ToolTipProps,
   ToolTipViewProps,
 } from './core/tooltip-types'
+
+export type {
+  PopoverPlacement,
+  PopoverProps,
+  PopoverViewProps,
+} from './core/popover-types'
 
 export type {
   SnackContainer,

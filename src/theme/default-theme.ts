@@ -716,6 +716,21 @@ export const defaultTheme: ResolvedTheme = {
         typo: 'body-xsmall',
       },
     },
+    Popover: {
+      base: {
+        background: 'surface',
+        color: 'tertiary',
+        borderColor: 'outline',
+        borderWidth: 0.0625,
+        radius: 'medium',
+        paddingX: 0.75,
+        paddingY: 0.75,
+        minWidth: 12,
+        maxWidth: 24,
+        shadow: 'medium',
+        motionOffset: 0.25,
+      },
+    },
     Snack: {
       base: {
         background: 'surface',

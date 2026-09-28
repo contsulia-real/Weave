@@ -19,6 +19,7 @@ import {
   Image,
   Link,
   Presence,
+  Popover,
   Row,
   Stack,
   Text,
@@ -309,6 +310,107 @@ function BadgeMotionPlayground() {
           <Button text="Animated status" variant="secondary" />
         </Badge>
       </Row>
+    </Column>
+  )
+}
+
+const popoverPlacements = [
+  'top-left',
+  'top',
+  'top-right',
+  'right',
+  'bottom-right',
+  'bottom',
+  'bottom-left',
+  'left',
+] as const
+
+function PopoverPlayground() {
+  const [controlledOpen, setControlledOpen] =
+    useState(false)
+
+  return (
+    <Column gap={1.25} align="start">
+      <Column gap={0.75} align="start">
+        <Text typo="label-medium" color="secondary">
+          Eight placements · click to toggle
+        </Text>
+
+        <Row gap={0.75} wrap>
+          {popoverPlacements.map((placement) => (
+            <Popover
+              key={placement}
+              placement={placement}
+              content={
+                <Column gap={0.5} width={13}>
+                  <Text typo="label-medium">
+                    {placement}
+                  </Text>
+                  <Text typo="body-small" color="secondary">
+                    Interactive content stays clickable. Escape or outside
+                    pointer input closes the popover.
+                  </Text>
+                  <Button
+                    text="Popover action"
+                    size="small"
+                    variant="secondary"
+                  />
+                </Column>
+              }
+            >
+              <Button
+                text={placement}
+                variant="secondary"
+              />
+            </Popover>
+          ))}
+        </Row>
+      </Column>
+
+      <Column gap={0.75} align="start">
+        <Text typo="label-medium" color="secondary">
+          Controlled
+        </Text>
+
+        <Row gap={0.75} align="center" wrap>
+          <Popover
+            open={controlledOpen}
+            onOpenChange={setControlledOpen}
+            placement="bottom-left"
+            content={
+              <Column gap={0.5} width={14}>
+                <Text typo="label-medium">
+                  Controlled popover
+                </Text>
+                <Text typo="body-small" color="secondary">
+                  open / onOpenChange are owned by the playground state.
+                </Text>
+                <Button
+                  text="Close from content"
+                  size="small"
+                  variant="secondary"
+                  viewProps={{
+                    onClick: () => setControlledOpen(false),
+                  }}
+                />
+              </Column>
+            }
+          >
+            <Button
+              text={
+                controlledOpen
+                  ? 'Controlled · open'
+                  : 'Controlled · closed'
+              }
+              variant="primary"
+            />
+          </Popover>
+
+          <Text typo="body-small" color="secondary">
+            state: {controlledOpen ? 'open' : 'closed'}
+          </Text>
+        </Row>
+      </Column>
     </Column>
   )
 }
@@ -1235,6 +1337,13 @@ export function FoundationPlayground() {
             />
           </ToolTip>
         </Row>
+      </PlaygroundSection>
+
+      <PlaygroundSection
+        title="Popover"
+        description="交互式锚定浮层：click toggle、outside / Escape dismiss、focus restore、8 向 placement，以及 viewport flip / shift collision。"
+      >
+        <PopoverPlayground />
       </PlaygroundSection>
     </>
   )
