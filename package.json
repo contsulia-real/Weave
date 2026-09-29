@@ -41,6 +41,7 @@
     "test:watch": "vitest",
     "lint": "oxlint",
     "verify:package": "node verify-package.mjs",
+    "verify:task": "node scripts/verify-task-complete.mjs",
     "preview": "vite preview"
   },
   "peerDependencies": {
