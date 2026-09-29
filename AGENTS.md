@@ -67,3 +67,13 @@ Do not push unless the user explicitly asks.
 
 Do not claim a command, test, build, commit, or cleanup succeeded unless its result was actually observed.
 If tooling prevents completion, state exactly which completion gate remains unsatisfied.
+
+## 6. Audit and review fidelity
+
+When the user asks for an audit, review, inventory, defect list, architecture check, or similar examination, preserve every finding as an independent item.
+
+Do not compress findings into categories, themes, tiers, summaries, "core problems", or a smaller derived list unless the user explicitly asks for that transformation.
+Do not replace the complete finding set with a synthesized conclusion at the end.
+Do not use a synthesized or grouped version as the basis for later implementation.
+When subsequent work is based on an audit, use the original granular findings directly and keep their distinctions intact.
+If the user explicitly says not to summarize, do not add any concluding summary, recap, grouping, or restatement.
