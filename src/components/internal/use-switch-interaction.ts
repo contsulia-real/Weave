@@ -33,6 +33,7 @@ interface UseSwitchInteractionProps {
   dragShrink: number
   dragMaxWidth: number
   autoDragDuration: number
+  reducedMotion: boolean
   callbacks: SwitchInteractionCallbacks
   onCommit: (checked: boolean) => void
 }
@@ -45,6 +46,7 @@ export function useSwitchInteraction({
   dragShrink,
   dragMaxWidth,
   autoDragDuration,
+  reducedMotion,
   callbacks,
   onCommit,
 }: UseSwitchInteractionProps) {
@@ -90,6 +92,11 @@ export function useSwitchInteraction({
   const playAutoDrag = (nextChecked: boolean) => {
     const root = rootRef.current
     const thumb = thumbRef.current
+
+    if (reducedMotion) {
+      stopAutoDrag()
+      return
+    }
 
     if (
       root === null ||

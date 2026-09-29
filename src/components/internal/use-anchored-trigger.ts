@@ -43,26 +43,42 @@ export function useAnchoredTrigger({
     const previousHasPopup = target.getAttribute('aria-haspopup')
     const previousControls = target.getAttribute('aria-controls')
     const previousExpanded = target.getAttribute('aria-expanded')
+    const document = target.ownerDocument
 
     target.setAttribute('aria-haspopup', hasPopup)
     target.setAttribute('aria-controls', popupId)
     target.setAttribute('aria-expanded', 'false')
 
+    const eventBelongsToTarget = (event: Event) =>
+      event.target instanceof Node && target.contains(event.target)
+
+    const handleClick = (event: MouseEvent) => {
+      if (eventBelongsToTarget(event)) {
+        onClick?.(event)
+      }
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (eventBelongsToTarget(event)) {
+        onKeyDown?.(event)
+      }
+    }
+
     if (onClick !== undefined) {
-      target.addEventListener('click', onClick)
+      document.addEventListener('click', handleClick)
     }
 
     if (onKeyDown !== undefined) {
-      target.addEventListener('keydown', onKeyDown)
+      document.addEventListener('keydown', handleKeyDown)
     }
 
     return () => {
       if (onClick !== undefined) {
-        target.removeEventListener('click', onClick)
+        document.removeEventListener('click', handleClick)
       }
 
       if (onKeyDown !== undefined) {
-        target.removeEventListener('keydown', onKeyDown)
+        document.removeEventListener('keydown', handleKeyDown)
       }
 
       restoreAttribute(target, 'aria-haspopup', previousHasPopup)

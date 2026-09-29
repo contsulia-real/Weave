@@ -1,4 +1,5 @@
 import { cleanup, fireEvent, render, waitFor } from '@testing-library/react'
+import type { KeyboardEvent, MouseEvent } from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { Button, createTheme, Divider, Menu, MenuItem, ThemeProvider } from '../src'
 
@@ -489,6 +490,128 @@ describe('Menu', () => {
 
     await waitFor(() => {
       expect(document.querySelector('[data-weave-menu]')).toBeNull()
+    })
+  })
+
+  it('lets trigger React handlers cancel click and keyboard activation', async () => {
+    const onClick = vi.fn((event: MouseEvent<HTMLButtonElement>) => {
+      event.preventDefault()
+    })
+    const onKeyDown = vi.fn((event: KeyboardEvent<HTMLButtonElement>) => {
+      event.preventDefault()
+    })
+    const { getByRole, queryByRole } = render(
+      <Menu trigger={<Button text="Cancelled menu" viewProps={{ onClick, onKeyDown }} />}>
+        <MenuItem text="Item" />
+      </Menu>,
+    )
+    const trigger = getByRole('button')
+
+    fireEvent.click(trigger)
+    await Promise.resolve()
+
+    expect(onClick).toHaveBeenCalledTimes(1)
+    expect(queryByRole('menu')).toBeNull()
+
+    fireEvent.keyDown(trigger, { key: 'ArrowDown' })
+    await Promise.resolve()
+
+    expect(onKeyDown).toHaveBeenCalledTimes(1)
+    expect(trigger.getAttribute('aria-expanded')).toBe('false')
+    expect(queryByRole('menu')).toBeNull()
+  })
+
+  it('uses custom viewportPadding for the root menu', async () => {
+    const { getByRole } = render(
+      <Menu
+        defaultOpen
+        placement="bottom-left"
+        viewportPadding={2}
+        trigger={<Button text="Padding menu" />}
+      >
+        <MenuItem text="Item" />
+      </Menu>,
+    )
+    const trigger = getByRole('button')
+    const menu = getByRole('menu')
+
+    trigger.getBoundingClientRect = () =>
+      ({
+        x: -20,
+        y: 80,
+        left: -20,
+        top: 80,
+        right: 20,
+        bottom: 120,
+        width: 40,
+        height: 40,
+        toJSON: () => ({}),
+      }) as DOMRect
+    menu.getBoundingClientRect = () =>
+      ({
+        x: 0,
+        y: 0,
+        left: 0,
+        top: 0,
+        right: 180,
+        bottom: 100,
+        width: 180,
+        height: 100,
+        toJSON: () => ({}),
+      }) as DOMRect
+
+    fireEvent.scroll(window)
+
+    await waitFor(() => {
+      expect(menu.style.left).toBe('32px')
+    })
+  })
+
+  it('uses custom submenuOffset for submenu positioning', async () => {
+    const { getByRole, getAllByRole } = render(
+      <Menu defaultOpen submenuOffset={1} trigger={<Button text="Offset menu" />}>
+        <MenuItem text="More" submenu={<MenuItem text="Child" />} />
+      </Menu>,
+    )
+    const more = getByRole('menuitem', { name: /More/ })
+
+    fireEvent.pointerEnter(more)
+
+    await waitFor(() => {
+      expect(getAllByRole('menu')).toHaveLength(2)
+    })
+
+    const submenu = getAllByRole('menu')[1]!
+
+    more.getBoundingClientRect = () =>
+      ({
+        x: 100,
+        y: 100,
+        left: 100,
+        top: 100,
+        right: 140,
+        bottom: 140,
+        width: 40,
+        height: 40,
+        toJSON: () => ({}),
+      }) as DOMRect
+    submenu.getBoundingClientRect = () =>
+      ({
+        x: 0,
+        y: 0,
+        left: 0,
+        top: 0,
+        right: 100,
+        bottom: 80,
+        width: 100,
+        height: 80,
+        toJSON: () => ({}),
+      }) as DOMRect
+
+    fireEvent.scroll(window)
+
+    await waitFor(() => {
+      expect(submenu.style.left).toBe('156px')
     })
   })
 

@@ -22,7 +22,7 @@ export function Switch({
 }: SwitchProps) {
   useInsertionEffect(ensureSwitchStylesheet, [])
 
-  const { theme } = useTheme()
+  const { theme, reducedMotion } = useTheme()
   const themeDeclarations = useMemo(() => resolveSwitchTheme(theme, size), [size, theme])
   const themeClassName = useRuntimeStyleClass('switch-theme', themeDeclarations)
 
@@ -73,6 +73,7 @@ export function Switch({
     dragShrink,
     dragMaxWidth,
     autoDragDuration,
+    reducedMotion,
     callbacks: {
       onClick: viewProps.onClick,
       onKeyDown: viewProps.onKeyDown,

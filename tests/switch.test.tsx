@@ -359,6 +359,33 @@ describe('Switch', () => {
     thumbRect.mockRestore()
   })
 
+  it('skips automatic thumb motion when reduced motion is active', () => {
+    const onChange = vi.fn()
+    const { getByRole } = render(
+      <ThemeProvider reducedMotion="reduce">
+        <Switch onChange={onChange} />
+      </ThemeProvider>,
+    )
+    const element = getByRole('switch') as HTMLButtonElement
+    const thumb = element.querySelector('[data-weave-switch-thumb]') as HTMLDivElement
+
+    setupGeometry(element, thumb)
+
+    const frameSpy = vi.spyOn(window, 'requestAnimationFrame')
+    frameSpy.mockClear()
+
+    fireEvent.click(element)
+
+    expect(onChange).toHaveBeenCalledWith(true)
+    expect(frameSpy).not.toHaveBeenCalled()
+    expect(element.dataset.weaveSwitchDragging).toBeUndefined()
+    expect(thumb.style.width).toBe('')
+    expect(thumb.style.height).toBe('')
+    expect(thumb.style.transform).toBe('')
+
+    frameSpy.mockRestore()
+  })
+
   it('uses a clear off fill, primary on fill, recessed track, and raised thumb', () => {
     const { getByRole } = render(<Switch size="medium" />)
     const element = getByRole('switch')

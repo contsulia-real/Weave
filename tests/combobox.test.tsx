@@ -449,6 +449,85 @@ describe('Combobox', () => {
     })
   })
 
+  it('uses defaultInputValue as the uncontrolled input initial value only', () => {
+    const { getByRole, rerender } = render(
+      <Combobox defaultValue="alpha" defaultInputValue="Draft">
+        <ComboboxOption value="alpha" text="Alpha" />
+        <ComboboxOption value="beta" text="Beta" />
+      </Combobox>,
+    )
+    const input = getByRole('combobox') as HTMLInputElement
+
+    expect(input.value).toBe('Draft')
+
+    rerender(
+      <Combobox defaultValue="alpha" defaultInputValue="Changed default">
+        <ComboboxOption value="alpha" text="Alpha" />
+        <ComboboxOption value="beta" text="Beta" />
+      </Combobox>,
+    )
+
+    expect(input.value).toBe('Draft')
+  })
+
+  it('uses custom viewportPadding and forwards listboxViewProps', async () => {
+    const listboxRef = vi.fn()
+    const { getByRole, getByTestId } = render(
+      <Combobox
+        defaultOpen
+        placement="bottom-left"
+        viewportPadding={2}
+        listboxViewProps={{
+          id: 'custom-combobox-listbox',
+          ref: listboxRef,
+          className: 'custom-listbox',
+          data: { testid: 'combobox-listbox' },
+          style: { opacity: 0.5 },
+        }}
+      >
+        <ComboboxOption value="alpha" text="Alpha" />
+      </Combobox>,
+    )
+    const input = getByRole('combobox')
+    const listbox = getByTestId('combobox-listbox')
+
+    input.getBoundingClientRect = () =>
+      ({
+        x: -20,
+        y: 80,
+        left: -20,
+        top: 80,
+        right: 180,
+        bottom: 120,
+        width: 200,
+        height: 40,
+        toJSON: () => ({}),
+      }) as DOMRect
+    listbox.getBoundingClientRect = () =>
+      ({
+        x: 0,
+        y: 0,
+        left: 0,
+        top: 0,
+        right: 180,
+        bottom: 100,
+        width: 180,
+        height: 100,
+        toJSON: () => ({}),
+      }) as DOMRect
+
+    fireEvent.scroll(window)
+
+    await waitFor(() => {
+      expect(listbox.style.left).toBe('32px')
+    })
+    expect(listbox.id).toBe('custom-combobox-listbox')
+    expect(listbox.classList.contains('custom-listbox')).toBe(true)
+    expect(listbox.style.opacity).toBe('0.5')
+    expect(listbox.getAttribute('role')).toBe('listbox')
+    expect(listboxRef).toHaveBeenCalledWith(listbox)
+  })
+
   it('rejects duplicate option values', () => {
     expect(() =>
       render(

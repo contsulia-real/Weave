@@ -1,5 +1,5 @@
 import { cleanup, fireEvent, render, waitFor } from '@testing-library/react'
-import { act } from 'react'
+import { act, type KeyboardEvent } from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { Button, createTheme, Text, ThemeProvider, ToolTip, View } from '../src'
 
@@ -150,6 +150,24 @@ describe('ToolTip', () => {
     )
 
     expect(queryByRole('tooltip')).not.toBeNull()
+  })
+
+  it('lets the target cancel Escape dismissal with preventDefault', async () => {
+    const onKeyDown = vi.fn((event: KeyboardEvent<HTMLButtonElement>) => {
+      event.preventDefault()
+    })
+    const { getByRole } = render(
+      <ToolTip content="Persistent tip" defaultOpen>
+        <Button text="Target" viewProps={{ onKeyDown }} />
+      </ToolTip>,
+    )
+    const target = getByRole('button')
+
+    fireEvent.keyDown(target, { key: 'Escape' })
+    await Promise.resolve()
+
+    expect(onKeyDown).toHaveBeenCalledTimes(1)
+    expect(getByRole('tooltip')).toBeDefined()
   })
 
   it('positions each placement from the target rectangle and applies rem offset', async () => {

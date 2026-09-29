@@ -136,7 +136,12 @@ export function ToolTip({
     }
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== 'Escape') {
+      if (
+        event.key !== 'Escape' ||
+        !(event.target instanceof Node) ||
+        !target.contains(event.target) ||
+        event.defaultPrevented
+      ) {
         return
       }
 
@@ -151,7 +156,7 @@ export function ToolTip({
     target.ownerDocument.defaultView?.addEventListener('pointercancel', clearPointerFocus)
     target.addEventListener('focusin', handleFocusIn)
     target.addEventListener('focusout', handleFocusOut)
-    target.addEventListener('keydown', handleKeyDown)
+    target.ownerDocument.addEventListener('keydown', handleKeyDown)
 
     return () => {
       target.removeEventListener('pointerenter', handlePointerEnter)
@@ -161,7 +166,7 @@ export function ToolTip({
       target.ownerDocument.defaultView?.removeEventListener('pointercancel', clearPointerFocus)
       target.removeEventListener('focusin', handleFocusIn)
       target.removeEventListener('focusout', handleFocusOut)
-      target.removeEventListener('keydown', handleKeyDown)
+      target.ownerDocument.removeEventListener('keydown', handleKeyDown)
 
       if (targetRef.current === target) {
         targetRef.current = null

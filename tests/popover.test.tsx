@@ -1,4 +1,5 @@
 import { act, cleanup, fireEvent, render, waitFor } from '@testing-library/react'
+import type { MouseEvent } from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { Button, Column, createTheme, Popover, Text, ThemeProvider } from '../src'
 
@@ -188,6 +189,114 @@ describe('Popover', () => {
     )
 
     expect(queryByRole('dialog')).not.toBeNull()
+  })
+
+  it('repeats controlled open requests when the parent rejects the previous request', async () => {
+    const onOpenChange = vi.fn()
+    const { getByRole } = render(
+      <Popover open={false} onOpenChange={onOpenChange} content="Controlled">
+        <Button text="Controlled trigger" />
+      </Popover>,
+    )
+    const trigger = getByRole('button')
+
+    fireEvent.click(trigger)
+    await Promise.resolve()
+    fireEvent.click(trigger)
+    await Promise.resolve()
+
+    expect(onOpenChange.mock.calls).toEqual([[true], [true]])
+    expect(trigger.getAttribute('aria-expanded')).toBe('false')
+  })
+
+  it('lets the trigger cancel Popover activation with preventDefault', async () => {
+    const onClick = vi.fn((event: MouseEvent<HTMLButtonElement>) => {
+      event.preventDefault()
+    })
+    const { getByRole, queryByRole } = render(
+      <Popover content="Cancelled">
+        <Button text="Cancelled trigger" viewProps={{ onClick }} />
+      </Popover>,
+    )
+    const trigger = getByRole('button')
+
+    fireEvent.click(trigger)
+    await Promise.resolve()
+
+    expect(onClick).toHaveBeenCalledTimes(1)
+    expect(trigger.getAttribute('aria-expanded')).toBe('false')
+    expect(queryByRole('dialog')).toBeNull()
+  })
+
+  it('does not restore trigger focus when restoreFocus is false', async () => {
+    const { getByRole } = render(
+      <Popover restoreFocus={false} content={<Button text="Inside action" />}>
+        <Button text="Trigger" />
+      </Popover>,
+    )
+    const trigger = getByRole('button', { name: 'Trigger' })
+
+    trigger.focus()
+    fireEvent.click(trigger)
+
+    const inside = getByRole('button', { name: 'Inside action' })
+
+    await waitFor(() => {
+      expect(document.activeElement).toBe(inside)
+    })
+
+    fireEvent.keyDown(document, { key: 'Escape' })
+
+    await waitFor(() => {
+      expect(trigger.getAttribute('aria-expanded')).toBe('false')
+    })
+    expect(document.activeElement).not.toBe(trigger)
+  })
+
+  it('uses a custom viewportPadding when shifting inside the viewport', async () => {
+    const { getByRole } = render(
+      <Popover
+        defaultOpen
+        placement="bottom-left"
+        viewportPadding={2}
+        content="Custom viewport padding"
+      >
+        <Button text="Padding trigger" />
+      </Popover>,
+    )
+    const trigger = getByRole('button', { name: 'Padding trigger' })
+    const dialog = getByRole('dialog')
+
+    trigger.getBoundingClientRect = () =>
+      ({
+        x: -20,
+        y: 80,
+        left: -20,
+        top: 80,
+        right: 20,
+        bottom: 120,
+        width: 40,
+        height: 40,
+        toJSON: () => ({}),
+      }) as DOMRect
+    dialog.getBoundingClientRect = () =>
+      ({
+        x: 0,
+        y: 0,
+        left: 0,
+        top: 0,
+        right: 180,
+        bottom: 100,
+        width: 180,
+        height: 100,
+        toJSON: () => ({}),
+      }) as DOMRect
+
+    fireEvent.scroll(window)
+
+    await waitFor(() => {
+      expect(dialog.style.left).toBe('32px')
+    })
   })
 
   it('flips on main-axis collision and shifts the resolved panel inside the viewport', async () => {

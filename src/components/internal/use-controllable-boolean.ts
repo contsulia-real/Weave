@@ -1,8 +1,7 @@
-import { type MutableRefObject, useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useLayoutEffect, useRef, useState } from 'react'
 
 interface ControllableBooleanState {
   value: boolean
-  requestedValueRef: MutableRefObject<boolean>
   request(next: boolean): boolean
 }
 
@@ -14,27 +13,23 @@ export function useControllableBoolean(
   const controlled = value !== undefined
   const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue)
   const resolvedValue = value ?? uncontrolledValue
-  const requestedValueRef = useRef(resolvedValue)
+  const resolvedValueRef = useRef(resolvedValue)
   const controlledRef = useRef(controlled)
   const onChangeRef = useRef(onChange)
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    resolvedValueRef.current = resolvedValue
     controlledRef.current = controlled
     onChangeRef.current = onChange
-  }, [controlled, onChange])
-
-  useEffect(() => {
-    requestedValueRef.current = resolvedValue
-  }, [resolvedValue])
+  }, [controlled, onChange, resolvedValue])
 
   const request = useCallback((next: boolean) => {
-    if (requestedValueRef.current === next) {
+    if (resolvedValueRef.current === next) {
       return false
     }
 
-    requestedValueRef.current = next
-
     if (!controlledRef.current) {
+      resolvedValueRef.current = next
       setUncontrolledValue(next)
     }
 
@@ -44,7 +39,6 @@ export function useControllableBoolean(
 
   return {
     value: resolvedValue,
-    requestedValueRef,
     request,
   }
 }

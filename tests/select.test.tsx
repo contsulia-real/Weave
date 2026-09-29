@@ -345,6 +345,64 @@ describe('Select', () => {
     })
   })
 
+  it('uses custom viewportPadding and forwards listboxViewProps', async () => {
+    const listboxRef = vi.fn()
+    const { getByRole, getByTestId } = render(
+      <Select
+        defaultOpen
+        placement="bottom-left"
+        viewportPadding={2}
+        listboxViewProps={{
+          id: 'custom-select-listbox',
+          ref: listboxRef,
+          className: 'custom-listbox',
+          data: { testid: 'select-listbox' },
+          style: { opacity: 0.5 },
+        }}
+      >
+        <SelectOption value="alpha" text="Alpha" />
+      </Select>,
+    )
+    const trigger = getByRole('combobox')
+    const listbox = getByTestId('select-listbox')
+
+    trigger.getBoundingClientRect = () =>
+      ({
+        x: -20,
+        y: 80,
+        left: -20,
+        top: 80,
+        right: 100,
+        bottom: 120,
+        width: 120,
+        height: 40,
+        toJSON: () => ({}),
+      }) as DOMRect
+    listbox.getBoundingClientRect = () =>
+      ({
+        x: 0,
+        y: 0,
+        left: 0,
+        top: 0,
+        right: 180,
+        bottom: 100,
+        width: 180,
+        height: 100,
+        toJSON: () => ({}),
+      }) as DOMRect
+
+    fireEvent.scroll(window)
+
+    await waitFor(() => {
+      expect(listbox.style.left).toBe('32px')
+    })
+    expect(listbox.id).toBe('custom-select-listbox')
+    expect(listbox.classList.contains('custom-listbox')).toBe(true)
+    expect(listbox.style.opacity).toBe('0.5')
+    expect(listbox.getAttribute('role')).toBe('listbox')
+    expect(listboxRef).toHaveBeenCalledWith(listbox)
+  })
+
   it('rejects duplicate option values', () => {
     expect(() =>
       render(

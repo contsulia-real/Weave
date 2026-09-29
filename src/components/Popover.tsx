@@ -26,11 +26,11 @@ export function Popover({
   restoreFocus = true,
   viewProps = {},
 }: PopoverProps) {
-  const {
-    value: resolvedOpen,
-    requestedValueRef: requestedOpenRef,
-    request: requestOpen,
-  } = useControllableBoolean(open, defaultOpen, onOpenChange)
+  const { value: resolvedOpen, request: requestOpen } = useControllableBoolean(
+    open,
+    defaultOpen,
+    onOpenChange,
+  )
   const wrapperRef = useRef<HTMLSpanElement>(null)
   const targetRef = useRef<HTMLElement | null>(null)
   const panelRef = useRef<HTMLDivElement>(null)
@@ -49,8 +49,8 @@ export function Popover({
   useInsertionEffect(ensurePopoverStylesheet, [])
 
   const toggleOpen = useCallback(() => {
-    requestOpen(!requestedOpenRef.current)
-  }, [requestOpen, requestedOpenRef])
+    requestOpen(!resolvedOpen)
+  }, [requestOpen, resolvedOpen])
 
   const close = useCallback(() => {
     requestOpen(false)
