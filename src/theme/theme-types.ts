@@ -55,6 +55,7 @@ export interface ThemeTokens {
 
 export interface InputThemeBase {
   background?: string
+  shadow?: string
   color?: string
   placeholderColor?: string
   borderColor?: string

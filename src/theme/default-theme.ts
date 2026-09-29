@@ -53,6 +53,9 @@ const optionItemBase = {
 const inputBase = {
   ...controlBaseline,
   ...controlMedium,
+  background: 'color-mix(in srgb, var(--weave-color-outline) 34%, var(--weave-color-surface))',
+  shadow:
+    'inset 0 0.125rem 0.1875rem rgb(58 48 40 / 0.24), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.42)',
   color: 'inherit',
   placeholderColor: 'secondary',
   borderColor: 'outline',
@@ -106,6 +109,12 @@ export const defaultDarkTheme: ThemeOverride = {
         danger: {
           depthColor: 'color-mix(in srgb, var(--weave-color-danger) 38%, black)',
         },
+      },
+    },
+    Input: {
+      base: {
+        shadow:
+          'inset 0 0.125rem 0.1875rem rgb(0 0 0 / 0.58), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.045)',
       },
     },
     Switch: {

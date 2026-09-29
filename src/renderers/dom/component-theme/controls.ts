@@ -48,11 +48,10 @@ export function resolveInputTheme(theme: ResolvedTheme): RuntimeStyleDeclaration
   const component = theme.components.Input
   const base = component?.base
   const disabled = component?.states?.disabled
-  const switchBase = theme.components.Switch?.base
 
   return {
-    '--weave-input-background': color(base?.background ?? switchBase?.background),
-    '--weave-input-shadow': switchBase?.trackShadow,
+    '--weave-input-background': color(base?.background),
+    '--weave-input-shadow': base?.shadow,
     '--weave-input-color': color(base?.color),
     '--weave-input-placeholder-color': color(base?.placeholderColor),
     '--weave-input-border-color': color(base?.borderColor),

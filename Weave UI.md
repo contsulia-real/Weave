@@ -2305,7 +2305,7 @@ focus       = 0.125rem focus outline
 focusOffset = 0.0625rem
 ```
 
-Input / Select / Combobox 默认使用完全相同的 Input field surface。默认 surface 保留既有 Input border，并复用当前 theme 的 Switch track background 与 trackShadow；不增加 hover 额外加深、thumb 式凸起、底边 extrusion 或外凸 drop shadow。Focus 只叠加既有 outline，不改变凹陷本身。禁止为了实现 Select 或 Combobox 再复制一份“看起来差不多”的 input CSS，也禁止为了共享这些视觉再增加一个与 Input 平行的 Field Control 层。
+Input / Select / Combobox 默认使用完全相同的 Input field surface。默认 surface 的 background / shadow / border 全部由 `theme.components.Input.base` 自己定义；Input 不再借用 Switch track 的 background / trackShadow。Light / Dark 必须保持相同的 field-surface 几何。现有 Dark field surface 作为视觉基准保持不变；Light 必须使用同样的方向性凹陷几何与材质层次，只把阴影颜色 / 透明度调整为适合浅色 palette 的数值。默认不增加 hover 额外加深、thumb 式凸起、底边 extrusion 或外凸 drop shadow。Focus 只叠加既有 outline，不改变 field surface 本身。禁止为了实现 Select 或 Combobox 再复制一份“看起来差不多”的 input CSS，也禁止为了共享这些视觉再增加一个与 Input 平行的 Field Control 层。
 
 单行 Input 不再用 `paddingY` 把自身撑高；垂直尺寸由共享 `minHeight + typography` 基线统一。`Input.base.paddingY` 只用于 multiline textarea 的内容内边距。
 
@@ -5377,7 +5377,7 @@ Weave 默认主题内置完整 light / dark 配色。`ThemeProvider` 未显式�
 
 默认深色模式不是对浅色值做滤镜或简单反相，而是提供独立的语义 token：深色 surface、提高亮度的 primary、适配深色背景的正文 / 次级文字、outline、状态色、focus 色与阴影。组件继续只消费语义 token，不需要知道当前模式。
 
-深色模式必须保持与浅色模式相同的组件设计语言，而不是另起一套“加边框提高对比度”的规则。Button 继续沿用同一套 variant 配方与实体厚度：rest 有 depth，hover 抬起并增加 depth，press 下沉并收缩 depth；dark 只替换语义 token 和必要的阴影颜色。Switch 继续保持“track 凹陷、thumb 凸起”的物理层级：track 与 Input / Select / Combobox 共用 Input surface 的 border color / width，并继续用方向性 inset shadow 表达凹槽；on track 使用 primary；thumb 用外部投影与顶部高光表达突起。
+深色模式必须保持与浅色模式相同的组件设计语言，而不是另起一套“加边框提高对比度”的规则。Button 继续沿用同一套 variant 配方与实体厚度：rest 有 depth，hover 抬起并增加 depth，press 下沉并收缩 depth；dark 只替换语义 token 和必要的阴影颜色。Input / Select / Combobox 继续使用同一套 Input field-surface 几何；Dark 保持现有凹陷视觉不变，Light 向该基准对齐，不能再使用更浅、更扁的另一套 field surface。Switch 继续保持“track 凹陷、thumb 凸起”的独立物理层级：track 与 Input / Select / Combobox 只共用 Input surface 的 border color / width，不再共享 background / shadow；Switch track 自己用方向性 inset shadow 表达凹槽；on track 使用 primary；thumb 用外部投影与顶部高光表达突起。
 
 默认深色核心颜色：
 

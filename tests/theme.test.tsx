@@ -278,12 +278,17 @@ describe('Theme', () => {
 
   it('preserves the light control language in dark mode instead of replacing it with outlines', () => {
     const button = defaultDarkTheme.components?.Button
+    const inputTheme = defaultDarkTheme.components?.Input
     const switchTheme = defaultDarkTheme.components?.Switch
 
     expect(button?.variants?.secondary?.background).toBeUndefined()
     expect(button?.variants?.secondary?.borderColor).toBeUndefined()
     expect(button?.variants?.tertiary?.background).toBeUndefined()
     expect(button?.variants?.ghost).toBeUndefined()
+    expect(inputTheme?.base?.background).toBeUndefined()
+    expect(inputTheme?.base?.shadow).toBe(
+      'inset 0 0.125rem 0.1875rem rgb(0 0 0 / 0.58), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.045)',
+    )
     expect(switchTheme?.base?.background).toBeUndefined()
     expect(switchTheme?.base?.trackShadow).toContain('inset 0 0.125rem 0.1875rem')
     expect(switchTheme?.base?.thumbShadow).toContain('0 0.1875rem 0.375rem')

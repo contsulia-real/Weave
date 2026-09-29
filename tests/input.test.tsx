@@ -310,7 +310,7 @@ describe('Input', () => {
     )
     expect(stylesheet?.textContent).toContain('--weave-component-border-style: solid')
     expect(rule).toContain(
-      '--weave-input-shadow:inset00.0625rem0.125remrgb(584840/0.10),inset0000.0625remrgb(584840/0.05);',
+      '--weave-input-shadow:inset00.125rem0.1875remrgb(584840/0.24),inset0-0.0625rem0rgb(255255255/0.42);',
     )
     expect(rule).toContain(
       '--weave-input-background:color-mix(insrgb,var(--weave-color-outline)34%,var(--weave-color-surface));',
@@ -319,6 +319,31 @@ describe('Input', () => {
       '--weave-component-box-shadow:\n    var(--weave-input-shadow)',
     )
     expect(stylesheet?.textContent).not.toContain('0 0.09375rem 0.15625rem')
+  })
+
+  it('preserves the existing dark field surface while light uses the same recessed geometry', () => {
+    const { getByTestId } = render(
+      <ThemeProvider mode="dark">
+        <Input
+          viewProps={{
+            data: {
+              testid: 'dark-input',
+            },
+          }}
+        />
+      </ThemeProvider>,
+    )
+
+    const element = getByTestId('dark-input')
+    const rule = runtimeRule(element, 'weave-input-theme-')
+
+    expect(rule).toContain(
+      '--weave-input-background:color-mix(insrgb,var(--weave-color-outline)34%,var(--weave-color-surface));',
+    )
+    expect(rule).toContain(
+      '--weave-input-shadow:inset00.125rem0.1875remrgb(000/0.58),inset0-0.0625rem0rgb(255255255/0.045);',
+    )
+    expect(rule).toContain('inset00.125rem0.1875remrgb(000/0.58)')
   })
 
   it('lets ThemeProvider select Input typography by typo', () => {
