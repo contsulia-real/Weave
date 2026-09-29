@@ -36,6 +36,7 @@ const expectedRuntimeExports = [
   'Column',
   'Combobox',
   'ComboboxOption',
+  'Dialog',
   'Flex',
   'Grid',
   'Icon',
@@ -108,6 +109,8 @@ assert(typeSource.includes('PresenceProps'), 'Built declarations are missing Pre
 assert(typeSource.includes('PopoverProps'), 'Built declarations are missing PopoverProps')
 assert(typeSource.includes('MenuProps'), 'Built declarations are missing MenuProps')
 assert(typeSource.includes('MenuItemProps'), 'Built declarations are missing MenuItemProps')
+assert(typeSource.includes('DialogProps'), 'Built declarations are missing DialogProps')
+assert(typeSource.includes('DialogViewProps'), 'Built declarations are missing DialogViewProps')
 assert(typeSource.includes('DividerProps'), 'Built declarations are missing DividerProps')
 assert(typeSource.includes('SelectProps'), 'Built declarations are missing SelectProps')
 assert(typeSource.includes('SelectOptionProps'), 'Built declarations are missing SelectOptionProps')
@@ -143,6 +146,7 @@ const expectedThemeTypeExports = [
   'BadgeTheme',
   'LinkTheme',
   'ButtonTheme',
+  'DialogTheme',
   'PopoverTheme',
   'MenuTheme',
   'ProgressTheme',

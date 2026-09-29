@@ -16,6 +16,7 @@ export {
 } from './component-theme/lists'
 
 export {
+  resolveDialogTheme,
   resolveMenuTheme,
   resolvePopoverTheme,
   resolveSnackTheme,

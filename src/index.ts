@@ -5,6 +5,7 @@ export { Checkbox } from './components/Checkbox'
 export { Column } from './components/Column'
 export { Combobox } from './components/Combobox'
 export { ComboboxOption } from './components/ComboboxOption'
+export { Dialog } from './components/Dialog'
 export { Divider } from './components/Divider'
 export { Flex } from './components/Flex'
 export { Grid } from './components/Grid'
@@ -69,6 +70,7 @@ export type {
   ComboboxProps,
   ComboboxValue,
 } from './core/combobox-types'
+export type { DialogProps, DialogViewProps } from './core/dialog-types'
 export type {
   DividerDirection,
   DividerProps,
@@ -267,6 +269,8 @@ export type {
   ComboboxThemeBase,
   ComboboxThemeListbox,
   ComboboxThemeOption,
+  DialogTheme,
+  DialogThemeBase,
   InputTheme,
   InputThemeBase,
   LinkTheme,

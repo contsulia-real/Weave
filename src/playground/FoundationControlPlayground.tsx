@@ -1,10 +1,11 @@
 import { IconSearch, IconSettings, IconUser } from '@tabler/icons-react'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import {
   Button,
   Column,
   Combobox,
   ComboboxOption,
+  Dialog,
   Divider,
   Menu,
   MenuItem,
@@ -97,6 +98,83 @@ function PopoverPlayground() {
           </Text>
         </Row>
       </Column>
+    </Column>
+  )
+}
+
+function DialogPlayground() {
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [modalOpen, setModalOpen] = useState(false)
+  const modalFocusRef = useRef<HTMLButtonElement>(null)
+
+  return (
+    <Column gap={1} align="start">
+      <Row gap={0.75} wrap>
+        <Button
+          text="Open non-modal Dialog"
+          variant="secondary"
+          viewProps={{
+            onClick: () => setDialogOpen(true),
+          }}
+        />
+        <Button
+          text="Open modal Dialog"
+          viewProps={{
+            onClick: () => setModalOpen(true),
+          }}
+        />
+      </Row>
+
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <Column gap={0.75}>
+          <Text typo="title-medium">Non-modal Dialog</Text>
+          <Text typo="body-small" color="secondary">
+            This uses the native dialog.show() path. Background controls remain interactive.
+          </Text>
+          <Button
+            text="Close"
+            size="small"
+            variant="secondary"
+            viewProps={{
+              onClick: () => setDialogOpen(false),
+            }}
+          />
+        </Column>
+      </Dialog>
+
+      <Dialog
+        modal
+        closeOnBackdrop
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+        initialFocus={modalFocusRef}
+      >
+        <Column gap={0.75}>
+          <Text typo="title-medium">Modal Dialog</Text>
+          <Text typo="body-small" color="secondary">
+            This uses showModal(): native top layer, backdrop, inert background and focus
+            containment.
+          </Text>
+          <Row gap={0.5} justify="end">
+            <Button
+              text="Cancel"
+              size="small"
+              variant="secondary"
+              viewProps={{
+                ref: modalFocusRef,
+                onClick: () => setModalOpen(false),
+              }}
+            />
+            <Button
+              text="Confirm"
+              size="small"
+              viewProps={{
+                onClick: () => setModalOpen(false),
+              }}
+            />
+          </Row>
+        </Column>
+      </Dialog>
     </Column>
   )
 }
@@ -269,6 +347,13 @@ export function FoundationControlPlayground() {
         description="交互式锚定浮层：click toggle、outside / Escape dismiss、focus restore、8 向 placement，以及 viewport flip / shift collision。"
       >
         <PopoverPlayground />
+      </PlaygroundSection>
+
+      <PlaygroundSection
+        title="Dialog"
+        description="同一个原生 <dialog>：默认走 show() 非模态；modal 走 showModal()，由浏览器提供 top layer、backdrop、背景 inert 与 focus containment。"
+      >
+        <DialogPlayground />
       </PlaygroundSection>
 
       <PlaygroundSection

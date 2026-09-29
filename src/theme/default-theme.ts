@@ -761,6 +761,23 @@ export const defaultTheme: ResolvedTheme = {
         typo: 'body-xsmall',
       },
     },
+    Dialog: {
+      base: {
+        background: 'surface',
+        color: 'tertiary',
+        borderColor: 'outline',
+        borderWidth: 0.0625,
+        radius: 'large',
+        paddingX: 1,
+        paddingY: 1,
+        width: 28,
+        maxWidth: 'calc(100vw - 2rem)',
+        maxHeight: 'calc(100vh - 2rem)',
+        shadow: 'large',
+        backdropColor: 'rgb(0 0 0 / 0.48)',
+        motionOffset: 0.5,
+      },
+    },
     Popover: {
       base: {
         background: 'surface',

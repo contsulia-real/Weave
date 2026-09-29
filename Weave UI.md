@@ -3898,7 +3898,7 @@ viewportPadding = 0.5rem
 - exit transition 完成前 panel 保留在 DOM 中，随后才卸载；
 - `prefers-reduced-motion: reduce` 时跳过退出等待与位移 / scale motion。
 
-Popover 不实现 focus trap，也不是 modal。需要阻断背景交互和强制 focus containment 的场景应由后续 Dialog / Modal 组件负责。
+Popover 不实现 focus trap，也不是 modal。需要独立窗口或模态阻断时使用 `Dialog`；`Dialog modal` 直接复用浏览器原生 `<dialog>.showModal()` 提供 top layer、背景 inert 与 focus containment，不由 Weave 手写第二套 focus trap。
 
 ## 19.5.3 Portal、collision 与视觉
 
@@ -4073,6 +4073,166 @@ theme.components.Menu.item
 `base` 控制 surface / border / radius / padding / minWidth / maxWidth / shadow / motionOffset；`item` 控制普通、hover、active、danger、disabled、icon、typography 与 focus ring。分割线不属于 MenuTheme，由通用 `Divider` 自己负责。
 
 `viewProps` 仍是通用 escape hatch，但 `role`、fixed positioning、collision 坐标和菜单键盘语义由 Menu 自己拥有。
+
+---
+# 19.7 `Dialog`
+
+`Dialog` 是不依附 trigger 的独立窗口组件，语义宿主固定为浏览器原生 `<dialog>`。Weave 不另外公开一套 `Modal` 组件；modal 是 Dialog 的打开模式，而不是第二种内容模型。
+
+## 19.7.1 API
+
+```tsx
+<Dialog
+  open={open}
+  onOpenChange={setOpen}
+>
+  <Column gap={1}>
+    <Text typo="title-medium">Reference</Text>
+    <Text>Background work can continue.</Text>
+  </Column>
+</Dialog>
+
+<Dialog
+  modal
+  open={confirming}
+  onOpenChange={setConfirming}
+>
+  <Column gap={1}>
+    <Text typo="title-medium">Delete item?</Text>
+    <Button text="Delete" variant="danger" />
+  </Column>
+</Dialog>
+```
+
+公开属性：
+
+```text
+children
+open
+defaultOpen
+onOpenChange
+modal
+closeOnEscape
+closeOnBackdrop
+initialFocus
+restoreFocus
+viewProps
+```
+
+默认值：
+
+```text
+modal = false
+closeOnEscape = modal
+closeOnBackdrop = false
+restoreFocus = true
+```
+
+`initialFocus` 接收 `RefObject<HTMLElement | null>`。不提供时不重新实现浏览器的 dialog focusing steps；提供时，在原生 `show() / showModal()` 完成后显式聚焦该目标。
+
+## 19.7.2 非模态与模态是同一个原生元素
+
+Weave 必须保持 HTML 自身的模型：
+
+```text
+Dialog modal=false
+→ <dialog>.show()
+→ 非模态
+→ 背景仍可交互
+→ 不进入 modal top layer
+→ 没有可交互的 ::backdrop
+→ 不由 Weave 强制 focus containment
+→ Escape 默认不关闭
+
+Dialog modal=true
+→ <dialog>.showModal()
+→ 模态
+→ 浏览器负责 top layer
+→ 浏览器负责背景 inert
+→ 浏览器负责 modal focus containment
+→ 获得 ::backdrop
+→ Escape 产生原生 cancel 事件
+```
+
+禁止为了 modal 再实现一套 div + portal + inert + focus trap。浏览器已经提供的模态语义由原生 `showModal()` 负责。
+
+`modal` 在打开状态下变化时仍复用当前同一个 `<dialog>`：框架先关闭当前原生打开模式，再用目标 `show() / showModal()` 重新同步，不创建另一种 Dialog DOM。
+
+## 19.7.3 打开、关闭与事件
+
+`open / defaultOpen / onOpenChange` 使用与其他受控组件一致的模型。父级拒绝一次受控请求时，下一次相同请求仍必须正常发出。
+
+Modal 的 Escape 使用原生 `cancel` 事件：
+
+- Weave 始终 `preventDefault()` 阻止浏览器绕过 React 状态直接关闭；
+- `closeOnEscape=true` 时请求 `onOpenChange(false)`；
+- `closeOnEscape=false` 时保持打开；
+- `viewProps.onCancel` 先执行；用户已经 `preventDefault()` 时，框架不再发关闭请求。
+
+非模态 Dialog 默认不因 Escape 关闭；显式 `closeOnEscape=true` 时，只在 focus / key event 位于当前 Dialog 内时请求关闭。
+
+原生 `close` 事件（包括调用 dialog.close() 或原生 dialog form 流程）必须同步回 `onOpenChange(false)`。对于仍保持 `open=true` 的受控 Dialog，框架重新同步原生打开状态，不能让 DOM 与受控 prop 永久分叉。
+
+## 19.7.4 Backdrop
+
+只有 modal Dialog 才存在原生 `::backdrop`。
+
+`closeOnBackdrop=false` 是默认值，避免确认删除、登录和必须完成的步骤因误点遮罩消失。
+
+显式开启后：
+
+```tsx
+<Dialog modal closeOnBackdrop />
+```
+
+只有真正落在 Dialog 外部 backdrop 区域的点击才请求关闭；Dialog surface 内部空白区域、padding 和 children 点击都不算 backdrop click。用户 `viewProps.onClick` 已经 `preventDefault()` 时不执行框架默认关闭。
+
+## 19.7.5 Focus
+
+打开前记录当前 active element。关闭并完成 exit 后，`restoreFocus=true` 时恢复该元素；`restoreFocus=false` 时不主动恢复。
+
+Modal 的 focus containment 本身由浏览器 `showModal()` 提供。Weave 不维护 tabbable 列表，不监听 Tab 循环，也不向页面其他节点手工写 `inert`。
+
+## 19.7.6 Portal、Layer 与 Motion
+
+Dialog portal 到 `document.body`，portal 内重新建立当前 ThemeProvider。
+
+默认 semantic layer：
+
+```text
+modal=false → overlay
+modal=true  → modal
+```
+
+对 modal 而言，真正的模态堆叠仍以浏览器 top layer 为权威，`layer="modal"` 只保持 Weave 自身语义一致。
+
+关闭时不能立即调用原生 `close()`：Dialog 先进入 `closing` 视觉状态并保持 `<dialog open>`，完成 exit transition 后才调用 `close()` 并卸载。这样 `::backdrop` 与 surface 可以一起完成退出。Reduced Motion 下跳过等待并立即完成关闭。
+
+默认视觉来自：
+
+```text
+theme.components.Dialog.base
+```
+
+当前可主题化字段：
+
+```text
+background
+color
+borderColor
+borderWidth
+radius
+paddingX
+paddingY
+width
+maxWidth
+maxHeight
+shadow
+backdropColor
+motionOffset
+```
+
+Dialog 使用 surface / outline / large ambient shadow；modal backdrop 使用独立 `backdropColor`。通用布局、ARIA、className、style、事件和响应式覆盖继续通过 `viewProps`，但原生 dialog 打开模式、modal 语义与 close 生命周期由 Dialog 自己拥有。
 
 ---
 # 20. `Snack`
@@ -6249,6 +6409,10 @@ tooltip
 ```text
 ToolTip
 → 默认 layer="tooltip"
+
+Dialog
+→ 非模态默认 layer="overlay"
+→ modal 默认 layer="modal"
 
 Snack
 → 默认 layer="snack"

@@ -24,6 +24,26 @@ export function resolveToolTipTheme(theme: ResolvedTheme): RuntimeStyleDeclarati
   }
 }
 
+export function resolveDialogTheme(theme: ResolvedTheme): RuntimeStyleDeclarations {
+  const base = theme.components.Dialog?.base
+
+  return {
+    '--weave-dialog-background': color(base?.background),
+    '--weave-dialog-color': color(base?.color),
+    '--weave-dialog-border-color': color(base?.borderColor),
+    '--weave-dialog-border-width': length(base?.borderWidth),
+    '--weave-dialog-radius': radius(base?.radius),
+    '--weave-dialog-padding-x': length(base?.paddingX),
+    '--weave-dialog-padding-y': length(base?.paddingY),
+    '--weave-dialog-width': length(base?.width),
+    '--weave-dialog-max-width': length(base?.maxWidth),
+    '--weave-dialog-max-height': length(base?.maxHeight),
+    '--weave-dialog-shadow': shadowToken(base?.shadow),
+    '--weave-dialog-backdrop-color': color(base?.backdropColor),
+    '--weave-dialog-motion-offset': length(base?.motionOffset),
+  }
+}
+
 export function resolvePopoverTheme(theme: ResolvedTheme): RuntimeStyleDeclarations {
   const base = theme.components.Popover?.base
 

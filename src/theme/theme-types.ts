@@ -359,6 +359,26 @@ export interface ToolTipTheme {
   base?: ToolTipThemeBase
 }
 
+export interface DialogThemeBase {
+  background?: string
+  color?: string
+  borderColor?: string
+  borderWidth?: ThemeScaleValue
+  radius?: ThemeScaleValue
+  paddingX?: ThemeScaleValue
+  paddingY?: ThemeScaleValue
+  width?: ThemeScaleValue
+  maxWidth?: ThemeScaleValue
+  maxHeight?: ThemeScaleValue
+  shadow?: string
+  backdropColor?: string
+  motionOffset?: ThemeScaleValue
+}
+
+export interface DialogTheme {
+  base?: DialogThemeBase
+}
+
 export interface PopoverThemeBase {
   background?: string
   color?: string
@@ -499,6 +519,7 @@ export interface ThemeComponents {
   Progress?: ProgressTheme
   Scrollbar?: ScrollbarTheme
   ToolTip?: ToolTipTheme
+  Dialog?: DialogTheme
   Popover?: PopoverTheme
   Menu?: MenuTheme
   Snack?: SnackTheme
