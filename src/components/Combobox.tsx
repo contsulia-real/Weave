@@ -251,14 +251,12 @@ export function Combobox({
     mode,
     reducedMotion,
   } = useTheme()
-  const comboboxTheme =
-    resolveComboboxTheme(
-      theme,
-    )
   const themeClassName =
     useRuntimeStyleClass(
       'combobox-theme',
-      comboboxTheme,
+      resolveComboboxTheme(
+        theme,
+      ),
     )
   const exitDuration =
     durationMilliseconds(
@@ -979,10 +977,6 @@ export function Combobox({
             onClick: handleClick,
             onKeyDown:
               handleKeyDown,
-            style: {
-              ...comboboxTheme,
-              ...viewProps.style,
-            } as CSSProperties,
             className: [
               'weave-combobox',
               viewProps.className,

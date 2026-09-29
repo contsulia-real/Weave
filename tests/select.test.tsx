@@ -769,12 +769,17 @@ describe('Select', () => {
     const theme =
       createTheme({
         components: {
-          Select: {
+          Input: {
             base: {
               background:
                 'primary',
               color:
                 'onPrimary',
+            },
+          },
+          Select: {
+            base: {
+              gap: 0.75,
             },
             listbox: {
               shadow: 'large',
@@ -848,13 +853,30 @@ describe('Select', () => {
 
     expect(runtimeStyle)
       .toContain(
-        '--weave-field-control-background:',
+        '--weave-select-gap: 0.75rem',
       )
     expect(runtimeStyle)
       .toContain(
         '--weave-option-listbox-gap: 0.25rem',
       )
-    expect(runtimeStyle)
+    const inputThemeRule =
+      [...trigger.classList]
+        .map(
+          (name) =>
+            document.querySelector<HTMLStyleElement>(
+              'style[data-weave-runtime-class="' +
+                name +
+                '"]',
+            )?.textContent ??
+            '',
+        )
+        .find(
+          (rule) =>
+            rule.includes(
+              '--weave-input-background:',
+            ),
+        ) ?? ''
+    expect(inputThemeRule)
       .toContain(
         '--weave-color-primary',
       )

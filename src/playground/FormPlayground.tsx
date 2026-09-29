@@ -29,7 +29,7 @@ export function FormPlayground() {
     <>
       <PlaygroundSection
         title="Input"
-        description="单行 Input 与 Select / Combobox 共用同一套 Field Control visual baseline；multiline 仍使用 Input theme 与 Weave Scrollbar。"
+        description="单行 Input 是 field surface 的视觉来源；Select 直接复用 Input stylesheet/theme，Combobox 直接组合 Input；multiline 仍使用 Input theme 与 Weave Scrollbar。"
       >
         <Column
           gap={0.75}

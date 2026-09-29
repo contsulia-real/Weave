@@ -1,5 +1,4 @@
 import type {
-  FieldControlThemeBase,
   ResolvedTheme,
   SelectThemeListbox,
   SelectThemeOption,
@@ -17,78 +16,6 @@ import {
 } from '../../../core/values'
 import { shadowToken } from './shared'
 import type { RuntimeStyleDeclarations } from '../runtime-class'
-
-interface FieldControlDisabledTheme {
-  opacity?: number
-  cursor?: string
-}
-
-function resolveFieldControlTheme(
-  base:
-    FieldControlThemeBase | undefined,
-  disabled:
-    FieldControlDisabledTheme | undefined,
-): RuntimeStyleDeclarations {
-  return {
-    '--weave-field-control-background':
-      color(base?.background),
-    '--weave-field-control-color':
-      color(base?.color),
-    '--weave-field-control-placeholder-color':
-      color(base?.placeholderColor),
-    '--weave-field-control-border-color':
-      color(base?.borderColor),
-    '--weave-field-control-border-width':
-      length(base?.borderWidth),
-    '--weave-field-control-radius':
-      radius(base?.radius),
-    '--weave-field-control-min-height':
-      length(base?.minHeight),
-    '--weave-field-control-min-width':
-      length(base?.minWidth),
-    '--weave-field-control-padding-x':
-      length(base?.paddingX),
-    '--weave-field-control-font-size':
-      typographyStyleVariableReference(
-        base?.typo,
-        'fontSize',
-      ),
-    '--weave-field-control-font-weight':
-      typographyStyleVariableReference(
-        base?.typo,
-        'fontWeight',
-      ),
-    '--weave-field-control-line-height':
-      typographyStyleVariableReference(
-        base?.typo,
-        'lineHeight',
-      ),
-    '--weave-field-control-letter-spacing':
-      typographyStyleVariableReference(
-        base?.typo,
-        'letterSpacing',
-      ),
-    '--weave-field-control-focus-outline-width':
-      length(
-        base?.focusOutlineWidth,
-      ),
-    '--weave-field-control-focus-outline-color':
-      color(
-        base?.focusOutlineColor,
-      ),
-    '--weave-field-control-focus-outline-style':
-      base?.focusOutlineStyle,
-    '--weave-field-control-focus-outline-offset':
-      length(
-        base?.focusOutlineOffset,
-      ),
-    '--weave-field-control-disabled-opacity':
-      disabled?.opacity,
-    '--weave-field-control-disabled-cursor':
-      disabled?.cursor,
-  }
-}
-
 
 function resolveOptionCollectionTheme(
   listbox:
@@ -159,12 +86,64 @@ export function resolveInputTheme(
   const disabled = component?.states?.disabled
 
   return {
-    ...resolveFieldControlTheme(
-      base,
-      disabled,
-    ),
-    '--weave-input-theme-padding-y':
+    '--weave-input-background':
+      color(base?.background),
+    '--weave-input-color':
+      color(base?.color),
+    '--weave-input-placeholder-color':
+      color(base?.placeholderColor),
+    '--weave-input-border-color':
+      color(base?.borderColor),
+    '--weave-input-border-width':
+      length(base?.borderWidth),
+    '--weave-input-radius':
+      radius(base?.radius),
+    '--weave-input-min-height':
+      length(base?.minHeight),
+    '--weave-input-min-width':
+      length(base?.minWidth),
+    '--weave-input-padding-x':
+      length(base?.paddingX),
+    '--weave-input-padding-y':
       length(base?.paddingY),
+    '--weave-input-font-size':
+      typographyStyleVariableReference(
+        base?.typo,
+        'fontSize',
+      ),
+    '--weave-input-font-weight':
+      typographyStyleVariableReference(
+        base?.typo,
+        'fontWeight',
+      ),
+    '--weave-input-line-height':
+      typographyStyleVariableReference(
+        base?.typo,
+        'lineHeight',
+      ),
+    '--weave-input-letter-spacing':
+      typographyStyleVariableReference(
+        base?.typo,
+        'letterSpacing',
+      ),
+    '--weave-input-focus-outline-width':
+      length(
+        base?.focusOutlineWidth,
+      ),
+    '--weave-input-focus-outline-color':
+      color(
+        base?.focusOutlineColor,
+      ),
+    '--weave-input-focus-outline-style':
+      base?.focusOutlineStyle,
+    '--weave-input-focus-outline-offset':
+      length(
+        base?.focusOutlineOffset,
+      ),
+    '--weave-input-disabled-opacity':
+      disabled?.opacity,
+    '--weave-input-disabled-cursor':
+      disabled?.cursor,
   }
 }
 
@@ -177,15 +156,6 @@ export function resolveSelectTheme(
   const option = component?.option
 
   return {
-    ...resolveFieldControlTheme(
-      base,
-      {
-        opacity:
-          base?.disabledOpacity,
-        cursor:
-          base?.disabledCursor,
-      },
-    ),
     '--weave-select-gap':
       length(base?.gap),
     '--weave-select-icon-size':
@@ -210,27 +180,10 @@ export function resolveComboboxTheme(
     component?.option
 
   return {
-    ...resolveFieldControlTheme(
-      base,
-      {
-        opacity:
-          base?.disabledOpacity,
-        cursor:
-          base?.disabledCursor,
-      },
-    ),
-    '--weave-combobox-gap':
-      length(base?.gap),
     '--weave-combobox-icon-size':
       length(base?.iconSize),
     '--weave-combobox-action-size':
       length(base?.actionSize),
-    '--weave-combobox-action-color':
-      color(base?.actionColor),
-    '--weave-combobox-action-hover-background':
-      color(
-        base?.actionHoverBackground,
-      ),
 
     ...resolveOptionCollectionTheme(
       listbox,

@@ -1,4 +1,3 @@
-import { ensureFieldControlStylesheet } from './field-control-stylesheet'
 import { ensureOptionListboxStylesheet } from './option-listbox-stylesheet'
 import { ensureStaticStylesheet } from './static-stylesheet'
 
@@ -12,7 +11,7 @@ const stylesheet = `
 :where(.weave-combobox) {
   --weave-component-padding-right:
     calc(
-      var(--weave-field-control-padding-x) +
+      var(--weave-input-padding-x) +
       var(--weave-combobox-action-size) +
       0.25rem
     );
@@ -25,7 +24,7 @@ const stylesheet = `
 ) {
   --weave-component-padding-right:
     calc(
-      var(--weave-field-control-padding-x) +
+      var(--weave-input-padding-x) +
       var(--weave-combobox-action-size) * 2 +
       0.5rem
     );
@@ -76,7 +75,6 @@ const stylesheet = `
 `
 
 export function ensureComboboxStylesheet(): void {
-  ensureFieldControlStylesheet()
   ensureOptionListboxStylesheet()
   ensureStaticStylesheet(
     'combobox',

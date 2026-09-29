@@ -112,7 +112,6 @@ function SingleLineInput({
       data-weave-input=""
       data-weave-layout={resolved.layout}
       className={[
-        'weave-field-control',
         'weave-input',
         themeClassName,
         className,
@@ -192,8 +191,7 @@ function MultilineInput({
         data-weave-scroll-host=""
         data-weave-layout={resolved.layout}
         className={[
-          'weave-field-control',
-          'weave-input',
+            'weave-input',
           'weave-input--multiline',
           'weave-scroll-host',
           themeClassName,

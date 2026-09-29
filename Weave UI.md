@@ -473,7 +473,7 @@ View
 
 `useViewHost` 不属于公开组件层，也不是第二个基础原语。它是 Weave 自己实现组件时复用 `View` 通用能力的底层机制。`Text`、`Image`、`Input`、`Button` 等组件可以通过 `useViewHost` 直接把这些通用能力应用到最合适的真实 DOM 元素，而不需要为了复用能力额外包一层 `<View>`。
 
-复用 `useViewHost` 只解决**通用宿主能力**，不意味着同类组件可以各自重写视觉基线。Input / Select / Combobox 这类 field control 还必须在其上复用统一的 Field Control visual baseline；宿主语义可以分别是 `<input>` / `<button>`，但默认 field geometry、surface 与 interaction feedback 必须来自同一实现。
+复用 `useViewHost` 只解决**通用宿主能力**。当组合组件已经有语义匹配的公开组件可复用时，应直接复用现有组件；如果宿主语义不同但视觉职责相同，也应复用已有组件的视觉实现，而不是再建立一层平行 abstraction。Select 的宿主仍是 `<button role="combobox">`，但其 field surface 直接复用 Input stylesheet / Input theme；Combobox 的真实输入则直接组合公开 `Input`。
 
 本文后续所说的 **ViewHost**，指通过这套内部宿主机制承载 `View` 通用能力的真实 DOM 宿主。
 
@@ -2349,9 +2349,9 @@ Input 的主题入口仍然是：
 theme.components.Input
 ```
 
-但**单行 Input、Select、Combobox 的外层 field surface 不允许各自实现一套近似视觉**。三者必须通过同一个 internal `Field Control` baseline 输出 background / foreground / placeholder / border / radius / minHeight / minWidth / horizontal padding / typography / depth / hover / focus / disabled 行为；各组件 stylesheet 只保留自身结构差异。
+单行 Input 是 field surface 的唯一视觉实现与主题来源。Select 不复制这套 CSS，而是直接加载 Input stylesheet 并使用 `theme.components.Input`；Combobox 直接组合公开 `Input`。Select / Combobox 自己的 theme 只保留它们新增的结构、popup 与 option 属性。
 
-默认 Field Control baseline：
+默认 Input field surface：
 
 ```text
 minHeight   = 2.5rem
@@ -2365,11 +2365,11 @@ focus       = 0.125rem focus outline
 focusOffset = 0.0625rem
 ```
 
-Input / Select / Combobox 默认使用完全相同的 field depth、hover shadow 与 focus border/shadow。禁止为了实现 Select 或 Combobox 再复制一份“看起来差不多”的 input CSS。
+Input / Select / Combobox 默认使用完全相同的 Input field depth、hover shadow 与 focus border/shadow。禁止为了实现 Select 或 Combobox 再复制一份“看起来差不多”的 input CSS，也禁止为了共享这些视觉再增加一个与 Input 平行的 Field Control 层。
 
 单行 Input 不再用 `paddingY` 把自身撑高；垂直尺寸由共享 `minHeight + typography` 基线统一。`Input.base.paddingY` 只用于 multiline textarea 的内容内边距。
 
-精确 field 宽度属于布局，继续通过 `viewProps.width / minWidth / maxWidth` 控制。共享 baseline 只规定相同的默认 `minWidth`；**浏览器原生 `<input>` intrinsic width 不能作为 Weave 的设计尺寸来源**。Playground 在并列验证 Input / Select / Combobox 时应给三者相同的显式 width。
+精确 field 宽度属于布局，继续通过 `viewProps.width / minWidth / maxWidth` 控制。Input field surface 规定相同的默认 `minWidth`；**浏览器原生 `<input>` intrinsic width 不能作为 Weave 的设计尺寸来源**。Playground 在并列验证 Input / Select / Combobox 时应给三者相同的显式 width。
 
 input value、textarea value 与 placeholder 共享该 typo 的 `fontSize / fontWeight / lineHeight / letterSpacing`。
 
@@ -2589,12 +2589,13 @@ listbox option 默认保留 selected check affordance；selected 与 active 是�
 默认视觉来自：
 
 ```text
+theme.components.Input
 theme.components.Select.base
 theme.components.Select.listbox
 theme.components.Select.option
 ```
 
-`base` 提供 Select 对共享 Field Control baseline 的主题值；trigger 的 border / radius / depth / hover / focus / disabled 行为由共享 Field Control stylesheet 统一实现，Select stylesheet 不复制这些规则。`listbox` 控制 popup surface / 尺寸 / shadow / motion；`option` 控制 active / selected / disabled、icon、check 与 typography。
+Select trigger 的 field surface 直接来自 `theme.components.Input` 与 Input stylesheet；`Select.base` 只控制 Select 自己新增的 trigger 内容结构，例如 gap / chevron icon size。`listbox` 控制 popup surface / 尺寸 / shadow / motion；`option` 控制 active / selected / disabled、icon、check 与 typography。
 
 `viewProps` 作用于 trigger；`listboxViewProps` 作用于 popup listbox。Select 自己拥有 combobox role、listbox role、fixed positioning、collision 坐标和 selection 语义，调用方不能通过这些 escape hatch 把它改成另一种控件。
 
@@ -2766,12 +2767,13 @@ focus 移出整个 Combobox root / listbox 时 popup 关闭；clear action 属�
 ## 14C.6 Theme
 
 ```text
+theme.components.Input
 theme.components.Combobox.base
 theme.components.Combobox.listbox
 theme.components.Combobox.option
 ```
 
-`base` 提供 Combobox 对共享 Field Control baseline 的主题值，并额外控制 clear / chevron action。真实 input 由 `Input` 提供，但 `theme.components.Combobox.base` 仍是 Combobox field 的主题权威：组合时必须让 Combobox 的 Field Control 变量覆盖 `Input` 自身的组件主题值。border / radius / depth / hover / focus / disabled 与单行 Input / Select 共用同一个 Field Control stylesheet；Combobox stylesheet 不复制这些规则。`listbox` 控制 popup surface / gap / size / shadow / motion；`option` 控制 active / selected / disabled、icon、check 和 typography。
+Combobox 的真实输入直接是公开 `Input`，所以 field surface 与 typography 只由 `theme.components.Input` 控制。`Combobox.base` 只控制 Combobox 自己新增的 chevron / action 尺寸；`listbox` 控制 popup surface / gap / size / shadow / motion；`option` 控制 active / selected / disabled、icon、check 和 typography。
 
 `viewProps` 作用于真实 input；`listboxViewProps` 作用于 popup listbox。
 

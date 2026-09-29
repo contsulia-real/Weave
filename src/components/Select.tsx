@@ -23,6 +23,7 @@ import type {
 } from '../core/view-types'
 import { length } from '../core/values'
 import {
+  resolveInputTheme,
   resolveSelectTheme,
 } from '../renderers/dom/resolve-component-theme'
 import {
@@ -158,9 +159,14 @@ export function Select({
     mode,
     reducedMotion,
   } = useTheme()
-  const selectBaseTheme =
-    theme.components.Select
+  const inputBaseTheme =
+    theme.components.Input
       ?.base
+  const inputThemeClassName =
+    useRuntimeStyleClass(
+      'input-theme',
+      resolveInputTheme(theme),
+    )
   const themeClassName =
     useRuntimeStyleClass(
       'select-theme',
@@ -709,7 +715,8 @@ export function Select({
                 className={[
                   'weave-option-listbox',
                   'weave-select-listbox',
-                  themeClassName,
+                  inputThemeClassName,
+          themeClassName,
                   listboxViewProps
                     .className,
                 ].filter(Boolean).join(' ')}
@@ -780,8 +787,8 @@ export function Select({
           triggerResolved.layout
         }
         className={[
-          'weave-field-control',
           'weave-select',
+          inputThemeClassName,
           themeClassName,
           triggerClassName,
         ].filter(Boolean).join(' ')}
@@ -813,7 +820,7 @@ export function Select({
 
           <Text
             typo={
-              selectBaseTheme
+              inputBaseTheme
                 ?.typo ??
               'body-large'
             }

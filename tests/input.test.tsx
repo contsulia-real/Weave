@@ -264,35 +264,35 @@ describe('Input', () => {
     const element = getByTestId('themed-input')
     const rule = runtimeRule(element, 'weave-input-theme-')
     const stylesheet = document.querySelector(
-      'style[data-weave-field-control-styles]',
+      'style[data-weave-input-styles]',
     )
 
     expect(element.className).toContain(
-      'weave-field-control',
+      'weave-input',
     )
     expect(rule).toContain(
-      '--weave-field-control-min-height:2.5rem;',
+      '--weave-input-min-height:2.5rem;',
     )
     expect(rule).toContain(
-      '--weave-field-control-min-width:12rem;',
+      '--weave-input-min-width:12rem;',
     )
     expect(rule).toContain(
-      '--weave-field-control-border-width:0.0625rem;',
+      '--weave-input-border-width:0.0625rem;',
     )
     expect(rule).toContain(
-      '--weave-field-control-radius:0.75rem;',
+      '--weave-input-radius:0.75rem;',
     )
     expect(rule).toContain(
-      '--weave-field-control-font-size:var(--weave-typography-style-body-large-font-size);',
+      '--weave-input-font-size:var(--weave-typography-style-body-large-font-size);',
     )
     expect(rule).toContain(
-      '--weave-field-control-font-weight:var(--weave-typography-style-body-large-font-weight);',
+      '--weave-input-font-weight:var(--weave-typography-style-body-large-font-weight);',
     )
     expect(rule).toContain(
-      '--weave-field-control-line-height:var(--weave-typography-style-body-large-line-height);',
+      '--weave-input-line-height:var(--weave-typography-style-body-large-line-height);',
     )
     expect(rule).toContain(
-      '--weave-field-control-letter-spacing:var(--weave-typography-style-body-large-letter-spacing);',
+      '--weave-input-letter-spacing:var(--weave-typography-style-body-large-letter-spacing);',
     )
     expect(stylesheet?.textContent).toContain(
       '--weave-component-border-style: solid',
@@ -326,20 +326,20 @@ describe('Input', () => {
     const element = getByTestId('typo-input')
     const rule = runtimeRule(element, 'weave-input-theme-')
     const stylesheet = document.querySelector(
-      'style[data-weave-field-control-styles]',
+      'style[data-weave-input-styles]',
     )?.textContent ?? ''
 
     expect(rule).toContain(
-      '--weave-field-control-font-size:var(--weave-typography-style-body-small-font-size);',
+      '--weave-input-font-size:var(--weave-typography-style-body-small-font-size);',
     )
     expect(rule).toContain(
-      '--weave-field-control-font-weight:var(--weave-typography-style-body-small-font-weight);',
+      '--weave-input-font-weight:var(--weave-typography-style-body-small-font-weight);',
     )
     expect(rule).toContain(
-      '--weave-field-control-line-height:var(--weave-typography-style-body-small-line-height);',
+      '--weave-input-line-height:var(--weave-typography-style-body-small-line-height);',
     )
     expect(rule).toContain(
-      '--weave-field-control-letter-spacing:var(--weave-typography-style-body-small-letter-spacing);',
+      '--weave-input-letter-spacing:var(--weave-typography-style-body-small-letter-spacing);',
     )
     expect(stylesheet).toContain(
       'font-weight:',

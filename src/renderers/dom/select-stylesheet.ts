@@ -1,4 +1,4 @@
-import { ensureFieldControlStylesheet } from './field-control-stylesheet'
+import { ensureInputStylesheet } from './input-stylesheet'
 import { ensureOptionListboxStylesheet } from './option-listbox-stylesheet'
 import { ensureStaticStylesheet } from './static-stylesheet'
 
@@ -22,7 +22,7 @@ const stylesheet = `
 }
 
 :where(.weave-select__placeholder) {
-  color: var(--weave-field-control-placeholder-color);
+  color: var(--weave-input-placeholder-color);
 }
 
 :where(.weave-select__value-icon),
@@ -45,7 +45,7 @@ const stylesheet = `
 `
 
 export function ensureSelectStylesheet(): void {
-  ensureFieldControlStylesheet()
+  ensureInputStylesheet()
   ensureOptionListboxStylesheet()
   ensureStaticStylesheet(
     'select',

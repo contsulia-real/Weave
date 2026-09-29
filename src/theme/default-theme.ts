@@ -51,7 +51,7 @@ const optionItemBase = {
   disabledOpacity: 0.5,
 } as const
 
-const fieldControlBase = {
+const inputBase = {
   ...controlBaseline,
   ...controlMedium,
   background: 'surface',
@@ -510,7 +510,7 @@ export const defaultTheme: ResolvedTheme = {
     },
     Input: {
       base: {
-        ...fieldControlBase,
+        ...inputBase,
         paddingY: 0.625,
       },
       states: {
@@ -522,11 +522,8 @@ export const defaultTheme: ResolvedTheme = {
     },
     Select: {
       base: {
-        ...fieldControlBase,
         gap: 0.625,
         iconSize: 1,
-        disabledOpacity: 0.5,
-        disabledCursor: 'default',
       },
       listbox: {
         ...optionListboxBase,
@@ -537,14 +534,8 @@ export const defaultTheme: ResolvedTheme = {
     },
     Combobox: {
       base: {
-        ...fieldControlBase,
-        gap: 0.625,
         iconSize: 1,
         actionSize: 1.75,
-        actionColor: 'secondary',
-        actionHoverBackground: 'surfaceHover',
-        disabledOpacity: 0.5,
-        disabledCursor: 'default',
       },
       listbox: {
         ...optionListboxBase,

@@ -845,12 +845,17 @@ describe('Combobox', () => {
     const theme =
       createTheme({
         components: {
-          Combobox: {
+          Input: {
             base: {
               background:
                 'primary',
               color:
                 'onPrimary',
+            },
+          },
+          Combobox: {
+            base: {
+              actionSize: 2,
             },
             listbox: {
               shadow: 'large',
@@ -928,16 +933,12 @@ describe('Combobox', () => {
 
     expect(runtimeStyle)
       .toContain(
-        '--weave-field-control-background:',
-      )
-    expect(runtimeStyle)
-      .toContain(
-        '--weave-color-primary',
+        '--weave-combobox-action-size: 2rem',
       )
     expect(
       getComputedStyle(input)
         .getPropertyValue(
-          '--weave-field-control-background',
+          '--weave-input-background',
         ),
     ).toContain(
       '--weave-color-primary',

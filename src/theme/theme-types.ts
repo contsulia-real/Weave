@@ -58,7 +58,7 @@ export interface ThemeTokens {
   }
 }
 
-export interface FieldControlThemeBase {
+export interface InputThemeBase {
   background?: string
   color?: string
   placeholderColor?: string
@@ -68,16 +68,12 @@ export interface FieldControlThemeBase {
   minHeight?: ThemeScaleValue
   minWidth?: ThemeScaleValue
   paddingX?: ThemeScaleValue
+  paddingY?: ThemeScaleValue
   typo?: TextTypo
   focusOutlineWidth?: ThemeScaleValue
   focusOutlineColor?: string
   focusOutlineStyle?: string
   focusOutlineOffset?: ThemeScaleValue
-}
-
-export interface InputThemeBase
-  extends FieldControlThemeBase {
-  paddingY?: ThemeScaleValue
 }
 
 export interface InputTheme {
@@ -90,12 +86,9 @@ export interface InputTheme {
   }
 }
 
-export interface SelectThemeBase
-  extends FieldControlThemeBase {
+export interface SelectThemeBase {
   gap?: ThemeScaleValue
   iconSize?: ThemeScaleValue
-  disabledOpacity?: number
-  disabledCursor?: string
 }
 
 export interface SelectThemeListbox {
@@ -137,11 +130,9 @@ export interface SelectTheme {
   option?: SelectThemeOption
 }
 
-export interface ComboboxThemeBase
-  extends SelectThemeBase {
+export interface ComboboxThemeBase {
+  iconSize?: ThemeScaleValue
   actionSize?: ThemeScaleValue
-  actionColor?: string
-  actionHoverBackground?: string
 }
 
 export interface ComboboxThemeListbox
