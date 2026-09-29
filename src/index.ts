@@ -18,6 +18,8 @@ export { Button } from './components/Button'
 export { Input } from './components/Input'
 export { Select } from './components/Select'
 export { SelectOption } from './components/SelectOption'
+export { Combobox } from './components/Combobox'
+export { ComboboxOption } from './components/ComboboxOption'
 export { Switch } from './components/Switch'
 export { Radio } from './components/Radio'
 export { Checkbox } from './components/Checkbox'
@@ -96,6 +98,10 @@ export type {
   SelectThemeBase,
   SelectThemeListbox,
   SelectThemeOption,
+  ComboboxTheme,
+  ComboboxThemeBase,
+  ComboboxThemeListbox,
+  ComboboxThemeOption,
   LinkTheme,
   LinkThemeBase,
   ListItemTheme,
@@ -247,6 +253,19 @@ export type {
   SelectValue,
   SelectViewProps,
 } from './core/select-types'
+
+export type {
+  ComboboxFilter,
+  ComboboxFilterOption,
+  ComboboxIcon,
+  ComboboxInputViewProps,
+  ComboboxListboxViewProps,
+  ComboboxOptionProps,
+  ComboboxOptionViewProps,
+  ComboboxPlacement,
+  ComboboxProps,
+  ComboboxValue,
+} from './core/combobox-types'
 
 export type {
   SwitchProps,

@@ -145,6 +145,25 @@ export interface SelectTheme {
   option?: SelectThemeOption
 }
 
+export interface ComboboxThemeBase
+  extends SelectThemeBase {
+  actionSize?: ThemeScaleValue
+  actionColor?: string
+  actionHoverBackground?: string
+}
+
+export interface ComboboxThemeListbox
+  extends SelectThemeListbox {}
+
+export interface ComboboxThemeOption
+  extends SelectThemeOption {}
+
+export interface ComboboxTheme {
+  base?: ComboboxThemeBase
+  listbox?: ComboboxThemeListbox
+  option?: ComboboxThemeOption
+}
+
 export interface SwitchThemeBase {
   background?: string
   radius?: ThemeScaleValue
@@ -511,6 +530,7 @@ export interface ThemeComponents {
   Button?: ButtonTheme
   Input?: InputTheme
   Select?: SelectTheme
+  Combobox?: ComboboxTheme
   Switch?: SwitchTheme
   Radio?: ChoiceControlTheme
   Checkbox?: ChoiceControlTheme

@@ -142,6 +142,98 @@ export function resolveSelectTheme(
   }
 }
 
+export function resolveComboboxTheme(
+  theme: ResolvedTheme,
+): RuntimeStyleDeclarations {
+  const component =
+    theme.components.Combobox
+  const base = component?.base
+  const listbox =
+    component?.listbox
+  const option =
+    component?.option
+
+  return {
+    '--weave-combobox-background': color(base?.background),
+    '--weave-combobox-color': color(base?.color),
+    '--weave-combobox-placeholder-color': color(base?.placeholderColor),
+    '--weave-combobox-border-color': color(base?.borderColor),
+    '--weave-combobox-border-width': length(base?.borderWidth),
+    '--weave-combobox-radius': radius(base?.radius),
+    '--weave-combobox-min-height': length(base?.minHeight),
+    '--weave-combobox-min-width': length(base?.minWidth),
+    '--weave-combobox-padding-x': length(base?.paddingX),
+    '--weave-combobox-gap': length(base?.gap),
+    '--weave-combobox-icon-size': length(base?.iconSize),
+    '--weave-combobox-action-size': length(base?.actionSize),
+    '--weave-combobox-action-color': color(base?.actionColor),
+    '--weave-combobox-action-hover-background': color(
+      base?.actionHoverBackground,
+    ),
+    '--weave-combobox-font-size':
+      typographyStyleVariableReference(base?.typo, 'fontSize'),
+    '--weave-combobox-font-weight':
+      typographyStyleVariableReference(base?.typo, 'fontWeight'),
+    '--weave-combobox-line-height':
+      typographyStyleVariableReference(base?.typo, 'lineHeight'),
+    '--weave-combobox-letter-spacing':
+      typographyStyleVariableReference(base?.typo, 'letterSpacing'),
+    '--weave-combobox-focus-outline-width': length(
+      base?.focusOutlineWidth,
+    ),
+    '--weave-combobox-focus-outline-color': color(
+      base?.focusOutlineColor,
+    ),
+    '--weave-combobox-focus-outline-style':
+      base?.focusOutlineStyle,
+    '--weave-combobox-focus-outline-offset': length(
+      base?.focusOutlineOffset,
+    ),
+    '--weave-combobox-disabled-opacity':
+      base?.disabledOpacity,
+    '--weave-combobox-disabled-cursor':
+      base?.disabledCursor,
+
+    '--weave-combobox-listbox-background': color(listbox?.background),
+    '--weave-combobox-listbox-color': color(listbox?.color),
+    '--weave-combobox-listbox-border-color': color(listbox?.borderColor),
+    '--weave-combobox-listbox-border-width': length(listbox?.borderWidth),
+    '--weave-combobox-listbox-radius': radius(listbox?.radius),
+    '--weave-combobox-listbox-padding': length(listbox?.padding),
+    '--weave-combobox-listbox-gap': length(listbox?.gap),
+    '--weave-combobox-listbox-min-width': length(listbox?.minWidth),
+    '--weave-combobox-listbox-max-width': length(listbox?.maxWidth),
+    '--weave-combobox-listbox-max-height': length(listbox?.maxHeight),
+    '--weave-combobox-listbox-shadow': shadowToken(listbox?.shadow),
+    '--weave-combobox-listbox-motion-offset': length(
+      listbox?.motionOffset,
+    ),
+
+    '--weave-combobox-option-background': color(option?.background),
+    '--weave-combobox-option-active-background': color(
+      option?.activeBackground,
+    ),
+    '--weave-combobox-option-selected-background': color(
+      option?.selectedBackground,
+    ),
+    '--weave-combobox-option-color': color(option?.color),
+    '--weave-combobox-option-selected-color': color(
+      option?.selectedColor,
+    ),
+    '--weave-combobox-option-secondary-color': color(
+      option?.secondaryColor,
+    ),
+    '--weave-combobox-option-radius': radius(option?.radius),
+    '--weave-combobox-option-padding-x': length(option?.paddingX),
+    '--weave-combobox-option-padding-y': length(option?.paddingY),
+    '--weave-combobox-option-gap': length(option?.gap),
+    '--weave-combobox-option-icon-size': length(option?.iconSize),
+    '--weave-combobox-option-check-size': length(option?.checkSize),
+    '--weave-combobox-option-disabled-opacity':
+      option?.disabledOpacity,
+  }
+}
+
 export function resolveSwitchTheme(
   theme: ResolvedTheme,
   size: SwitchSize,

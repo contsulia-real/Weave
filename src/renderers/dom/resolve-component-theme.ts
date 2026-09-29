@@ -1,6 +1,7 @@
 export {
   resolveInputTheme,
   resolveSelectTheme,
+  resolveComboboxTheme,
   resolveSwitchTheme,
   resolveChoiceControlTheme,
 } from './component-theme/controls'

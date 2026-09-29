@@ -2599,7 +2599,7 @@ create option
 multi-select
 ```
 
-可输入 / 可过滤的候选输入属于后续 `Combobox`。Select 不通过不断增加布尔属性演化成 Combobox。
+可输入 / 可过滤的固定候选输入由 `Combobox` 负责。Select 不通过不断增加布尔属性演化成 Combobox。
 
 ---
 # 14B. `Divider`
@@ -2648,6 +2648,135 @@ Divider 自身负责 `role="separator"` 与对应的 `aria-orientation`。
 
 ---
 
+# 14C. `Combobox`
+
+`Combobox` 是**可输入、可过滤、固定候选集、单选**控件。它使用真实 `<input role="combobox">`，popup 为 anchored `listbox`。第一版不支持 free-form / creatable：输入文本不是 value，只有提交已有 option 或 clear 才改变 value。
+
+```tsx
+<Combobox
+  value={value}
+  onValueChange={setValue}
+  placeholder="Search workspace"
+>
+  <ComboboxOption
+    value="design"
+    text="Design"
+    textValue="Design"
+  />
+  <ComboboxOption
+    value="profile"
+    text="Profile"
+  />
+</Combobox>
+```
+
+## 14C.1 双状态模型
+
+Combobox 明确区分：
+
+```text
+value / defaultValue / onValueChange
+inputValue / defaultInputValue / onInputValueChange
+```
+
+`value` 是已提交的 option value；`inputValue` 是输入框当前文字。用户打字只更新 inputValue 和过滤结果，**不会清空或修改 value**。只有 option 提交时才把 value 改成该 option；clear 会显式把 value 设为 null 并清空 inputValue。
+
+当 inputValue 未受控时，提交 option 后输入框显示该 option 的 `textValue`。外部 value 改变时，未受控 input 也同步到新 selected option 的 textValue。
+
+## 14C.2 Option 与 filtering
+
+`ComboboxOption`：
+
+```text
+value
+text
+textValue
+secondaryText
+icon
+disabled
+viewProps
+```
+
+value 在同一 Combobox 内必须唯一。字符串 / number text 会自动生成 textValue；复杂 ReactNode 应显式提供 textValue。
+
+默认 filter 对 textValue 做 case-insensitive substring 匹配。可以通过：
+
+```tsx
+filter={(option, inputValue) =>
+  option.value.startsWith(inputValue.toLowerCase())
+}
+```
+
+替换默认规则。filter 收到 `{ value, textValue, disabled }` 与当前 inputValue。`emptyContent` 控制无匹配项时 listbox 内显示的内容，默认 `No options`。
+
+disabled option 可以显示，但不会成为 active，也不能被提交。
+
+## 14C.3 ARIA / focus
+
+```text
+input  → <input role="combobox">
+popup  → role="listbox"
+item   → role="option"
+```
+
+input 提供 `aria-haspopup="listbox" / aria-expanded / aria-controls / aria-activedescendant / aria-autocomplete="list"`。打开 listbox 时 DOM focus 保持在 input；候选浏览状态通过 aria-activedescendant 表达。
+
+键盘：
+
+```text
+ArrowDown / ArrowUp   → 打开或移动 active option
+Home / End            → listbox 打开时 first / last enabled option
+Enter                 → 提交 active option
+Escape                → 关闭，不改变 value / inputValue
+```
+
+普通文本编辑键保持浏览器原生 input 行为；Combobox 不把 Space 或可打印字符劫持成菜单命令。
+
+## 14C.4 Clear
+
+`clearable=true` 为默认值。当存在 selected value 或输入文字时显示 clear action。clear：
+
+- value → null；
+- inputValue → ""；
+- 关闭 popup；
+- pointer 激活后 focus 回到 input。
+
+`clearLabel` 控制 clear button 的 accessible name，默认 `Clear selection`。
+
+## 14C.5 Anchored listbox
+
+Combobox 复用统一 anchored-overlay 基础设施：8 向 placement、flip / shift、scroll / resize / transform 跟踪、anchor 完全离开 viewport 后 dismiss、outside pointer dismiss 与 exit presence。
+
+listbox 默认至少和 input anchor 一样宽；input 宽度变化时会实时更新最小宽度。`offset` 默认 0.375rem，`viewportPadding` 默认 0.5rem。
+
+focus 移出整个 Combobox root / listbox 时 popup 关闭；clear action 属于 root 内部交互。
+
+## 14C.6 Theme
+
+```text
+theme.components.Combobox.base
+theme.components.Combobox.listbox
+theme.components.Combobox.option
+```
+
+`base` 控制 input surface / typography / border / focus / disabled / clear action；`listbox` 控制 popup surface / gap / size / shadow / motion；`option` 控制 active / selected / disabled、icon、check 和 typography。
+
+`viewProps` 作用于真实 input；`listboxViewProps` 作用于 popup listbox。
+
+## 14C.7 边界
+
+第一版 Combobox 不支持：
+
+```text
+free-form value
+create option
+multi-select
+内建 async/loading 协议
+```
+
+业务可以通过更新 children 提供异步候选数据，但框架不把请求生命周期塞进 Combobox。本组件只负责输入、过滤、候选浏览与已有 option 的提交。
+
+---
 # 15. `Switch`
 
 `Switch` 是基础组件。
@@ -5003,6 +5132,7 @@ const theme = {
     Button: { ... },
     Input: { ... },
     Select: { ... },
+    Combobox: { ... },
     Switch: { ... },
     Progress: { ... },
     Scrollbar: { ... },
@@ -6050,6 +6180,7 @@ ref.current.blur()
 Button  默认 focusable
 Input   默认 focusable
 Select  默认 focusable（focus 保持在 combobox trigger）
+Combobox 默认 focusable（真实 input 保持 DOM focus）
 Switch  默认 focusable
 
 Text    默认不 focusable
@@ -6077,6 +6208,8 @@ Space
 `List` 在可选择模式下提供对应键盘导航语义；持久选择状态叫 `selected`，内部 roving focus target 不作为公开 `active` 状态。
 
 `Select` 自己保证 select-only combobox 键盘模型；DOM focus 保持在 trigger，候选浏览状态通过 `aria-activedescendant` 表达，只有提交 option 才改变 `value`。
+
+`Combobox` 保证 editable combobox 键盘模型；DOM focus 保持在真实 input，输入文本只影响 `inputValue` / filtering，提交 option 才改变 `value`。
 
 Button 的 `:active` 只表示瞬时按压；需要维持按下状态时使用 Button 自己的 `pressed`。Weave 不提供一个跨 Button / Switch / List 的通用 `active: boolean`，因为瞬时 press、持久 pressed、checked、selected、focus 是不同语义。
 
@@ -6247,6 +6380,7 @@ Weave 公开 API
 │  ├─ ToolTip
 │  ├─ Popover
 │  ├─ Select / SelectOption
+│  ├─ Combobox / ComboboxOption
 │  ├─ Menu / MenuItem
 │  ├─ Snack
 │  ├─ List
@@ -6298,7 +6432,7 @@ CSS variables + runtime classes + framework stylesheet
 
 其中 `Presence`、Provider 与 Hook 不属于 ViewHost 宿主链路；它们分别负责生命周期编排和 React context / 命令式能力。只有实际承载 DOM 的组件才进入 `useViewHost → DOM + CSS` 这条宿主路径。
 
-内部实现按职责继续拆分而不是形成新的集中式 god-file：静态 framework stylesheet 共享统一安装器；组件主题解析按 controls / actions / progress / overlays / lists 分域；List 的内容归一化、selection、roving focus 与 virtualization layout 分离；Badge / ToolTip / Popover / Snack / Menu / Select 共用 exit-presence 基础生命周期，Badge / ToolTip / Popover / Menu / Select 的视觉锚点更新复用统一的 rAF / observer 跟踪基础设施；Popover / Menu root / Select 进一步共用 anchored-overlay 的 viewport-exit dismiss helper，组件层只决定 dismiss 后的 focus / selection 语义，不重复判断 anchor visibility；Snack 的 lifetime、内容渲染、队列策略、region registry / host positioning 与 region FLIP layout animation 分属独立 internal 模块。公开 API 不暴露这些内部 helper。
+内部实现按职责继续拆分而不是形成新的集中式 god-file：静态 framework stylesheet 共享统一安装器；组件主题解析按 controls / actions / progress / overlays / lists 分域；List 的内容归一化、selection、roving focus 与 virtualization layout 分离；Badge / ToolTip / Popover / Snack / Menu / Select / Combobox 共用 exit-presence 基础生命周期，Badge / ToolTip / Popover / Menu / Select / Combobox 的视觉锚点更新复用统一的 rAF / observer 跟踪基础设施；Popover / Menu root / Select / Combobox 进一步共用 anchored-overlay 的 viewport-exit dismiss helper，组件层只决定 dismiss 后的 focus / selection 语义，不重复判断 anchor visibility；Snack 的 lifetime、内容渲染、队列策略、region registry / host positioning 与 region FLIP layout animation 分属独立 internal 模块。公开 API 不暴露这些内部 helper。
 
 ---
 

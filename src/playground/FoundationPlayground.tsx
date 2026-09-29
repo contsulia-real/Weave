@@ -13,6 +13,8 @@ import {
   Badge,
   Button,
   Column,
+  Combobox,
+  ComboboxOption,
   Flex,
   Grid,
   Icon,
@@ -472,6 +474,71 @@ function SelectPlayground() {
           text="One"
         />
       </Select>
+    </Column>
+  )
+}
+
+function ComboboxPlayground() {
+  const [value, setValue] =
+    useState<string | null>('design')
+
+  return (
+    <Column gap={0.75} align="start">
+      <Combobox
+        value={value}
+        onValueChange={setValue}
+        placeholder="Search workspace"
+      >
+        <ComboboxOption
+          value="design"
+          text="Design"
+          secondaryText="UI and visual work"
+          icon={IconSettings}
+        />
+        <ComboboxOption
+          value="profile"
+          text="Profile"
+          secondaryText="Identity and account"
+          icon={IconUser}
+        />
+        <ComboboxOption
+          value="search"
+          text="Search"
+          secondaryText="Find indexed content"
+          icon={IconSearch}
+        />
+        <ComboboxOption
+          value="disabled"
+          text="Unavailable"
+          disabled
+        />
+      </Combobox>
+
+      <Text
+        typo="body-small"
+        color="secondary"
+      >
+        selected value: {value ?? 'null'} · typing only filters; Enter commits
+      </Text>
+
+      <Combobox
+        placeholder="Filter by value prefix"
+        emptyContent="No matching command"
+        filter={(option, input) =>
+          option.value.startsWith(
+            input.toLowerCase(),
+          )
+        }
+      >
+        <ComboboxOption
+          value="alpha"
+          text="Alpha"
+        />
+        <ComboboxOption
+          value="beta"
+          text="Beta"
+        />
+      </Combobox>
     </Column>
   )
 }
@@ -1534,6 +1601,13 @@ export function FoundationPlayground() {
         description="select-only combobox：focus 保持在 trigger；ArrowUp / ArrowDown / Home / End 改变 active option，Enter / Space 提交，支持 typeahead、disabled option 与 anchored overlay collision。"
       >
         <SelectPlayground />
+      </PlaygroundSection>
+
+      <PlaygroundSection
+        title="Combobox"
+        description="editable combobox：inputValue 与 value 分离；输入自动过滤，Arrow 键浏览候选，Enter 提交；支持 custom filter、empty state、clear 与 anchored overlay collision。"
+      >
+        <ComboboxPlayground />
       </PlaygroundSection>
 
       <PlaygroundSection

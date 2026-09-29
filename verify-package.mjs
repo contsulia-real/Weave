@@ -26,6 +26,8 @@ const expectedRuntimeExports = [
   'Button',
   'Checkbox',
   'Column',
+  'Combobox',
+  'ComboboxOption',
   'Flex',
   'Grid',
   'Icon',
@@ -84,6 +86,8 @@ assert(typeSource.includes('MenuItemProps'), 'Built declarations are missing Men
 assert(typeSource.includes('DividerProps'), 'Built declarations are missing DividerProps')
 assert(typeSource.includes('SelectProps'), 'Built declarations are missing SelectProps')
 assert(typeSource.includes('SelectOptionProps'), 'Built declarations are missing SelectOptionProps')
+assert(typeSource.includes('ComboboxProps'), 'Built declarations are missing ComboboxProps')
+assert(typeSource.includes('ComboboxOptionProps'), 'Built declarations are missing ComboboxOptionProps')
 assert(typeSource.includes('ReducedMotionPreference'), 'Built declarations are missing ReducedMotionPreference')
 assert(typeSource.includes('AbsoluteProps'), 'Built declarations are missing AbsoluteProps')
 assert(typeSource.includes('FlexProps'), 'Built declarations are missing FlexProps')
@@ -102,6 +106,7 @@ const expectedThemeTypeExports = [
   'ThemeScaleValue',
   'InputTheme',
   'SelectTheme',
+  'ComboboxTheme',
   'SwitchTheme',
   'ChoiceControlTheme',
   'BadgeTheme',
