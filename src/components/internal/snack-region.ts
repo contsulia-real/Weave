@@ -1,9 +1,4 @@
 export {
-  captureSnackPlacementLayout,
-  captureSnackRegionLayout,
-} from './snack-region-layout'
-
-export {
   getSnackRegion,
   retainSnackRegion,
   syncSnackRegion,

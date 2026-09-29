@@ -25,6 +25,9 @@ import {
 afterEach(() => {
   cleanup()
   vi.useRealTimers()
+  delete (
+    HTMLElement.prototype as Partial<HTMLElement>
+  ).animate
 
   document
     .querySelectorAll(
@@ -522,6 +525,135 @@ describe('Snack', () => {
       'C',
       'D',
     ])
+  })
+
+  it('reuses View layoutAnimation when FIFO removal reflows stable snacks', () => {
+    let phase: 'before' | 'after' =
+      'before'
+
+    const topFor = (
+      text: string,
+    ) => {
+      const before = {
+        A: 0,
+        B: 40,
+        C: 80,
+        D: 120,
+      } as const
+      const after = {
+        B: 0,
+        C: 40,
+        D: 80,
+      } as const
+
+      return phase === 'before'
+        ? before[
+            text as keyof typeof before
+          ] ?? 0
+        : after[
+            text as keyof typeof after
+          ] ?? 0
+    }
+
+    vi.spyOn(
+      HTMLElement.prototype,
+      'getBoundingClientRect',
+    ).mockImplementation(function () {
+      const element =
+        this as HTMLElement
+      const top =
+        element.dataset.weaveSnack !==
+        undefined
+          ? topFor(
+              element.textContent ?? '',
+            )
+          : 0
+
+      return {
+        x: 0,
+        y: top,
+        left: 0,
+        top,
+        width: 240,
+        height: 32,
+        right: 240,
+        bottom: top + 32,
+        toJSON: () => ({}),
+      } as DOMRect
+    })
+
+    const animate = vi.fn(
+      () => ({
+        cancel: vi.fn(),
+        finish: vi.fn(),
+        onfinish: null,
+      }) as unknown as Animation,
+    )
+
+    Object.defineProperty(
+      HTMLElement.prototype,
+      'animate',
+      {
+        configurable: true,
+        writable: true,
+        value: animate,
+      },
+    )
+
+    const { getByRole } = render(
+      <SnackProvider>
+        <SnackFifoHarness />
+      </SnackProvider>,
+    )
+
+    for (const name of [
+      'Push A',
+      'Push B',
+      'Push C',
+      'Push D',
+    ]) {
+      fireEvent.click(
+        getByRole('button', {
+          name,
+        }),
+      )
+    }
+
+    const region =
+      document.querySelector(
+        '[data-weave-snack-region="top-left"]',
+      )
+    const oldest =
+      region?.querySelector<HTMLElement>(
+        '[data-weave-snack-state="closing"]',
+      )
+
+    expect(oldest).not.toBeNull()
+
+    animate.mockClear()
+    phase = 'after'
+
+    fireEvent.transitionEnd(oldest!)
+
+    const layoutCalls =
+      animate.mock.calls.filter(
+        ([keyframes]) =>
+          Array.isArray(keyframes) &&
+          keyframes[0] !== undefined &&
+          'translate' in keyframes[0],
+      )
+
+    expect(layoutCalls.length)
+      .toBeGreaterThanOrEqual(2)
+    expect(
+      layoutCalls.some(
+        ([keyframes]) =>
+          (
+            keyframes as Keyframe[]
+          )[0]?.translate ===
+          '0px 40px',
+      ),
+    ).toBe(true)
   })
 
   it('does not render lifetime progress unless progress is enabled', () => {

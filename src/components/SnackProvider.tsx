@@ -25,9 +25,6 @@ import {
   enqueueSnack,
   type SnackQueueItem,
 } from './internal/snack-queue'
-import {
-  captureSnackPlacementLayout,
-} from './internal/snack-region'
 
 export interface SnackProviderProps {
   children?: ReactNode
@@ -158,12 +155,6 @@ export function SnackProvider({
                     }
                   }}
                   onDismissed={() => {
-                    captureSnackPlacementLayout(
-                      placement,
-                      container,
-                      scopeId,
-                    )
-
                     setItems(
                       (current) =>
                         completeSnackDismiss(

@@ -259,6 +259,13 @@ export function Snack({
           viewProps.layer ??
           'snack'
         }
+        layoutAnimation={
+          viewProps.layoutAnimation ?? {
+            duration: 'normal',
+            curve: 'emphasized',
+            interruption: 'continue',
+          }
+        }
         className={[
           'weave-snack',
           `weave-snack--${variant}`,
