@@ -16,6 +16,18 @@ const controlMedium = {
   minHeight: 2.5,
 } as const
 
+const fieldControlBase = {
+  ...controlBaseline,
+  ...controlMedium,
+  background: 'surface',
+  color: 'inherit',
+  placeholderColor: 'secondary',
+  borderColor: 'outline',
+  minWidth: 12,
+  paddingX: 0.875,
+  typo: 'body-large',
+} as const
+
 export const defaultBreakpoints = {
   sm: 40,
   md: 48,
@@ -463,15 +475,8 @@ export const defaultTheme: ResolvedTheme = {
     },
     Input: {
       base: {
-        ...controlBaseline,
-        ...controlMedium,
-        background: 'surface',
-        color: 'inherit',
-        placeholderColor: 'secondary',
-        borderColor: 'outline',
-        paddingX: 0.875,
+        ...fieldControlBase,
         paddingY: 0.625,
-        typo: 'body-large',
       },
       states: {
         disabled: {
@@ -482,17 +487,9 @@ export const defaultTheme: ResolvedTheme = {
     },
     Select: {
       base: {
-        ...controlBaseline,
-        ...controlMedium,
-        background: 'surface',
-        color: 'inherit',
-        placeholderColor: 'secondary',
-        borderColor: 'outline',
-        minWidth: 12,
-        paddingX: 0.875,
+        ...fieldControlBase,
         gap: 0.625,
         iconSize: 1,
-        typo: 'body-large',
         disabledOpacity: 0.5,
         disabledCursor: 'default',
       },
@@ -531,20 +528,12 @@ export const defaultTheme: ResolvedTheme = {
     },
     Combobox: {
       base: {
-        ...controlBaseline,
-        ...controlMedium,
-        background: 'surface',
-        color: 'inherit',
-        placeholderColor: 'secondary',
-        borderColor: 'outline',
-        minWidth: 12,
-        paddingX: 0.875,
+        ...fieldControlBase,
         gap: 0.625,
         iconSize: 1,
         actionSize: 1.75,
         actionColor: 'secondary',
         actionHoverBackground: 'surfaceHover',
-        typo: 'body-large',
         disabledOpacity: 0.5,
         disabledCursor: 'default',
       },

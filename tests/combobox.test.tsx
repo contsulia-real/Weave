@@ -922,7 +922,7 @@ describe('Combobox', () => {
 
     expect(runtimeStyle)
       .toContain(
-        '--weave-combobox-background:',
+        '--weave-field-control-background:',
       )
     expect(runtimeStyle)
       .toContain(

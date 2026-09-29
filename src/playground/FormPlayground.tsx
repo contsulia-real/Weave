@@ -29,17 +29,17 @@ export function FormPlayground() {
     <>
       <PlaygroundSection
         title="Input"
-        description="单行和多行共用同一个 Input；默认视觉来自 Input theme，multiline 内部滚动统一使用 Weave Scrollbar。"
+        description="单行 Input 与 Select / Combobox 共用同一套 Field Control visual baseline；multiline 仍使用 Input theme 与 Weave Scrollbar。"
       >
         <Column
           gap={0.75}
-          maxWidth={32}
+          align="start"
         >
           <Input
             placeholder="Name"
             autoComplete="name"
             viewProps={{
-              width: 'fill',
+              width: 20,
             }}
           />
 
@@ -47,7 +47,7 @@ export function FormPlayground() {
             disabled
             defaultValue="Disabled input"
             viewProps={{
-              width: 'fill',
+              width: 20,
             }}
           />
 
@@ -64,7 +64,7 @@ export function FormPlayground() {
             ].join('\n')}
             placeholder="Notes"
             viewProps={{
-              width: 'fill',
+              width: 32,
             }}
           />
         </Column>

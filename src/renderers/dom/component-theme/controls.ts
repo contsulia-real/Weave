@@ -1,4 +1,5 @@
 import type {
+  FieldControlThemeBase,
   ResolvedTheme,
 } from '../../../theme/theme-types'
 import { typographyStyleVariableReference } from '../../../theme/theme-css'
@@ -15,6 +16,77 @@ import {
 import { shadowToken } from './shared'
 import type { RuntimeStyleDeclarations } from '../runtime-class'
 
+interface FieldControlDisabledTheme {
+  opacity?: number
+  cursor?: string
+}
+
+function resolveFieldControlTheme(
+  base:
+    FieldControlThemeBase | undefined,
+  disabled:
+    FieldControlDisabledTheme | undefined,
+): RuntimeStyleDeclarations {
+  return {
+    '--weave-field-control-background':
+      color(base?.background),
+    '--weave-field-control-color':
+      color(base?.color),
+    '--weave-field-control-placeholder-color':
+      color(base?.placeholderColor),
+    '--weave-field-control-border-color':
+      color(base?.borderColor),
+    '--weave-field-control-border-width':
+      length(base?.borderWidth),
+    '--weave-field-control-radius':
+      radius(base?.radius),
+    '--weave-field-control-min-height':
+      length(base?.minHeight),
+    '--weave-field-control-min-width':
+      length(base?.minWidth),
+    '--weave-field-control-padding-x':
+      length(base?.paddingX),
+    '--weave-field-control-font-size':
+      typographyStyleVariableReference(
+        base?.typo,
+        'fontSize',
+      ),
+    '--weave-field-control-font-weight':
+      typographyStyleVariableReference(
+        base?.typo,
+        'fontWeight',
+      ),
+    '--weave-field-control-line-height':
+      typographyStyleVariableReference(
+        base?.typo,
+        'lineHeight',
+      ),
+    '--weave-field-control-letter-spacing':
+      typographyStyleVariableReference(
+        base?.typo,
+        'letterSpacing',
+      ),
+    '--weave-field-control-focus-outline-width':
+      length(
+        base?.focusOutlineWidth,
+      ),
+    '--weave-field-control-focus-outline-color':
+      color(
+        base?.focusOutlineColor,
+      ),
+    '--weave-field-control-focus-outline-style':
+      base?.focusOutlineStyle,
+    '--weave-field-control-focus-outline-offset':
+      length(
+        base?.focusOutlineOffset,
+      ),
+    '--weave-field-control-disabled-opacity':
+      disabled?.opacity,
+    '--weave-field-control-disabled-cursor':
+      disabled?.cursor,
+  }
+}
+
 export function resolveInputTheme(
   theme: ResolvedTheme,
 ): RuntimeStyleDeclarations {
@@ -23,38 +95,12 @@ export function resolveInputTheme(
   const disabled = component?.states?.disabled
 
   return {
-    '--weave-input-theme-background': color(base?.background),
-    '--weave-input-theme-color': color(base?.color),
-    '--weave-input-theme-placeholder-color': color(
-      base?.placeholderColor,
+    ...resolveFieldControlTheme(
+      base,
+      disabled,
     ),
-    '--weave-input-theme-border-color': color(base?.borderColor),
-    '--weave-input-theme-border-width': length(base?.borderWidth),
-    '--weave-input-theme-radius': radius(base?.radius),
-    '--weave-input-theme-min-height': length(base?.minHeight),
-    '--weave-input-theme-padding-x': length(base?.paddingX),
-    '--weave-input-theme-padding-y': length(base?.paddingY),
-    '--weave-input-theme-font-size':
-      typographyStyleVariableReference(base?.typo, 'fontSize'),
-    '--weave-input-theme-font-weight':
-      typographyStyleVariableReference(base?.typo, 'fontWeight'),
-    '--weave-input-theme-line-height':
-      typographyStyleVariableReference(base?.typo, 'lineHeight'),
-    '--weave-input-theme-letter-spacing':
-      typographyStyleVariableReference(base?.typo, 'letterSpacing'),
-    '--weave-input-theme-focus-outline-width': length(
-      base?.focusOutlineWidth,
-    ),
-    '--weave-input-theme-focus-outline-color': color(
-      base?.focusOutlineColor,
-    ),
-    '--weave-input-theme-focus-outline-style':
-      base?.focusOutlineStyle,
-    '--weave-input-theme-focus-outline-offset': length(
-      base?.focusOutlineOffset,
-    ),
-    '--weave-input-theme-disabled-opacity': disabled?.opacity,
-    '--weave-input-theme-disabled-cursor': disabled?.cursor,
+    '--weave-input-theme-padding-y':
+      length(base?.paddingY),
   }
 }
 
@@ -67,40 +113,19 @@ export function resolveSelectTheme(
   const option = component?.option
 
   return {
-    '--weave-select-background': color(base?.background),
-    '--weave-select-color': color(base?.color),
-    '--weave-select-placeholder-color': color(base?.placeholderColor),
-    '--weave-select-border-color': color(base?.borderColor),
-    '--weave-select-border-width': length(base?.borderWidth),
-    '--weave-select-radius': radius(base?.radius),
-    '--weave-select-min-height': length(base?.minHeight),
-    '--weave-select-min-width': length(base?.minWidth),
-    '--weave-select-padding-x': length(base?.paddingX),
-    '--weave-select-gap': length(base?.gap),
-    '--weave-select-icon-size': length(base?.iconSize),
-    '--weave-select-font-size':
-      typographyStyleVariableReference(base?.typo, 'fontSize'),
-    '--weave-select-font-weight':
-      typographyStyleVariableReference(base?.typo, 'fontWeight'),
-    '--weave-select-line-height':
-      typographyStyleVariableReference(base?.typo, 'lineHeight'),
-    '--weave-select-letter-spacing':
-      typographyStyleVariableReference(base?.typo, 'letterSpacing'),
-    '--weave-select-focus-outline-width': length(
-      base?.focusOutlineWidth,
+    ...resolveFieldControlTheme(
+      base,
+      {
+        opacity:
+          base?.disabledOpacity,
+        cursor:
+          base?.disabledCursor,
+      },
     ),
-    '--weave-select-focus-outline-color': color(
-      base?.focusOutlineColor,
-    ),
-    '--weave-select-focus-outline-style':
-      base?.focusOutlineStyle,
-    '--weave-select-focus-outline-offset': length(
-      base?.focusOutlineOffset,
-    ),
-    '--weave-select-disabled-opacity':
-      base?.disabledOpacity,
-    '--weave-select-disabled-cursor':
-      base?.disabledCursor,
+    '--weave-select-gap':
+      length(base?.gap),
+    '--weave-select-icon-size':
+      length(base?.iconSize),
 
     '--weave-select-listbox-background': color(listbox?.background),
     '--weave-select-listbox-color': color(listbox?.color),
@@ -154,45 +179,27 @@ export function resolveComboboxTheme(
     component?.option
 
   return {
-    '--weave-combobox-background': color(base?.background),
-    '--weave-combobox-color': color(base?.color),
-    '--weave-combobox-placeholder-color': color(base?.placeholderColor),
-    '--weave-combobox-border-color': color(base?.borderColor),
-    '--weave-combobox-border-width': length(base?.borderWidth),
-    '--weave-combobox-radius': radius(base?.radius),
-    '--weave-combobox-min-height': length(base?.minHeight),
-    '--weave-combobox-min-width': length(base?.minWidth),
-    '--weave-combobox-padding-x': length(base?.paddingX),
-    '--weave-combobox-gap': length(base?.gap),
-    '--weave-combobox-icon-size': length(base?.iconSize),
-    '--weave-combobox-action-size': length(base?.actionSize),
-    '--weave-combobox-action-color': color(base?.actionColor),
-    '--weave-combobox-action-hover-background': color(
-      base?.actionHoverBackground,
+    ...resolveFieldControlTheme(
+      base,
+      {
+        opacity:
+          base?.disabledOpacity,
+        cursor:
+          base?.disabledCursor,
+      },
     ),
-    '--weave-combobox-font-size':
-      typographyStyleVariableReference(base?.typo, 'fontSize'),
-    '--weave-combobox-font-weight':
-      typographyStyleVariableReference(base?.typo, 'fontWeight'),
-    '--weave-combobox-line-height':
-      typographyStyleVariableReference(base?.typo, 'lineHeight'),
-    '--weave-combobox-letter-spacing':
-      typographyStyleVariableReference(base?.typo, 'letterSpacing'),
-    '--weave-combobox-focus-outline-width': length(
-      base?.focusOutlineWidth,
-    ),
-    '--weave-combobox-focus-outline-color': color(
-      base?.focusOutlineColor,
-    ),
-    '--weave-combobox-focus-outline-style':
-      base?.focusOutlineStyle,
-    '--weave-combobox-focus-outline-offset': length(
-      base?.focusOutlineOffset,
-    ),
-    '--weave-combobox-disabled-opacity':
-      base?.disabledOpacity,
-    '--weave-combobox-disabled-cursor':
-      base?.disabledCursor,
+    '--weave-combobox-gap':
+      length(base?.gap),
+    '--weave-combobox-icon-size':
+      length(base?.iconSize),
+    '--weave-combobox-action-size':
+      length(base?.actionSize),
+    '--weave-combobox-action-color':
+      color(base?.actionColor),
+    '--weave-combobox-action-hover-background':
+      color(
+        base?.actionHoverBackground,
+      ),
 
     '--weave-combobox-listbox-background': color(listbox?.background),
     '--weave-combobox-listbox-color': color(listbox?.color),

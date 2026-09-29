@@ -803,6 +803,7 @@ export function Select({
           triggerResolved.layout
         }
         className={[
+          'weave-field-control',
           'weave-select',
           themeClassName,
           triggerClassName,

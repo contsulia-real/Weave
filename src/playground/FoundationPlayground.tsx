@@ -432,6 +432,7 @@ function SelectPlayground() {
         value={value}
         onValueChange={setValue}
         placeholder="Choose workspace"
+        viewProps={{ width: 20 }}
       >
         <SelectOption
           value="design"
@@ -468,6 +469,7 @@ function SelectPlayground() {
       <Select
         disabled
         placeholder="Disabled select"
+        viewProps={{ width: 20 }}
       >
         <SelectOption
           value="one"
@@ -488,6 +490,7 @@ function ComboboxPlayground() {
         value={value}
         onValueChange={setValue}
         placeholder="Search workspace"
+        viewProps={{ width: 20 }}
       >
         <ComboboxOption
           value="design"
@@ -524,6 +527,7 @@ function ComboboxPlayground() {
       <Combobox
         placeholder="Filter by value prefix"
         emptyContent="No matching command"
+        viewProps={{ width: 20 }}
         filter={(option, input) =>
           option.value.startsWith(
             input.toLowerCase(),

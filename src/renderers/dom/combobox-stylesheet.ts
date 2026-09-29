@@ -1,3 +1,4 @@
+import { ensureFieldControlStylesheet } from './field-control-stylesheet'
 import { ensureStaticStylesheet } from './static-stylesheet'
 
 const stylesheet = `
@@ -8,52 +9,12 @@ const stylesheet = `
 }
 
 :where(.weave-combobox) {
-  --weave-component-min-height: var(--weave-combobox-min-height);
-  --weave-component-min-width: var(--weave-combobox-min-width);
-  --weave-component-padding-left: var(--weave-combobox-padding-x);
   --weave-component-padding-right:
     calc(
-      var(--weave-combobox-padding-x) +
+      var(--weave-field-control-padding-x) +
       var(--weave-combobox-action-size) +
       0.25rem
     );
-  --weave-component-background: var(--weave-combobox-background);
-  --weave-component-color: var(--weave-combobox-color);
-  --weave-component-border-top-width: var(--weave-combobox-border-width);
-  --weave-component-border-right-width: var(--weave-combobox-border-width);
-  --weave-component-border-bottom-width: var(--weave-combobox-border-width);
-  --weave-component-border-left-width: var(--weave-combobox-border-width);
-  --weave-component-border-style: solid;
-  --weave-component-border-top-color: var(--weave-combobox-border-color);
-  --weave-component-border-right-color: var(--weave-combobox-border-color);
-  --weave-component-border-bottom-color: var(--weave-combobox-border-color);
-  --weave-component-border-left-color: var(--weave-combobox-border-color);
-  --weave-component-border-top-left-radius: var(--weave-combobox-radius);
-  --weave-component-border-top-right-radius: var(--weave-combobox-radius);
-  --weave-component-border-bottom-right-radius: var(--weave-combobox-radius);
-  --weave-component-border-bottom-left-radius: var(--weave-combobox-radius);
-  --weave-component-outline-width: 0;
-
-  appearance: none;
-  font: inherit;
-  font-size: var(--weave-combobox-font-size);
-  font-weight: var(--weave-combobox-font-weight);
-  line-height: var(--weave-combobox-line-height);
-  letter-spacing: var(--weave-combobox-letter-spacing);
-
-  --weave-component-transition-property:
-    background-color, border-color, color, opacity;
-  --weave-component-transition-duration:
-    var(--weave-motion-duration-fast),
-    var(--weave-motion-duration-fast),
-    var(--weave-motion-duration-fast),
-    var(--weave-motion-duration-fast);
-  --weave-component-transition-timing-function:
-    var(--weave-motion-curve-standard),
-    var(--weave-motion-curve-standard),
-    var(--weave-motion-curve-standard),
-    var(--weave-motion-curve-standard);
-  --weave-component-transition-delay: 0ms;
 }
 
 :where(
@@ -63,32 +24,10 @@ const stylesheet = `
 ) {
   --weave-component-padding-right:
     calc(
-      var(--weave-combobox-padding-x) +
+      var(--weave-field-control-padding-x) +
       var(--weave-combobox-action-size) * 2 +
       0.5rem
     );
-}
-
-:where(.weave-combobox::placeholder) {
-  color: var(--weave-combobox-placeholder-color);
-}
-
-:where(.weave-combobox:focus-visible) {
-  --weave-component-outline-width:
-    var(--weave-combobox-focus-outline-width);
-  --weave-component-outline-color:
-    var(--weave-combobox-focus-outline-color);
-  --weave-component-outline-style:
-    var(--weave-combobox-focus-outline-style);
-  --weave-component-outline-offset:
-    var(--weave-combobox-focus-outline-offset);
-}
-
-:where(.weave-combobox:disabled) {
-  --weave-component-opacity:
-    var(--weave-combobox-disabled-opacity);
-  --weave-component-cursor:
-    var(--weave-combobox-disabled-cursor);
 }
 
 :where(.weave-combobox__actions) {
@@ -124,11 +63,11 @@ const stylesheet = `
 
 :where(.weave-combobox__action:focus-visible) {
   outline:
-    var(--weave-combobox-focus-outline-width)
-    var(--weave-combobox-focus-outline-style)
-    var(--weave-combobox-focus-outline-color);
+    var(--weave-field-control-focus-outline-width)
+    var(--weave-field-control-focus-outline-style)
+    var(--weave-field-control-focus-outline-color);
   outline-offset:
-    var(--weave-combobox-focus-outline-offset);
+    var(--weave-field-control-focus-outline-offset);
 }
 
 :where(.weave-combobox__action-icon),
@@ -345,6 +284,7 @@ const stylesheet = `
 `
 
 export function ensureComboboxStylesheet(): void {
+  ensureFieldControlStylesheet()
   ensureStaticStylesheet(
     'combobox',
     stylesheet,

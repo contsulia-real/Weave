@@ -1025,6 +1025,7 @@ export function Combobox({
             inputResolved.layout
           }
           className={[
+            'weave-field-control',
             'weave-combobox',
             inputClassName,
           ].filter(Boolean).join(' ')}

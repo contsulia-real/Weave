@@ -58,7 +58,7 @@ export interface ThemeTokens {
   }
 }
 
-export interface InputThemeBase {
+export interface FieldControlThemeBase {
   background?: string
   color?: string
   placeholderColor?: string
@@ -66,13 +66,18 @@ export interface InputThemeBase {
   borderWidth?: ThemeScaleValue
   radius?: ThemeScaleValue
   minHeight?: ThemeScaleValue
+  minWidth?: ThemeScaleValue
   paddingX?: ThemeScaleValue
-  paddingY?: ThemeScaleValue
-  typo?: string
+  typo?: TextTypo
   focusOutlineWidth?: ThemeScaleValue
   focusOutlineColor?: string
   focusOutlineStyle?: string
   focusOutlineOffset?: ThemeScaleValue
+}
+
+export interface InputThemeBase
+  extends FieldControlThemeBase {
+  paddingY?: ThemeScaleValue
 }
 
 export interface InputTheme {
@@ -85,23 +90,10 @@ export interface InputTheme {
   }
 }
 
-export interface SelectThemeBase {
-  background?: string
-  color?: string
-  placeholderColor?: string
-  borderColor?: string
-  borderWidth?: ThemeScaleValue
-  radius?: ThemeScaleValue
-  minHeight?: ThemeScaleValue
-  minWidth?: ThemeScaleValue
-  paddingX?: ThemeScaleValue
+export interface SelectThemeBase
+  extends FieldControlThemeBase {
   gap?: ThemeScaleValue
   iconSize?: ThemeScaleValue
-  typo?: TextTypo
-  focusOutlineWidth?: ThemeScaleValue
-  focusOutlineColor?: string
-  focusOutlineStyle?: string
-  focusOutlineOffset?: ThemeScaleValue
   disabledOpacity?: number
   disabledCursor?: string
 }

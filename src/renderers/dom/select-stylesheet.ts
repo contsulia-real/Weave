@@ -1,3 +1,4 @@
+import { ensureFieldControlStylesheet } from './field-control-stylesheet'
 import { ensureStaticStylesheet } from './static-stylesheet'
 
 const stylesheet = `
@@ -6,75 +7,9 @@ const stylesheet = `
   --weave-component-align-items: center;
   --weave-component-justify-content: space-between;
   --weave-component-gap: var(--weave-select-gap);
-  --weave-component-min-height: var(--weave-select-min-height);
-  --weave-component-min-width: var(--weave-select-min-width);
-  --weave-component-padding-left: var(--weave-select-padding-x);
-  --weave-component-padding-right: var(--weave-select-padding-x);
-  --weave-component-background: var(--weave-select-background);
-  --weave-component-color: var(--weave-select-color);
-
-  --weave-component-border-top-width: var(--weave-select-border-width);
-  --weave-component-border-right-width: var(--weave-select-border-width);
-  --weave-component-border-bottom-width: var(--weave-select-border-width);
-  --weave-component-border-left-width: var(--weave-select-border-width);
-  --weave-component-border-style: solid;
-  --weave-component-border-top-color: var(--weave-select-border-color);
-  --weave-component-border-right-color: var(--weave-select-border-color);
-  --weave-component-border-bottom-color: var(--weave-select-border-color);
-  --weave-component-border-left-color: var(--weave-select-border-color);
-
-  --weave-component-border-top-left-radius: var(--weave-select-radius);
-  --weave-component-border-top-right-radius: var(--weave-select-radius);
-  --weave-component-border-bottom-right-radius: var(--weave-select-radius);
-  --weave-component-border-bottom-left-radius: var(--weave-select-radius);
-
   --weave-component-cursor: pointer;
   --weave-component-user-select: none;
-  --weave-component-outline-width: 0;
-
-  appearance: none;
-  font: inherit;
-  font-size: var(--weave-select-font-size);
-  font-weight: var(--weave-select-font-weight);
-  line-height: var(--weave-select-line-height);
-  letter-spacing: var(--weave-select-letter-spacing);
   text-align: start;
-
-  --weave-component-transition-property:
-    background-color, border-color, color, opacity;
-  --weave-component-transition-duration:
-    var(--weave-motion-duration-fast),
-    var(--weave-motion-duration-fast),
-    var(--weave-motion-duration-fast),
-    var(--weave-motion-duration-fast);
-  --weave-component-transition-timing-function:
-    var(--weave-motion-curve-standard),
-    var(--weave-motion-curve-standard),
-    var(--weave-motion-curve-standard),
-    var(--weave-motion-curve-standard);
-  --weave-component-transition-delay: 0ms;
-}
-
-:where(.weave-select:hover:not([aria-disabled="true"])) {
-  --weave-component-background: var(--weave-color-surface-hover);
-}
-
-:where(.weave-select:focus-visible) {
-  --weave-component-outline-width:
-    var(--weave-select-focus-outline-width);
-  --weave-component-outline-color:
-    var(--weave-select-focus-outline-color);
-  --weave-component-outline-style:
-    var(--weave-select-focus-outline-style);
-  --weave-component-outline-offset:
-    var(--weave-select-focus-outline-offset);
-}
-
-:where(.weave-select[aria-disabled="true"]) {
-  --weave-component-opacity:
-    var(--weave-select-disabled-opacity);
-  --weave-component-cursor:
-    var(--weave-select-disabled-cursor);
 }
 
 :where(.weave-select__value) {
@@ -86,7 +21,7 @@ const stylesheet = `
 }
 
 :where(.weave-select__placeholder) {
-  color: var(--weave-select-placeholder-color);
+  color: var(--weave-field-control-placeholder-color);
 }
 
 :where(.weave-select__value-icon),
@@ -313,6 +248,7 @@ const stylesheet = `
 `
 
 export function ensureSelectStylesheet(): void {
+  ensureFieldControlStylesheet()
   ensureStaticStylesheet(
     'select',
     stylesheet,

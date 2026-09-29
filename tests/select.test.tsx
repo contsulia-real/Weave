@@ -848,7 +848,7 @@ describe('Select', () => {
 
     expect(runtimeStyle)
       .toContain(
-        '--weave-select-background:',
+        '--weave-field-control-background:',
       )
     expect(runtimeStyle)
       .toContain(

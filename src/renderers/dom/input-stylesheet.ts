@@ -1,99 +1,16 @@
+import { ensureFieldControlStylesheet } from './field-control-stylesheet'
 import { ensureStaticStylesheet } from './static-stylesheet'
 
 const stylesheet = `
 :where(.weave-input) {
   --weave-component-display: block;
-  --weave-component-background: var(--weave-input-theme-background);
-  --weave-component-color: var(--weave-input-theme-color);
-  --weave-component-min-height: var(--weave-input-theme-min-height);
-  --weave-component-padding-top: var(--weave-input-theme-padding-y);
-  --weave-component-padding-bottom: var(--weave-input-theme-padding-y);
-  --weave-component-padding-left: var(--weave-input-theme-padding-x);
-  --weave-component-padding-right: var(--weave-input-theme-padding-x);
-  --weave-component-border-top-width: var(--weave-input-theme-border-width);
-  --weave-component-border-right-width: var(--weave-input-theme-border-width);
-  --weave-component-border-bottom-width: var(--weave-input-theme-border-width);
-  --weave-component-border-left-width: var(--weave-input-theme-border-width);
-  --weave-component-border-top-color: var(--weave-input-theme-border-color);
-  --weave-component-border-right-color: var(--weave-input-theme-border-color);
-  --weave-component-border-bottom-color: var(--weave-input-theme-border-color);
-  --weave-component-border-left-color: var(--weave-input-theme-border-color);
-  --weave-component-border-style: solid;
-  --weave-component-border-top-left-radius: var(--weave-input-theme-radius);
-  --weave-component-border-top-right-radius: var(--weave-input-theme-radius);
-  --weave-component-border-bottom-right-radius: var(--weave-input-theme-radius);
-  --weave-component-border-bottom-left-radius: var(--weave-input-theme-radius);
-  --weave-component-outline-width: 0;
-  --weave-component-box-shadow:
-    0 0.0625rem 0
-    color-mix(in srgb, var(--weave-input-theme-border-color) 72%, transparent);
-
-  font: inherit;
-  font-size: var(--weave-input-theme-font-size);
-  font-weight: var(--weave-input-theme-font-weight);
-  line-height: var(--weave-input-theme-line-height);
-  letter-spacing: var(--weave-input-theme-letter-spacing);
-  --weave-component-transition-property:
-    background-color, border-color, color, opacity, box-shadow;
-  --weave-component-transition-duration:
-    var(--weave-motion-duration-fast),
-    var(--weave-motion-duration-fast),
-    var(--weave-motion-duration-fast),
-    var(--weave-motion-duration-fast),
-    var(--weave-motion-duration-fast);
-  --weave-component-transition-timing-function:
-    var(--weave-motion-curve-standard),
-    var(--weave-motion-curve-standard),
-    var(--weave-motion-curve-standard),
-    var(--weave-motion-curve-standard),
-    var(--weave-motion-curve-standard);
-  --weave-component-transition-delay: 0ms;
 }
 
-:where(.weave-input::placeholder) {
-  color: var(--weave-input-theme-placeholder-color);
-  opacity: 1;
-}
-
-:where(.weave-input:hover:not([aria-disabled="true"])) {
-  --weave-component-box-shadow:
-    0 calc(var(--weave-feedback-rest-depth) * 0.5) 0
-    color-mix(in srgb, var(--weave-input-theme-border-color) 82%, transparent);
-}
-
-:where(.weave-input:focus-visible) {
-  --weave-component-box-shadow:
-    0 var(--weave-feedback-rest-depth) 0
-    color-mix(in srgb, var(--weave-input-theme-focus-outline-color) 34%, transparent);
-  --weave-component-border-top-color: var(
-    --weave-input-theme-focus-outline-color
-  );
-  --weave-component-border-right-color: var(
-    --weave-input-theme-focus-outline-color
-  );
-  --weave-component-border-bottom-color: var(
-    --weave-input-theme-focus-outline-color
-  );
-  --weave-component-border-left-color: var(
-    --weave-input-theme-focus-outline-color
-  );
-  --weave-component-outline-width: var(
-    --weave-input-theme-focus-outline-width
-  );
-  --weave-component-outline-color: var(
-    --weave-input-theme-focus-outline-color
-  );
-  --weave-component-outline-style: var(
-    --weave-input-theme-focus-outline-style
-  );
-  --weave-component-outline-offset: var(
-    --weave-input-theme-focus-outline-offset
-  );
-}
-
-:where(.weave-input[aria-disabled="true"]) {
-  --weave-component-opacity: var(--weave-input-theme-disabled-opacity);
-  --weave-component-cursor: var(--weave-input-theme-disabled-cursor);
+:where(.weave-input--multiline) {
+  --weave-component-padding-top:
+    var(--weave-input-theme-padding-y);
+  --weave-component-padding-bottom:
+    var(--weave-input-theme-padding-y);
 }
 
 :where([data-weave-input-multiline]) {
@@ -102,6 +19,9 @@ const stylesheet = `
 `
 
 export function ensureInputStylesheet(): void {
-  ensureStaticStylesheet('input', stylesheet)
+  ensureFieldControlStylesheet()
+  ensureStaticStylesheet(
+    'input',
+    stylesheet,
+  )
 }
-
