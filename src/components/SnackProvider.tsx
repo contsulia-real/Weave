@@ -1,4 +1,4 @@
-import { type ReactNode, useCallback, useId, useMemo, useRef, useState } from 'react'
+import { type ReactNode, useCallback, useEffect, useId, useMemo, useRef, useState } from 'react'
 import type { SnackContainer, SnackController, SnackRequest } from '../core/snack-types'
 import { SnackContext } from './internal/snack-context'
 import { SnackHostContext } from './internal/snack-host-context'
@@ -8,6 +8,7 @@ import {
   dismissSnack,
   enqueueSnack,
   type SnackQueueItem,
+  startSnackOverflowDismissals,
 } from './internal/snack-queue'
 import { Snack } from './Snack'
 
@@ -55,6 +56,12 @@ export function SnackProvider({ children, container }: SnackProviderProps) {
     }),
     [dismiss, dismissAll, show],
   )
+
+  /* oxlint-disable react/set-state-in-effect */
+  useEffect(() => {
+    setItems((current) => startSnackOverflowDismissals(current))
+  }, [items])
+  /* oxlint-enable react/set-state-in-effect */
 
   return (
     <SnackContext.Provider value={controller}>

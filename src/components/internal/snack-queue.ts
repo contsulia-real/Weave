@@ -67,7 +67,7 @@ export function enqueueSnack(
   const closing = visible.some((item) => !item.open)
   const canShow = visible.length < MAX_VISIBLE_SNACKS_PER_PLACEMENT && !closing
 
-  let next: SnackQueueItem[] = [
+  return [
     ...current,
     {
       id,
@@ -76,25 +76,45 @@ export function enqueueSnack(
       visible: canShow,
     },
   ]
+}
 
-  if (!canShow && !closing && visible.length >= MAX_VISIBLE_SNACKS_PER_PLACEMENT) {
-    const oldest = next.find(
-      (item) => item.visible && item.open && snackItemPlacement(item) === placement,
+export function startSnackOverflowDismissals(current: SnackQueueItem[]): SnackQueueItem[] {
+  const placements = new Set(current.map(snackItemPlacement))
+  let next: SnackQueueItem[] | undefined
+
+  for (const placement of placements) {
+    const source = next ?? current
+    const visible = source.filter((item) => item.visible && snackItemPlacement(item) === placement)
+
+    if (visible.some((item) => !item.open)) {
+      continue
+    }
+
+    const hasPending = source.some(
+      (item) => !item.visible && item.open && snackItemPlacement(item) === placement,
     )
 
-    if (oldest !== undefined) {
-      next = next.map((item) =>
-        item.id === oldest.id
-          ? {
-              ...item,
-              open: false,
-            }
-          : item,
-      )
+    if (!hasPending || visible.length < MAX_VISIBLE_SNACKS_PER_PLACEMENT) {
+      continue
     }
+
+    const oldest = visible.find((item) => item.open)
+
+    if (oldest === undefined) {
+      continue
+    }
+
+    next = source.map((item) =>
+      item.id === oldest.id
+        ? {
+            ...item,
+            open: false,
+          }
+        : item,
+    )
   }
 
-  return next
+  return next ?? current
 }
 
 export function dismissSnack(current: readonly SnackQueueItem[], id: string): SnackQueueItem[] {

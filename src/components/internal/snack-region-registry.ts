@@ -17,7 +17,7 @@ const regions = new WeakMap<HTMLElement, Map<string, Map<SnackPlacement, RegionE
 const hostPositions = new WeakMap<HTMLElement, HostPositionEntry>()
 
 function snackElements(element: HTMLDivElement): HTMLElement[] {
-  return Array.from(element.querySelectorAll<HTMLElement>('[data-weave-snack]'))
+  return Array.from(element.querySelectorAll<HTMLElement>('[data-weave-snack-layout]'))
 }
 
 function retainHostPosition(host: HTMLElement): () => void {

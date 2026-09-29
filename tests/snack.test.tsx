@@ -71,6 +71,27 @@ function SnackFifoHarness() {
   )
 }
 
+function SnackBatchFifoHarness() {
+  const snack = useSnack()
+
+  return (
+    <Button
+      text="Push batch"
+      viewProps={{
+        onClick: () => {
+          for (const text of ['A', 'B', 'C', 'D']) {
+            snack.show({
+              text,
+              persistent: true,
+              placement: 'top-left',
+            })
+          }
+        },
+      }}
+    />
+  )
+}
+
 describe('Snack', () => {
   it('mounts provider Snacks into an explicit container', () => {
     const host = document.createElement('div')
@@ -254,6 +275,39 @@ describe('Snack', () => {
     expect(snack.getAttribute('data-variant')).toBe('success')
   })
 
+  it('keeps batched FIFO overflow mounted so the oldest Snack can complete its exit', () => {
+    const { getByRole } = render(
+      <SnackProvider>
+        <SnackBatchFifoHarness />
+      </SnackProvider>,
+    )
+
+    fireEvent.click(getByRole('button', { name: 'Push batch' }))
+
+    const region = document.querySelector('[data-weave-snack-region="top-left"]')
+    const snacks = Array.from(region?.querySelectorAll<HTMLElement>('[data-weave-snack]') ?? [])
+
+    expect(snacks.map((snack) => snack.textContent)).toEqual(['A', 'B', 'C'])
+    expect(snacks[0]?.getAttribute('data-weave-snack-state')).toBe('closing')
+
+    fireEvent.transitionEnd(snacks[0]!)
+
+    expect(
+      Array.from(region?.querySelectorAll<HTMLElement>('[data-weave-snack]') ?? []).map(
+        (snack) => snack.textContent,
+      ),
+    ).toEqual(['B', 'C', 'D'])
+
+    fireEvent.click(getByRole('button', { name: 'Push batch' }))
+
+    const secondBatch = Array.from(
+      region?.querySelectorAll<HTMLElement>('[data-weave-snack]') ?? [],
+    )
+
+    expect(secondBatch.map((snack) => snack.textContent)).toEqual(['B', 'C', 'D'])
+    expect(secondBatch[0]?.getAttribute('data-weave-snack-state')).toBe('closing')
+  })
+
   it('evicts the oldest visible Snack with exit motion when FIFO capacity overflows', () => {
     const { getByRole } = render(
       <SnackProvider>
@@ -321,7 +375,8 @@ describe('Snack', () => {
 
     vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function () {
       const element = this as HTMLElement
-      const top = element.dataset.weaveSnack !== undefined ? topFor(element.textContent ?? '') : 0
+      const top =
+        element.dataset.weaveSnackLayout !== undefined ? topFor(element.textContent ?? '') : 0
 
       return {
         x: 0,
@@ -336,14 +391,16 @@ describe('Snack', () => {
       } as DOMRect
     })
 
-    const animate = vi.fn(
-      () =>
-        ({
-          cancel: vi.fn(),
-          finish: vi.fn(),
-          onfinish: null,
-        }) as unknown as Animation,
-    )
+    const animationTargets: HTMLElement[] = []
+    const animate = vi.fn(function (this: HTMLElement) {
+      animationTargets.push(this)
+
+      return {
+        cancel: vi.fn(),
+        finish: vi.fn(),
+        onfinish: null,
+      } as unknown as Animation
+    })
 
     Object.defineProperty(HTMLElement.prototype, 'animate', {
       configurable: true,
@@ -366,11 +423,14 @@ describe('Snack', () => {
     }
 
     const region = document.querySelector('[data-weave-snack-region="top-left"]')
-    const oldest = region?.querySelector<HTMLElement>('[data-weave-snack-state="closing"]')
+    const oldest = region?.querySelector<HTMLElement>(
+      '[data-weave-snack][data-weave-snack-state="closing"]',
+    )
 
     expect(oldest).not.toBeNull()
 
     animate.mockClear()
+    animationTargets.length = 0
     phase = 'after'
 
     fireEvent.transitionEnd(oldest!)
@@ -384,6 +444,11 @@ describe('Snack', () => {
     expect(
       layoutCalls.some(([keyframes]) => (keyframes as Keyframe[])[0]?.translate === '0px 40px'),
     ).toBe(true)
+    expect(animationTargets.length).toBe(layoutCalls.length)
+    expect(
+      animationTargets.every((element) => element.dataset.weaveSnackLayout !== undefined),
+    ).toBe(true)
+    expect(animationTargets.some((element) => element.dataset.weaveSnack !== undefined)).toBe(false)
   })
 
   it('does not render lifetime progress unless progress is enabled', () => {
@@ -507,13 +572,17 @@ describe('Snack', () => {
 
     render(<Snack text="Temporary" duration={1000} />)
 
-    expect(document.querySelector('[data-weave-snack-state="open"]')).not.toBeNull()
+    expect(
+      document.querySelector('[data-weave-snack][data-weave-snack-state="open"]'),
+    ).not.toBeNull()
 
     act(() => {
       vi.advanceTimersByTime(1000)
     })
 
-    const closing = document.querySelector<HTMLElement>('[data-weave-snack-state="closing"]')
+    const closing = document.querySelector<HTMLElement>(
+      '[data-weave-snack][data-weave-snack-state="closing"]',
+    )
 
     expect(closing).not.toBeNull()
     expect(closing?.getAttribute('aria-hidden')).toBe('true')
@@ -534,7 +603,9 @@ describe('Snack', () => {
       vi.advanceTimersByTime(5000)
     })
 
-    expect(document.querySelector('[data-weave-snack-state="open"]')).not.toBeNull()
+    expect(
+      document.querySelector('[data-weave-snack][data-weave-snack-state="open"]'),
+    ).not.toBeNull()
   })
 
   it('pauses auto close while hovered', () => {

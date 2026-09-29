@@ -43,6 +43,7 @@ export function Snack({
     onOpenChange,
   )
   const durationMs = Math.max(0, duration)
+  const { layoutAnimation, ...surfaceViewProps } = viewProps
 
   const snackHostContext = useContext(SnackHostContext)
   const snackHostTarget = snackHostContext?.target
@@ -130,59 +131,72 @@ export function Snack({
   return (
     <ThemedPortal target={region}>
       <View
-        {...viewProps}
-        role={urgentVariant(variant) ? 'alert' : 'status'}
-        aria-atomic="true"
-        aria-hidden={visualState === 'closing' ? true : undefined}
-        onPointerEnter={handlePointerEnter}
-        onPointerLeave={handlePointerLeave}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-        onTransitionEnd={handleTransitionEnd}
-        layer={viewProps.layer ?? 'snack'}
+        className="weave-snack-layout"
         layoutAnimation={
-          viewProps.layoutAnimation ?? {
+          layoutAnimation ?? {
             duration: 'normal',
             curve: 'emphasized',
             interruption: 'continue',
           }
         }
-        className={['weave-snack', `weave-snack--${variant}`, themeClassName, viewProps.className]
-          .filter(Boolean)
-          .join(' ')}
         data={{
-          ...viewProps.data,
-          'weave-snack': '',
+          'weave-snack-layout': '',
           'weave-snack-state': visualState,
-          'weave-snack-placement': placement,
-          'weave-snack-paused': paused ? '' : undefined,
-          variant,
         }}
       >
-        {content}
+        <View
+          {...surfaceViewProps}
+          role={urgentVariant(variant) ? 'alert' : 'status'}
+          aria-atomic="true"
+          aria-hidden={visualState === 'closing' ? true : undefined}
+          onPointerEnter={handlePointerEnter}
+          onPointerLeave={handlePointerLeave}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          onTransitionEnd={handleTransitionEnd}
+          layer={surfaceViewProps.layer ?? 'snack'}
+          className={[
+            'weave-snack',
+            `weave-snack--${variant}`,
+            themeClassName,
+            surfaceViewProps.className,
+          ]
+            .filter(Boolean)
+            .join(' ')}
+          data={{
+            ...surfaceViewProps.data,
+            'weave-snack': '',
+            'weave-snack-state': visualState,
+            'weave-snack-placement': placement,
+            'weave-snack-paused': paused ? '' : undefined,
+            variant,
+          }}
+        >
+          {content}
 
-        {progress && !persistent && resolvedOpen && durationMs > 0 ? (
-          <Progress
-            progress={lifetimeProgress}
-            mode="linear"
-            size="small"
-            color="var(--weave-snack-accent)"
-            speed={SNACK_PROGRESS_UPDATE_MS}
-            viewProps={{
-              className: 'weave-snack__lifetime',
-              position: 'absolute',
-              left: 'var(--weave-snack-padding-x)',
-              right: 'var(--weave-snack-padding-x)',
-              width: 'auto',
-              bottom: 0,
-              pointerEvents: 'none',
-              data: {
-                'weave-snack-lifetime-progress': lifetimeProgress.toFixed(4),
-              },
-              'aria-hidden': true,
-            }}
-          />
-        ) : null}
+          {progress && !persistent && resolvedOpen && durationMs > 0 ? (
+            <Progress
+              progress={lifetimeProgress}
+              mode="linear"
+              size="small"
+              color="var(--weave-snack-accent)"
+              speed={SNACK_PROGRESS_UPDATE_MS}
+              viewProps={{
+                className: 'weave-snack__lifetime',
+                position: 'absolute',
+                left: 'var(--weave-snack-padding-x)',
+                right: 'var(--weave-snack-padding-x)',
+                width: 'auto',
+                bottom: 0,
+                pointerEvents: 'none',
+                data: {
+                  'weave-snack-lifetime-progress': lifetimeProgress.toFixed(4),
+                },
+                'aria-hidden': true,
+              }}
+            />
+          ) : null}
+        </View>
       </View>
     </ThemedPortal>
   )

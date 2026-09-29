@@ -199,7 +199,7 @@ const stylesheet = `
 :where(
   .weave-snack[data-weave-reduced-motion="reduce"][data-weave-snack-state="closing"]
 ) {
-  translate: 0 0;
+  --weave-component-transform: translateY(0);
 }
 `
 

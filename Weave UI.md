@@ -4523,7 +4523,7 @@ top-*    → 新项从下方进入；最旧项向上退出
 bottom-* → 新项从上方进入；最旧项向下退出
 ```
 
-A 移除后的 B / C 使用 FLIP / layout animation 从旧位置平滑补位；快速连续变化时新布局从当前视觉值接管，不排动画队列。
+A 移除后的 B / C 使用 FLIP / layout animation 从旧位置平滑补位；快速连续变化时新布局从当前视觉值接管，不排动画队列。Snack 自身 enter / exit 的视觉 transform 与 FIFO 补位的 layout transform 必须由不同的 DOM transform owner 承担，layout measurement 不得把正在进行的 enter / exit 位移误判成布局变化。
 
 不使用 Button 式弹跳、depth、press/release，也不使用多卡重叠缩放。
 
