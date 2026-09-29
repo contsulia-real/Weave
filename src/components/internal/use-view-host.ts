@@ -11,7 +11,7 @@ import { useViewLayoutAnimation } from './use-view-layout-animation'
 import { useViewMotion } from './use-view-motion'
 import { useViewEnterStagger } from './use-view-stagger'
 
-export interface ViewHostResult<TElement extends HTMLElement> {
+interface ViewHostResult<TElement extends HTMLElement> {
   elementRef: RefObject<TElement | null>
   className: string | undefined
   inlineStyle: CSSProperties | undefined

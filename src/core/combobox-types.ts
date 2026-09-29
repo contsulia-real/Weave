@@ -1,4 +1,4 @@
-import type { ReactElement, ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import type { PopoverPlacement } from './popover-types'
 import type { SelectIcon, SelectOptionDescriptor, SelectOptionProps } from './select-types'
 import type { Length, ViewCoreProps, ViewDynamicBreakpointProps } from './view-types'
@@ -70,5 +70,3 @@ export type ComboboxOptionProps = Omit<SelectOptionProps, 'viewProps'> & {
 }
 
 export type ComboboxOptionDescriptor = SelectOptionDescriptor
-
-export type ComboboxChild = ReactElement<ComboboxOptionProps>

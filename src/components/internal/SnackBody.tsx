@@ -21,7 +21,7 @@ function iconContent(icon: SnackIcon) {
   )
 }
 
-export interface SnackBodyProps {
+interface SnackBodyProps {
   text: ReactNode
   icon?: SnackIcon
   action?: ReactNode

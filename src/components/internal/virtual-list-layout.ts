@@ -11,7 +11,7 @@ export interface VirtualViewport {
   gap: number
 }
 
-export interface VirtualLayout {
+interface VirtualLayout {
   offsets: readonly number[]
   sizes: readonly number[]
   total: number

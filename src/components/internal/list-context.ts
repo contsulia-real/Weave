@@ -3,7 +3,7 @@ import type { ListOrientation, ListSelection } from '../../core/list-types'
 
 export type ListFocusMove = 'previous' | 'next' | 'first' | 'last'
 
-export interface ListContextValue {
+interface ListContextValue {
   selection: ListSelection
   orientation: ListOrientation
   disabled: boolean

@@ -8,7 +8,7 @@ export const visualAnchorInteractionEvents = [
   'focusout',
 ] as const
 
-export interface VisualAnchorTrackerOptions {
+interface VisualAnchorTrackerOptions {
   additionalTargets?: readonly HTMLElement[]
   trackScroll?: boolean
   trackMutations?: boolean

@@ -8,7 +8,7 @@ import {
 } from 'react'
 import type { SelectIcon, SelectOptionDescriptor } from '../../core/select-types'
 
-export interface OptionPropsLike {
+interface OptionPropsLike {
   value: string
   text: ReactNode
   textValue?: string
@@ -17,7 +17,7 @@ export interface OptionPropsLike {
   disabled?: boolean
 }
 
-export function optionTextValue(props: OptionPropsLike): string {
+function optionTextValue(props: OptionPropsLike): string {
   if (props.textValue !== undefined) {
     return props.textValue
   }

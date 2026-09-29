@@ -1,17 +1,17 @@
 import type { PopoverPlacement } from '../../core/popover-types'
 
-export interface PopoverSize {
+interface PopoverSize {
   width: number
   height: number
 }
 
-export interface PopoverViewport {
+interface PopoverViewport {
   width: number
   height: number
   padding: number
 }
 
-export interface ResolvedPopoverPosition {
+interface ResolvedPopoverPosition {
   left: number
   top: number
   placement: PopoverPlacement
@@ -19,7 +19,7 @@ export interface ResolvedPopoverPosition {
 
 export type PopoverCrossAlignment = 'center' | 'start'
 
-export function oppositePopoverPlacement(placement: PopoverPlacement): PopoverPlacement {
+function oppositePopoverPlacement(placement: PopoverPlacement): PopoverPlacement {
   switch (placement) {
     case 'top-left':
       return 'bottom-left'

@@ -4,7 +4,7 @@ import { defaultTheme } from './default-theme'
 import { useResolvedReducedMotion } from './reduced-motion'
 import type { ResolvedTheme, ThemeDefinition, ThemeMode } from './theme-types'
 
-export interface ThemeContextValue {
+interface ThemeContextValue {
   definition: ThemeDefinition
   theme: ResolvedTheme
   mode: Exclude<ThemeMode, 'system'>

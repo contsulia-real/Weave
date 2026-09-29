@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react'
 import type { ProgressSpeed } from '../../core/progress-types'
 
-export type ProgressVariableStyle = CSSProperties &
+type ProgressVariableStyle = CSSProperties &
   Record<`--weave-progress-${string}`, string | number | undefined>
 
 export function resolveProgressStyle(speed: ProgressSpeed | undefined): ProgressVariableStyle {

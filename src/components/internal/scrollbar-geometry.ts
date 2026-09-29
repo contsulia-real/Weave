@@ -15,7 +15,7 @@ interface CornerRadii {
   bottomLeft: RadiusAxes
 }
 
-export interface ScrollbarElements {
+interface ScrollbarElements {
   verticalHitRegion: HTMLDivElement
   horizontalHitRegion: HTMLDivElement
   verticalThumb: HTMLDivElement

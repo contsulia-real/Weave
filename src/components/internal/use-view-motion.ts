@@ -9,7 +9,7 @@ import { useRuntimeStyleClass } from '../../renderers/dom/runtime-class'
 import type { ResolvedTheme } from '../../theme/theme-types'
 import { PresenceContext } from './presence-context'
 
-export interface ViewMotionHostResult {
+interface ViewMotionHostResult {
   className: string | undefined
   state: ViewMotionState | undefined
 }

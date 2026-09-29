@@ -18,7 +18,7 @@ import type { RuntimeStyleDeclarations } from './runtime-class'
 
 export type ViewMotionState = 'enter-from' | 'enter-to' | 'exit-from' | 'exit-to'
 
-export interface ResolvedViewEnterExit {
+interface ResolvedViewEnterExit {
   frames: RuntimeStyleDeclarations
   transition: RuntimeStyleDeclarations
   totalMilliseconds: number

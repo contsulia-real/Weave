@@ -1,6 +1,6 @@
 import { type MutableRefObject, useCallback, useEffect, useRef, useState } from 'react'
 
-export interface ControllableBooleanState {
+interface ControllableBooleanState {
   value: boolean
   requestedValueRef: MutableRefObject<boolean>
   request(next: boolean): boolean

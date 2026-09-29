@@ -13,7 +13,7 @@ import {
   selectedOptionDescriptor,
 } from './option-collection'
 
-export interface ComboboxOptionEntry {
+interface ComboboxOptionEntry {
   descriptor: ComboboxOptionDescriptor
   node: ReactElement<ComboboxOptionProps>
 }
@@ -40,7 +40,7 @@ export function comboboxOptionDescriptors(
 
 export const selectedComboboxDescriptor = selectedOptionDescriptor
 
-export function defaultComboboxFilter(option: ComboboxFilterOption, inputValue: string): boolean {
+function defaultComboboxFilter(option: ComboboxFilterOption, inputValue: string): boolean {
   const query = inputValue.trim().toLocaleLowerCase()
 
   if (query.length === 0) {

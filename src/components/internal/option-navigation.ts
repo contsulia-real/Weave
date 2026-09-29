@@ -1,4 +1,4 @@
-export interface NavigableOption {
+interface NavigableOption {
   value: string
   disabled: boolean
 }

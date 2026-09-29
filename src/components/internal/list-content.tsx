@@ -14,7 +14,7 @@ import { View } from '../View'
 import { renderIconSource } from './render-icon-source'
 import type { VirtualListEntry } from './VirtualListWindow'
 
-export interface ListDescriptor {
+interface ListDescriptor {
   id: string
   disabled: boolean
 }

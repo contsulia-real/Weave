@@ -1,7 +1,7 @@
 import { createContext } from 'react'
 import type { SnackContainer } from '../../core/snack-types'
 
-export interface SnackHostContextValue {
+interface SnackHostContextValue {
   target: SnackContainer | undefined
   scopeId: string
 }

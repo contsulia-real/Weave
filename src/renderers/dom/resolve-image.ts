@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react'
 import type { ImageFit, ImagePosition } from '../../core/image-types'
 
-export type ImageVariableStyle = CSSProperties &
+type ImageVariableStyle = CSSProperties &
   Record<`--weave-image-${string}`, string | number | undefined>
 
 const positionMap: Readonly<Record<string, string>> = {
@@ -16,7 +16,7 @@ const positionMap: Readonly<Record<string, string>> = {
   'bottom-right': 'right bottom',
 }
 
-export function imagePosition(value: ImagePosition | undefined): string | undefined {
+function imagePosition(value: ImagePosition | undefined): string | undefined {
   if (value === undefined) return undefined
   return positionMap[value] ?? value
 }

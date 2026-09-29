@@ -3,7 +3,7 @@ import type { TextResponsiveProps, TextStyleProps } from '../../core/text-types'
 import { length } from '../../core/values'
 import { typographyStyleVariableReference } from '../../theme/theme-css'
 
-export type TextVariableStyle = CSSProperties &
+type TextVariableStyle = CSSProperties &
   Record<`--weave-text-${string}`, string | number | undefined>
 
 const variable = (property: string, breakpoint?: string): `--weave-text-${string}` =>
@@ -46,7 +46,7 @@ function applyTypographyPreset(
   )
 }
 
-export function resolveTextStyle(
+function resolveTextStyle(
   props: TextStyleProps | TextResponsiveProps | undefined,
   breakpoint?: string,
 ): TextVariableStyle {

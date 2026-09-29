@@ -15,7 +15,7 @@ import { background, color, filterValue, transformValue } from '../../core/value
 import type { ViewStyleProps } from '../../core/view-types'
 import type { ResolvedTheme } from '../../theme/theme-types'
 
-export interface ResolvedMotionTiming {
+interface ResolvedMotionTiming {
   durationMs: number
   durationCss: string
   easing: string
@@ -97,7 +97,7 @@ export function resolveMotionCurveCss(
   return `steps(${steps.steps}, ${steps.position ?? 'end'})`
 }
 
-export function resolveMotionSpring(value: MotionSpringValue, theme: ResolvedTheme): MotionSpring {
+function resolveMotionSpring(value: MotionSpringValue, theme: ResolvedTheme): MotionSpring {
   if (typeof value !== 'string') return value
   return theme.tokens.motion?.spring?.[value] ?? {}
 }

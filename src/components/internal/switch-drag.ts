@@ -10,7 +10,7 @@ export interface SwitchDragState {
 
 const DRAG_THRESHOLD = 3
 
-export interface SwitchDragGeometry {
+interface SwitchDragGeometry {
   startOffset: number
   maxOffset: number
   thumbSize: number

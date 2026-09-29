@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom'
 import { ThemeProvider } from '../../theme/ThemeProvider'
 import { useTheme } from '../../theme/theme-context'
 
-export interface ThemedPortalProps {
+interface ThemedPortalProps {
   children?: ReactNode
   target?: Element | DocumentFragment
 }

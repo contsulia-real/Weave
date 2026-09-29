@@ -1,6 +1,6 @@
 import type { ViewSemanticProps, ViewStyleProps } from './view-types'
 
-export const VIEW_STYLE_PROP_KEYS = [
+const VIEW_STYLE_PROP_KEYS = [
   'layout',
   'direction',
   'wrap',
@@ -104,7 +104,7 @@ export const VIEW_STYLE_PROP_KEYS = [
   'selectable',
 ] as const satisfies readonly (keyof ViewStyleProps)[]
 
-export const VIEW_SEMANTIC_PROP_KEYS = [
+const VIEW_SEMANTIC_PROP_KEYS = [
   'role',
   'label',
   'description',
@@ -128,7 +128,7 @@ export const VIEW_SEMANTIC_PROP_KEYS = [
   'owns',
 ] as const satisfies readonly (keyof ViewSemanticProps)[]
 
-export const VIEW_DEFAULT_BREAKPOINT_PROP_KEYS = [
+const VIEW_DEFAULT_BREAKPOINT_PROP_KEYS = [
   'sm',
   'md',
   'lg',
@@ -139,9 +139,9 @@ export const VIEW_DEFAULT_BREAKPOINT_PROP_KEYS = [
   'containerXl',
 ] as const
 
-export const VIEW_NATIVE_NORMALIZED_PROP_KEYS = ['hidden', 'draggable', 'tabIndex'] as const
+const VIEW_NATIVE_NORMALIZED_PROP_KEYS = ['hidden', 'draggable', 'tabIndex'] as const
 
-export const VIEW_CONTROL_PROP_KEYS = [
+const VIEW_CONTROL_PROP_KEYS = [
   'children',
   'ref',
   'className',
@@ -173,10 +173,10 @@ export const VIEW_INTERNAL_PROP_KEYS = new Set<string>([
 
 type AssertNoMissingKeys<T extends never> = T
 
-export type ViewStylePropKeyCoverage = AssertNoMissingKeys<
+declare const _viewStylePropKeyCoverage: AssertNoMissingKeys<
   Exclude<keyof ViewStyleProps, (typeof VIEW_STYLE_PROP_KEYS)[number]>
 >
 
-export type ViewSemanticPropKeyCoverage = AssertNoMissingKeys<
+declare const _viewSemanticPropKeyCoverage: AssertNoMissingKeys<
   Exclude<keyof ViewSemanticProps, (typeof VIEW_SEMANTIC_PROP_KEYS)[number]>
 >

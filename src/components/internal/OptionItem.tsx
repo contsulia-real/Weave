@@ -9,7 +9,7 @@ import type { OptionContextValue } from './option-context'
 import { optionDomId } from './option-navigation'
 import { renderIconSource } from './render-icon-source'
 
-export interface OptionItemProps {
+interface OptionItemProps {
   component: 'select' | 'combobox'
   value: string
   text: ReactNode

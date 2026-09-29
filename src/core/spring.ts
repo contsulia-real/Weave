@@ -15,7 +15,7 @@ interface SpringState {
   velocity: number
 }
 
-export interface ResolvedSpring {
+interface ResolvedSpring {
   durationMs: number
   easing: string
   samples: readonly number[]

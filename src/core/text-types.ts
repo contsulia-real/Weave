@@ -4,7 +4,6 @@ import type {
   Length,
   ViewCoreProps,
   ViewDynamicBreakpointProps,
-  ViewResponsiveStyle,
 } from './view-types'
 
 export type TextSize = 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' | 'xxlarge'
@@ -74,14 +73,3 @@ export type TextProps = TextStyleProps &
     children?: ReactNode
     viewProps?: TextViewProps
   }
-
-export function mergeTextColorResponsive(
-  base: ViewResponsiveStyle | undefined,
-  text: TextResponsiveProps | undefined,
-): ViewResponsiveStyle | undefined {
-  if (text?.color === undefined) return base
-  return {
-    ...base,
-    color: text.color,
-  }
-}

@@ -41,7 +41,7 @@ export function hashRuntimeValue(value: string): string {
   return (output >>> 0).toString(36)
 }
 
-export function createRuntimeStyleClass(
+function createRuntimeStyleClass(
   prefix: string,
   declarations: Readonly<object> | undefined,
 ): RuntimeClassRule | undefined {

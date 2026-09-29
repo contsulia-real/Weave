@@ -2,7 +2,7 @@ import { isValidElement, type ReactElement } from 'react'
 import type { IconComponent, IconProps, IconSvg } from '../../core/icon-types'
 import { Icon } from '../Icon'
 
-export type IconSource = IconComponent | IconSvg
+type IconSource = IconComponent | IconSvg
 
 export function renderIconSource(
   source: IconSource,

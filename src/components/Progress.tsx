@@ -13,7 +13,7 @@ import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { useTheme } from '../theme/theme-context'
 import { useViewHost } from './internal/use-view-host'
 
-export interface ProgressVisualProps {
+interface ProgressVisualProps {
   undetermined: boolean
   progress?: number
   mode?: ProgressMode
@@ -24,7 +24,7 @@ export interface ProgressVisualProps {
   viewProps?: ViewProps<HTMLSpanElement>
 }
 
-export function ProgressVisual({
+function ProgressVisual({
   undetermined,
   progress,
   mode = 'spin',

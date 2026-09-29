@@ -4,7 +4,7 @@ export interface BreakpointEntry {
   minWidth: number
 }
 
-export function breakpointCSSName(name: string): string {
+function breakpointCSSName(name: string): string {
   if (/^[a-z][a-z0-9-]*$/.test(name)) return name
 
   return `bp-${Array.from(name)

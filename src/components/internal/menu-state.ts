@@ -1,7 +1,7 @@
 import { createContext, type RefObject } from 'react'
 import type { Length } from '../../core/view-types'
 
-export interface MenuRootContextValue {
+interface MenuRootContextValue {
   rootId: string
   closeAll(): void
   closeOnSelect: boolean

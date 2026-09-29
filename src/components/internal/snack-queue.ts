@@ -9,11 +9,11 @@ export interface SnackQueueItem {
   visible: boolean
 }
 
-export function snackItemPlacement(item: SnackQueueItem): SnackPlacement {
+function snackItemPlacement(item: SnackQueueItem): SnackPlacement {
   return item.request.placement ?? 'bottom-center'
 }
 
-export function rebalanceSnackPlacement(
+function rebalanceSnackPlacement(
   items: readonly SnackQueueItem[],
   placement: SnackPlacement,
 ): SnackQueueItem[] {

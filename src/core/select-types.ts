@@ -1,4 +1,4 @@
-import type { ReactElement, ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import type { ButtonIcon } from './button-types'
 import type { PopoverPlacement } from './popover-types'
 import type { Length, ViewCoreProps, ViewDynamicBreakpointProps } from './view-types'
@@ -62,7 +62,3 @@ export interface SelectOptionDescriptor {
   icon?: SelectIcon
   disabled: boolean
 }
-
-export type SelectTriggerContent = Pick<SelectOptionDescriptor, 'text' | 'icon'>
-
-export type SelectChild = ReactElement<SelectOptionProps>

@@ -2,7 +2,7 @@ import type { CSSProperties } from 'react'
 import { solveSpring } from '../core/spring'
 import type { ResolvedTheme, ThemeTokens, ThemeTypographyStyle } from './theme-types'
 
-export type ThemeVariableStyle = CSSProperties & Record<`--weave-${string}`, string | number>
+type ThemeVariableStyle = CSSProperties & Record<`--weave-${string}`, string | number>
 
 const toRem = (value: number | string) => (typeof value === 'number' ? `${value}rem` : value)
 
@@ -11,11 +11,11 @@ const toMs = (value: number | string) => (typeof value === 'number' ? `${value}m
 const toCurve = (value: string | readonly [number, number, number, number]) =>
   typeof value === 'string' ? value : `cubic-bezier(${value.join(', ')})`
 
-export type TypographyStyleProperty = 'fontSize' | 'fontWeight' | 'lineHeight' | 'letterSpacing'
+type TypographyStyleProperty = 'fontSize' | 'fontWeight' | 'lineHeight' | 'letterSpacing'
 
 const toKebab = (value: string) => value.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)
 
-export function typographyStyleVariableName(
+function typographyStyleVariableName(
   typo: string,
   property: TypographyStyleProperty,
 ): `--weave-typography-style-${string}` {

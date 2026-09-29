@@ -27,7 +27,7 @@ export type ViewJustify =
   | 'space-around'
   | 'space-evenly'
 
-export type GradientStop = readonly [ColorValue, number]
+type GradientStop = readonly [ColorValue, number]
 
 export interface LinearGradient {
   type: 'linear'
