@@ -1,10 +1,8 @@
 import {
-  type CSSProperties,
   cloneElement,
   type KeyboardEvent,
   type MouseEvent,
   type PointerEvent,
-  type TransitionEvent,
   useCallback,
   useEffect,
   useId,
@@ -31,26 +29,24 @@ import {
 } from './internal/combobox-options'
 import { chevronDownIcon, closeIcon } from './internal/control-icons'
 import { durationMilliseconds } from './internal/motion-duration'
+import { OptionListboxHost } from './internal/OptionListboxHost'
 import {
+  handleOpenOptionListboxKey,
   initialOptionActiveValue,
   moveOptionActiveValue,
   optionDomId,
 } from './internal/option-navigation'
-import { ThemedPortal } from './internal/ThemedPortal'
+import { useActiveOptionScrollIntoView } from './internal/use-active-option-scroll'
 import {
   useAnchorViewportDismiss,
   useOutsideInteractionDismiss,
 } from './internal/use-anchor-viewport-dismiss'
 import { useAnchorWidth } from './internal/use-anchor-width'
 import { useControllableBoolean } from './internal/use-controllable-boolean'
-import { finishExitOnTransition, useExitPresence } from './internal/use-exit-presence'
+import { useExitPresence, useExitTransitionEnd } from './internal/use-exit-presence'
 import { usePopoverPosition } from './internal/use-popover-position'
 import { Text } from './Text'
 import { View } from './View'
-
-type ComboboxListboxStyle = CSSProperties & {
-  '--weave-option-listbox-anchor-width'?: string
-}
 
 export function Combobox({
   children,
@@ -233,19 +229,7 @@ export function Combobox({
 
   const anchorWidth = useAnchorWidth(inputRef, present)
 
-  useEffect(() => {
-    if (!resolvedOpen || resolvedActiveValue === null) {
-      return
-    }
-
-    const option = inputRef.current?.ownerDocument.getElementById(
-      optionDomId(listboxId, resolvedActiveValue),
-    )
-
-    option?.scrollIntoView?.({
-      block: 'nearest',
-    })
-  }, [inputRef, listboxId, resolvedActiveValue, resolvedOpen])
+  useActiveOptionScrollIntoView(inputRef, listboxId, resolvedActiveValue, resolvedOpen)
 
   const {
     positioned,
@@ -272,14 +256,6 @@ export function Combobox({
     openCombobox()
   }
 
-  const moveActive = (move: 'previous' | 'next' | 'first' | 'last') => {
-    const next = moveOptionActiveValue(filteredOptions, resolvedActiveValue, move)
-
-    if (next !== null) {
-      setActiveValue(next)
-    }
-  }
-
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     viewProps.onKeyDown?.(event)
 
@@ -302,37 +278,15 @@ export function Combobox({
       return
     }
 
-    if (
-      event.key === 'ArrowDown' ||
-      event.key === 'ArrowUp' ||
-      event.key === 'Home' ||
-      event.key === 'End'
-    ) {
-      event.preventDefault()
-      moveActive(
-        event.key === 'ArrowDown'
-          ? 'next'
-          : event.key === 'ArrowUp'
-            ? 'previous'
-            : event.key === 'Home'
-              ? 'first'
-              : 'last',
-      )
-      return
-    }
-
-    if (event.key === 'Enter') {
-      if (resolvedActiveValue !== null) {
-        event.preventDefault()
-        selectValue(resolvedActiveValue)
-      }
-      return
-    }
-
-    if (event.key === 'Escape') {
-      event.preventDefault()
-      close()
-    }
+    handleOpenOptionListboxKey(
+      event,
+      filteredOptions,
+      resolvedActiveValue,
+      setActiveValue,
+      selectValue,
+      close,
+      false,
+    )
   }
 
   const clearSelection = useCallback(() => {
@@ -361,11 +315,12 @@ export function Combobox({
     [listboxId, resolvedActiveValue, selectValue, selectedValue, setEnabledActiveValue],
   )
 
-  const handleTransitionEnd = (event: TransitionEvent<HTMLDivElement>) => {
-    listboxViewProps.onTransitionEnd?.(event)
-
-    finishExitOnTransition(event, resolvedOpen, visualState, finishExit)
-  }
+  const handleTransitionEnd = useExitTransitionEnd(
+    resolvedOpen,
+    visualState,
+    finishExit,
+    listboxViewProps.onTransitionEnd,
+  )
 
   const setInputRef = (element: HTMLInputElement | null) => {
     inputRef.current = element
@@ -385,66 +340,43 @@ export function Combobox({
   const hasClear =
     clearable && !disabled && (resolvedInputValue.length > 0 || selectedValue !== null)
 
-  const listboxStyle: ComboboxListboxStyle = {
-    ...listboxViewProps.style,
-    ...placementStyle,
-    '--weave-option-listbox-anchor-width': String(anchorWidth) + 'px',
-    visibility: positioned ? 'visible' : 'hidden',
-  }
-
-  const portal = present ? (
-    <ThemedPortal>
-      <ComboboxContext.Provider value={contextValue}>
-        <View
-          {...listboxViewProps}
-          ref={setListboxRef}
-          id={listboxId}
-          role="listbox"
-          labelledBy={inputId}
-          tabIndex={-1}
-          aria-hidden={visualState === 'closing' ? true : undefined}
-          onTransitionEnd={handleTransitionEnd}
-          position="fixed"
-          layer={listboxViewProps.layer ?? 'overlay'}
-          className={[
-            'weave-option-listbox',
-            'weave-combobox-listbox',
-            themeClassName,
-            listboxViewProps.className,
-          ]
-            .filter(Boolean)
-            .join(' ')}
-          data={{
-            ...listboxViewProps.data,
-            'weave-option-listbox': '',
-            'weave-option-listbox-state': visualState,
-            'weave-combobox-listbox': '',
-            'weave-combobox-state': visualState,
-            placement: resolvedPlacement,
-            'weave-reduced-motion': reducedMotion ? 'reduce' : undefined,
-          }}
-          style={listboxStyle}
-        >
-          {filteredEntries.length === 0 ? (
-            <View
-              className="weave-combobox-empty"
-              data={{
-                'weave-combobox-empty': '',
-              }}
-            >
-              <Text typo="body-small">{emptyContent}</Text>
-            </View>
-          ) : (
-            filteredEntries.map((entry) =>
-              cloneElement(entry.node, {
-                key: entry.descriptor.value,
-              }),
-            )
-          )}
-        </View>
-      </ComboboxContext.Provider>
-    </ThemedPortal>
-  ) : null
+  const portal = (
+    <ComboboxContext.Provider value={contextValue}>
+      <OptionListboxHost
+        component="combobox"
+        present={present}
+        panelRef={setListboxRef}
+        viewProps={listboxViewProps}
+        id={listboxId}
+        labelledBy={inputId}
+        visualState={visualState}
+        placement={resolvedPlacement}
+        positioned={positioned}
+        placementStyle={placementStyle}
+        reducedMotion={reducedMotion}
+        themeClassNames={[themeClassName]}
+        anchorWidth={anchorWidth}
+        onTransitionEnd={handleTransitionEnd}
+      >
+        {filteredEntries.length === 0 ? (
+          <View
+            className="weave-combobox-empty"
+            data={{
+              'weave-combobox-empty': '',
+            }}
+          >
+            <Text typo="body-small">{emptyContent}</Text>
+          </View>
+        ) : (
+          filteredEntries.map((entry) =>
+            cloneElement(entry.node, {
+              key: entry.descriptor.value,
+            }),
+          )
+        )}
+      </OptionListboxHost>
+    </ComboboxContext.Provider>
+  )
 
   return (
     <>

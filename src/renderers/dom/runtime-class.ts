@@ -1,4 +1,5 @@
 import { useInsertionEffect } from 'react'
+import { createRetainedStylesheetRegistry } from './retained-stylesheet'
 
 export type RuntimeStyleValue = string | number | null | undefined
 
@@ -12,12 +13,6 @@ interface RuntimeClassRule {
   declarations: readonly RuntimeEntry[]
 }
 
-interface RuntimeClassEntry {
-  count: number
-  element: HTMLStyleElement
-}
-
-const runtimeClasses = new Map<string, RuntimeClassEntry>()
 const runtimeRuleCache = new WeakMap<object, Map<string, RuntimeClassRule | null>>()
 
 function entries(declarations: Readonly<object> | undefined): readonly RuntimeEntry[] {
@@ -99,38 +94,14 @@ function createStyleElement(rule: RuntimeClassRule): HTMLStyleElement {
   return element
 }
 
-function retainRuntimeClass(rule: RuntimeClassRule): () => void {
-  const current = runtimeClasses.get(rule.className)
-
-  if (current !== undefined) {
-    current.count += 1
-    return () => releaseRuntimeClass(rule.className)
-  }
-
-  const existing = document.querySelector<HTMLStyleElement>(
-    'style[data-weave-runtime-class="' + rule.className + '"]',
-  )
-  const element = existing ?? createStyleElement(rule)
-
-  runtimeClasses.set(rule.className, {
-    count: 1,
-    element,
-  })
-
-  return () => releaseRuntimeClass(rule.className)
-}
-
-function releaseRuntimeClass(className: string): void {
-  const current = runtimeClasses.get(className)
-  if (current === undefined) return
-
-  current.count -= 1
-
-  if (current.count <= 0) {
-    current.element.remove()
-    runtimeClasses.delete(className)
-  }
-}
+const retainRuntimeClass = createRetainedStylesheetRegistry(
+  (rule: RuntimeClassRule) => rule.className,
+  (rule) =>
+    document.querySelector<HTMLStyleElement>(
+      'style[data-weave-runtime-class="' + rule.className + '"]',
+    ),
+  createStyleElement,
+)
 
 export function useRuntimeStyleClass(
   prefix: string,

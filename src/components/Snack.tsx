@@ -1,9 +1,4 @@
-import {
-  type ReactNode,
-  type TransitionEvent as ReactTransitionEvent,
-  useContext,
-  useInsertionEffect,
-} from 'react'
+import { type ReactNode, useContext, useInsertionEffect } from 'react'
 import type { SnackProps, SnackVariant, SnackViewProps } from '../core/snack-types'
 import { resolveSnackTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
@@ -14,7 +9,7 @@ import { SnackBody } from './internal/SnackBody'
 import { SnackHostContext } from './internal/snack-host-context'
 import { ThemedPortal } from './internal/ThemedPortal'
 import { useControllableBoolean } from './internal/use-controllable-boolean'
-import { finishExitOnTransition, useExitPresence } from './internal/use-exit-presence'
+import { useExitPresence, useExitTransitionEnd } from './internal/use-exit-presence'
 import { SNACK_PROGRESS_UPDATE_MS, useSnackLifetime } from './internal/use-snack-lifetime'
 import { useSnackRegion } from './internal/use-snack-region'
 import { Progress } from './Progress'
@@ -99,11 +94,12 @@ export function Snack({
     viewProps.onBlur?.(event)
   }
 
-  const handleTransitionEnd = (event: ReactTransitionEvent<HTMLDivElement>) => {
-    viewProps.onTransitionEnd?.(event)
-
-    finishExitOnTransition(event, resolvedOpen, visualState, finishExit)
-  }
+  const handleTransitionEnd = useExitTransitionEnd(
+    resolvedOpen,
+    visualState,
+    finishExit,
+    viewProps.onTransitionEnd,
+  )
 
   if (!present || region === null) {
     return null

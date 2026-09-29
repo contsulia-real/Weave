@@ -1,3 +1,5 @@
+import { type NavigationMove, resolveNavigationIndex } from './navigation-index'
+
 function enabledItems(panel: HTMLDivElement | null, levelId: string): HTMLDivElement[] {
   if (panel === null) {
     return []
@@ -34,32 +36,14 @@ export function moveMenuFocus(
   panel: HTMLDivElement | null,
   levelId: string,
   current: HTMLDivElement | null,
-  move: 'previous' | 'next' | 'first' | 'last',
+  move: NavigationMove,
 ): void {
   const items = enabledItems(panel, levelId)
 
-  if (items.length === 0) {
-    return
-  }
-
-  if (move === 'first') {
-    items[0]?.focus()
-    return
-  }
-
-  if (move === 'last') {
-    items.at(-1)?.focus()
-    return
-  }
-
   const index = current === null ? -1 : items.indexOf(current)
-  const delta = move === 'next' ? 1 : -1
-  const nextIndex =
-    index < 0
-      ? move === 'next'
-        ? 0
-        : items.length - 1
-      : (index + delta + items.length) % items.length
+  const nextIndex = resolveNavigationIndex(items.length, index, move)
 
-  items[nextIndex]?.focus()
+  if (nextIndex !== null) {
+    items[nextIndex]?.focus()
+  }
 }

@@ -3,7 +3,6 @@ import {
   type KeyboardEvent,
   type MouseEvent,
   type PointerEvent,
-  type TransitionEvent,
   useCallback,
   useContext,
   useId,
@@ -18,12 +17,12 @@ import { useTheme } from '../theme/theme-context'
 import { Icon } from './Icon'
 import { chevronRightIcon } from './internal/control-icons'
 import { MenuSurface } from './internal/MenuSurface'
-import { syncMenuTabIndex } from './internal/menu-navigation'
+import { focusMenuItem, syncMenuTabIndex } from './internal/menu-navigation'
 import { MenuLevelContext, MenuRootContext } from './internal/menu-state'
 import { durationMilliseconds } from './internal/motion-duration'
 import { renderIconSource } from './internal/render-icon-source'
 import { ThemedPortal } from './internal/ThemedPortal'
-import { finishExitOnTransition, useExitPresence } from './internal/use-exit-presence'
+import { useExitPresence, useExitTransitionEnd } from './internal/use-exit-presence'
 import { usePopoverPosition } from './internal/use-popover-position'
 import { Text } from './Text'
 import { View } from './View'
@@ -105,23 +104,7 @@ export function MenuItem({
 
       if (focusFirst) {
         queueMicrotask(() => {
-          const panel = submenuPanelRef.current
-
-          if (panel === null) {
-            return
-          }
-
-          const items = panel.querySelectorAll<HTMLDivElement>('[data-weave-menu-item]')
-
-          for (const candidate of items) {
-            if (
-              candidate.dataset.weaveMenuLevel === submenuLevelId &&
-              candidate.getAttribute('aria-disabled') !== 'true'
-            ) {
-              candidate.focus()
-              break
-            }
-          }
+          focusMenuItem(submenuPanelRef.current, submenuLevelId, 'first')
         })
       }
     },
@@ -288,9 +271,7 @@ export function MenuItem({
     }
   }
 
-  const handleSubmenuTransitionEnd = (event: TransitionEvent<HTMLDivElement>) => {
-    finishExitOnTransition(event, submenuOpen, visualState, finishExit)
-  }
+  const handleSubmenuTransitionEnd = useExitTransitionEnd(submenuOpen, visualState, finishExit)
 
   const submenuPortal = present ? (
     <ThemedPortal>

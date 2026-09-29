@@ -2,6 +2,7 @@ import { useInsertionEffect } from 'react'
 import type { ButtonSize, ButtonVariant } from '../../core/button-types'
 import { type BreakpointEntry, breakpointEntries } from './breakpoint-utils'
 import { buttonSizeDeclarations, buttonVariantDeclarations } from './button-stylesheet'
+import { createRetainedStylesheetRegistry } from './retained-stylesheet'
 import { hashRuntimeValue } from './runtime-class'
 import type { TextStyleProperty } from './text-stylesheet'
 import {
@@ -18,12 +19,6 @@ interface BreakpointRule {
   stylesheet: string
 }
 
-interface BreakpointRuleEntry {
-  count: number
-  element: HTMLStyleElement
-}
-
-const breakpointRules = new Map<string, BreakpointRuleEntry>()
 const breakpointRuleCache = new WeakMap<object, BreakpointRule | null>()
 
 function sourceChain(
@@ -196,38 +191,14 @@ function createStyleElement(rule: BreakpointRule): HTMLStyleElement {
   return element
 }
 
-function releaseBreakpointRule(className: string): void {
-  const current = breakpointRules.get(className)
-  if (current === undefined) return
-
-  current.count -= 1
-
-  if (current.count <= 0) {
-    current.element.remove()
-    breakpointRules.delete(className)
-  }
-}
-
-function retainBreakpointRule(rule: BreakpointRule): () => void {
-  const current = breakpointRules.get(rule.className)
-
-  if (current !== undefined) {
-    current.count += 1
-    return () => releaseBreakpointRule(rule.className)
-  }
-
-  const existing = document.querySelector<HTMLStyleElement>(
-    `style[data-weave-breakpoint-styles="${rule.className}"]`,
-  )
-  const element = existing ?? createStyleElement(rule)
-
-  breakpointRules.set(rule.className, {
-    count: 1,
-    element,
-  })
-
-  return () => releaseBreakpointRule(rule.className)
-}
+const retainBreakpointRule = createRetainedStylesheetRegistry(
+  (rule: BreakpointRule) => rule.className,
+  (rule) =>
+    document.querySelector<HTMLStyleElement>(
+      `style[data-weave-breakpoint-styles="${rule.className}"]`,
+    ),
+  createStyleElement,
+)
 
 export function useBreakpointStylesheet(
   breakpoints: Readonly<Record<string, number>>,

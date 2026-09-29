@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react'
+import { toKebabCase } from '../core/css-name'
 import { solveSpring } from '../core/spring'
 import type { ResolvedTheme, ThemeTokens, ThemeTypographyStyle } from './theme-types'
 
@@ -13,13 +14,11 @@ const toCurve = (value: string | readonly [number, number, number, number]) =>
 
 type TypographyStyleProperty = 'fontSize' | 'fontWeight' | 'lineHeight' | 'letterSpacing'
 
-const toKebab = (value: string) => value.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)
-
 function typographyStyleVariableName(
   typo: string,
   property: TypographyStyleProperty,
 ): `--weave-typography-style-${string}` {
-  return `--weave-typography-style-${typo}-${toKebab(property)}`
+  return `--weave-typography-style-${typo}-${toKebabCase(property)}`
 }
 
 export function typographyStyleVariableReference(

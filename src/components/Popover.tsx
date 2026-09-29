@@ -1,10 +1,4 @@
-import {
-  type TransitionEvent as ReactTransitionEvent,
-  useCallback,
-  useId,
-  useInsertionEffect,
-  useRef,
-} from 'react'
+import { useCallback, useId, useInsertionEffect, useRef } from 'react'
 import type { PopoverProps } from '../core/popover-types'
 import { ensurePopoverStylesheet } from '../renderers/dom/popover-stylesheet'
 import { resolvePopoverTheme } from '../renderers/dom/resolve-component-theme'
@@ -14,7 +8,7 @@ import { assignRef } from './internal/assign-ref'
 import { durationMilliseconds } from './internal/motion-duration'
 import { ThemedPortal } from './internal/ThemedPortal'
 import { useControllableBoolean } from './internal/use-controllable-boolean'
-import { finishExitOnTransition, useExitPresence } from './internal/use-exit-presence'
+import { useExitPresence, useExitTransitionEnd } from './internal/use-exit-presence'
 import { usePopoverInteraction } from './internal/use-popover-interaction'
 import { usePopoverPosition } from './internal/use-popover-position'
 import { View } from './View'
@@ -81,11 +75,12 @@ export function Popover({
     placementStyle,
   } = usePopoverPosition(targetRef, panelRef, present, placement, offset, viewportPadding)
 
-  const handleTransitionEnd = (event: ReactTransitionEvent<HTMLDivElement>) => {
-    viewProps.onTransitionEnd?.(event)
-
-    finishExitOnTransition(event, resolvedOpen, visualState, finishExit)
-  }
+  const handleTransitionEnd = useExitTransitionEnd(
+    resolvedOpen,
+    visualState,
+    finishExit,
+    viewProps.onTransitionEnd,
+  )
 
   const setPanelRef = (element: HTMLDivElement | null) => {
     panelRef.current = element

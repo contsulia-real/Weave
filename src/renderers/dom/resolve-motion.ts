@@ -1,3 +1,4 @@
+import { toKebabCase } from '../../core/css-name'
 import type {
   MotionStyle,
   ViewEnterExit,
@@ -8,7 +9,6 @@ import { background, color, filterValue, transformValue } from '../../core/value
 import type { ViewStyleProps } from '../../core/view-types'
 import type { ResolvedTheme } from '../../theme/theme-types'
 import {
-  kebab,
   resolveMotionCurveCss,
   resolveMotionDurationCss,
   resolveMotionDurationMs,
@@ -26,7 +26,7 @@ interface ResolvedViewEnterExit {
 
 function properties(values: readonly string[] | undefined): string {
   if (values === undefined || values.length === 0) return 'all'
-  return values.map(kebab).join(', ')
+  return values.map(toKebabCase).join(', ')
 }
 
 function preset(value: string, phase: 'enter' | 'exit'): ViewEnterExitConfig | undefined {
@@ -138,7 +138,7 @@ function setMotionVariable(
   value: string | number | undefined,
 ): void {
   if (value === undefined) return
-  output[`--weave-motion-${state}-${kebab(property)}`] = value
+  output[`--weave-motion-${state}-${toKebabCase(property)}`] = value
 }
 
 function motionStyle(style: MotionStyle | undefined, state: string): RuntimeStyleDeclarations {

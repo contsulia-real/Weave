@@ -1,7 +1,6 @@
 import {
   type KeyboardEvent,
   type MouseEvent,
-  type TransitionEvent,
   useCallback,
   useEffect,
   useId,
@@ -20,7 +19,9 @@ import { Icon } from './Icon'
 import { assignRef } from './internal/assign-ref'
 import { chevronDownIcon } from './internal/control-icons'
 import { durationMilliseconds } from './internal/motion-duration'
+import { OptionListboxHost } from './internal/OptionListboxHost'
 import {
+  handleOpenOptionListboxKey,
   initialOptionActiveValue,
   moveOptionActiveValue,
   optionDomId,
@@ -28,13 +29,13 @@ import {
 import { renderIconSource } from './internal/render-icon-source'
 import { SelectContext } from './internal/select-context'
 import { selectedDescriptor, selectOptionDescriptors } from './internal/select-options'
-import { ThemedPortal } from './internal/ThemedPortal'
+import { useActiveOptionScrollIntoView } from './internal/use-active-option-scroll'
 import {
   useAnchorViewportDismiss,
   useOutsideInteractionDismiss,
 } from './internal/use-anchor-viewport-dismiss'
 import { useControllableBoolean } from './internal/use-controllable-boolean'
-import { finishExitOnTransition, useExitPresence } from './internal/use-exit-presence'
+import { useExitPresence, useExitTransitionEnd } from './internal/use-exit-presence'
 import { usePopoverPosition } from './internal/use-popover-position'
 import { useSelectTypeahead } from './internal/use-select-typeahead'
 import { useViewHost } from './internal/use-view-host'
@@ -176,21 +177,7 @@ export function Select({
   useAnchorViewportDismiss(triggerRef, resolvedOpen, close)
   useOutsideInteractionDismiss(triggerRef, listboxRef, resolvedOpen, close)
 
-  useEffect(() => {
-    if (!resolvedOpen || resolvedActiveValue === null) {
-      return
-    }
-
-    const option = triggerRef.current?.ownerDocument.getElementById(
-      optionDomId(listboxId, resolvedActiveValue),
-    )
-
-    if (option !== null && option !== undefined && typeof option.scrollIntoView === 'function') {
-      option.scrollIntoView({
-        block: 'nearest',
-      })
-    }
-  }, [listboxId, resolvedActiveValue, resolvedOpen, triggerRef])
+  useActiveOptionScrollIntoView(triggerRef, listboxId, resolvedActiveValue, resolvedOpen)
 
   /*
    * Controlled open can close without passing through close().
@@ -222,14 +209,6 @@ export function Select({
       close()
     } else {
       openSelect()
-    }
-  }
-
-  const moveActive = (move: 'previous' | 'next' | 'first' | 'last') => {
-    const next = moveOptionActiveValue(options, resolvedActiveValue, move)
-
-    if (next !== null) {
-      setActiveValue(next)
     }
   }
 
@@ -268,36 +247,16 @@ export function Select({
     }
 
     if (
-      event.key === 'ArrowDown' ||
-      event.key === 'ArrowUp' ||
-      event.key === 'Home' ||
-      event.key === 'End'
-    ) {
-      event.preventDefault()
-      moveActive(
-        event.key === 'ArrowDown'
-          ? 'next'
-          : event.key === 'ArrowUp'
-            ? 'previous'
-            : event.key === 'Home'
-              ? 'first'
-              : 'last',
+      handleOpenOptionListboxKey(
+        event,
+        options,
+        resolvedActiveValue,
+        setActiveValue,
+        selectValue,
+        close,
+        true,
       )
-      return
-    }
-
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault()
-
-      if (resolvedActiveValue !== null) {
-        selectValue(resolvedActiveValue)
-      }
-      return
-    }
-
-    if (event.key === 'Escape') {
-      event.preventDefault()
-      close()
+    ) {
       return
     }
 
@@ -318,11 +277,12 @@ export function Select({
     [listboxId, resolvedActiveValue, selectValue, selectedValue, setEnabledActiveValue],
   )
 
-  const handleTransitionEnd = (event: TransitionEvent<HTMLDivElement>) => {
-    listboxViewProps.onTransitionEnd?.(event)
-
-    finishExitOnTransition(event, resolvedOpen, visualState, finishExit)
-  }
+  const handleTransitionEnd = useExitTransitionEnd(
+    resolvedOpen,
+    visualState,
+    finishExit,
+    listboxViewProps.onTransitionEnd,
+  )
 
   const setListboxRef = (element: HTMLDivElement | null) => {
     listboxRef.current = element
@@ -334,49 +294,27 @@ export function Select({
       ? optionDomId(listboxId, resolvedActiveValue)
       : undefined
 
-  const portal = present ? (
-    <ThemedPortal>
-      <SelectContext.Provider value={contextValue}>
-        <View
-          {...listboxViewProps}
-          ref={setListboxRef}
-          id={listboxId}
-          role="listbox"
-          labelledBy={triggerId}
-          tabIndex={-1}
-          aria-hidden={visualState === 'closing' ? true : undefined}
-          onTransitionEnd={handleTransitionEnd}
-          position="fixed"
-          layer={listboxViewProps.layer ?? 'overlay'}
-          className={[
-            'weave-option-listbox',
-            'weave-select-listbox',
-            inputThemeClassName,
-            themeClassName,
-            listboxViewProps.className,
-          ]
-            .filter(Boolean)
-            .join(' ')}
-          data={{
-            ...listboxViewProps.data,
-            'weave-option-listbox': '',
-            'weave-option-listbox-state': visualState,
-            'weave-select-listbox': '',
-            'weave-select-state': visualState,
-            placement: resolvedPlacement,
-            'weave-reduced-motion': reducedMotion ? 'reduce' : undefined,
-          }}
-          style={{
-            ...listboxViewProps.style,
-            ...placementStyle,
-            visibility: positioned ? 'visible' : 'hidden',
-          }}
-        >
-          {children}
-        </View>
-      </SelectContext.Provider>
-    </ThemedPortal>
-  ) : null
+  const portal = (
+    <SelectContext.Provider value={contextValue}>
+      <OptionListboxHost
+        component="select"
+        present={present}
+        panelRef={setListboxRef}
+        viewProps={listboxViewProps}
+        id={listboxId}
+        labelledBy={triggerId}
+        visualState={visualState}
+        placement={resolvedPlacement}
+        positioned={positioned}
+        placementStyle={placementStyle}
+        reducedMotion={reducedMotion}
+        themeClassNames={[inputThemeClassName, themeClassName]}
+        onTransitionEnd={handleTransitionEnd}
+      >
+        {children}
+      </OptionListboxHost>
+    </SelectContext.Provider>
+  )
 
   return (
     <>

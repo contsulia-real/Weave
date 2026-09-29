@@ -22,10 +22,6 @@ interface ResolvedMotionTiming {
   spring: boolean
 }
 
-export function kebab(value: string): string {
-  return value.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)
-}
-
 export function resolveMotionDurationCss(
   value: MotionDuration | undefined,
   theme: ResolvedTheme,

@@ -1,6 +1,5 @@
 import {
   type KeyboardEvent,
-  type TransitionEvent,
   useCallback,
   useEffect,
   useId,
@@ -19,7 +18,7 @@ import { MenuRootContext } from './internal/menu-state'
 import { durationMilliseconds } from './internal/motion-duration'
 import { ThemedPortal } from './internal/ThemedPortal'
 import { useControllableBoolean } from './internal/use-controllable-boolean'
-import { finishExitOnTransition, useExitPresence } from './internal/use-exit-presence'
+import { useExitPresence, useExitTransitionEnd } from './internal/use-exit-presence'
 import { type MenuInitialFocus, useMenuTrigger } from './internal/use-menu-trigger'
 import { usePopoverPosition } from './internal/use-popover-position'
 
@@ -130,11 +129,12 @@ export function Menu({
     }
   }
 
-  const handleTransitionEnd = (event: TransitionEvent<HTMLDivElement>) => {
-    viewProps.onTransitionEnd?.(event)
-
-    finishExitOnTransition(event, resolvedOpen, visualState, finishExit)
-  }
+  const handleTransitionEnd = useExitTransitionEnd(
+    resolvedOpen,
+    visualState,
+    finishExit,
+    viewProps.onTransitionEnd,
+  )
 
   const portal = present ? (
     <ThemedPortal>

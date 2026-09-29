@@ -1,3 +1,5 @@
+import { type NavigationMove, resolveNavigationIndex } from './navigation-index'
+
 interface NavigableOption {
   value: string
   disabled: boolean
@@ -25,32 +27,71 @@ export function initialOptionActiveValue<TOption extends NavigableOption>(
 export function moveOptionActiveValue<TOption extends NavigableOption>(
   options: readonly TOption[],
   current: string | null,
-  move: 'previous' | 'next' | 'first' | 'last',
+  move: NavigationMove,
 ): string | null {
   const enabled = enabledOptions(options)
 
-  if (enabled.length === 0) {
-    return null
-  }
-
-  if (move === 'first') {
-    return enabled[0]!.value
-  }
-
-  if (move === 'last') {
-    return enabled.at(-1)!.value
-  }
-
   const index = current === null ? -1 : enabled.findIndex((option) => option.value === current)
-  const delta = move === 'next' ? 1 : -1
-  const nextIndex =
-    index < 0
-      ? move === 'next'
-        ? 0
-        : enabled.length - 1
-      : (index + delta + enabled.length) % enabled.length
+  const nextIndex = resolveNavigationIndex(enabled.length, index, move)
 
-  return enabled[nextIndex]?.value ?? null
+  return nextIndex === null ? null : (enabled[nextIndex]?.value ?? null)
+}
+
+interface OptionListboxKeyEvent {
+  key: string
+  preventDefault(): void
+}
+
+export function handleOpenOptionListboxKey<TOption extends NavigableOption>(
+  event: OptionListboxKeyEvent,
+  options: readonly TOption[],
+  current: string | null,
+  setActiveValue: (value: string) => void,
+  selectValue: (value: string) => void,
+  close: () => void,
+  selectOnSpace: boolean,
+): boolean {
+  const move: NavigationMove | undefined =
+    event.key === 'ArrowDown'
+      ? 'next'
+      : event.key === 'ArrowUp'
+        ? 'previous'
+        : event.key === 'Home'
+          ? 'first'
+          : event.key === 'End'
+            ? 'last'
+            : undefined
+
+  if (move !== undefined) {
+    event.preventDefault()
+    const next = moveOptionActiveValue(options, current, move)
+
+    if (next !== null) {
+      setActiveValue(next)
+    }
+
+    return true
+  }
+
+  if (event.key === 'Enter' || (selectOnSpace && event.key === ' ')) {
+    if (current !== null || selectOnSpace) {
+      event.preventDefault()
+    }
+
+    if (current !== null) {
+      selectValue(current)
+    }
+
+    return true
+  }
+
+  if (event.key === 'Escape') {
+    event.preventDefault()
+    close()
+    return true
+  }
+
+  return false
 }
 
 export function optionDomId(listboxId: string, value: string): string {

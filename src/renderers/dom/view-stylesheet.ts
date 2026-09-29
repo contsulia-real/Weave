@@ -1,3 +1,4 @@
+import { toKebabCase } from '../../core/css-name'
 import { defaultTheme } from '../../theme/default-theme'
 import { themeVariableDeclarations } from '../../theme/theme-css'
 
@@ -88,18 +89,16 @@ const VIEW_MOTION_STATES = [
   'motion-exit-to',
 ] as const
 
-const toKebab = (value: string) => value.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)
-
 const variableName = (property: ViewStyleProperty, prefix?: string): `--weave-${string}` =>
-  `--weave-${prefix === undefined ? '' : `${prefix}-`}${toKebab(property)}`
+  `--weave-${prefix === undefined ? '' : `${prefix}-`}${toKebabCase(property)}`
 
 const componentVariableName = (property: ViewStyleProperty): `--weave-component-${string}` =>
-  `--weave-component-${toKebab(property)}`
+  `--weave-component-${toKebabCase(property)}`
 
 const responsiveVariableName = (
   scope: 'viewport' | 'container',
   property: ViewStyleProperty,
-): `--weave-${string}` => `--weave-${scope}-responsive-${toKebab(property)}`
+): `--weave-${string}` => `--weave-${scope}-responsive-${toKebabCase(property)}`
 
 const componentFallback = (property: ViewStyleProperty) => `var(${componentVariableName(property)})`
 
@@ -116,7 +115,7 @@ const resolvedValue = (property: ViewStyleProperty, state?: string) =>
 
 const declarationBlock = (state?: string) =>
   VIEW_STYLE_PROPERTIES.map(
-    (property) => `${toKebab(property)}: ${resolvedValue(property, state)};`,
+    (property) => `${toKebabCase(property)}: ${resolvedValue(property, state)};`,
   ).join('')
 
 const propertyRegistrationBlock = () =>

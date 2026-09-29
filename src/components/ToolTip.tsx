@@ -1,4 +1,3 @@
-import type { TransitionEvent as ReactTransitionEvent } from 'react'
 import { useCallback, useEffect, useId, useInsertionEffect, useLayoutEffect, useRef } from 'react'
 import type { ToolTipProps } from '../core/tooltip-types'
 import { length } from '../core/values'
@@ -9,7 +8,7 @@ import { useTheme } from '../theme/theme-context'
 import { durationMilliseconds } from './internal/motion-duration'
 import { ThemedPortal } from './internal/ThemedPortal'
 import { useControllableBoolean } from './internal/use-controllable-boolean'
-import { finishExitOnTransition, useExitPresence } from './internal/use-exit-presence'
+import { useExitPresence, useExitTransitionEnd } from './internal/use-exit-presence'
 import { useToolTipPosition } from './internal/use-tooltip-position'
 import { Text } from './Text'
 import { View } from './View'
@@ -204,11 +203,12 @@ export function ToolTip({
     }
   }, [resolvedOpen, tooltipId])
 
-  const handleTransitionEnd = (event: ReactTransitionEvent<HTMLDivElement>) => {
-    viewProps.onTransitionEnd?.(event)
-
-    finishExitOnTransition(event, resolvedOpen, visualState, finishExit)
-  }
+  const handleTransitionEnd = useExitTransitionEnd(
+    resolvedOpen,
+    visualState,
+    finishExit,
+    viewProps.onTransitionEnd,
+  )
 
   const offsetValue = length(offset) ?? '0rem'
   const { positioned, placementStyle } = useToolTipPosition(

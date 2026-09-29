@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { type TransitionEventHandler, useCallback, useEffect, useRef, useState } from 'react'
 
 export type ExitPresenceState = 'open' | 'closing'
 
@@ -16,6 +16,21 @@ export function finishExitOnTransition(
   }
 
   finishExit()
+}
+
+export function useExitTransitionEnd<TElement extends HTMLElement>(
+  open: boolean,
+  visualState: ExitPresenceState,
+  finishExit: () => void,
+  onTransitionEnd?: TransitionEventHandler<TElement>,
+): TransitionEventHandler<TElement> {
+  return useCallback(
+    (event) => {
+      onTransitionEnd?.(event)
+      finishExitOnTransition(event, open, visualState, finishExit)
+    },
+    [finishExit, onTransitionEnd, open, visualState],
+  )
 }
 
 export function useExitPresence(
