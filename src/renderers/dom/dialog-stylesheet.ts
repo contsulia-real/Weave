@@ -2,7 +2,19 @@ import { ensureStaticStylesheet } from './static-stylesheet'
 
 const stylesheet = `
 :where(.weave-dialog) {
+  --weave-component-display: block;
+  --weave-component-position: fixed;
+  --weave-component-top: 0;
+  --weave-component-right: 0;
+  --weave-component-bottom: 0;
+  --weave-component-left: 0;
+  --weave-component-margin-top: auto;
+  --weave-component-margin-right: auto;
+  --weave-component-margin-bottom: auto;
+  --weave-component-margin-left: auto;
+
   --weave-component-width: var(--weave-dialog-width);
+  --weave-component-height: fit-content;
   --weave-component-max-width: var(--weave-dialog-max-width);
   --weave-component-max-height: var(--weave-dialog-max-height);
   --weave-component-background: var(--weave-dialog-background);

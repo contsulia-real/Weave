@@ -362,4 +362,27 @@ describe('Dialog', () => {
     expect(stylesheet).toContain('::backdrop')
     expect(stylesheet).toContain('@starting-style')
   })
+
+  it('preserves centered dialog geometry through the View host defaults', () => {
+    render(
+      <Dialog defaultOpen>
+        <Text>Geometry</Text>
+      </Dialog>,
+    )
+
+    const stylesheet =
+      document.querySelector<HTMLStyleElement>('style[data-weave-dialog-styles]')?.textContent ?? ''
+
+    expect(stylesheet).toContain('--weave-component-display: block')
+    expect(stylesheet).toContain('--weave-component-position: fixed')
+    expect(stylesheet).toContain('--weave-component-top: 0')
+    expect(stylesheet).toContain('--weave-component-right: 0')
+    expect(stylesheet).toContain('--weave-component-bottom: 0')
+    expect(stylesheet).toContain('--weave-component-left: 0')
+    expect(stylesheet).toContain('--weave-component-margin-top: auto')
+    expect(stylesheet).toContain('--weave-component-margin-right: auto')
+    expect(stylesheet).toContain('--weave-component-margin-bottom: auto')
+    expect(stylesheet).toContain('--weave-component-margin-left: auto')
+    expect(stylesheet).toContain('--weave-component-height: fit-content')
+  })
 })

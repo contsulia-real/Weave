@@ -4206,6 +4206,8 @@ modal=true  → modal
 
 对 modal 而言，真正的模态堆叠仍以浏览器 top layer 为权威，`layer="modal"` 只保持 Weave 自身语义一致。
 
+Dialog 仍然使用 ViewHost，因此 Dialog stylesheet 必须显式提供不会被通用 View style declaration 重置掉的几何 fallback。默认 surface 使用 `display:block + position:fixed + inset:0 + margin:auto + height:fit-content`，因此 non-modal 与 modal 都以 viewport 中央作为默认视觉位置，不依赖 portal 在 `body` 中的静态文档位置。这里的 fixed 居中只属于视觉几何：`modal=false` 仍然通过原生 `show()` 打开，不进入 top layer、不让背景 inert、也不获得 modal focus containment；`modal=true` 仍然通过 `showModal()` 获得这些浏览器模态语义。显式 `viewProps.display / position / margin / top / right / bottom / left / height` 仍具有更高优先级。
+
 关闭时不能立即调用原生 `close()`：Dialog 先进入 `closing` 视觉状态并保持 `<dialog open>`，完成 exit transition 后才调用 `close()` 并卸载。这样 `::backdrop` 与 surface 可以一起完成退出。Reduced Motion 下跳过等待并立即完成关闭。
 
 默认视觉来自：
