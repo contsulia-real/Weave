@@ -1,11 +1,10 @@
 import {
-  useCallback,
-  useEffect,
   useMemo,
-  useRef,
-  useState,
+  type ReactNode,
 } from 'react'
-import type { ReactNode } from 'react'
+import {
+  useExitPresence,
+} from './internal/use-exit-presence'
 import {
   PresenceContext,
   type PresenceContextValue,
@@ -22,87 +21,41 @@ export function Presence({
   children,
   onExitComplete,
 }: PresenceProps) {
-  const [mounted, setMounted] = useState(present)
-  const [exiting, setExiting] = useState(false)
-  const registered = useRef(new Set<symbol>())
-  const pending = useRef(new Set<symbol>())
-  const exitingRef = useRef(false)
-
-  const finishExit = useCallback(() => {
-    pending.current.clear()
-    exitingRef.current = false
-    setExiting(false)
-    setMounted(false)
-    onExitComplete?.()
-  }, [onExitComplete])
-
-  const registerExit = useCallback(
-    (id: symbol) => {
-      registered.current.add(id)
-
-      return () => {
-        registered.current.delete(id)
-        pending.current.delete(id)
-
-        if (
-          exitingRef.current &&
-          pending.current.size === 0
-        ) {
-          finishExit()
-        }
-      }
-    },
-    [finishExit],
+  const {
+    present: mounted,
+    visualState,
+    registerExit,
+    completeExit,
+  } = useExitPresence(
+    present,
+    false,
+    0,
+    onExitComplete,
+    true,
   )
 
-  const completeExit = useCallback(
-    (id: symbol) => {
-      if (!exitingRef.current) return
-
-      pending.current.delete(id)
-      if (pending.current.size === 0) {
-        finishExit()
-      }
-    },
-    [finishExit],
-  )
-
-  /* oxlint-disable react/set-state-in-effect */
-  useEffect(() => {
-    if (present) {
-      pending.current.clear()
-      exitingRef.current = false
-      setExiting(false)
-      setMounted(true)
-      return
-    }
-
-    if (!mounted) return
-
-    pending.current = new Set(registered.current)
-    if (pending.current.size === 0) {
-      finishExit()
-      return
-    }
-
-    exitingRef.current = true
-    setExiting(true)
-  }, [finishExit, mounted, present])
-  /* oxlint-enable react/set-state-in-effect */
-
-  const context = useMemo<PresenceContextValue>(
-    () => ({
-      exiting,
-      registerExit,
-      completeExit,
-    }),
-    [completeExit, exiting, registerExit],
-  )
+  const context =
+    useMemo<PresenceContextValue>(
+      () => ({
+        exiting:
+          visualState ===
+          'closing',
+        registerExit,
+        completeExit,
+      }),
+      [
+        completeExit,
+        registerExit,
+        visualState,
+      ],
+    )
 
   if (!mounted) return null
 
   return (
-    <PresenceContext.Provider value={context}>
+    <PresenceContext.Provider
+      value={context}
+    >
       {children}
     </PresenceContext.Provider>
   )

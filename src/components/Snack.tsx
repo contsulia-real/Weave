@@ -19,7 +19,10 @@ import { durationMilliseconds } from './internal/motion-duration'
 import { ThemedPortal } from './internal/ThemedPortal'
 import { SnackBody } from './internal/SnackBody'
 import { useControllableBoolean } from './internal/use-controllable-boolean'
-import { useExitPresence } from './internal/use-exit-presence'
+import {
+  finishExitOnTransition,
+  useExitPresence,
+} from './internal/use-exit-presence'
 import {
   SnackHostContext,
 } from './internal/snack-host-context'
@@ -186,16 +189,12 @@ export function Snack({
       event,
     )
 
-    if (
-      event.target !==
-        event.currentTarget ||
-      resolvedOpen ||
-      visualState !== 'closing'
-    ) {
-      return
-    }
-
-    finishExit()
+    finishExitOnTransition(
+      event,
+      resolvedOpen,
+      visualState,
+      finishExit,
+    )
   }
 
   if (

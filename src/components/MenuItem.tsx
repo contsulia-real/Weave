@@ -44,6 +44,7 @@ import {
   durationMilliseconds,
 } from './internal/motion-duration'
 import {
+  finishExitOnTransition,
   useExitPresence,
 } from './internal/use-exit-presence'
 import {
@@ -497,17 +498,12 @@ export function MenuItem({
     event:
       TransitionEvent<HTMLDivElement>,
   ) => {
-    if (
-      event.target !==
-        event.currentTarget ||
-      submenuOpen ||
-      visualState !==
-        'closing'
-    ) {
-      return
-    }
-
-    finishExit()
+    finishExitOnTransition(
+      event,
+      submenuOpen,
+      visualState,
+      finishExit,
+    )
   }
 
   const submenuPortal =

@@ -20,7 +20,10 @@ import { useTheme } from '../theme/theme-context'
 import { durationMilliseconds } from './internal/motion-duration'
 import { ThemedPortal } from './internal/ThemedPortal'
 import { useControllableBoolean } from './internal/use-controllable-boolean'
-import { useExitPresence } from './internal/use-exit-presence'
+import {
+  finishExitOnTransition,
+  useExitPresence,
+} from './internal/use-exit-presence'
 import { useToolTipPosition } from './internal/use-tooltip-position'
 import { Text } from './Text'
 import { View } from './View'
@@ -376,16 +379,12 @@ export function ToolTip({
       event,
     )
 
-    if (
-      event.target !==
-        event.currentTarget ||
-      resolvedOpen ||
-      visualState !== 'closing'
-    ) {
-      return
-    }
-
-    finishExit()
+    finishExitOnTransition(
+      event,
+      resolvedOpen,
+      visualState,
+      finishExit,
+    )
   }
 
   const offsetValue =

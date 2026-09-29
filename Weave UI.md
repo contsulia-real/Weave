@@ -6373,7 +6373,7 @@ CSS variables + runtime classes + framework stylesheet
 
 其中 `Presence`、Provider 与 Hook 不属于 ViewHost 宿主链路；它们分别负责生命周期编排和 React context / 命令式能力。只有实际承载 DOM 的组件才进入 `useViewHost → DOM + CSS` 这条宿主路径。
 
-内部实现按职责继续拆分而不是形成新的集中式 god-file：静态 framework stylesheet 共享统一安装器；组件主题解析按 controls / actions / progress / overlays / lists 分域；List 的内容归一化、selection、roving focus 与 virtualization layout 分离；Badge / ToolTip / Popover / Snack / Menu / Select / Combobox 共用 exit-presence 基础生命周期，Badge / ToolTip / Popover / Menu / Select / Combobox 的视觉锚点更新复用统一的 rAF / observer 跟踪基础设施；Popover / Menu root / Select / Combobox 进一步共用 anchored-overlay 的 viewport-exit dismiss helper，组件层只决定 dismiss 后的 focus / selection 语义，不重复判断 anchor visibility；Snack 的 lifetime、内容渲染、队列策略、region registry / host positioning 与 region FLIP layout animation 分属独立 internal 模块。公开 API 不暴露这些内部 helper。
+内部实现按职责继续拆分而不是形成新的集中式 god-file：静态 framework stylesheet 共享统一安装器；组件主题解析按 controls / actions / progress / overlays / lists 分域；List 的内容归一化、selection、roving focus 与 virtualization layout 分离；公开 `Presence` 与 Badge / ToolTip / Popover / Snack / Menu / Select / Combobox 共用同一个 exit-presence 生命周期引擎；`Presence` 通过注册的子宿主协调多项 exit，其余组件通过自身 transition / animation 完成信号与 timeout fallback 结束退出，Badge / ToolTip / Popover / Menu / Select / Combobox 的视觉锚点更新复用统一的 rAF / observer 跟踪基础设施；Popover / Menu root / Select / Combobox 进一步共用 anchored-overlay 的 viewport-exit dismiss helper，组件层只决定 dismiss 后的 focus / selection 语义，不重复判断 anchor visibility；Snack 的 lifetime、内容渲染、队列策略、region registry / host positioning 与 region FLIP layout animation 分属独立 internal 模块。公开 API 不暴露这些内部 helper。
 
 ---
 

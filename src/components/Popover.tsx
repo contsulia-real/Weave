@@ -19,7 +19,10 @@ import { assignRef } from './internal/assign-ref'
 import { ThemedPortal } from './internal/ThemedPortal'
 import { durationMilliseconds } from './internal/motion-duration'
 import { useControllableBoolean } from './internal/use-controllable-boolean'
-import { useExitPresence } from './internal/use-exit-presence'
+import {
+  finishExitOnTransition,
+  useExitPresence,
+} from './internal/use-exit-presence'
 import { usePopoverInteraction } from './internal/use-popover-interaction'
 import { usePopoverPosition } from './internal/use-popover-position'
 import { View } from './View'
@@ -144,16 +147,12 @@ export function Popover({
       event,
     )
 
-    if (
-      event.target !==
-        event.currentTarget ||
-      resolvedOpen ||
-      visualState !== 'closing'
-    ) {
-      return
-    }
-
-    finishExit()
+    finishExitOnTransition(
+      event,
+      resolvedOpen,
+      visualState,
+      finishExit,
+    )
   }
 
   const setPanelRef = (

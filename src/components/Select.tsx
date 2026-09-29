@@ -58,6 +58,7 @@ import {
   useControllableBoolean,
 } from './internal/use-controllable-boolean'
 import {
+  finishExitOnTransition,
   useExitPresence,
 } from './internal/use-exit-presence'
 import {
@@ -623,17 +624,12 @@ export function Select({
         event,
       )
 
-    if (
-      event.target !==
-        event.currentTarget ||
-      resolvedOpen ||
-      visualState !==
-        'closing'
-    ) {
-      return
-    }
-
-    finishExit()
+    finishExitOnTransition(
+      event,
+      resolvedOpen,
+      visualState,
+      finishExit,
+    )
   }
 
   const setListboxRef = (
