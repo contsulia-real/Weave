@@ -12,7 +12,10 @@ import {
   resolvePopoverPosition,
   type PopoverCrossAlignment,
 } from './popover-position'
-import { trackVisualAnchor } from './visual-anchor-tracker'
+import {
+  trackVisualAnchor,
+  visualAnchorInteractionEvents,
+} from './visual-anchor-tracker'
 
 interface PopoverPositionState {
   left: number
@@ -20,16 +23,6 @@ interface PopoverPositionState {
   placement: PopoverPlacement
   positioned: boolean
 }
-
-const INTERACTION_EVENTS = [
-  'pointerenter',
-  'pointerleave',
-  'pointerdown',
-  'pointerup',
-  'pointercancel',
-  'focusin',
-  'focusout',
-] as const
 
 function samePosition(
   current: PopoverPositionState,
@@ -163,7 +156,7 @@ export function usePopoverPosition(
         trackScroll: true,
         trackMutations: true,
         interactionEvents:
-          INTERACTION_EVENTS,
+          visualAnchorInteractionEvents,
         continuousAnimations:
           true,
       },

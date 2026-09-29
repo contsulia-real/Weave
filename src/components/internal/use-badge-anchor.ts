@@ -3,7 +3,10 @@ import {
   type ReactNode,
   type RefObject,
 } from 'react'
-import { trackVisualAnchor } from './visual-anchor-tracker'
+import {
+  trackVisualAnchor,
+  visualAnchorInteractionEvents,
+} from './visual-anchor-tracker'
 
 interface VisualRect {
   left: number
@@ -63,16 +66,6 @@ function setAnchorVariables(
   return rect
 }
 
-const INTERACTION_EVENTS = [
-  'pointerenter',
-  'pointerleave',
-  'pointerdown',
-  'pointerup',
-  'pointercancel',
-  'focusin',
-  'focusout',
-] as const
-
 export function useBadgeAnchor(
   wrapperRef:
     RefObject<HTMLSpanElement | null>,
@@ -104,7 +97,7 @@ export function useBadgeAnchor(
         additionalTargets: [wrapper],
         trackMutations: true,
         interactionEvents:
-          INTERACTION_EVENTS,
+          visualAnchorInteractionEvents,
         continuousAnimations: true,
       },
     )

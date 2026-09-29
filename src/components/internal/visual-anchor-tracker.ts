@@ -1,3 +1,13 @@
+export const visualAnchorInteractionEvents = [
+  'pointerenter',
+  'pointerleave',
+  'pointerdown',
+  'pointerup',
+  'pointercancel',
+  'focusin',
+  'focusout',
+] as const
+
 export interface VisualAnchorTrackerOptions {
   additionalTargets?: readonly HTMLElement[]
   trackScroll?: boolean

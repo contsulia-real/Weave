@@ -4,17 +4,8 @@ import {
 } from 'react'
 import {
   trackVisualAnchor,
+  visualAnchorInteractionEvents,
 } from './visual-anchor-tracker'
-
-const INTERACTION_EVENTS = [
-  'pointerenter',
-  'pointerleave',
-  'pointerdown',
-  'pointerup',
-  'pointercancel',
-  'focusin',
-  'focusout',
-] as const
 
 function anchorFullyOutsideViewport(
   target: HTMLElement,
@@ -183,7 +174,7 @@ export function useAnchorViewportDismiss(
         trackScroll: true,
         trackMutations: true,
         interactionEvents:
-          INTERACTION_EVENTS,
+          visualAnchorInteractionEvents,
         continuousAnimations:
           true,
       },
