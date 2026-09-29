@@ -1,5 +1,5 @@
 import { IconBell, IconSearch, IconSearchFilled, IconSettings, IconUser } from '@tabler/icons-react'
-import { Column, createTheme, Icon, Image, Row, Text, ThemeProvider, View } from '../index'
+import { Column, createTheme, Icon, Image, Key, Row, Text, ThemeProvider, View } from '../index'
 import { PlaygroundSection } from './PlaygroundSection'
 
 const diagnosticImage =
@@ -187,6 +187,26 @@ export function FoundationVisualPlayground() {
             />
           </Column>
         </Row>
+      </PlaygroundSection>
+
+      <PlaygroundSection
+        title="Key"
+        description="纯展示的 <kbd> keycap：复用 Button 的静态实体样式，但 hover / press 不产生任何反馈；meta 默认按浏览器平台解析，也可显式覆盖。"
+      >
+        <Column gap={0.75}>
+          <Row gap={0.5} align="center" wrap>
+            <Key value="meta" />
+            <Text typo="body-small">+</Text>
+            <Key value="K" />
+            <Text typo="body-small">Auto Meta</Text>
+          </Row>
+          <Row gap={0.5} align="center" wrap>
+            <Key value="meta" metaKey="command" />
+            <Key value="meta" metaKey="windows" />
+            <Key value="meta" metaKey="meta" />
+            <Key value="Enter" variant="tertiary" />
+          </Row>
+        </Column>
       </PlaygroundSection>
 
       <PlaygroundSection

@@ -3622,6 +3622,112 @@ bottom-left  bottom  bottom-right
 
 ---
 
+# 18.11 `Key`
+
+`Key` 用于展示键盘按键或快捷键片段。它是纯展示组件，语义宿主固定为原生 `<kbd>`，不承担点击、切换或键盘激活行为。
+
+## 18.11.1 API
+
+```tsx
+<Key value="K" />
+
+<Row gap={0.5}>
+  <Key value="meta" />
+  <Text>+</Text>
+  <Key value="K" />
+</Row>
+```
+
+当前高层属性：
+
+```text
+value
+metaKey
+variant
+size
+viewProps
+```
+
+默认值：
+
+```text
+metaKey = auto
+variant = secondary
+size = small
+```
+
+`variant` 与 `size` 直接使用 Button 的公开 `ButtonVariant / ButtonSize`，只选择视觉，不改变 Key 的展示语义。
+
+## 18.11.2 视觉直接复用 Button
+
+Key 不建立 `theme.components.Key`，也不复制 Button theme resolver。它直接复用：
+
+```text
+theme.components.Button
+Button stylesheet 的 variant / size / rest surface
+theme.tokens.feedback.restDepth
+```
+
+因此 Button 的 background、border、radius、depth、typography、variant 与 size 主题变化会同步影响 Key。
+
+但 Key 只保留 Button 的 rest 外观：
+
+```text
+hover
+→ 无变化
+
+active / pointer press
+→ 无变化
+
+focus-visible
+→ 不产生 Button 的交互 outline
+
+cursor
+→ default
+```
+
+Key 不读取 `hoverDepth / hoverLift / hoverScale / pressDepth / pressOffset / pressScale` 来改变自身外观，也不提供 pressed / disabled 等 Button 行为状态。
+
+## 18.11.3 Meta key
+
+当且仅当：
+
+```tsx
+<Key value="meta" />
+```
+
+时，Key 根据浏览器报告的平台解析 Meta 键归属：
+
+```text
+Apple platform  → ⌘
+Windows         → ⊞
+其他平台        → Meta
+```
+
+自动探测优先读取 `navigator.userAgentData.platform`，不可用时退回 `navigator.platform` / `navigator.userAgent`。
+
+可通过 `metaKey` 显式覆盖：
+
+```tsx
+<Key value="meta" metaKey="command" />  // ⌘
+<Key value="meta" metaKey="windows" />  // ⊞
+<Key value="meta" metaKey="meta" />     // Meta
+```
+
+`metaKey` 的类型为：
+
+```text
+auto
+command
+windows
+meta
+```
+
+显式覆盖只影响 `value="meta"`；其他 value 原样展示。
+
+SSR 无法读取浏览器平台时使用 `Meta` 作为稳定 fallback，客户端再同步到实际平台值，避免服务端直接猜测用户平台。
+
+---
 # 19. `ToolTip`
 
 `ToolTip` 是目标附着的辅助说明组件。

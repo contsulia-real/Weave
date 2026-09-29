@@ -12,6 +12,7 @@ export { Grid } from './components/Grid'
 export { Icon } from './components/Icon'
 export { Image } from './components/Image'
 export { Input } from './components/Input'
+export { Key } from './components/Key'
 export { Link } from './components/Link'
 export { List } from './components/List'
 export { ListItem } from './components/ListItem'
@@ -105,6 +106,7 @@ export type {
   MultilineInputViewProps,
   SingleLineInputViewProps,
 } from './core/input-types'
+export type { KeyMetaKey, KeyProps, KeyViewProps } from './core/key-types'
 export type {
   AbsoluteProps,
   ColumnProps,

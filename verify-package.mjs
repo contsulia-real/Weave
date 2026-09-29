@@ -42,6 +42,7 @@ const expectedRuntimeExports = [
   'Icon',
   'Image',
   'Input',
+  'Key',
   'List',
   'ListItem',
   'Link',
@@ -139,6 +140,9 @@ assert(typeSource.includes('RowProps'), 'Built declarations are missing RowProps
 assert(typeSource.includes('StackProps'), 'Built declarations are missing StackProps')
 assert(typeSource.includes('BadgeProps'), 'Built declarations are missing BadgeProps')
 assert(typeSource.includes('ListProps'), 'Built declarations are missing ListProps')
+assert(typeSource.includes('KeyProps'), 'Built declarations are missing KeyProps')
+assert(typeSource.includes('KeyViewProps'), 'Built declarations are missing KeyViewProps')
+assert(typeSource.includes('KeyMetaKey'), 'Built declarations are missing KeyMetaKey')
 assert(typeSource.includes('LinkProps'), 'Built declarations are missing LinkProps')
 assert(typeSource.includes('RadioProps'), 'Built declarations are missing RadioProps')
 assert(typeSource.includes('CheckboxProps'), 'Built declarations are missing CheckboxProps')
