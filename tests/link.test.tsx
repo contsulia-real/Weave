@@ -27,6 +27,9 @@ describe('Link', () => {
     expect(link.textContent).toContain(
       'https://example.com/docs',
     )
+    expect(
+      link.querySelector('[data-weave-text]'),
+    ).not.toBeNull()
   })
 
   it('uses text when provided without changing the href', () => {

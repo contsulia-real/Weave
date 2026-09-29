@@ -107,6 +107,9 @@ describe('Combobox', () => {
       getByRole('combobox') as
         HTMLInputElement
 
+    expect(input.dataset.weaveInput)
+      .toBe('')
+
     input.focus()
     fireEvent.change(
       input,
@@ -561,6 +564,9 @@ describe('Combobox', () => {
         name: 'Clear selection',
       })
 
+    expect(clear.dataset.weaveButton)
+      .toBe('')
+
     input.focus()
     fireEvent.pointerDown(clear)
     fireEvent.click(clear)
@@ -928,6 +934,14 @@ describe('Combobox', () => {
       .toContain(
         '--weave-color-primary',
       )
+    expect(
+      getComputedStyle(input)
+        .getPropertyValue(
+          '--weave-field-control-background',
+        ),
+    ).toContain(
+      '--weave-color-primary',
+    )
     expect(stylesheet)
       .toContain(
         '@starting-style',

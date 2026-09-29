@@ -515,6 +515,8 @@ Absolute
 
 组合组件同样可以通过内部 `useViewHost` 直接承载自己的真实 DOM 宿主，并可以组合以下任意公开组件：
 
+当已有公开组件的语义和 API 已经匹配内部子职责时，组合组件必须直接复用它，而不是重新手写同义 DOM / 样式 / 交互。例如 `Combobox` 的可编辑输入复用 `Input`，clear action 复用 `Button`；`Link` 和非 dot `Badge` 的可见文字复用 `Text`。这种内部组合不改变外层组件自己的状态模型、ARIA ownership 或主题入口。
+
 ```text
 View
 基础组件
@@ -2660,7 +2662,7 @@ Divider 自身负责 `role="separator"` 与对应的 `aria-orientation`。
 
 # 14C. `Combobox`
 
-`Combobox` 是**可输入、可过滤、固定候选集、单选**控件。它使用真实 `<input role="combobox">`，popup 为 anchored `listbox`。第一版不支持 free-form / creatable：输入文本不是 value，只有提交已有 option 或 clear 才改变 value。
+`Combobox` 是**可输入、可过滤、固定候选集、单选**控件。它内部复用公开 `Input` 提供真实 `<input>` 宿主，并在该真实 input 上叠加 `role="combobox"` 与 editable-combobox 交互；popup 为 anchored `listbox`。第一版不支持 free-form / creatable：输入文本不是 value，只有提交已有 option 或 clear 才改变 value。
 
 ```tsx
 <Combobox
@@ -2751,7 +2753,7 @@ Escape                → 关闭，不改变 value / inputValue
 - 关闭 popup；
 - pointer 激活后 focus 回到 input。
 
-`clearLabel` 控制 clear button 的 accessible name，默认 `Clear selection`。
+`clearLabel` 控制 clear button 的 accessible name，默认 `Clear selection`。clear action 内部复用公开 `Button`，不再维护一套私有 `<button>` 实现。
 
 ## 14C.5 Anchored listbox
 
@@ -2769,7 +2771,7 @@ theme.components.Combobox.listbox
 theme.components.Combobox.option
 ```
 
-`base` 提供 Combobox 对共享 Field Control baseline 的主题值，并额外控制 clear / chevron action。真实 input 的 border / radius / depth / hover / focus / disabled 与单行 Input / Select 共用同一个 Field Control stylesheet；Combobox stylesheet 不复制这些规则。`listbox` 控制 popup surface / gap / size / shadow / motion；`option` 控制 active / selected / disabled、icon、check 和 typography。
+`base` 提供 Combobox 对共享 Field Control baseline 的主题值，并额外控制 clear / chevron action。真实 input 由 `Input` 提供，但 `theme.components.Combobox.base` 仍是 Combobox field 的主题权威：组合时必须让 Combobox 的 Field Control 变量覆盖 `Input` 自身的组件主题值。border / radius / depth / hover / focus / disabled 与单行 Input / Select 共用同一个 Field Control stylesheet；Combobox stylesheet 不复制这些规则。`listbox` 控制 popup surface / gap / size / shadow / motion；`option` 控制 active / selected / disabled、icon、check 和 typography。
 
 `viewProps` 作用于真实 input；`listboxViewProps` 作用于 popup listbox。
 
@@ -3602,7 +3604,7 @@ viewProps
 // 显示：Docs
 ```
 
-- `text` 未提供时，直接显示 `href`；提供后只改变可见文字，不改变真实 `href`。
+- `text` 未提供时，直接显示 `href`；提供后只改变可见文字，不改变真实 `href`。可见文字内部复用公开 `Text`，不维护私有文本 span 的平行实现。
 - 默认在内容末尾追加一个装饰性 link icon；icon 不进入 accessible name。只有 `hideIcon` 才隐藏。
 - `hideUnderline` 为 `true` 时完全隐藏底部 link marker；它不影响文字、icon、focus outline 或原生 `<a>` 导航行为。
 - `target` 直接写到真实 `<a target>`，例如 `_self`、`_blank`；框架不重写浏览器原生导航行为，也不自动添加或修改 `rel`。
@@ -3665,7 +3667,7 @@ bottom-left  bottom  bottom-right
 
 规则：
 
-- 不传 `dot` 时是正常 Badge，必须提供 `text`；`text` 可以是 ReactNode。
+- 不传 `dot` 时是正常 Badge，必须提供 `text`；`text` 可以是 ReactNode，并由公开 `Text` 承载可见文字。dot 模式不渲染 `Text`。
 - `dot` 为 `true` 时只显示小圆点，不显示文字；类型层不允许同时传 `text`。
 - dot 是纯视觉状态点，因此自身 `aria-hidden=true`；正常文本 Badge 保留可读文本。
 - Badge 默认 `pointer-events: none`，不会盖住或拦截被附着控件的点击、hover、focus、drag。

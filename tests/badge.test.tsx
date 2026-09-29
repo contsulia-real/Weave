@@ -31,7 +31,10 @@ describe('Badge', () => {
       </Badge>,
     )
 
-    const badge = getByText('12')
+    const text = getByText('12')
+    const badge = text.closest(
+      '[data-weave-badge]',
+    ) as HTMLElement
     const anchor = badge.closest(
       '[data-weave-badge-anchor]',
     ) as HTMLElement
@@ -43,6 +46,8 @@ describe('Badge', () => {
     expect(
       badge.getAttribute('data-weave-badge-dot'),
     ).toBe('false')
+    expect(text.dataset.weaveText)
+      .toBe('')
   })
 
   it('renders a small dot without text when dot is enabled', () => {
@@ -80,7 +85,10 @@ describe('Badge', () => {
       </Badge>,
     )
 
-    const badge = queryByText('8') as HTMLElement
+    const badgeText = queryByText('8') as HTMLElement
+    const badge = badgeText.closest(
+      '[data-weave-badge]',
+    ) as HTMLElement
     expect(badge.dataset.weaveBadgeState).toBe('open')
 
     const stylesheet =
@@ -106,7 +114,10 @@ describe('Badge', () => {
       </Badge>,
     )
 
-    const closing = queryByText('8') as HTMLElement
+    const closingText = queryByText('8') as HTMLElement
+    const closing = closingText.closest(
+      '[data-weave-badge]',
+    ) as HTMLElement
     expect(closing.dataset.weaveBadgeState).toBe('closing')
     expect(getByRole('button').textContent).toContain('Inbox')
 
@@ -123,9 +134,12 @@ describe('Badge', () => {
       </Badge>,
     )
 
-    expect(
-      (queryByText('8') as HTMLElement).dataset.weaveBadgeState,
-    ).toBe('open')
+    const reopenedText = queryByText('8') as HTMLElement
+    const reopened = reopenedText.closest(
+      '[data-weave-badge]',
+    ) as HTMLElement
+    expect(reopened.dataset.weaveBadgeState)
+      .toBe('open')
   })
 
   it('tracks the wrapped component visual box instead of the static wrapper box', () => {

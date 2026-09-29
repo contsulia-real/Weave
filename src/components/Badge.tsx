@@ -11,6 +11,7 @@ import { durationMilliseconds } from './internal/motion-duration'
 import { useBadgeAnchor } from './internal/use-badge-anchor'
 import { useExitPresence } from './internal/use-exit-presence'
 import { useViewHost } from './internal/use-view-host'
+import { Text } from './Text'
 
 export function Badge({
   children,
@@ -87,7 +88,16 @@ export function Badge({
             }
           }}
         >
-          {dot ? null : content.text}
+          {dot ? null : (
+            <Text
+              typo={
+                theme.components.Badge
+                  ?.base?.typo
+              }
+            >
+              {content.text}
+            </Text>
+          )}
         </span>
       ) : null}
     </span>

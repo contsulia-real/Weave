@@ -7,7 +7,6 @@ import {
   useMemo,
   useRef,
   useState,
-  type ChangeEvent,
   type CSSProperties,
   type KeyboardEvent,
   type MouseEvent,
@@ -23,9 +22,6 @@ import type {
   ComboboxProps,
   ComboboxValue,
 } from '../core/combobox-types'
-import type {
-  ViewProps,
-} from '../core/view-types'
 import { length } from '../core/values'
 import {
   resolveComboboxTheme,
@@ -40,7 +36,9 @@ import {
   useTheme,
 } from '../theme/theme-context'
 import { ThemeProvider } from '../theme/ThemeProvider'
+import { Button } from './Button'
 import { Icon } from './Icon'
+import { Input } from './Input'
 import {
   ComboboxContext,
 } from './internal/combobox-context'
@@ -70,9 +68,6 @@ import {
 import {
   usePopoverPosition,
 } from './internal/use-popover-position'
-import {
-  useViewHost,
-} from './internal/use-view-host'
 import { Text } from './Text'
 import { View } from './View'
 
@@ -281,6 +276,10 @@ export function Combobox({
     useRef<HTMLSpanElement>(
       null,
     )
+  const inputRef =
+    useRef<HTMLInputElement>(
+      null,
+    )
   const listboxRef =
     useRef<HTMLDivElement>(
       null,
@@ -291,12 +290,14 @@ export function Combobox({
     mode,
     reducedMotion,
   } = useTheme()
+  const comboboxTheme =
+    resolveComboboxTheme(
+      theme,
+    )
   const themeClassName =
     useRuntimeStyleClass(
       'combobox-theme',
-      resolveComboboxTheme(
-        theme,
-      ),
+      comboboxTheme,
     )
   const exitDuration =
     durationMilliseconds(
@@ -531,28 +532,6 @@ export function Combobox({
   ])
   /* oxlint-enable react/set-state-in-effect */
 
-  const hostProps:
-    ViewProps<HTMLInputElement> = {
-      ...viewProps,
-      disabled,
-      expanded:
-        resolvedOpen,
-      controls:
-        listboxId,
-    }
-  const {
-    elementRef:
-      inputRef,
-    className:
-      inputClassName,
-    inlineStyle:
-      inputInlineStyle,
-    resolved:
-      inputResolved,
-  } = useViewHost(
-    hostProps,
-  )
-
   useComboboxInteraction(
     inputRef,
     rootRef,
@@ -616,11 +595,8 @@ export function Combobox({
   )
 
   const handleChange = (
-    event:
-      ChangeEvent<HTMLInputElement>,
+    next: string,
   ) => {
-    const next =
-      event.currentTarget.value
     const nextEntries =
       filteredComboboxEntries(
         entries,
@@ -839,6 +815,18 @@ export function Combobox({
     finishExit()
   }
 
+  const setInputRef = (
+    element:
+      HTMLInputElement | null,
+  ) => {
+    inputRef.current =
+      element
+    assignRef(
+      viewProps.ref,
+      element,
+    )
+  }
+
   const setListboxRef = (
     element:
       HTMLDivElement | null,
@@ -994,49 +982,50 @@ export function Combobox({
             : 'false'
         }
       >
-        <input
-          {...inputResolved.domProps}
-          ref={inputRef}
-          id={inputId}
-          type="text"
-          role="combobox"
+        <Input
           value={
             resolvedInputValue
+          }
+          onChange={
+            handleChange
           }
           placeholder={
             placeholder
           }
           disabled={disabled}
+          type="text"
           autoComplete="off"
-          aria-haspopup="listbox"
-          aria-expanded={
-            resolvedOpen
-          }
-          aria-controls={
-            listboxId
-          }
-          aria-activedescendant={
-            activeDescendant
-          }
-          aria-autocomplete="list"
-          data-weave-view=""
-          data-weave-combobox=""
-          data-weave-layout={
-            inputResolved.layout
-          }
-          className={[
-            'weave-field-control',
-            'weave-combobox',
-            inputClassName,
-          ].filter(Boolean).join(' ')}
-          style={inputInlineStyle}
-          onChange={
-            handleChange
-          }
-          onClick={handleClick}
-          onKeyDown={
-            handleKeyDown
-          }
+          viewProps={{
+            ...viewProps,
+            ref: setInputRef,
+            id: inputId,
+            role: 'combobox',
+            expanded:
+              resolvedOpen,
+            controls:
+              listboxId,
+            'aria-haspopup':
+              'listbox',
+            'aria-activedescendant':
+              activeDescendant,
+            'aria-autocomplete':
+              'list',
+            onClick: handleClick,
+            onKeyDown:
+              handleKeyDown,
+            style: {
+              ...comboboxTheme,
+              ...viewProps.style,
+            } as CSSProperties,
+            className: [
+              'weave-combobox',
+              viewProps.className,
+            ].filter(Boolean).join(' '),
+            data: {
+              ...viewProps.data,
+              'weave-combobox': '',
+            },
+          }}
         />
 
         <span
@@ -1048,36 +1037,23 @@ export function Combobox({
           }
         >
           {hasClear ? (
-            <button
-              type="button"
-              className="weave-combobox__action"
-              aria-label={
-                clearLabel
+            <Button
+              icon={
+                clearIcon as IconSvg
               }
-              onPointerDown={
-                handleClearPointerDown
-              }
-              onFocus={close}
-              onClick={
-                clearSelection
-              }
-            >
-              <Icon
-                svg={
-                  clearIcon as IconSvg
-                }
-                size="small"
-                stroke="regular"
-                viewProps={{
-                  className:
-                    'weave-combobox__action-icon',
-                  'aria-hidden':
-                    true,
-                  pointerEvents:
-                    'none',
-                }}
-              />
-            </button>
+              variant="ghost"
+              size="small"
+              viewProps={{
+                className:
+                  'weave-combobox__action',
+                label: clearLabel,
+                onPointerDown:
+                  handleClearPointerDown,
+                onFocus: close,
+                onClick:
+                  clearSelection,
+              }}
+            />
           ) : null}
 
           <Icon

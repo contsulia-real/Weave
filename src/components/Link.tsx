@@ -8,6 +8,7 @@ import { resolveLinkTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { useTheme } from '../theme/theme-context'
 import { Icon } from './Icon'
+import { Text } from './Text'
 import { useViewHost } from './internal/use-view-host'
 
 const linkIcon = (
@@ -63,9 +64,13 @@ export function Link({
       ].filter(Boolean).join(' ')}
       style={inlineStyle}
     >
-      <span className="weave-link__text">
+      <Text
+        viewProps={{
+          className: 'weave-link__text',
+        }}
+      >
         {text ?? href}
-      </span>
+      </Text>
 
       {!hideIcon ? (
         <Icon
