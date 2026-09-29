@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, waitFor } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, waitFor } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { Button, Column, createTheme, Popover, Text, ThemeProvider } from '../src'
 
@@ -6,6 +6,17 @@ afterEach(() => {
   cleanup()
   vi.useRealTimers()
 })
+
+async function flushAnimationFrames() {
+  await act(
+    () =>
+      new Promise<void>((resolve) => {
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => resolve())
+        })
+      }),
+  )
+}
 
 describe('Popover', () => {
   it('opens from its trigger in a body portal and wires dialog semantics', async () => {
@@ -270,6 +281,72 @@ describe('Popover', () => {
       expect(dialog.getAttribute('data-placement')).toBe('bottom-left')
       expect(dialog.style.left).toBe('8px')
       expect(dialog.style.top).toBe('128px')
+    })
+  })
+
+  it('does not reposition for a transient pressed anchor transform', async () => {
+    const { getByRole } = render(
+      <Popover defaultOpen placement="bottom-left" content="Stable anchor">
+        <Button text="Stable trigger" />
+      </Popover>,
+    )
+
+    const trigger = getByRole('button', { name: 'Stable trigger' })
+    const dialog = getByRole('dialog')
+    let left = 100
+    let top = 100
+
+    trigger.getBoundingClientRect = () =>
+      ({
+        x: left,
+        y: top,
+        left,
+        top,
+        right: left + 40,
+        bottom: top + 40,
+        width: 40,
+        height: 40,
+        toJSON: () => ({}),
+      }) as DOMRect
+    dialog.getBoundingClientRect = () =>
+      ({
+        x: 0,
+        y: 0,
+        left: 0,
+        top: 0,
+        right: 160,
+        bottom: 80,
+        width: 160,
+        height: 80,
+        toJSON: () => ({}),
+      }) as DOMRect
+
+    fireEvent.scroll(window)
+
+    await waitFor(() => {
+      expect(dialog.style.visibility).toBe('visible')
+      expect(dialog.style.left).not.toBe('')
+    })
+
+    await flushAnimationFrames()
+
+    const initialLeft = dialog.style.left
+    const initialTop = dialog.style.top
+
+    left = 280
+    top = 220
+    fireEvent.pointerDown(trigger)
+
+    await flushAnimationFrames()
+
+    expect(dialog.style.left).toBe(initialLeft)
+    expect(dialog.style.top).toBe(initialTop)
+
+    fireEvent.scroll(window)
+
+    await waitFor(() => {
+      expect(dialog.style.left).not.toBe(initialLeft)
+      expect(dialog.style.top).not.toBe(initialTop)
     })
   })
 

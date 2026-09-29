@@ -229,6 +229,10 @@ describe('Snack', () => {
       document.querySelector<HTMLStyleElement>('style[data-weave-snack-styles]')?.textContent ?? ''
 
     expect(stylesheet).toContain('--weave-component-background: var(--weave-snack-background);')
+    expect(stylesheet).toContain('--weave-component-transform: translateY(0);')
+    expect(stylesheet).toContain('--weave-component-transition-property: opacity, transform;')
+    expect(stylesheet).not.toContain('translate: 0 var(--weave-snack-enter-y)')
+    expect(stylesheet).not.toContain('translate: 0 var(--weave-snack-exit-y)')
     expect(stylesheet).toContain('.weave-snack__icon-shell')
     expect(stylesheet).not.toContain('--weave-snack-accent-width')
     expect(stylesheet).not.toContain('--weave-snack-min-width')

@@ -102,6 +102,14 @@ describe('Input', () => {
     expect(clear.dataset.weaveButton).toBe('')
     expect(clear.className).toContain('weave-button--ghost')
 
+    const stylesheet = (
+      document.querySelector<HTMLStyleElement>('style[data-weave-input-styles]')?.textContent ?? ''
+    ).replace(/\s+/g, '')
+    expect(stylesheet).toContain('--weave-component-padding-right:var(--weave-input-min-height);')
+    expect(stylesheet).toContain(
+      'right:calc((var(--weave-input-min-height)-var(--weave-button-min-height))/2);',
+    )
+
     fireEvent.pointerDown(clear)
     fireEvent.click(clear)
 

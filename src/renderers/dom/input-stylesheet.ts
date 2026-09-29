@@ -104,16 +104,19 @@ const stylesheet = `
   .weave-input[data-weave-input-has-clear="true"]
 ) {
   --weave-component-padding-right:
-    calc(
-      var(--weave-input-padding-x) +
-      var(--weave-input-min-height)
-    );
+    var(--weave-input-min-height);
 }
 
 :where(.weave-input__clear) {
   position: absolute;
   top: 50%;
-  right: var(--weave-input-padding-x);
+  right:
+    calc(
+      (
+        var(--weave-input-min-height) -
+        var(--weave-button-min-height)
+      ) / 2
+    );
   translate: 0 -50%;
 }
 

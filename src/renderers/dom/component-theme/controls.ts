@@ -110,6 +110,7 @@ export function resolveSwitchTheme(
   size: SwitchSize,
 ): RuntimeStyleDeclarations {
   const component = theme.components.Switch
+  const inputBase = theme.components.Input?.base
   const base = component?.base
   const sized = component?.sizes?.[size]
   const checked = component?.states?.checked
@@ -121,6 +122,8 @@ export function resolveSwitchTheme(
     '--weave-switch-thumb-size': length(sized?.thumbSize),
     '--weave-switch-shift': length(sized?.shift),
     '--weave-switch-background': color(base?.background),
+    '--weave-switch-border-color': color(inputBase?.borderColor),
+    '--weave-switch-border-width': length(inputBase?.borderWidth),
     '--weave-switch-radius': radius(base?.radius),
     '--weave-switch-cursor': base?.cursor,
     '--weave-switch-track-shadow': base?.trackShadow,

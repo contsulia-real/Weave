@@ -1,4 +1,5 @@
 import { cleanup, render } from '@testing-library/react'
+import { StrictMode } from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { ThemeProvider, View } from '../src'
 
@@ -160,6 +161,32 @@ describe('View keyframe animation', () => {
     finish(animations[2])
     vi.advanceTimersByTime(1000)
     expect(animate).toHaveBeenCalledTimes(3)
+  })
+
+  it('restarts keyframes and repeat after StrictMode effect replay', () => {
+    const { animate, animations } = installAnimationStub()
+
+    render(
+      <StrictMode>
+        <View
+          animation={{
+            keyframes: [{ opacity: 0 }, { opacity: 1 }],
+            duration: 100,
+            repeat: 1,
+            direction: 'alternate',
+          }}
+        />
+      </StrictMode>,
+    )
+
+    expect(animate).toHaveBeenCalledTimes(2)
+    expect(animations[0]?.cancel).toHaveBeenCalledTimes(1)
+    expect(animations[1]?.cancel).not.toHaveBeenCalled()
+
+    finish(animations[1]!)
+
+    expect(animate).toHaveBeenCalledTimes(3)
+    expect(animate.mock.calls[2]?.[1]).toMatchObject({ direction: 'reverse' })
   })
 
   it('supports reverse and alternate-reverse direction', () => {

@@ -369,12 +369,18 @@ describe('Switch', () => {
       '--weave-switch-background:color-mix(insrgb,var(--weave-color-outline)34%,var(--weave-color-surface));',
     )
     expect(themeRule).toContain('--weave-switch-checked-background:var(--weave-color-primary')
+    expect(themeRule).toContain('--weave-switch-border-color:var(--weave-color-outline')
+    expect(themeRule).toContain('--weave-switch-border-width:0.0625rem;')
     expect(themeRule).toContain('--weave-switch-thumb-drag-shrink:0.68;')
     expect(themeRule).toContain('--weave-switch-thumb-drag-max-width:1.35;')
     expect(themeRule).toContain('--weave-switch-track-shadow:')
     expect(themeRule).toContain('--weave-switch-thumb-shadow:')
     expect(themeRule).toContain('--weave-switch-thumb-hover-shadow:')
     expect(stylesheet).toContain('--weave-component-box-shadow: var(--weave-switch-track-shadow)')
+    expect(stylesheet).toContain(
+      '--weave-component-border-top-width: var(--weave-switch-border-width)',
+    )
+    expect(stylesheet).toContain('--weave-component-border-style: solid')
     expect(stylesheet).toContain('--weave-component-box-shadow: var(--weave-switch-thumb-shadow)')
     expect(stylesheet).toContain('--weave-switch-thumb-hover-shadow')
     expect(stylesheet).toContain('--weave-component-top: 50%;')

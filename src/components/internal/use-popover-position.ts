@@ -4,7 +4,7 @@ import { length } from '../../core/values'
 import type { Length } from '../../core/view-types'
 import { cssLengthPixels } from './css-length-pixels'
 import { type PopoverCrossAlignment, resolvePopoverPosition } from './popover-position'
-import { trackVisualAnchor, visualAnchorInteractionEvents } from './visual-anchor-tracker'
+import { trackVisualAnchor } from './visual-anchor-tracker'
 
 interface PopoverPositionState {
   left: number
@@ -92,8 +92,6 @@ export function usePopoverPosition(
       additionalTargets: [panel],
       trackScroll: true,
       trackMutations: true,
-      interactionEvents: visualAnchorInteractionEvents,
-      continuousAnimations: true,
     })
   }, [crossAlignment, offset, panelRef, placement, present, targetRef, viewportPadding])
 

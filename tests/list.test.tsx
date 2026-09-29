@@ -447,6 +447,7 @@ describe('List', () => {
   it('keeps the default List borderless and selected rows clearly emphasized', () => {
     expect(defaultTheme.components?.List?.base?.borderWidth).toBe(0)
     expect(defaultTheme.components?.List?.base?.borderColor).toBeUndefined()
+    expect(defaultTheme.components?.ListItem?.base?.radius).toBe(0)
     expect(defaultTheme.components?.ListItem?.base?.selectedBackground).toBe(
       'color-mix(in srgb, var(--weave-color-primary) 14%, var(--weave-color-surface))',
     )

@@ -147,6 +147,7 @@ export function useViewAnimation<TElement extends HTMLElement>(
       pendingStart.current = undefined
       pendingKey.current = undefined
       waitingForFinish.current = false
+      activeKey.current = undefined
       sequence.current?.cancel()
       sequence.current = undefined
       reducedAnimation.current?.cancel()

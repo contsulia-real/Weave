@@ -1,6 +1,6 @@
 import { act, cleanup, fireEvent, render, waitFor } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { Combobox, ComboboxOption, createTheme, ThemeProvider } from '../src'
+import { Combobox, ComboboxOption, createTheme, defaultTheme, ThemeProvider } from '../src'
 
 afterEach(cleanup)
 
@@ -458,6 +458,29 @@ describe('Combobox', () => {
         </Combobox>,
       ),
     ).toThrow('Combobox option value "same" is duplicated')
+  })
+
+  it('aligns the default chevron inset with the shared Input surface padding', () => {
+    expect(defaultTheme.components?.Combobox?.base?.actionInset).toBe(
+      defaultTheme.components?.Input?.base?.paddingX,
+    )
+
+    const { getByRole } = render(
+      <Combobox>
+        <ComboboxOption value="alpha" text="Alpha" />
+      </Combobox>,
+    )
+    const root = getByRole('combobox').closest('.weave-combobox-root')!
+    const themeClass = [...root.classList].find((name) => name.startsWith('weave-combobox-theme-'))
+
+    expect(themeClass).toBeDefined()
+
+    const runtimeStyle =
+      document.querySelector<HTMLStyleElement>(
+        'style[data-weave-runtime-class="' + themeClass + '"]',
+      )?.textContent ?? ''
+
+    expect(runtimeStyle).toContain('--weave-combobox-action-inset: 0.875rem')
   })
 
   it('uses dedicated Combobox theme variables and listbox motion', async () => {

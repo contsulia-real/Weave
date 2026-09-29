@@ -2262,7 +2262,7 @@ url
 
 单行 Input 默认 `clearable=true`。当前实际输入文字非空，且 Input 不是 disabled / readOnly 时显示 clear action；`clearable={false}` 可完全隐藏该 action，`clearLabel` 控制 accessible name，默认 `Clear input`。clear 会把非受控 input 直接清空、调用 `onChange("")` 并把 focus 保持 / 恢复到真实 input；受控 Input 只发出 `onChange("")`，最终 value 仍由调用方决定。multiline Input 不提供 clear action。
 
-Input 的 clear action 直接复用公开 `Button`，不维护私有 button DOM / hover / focus / pressed 视觉；`viewProps.ref` 仍然指向真实 `<input>`，不会改指 clear wrapper。
+Input 的 clear action 直接复用公开 `Button`，不维护私有 button DOM / hover / focus / pressed 视觉；clear button 在 Input 高度内使用上下左右一致的 inset，文本右侧也保留同等间距；`viewProps.ref` 仍然指向真实 `<input>`，不会改指 clear wrapper。
 
 ## 14.2 多行输入仍然使用 Input
 
@@ -2500,7 +2500,7 @@ Select 不实现第二套 popup 系统。listbox 复用 anchored-overlay infrast
 - 默认 `offset = 0.375rem`；
 - 默认 `viewportPadding = 0.5rem`；
 - 使用实时 anchor rect + panel 尺寸执行 flip / shift；
-- scroll / resize / transform / mutation 后重新定位；
+- scroll / resize / mutation 后重新定位；hover / press / transition / animation 产生的瞬时视觉 transform 不改变 overlay 锚点；
 - trigger 只要仍与 viewport 相交就保持打开；完全离开 viewport 后自动 dismiss；
 - anchor-hidden dismiss 不额外把 focus 拉回已经离屏的 trigger；
 - outside pointer dismiss 关闭 listbox；
@@ -2698,7 +2698,7 @@ Escape                → 关闭，不改变 value / inputValue
 
 ## 14C.5 Anchored listbox
 
-Combobox 复用统一 anchored-overlay 基础设施：8 向 placement、flip / shift、scroll / resize / transform 跟踪、anchor 完全离开 viewport 后 dismiss、outside pointer dismiss 与 exit presence。
+Combobox 复用统一 anchored-overlay 基础设施：8 向 placement、flip / shift、scroll / resize / mutation 跟踪、anchor 完全离开 viewport 后 dismiss、outside pointer dismiss 与 exit presence。hover / press / transition / animation 产生的瞬时视觉 transform 不改变 listbox 锚点。
 
 listbox 默认至少和 input anchor 一样宽；input 宽度变化时会实时更新最小宽度。`offset` 默认 0.375rem，`viewportPadding` 默认 0.5rem。
 
@@ -4800,7 +4800,7 @@ ListItem 是“列表行 / 可选择项”，不是 Button。
 默认视觉：
 
 - List 自身是一个轻量 surface 容器，默认不预设边框；统一圆角和小幅内边距用于组织多行，若产品需要外框再通过 `theme.components.List.base` 显式配置；
-- ListItem 是连续 row，不是彼此独立的卡片或大胶囊；默认行圆角必须明显小于外层 List；
+- ListItem 是连续 row，不是彼此独立的卡片或大胶囊；默认行不设圆角，产品需要时再通过 `theme.components.ListItem.base.radius` 显式配置；
 - flat surface，不使用 Button 的 depth / hoverLift / pressDepth；
 - hover 只改变行 surface；
 - active 只表达当前直接操作；
@@ -5167,7 +5167,7 @@ Weave 默认主题内置完整 light / dark 配色。`ThemeProvider` 未显式�
 
 默认深色模式不是对浅色值做滤镜或简单反相，而是提供独立的语义 token：深色 surface、提高亮度的 primary、适配深色背景的正文 / 次级文字、outline、状态色、focus 色与阴影。组件继续只消费语义 token，不需要知道当前模式。
 
-深色模式必须保持与浅色模式相同的组件设计语言，而不是另起一套“加边框提高对比度”的规则。Button 继续沿用同一套 variant 配方与实体厚度：rest 有 depth，hover 抬起并增加 depth，press 下沉并收缩 depth；dark 只替换语义 token 和必要的阴影颜色。Switch 继续保持“track 凹陷、thumb 凸起”的物理层级：off track 沿用默认混色并用方向性 inset shadow 表达凹槽，不使用均匀 outline；on track 使用 primary；thumb 用外部投影与顶部高光表达突起。
+深色模式必须保持与浅色模式相同的组件设计语言，而不是另起一套“加边框提高对比度”的规则。Button 继续沿用同一套 variant 配方与实体厚度：rest 有 depth，hover 抬起并增加 depth，press 下沉并收缩 depth；dark 只替换语义 token 和必要的阴影颜色。Switch 继续保持“track 凹陷、thumb 凸起”的物理层级：track 与 Input / Select / Combobox 共用 Input surface 的 border color / width，并继续用方向性 inset shadow 表达凹槽；on track 使用 primary；thumb 用外部投影与顶部高光表达突起。
 
 默认深色核心颜色：
 
@@ -6373,7 +6373,7 @@ CSS variables + runtime classes + framework stylesheet
 
 其中 `Presence`、Provider 与 Hook 不属于 ViewHost 宿主链路；它们分别负责生命周期编排和 React context / 命令式能力。只有实际承载 DOM 的组件才进入 `useViewHost → DOM + CSS` 这条宿主路径。
 
-内部实现按职责继续拆分而不是形成新的集中式 god-file：静态 framework stylesheet 共享统一安装器；组件主题解析按 controls / actions / progress / overlays / lists 分域；List 的内容归一化、selection、roving focus 与 virtualization layout 分离；公开 `Presence` 与 Badge / ToolTip / Popover / Snack / Menu / Select / Combobox 共用同一个 exit-presence 生命周期引擎；`Presence` 通过注册的子宿主协调多项 exit，其余组件通过自身 transition / animation 完成信号与 timeout fallback 结束退出，Badge / ToolTip / Popover / Menu / Select / Combobox 的视觉锚点更新复用统一的 rAF / observer 跟踪基础设施；Popover / Menu root / Select / Combobox 进一步共用 anchored-overlay 的 viewport-exit dismiss helper，组件层只决定 dismiss 后的 focus / selection 语义，不重复判断 anchor visibility；Snack 的 lifetime、内容渲染、队列策略与 region registry / host positioning 保持独立职责；队列补位直接复用 `View.layoutAnimation`，不维护 Snack 私有 FLIP 引擎。公开 API 不暴露这些内部 helper。
+内部实现按职责继续拆分而不是形成新的集中式 god-file：静态 framework stylesheet 共享统一安装器；组件主题解析按 controls / actions / progress / overlays / lists 分域；List 的内容归一化、selection、roving focus 与 virtualization layout 分离；公开 `Presence` 与 Badge / ToolTip / Popover / Snack / Menu / Select / Combobox 共用同一个 exit-presence 生命周期引擎；`Presence` 通过注册的子宿主协调多项 exit，其余组件通过自身 transition / animation 完成信号与 timeout fallback 结束退出，Badge / ToolTip / Popover / Menu / Select / Combobox 的锚点更新复用统一的 rAF / observer 跟踪基础设施，但 Badge 单独启用实时视觉 transform 跟随，anchored overlay 不跟随 hover / press 等瞬时视觉 transform；Popover / Menu root / Select / Combobox 进一步共用 anchored-overlay 的 viewport-exit dismiss helper，组件层只决定 dismiss 后的 focus / selection 语义，不重复判断 anchor visibility；Snack 的 lifetime、内容渲染、队列策略与 region registry / host positioning 保持独立职责；队列补位直接复用 `View.layoutAnimation`，不维护 Snack 私有 FLIP 引擎。公开 API 不暴露这些内部 helper。
 
 ---
 

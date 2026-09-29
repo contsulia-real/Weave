@@ -518,7 +518,7 @@ export const defaultTheme: ResolvedTheme = {
         iconSize: 1,
         actionSize: 1.75,
         actionGap: 0.5,
-        actionInset: 0.625,
+        actionInset: inputBase.paddingX,
       },
       listbox: {
         ...optionListboxBase,
@@ -871,7 +871,7 @@ export const defaultTheme: ResolvedTheme = {
         color: 'tertiary',
         secondaryColor: 'secondary',
         selectedColor: 'primary',
-        radius: 'small',
+        radius: 0,
         paddingX: 0.75,
         paddingY: 0.5625,
         gap: 0.625,

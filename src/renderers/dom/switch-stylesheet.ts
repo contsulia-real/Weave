@@ -22,6 +22,15 @@ const stylesheet = `
   --weave-component-width: var(--weave-switch-width);
   --weave-component-height: var(--weave-switch-height);
   --weave-component-background: var(--weave-switch-background);
+  --weave-component-border-top-width: var(--weave-switch-border-width);
+  --weave-component-border-right-width: var(--weave-switch-border-width);
+  --weave-component-border-bottom-width: var(--weave-switch-border-width);
+  --weave-component-border-left-width: var(--weave-switch-border-width);
+  --weave-component-border-style: solid;
+  --weave-component-border-top-color: var(--weave-switch-border-color);
+  --weave-component-border-right-color: var(--weave-switch-border-color);
+  --weave-component-border-bottom-color: var(--weave-switch-border-color);
+  --weave-component-border-left-color: var(--weave-switch-border-color);
   --weave-component-border-top-left-radius: var(--weave-switch-radius);
   --weave-component-border-top-right-radius: var(--weave-switch-radius);
   --weave-component-border-bottom-right-radius: var(--weave-switch-radius);
@@ -32,7 +41,6 @@ const stylesheet = `
 
   appearance: none;
   -webkit-appearance: none;
-  border: 0;
   padding: 0;
   font: inherit;
   text-align: inherit;

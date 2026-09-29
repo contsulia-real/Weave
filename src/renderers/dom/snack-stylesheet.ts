@@ -77,10 +77,10 @@ const stylesheet = `
   --weave-snack-exit-y: 0rem;
 
   opacity: 1;
-  translate: 0 0;
-  will-change: opacity, translate;
+  --weave-component-transform: translateY(0);
+  will-change: opacity, transform;
 
-  --weave-component-transition-property: opacity, translate;
+  --weave-component-transition-property: opacity, transform;
   --weave-component-transition-duration:
     var(--weave-motion-duration-fast),
     var(--weave-motion-duration-normal);
@@ -107,14 +107,14 @@ const stylesheet = `
 @starting-style {
   :where(.weave-snack[data-weave-snack-state="open"]) {
     opacity: 0;
-    translate: 0 var(--weave-snack-enter-y);
+    --weave-component-transform: translateY(var(--weave-snack-enter-y));
   }
 }
 
 :where(.weave-snack[data-weave-snack-state="closing"]) {
   opacity: 0;
-  translate: 0 var(--weave-snack-exit-y);
-  --weave-component-transition-property: opacity, translate;
+  --weave-component-transform: translateY(var(--weave-snack-exit-y));
+  --weave-component-transition-property: opacity, transform;
   --weave-component-transition-duration:
     var(--weave-motion-duration-fast),
     var(--weave-motion-duration-fast);
