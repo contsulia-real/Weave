@@ -3,9 +3,8 @@ import type {
   ReactNode,
 } from 'react'
 import type {
-  IconComponent,
-  IconSvg,
-} from './icon-types'
+  ButtonIcon,
+} from './button-types'
 import type {
   PopoverPlacement,
 } from './popover-types'
@@ -18,8 +17,7 @@ import type {
 export type SelectValue = string
 
 export type SelectIcon =
-  | IconComponent
-  | IconSvg
+  ButtonIcon
 
 export type SelectPlacement =
   PopoverPlacement

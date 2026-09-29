@@ -3,9 +3,8 @@ import type {
   ReactNode,
 } from 'react'
 import type {
-  IconComponent,
-  IconSvg,
-} from './icon-types'
+  ButtonIcon,
+} from './button-types'
 import type {
   PopoverPlacement,
 } from './popover-types'
@@ -19,7 +18,7 @@ export type MenuPlacement =
   PopoverPlacement
 
 export type MenuItemIcon =
-  IconComponent | IconSvg
+  ButtonIcon
 
 export type MenuViewProps =
   Omit<
