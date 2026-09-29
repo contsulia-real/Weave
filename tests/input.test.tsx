@@ -333,7 +333,7 @@ describe('Input', () => {
       '--weave-input-min-width:12rem;',
     )
     expect(rule).toContain(
-      '--weave-input-border-width:0rem;',
+      '--weave-input-border-width:0.0625rem;',
     )
     expect(rule).toContain(
       '--weave-input-radius:0.75rem;',

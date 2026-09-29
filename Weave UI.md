@@ -2305,7 +2305,7 @@ focus       = 0.125rem focus outline
 focusOffset = 0.0625rem
 ```
 
-Input / Select / Combobox 默认使用完全相同的 Input field surface。默认 surface 直接复用当前 theme 的 Switch track background 与 trackShadow：无实体 border、无 hover 额外加深、无 thumb 式凸起、无底边 extrusion、无外凸 drop shadow。Focus 只叠加既有 outline，不改变凹陷本身。禁止为了实现 Select 或 Combobox 再复制一份“看起来差不多”的 input CSS，也禁止为了共享这些视觉再增加一个与 Input 平行的 Field Control 层。
+Input / Select / Combobox 默认使用完全相同的 Input field surface。默认 surface 保留既有 Input border，并复用当前 theme 的 Switch track background 与 trackShadow；不增加 hover 额外加深、thumb 式凸起、底边 extrusion 或外凸 drop shadow。Focus 只叠加既有 outline，不改变凹陷本身。禁止为了实现 Select 或 Combobox 再复制一份“看起来差不多”的 input CSS，也禁止为了共享这些视觉再增加一个与 Input 平行的 Field Control 层。
 
 单行 Input 不再用 `paddingY` 把自身撑高；垂直尺寸由共享 `minHeight + typography` 基线统一。`Input.base.paddingY` 只用于 multiline textarea 的内容内边距。
 
