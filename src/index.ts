@@ -26,7 +26,7 @@ export { ToolTip } from './components/ToolTip'
 export { Popover } from './components/Popover'
 export { Menu } from './components/Menu'
 export { MenuItem } from './components/MenuItem'
-export { MenuSeparator } from './components/MenuSeparator'
+export { Divider } from './components/Divider'
 export { Snack } from './components/Snack'
 export { List } from './components/List'
 export { ListItem } from './components/ListItem'
@@ -105,7 +105,6 @@ export type {
   MenuTheme,
   MenuThemeBase,
   MenuThemeItem,
-  MenuThemeSeparator,
   PopoverTheme,
   PopoverThemeBase,
   ProgressTheme,
@@ -292,10 +291,14 @@ export type {
   MenuItemViewProps,
   MenuPlacement,
   MenuProps,
-  MenuSeparatorProps,
-  MenuSeparatorViewProps,
   MenuViewProps,
 } from './core/menu-types'
+
+export type {
+  DividerDirection,
+  DividerProps,
+  DividerViewProps,
+} from './core/divider-types'
 
 export type {
   SnackContainer,

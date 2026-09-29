@@ -65,7 +65,6 @@ export function resolveMenuTheme(
   const component = theme.components.Menu
   const base = component?.base
   const item = component?.item
-  const separator = component?.separator
 
   return {
     '--weave-menu-background': color(base?.background),
@@ -104,9 +103,6 @@ export function resolveMenuTheme(
       item?.focusOutlineOffset,
     ),
     '--weave-menu-item-disabled-opacity': item?.disabledOpacity,
-    '--weave-menu-separator-color': color(separator?.color),
-    '--weave-menu-separator-thickness': length(separator?.thickness),
-    '--weave-menu-separator-inset': length(separator?.inset),
   }
 }
 

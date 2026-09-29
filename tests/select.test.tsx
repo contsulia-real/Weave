@@ -852,6 +852,10 @@ describe('Select', () => {
       )
     expect(runtimeStyle)
       .toContain(
+        '--weave-select-listbox-gap: 0.25rem',
+      )
+    expect(runtimeStyle)
+      .toContain(
         '--weave-color-primary',
       )
     expect(stylesheet)

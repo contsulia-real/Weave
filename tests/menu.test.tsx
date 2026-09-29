@@ -13,9 +13,9 @@ import {
 } from 'vitest'
 import {
   Button,
+  Divider,
   Menu,
   MenuItem,
-  MenuSeparator,
   ThemeProvider,
   createTheme,
 } from '../src'
@@ -865,7 +865,7 @@ describe('Menu', () => {
           }
         >
           <MenuItem text="Normal" />
-          <MenuSeparator />
+          <Divider gap={0.25} />
           <MenuItem
             text="Delete"
             danger
@@ -925,18 +925,20 @@ describe('Menu', () => {
       .toContain(
         'data-weave-menu-item-danger',
       )
-    expect(stylesheet)
-      .toContain(
-        '.weave-menu-separator)::before',
-      )
-    expect(stylesheet)
-      .toContain(
-        '--weave-component-height: 0rem;',
-      )
-    expect(runtimeStyle)
-      .not.toContain(
-        '--weave-menu-separator-margin-y',
-      )
+
+    const divider =
+      getByRole('separator')
+
+    expect(
+      divider.getAttribute(
+        'data-weave-divider-direction',
+      ),
+    ).toBe('horizontal')
+    expect(
+      divider.style.getPropertyValue(
+        '--weave-divider-gap',
+      ),
+    ).toBe('0.25rem')
     expect(stylesheet)
       .toContain(
         '@starting-style',

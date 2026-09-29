@@ -430,16 +430,9 @@ export interface MenuThemeItem {
   disabledOpacity?: number
 }
 
-export interface MenuThemeSeparator {
-  color?: string
-  thickness?: ThemeScaleValue
-  inset?: ThemeScaleValue
-}
-
 export interface MenuTheme {
   base?: MenuThemeBase
   item?: MenuThemeItem
-  separator?: MenuThemeSeparator
 }
 
 export interface SnackThemeBase {

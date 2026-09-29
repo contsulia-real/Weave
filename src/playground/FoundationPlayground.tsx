@@ -20,7 +20,7 @@ import {
   Link,
   Menu,
   MenuItem,
-  MenuSeparator,
+  Divider,
   Presence,
   Popover,
   Row,
@@ -476,6 +476,35 @@ function SelectPlayground() {
   )
 }
 
+function DividerPlayground() {
+  return (
+    <Column gap={1} width={18}>
+      <Text typo="label-medium">
+        Horizontal
+      </Text>
+      <Divider />
+      <Divider gap={0.5} />
+      <Divider gap={0.5} size={2} />
+
+      <Text typo="label-medium">
+        Vertical
+      </Text>
+      <Row
+        height={4}
+        align="stretch"
+      >
+        <Text>A</Text>
+        <Divider
+          direction="vertical"
+          gap={0.5}
+          size={2}
+        />
+        <Text>B</Text>
+      </Row>
+    </Column>
+  )
+}
+
 function MenuPlayground() {
   const [lastAction, setLastAction] =
     useState('None')
@@ -512,7 +541,7 @@ function MenuPlayground() {
           disabled
         />
 
-        <MenuSeparator />
+        <Divider gap={0.25} />
 
         <MenuItem
           text="Share"
@@ -548,7 +577,7 @@ function MenuPlayground() {
           }
         />
 
-        <MenuSeparator />
+        <Divider gap={0.25} />
 
         <MenuItem
           text="Delete"
@@ -1505,6 +1534,13 @@ export function FoundationPlayground() {
         description="select-only combobox：focus 保持在 trigger；ArrowUp / ArrowDown / Home / End 改变 active option，Enter / Space 提交，支持 typeahead、disabled option 与 anchored overlay collision。"
       >
         <SelectPlayground />
+      </PlaygroundSection>
+
+      <PlaygroundSection
+        title="Divider"
+        description="通用分割线：horizontal 的 gap 作用于上下，vertical 的 gap 作用于左右；gap=0 时不额外撑开主轴布局。"
+      >
+        <DividerPlayground />
       </PlaygroundSection>
 
       <PlaygroundSection

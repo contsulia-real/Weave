@@ -108,7 +108,11 @@ describe('List', () => {
       { id: 'first', text: 'First' },
       { id: 'second', text: 'Second' },
     ] as const
-    const { getByRole, rerender } = render(
+    const {
+      getByRole,
+      queryAllByRole,
+      rerender,
+    } = render(
       <List items={items} />,
     )
 
@@ -119,16 +123,33 @@ describe('List', () => {
       ),
     ).toBe('true')
 
-    const stylesheet =
+    const dividers =
+      queryAllByRole('separator')
+
+    expect(dividers)
+      .toHaveLength(1)
+    expect(
+      dividers[0]?.getAttribute(
+        'data-weave-divider-direction',
+      ),
+    ).toBe('horizontal')
+    expect(
+      dividers[0]?.style.getPropertyValue(
+        '--weave-divider-gap',
+      ),
+    ).toBe('0rem')
+
+    const listStyles =
       document.querySelector<HTMLStyleElement>(
         'style[data-weave-list-styles]',
       )?.textContent ?? ''
-    expect(stylesheet).toContain(
-      'data-weave-list-dividers="true"',
-    )
-    expect(stylesheet).toContain(
-      'data-weave-list-virtual-index="0"',
-    )
+
+    expect(listStyles)
+      .not.toContain('::before')
+    expect(listStyles)
+      .not.toContain(
+        'data-weave-list-dividers="true"',
+      )
 
     rerender(
       <List items={items} noDividers />,
@@ -139,6 +160,9 @@ describe('List', () => {
         'data-weave-list-dividers',
       ),
     ).toBe('false')
+    expect(
+      queryAllByRole('separator'),
+    ).toHaveLength(0)
   })
 
   it('supports composed ListItem children with the same id semantics', () => {

@@ -219,22 +219,6 @@ const stylesheet = `
   margin-inline-start: auto;
 }
 
-:where(.weave-menu-separator) {
-  --weave-component-position: relative;
-  --weave-component-height: 0rem;
-  --weave-component-flex-shrink: 0;
-}
-
-:where(.weave-menu-separator)::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: var(--weave-menu-separator-inset);
-  right: var(--weave-menu-separator-inset);
-  height: var(--weave-menu-separator-thickness);
-  background: var(--weave-menu-separator-color);
-  pointer-events: none;
-}
 `
 
 export function ensureMenuStylesheet(): void {

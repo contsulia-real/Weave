@@ -71,13 +71,3 @@ export interface MenuItemProps {
   viewProps?: MenuItemViewProps
 }
 
-export type MenuSeparatorViewProps =
-  Omit<
-    ViewCoreProps<HTMLDivElement>,
-    'children' | 'role'
-  > &
-  ViewDynamicBreakpointProps
-
-export interface MenuSeparatorProps {
-  viewProps?: MenuSeparatorViewProps
-}

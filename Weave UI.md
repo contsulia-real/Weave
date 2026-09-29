@@ -2570,7 +2570,7 @@ disabled
 
 trigger 回显当前 selected option 的 `text` 与可选 `icon`；`secondaryText` 只属于 listbox option，不塞进 trigger。没有 selected option 时显示 `placeholder`。
 
-listbox option 默认保留 selected check affordance；selected 与 active 是不同状态，可以同时存在。
+listbox option 默认保留 selected check affordance；selected 与 active 是不同状态，可以同时存在。Option 之间默认使用 `0.25rem` gap，Select 不在 option 之间插入 Divider。
 
 ## 14A.7 Theme
 
@@ -2602,6 +2602,52 @@ multi-select
 可输入 / 可过滤的候选输入属于后续 `Combobox`。Select 不通过不断增加布尔属性演化成 Combobox。
 
 ---
+# 14B. `Divider`
+
+`Divider` 是通用分割线组件，不属于 Menu 或 List 私有实现。
+
+```tsx
+<Divider />
+
+<Divider
+  direction="vertical"
+  gap={0.5}
+/>
+```
+
+公开属性：
+
+```text
+direction
+  horizontal
+  vertical
+
+gap
+size
+viewProps
+```
+
+默认：
+
+```text
+direction = horizontal
+gap = 0
+size = 1
+```
+
+`size` 设置分割线厚度，类型为 number，**固定以 px 为单位**。例如 `size={1}` 表示 1px，`size={2}` 表示 2px。它不使用 Weave 常规数字 Length 的 rem 规则。
+
+`gap` 始终表示**分割线两侧的留白**：
+
+- `direction="horizontal"`：gap 作用于上 / 下；
+- `direction="vertical"`：gap 作用于左 / 右。
+
+Divider 自身负责 `role="separator"` 与对应的 `aria-orientation`。
+
+当 `gap=0` 时，Divider 的主轴布局尺寸为 0，线绘制在内容边界上，不额外撑开布局。因此 List 可以用 `<Divider gap={0} />` 保持紧邻 item 的边界分割；Menu 若需要视觉分组留白，则直接写带 gap 的 Divider。
+
+---
+
 # 15. `Switch`
 
 `Switch` 是基础组件。
@@ -3836,7 +3882,7 @@ Popover 使用 surface / outline / ambient shadow 表达可交互浮层材质；
     }
   />
 
-  <MenuSeparator />
+  <Divider gap={0.25} />
   <MenuItem text="Delete" danger />
 </Menu>
 ```
@@ -3871,9 +3917,9 @@ submenu
 viewProps
 ```
 
-`MenuSeparator` 只表示菜单项之间的语义分隔，不参与 focus 顺序。默认 separator 和 List divider 一样绘制在相邻内容的边界上，separator 自身为零布局高度，不额外制造上下 gap；需要额外留白时由调用方通过 `viewProps` 明确添加。
+Menu 不定义私有 separator 组件。需要分组时直接插入通用 `Divider`；Menu 通常使用带 gap 的 Divider，例如 `<Divider gap={0.25} />`。
 
-`submenu` 接收普通 ReactNode，因此 `MenuItem` 可以递归包含新的 `MenuItem / MenuSeparator`，框架不限制嵌套层数，也不引入第二套 SubMenu 组件。
+`submenu` 接收普通 ReactNode，因此 `MenuItem` 可以递归包含新的 `MenuItem / Divider`，框架不限制嵌套层数，也不引入第二套 SubMenu 组件。
 
 ## 19.6.2 语义与 focus
 
@@ -3939,10 +3985,9 @@ root 和所有 submenu 都使用同一个 semantic `overlay` layer、ThemeProvid
 ```text
 theme.components.Menu.base
 theme.components.Menu.item
-theme.components.Menu.separator
 ```
 
-`base` 控制 surface / border / radius / padding / minWidth / maxWidth / shadow / motionOffset；`item` 控制普通、hover、active、danger、disabled、icon、typography 与 focus ring；`separator` 控制颜色、厚度与 inset。separator 默认不拥有独立垂直间距。
+`base` 控制 surface / border / radius / padding / minWidth / maxWidth / shadow / motionOffset；`item` 控制普通、hover、active、danger、disabled、icon、typography 与 focus ring。分割线不属于 MenuTheme，由通用 `Divider` 自己负责。
 
 `viewProps` 仍是通用 escape hatch，但 `role`、fixed positioning、collision 坐标和菜单键盘语义由 Menu 自己拥有。
 
@@ -4582,13 +4627,13 @@ orientation
 
 `gap={0.5}` 表示 `0.5rem`。
 
-List 默认在相邻 item 之间显示分割线；需要无分割线列表时使用：
+List 默认在相邻 item 之间插入通用 `Divider`，并固定使用 `gap={0}`，因此分割线不会额外撑开 item 间距；需要无分割线列表时使用：
 
 ```tsx
 <List items={items} noDividers />
 ```
 
-`noDividers` 只控制 item 之间的视觉分割线，不改变 ListItem 的选择、焦点、虚拟化或布局语义。
+`noDividers` 只控制 item 之间是否渲染 Divider，不改变 ListItem 的选择、焦点、虚拟化或布局语义。
 
 ## 21.6 键盘、焦点与可访问性
 
@@ -6188,6 +6233,7 @@ Weave 公开 API
 │  ├─ Image
 │  ├─ Input
 │  ├─ Icon
+│  ├─ Divider
 │  ├─ Switch
 │  ├─ Radio
 │  ├─ Checkbox
@@ -6201,7 +6247,7 @@ Weave 公开 API
 │  ├─ ToolTip
 │  ├─ Popover
 │  ├─ Select / SelectOption
-│  ├─ Menu / MenuItem / MenuSeparator
+│  ├─ Menu / MenuItem
 │  ├─ Snack
 │  ├─ List
 │  └─ ListItem

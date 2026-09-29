@@ -10,6 +10,7 @@ import { resolveListTheme } from '../renderers/dom/resolve-component-theme'
 import { ensureListStylesheet } from '../renderers/dom/list-stylesheet'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { useTheme } from '../theme/theme-context'
+import { Divider } from './Divider'
 import { View } from './View'
 import { ListContext } from './internal/list-context'
 import {
@@ -167,14 +168,53 @@ export function List(
             orientation={orientation}
             rootRef={rootRef}
             focusId={focusId}
+            showDividers={
+              !noDividers
+            }
           />
         )
-      : (
-          dataEntries === undefined
-            ? props.children
-            : dataEntries.map(
-                (entry) => entry.node,
-              )
+      : virtualEntries.map(
+          (entry, index) => (
+            <div
+              key={entry.id}
+              role="presentation"
+              data-weave-list-entry=""
+              data-weave-list-entry-index={
+                index
+              }
+              style={{
+                display: 'flex',
+                flexDirection:
+                  orientation ===
+                    'vertical'
+                    ? 'column'
+                    : 'row',
+                alignItems:
+                  'stretch',
+                minWidth: 0,
+                width:
+                  orientation ===
+                    'vertical'
+                    ? '100%'
+                    : undefined,
+              }}
+            >
+              {!noDividers &&
+              index > 0 ? (
+                <Divider
+                  direction={
+                    orientation ===
+                      'vertical'
+                      ? 'horizontal'
+                      : 'vertical'
+                  }
+                  gap={0}
+                />
+              ) : null}
+
+              {entry.node}
+            </div>
+          ),
         )
 
   return (

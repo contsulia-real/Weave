@@ -503,7 +503,7 @@ export const defaultTheme: ResolvedTheme = {
         borderWidth: 0.0625,
         radius: 'medium',
         padding: 0.25,
-        gap: 0,
+        gap: 0.25,
         minWidth: 12,
         maxWidth: 24,
         maxHeight: 20,
@@ -817,11 +817,6 @@ export const defaultTheme: ResolvedTheme = {
         focusOutlineStyle: 'solid',
         focusOutlineOffset: 0.0625,
         disabledOpacity: 0.5,
-      },
-      separator: {
-        color: 'outline',
-        thickness: 0.0625,
-        inset: 0.5,
       },
     },
     Snack: {

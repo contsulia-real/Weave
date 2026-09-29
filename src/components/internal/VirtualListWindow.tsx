@@ -13,6 +13,7 @@ import type {
 import type {
   ListOrientation,
 } from '../../core/list-types'
+import { Divider } from '../Divider'
 import {
   createVirtualLayout,
   readVirtualViewport,
@@ -36,6 +37,7 @@ interface VirtualListWindowProps {
     RefObject<HTMLDivElement | null>
   focusId:
     string | null
+  showDividers: boolean
 }
 
 function VirtualItem({
@@ -44,6 +46,7 @@ function VirtualItem({
   offset,
   orientation,
   onMeasure,
+  showDivider,
 }: {
   entry: VirtualListEntry
   index: number
@@ -55,6 +58,7 @@ function VirtualItem({
     measurement:
       VirtualMeasurement,
   ): void
+  showDivider: boolean
 }) {
   const ref =
     useRef<HTMLDivElement>(null)
@@ -153,11 +157,17 @@ function VirtualItem({
           top: offset,
           left: 0,
           right: 0,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'stretch',
         }
       : {
           position: 'absolute',
           left: offset,
           top: 0,
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'stretch',
         }
 
   return (
@@ -173,6 +183,18 @@ function VirtualItem({
       }
       style={style}
     >
+      {showDivider ? (
+        <Divider
+          direction={
+            orientation ===
+              'vertical'
+              ? 'horizontal'
+              : 'vertical'
+          }
+          gap={0}
+        />
+      ) : null}
+
       {entry.node}
     </div>
   )
@@ -183,6 +205,7 @@ export function VirtualListWindow({
   orientation,
   rootRef,
   focusId,
+  showDividers,
 }: VirtualListWindowProps) {
   const [
     measurements,
@@ -422,6 +445,10 @@ export function VirtualListWindow({
               }
               onMeasure={
                 onMeasure
+              }
+              showDivider={
+                showDividers &&
+                index > 0
               }
             />
           )

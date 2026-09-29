@@ -32,7 +32,7 @@ The main layers are:
 
 ### Content and actions
 
-`Text`, `Image`, `Icon`, `Link`, `Badge`, `Button`.
+`Text`, `Image`, `Icon`, `Divider`, `Link`, `Badge`, `Button`.
 
 ### Forms and status
 
@@ -40,7 +40,7 @@ The main layers are:
 
 ### Composite UI
 
-`ToolTip`, `Popover`, `Menu`, `MenuItem`, `MenuSeparator`, `Snack`, `SnackProvider`, `useSnack`, `List`, `ListItem`.
+`ToolTip`, `Popover`, `Menu`, `MenuItem`, `Snack`, `SnackProvider`, `useSnack`, `List`, `ListItem`.
 
 ### Theme and application
 
