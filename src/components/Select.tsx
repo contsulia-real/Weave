@@ -65,8 +65,9 @@ import {
   usePopoverPosition,
 } from './internal/use-popover-position'
 import {
-  useSelectInteraction,
-} from './internal/use-select-interaction'
+  useAnchorViewportDismiss,
+  useOutsideInteractionDismiss,
+} from './internal/use-anchor-viewport-dismiss'
 import {
   useSelectTypeahead,
 } from './internal/use-select-typeahead'
@@ -350,7 +351,12 @@ export function Select({
     hostProps,
   )
 
-  useSelectInteraction(
+  useAnchorViewportDismiss(
+    triggerRef,
+    resolvedOpen,
+    close,
+  )
+  useOutsideInteractionDismiss(
     triggerRef,
     listboxRef,
     resolvedOpen,

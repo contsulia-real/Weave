@@ -64,8 +64,9 @@ import {
   useAnchorWidth,
 } from './internal/use-anchor-width'
 import {
-  useComboboxInteraction,
-} from './internal/use-combobox-interaction'
+  useAnchorViewportDismiss,
+  useOutsideInteractionDismiss,
+} from './internal/use-anchor-viewport-dismiss'
 import {
   useControllableBoolean,
 } from './internal/use-controllable-boolean'
@@ -459,12 +460,17 @@ export function Combobox({
   ])
   /* oxlint-enable react/set-state-in-effect */
 
-  useComboboxInteraction(
+  useAnchorViewportDismiss(
     inputRef,
+    resolvedOpen,
+    close,
+  )
+  useOutsideInteractionDismiss(
     rootRef,
     listboxRef,
     resolvedOpen,
     close,
+    true,
   )
 
   const anchorWidth =

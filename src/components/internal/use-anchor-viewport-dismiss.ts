@@ -47,6 +47,97 @@ function anchorFullyOutsideViewport(
   )
 }
 
+export function useOutsideInteractionDismiss(
+  anchorRef:
+    RefObject<HTMLElement | null>,
+  surfaceRef:
+    RefObject<HTMLElement | null>,
+  active: boolean,
+  onDismiss: () => void,
+  dismissOnFocusOutside = false,
+): void {
+  useEffect(() => {
+    if (!active) return
+
+    const anchor =
+      anchorRef.current
+
+    if (anchor === null) {
+      return
+    }
+
+    const document =
+      anchor.ownerDocument
+
+    const inside = (
+      target: EventTarget | null,
+    ) => {
+      if (!(target instanceof Node)) {
+        return false
+      }
+
+      return (
+        anchorRef.current
+          ?.contains(target) === true ||
+        surfaceRef.current
+          ?.contains(target) === true
+      )
+    }
+
+    const pointerDown = (
+      event: PointerEvent,
+    ) => {
+      if (!inside(event.target)) {
+        onDismiss()
+      }
+    }
+
+    const focusIn = (
+      event: FocusEvent,
+    ) => {
+      if (!inside(event.target)) {
+        onDismiss()
+      }
+    }
+
+    document.addEventListener(
+      'pointerdown',
+      pointerDown,
+      true,
+    )
+
+    if (dismissOnFocusOutside) {
+      document.addEventListener(
+        'focusin',
+        focusIn,
+        true,
+      )
+    }
+
+    return () => {
+      document.removeEventListener(
+        'pointerdown',
+        pointerDown,
+        true,
+      )
+
+      if (dismissOnFocusOutside) {
+        document.removeEventListener(
+          'focusin',
+          focusIn,
+          true,
+        )
+      }
+    }
+  }, [
+    active,
+    anchorRef,
+    dismissOnFocusOutside,
+    onDismiss,
+    surfaceRef,
+  ])
+}
+
 export function useAnchorViewportDismiss(
   targetRef:
     RefObject<HTMLElement | null>,
