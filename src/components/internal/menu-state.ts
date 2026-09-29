@@ -2,13 +2,14 @@ import {
   createContext,
   type RefObject,
 } from 'react'
+import type { Length } from '../../core/view-types'
 
 export interface MenuRootContextValue {
   rootId: string
   closeAll(): void
   closeOnSelect: boolean
-  submenuOffset: string
-  viewportPadding: string
+  submenuOffset: Length
+  viewportPadding: Length
 }
 
 export const MenuRootContext =

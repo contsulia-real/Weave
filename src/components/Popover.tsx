@@ -8,7 +8,6 @@ import {
 import type {
   PopoverProps,
 } from '../core/popover-types'
-import { length } from '../core/values'
 import {
   resolvePopoverTheme,
 } from '../renderers/dom/resolve-component-theme'
@@ -119,12 +118,6 @@ export function Popover({
     children,
   )
 
-  const offsetValue =
-    length(offset) ??
-    '0rem'
-  const viewportPaddingValue =
-    length(viewportPadding) ??
-    '0rem'
   const {
     positioned,
     placement:
@@ -135,8 +128,8 @@ export function Popover({
     panelRef,
     present,
     placement,
-    offsetValue,
-    viewportPaddingValue,
+    offset,
+    viewportPadding,
   )
 
   const handleTransitionEnd = (

@@ -17,7 +17,6 @@ import type {
 import type {
   ViewProps,
 } from '../core/view-types'
-import { length } from '../core/values'
 import {
   resolveInputTheme,
   resolveSelectTheme,
@@ -413,12 +412,6 @@ export function Select({
   ])
   /* oxlint-enable react/set-state-in-effect */
 
-  const offsetValue =
-    length(offset) ??
-    '0rem'
-  const viewportPaddingValue =
-    length(viewportPadding) ??
-    '0rem'
   const {
     positioned,
     placement:
@@ -429,8 +422,8 @@ export function Select({
     listboxRef,
     present,
     placement,
-    offsetValue,
-    viewportPaddingValue,
+    offset,
+    viewportPadding,
   )
 
   const handleClick = (

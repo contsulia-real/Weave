@@ -11,7 +11,6 @@ import {
 import type {
   MenuProps,
 } from '../core/menu-types'
-import { length } from '../core/values'
 import {
   resolveMenuTheme,
 } from '../renderers/dom/resolve-component-theme'
@@ -188,15 +187,6 @@ export function Menu({
     resolvedOpen,
   ])
 
-  const offsetValue =
-    length(offset) ??
-    '0rem'
-  const submenuOffsetValue =
-    length(submenuOffset) ??
-    '0rem'
-  const viewportPaddingValue =
-    length(viewportPadding) ??
-    '0rem'
   const {
     positioned,
     placement:
@@ -207,8 +197,8 @@ export function Menu({
     panelRef,
     present,
     placement,
-    offsetValue,
-    viewportPaddingValue,
+    offset,
+    viewportPadding,
   )
 
   const rootContext =
@@ -217,17 +207,15 @@ export function Menu({
         rootId,
         closeAll,
         closeOnSelect,
-        submenuOffset:
-          submenuOffsetValue,
-        viewportPadding:
-          viewportPaddingValue,
+        submenuOffset,
+        viewportPadding,
       }),
       [
         closeAll,
         closeOnSelect,
         rootId,
-        submenuOffsetValue,
-        viewportPaddingValue,
+        submenuOffset,
+        viewportPadding,
       ],
     )
 

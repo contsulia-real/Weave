@@ -17,7 +17,6 @@ import type {
   ComboboxProps,
   ComboboxValue,
 } from '../core/combobox-types'
-import { length } from '../core/values'
 import {
   resolveComboboxTheme,
 } from '../renderers/dom/resolve-component-theme'
@@ -503,12 +502,6 @@ export function Combobox({
     resolvedOpen,
   ])
 
-  const offsetValue =
-    length(offset) ??
-    '0rem'
-  const viewportPaddingValue =
-    length(viewportPadding) ??
-    '0rem'
   const {
     positioned,
     placement:
@@ -519,8 +512,8 @@ export function Combobox({
     listboxRef,
     present,
     placement,
-    offsetValue,
-    viewportPaddingValue,
+    offset,
+    viewportPadding,
   )
 
   const handleChange = (

@@ -7,6 +7,8 @@ import {
 import type {
   PopoverPlacement,
 } from '../../core/popover-types'
+import type { Length } from '../../core/view-types'
+import { length } from '../../core/values'
 import { cssLengthPixels } from './css-length-pixels'
 import {
   resolvePopoverPosition,
@@ -49,8 +51,8 @@ export function usePopoverPosition(
     RefObject<HTMLDivElement | null>,
   present: boolean,
   placement: PopoverPlacement,
-  offset: string,
-  viewportPadding: string,
+  offset: Length,
+  viewportPadding: Length,
   crossAlignment:
     PopoverCrossAlignment =
       'center',
@@ -116,7 +118,7 @@ export function usePopoverPosition(
           placement,
           cssLengthPixels(
             panel,
-            offset,
+            length(offset) ?? '0rem',
           ),
           {
             width:
@@ -126,7 +128,8 @@ export function usePopoverPosition(
             padding:
               cssLengthPixels(
                 panel,
-                viewportPadding,
+                length(viewportPadding) ??
+                  '0rem',
               ),
           },
           crossAlignment,
