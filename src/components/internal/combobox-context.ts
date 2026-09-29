@@ -1,25 +1,12 @@
-import {
-  createContext,
-} from 'react'
 import type {
-  ComboboxValue,
-} from '../../core/combobox-types'
+  OptionContextValue,
+} from './option-context'
+import {
+  createOptionContext,
+} from './option-context'
 
-export interface ComboboxContextValue {
-  listboxId: string
-  selectedValue:
-    ComboboxValue | null
-  activeValue:
-    ComboboxValue | null
-  setActiveValue(
-    value: ComboboxValue,
-  ): void
-  selectValue(
-    value: ComboboxValue,
-  ): void
-}
+export type ComboboxContextValue =
+  OptionContextValue
 
 export const ComboboxContext =
-  createContext<ComboboxContextValue | null>(
-    null,
-  )
+  createOptionContext()

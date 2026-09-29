@@ -1,126 +1,38 @@
-import {
-  Children,
-  Fragment,
-  isValidElement,
-  type ReactNode,
+import type {
+  ReactNode,
 } from 'react'
 import type {
   SelectOptionDescriptor,
-  SelectOptionProps,
-  SelectValue,
 } from '../../core/select-types'
 import { SelectOption } from '../SelectOption'
-
-function optionTextValue(
-  props: SelectOptionProps,
-): string {
-  if (
-    props.textValue !== undefined
-  ) {
-    return props.textValue
-  }
-
-  if (
-    typeof props.text === 'string' ||
-    typeof props.text === 'number'
-  ) {
-    return String(props.text)
-  }
-
-  return ''
-}
-
-function collectOptions(
-  children: ReactNode,
-  output:
-    SelectOptionDescriptor[],
-): void {
-  Children.forEach(
-    children,
-    (child) => {
-      if (!isValidElement(child)) {
-        return
-      }
-
-      if (child.type === Fragment) {
-        collectOptions(
-          (
-            child.props as {
-              children?: ReactNode
-            }
-          ).children,
-          output,
-        )
-        return
-      }
-
-      if (
-        child.type !== SelectOption
-      ) {
-        return
-      }
-
-      const props =
-        child.props as SelectOptionProps
-
-      output.push({
-        value: props.value,
-        text: props.text,
-        textValue:
-          optionTextValue(props),
-        secondaryText:
-          props.secondaryText,
-        icon: props.icon,
-        disabled:
-          props.disabled === true,
-      })
-    },
-  )
-}
+import {
+  assertUniqueOptionValues,
+  collectOptionElements,
+  optionDescriptor,
+  selectedOptionDescriptor,
+} from './option-collection'
 
 export function selectOptionDescriptors(
   children: ReactNode,
 ): readonly SelectOptionDescriptor[] {
-  const output:
-    SelectOptionDescriptor[] = []
+  const options =
+    collectOptionElements(
+      children,
+      SelectOption,
+    ).map(
+      (element) =>
+        optionDescriptor(
+          element.props,
+        ),
+    )
 
-  collectOptions(
-    children,
-    output,
+  assertUniqueOptionValues(
+    options,
+    'Select',
   )
 
-  const seen =
-    new Set<SelectValue>()
-
-  for (const option of output) {
-    if (seen.has(option.value)) {
-      throw new Error(
-        'Select option value "' +
-          option.value +
-          '" is duplicated',
-      )
-    }
-
-    seen.add(option.value)
-  }
-
-  return output
+  return options
 }
 
-export function selectedDescriptor(
-  options:
-    readonly SelectOptionDescriptor[],
-  value:
-    SelectValue | null,
-):
-  | SelectOptionDescriptor
-  | undefined {
-  if (value === null) {
-    return undefined
-  }
-
-  return options.find(
-    (option) =>
-      option.value === value,
-  )
-}
+export const selectedDescriptor =
+  selectedOptionDescriptor

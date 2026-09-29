@@ -43,10 +43,10 @@ import {
   SelectContext,
 } from './internal/select-context'
 import {
-  initialSelectActiveValue,
-  moveSelectActiveValue,
-  selectOptionId,
-} from './internal/select-navigation'
+  initialOptionActiveValue,
+  moveOptionActiveValue,
+  optionDomId,
+} from './internal/option-navigation'
 import {
   selectOptionDescriptors,
   selectedDescriptor,
@@ -196,7 +196,7 @@ export function Select({
     resolvedOpen
       ? (
           activeValue ??
-          initialSelectActiveValue(
+          initialOptionActiveValue(
             options,
             selectedValue,
           )
@@ -244,7 +244,7 @@ export function Select({
 
         setActiveValue(
           preferred ??
-          initialSelectActiveValue(
+          initialOptionActiveValue(
             options,
             selectedValue,
           ),
@@ -386,7 +386,7 @@ export function Select({
       triggerRef.current
         ?.ownerDocument
         .getElementById(
-          selectOptionId(
+          optionDomId(
             listboxId,
             resolvedActiveValue,
           ),
@@ -478,7 +478,7 @@ export function Select({
       | 'last',
   ) => {
     const next =
-      moveSelectActiveValue(
+      moveOptionActiveValue(
         options,
         resolvedActiveValue,
         move,
@@ -525,7 +525,7 @@ export function Select({
       ) {
         event.preventDefault()
         const next =
-          moveSelectActiveValue(
+          moveOptionActiveValue(
             options,
             null,
             event.key ===
@@ -664,7 +664,7 @@ export function Select({
   const activeDescendant =
     resolvedOpen &&
     resolvedActiveValue !== null
-      ? selectOptionId(
+      ? optionDomId(
           listboxId,
           resolvedActiveValue,
         )
@@ -707,6 +707,7 @@ export function Select({
                   'overlay'
                 }
                 className={[
+                  'weave-option-listbox',
                   'weave-select-listbox',
                   themeClassName,
                   listboxViewProps
@@ -715,12 +716,20 @@ export function Select({
                 data={{
                   ...listboxViewProps
                     .data,
+                  'weave-option-listbox':
+                    '',
+                  'weave-option-listbox-state':
+                    visualState,
                   'weave-select-listbox':
                     '',
                   'weave-select-state':
                     visualState,
                   placement:
                     resolvedPlacement,
+                  'weave-reduced-motion':
+                    reducedMotion
+                      ? 'reduce'
+                      : undefined,
                 }}
                 style={{
                   ...listboxViewProps

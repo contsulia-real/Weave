@@ -842,7 +842,7 @@ describe('Select', () => {
       ''
     const stylesheet =
       document.querySelector<HTMLStyleElement>(
-        'style[data-weave-select-styles]',
+        'style[data-weave-option-listbox-styles]',
       )?.textContent ??
       ''
 
@@ -852,7 +852,7 @@ describe('Select', () => {
       )
     expect(runtimeStyle)
       .toContain(
-        '--weave-select-listbox-gap: 0.25rem',
+        '--weave-option-listbox-gap: 0.25rem',
       )
     expect(runtimeStyle)
       .toContain(
@@ -864,7 +864,7 @@ describe('Select', () => {
       )
     expect(stylesheet)
       .toContain(
-        'data-weave-select-state="closing"',
+        'data-weave-option-listbox-state="closing"',
       )
     expect(stylesheet)
       .toContain(

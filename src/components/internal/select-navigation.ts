@@ -2,41 +2,6 @@ import type {
   SelectOptionDescriptor,
   SelectValue,
 } from '../../core/select-types'
-import {
-  initialOptionActiveValue,
-  moveOptionActiveValue,
-  optionDomId,
-} from './option-navigation'
-
-export function initialSelectActiveValue(
-  options:
-    readonly SelectOptionDescriptor[],
-  selectedValue:
-    SelectValue | null,
-): SelectValue | null {
-  return initialOptionActiveValue(
-    options,
-    selectedValue,
-  )
-}
-
-export function moveSelectActiveValue(
-  options:
-    readonly SelectOptionDescriptor[],
-  current:
-    SelectValue | null,
-  move:
-    | 'previous'
-    | 'next'
-    | 'first'
-    | 'last',
-): SelectValue | null {
-  return moveOptionActiveValue(
-    options,
-    current,
-    move,
-  )
-}
 
 export function findSelectTypeaheadMatch(
   options:
@@ -90,15 +55,5 @@ export function findSelectTypeaheadMatch(
           ),
     )?.value ??
     null
-  )
-}
-
-export function selectOptionId(
-  listboxId: string,
-  value: SelectValue,
-): string {
-  return optionDomId(
-    listboxId,
-    value,
   )
 }

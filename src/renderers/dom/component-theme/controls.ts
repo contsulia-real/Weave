@@ -1,6 +1,8 @@
 import type {
   FieldControlThemeBase,
   ResolvedTheme,
+  SelectThemeListbox,
+  SelectThemeOption,
 } from '../../../theme/theme-types'
 import { typographyStyleVariableReference } from '../../../theme/theme-css'
 import type { SwitchSize } from '../../../core/switch-types'
@@ -87,6 +89,68 @@ function resolveFieldControlTheme(
   }
 }
 
+
+function resolveOptionCollectionTheme(
+  listbox:
+    SelectThemeListbox | undefined,
+  option:
+    SelectThemeOption | undefined,
+): RuntimeStyleDeclarations {
+  return {
+    '--weave-option-listbox-background':
+      color(listbox?.background),
+    '--weave-option-listbox-color':
+      color(listbox?.color),
+    '--weave-option-listbox-border-color':
+      color(listbox?.borderColor),
+    '--weave-option-listbox-border-width':
+      length(listbox?.borderWidth),
+    '--weave-option-listbox-radius':
+      radius(listbox?.radius),
+    '--weave-option-listbox-padding':
+      length(listbox?.padding),
+    '--weave-option-listbox-gap':
+      length(listbox?.gap),
+    '--weave-option-listbox-min-width':
+      length(listbox?.minWidth),
+    '--weave-option-listbox-max-width':
+      length(listbox?.maxWidth),
+    '--weave-option-listbox-max-height':
+      length(listbox?.maxHeight),
+    '--weave-option-listbox-shadow':
+      shadowToken(listbox?.shadow),
+    '--weave-option-listbox-motion-offset':
+      length(listbox?.motionOffset),
+
+    '--weave-option-background':
+      color(option?.background),
+    '--weave-option-active-background':
+      color(option?.activeBackground),
+    '--weave-option-selected-background':
+      color(option?.selectedBackground),
+    '--weave-option-color':
+      color(option?.color),
+    '--weave-option-selected-color':
+      color(option?.selectedColor),
+    '--weave-option-secondary-color':
+      color(option?.secondaryColor),
+    '--weave-option-radius':
+      radius(option?.radius),
+    '--weave-option-padding-x':
+      length(option?.paddingX),
+    '--weave-option-padding-y':
+      length(option?.paddingY),
+    '--weave-option-gap':
+      length(option?.gap),
+    '--weave-option-icon-size':
+      length(option?.iconSize),
+    '--weave-option-check-size':
+      length(option?.checkSize),
+    '--weave-option-disabled-opacity':
+      option?.disabledOpacity,
+  }
+}
+
 export function resolveInputTheme(
   theme: ResolvedTheme,
 ): RuntimeStyleDeclarations {
@@ -127,43 +191,10 @@ export function resolveSelectTheme(
     '--weave-select-icon-size':
       length(base?.iconSize),
 
-    '--weave-select-listbox-background': color(listbox?.background),
-    '--weave-select-listbox-color': color(listbox?.color),
-    '--weave-select-listbox-border-color': color(listbox?.borderColor),
-    '--weave-select-listbox-border-width': length(listbox?.borderWidth),
-    '--weave-select-listbox-radius': radius(listbox?.radius),
-    '--weave-select-listbox-padding': length(listbox?.padding),
-    '--weave-select-listbox-gap': length(listbox?.gap),
-    '--weave-select-listbox-min-width': length(listbox?.minWidth),
-    '--weave-select-listbox-max-width': length(listbox?.maxWidth),
-    '--weave-select-listbox-max-height': length(listbox?.maxHeight),
-    '--weave-select-listbox-shadow': shadowToken(listbox?.shadow),
-    '--weave-select-listbox-motion-offset': length(
-      listbox?.motionOffset,
+    ...resolveOptionCollectionTheme(
+      listbox,
+      option,
     ),
-
-    '--weave-select-option-background': color(option?.background),
-    '--weave-select-option-active-background': color(
-      option?.activeBackground,
-    ),
-    '--weave-select-option-selected-background': color(
-      option?.selectedBackground,
-    ),
-    '--weave-select-option-color': color(option?.color),
-    '--weave-select-option-selected-color': color(
-      option?.selectedColor,
-    ),
-    '--weave-select-option-secondary-color': color(
-      option?.secondaryColor,
-    ),
-    '--weave-select-option-radius': radius(option?.radius),
-    '--weave-select-option-padding-x': length(option?.paddingX),
-    '--weave-select-option-padding-y': length(option?.paddingY),
-    '--weave-select-option-gap': length(option?.gap),
-    '--weave-select-option-icon-size': length(option?.iconSize),
-    '--weave-select-option-check-size': length(option?.checkSize),
-    '--weave-select-option-disabled-opacity':
-      option?.disabledOpacity,
   }
 }
 
@@ -201,43 +232,10 @@ export function resolveComboboxTheme(
         base?.actionHoverBackground,
       ),
 
-    '--weave-combobox-listbox-background': color(listbox?.background),
-    '--weave-combobox-listbox-color': color(listbox?.color),
-    '--weave-combobox-listbox-border-color': color(listbox?.borderColor),
-    '--weave-combobox-listbox-border-width': length(listbox?.borderWidth),
-    '--weave-combobox-listbox-radius': radius(listbox?.radius),
-    '--weave-combobox-listbox-padding': length(listbox?.padding),
-    '--weave-combobox-listbox-gap': length(listbox?.gap),
-    '--weave-combobox-listbox-min-width': length(listbox?.minWidth),
-    '--weave-combobox-listbox-max-width': length(listbox?.maxWidth),
-    '--weave-combobox-listbox-max-height': length(listbox?.maxHeight),
-    '--weave-combobox-listbox-shadow': shadowToken(listbox?.shadow),
-    '--weave-combobox-listbox-motion-offset': length(
-      listbox?.motionOffset,
+    ...resolveOptionCollectionTheme(
+      listbox,
+      option,
     ),
-
-    '--weave-combobox-option-background': color(option?.background),
-    '--weave-combobox-option-active-background': color(
-      option?.activeBackground,
-    ),
-    '--weave-combobox-option-selected-background': color(
-      option?.selectedBackground,
-    ),
-    '--weave-combobox-option-color': color(option?.color),
-    '--weave-combobox-option-selected-color': color(
-      option?.selectedColor,
-    ),
-    '--weave-combobox-option-secondary-color': color(
-      option?.secondaryColor,
-    ),
-    '--weave-combobox-option-radius': radius(option?.radius),
-    '--weave-combobox-option-padding-x': length(option?.paddingX),
-    '--weave-combobox-option-padding-y': length(option?.paddingY),
-    '--weave-combobox-option-gap': length(option?.gap),
-    '--weave-combobox-option-icon-size': length(option?.iconSize),
-    '--weave-combobox-option-check-size': length(option?.checkSize),
-    '--weave-combobox-option-disabled-opacity':
-      option?.disabledOpacity,
   }
 }
 

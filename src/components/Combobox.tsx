@@ -77,7 +77,7 @@ import { View } from './View'
 
 type ComboboxListboxStyle =
   CSSProperties & {
-    '--weave-combobox-anchor-width'?:
+    '--weave-option-listbox-anchor-width'?:
       string
   }
 
@@ -822,7 +822,7 @@ export function Combobox({
     ComboboxListboxStyle = {
       ...listboxViewProps.style,
       ...placementStyle,
-      '--weave-combobox-anchor-width':
+      '--weave-option-listbox-anchor-width':
         String(anchorWidth) +
         'px',
       visibility:
@@ -868,6 +868,7 @@ export function Combobox({
                   'overlay'
                 }
                 className={[
+                  'weave-option-listbox',
                   'weave-combobox-listbox',
                   themeClassName,
                   listboxViewProps
@@ -876,6 +877,10 @@ export function Combobox({
                 data={{
                   ...listboxViewProps
                     .data,
+                  'weave-option-listbox':
+                    '',
+                  'weave-option-listbox-state':
+                    visualState,
                   'weave-combobox-listbox':
                     '',
                   'weave-combobox-state':

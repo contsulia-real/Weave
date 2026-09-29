@@ -816,7 +816,7 @@ describe('Combobox', () => {
     await waitFor(() => {
       expect(
         listbox.style.getPropertyValue(
-          '--weave-combobox-anchor-width',
+          '--weave-option-listbox-anchor-width',
         ),
       ).toBe('240px')
     })
@@ -922,7 +922,7 @@ describe('Combobox', () => {
       ''
     const stylesheet =
       document.querySelector<HTMLStyleElement>(
-        'style[data-weave-combobox-styles]',
+        'style[data-weave-option-listbox-styles]',
       )?.textContent ??
       ''
 
@@ -948,7 +948,7 @@ describe('Combobox', () => {
       )
     expect(stylesheet)
       .toContain(
-        'data-weave-combobox-state="closing"',
+        'data-weave-option-listbox-state="closing"',
       )
     expect(stylesheet)
       .toContain(

@@ -3,9 +3,10 @@ import type {
   ReactNode,
 } from 'react'
 import type {
-  IconComponent,
-  IconSvg,
-} from './icon-types'
+  SelectIcon,
+  SelectOptionDescriptor,
+  SelectOptionProps,
+} from './select-types'
 import type {
   PopoverPlacement,
 } from './popover-types'
@@ -18,8 +19,7 @@ import type {
 export type ComboboxValue = string
 
 export type ComboboxIcon =
-  | IconComponent
-  | IconSvg
+  SelectIcon
 
 export type ComboboxPlacement =
   PopoverPlacement
@@ -107,25 +107,17 @@ export interface ComboboxProps {
     ComboboxListboxViewProps
 }
 
-export interface ComboboxOptionProps {
-  value: ComboboxValue
-  text: ReactNode
-  textValue?: string
-  secondaryText?: ReactNode
-  icon?: ComboboxIcon
-  disabled?: boolean
-  viewProps?:
-    ComboboxOptionViewProps
-}
+export type ComboboxOptionProps =
+  Omit<
+    SelectOptionProps,
+    'viewProps'
+  > & {
+    viewProps?:
+      ComboboxOptionViewProps
+  }
 
-export interface ComboboxOptionDescriptor {
-  value: ComboboxValue
-  text: ReactNode
-  textValue: string
-  secondaryText?: ReactNode
-  icon?: ComboboxIcon
-  disabled: boolean
-}
+export type ComboboxOptionDescriptor =
+  SelectOptionDescriptor
 
 export type ComboboxChild =
   ReactElement<ComboboxOptionProps>

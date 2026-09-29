@@ -1,25 +1,12 @@
-import {
-  createContext,
-} from 'react'
 import type {
-  SelectValue,
-} from '../../core/select-types'
+  OptionContextValue,
+} from './option-context'
+import {
+  createOptionContext,
+} from './option-context'
 
-export interface SelectContextValue {
-  listboxId: string
-  selectedValue:
-    SelectValue | null
-  activeValue:
-    SelectValue | null
-  setActiveValue(
-    value: SelectValue,
-  ): void
-  selectValue(
-    value: SelectValue,
-  ): void
-}
+export type SelectContextValue =
+  OptionContextValue
 
 export const SelectContext =
-  createContext<SelectContextValue | null>(
-    null,
-  )
+  createOptionContext()
