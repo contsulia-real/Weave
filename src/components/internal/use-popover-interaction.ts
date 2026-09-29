@@ -7,7 +7,11 @@ import {
 } from 'react'
 import {
   useAnchorViewportDismiss,
+  useOutsideInteractionDismiss,
 } from './use-anchor-viewport-dismiss'
+import {
+  useAnchoredTrigger,
+} from './use-anchored-trigger'
 
 const FOCUSABLE_SELECTOR = [
   'button:not([disabled])',
@@ -18,21 +22,6 @@ const FOCUSABLE_SELECTOR = [
   '[contenteditable="true"]',
   '[tabindex]:not([tabindex="-1"])',
 ].join(',')
-
-function restoreAttribute(
-  target: HTMLElement,
-  name: string,
-  value: string | null,
-): void {
-  if (value === null) {
-    target.removeAttribute(name)
-  } else {
-    target.setAttribute(
-      name,
-      value,
-    )
-  }
-}
 
 export function usePopoverInteraction(
   wrapperRef:
@@ -53,12 +42,41 @@ export function usePopoverInteraction(
     useRef(false)
   const previousOpenRef =
     useRef(false)
+
   const dismissForAnchorExit =
     useCallback(() => {
-      skipRestoreRef.current =
-        true
+      skipRestoreRef.current = true
       close()
     }, [close])
+
+  const dismissForOutside =
+    useCallback(() => {
+      skipRestoreRef.current = true
+      close()
+    }, [close])
+
+  const handleTriggerClick =
+    useCallback(
+      (event: MouseEvent) => {
+        if (event.defaultPrevented) {
+          return
+        }
+
+        skipRestoreRef.current = false
+        toggleOpen()
+      },
+      [toggleOpen],
+    )
+
+  useAnchoredTrigger({
+    wrapperRef,
+    targetRef,
+    popupId: popoverId,
+    hasPopup: 'dialog',
+    open,
+    children,
+    onClick: handleTriggerClick,
+  })
 
   useAnchorViewportDismiss(
     targetRef,
@@ -66,120 +84,12 @@ export function usePopoverInteraction(
     dismissForAnchorExit,
   )
 
-  useLayoutEffect(() => {
-    const wrapper =
-      wrapperRef.current
-    const target =
-      wrapper?.firstElementChild
-
-    if (
-      !(target instanceof HTMLElement)
-    ) {
-      targetRef.current = null
-      return
-    }
-
-    targetRef.current =
-      target
-
-    const previousHasPopup =
-      target.getAttribute(
-        'aria-haspopup',
-      )
-    const previousControls =
-      target.getAttribute(
-        'aria-controls',
-      )
-    const previousExpanded =
-      target.getAttribute(
-        'aria-expanded',
-      )
-
-    target.setAttribute(
-      'aria-haspopup',
-      'dialog',
-    )
-    target.setAttribute(
-      'aria-controls',
-      popoverId,
-    )
-    target.setAttribute(
-      'aria-expanded',
-      'false',
-    )
-
-    const handleClick = (
-      event: MouseEvent,
-    ) => {
-      if (
-        event.defaultPrevented
-      ) {
-        return
-      }
-
-      skipRestoreRef.current =
-        false
-      toggleOpen()
-    }
-
-    target.addEventListener(
-      'click',
-      handleClick,
-    )
-
-    return () => {
-      target.removeEventListener(
-        'click',
-        handleClick,
-      )
-
-      restoreAttribute(
-        target,
-        'aria-haspopup',
-        previousHasPopup,
-      )
-      restoreAttribute(
-        target,
-        'aria-controls',
-        previousControls,
-      )
-      restoreAttribute(
-        target,
-        'aria-expanded',
-        previousExpanded,
-      )
-
-      if (
-        targetRef.current ===
-        target
-      ) {
-        targetRef.current = null
-      }
-    }
-  }, [
-    children,
-    popoverId,
+  useOutsideInteractionDismiss(
     targetRef,
-    toggleOpen,
-    wrapperRef,
-  ])
-
-  useLayoutEffect(() => {
-    const target =
-      targetRef.current
-
-    if (target === null) {
-      return
-    }
-
-    target.setAttribute(
-      'aria-expanded',
-      String(open),
-    )
-  }, [
+    panelRef,
     open,
-    targetRef,
-  ])
+    dismissForOutside,
+  )
 
   useEffect(() => {
     if (!open) return
@@ -194,66 +104,24 @@ export function usePopoverInteraction(
     const document =
       target.ownerDocument
 
-    const handlePointerDown = (
-      event: PointerEvent,
-    ) => {
-      const eventTarget =
-        event.target
-
-      const panel =
-        panelRef.current
-
-      if (
-        !(eventTarget instanceof Node) ||
-        target.contains(
-          eventTarget,
-        ) ||
-        (
-          panel !== null &&
-          panel.contains(
-            eventTarget,
-          )
-        )
-      ) {
-        return
-      }
-
-      skipRestoreRef.current =
-        true
-      close()
-    }
-
     const handleKeyDown = (
       event: KeyboardEvent,
     ) => {
-      if (
-        event.key !== 'Escape'
-      ) {
+      if (event.key !== 'Escape') {
         return
       }
 
       event.preventDefault()
-      skipRestoreRef.current =
-        false
+      skipRestoreRef.current = false
       close()
     }
 
-    document.addEventListener(
-      'pointerdown',
-      handlePointerDown,
-      true,
-    )
     document.addEventListener(
       'keydown',
       handleKeyDown,
     )
 
     return () => {
-      document.removeEventListener(
-        'pointerdown',
-        handlePointerDown,
-        true,
-      )
       document.removeEventListener(
         'keydown',
         handleKeyDown,
@@ -262,7 +130,6 @@ export function usePopoverInteraction(
   }, [
     close,
     open,
-    panelRef,
     targetRef,
   ])
 
@@ -270,8 +137,7 @@ export function usePopoverInteraction(
     const wasOpen =
       previousOpenRef.current
 
-    previousOpenRef.current =
-      open
+    previousOpenRef.current = open
 
     if (
       open &&
@@ -310,8 +176,7 @@ export function usePopoverInteraction(
       const skipRestore =
         skipRestoreRef.current
 
-      skipRestoreRef.current =
-        false
+      skipRestoreRef.current = false
 
       if (
         !restoreFocus ||
@@ -337,8 +202,7 @@ export function usePopoverInteraction(
 
         if (
           active === null ||
-          active ===
-            document.body ||
+          active === document.body ||
           (
             panel !== null &&
             panel.contains(active)

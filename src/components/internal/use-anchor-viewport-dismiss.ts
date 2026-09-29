@@ -51,10 +51,14 @@ export function useOutsideInteractionDismiss(
   anchorRef:
     RefObject<HTMLElement | null>,
   surfaceRef:
-    RefObject<HTMLElement | null>,
+    | RefObject<HTMLElement | null>
+    | undefined,
   active: boolean,
   onDismiss: () => void,
   dismissOnFocusOutside = false,
+  isInsideExtra?: (
+    target: Node,
+  ) => boolean,
 ): void {
   useEffect(() => {
     if (!active) return
@@ -79,8 +83,9 @@ export function useOutsideInteractionDismiss(
       return (
         anchorRef.current
           ?.contains(target) === true ||
-        surfaceRef.current
-          ?.contains(target) === true
+        surfaceRef?.current
+          ?.contains(target) === true ||
+        isInsideExtra?.(target) === true
       )
     }
 
@@ -133,6 +138,7 @@ export function useOutsideInteractionDismiss(
     active,
     anchorRef,
     dismissOnFocusOutside,
+    isInsideExtra,
     onDismiss,
     surfaceRef,
   ])
