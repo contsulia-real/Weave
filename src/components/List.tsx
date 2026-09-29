@@ -3,7 +3,6 @@ import {
   useInsertionEffect,
   useMemo,
   useRef,
-  type Ref,
 } from 'react'
 import type { ListProps } from '../core/list-types'
 import { resolveListTheme } from '../renderers/dom/resolve-component-theme'
@@ -11,6 +10,7 @@ import { ensureListStylesheet } from '../renderers/dom/list-stylesheet'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { useTheme } from '../theme/theme-context'
 import { Divider } from './Divider'
+import { assignRef } from './internal/assign-ref'
 import { View } from './View'
 import { ListContext } from './internal/list-context'
 import {
@@ -23,20 +23,6 @@ import { useListSelection } from './internal/use-list-selection'
 import {
   VirtualListWindow,
 } from './internal/VirtualListWindow'
-
-function assignRef<T>(
-  ref: Ref<T> | undefined,
-  value: T | null,
-): void {
-  if (ref === null || ref === undefined) return
-
-  if (typeof ref === 'function') {
-    ref(value)
-    return
-  }
-
-  ref.current = value
-}
 
 export function List(
   props: ListProps,

@@ -11,7 +11,6 @@ import {
   type KeyboardEvent,
   type MouseEvent,
   type PointerEvent,
-  type Ref,
   type TransitionEvent,
 } from 'react'
 import { createPortal } from 'react-dom'
@@ -37,6 +36,11 @@ import {
 } from '../theme/theme-context'
 import { ThemeProvider } from '../theme/ThemeProvider'
 import { Button } from './Button'
+import { assignRef } from './internal/assign-ref'
+import {
+  chevronDownIcon,
+  closeIcon,
+} from './internal/control-icons'
 import { Icon } from './Icon'
 import { Input } from './Input'
 import {
@@ -71,54 +75,11 @@ import {
 import { Text } from './Text'
 import { View } from './View'
 
-const clearIcon = (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="m7 7 10 10M17 7 7 17" />
-  </svg>
-)
-
-const chevronIcon = (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="m6 9 6 6 6-6" />
-  </svg>
-)
-
 type ComboboxListboxStyle =
   CSSProperties & {
     '--weave-combobox-anchor-width'?:
       string
   }
-
-function assignRef<T>(
-  ref: Ref<T> | undefined,
-  value: T | null,
-): void {
-  if (
-    ref === undefined ||
-    ref === null
-  ) {
-    return
-  }
-
-  if (typeof ref === 'function') {
-    ref(value)
-    return
-  }
-
-  ref.current = value
-}
 
 export function Combobox({
   children,
@@ -1039,7 +1000,7 @@ export function Combobox({
           {hasClear ? (
             <Button
               icon={
-                clearIcon as IconSvg
+                closeIcon as IconSvg
               }
               variant="ghost"
               size="small"
@@ -1058,7 +1019,7 @@ export function Combobox({
 
           <Icon
             svg={
-              chevronIcon as IconSvg
+              chevronDownIcon as IconSvg
             }
             size="small"
             stroke="regular"

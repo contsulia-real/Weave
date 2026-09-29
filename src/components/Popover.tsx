@@ -5,7 +5,6 @@ import {
   useInsertionEffect,
   useRef,
   useState,
-  type Ref,
   type TransitionEvent as ReactTransitionEvent,
 } from 'react'
 import { createPortal } from 'react-dom'
@@ -20,30 +19,12 @@ import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { ensurePopoverStylesheet } from '../renderers/dom/popover-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { ThemeProvider } from '../theme/ThemeProvider'
+import { assignRef } from './internal/assign-ref'
 import { durationMilliseconds } from './internal/motion-duration'
 import { useExitPresence } from './internal/use-exit-presence'
 import { usePopoverInteraction } from './internal/use-popover-interaction'
 import { usePopoverPosition } from './internal/use-popover-position'
 import { View } from './View'
-
-function assignRef<T>(
-  ref: Ref<T> | undefined,
-  value: T | null,
-): void {
-  if (
-    ref === undefined ||
-    ref === null
-  ) {
-    return
-  }
-
-  if (typeof ref === 'function') {
-    ref(value)
-    return
-  }
-
-  ref.current = value
-}
 
 export function Popover({
   children,

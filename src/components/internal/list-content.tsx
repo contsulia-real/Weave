@@ -7,20 +7,16 @@ import {
   type ReactNode,
 } from 'react'
 import type {
-  IconComponent,
-  IconSvg,
-} from '../../core/icon-types'
-import type {
   ListDataItem,
   ListItemIcon,
   ListItemProps,
 } from '../../core/list-types'
 import type { TextTypo } from '../../core/text-types'
-import { Icon } from '../Icon'
 import { ListItem } from '../ListItem'
 import { Text } from '../Text'
 import { View } from '../View'
 import type { VirtualListEntry } from './VirtualListWindow'
+import { renderIconSource } from './render-icon-source'
 
 export interface ListDescriptor {
   id: string
@@ -125,32 +121,21 @@ function collectVirtualEntries(
 }
 
 function listIcon(icon: ListItemIcon) {
-  if (isValidElement(icon)) {
-    return (
-      <Icon
-        svg={icon as IconSvg}
-        size="medium"
-        stroke="regular"
-        viewProps={{
-          className: 'weave-list-item__icon',
-          width: 'var(--weave-list-item-icon-size)',
-          height: 'var(--weave-list-item-icon-size)',
-          'aria-hidden': true,
-        }}
-      />
-    )
-  }
-
-  return (
-    <Icon
-      icon={icon as IconComponent}
-      size="medium"
-      stroke="regular"
-      viewProps={{
-        className: 'weave-list-item__icon',
+  return renderIconSource(
+    icon,
+    {
+      size: 'medium',
+      stroke: 'regular',
+      viewProps: {
+        className:
+          'weave-list-item__icon',
+        width:
+          'var(--weave-list-item-icon-size)',
+        height:
+          'var(--weave-list-item-icon-size)',
         'aria-hidden': true,
-      }}
-    />
+      },
+    },
   )
 }
 

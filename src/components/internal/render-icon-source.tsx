@@ -1,0 +1,40 @@
+import {
+  isValidElement,
+  type ReactElement,
+} from 'react'
+import type {
+  IconComponent,
+  IconSvg,
+} from '../../core/icon-types'
+import type {
+  IconProps,
+} from '../../core/icon-types'
+import { Icon } from '../Icon'
+
+export type IconSource =
+  | IconComponent
+  | IconSvg
+
+export function renderIconSource(
+  source: IconSource,
+  props: Omit<
+    IconProps,
+    'icon' | 'svg'
+  >,
+): ReactElement {
+  if (isValidElement(source)) {
+    return (
+      <Icon
+        {...props}
+        svg={source as IconSvg}
+      />
+    )
+  }
+
+  return (
+    <Icon
+      {...props}
+      icon={source as IconComponent}
+    />
+  )
+}

@@ -1,11 +1,4 @@
-import {
-  isValidElement,
-  type ReactNode,
-} from 'react'
-import type {
-  IconComponent,
-  IconSvg,
-} from '../../core/icon-types'
+import type { ReactNode } from 'react'
 import type {
   SnackIcon,
 } from '../../core/snack-types'
@@ -13,44 +6,30 @@ import type {
   TextTypo,
 } from '../../core/text-types'
 import { Button } from '../Button'
-import { Icon } from '../Icon'
 import { Text } from '../Text'
+import { renderIconSource } from './render-icon-source'
 import { View } from '../View'
 
 function iconContent(
   icon: SnackIcon,
 ) {
-  const renderedIcon =
-    isValidElement(icon) ? (
-      <Icon
-        svg={icon as IconSvg}
-        size="small"
-        stroke="regular"
-        viewProps={{
-          className:
-            'weave-snack__icon',
-          'aria-hidden': true,
-        }}
-      />
-    ) : (
-      <Icon
-        icon={icon as IconComponent}
-        size="small"
-        stroke="regular"
-        viewProps={{
-          className:
-            'weave-snack__icon',
-          'aria-hidden': true,
-        }}
-      />
-    )
-
   return (
     <View
       className="weave-snack__icon-shell"
       aria-hidden="true"
     >
-      {renderedIcon}
+      {renderIconSource(
+        icon,
+        {
+          size: 'small',
+          stroke: 'regular',
+          viewProps: {
+            className:
+              'weave-snack__icon',
+            'aria-hidden': true,
+          },
+        },
+      )}
     </View>
   )
 }

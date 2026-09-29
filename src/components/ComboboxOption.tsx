@@ -1,16 +1,13 @@
 import {
-  isValidElement,
   useContext,
   useInsertionEffect,
   type MouseEvent,
   type PointerEvent,
 } from 'react'
 import type {
-  IconComponent,
   IconSvg,
 } from '../core/icon-types'
 import type {
-  ComboboxIcon,
   ComboboxOptionProps,
 } from '../core/combobox-types'
 import {
@@ -23,55 +20,13 @@ import { Icon } from './Icon'
 import {
   ComboboxContext,
 } from './internal/combobox-context'
+import { checkIcon } from './internal/control-icons'
+import { renderIconSource } from './internal/render-icon-source'
 import {
   optionDomId,
 } from './internal/option-navigation'
 import { Text } from './Text'
 import { View } from './View'
-
-const checkIcon = (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="m5 12 4 4L19 6" />
-  </svg>
-)
-
-function optionIcon(
-  icon: ComboboxIcon,
-) {
-  if (isValidElement(icon)) {
-    return (
-      <Icon
-        svg={icon as IconSvg}
-        size="small"
-        stroke="regular"
-        viewProps={{
-          className:
-            'weave-combobox-option__icon',
-          'aria-hidden': true,
-        }}
-      />
-    )
-  }
-
-  return (
-    <Icon
-      icon={icon as IconComponent}
-      size="small"
-      stroke="regular"
-      viewProps={{
-        className:
-          'weave-combobox-option__icon',
-        'aria-hidden': true,
-      }}
-    />
-  )
-}
 
 export function ComboboxOption({
   value,
@@ -200,7 +155,18 @@ export function ComboboxOption({
     >
       {icon === undefined
         ? null
-        : optionIcon(icon)}
+        : renderIconSource(
+            icon,
+            {
+              size: 'small',
+              stroke: 'regular',
+              viewProps: {
+                className:
+                  'weave-combobox-option__icon',
+                'aria-hidden': true,
+              },
+            },
+          )}
 
       <View
         className="weave-combobox-option__text"

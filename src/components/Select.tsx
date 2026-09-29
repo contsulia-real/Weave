@@ -8,7 +8,6 @@ import {
   useState,
   type KeyboardEvent,
   type MouseEvent,
-  type Ref,
   type TransitionEvent,
 } from 'react'
 import { createPortal } from 'react-dom'
@@ -37,6 +36,9 @@ import {
 } from '../theme/theme-context'
 import { ThemeProvider } from '../theme/ThemeProvider'
 import { Icon } from './Icon'
+import { assignRef } from './internal/assign-ref'
+import { chevronDownIcon } from './internal/control-icons'
+import { renderIconSource } from './internal/render-icon-source'
 import {
   SelectContext,
 } from './internal/select-context'
@@ -49,9 +51,6 @@ import {
   selectOptionDescriptors,
   selectedDescriptor,
 } from './internal/select-options'
-import {
-  selectIcon,
-} from './internal/select-icon'
 import {
   durationMilliseconds,
 } from './internal/motion-duration'
@@ -72,37 +71,6 @@ import { View } from './View'
 import {
   useViewHost,
 } from './internal/use-view-host'
-
-const chevronIcon = (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="m6 9 6 6 6-6" />
-  </svg>
-)
-
-function assignRef<T>(
-  ref: Ref<T> | undefined,
-  value: T | null,
-): void {
-  if (
-    ref === undefined ||
-    ref === null
-  ) {
-    return
-  }
-
-  if (typeof ref === 'function') {
-    ref(value)
-    return
-  }
-
-  ref.current = value
-}
 
 function printableKey(
   event:
@@ -821,10 +789,18 @@ export function Select({
           {selected?.icon ===
           undefined
             ? null
-            : selectIcon(
-                selected.icon,
-                'weave-select__value-icon',
-              )}
+            : renderIconSource(
+              selected.icon,
+              {
+                size: 'small',
+                stroke: 'regular',
+                viewProps: {
+                  className:
+                    'weave-select__value-icon',
+                  'aria-hidden': true,
+                },
+              },
+            )}
 
           <Text
             typo={
@@ -847,7 +823,7 @@ export function Select({
 
         <Icon
           svg={
-            chevronIcon as IconSvg
+            chevronDownIcon as IconSvg
           }
           size="small"
           stroke="regular"

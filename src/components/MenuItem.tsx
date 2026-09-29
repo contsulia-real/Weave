@@ -1,5 +1,4 @@
 import {
-  isValidElement,
   useCallback,
   useContext,
   useId,
@@ -13,7 +12,6 @@ import {
 } from 'react'
 import { createPortal } from 'react-dom'
 import type {
-  IconComponent,
   IconSvg,
 } from '../core/icon-types'
 import type {
@@ -34,6 +32,7 @@ import {
 } from '../theme/theme-context'
 import { ThemeProvider } from '../theme/ThemeProvider'
 import { Icon } from './Icon'
+import { renderIconSource } from './internal/render-icon-source'
 import {
   MenuLevelContext,
   MenuRootContext,
@@ -69,36 +68,17 @@ const submenuArrow = (
 function menuIcon(
   icon: MenuItemIcon,
 ) {
-  if (isValidElement(icon)) {
-    return (
-      <Icon
-        svg={
-          icon as IconSvg
-        }
-        size="small"
-        stroke="regular"
-        viewProps={{
-          className:
-            'weave-menu-item__icon',
-          'aria-hidden': true,
-        }}
-      />
-    )
-  }
-
-  return (
-    <Icon
-      icon={
-        icon as IconComponent
-      }
-      size="small"
-      stroke="regular"
-      viewProps={{
+  return renderIconSource(
+    icon,
+    {
+      size: 'small',
+      stroke: 'regular',
+      viewProps: {
         className:
           'weave-menu-item__icon',
         'aria-hidden': true,
-      }}
-    />
+      },
+    },
   )
 }
 

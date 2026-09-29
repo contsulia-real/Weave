@@ -1,5 +1,4 @@
 import {
-  isValidElement,
   useInsertionEffect,
 } from 'react'
 import type {
@@ -7,45 +6,27 @@ import type {
   ButtonProps,
   ButtonResponsiveProps,
 } from '../core/button-types'
-import type {
-  IconComponent,
-  IconSvg,
-} from '../core/icon-types'
 import type { ViewProps } from '../core/view-types'
 import { breakpointEntries } from '../renderers/dom/breakpoint-utils'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { ensureButtonStylesheet } from '../renderers/dom/button-stylesheet'
 import { resolveButtonTheme } from '../renderers/dom/resolve-component-theme'
 import { useTheme } from '../theme/theme-context'
-import { Icon } from './Icon'
+import { renderIconSource } from './internal/render-icon-source'
 import { Text } from './Text'
 import { useViewHost } from './internal/use-view-host'
 
 function iconContent(icon: ButtonIcon) {
-  if (isValidElement(icon)) {
-    return (
-      <Icon
-        svg={icon as IconSvg}
-        size="medium"
-        stroke="regular"
-        viewProps={{
-          width: '1em',
-          height: '1em',
-        }}
-      />
-    )
-  }
-
-  return (
-    <Icon
-      icon={icon as IconComponent}
-      size="medium"
-      stroke="regular"
-      viewProps={{
+  return renderIconSource(
+    icon,
+    {
+      size: 'medium',
+      stroke: 'regular',
+      viewProps: {
         width: '1em',
         height: '1em',
-      }}
-    />
+      },
+    },
   )
 }
 

@@ -20,26 +20,13 @@ import { Icon } from './Icon'
 import {
   SelectContext,
 } from './internal/select-context'
-import {
-  selectIcon,
-} from './internal/select-icon'
+import { checkIcon } from './internal/control-icons'
+import { renderIconSource } from './internal/render-icon-source'
 import {
   selectOptionId,
 } from './internal/select-navigation'
 import { Text } from './Text'
 import { View } from './View'
-
-const checkIcon = (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="m5 12 4 4L19 6" />
-  </svg>
-)
 
 export function SelectOption({
   value,
@@ -174,9 +161,17 @@ export function SelectOption({
     >
       {icon === undefined
         ? null
-        : selectIcon(
+        : renderIconSource(
             icon,
-            'weave-select-option__icon',
+            {
+              size: 'small',
+              stroke: 'regular',
+              viewProps: {
+                className:
+                  'weave-select-option__icon',
+                'aria-hidden': true,
+              },
+            },
           )}
 
       <View
