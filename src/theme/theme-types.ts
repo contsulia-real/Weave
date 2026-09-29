@@ -371,6 +371,7 @@ export interface DialogThemeBase {
   maxWidth?: ThemeScaleValue
   maxHeight?: ThemeScaleValue
   shadow?: string
+  depthColor?: string
   backdropColor?: string
   motionOffset?: ThemeScaleValue
 }

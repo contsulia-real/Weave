@@ -13,6 +13,9 @@ const controlMedium = {
   minHeight: 2.5,
 } as const
 
+const raisedSurfaceDepthColor =
+  'color-mix(in srgb, var(--weave-color-outline) 76%, #8f8377)' as const
+
 const optionListboxBase = {
   background: 'surface',
   color: 'tertiary',
@@ -446,7 +449,7 @@ export const defaultTheme: ResolvedTheme = {
           background: 'surface',
           color: 'inherit',
           borderColor: 'outline',
-          depthColor: 'color-mix(in srgb, var(--weave-color-outline) 76%, #8f8377)',
+          depthColor: raisedSurfaceDepthColor,
           hoverBackground: 'surfaceHover',
           activeBackground:
             'color-mix(in srgb, var(--weave-color-outline) 65%, var(--weave-color-surface))',
@@ -774,6 +777,7 @@ export const defaultTheme: ResolvedTheme = {
         maxWidth: 'calc(100vw - 2rem)',
         maxHeight: 'calc(100vh - 2rem)',
         shadow: 'large',
+        depthColor: raisedSurfaceDepthColor,
         backdropColor: 'rgb(0 0 0 / 0.48)',
         motionOffset: 0.5,
       },

@@ -40,24 +40,41 @@ const stylesheet = `
   --weave-component-padding-bottom: var(--weave-dialog-padding-y);
   --weave-component-padding-left: var(--weave-dialog-padding-x);
 
-  --weave-component-box-shadow: var(--weave-dialog-shadow);
+  --weave-component-transform: translateY(0) scale(1);
+  --weave-component-box-shadow:
+    var(--weave-dialog-shadow),
+    0 var(--weave-feedback-rest-depth) 0 var(--weave-dialog-depth-color);
 
   opacity: 1;
   translate: 0 0;
   scale: 1;
   isolation: isolate;
   overflow: auto;
-  will-change: opacity, translate, scale;
-  --weave-component-transition-property: opacity, translate, scale;
+  will-change: opacity, translate, scale, transform;
+  --weave-component-transition-property:
+    opacity, translate, scale, transform, box-shadow;
   --weave-component-transition-duration:
     var(--weave-motion-duration-fast),
     var(--weave-motion-duration-normal),
-    var(--weave-motion-duration-normal);
+    var(--weave-motion-duration-normal),
+    var(--weave-motion-spring-snappy-duration),
+    var(--weave-motion-duration-fast);
   --weave-component-transition-timing-function:
     var(--weave-motion-curve-enter),
     var(--weave-motion-curve-emphasized),
-    var(--weave-motion-curve-emphasized);
+    var(--weave-motion-curve-emphasized),
+    var(--weave-motion-spring-snappy-easing),
+    var(--weave-motion-curve-standard);
   --weave-component-transition-delay: 0ms;
+}
+
+:where(.weave-dialog[data-weave-dialog-state="open"]:hover) {
+  --weave-component-transform:
+    translateY(calc(-1 * var(--weave-feedback-hover-lift)))
+    scale(var(--weave-feedback-hover-scale));
+  --weave-component-box-shadow:
+    var(--weave-dialog-shadow),
+    0 var(--weave-feedback-hover-depth) 0 var(--weave-dialog-depth-color);
 }
 
 :where(.weave-dialog)::backdrop {
@@ -102,6 +119,7 @@ const stylesheet = `
 
 :where(.weave-dialog[data-weave-reduced-motion="reduce"]),
 :where(.weave-dialog[data-weave-reduced-motion="reduce"][data-weave-dialog-state="closing"]) {
+  --weave-component-transform: none;
   translate: 0 0;
   scale: 1;
   transition: none;

@@ -332,4 +332,46 @@ describe('Dialog', () => {
     expect(stylesheet).toContain('--weave-component-margin-left: auto')
     expect(stylesheet).toContain('--weave-component-height: fit-content')
   })
+
+  it('uses Button-style raised rest and hover feedback without press feedback', () => {
+    const theme = createTheme({
+      components: {
+        Dialog: {
+          base: {
+            depthColor: 'rgb(12 34 56)',
+          },
+        },
+      },
+    })
+
+    render(
+      <ThemeProvider theme={theme}>
+        <Dialog defaultOpen modal>
+          <Text>Raised</Text>
+        </Dialog>
+      </ThemeProvider>,
+    )
+
+    const dialog = document.querySelector<HTMLDialogElement>('[data-weave-dialog]')
+    const themeClass = [...(dialog?.classList ?? [])].find((name) =>
+      name.startsWith('weave-dialog-theme-'),
+    )
+    const runtimeStyle =
+      document.querySelector<HTMLStyleElement>(
+        'style[data-weave-runtime-class="' + themeClass + '"]',
+      )?.textContent ?? ''
+    const stylesheet =
+      document.querySelector<HTMLStyleElement>('style[data-weave-dialog-styles]')?.textContent ?? ''
+
+    expect(runtimeStyle).toContain('--weave-dialog-depth-color:')
+    expect(runtimeStyle).toContain('rgb(12 34 56)')
+    expect(stylesheet).toContain('var(--weave-feedback-rest-depth)')
+    expect(stylesheet).toContain('var(--weave-feedback-hover-depth)')
+    expect(stylesheet).toContain('var(--weave-feedback-hover-lift)')
+    expect(stylesheet).toContain('var(--weave-feedback-hover-scale)')
+    expect(stylesheet).not.toContain('.weave-dialog:active')
+    expect(stylesheet).not.toContain('--weave-feedback-press-depth')
+    expect(stylesheet).not.toContain('--weave-feedback-press-offset')
+    expect(stylesheet).not.toContain('--weave-feedback-press-scale')
+  })
 })

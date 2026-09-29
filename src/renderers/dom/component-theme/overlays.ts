@@ -39,6 +39,7 @@ export function resolveDialogTheme(theme: ResolvedTheme): RuntimeStyleDeclaratio
     '--weave-dialog-max-width': length(base?.maxWidth),
     '--weave-dialog-max-height': length(base?.maxHeight),
     '--weave-dialog-shadow': shadowToken(base?.shadow),
+    '--weave-dialog-depth-color': color(base?.depthColor),
     '--weave-dialog-backdrop-color': color(base?.backdropColor),
     '--weave-dialog-motion-offset': length(base?.motionOffset),
   }

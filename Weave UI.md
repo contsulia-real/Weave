@@ -4243,6 +4243,22 @@ Modal 默认视觉来自：
 theme.components.Dialog.base
 ```
 
+Modal surface 复用 Button 的全局 tactile feedback token 来表达“突起”，但它不是可按压控件：
+
+```text
+rest
+→ 使用 feedback.restDepth 形成方向性实体厚度
+
+hover
+→ 使用 feedback.hoverLift / hoverScale / hoverDepth 轻微抬起
+
+press / :active
+→ 不提供按压反馈
+→ 不使用 pressOffset / pressScale / pressDepth
+```
+
+这套动力学直接读取 `theme.tokens.feedback`，不在 Dialog 内复制另一组 motion 常量。Dialog 自己只提供 `depthColor`，同时保留原有 ambient `shadow`。
+
 当前可主题化字段：
 
 ```text
@@ -4257,6 +4273,7 @@ width
 maxWidth
 maxHeight
 shadow
+depthColor
 backdropColor
 motionOffset
 ```
