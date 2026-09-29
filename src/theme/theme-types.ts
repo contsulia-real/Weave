@@ -133,6 +133,8 @@ export interface SelectTheme {
 export interface ComboboxThemeBase {
   iconSize?: ThemeScaleValue
   actionSize?: ThemeScaleValue
+  actionGap?: ThemeScaleValue
+  actionInset?: ThemeScaleValue
 }
 
 export interface ComboboxThemeListbox

@@ -926,6 +926,7 @@ export function Combobox({
           }
           disabled={disabled}
           type="text"
+          clearable={false}
           autoComplete="off"
           viewProps={{
             ...viewProps,

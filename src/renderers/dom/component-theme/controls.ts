@@ -184,6 +184,10 @@ export function resolveComboboxTheme(
       length(base?.iconSize),
     '--weave-combobox-action-size':
       length(base?.actionSize),
+    '--weave-combobox-action-gap':
+      length(base?.actionGap),
+    '--weave-combobox-action-inset':
+      length(base?.actionInset),
 
     ...resolveOptionCollectionTheme(
       listbox,

@@ -29,15 +29,24 @@ export function FormPlayground() {
     <>
       <PlaygroundSection
         title="Input"
-        description="单行 Input 是 field surface 的视觉来源；Select 直接复用 Input stylesheet/theme，Combobox 直接组合 Input；multiline 仍使用 Input theme 与 Weave Scrollbar。"
+        description="单行 Input 是 field surface 的视觉来源；默认非空时显示可隐藏 clear action；Select 复用 Input stylesheet/theme，Combobox 直接组合 Input；multiline 仍使用 Input theme 与 Weave Scrollbar。"
       >
         <Column
           gap={0.75}
           align="start"
         >
           <Input
+            defaultValue="Editable input"
             placeholder="Name"
             autoComplete="name"
+            viewProps={{
+              width: 20,
+            }}
+          />
+
+          <Input
+            defaultValue="Clear hidden"
+            clearable={false}
             viewProps={{
               width: 20,
             }}

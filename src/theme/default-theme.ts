@@ -536,6 +536,8 @@ export const defaultTheme: ResolvedTheme = {
       base: {
         iconSize: 1,
         actionSize: 1.75,
+        actionGap: 0.5,
+        actionInset: 0.625,
       },
       listbox: {
         ...optionListboxBase,

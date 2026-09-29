@@ -1,4 +1,7 @@
-import { useInsertionEffect } from 'react'
+import {
+  useInsertionEffect,
+  useState,
+} from 'react'
 import type {
   ChangeEvent,
   CSSProperties,
@@ -14,7 +17,9 @@ import { ensureInputStylesheet } from '../renderers/dom/input-stylesheet'
 import { resolveInputTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { useTheme } from '../theme/theme-context'
+import { Button } from './Button'
 import { AutoScrollbar } from './internal/AutoScrollbar'
+import { closeIcon } from './internal/control-icons'
 import { useViewHost } from './internal/use-view-host'
 
 function cssString(
@@ -56,6 +61,8 @@ interface SingleLineInputHostProps {
   minLength?: number
   maxLength?: number
   pattern?: string
+  clearable?: boolean
+  clearLabel?: string
   viewProps?: SingleLineInputViewProps
 }
 
@@ -73,6 +80,8 @@ function SingleLineInput({
   minLength,
   maxLength,
   pattern,
+  clearable = true,
+  clearLabel = 'Clear input',
   viewProps = {},
 }: SingleLineInputHostProps) {
   const hostProps: ViewProps<HTMLInputElement> = {
@@ -86,12 +95,49 @@ function SingleLineInput({
     inlineStyle,
     resolved,
   } = useViewHost(hostProps)
+  const controlled =
+    value !== undefined
+  const [
+    uncontrolledText,
+    setUncontrolledText,
+  ] = useState(
+    String(defaultValue ?? ''),
+  )
+  const currentText =
+    controlled
+      ? String(value ?? '')
+      : uncontrolledText
+  const hasClear =
+    clearable &&
+    !disabled &&
+    !readOnly &&
+    currentText.length > 0
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    onChange?.(event.currentTarget.value)
+    const next =
+      event.currentTarget.value
+
+    if (!controlled) {
+      setUncontrolledText(next)
+    }
+
+    onChange?.(next)
   }
 
-  return (
+  const clear = () => {
+    if (!controlled) {
+      setUncontrolledText('')
+
+      if (elementRef.current !== null) {
+        elementRef.current.value = ''
+      }
+    }
+
+    onChange?.('')
+    elementRef.current?.focus()
+  }
+
+  const input = (
     <input
       {...resolved.domProps}
       ref={elementRef}
@@ -110,6 +156,11 @@ function SingleLineInput({
       pattern={pattern}
       data-weave-view=""
       data-weave-input=""
+      data-weave-input-has-clear={
+        hasClear
+          ? 'true'
+          : undefined
+      }
       data-weave-layout={resolved.layout}
       className={[
         'weave-input',
@@ -118,6 +169,49 @@ function SingleLineInput({
       ].filter(Boolean).join(' ')}
       style={inlineStyle}
     />
+  )
+
+  if (!clearable) {
+    return input
+  }
+
+  return (
+    <span
+      className={[
+        'weave-input-root',
+        themeClassName,
+      ].filter(Boolean).join(' ')}
+      data-weave-input-root=""
+      data-weave-input-root-fill={
+        viewProps.width === 'fill'
+          ? 'true'
+          : undefined
+      }
+      data-weave-input-has-clear={
+        hasClear
+          ? 'true'
+          : 'false'
+      }
+    >
+      {input}
+
+      {hasClear ? (
+        <Button
+          icon={closeIcon}
+          variant="ghost"
+          size="small"
+          viewProps={{
+            className:
+              'weave-input__clear',
+            label: clearLabel,
+            onPointerDown: (event) => {
+              event.preventDefault()
+            },
+            onClick: clear,
+          }}
+        />
+      ) : null}
+    </span>
   )
 }
 
@@ -247,6 +341,8 @@ export function Input(props: InputProps) {
       minLength={props.minLength}
       maxLength={props.maxLength}
       pattern={props.pattern}
+      clearable={props.clearable}
+      clearLabel={props.clearLabel}
       viewProps={props.viewProps}
     />
   )

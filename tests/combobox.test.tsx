@@ -856,6 +856,8 @@ describe('Combobox', () => {
           Combobox: {
             base: {
               actionSize: 2,
+              actionGap: 0.75,
+              actionInset: 0.5,
             },
             listbox: {
               shadow: 'large',
@@ -935,6 +937,14 @@ describe('Combobox', () => {
       .toContain(
         '--weave-combobox-action-size: 2rem',
       )
+    expect(runtimeStyle)
+      .toContain(
+        '--weave-combobox-action-gap: 0.75rem',
+      )
+    expect(runtimeStyle)
+      .toContain(
+        '--weave-combobox-action-inset: 0.5rem',
+      )
     expect(
       getComputedStyle(input)
         .getPropertyValue(
@@ -954,6 +964,18 @@ describe('Combobox', () => {
     expect(stylesheet)
       .toContain(
         'data-weave-reduced-motion="reduce"',
+      )
+    const comboboxStylesheet =
+      document.querySelector<HTMLStyleElement>(
+        'style[data-weave-combobox-styles]',
+      )?.textContent ?? ''
+    expect(comboboxStylesheet)
+      .toContain(
+        'gap: var(--weave-combobox-action-gap)',
+      )
+    expect(comboboxStylesheet)
+      .toContain(
+        'right: var(--weave-combobox-action-inset)',
       )
 
     await waitFor(() => {

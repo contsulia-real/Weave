@@ -18,6 +18,7 @@ Reuse order:
 3. Otherwise rely on browser-native HTML/CSS/DOM behavior where appropriate.
 4. Only create a new abstraction when the existing layers cannot express the required behavior.
 
+Do not block valid reuse because of a "basic / composite" component-layer classification. If an existing public component already provides the required semantics or interaction, reuse it directly regardless of those labels.
 Do not copy an existing component's implementation and rename or slightly modify it.
 Do not create a new shared abstraction merely to avoid reusing an existing component.
 Do not create parallel systems for overlay, positioning, presence, focus, selection, navigation, scrolling, layout, motion, theme, or form-control behavior when Weave already has one.

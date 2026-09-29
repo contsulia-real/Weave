@@ -1609,7 +1609,7 @@ export function FoundationPlayground() {
 
       <PlaygroundSection
         title="Combobox"
-        description="editable combobox：inputValue 与 value 分离；输入自动过滤，Arrow 键浏览候选，Enter 提交；支持 custom filter、empty state、clear 与 anchored overlay collision。"
+        description="editable combobox：inputValue 与 value 分离；输入自动过滤，Arrow 键浏览候选，Enter 提交；clear 与 chevron 具有显式 action gap / inset，并支持 custom filter、empty state 与 anchored overlay collision。"
       >
         <ComboboxPlayground />
       </PlaygroundSection>

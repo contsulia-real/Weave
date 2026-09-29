@@ -40,12 +40,16 @@ export type InputProps =
       multiline?: false
       rows?: never
       type?: InputType
+      clearable?: boolean
+      clearLabel?: string
       viewProps?: InputViewProps<HTMLInputElement>
     })
   | (InputCommonProps & {
       multiline: true
       rows?: number
       type?: never
+      clearable?: never
+      clearLabel?: never
       viewProps?: InputViewProps<HTMLTextAreaElement>
     })
 

@@ -80,6 +80,62 @@ describe('Input', () => {
     expect(onChange).toHaveBeenCalledWith('world')
   })
 
+  it('shows a clear action by default, can hide it, and clears uncontrolled text without losing focus', () => {
+    const onChange = vi.fn()
+    const { getByRole, getByTestId, queryByRole } = render(
+      <>
+        <Input
+          defaultValue="hello"
+          onChange={onChange}
+          viewProps={{
+            data: {
+              testid: 'clear-input',
+            },
+          }}
+        />
+        <Input
+          defaultValue="hidden"
+          clearable={false}
+          clearLabel="Hidden clear"
+          viewProps={{
+            data: {
+              testid: 'hidden-clear-input',
+            },
+          }}
+        />
+      </>,
+    )
+
+    const input = getByTestId('clear-input') as HTMLInputElement
+    const clear = getByRole('button', {
+      name: 'Clear input',
+    })
+
+    expect(clear.dataset.weaveButton).toBe('')
+    expect(clear.className).toContain('weave-button--ghost')
+
+    fireEvent.pointerDown(clear)
+    fireEvent.click(clear)
+
+    expect(input.value).toBe('')
+    expect(onChange).toHaveBeenCalledWith('')
+    expect(document.activeElement).toBe(input)
+    expect(
+      queryByRole('button', {
+        name: 'Clear input',
+      }),
+    ).toBeNull()
+    expect(
+      queryByRole('button', {
+        name: 'Hidden clear',
+      }),
+    ).toBeNull()
+    expect(
+      getByTestId('hidden-clear-input')
+        .closest('[data-weave-input-root]'),
+    ).toBeNull()
+  })
+
   it('maps disabled to the real input and textarea controls', () => {
     const { getByTestId } = render(
       <>
@@ -296,6 +352,12 @@ describe('Input', () => {
     )
     expect(stylesheet?.textContent).toContain(
       '--weave-component-border-style: solid',
+    )
+    expect(stylesheet?.textContent).toContain(
+      'inset 0 0.0625rem 0.125rem',
+    )
+    expect(stylesheet?.textContent).toContain(
+      'inset 0 0.09375rem 0.15625rem',
     )
   })
 

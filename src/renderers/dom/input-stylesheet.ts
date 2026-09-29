@@ -46,10 +46,16 @@ const stylesheet = `
     var(--weave-input-radius);
   --weave-component-outline-width: 0;
   --weave-component-box-shadow:
-    0 0.0625rem 0
+    inset 0 0.0625rem 0.125rem
     color-mix(
       in srgb,
-      var(--weave-input-border-color) 72%,
+      var(--weave-input-border-color) 28%,
+      transparent
+    ),
+    inset 0 0 0 0.0625rem
+    color-mix(
+      in srgb,
+      var(--weave-input-border-color) 10%,
       transparent
     );
 
@@ -89,6 +95,39 @@ const stylesheet = `
   --weave-component-display: block;
 }
 
+:where(.weave-input-root) {
+  position: relative;
+  display: inline-block;
+  min-width: 0;
+  max-width: 100%;
+  vertical-align: middle;
+}
+
+:where(
+  .weave-input-root[
+    data-weave-input-root-fill="true"
+  ]
+) {
+  width: 100%;
+}
+
+:where(
+  .weave-input[data-weave-input-has-clear="true"]
+) {
+  --weave-component-padding-right:
+    calc(
+      var(--weave-input-padding-x) +
+      var(--weave-input-min-height)
+    );
+}
+
+:where(.weave-input__clear) {
+  position: absolute;
+  top: 50%;
+  right: var(--weave-input-padding-x);
+  translate: 0 -50%;
+}
+
 :where(.weave-input::placeholder) {
   color:
     var(--weave-input-placeholder-color);
@@ -102,10 +141,16 @@ const stylesheet = `
   )
 ) {
   --weave-component-box-shadow:
-    0 calc(var(--weave-feedback-rest-depth) * 0.5) 0
+    inset 0 0.09375rem 0.15625rem
     color-mix(
       in srgb,
-      var(--weave-input-border-color) 82%,
+      var(--weave-input-border-color) 34%,
+      transparent
+    ),
+    inset 0 0 0 0.0625rem
+    color-mix(
+      in srgb,
+      var(--weave-input-border-color) 14%,
       transparent
     );
 }
@@ -113,10 +158,16 @@ const stylesheet = `
 :where(.weave-input:focus-visible),
 :where(.weave-select:focus-visible) {
   --weave-component-box-shadow:
-    0 var(--weave-feedback-rest-depth) 0
+    inset 0 0.0625rem 0.125rem
     color-mix(
       in srgb,
-      var(--weave-input-focus-outline-color) 34%,
+      var(--weave-input-focus-outline-color) 18%,
+      transparent
+    ),
+    inset 0 0 0 0.0625rem
+    color-mix(
+      in srgb,
+      var(--weave-input-focus-outline-color) 12%,
       transparent
     );
   --weave-component-border-top-color:

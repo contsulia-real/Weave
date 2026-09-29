@@ -447,118 +447,52 @@ delay    = 120ms
 
 ---
 
-## 5. 组件分层模型
+## 5. 组件复用模型
 
-组件体系不是“所有东西都是同级组件”。
+Weave 不使用“基础组件 / 组合组件”的依赖层级来决定一个组件能不能复用另一个组件。组件之间是否复用，只看现有公开组件的语义、API 和交互是否已经匹配当前子职责。
 
-正式分成三层：
+### 5.1 `View` 与 `useViewHost`
 
-```text
-基础原语
-    ↓
-基础组件
-    ↓
-组合组件
-```
-
-### 5.1 基础原语
-
-面向 Weave 使用者的基础原语只有一个：
+面向 Weave 使用者的通用公开原语是：
 
 ```text
 View
 ```
 
-`View` 是用户编写界面时直接使用的公开基础组件。它承载完整的 `ViewProps` 通用能力，并通过内部的 `useViewHost` 落到真实 DOM 宿主。
+`View` 承载完整的 `ViewProps` 通用能力，并通过内部 `useViewHost` 落到真实 DOM 宿主。
 
-`useViewHost` 不属于公开组件层，也不是第二个基础原语。它是 Weave 自己实现组件时复用 `View` 通用能力的底层机制。`Text`、`Image`、`Input`、`Button` 等组件可以通过 `useViewHost` 直接把这些通用能力应用到最合适的真实 DOM 元素，而不需要为了复用能力额外包一层 `<View>`。
+`useViewHost` 不是第二个公开组件，也不是用来绕开已有公开组件的理由。它只负责让需要直接承载真实 DOM 的组件复用 View 的布局、尺寸、视觉、响应式、motion、可访问性、事件、focus、layer 与 escape hatch 等宿主能力。
 
-复用 `useViewHost` 只解决**通用宿主能力**。当组合组件已经有语义匹配的公开组件可复用时，应直接复用现有组件；如果宿主语义不同但视觉职责相同，也应复用已有组件的视觉实现，而不是再建立一层平行 abstraction。Select 的宿主仍是 `<button role="combobox">`，但其 field surface 直接复用 Input stylesheet / Input theme；Combobox 的真实输入则直接组合公开 `Input`。
+### 5.2 强制复用顺序
 
-本文后续所说的 **ViewHost**，指通过这套内部宿主机制承载 `View` 通用能力的真实 DOM 宿主。
-
-### 5.2 基础组件
-
-基础组件的硬性规则：
-
-> 基础组件必须通过 `useViewHost` 复用 `View` 的通用能力；它们可以直接承载与自身语义匹配的真实 DOM 元素，不要求在 DOM 中嵌套一个 `<View>`。
-
-不能在内部依赖：
-
-- 其他基础组件
-- 组合组件
-
-当前基础组件：
+实现组件内部子职责时按以下顺序处理：
 
 ```text
-Text
-Image
-Input
-Icon
-Switch
-Radio
-Checkbox
-Progress
-Scrollbar
-
-Flex
-Row
-Column
-Grid
-Stack
-Absolute
+1. 已有公开组件
+2. 已有 internal helper / primitive
+3. 浏览器原生 HTML / CSS / DOM 能力
+4. 新实现 / 新抽象
 ```
 
-其中 `Flex / Row / Column / Grid / Stack / Absolute` 是正式布局组件。它们是对公开 `View` 布局能力的约束封装，不增加第二套布局引擎，也不增加额外 DOM 层。
+只要已有公开组件的语义和 API 匹配，就直接复用，不因为组件分类、文件位置或所谓“层级”重新手写同义 DOM / 样式 / 交互。
 
-### 5.3 组合组件
-
-组合组件同样可以通过内部 `useViewHost` 直接承载自己的真实 DOM 宿主，并可以组合以下任意公开组件：
-
-当已有公开组件的语义和 API 已经匹配内部子职责时，组合组件必须直接复用它，而不是重新手写同义 DOM / 样式 / 交互。例如 `Combobox` 的可编辑输入复用 `Input`，clear action 复用 `Button`；`Link` 和非 dot `Badge` 的可见文字复用 `Text`。这种内部组合不改变外层组件自己的状态模型、ARIA ownership 或主题入口。
+当前明确例子：
 
 ```text
-View
-基础组件
-其他组合组件
+Input clear action       → Button
+Combobox editable input  → Input
+Combobox clear action    → Button
+Link visible text        → Text
+non-dot Badge text       → Text
 ```
 
-当前组合组件：
+Select 的 trigger 语义必须是 `<button role="combobox">`，因此不能直接组合 `Input` 宿主；但它的 field surface 直接复用 Input stylesheet / Input theme，不再复制一套近似 field CSS。
 
-```text
-Button
-Link
-Badge
-ToolTip
-Snack
-List
-ListItem
-```
+复用公开组件不会自动转移外层组件自己的状态模型、ARIA ownership 或业务语义。外层组件仍负责自身语义，只把匹配的内部子职责交给已有组件。
 
-### 5.4 分层判断看“真实内部依赖”
+### 5.3 布局组件
 
-不能通过“这是 children 传进来的”之类说法规避真实依赖。
-
-例如：
-
-```text
-Button
-├─ useViewHost → <button>
-└─ Text
-```
-
-`Button` 自己通过 `useViewHost` 复用 `View` 的通用宿主能力，同时内部真实依赖 `Text`，所以它不是基础组件，而是组合组件。
-
-同理：
-
-```text
-List
-└─ ListItem
-   ├─ Text
-   └─ Icon?
-```
-
-因此 `List` 也是组合组件。
+`Flex / Row / Column / Grid / Stack / Absolute` 是对公开 `View` 布局能力的约束封装，不增加第二套布局引擎，也不增加额外 DOM 层。
 
 ---
 
@@ -586,7 +520,7 @@ CSS 样式与布局
 视觉效果
 ```
 
-基础组件只在 ViewHost 通用能力之上增加自身特有能力。
+具体组件可以在 ViewHost 通用能力之上增加自身特有能力，也可以直接复用已有公开组件提供的匹配职责。
 
 例如：
 
@@ -636,7 +570,7 @@ Absolute  → View layout="absolute"
 
 `View layout="..."` 仍然可用，但不再是一般业务布局的首选写法。
 
-Weave 自身必须 dogfood 正式布局组件：Playground、示例页以及组合组件中的一般布局应使用 `Flex / Row / Column / Grid / Stack / Absolute`。裸 `View layout="flex|grid|stack|absolute"` 只允许保留在这六个布局组件自己的实现边界，或确有底层实现理由且无法用正式布局组件表达的内部基础设施中；不能为了省事在业务/示例代码里继续回退到裸布局 View。
+Weave 自身必须 dogfood 正式布局组件：Playground、示例页以及组件内部的一般布局应使用 `Flex / Row / Column / Grid / Stack / Absolute`。裸 `View layout="flex|grid|stack|absolute"` 只允许保留在这六个布局组件自己的实现边界，或确有底层实现理由且无法用正式布局组件表达的内部基础设施中；不能为了省事在业务/示例代码里继续回退到裸布局 View。
 
 组件是否能够实际承载子项布局，遵循其对应 DOM 元素的内容模型。
 
@@ -1747,7 +1681,7 @@ defaultTheme
 
 # 11. `Text`
 
-`Text` 是基础组件。
+`Text` 是文字组件。
 
 依赖关系：
 
@@ -1991,7 +1925,7 @@ import { IconArrowRight } from "@tabler/icons-react"
 
 # 12. `Icon`
 
-`Icon` 是基础组件。
+`Icon` 是图标组件。
 
 图标来源确定为：
 
@@ -2136,13 +2070,13 @@ stroke = regular
 
 Icon 的宿主节点使用内联 `span`，因此可以合法嵌套在 `Text` 中。内部真实 SVG 默认 `aria-hidden`，Icon 本身默认作为装饰内容；当 `viewProps.label` 存在而未显式指定 `role` 时，宿主自动使用 `role="img"` 并承载可访问名称。
 
-颜色、旋转、透明度、动画等通用 `View` 能力通过 `viewProps` 使用，不需要改变 Icon 的分层。
+颜色、旋转、透明度、动画等通用 `View` 能力通过 `viewProps` 使用。
 
 ---
 
 # 13. `Image`
 
-`Image` 是基础组件。
+`Image` 是图片组件。
 
 ```text
 Image
@@ -2268,7 +2202,7 @@ eager
 
 # 14. `Input`
 
-`Input` 是基础组件。
+`Input` 是输入组件。
 
 ```text
 Input
@@ -2306,6 +2240,8 @@ autoComplete
 minLength
 maxLength
 pattern
+clearable
+clearLabel
 ```
 
 ### type
@@ -2324,6 +2260,10 @@ url
 
 不重新发明同义名称。
 
+单行 Input 默认 `clearable=true`。当前实际输入文字非空，且 Input 不是 disabled / readOnly 时显示 clear action；`clearable={false}` 可完全隐藏该 action，`clearLabel` 控制 accessible name，默认 `Clear input`。clear 会把非受控 input 直接清空、调用 `onChange("")` 并把 focus 保持 / 恢复到真实 input；受控 Input 只发出 `onChange("")`，最终 value 仍由调用方决定。multiline Input 不提供 clear action。
+
+Input 的 clear action 直接复用公开 `Button`，不维护私有 button DOM / hover / focus / pressed 视觉；`viewProps.ref` 仍然指向真实 `<input>`，不会改指 clear wrapper。
+
 ## 14.2 多行输入仍然使用 Input
 
 ```tsx
@@ -2333,7 +2273,7 @@ url
 />
 ```
 
-不额外建立 `TextArea` 基础组件。
+不额外建立 `TextArea` 组件。
 
 DOM 下仍然使用真实 `<textarea>`，保留浏览器原生文本编辑、选择、输入法与 `scrollTop / scrollLeft` 行为。
 
@@ -2365,7 +2305,7 @@ focus       = 0.125rem focus outline
 focusOffset = 0.0625rem
 ```
 
-Input / Select / Combobox 默认使用完全相同的 Input field depth、hover shadow 与 focus border/shadow。禁止为了实现 Select 或 Combobox 再复制一份“看起来差不多”的 input CSS，也禁止为了共享这些视觉再增加一个与 Input 平行的 Field Control 层。
+Input / Select / Combobox 默认使用完全相同的 Input field surface。field 只使用类似 Switch track 的轻微 inset shadow 表达凹陷，hover 只略微加深这层 inset；这里不使用任何 thumb 式、底边 extrusion 式或外凸 drop shadow。禁止为了实现 Select 或 Combobox 再复制一份“看起来差不多”的 input CSS，也禁止为了共享这些视觉再增加一个与 Input 平行的 Field Control 层。
 
 单行 Input 不再用 `paddingY` 把自身撑高；垂直尺寸由共享 `minHeight + typography` 基线统一。`Input.base.paddingY` 只用于 multiline textarea 的内容内边距。
 
@@ -2428,7 +2368,7 @@ suffix
 密码可见按钮
 ```
 
-这些会引入 `Text`、`Icon`、`Button` 等依赖，因此属于更高层组合组件的职责。
+这些能力如果要提供，应优先直接复用现有 `Text`、`Icon`、`Button` 等组件，而不是重新实现同义版本。
 
 ---
 
@@ -2773,7 +2713,7 @@ theme.components.Combobox.listbox
 theme.components.Combobox.option
 ```
 
-Combobox 的真实输入直接是公开 `Input`，所以 field surface 与 typography 只由 `theme.components.Input` 控制。`Combobox.base` 只控制 Combobox 自己新增的 chevron / action 尺寸；`listbox` 控制 popup surface / gap / size / shadow / motion；`option` 控制 active / selected / disabled、icon、check 和 typography。
+Combobox 的真实输入直接是公开 `Input`，所以 field surface 与 typography 只由 `theme.components.Input` 控制。Combobox 关闭 Input 自身的 clear action，因为 Combobox clear 还必须同步清理 committed value；`Combobox.base` 只控制 Combobox 自己新增的 chevron / action 尺寸，以及 `actionGap / actionInset`。clear 与 chevron 之间必须有显式 gap，chevron 到 field 右边缘必须有显式 inset，不能依赖 SVG 自身空白或偶然 padding。`listbox` 控制 popup surface / gap / size / shadow / motion；`option` 控制 active / selected / disabled、icon、check 和 typography。
 
 `viewProps` 作用于真实 input；`listboxViewProps` 作用于 popup listbox。
 
@@ -2793,9 +2733,9 @@ multi-select
 ---
 # 15. `Switch`
 
-`Switch` 是基础组件。
+`Switch` 是开关组件。
 
-Switch 的视觉仍由 Weave ViewHost 样式变量体系驱动，但作为基础组件不依赖公开 `View` 组件；语义宿主使用真实 labelable button，thumb 是 Switch 自己的内部视觉 DOM：
+Switch 的视觉仍由 Weave ViewHost 样式变量体系驱动；语义宿主使用真实 labelable button，thumb 是 Switch 自己的内部视觉 DOM：
 
 ```text
 Switch
@@ -2804,7 +2744,7 @@ Switch
 └─ <label> + visible label                // 仅传 label 时出现
 ```
 
-这样既满足基础组件不依赖其他基础组件的约束，又保留 track / thumb 的 Weave 视觉变量体系与拖动行为；`label` 继续使用浏览器原生 label activation，而不是额外模拟一次点击。
+这样保留 track / thumb 的 Weave 视觉变量体系与拖动行为；`label` 继续使用浏览器原生 label activation，而不是额外模拟一次点击。
 
 ## 15.1 API
 
@@ -2853,7 +2793,7 @@ large
 
 ## 15.2 `Radio` 与 `Checkbox`
 
-`Radio` 与 `Checkbox` 都是基础组件，并使用真实原生输入控件，而不是用 `div role=...` 模拟：
+`Radio` 与 `Checkbox` 都使用真实原生输入控件，而不是用 `div role=...` 模拟：
 
 ```text
 Radio    → <input type="radio">
@@ -2912,7 +2852,7 @@ viewProps
 
 # 16. `Progress`
 
-`Progress` 是基础组件。
+`Progress` 是进度组件。
 
 它通过 `useViewHost` 复用 `View` 的通用宿主能力，用来表达确定进度与不确定进度。
 
@@ -3131,9 +3071,9 @@ style
 
 # 17. `Scrollbar`
 
-`Scrollbar` 是一个特殊的基础组件。
+`Scrollbar` 是一个特殊的滚动条组件。
 
-## 17.1 它是复用 ViewHost 通用能力的基础组件
+## 17.1 它复用 ViewHost 通用能力
 
 不是：
 
@@ -3147,7 +3087,7 @@ style
 
 它是：
 
-> 框架自己的基础组件；内部通过 `useViewHost` 复用 `View` 的通用能力，并直接操作真实滚动宿主，不依赖浏览器私有 scrollbar 伪元素皮肤。
+> 框架自己的组件；内部通过 `useViewHost` 复用 `View` 的通用能力，并直接操作真实滚动宿主，不依赖浏览器私有 scrollbar 伪元素皮肤。
 
 ## 17.2 不需要显式插入
 
@@ -3263,7 +3203,7 @@ DOM 实现中：
 
 # 18. `Button`
 
-`Button` 是组合组件。
+`Button` 直接复用 `Text`，并可承载已有 Icon 内容能力。
 
 真实依赖：
 
@@ -3573,7 +3513,7 @@ style
 
 # 18A. `Link`
 
-`Link` 是组合组件，语义宿主必须是真实 `<a>`，不能用 Button / div 模拟导航。
+`Link` 的语义宿主必须是真实 `<a>`，不能用 Button / div 模拟导航。
 
 核心 API：
 
@@ -3683,7 +3623,7 @@ bottom-left  bottom  bottom-right
 
 # 19. `ToolTip`
 
-`ToolTip` 是组合组件。
+`ToolTip` 是目标附着的辅助说明组件。
 
 至少依赖：
 
@@ -3877,7 +3817,7 @@ typo
 
 # 19.5 `Popover`
 
-`Popover` 是交互式锚定浮层组合组件。它和 `ToolTip` 的职责不同：ToolTip 是不可交互的辅助说明；Popover 可以承载 Button、Link、表单控件等交互内容；正式的命令菜单由 `Menu` 提供，后续 Select 等组件也可以继续复用同一套锚定浮层基础设施。
+`Popover` 是交互式锚定浮层组件。它和 `ToolTip` 的职责不同：ToolTip 是不可交互的辅助说明；Popover 可以承载 Button、Link、表单控件等交互内容；正式的命令菜单由 `Menu` 提供，后续 Select 等组件也可以继续复用同一套锚定浮层基础设施。
 
 ## 19.5.1 API
 
@@ -4137,7 +4077,7 @@ theme.components.Menu.item
 ---
 # 20. `Snack`
 
-`Snack` 是组合组件，同时提供：
+`Snack` 同时提供：
 
 ```text
 Snack
@@ -4611,7 +4551,7 @@ Snack root 使用 `aria-atomic="true"`。
 
 # 21. `List` 与 `ListItem`
 
-`List` 是组合组件，不是“一个纵向 View”。
+`List` 不是“一个纵向 View”。
 
 它是一个真正的数据列表组合控件。
 
@@ -4625,7 +4565,7 @@ List
    └─ trailing?
 ```
 
-`ListItem` 同样是组合组件。
+`ListItem` 直接复用已有的文字、图标和 trailing 交互组件。
 
 ## 21.1 数据驱动 API
 
@@ -6375,30 +6315,17 @@ Weave 公开 API
 │  └─ Absolute
 │      └─ 对 View 布局能力的受约束封装，不增加额外 DOM
 │
-├─ 基础组件
-│  ├─ Text
-│  ├─ Image
-│  ├─ Input
-│  ├─ Icon
-│  ├─ Divider
-│  ├─ Switch
-│  ├─ Radio
-│  ├─ Checkbox
-│  ├─ Progress
-│  └─ Scrollbar
-│
-├─ 组合组件
-│  ├─ Button
-│  ├─ Link
-│  ├─ Badge
-│  ├─ ToolTip
-│  ├─ Popover
+├─ 公开组件
+│  ├─ Text / Image / Icon
+│  ├─ Input / Button / Link
+│  ├─ Switch / Radio / Checkbox
+│  ├─ Progress / Scrollbar / Divider
+│  ├─ Badge / ToolTip / Popover
 │  ├─ Select / SelectOption
 │  ├─ Combobox / ComboboxOption
 │  ├─ Menu / MenuItem
 │  ├─ Snack
-│  ├─ List
-│  └─ ListItem
+│  └─ List / ListItem
 │
 ├─ Motion 生命周期控制
 │  └─ Presence
@@ -6412,7 +6339,7 @@ Weave 公开 API
 真实 DOM 宿主组件
 │
 ├─ View
-└─ 需要承载自身 DOM 的基础 / 组合组件
+└─ 需要承载自身 DOM 的组件
     │
     ▼
 内部 useViewHost
@@ -6461,9 +6388,9 @@ CSS variables + runtime classes + framework stylesheet
 5. 面向用户的基础原语只有 `View`；`useViewHost` 是 Weave 内部复用通用宿主能力的实现机制，不是第二个公开基础原语。
 6. `View` 直接使用 `ViewProps`；直接承载自身 DOM 的组件通过 `viewProps` 暴露通用能力，并在内部使用 `useViewHost` 复用这套能力；正式布局组件可以作为受约束的 `View` 封装直接接受对应布局属性。
 7. 组件是否允许 `children`、允许哪些 `children`，遵循其对应 DOM 元素的内容模型。
-8. 基础组件不得依赖其他基础组件或组合组件；它们通过 `useViewHost` 复用 `View` 通用能力，并可以直接渲染与自身语义匹配的真实 DOM 元素，不要求额外嵌套 `<View>`。
-9. 组合组件可以通过 `useViewHost` 承载自身宿主，并由 `View`、基础组件、其他组合组件共同构建。
-10. 组件层级判断按真实内部依赖，不靠 children 绕开依赖关系。
+8. 不以“基础 / 组合”组件层级限制复用；已有公开组件的语义与 API 匹配时直接复用。
+9. 只有现有公开组件、internal helper 与浏览器原生能力都不能表达需求时，才允许新增实现或抽象。
+10. 不得因为组件分类重新实现已有组件已经提供的 DOM / 样式 / 交互能力。
 11. 不暴露 `as`、`asChild` 或底层 HTML 标签选择权。
 12. CSS 是内部实现与语义基础，但公开 API 应提供高层、语义化属性。
 13. `style` 保留为原始 CSS 逃生口。
@@ -6476,7 +6403,7 @@ CSS variables + runtime classes + framework stylesheet
 20. 组件视觉、布局、状态与交互必须以真实 DOM / CSS / 浏览器语义为唯一真值。
 21. 布局、文本、表单、事件、焦点、滚动与可访问性必须继续由浏览器 HTML / CSS / DOM 负责，禁止平行重复实现。
 22. 框架自身不提供 Canvas UI 渲染后端；业务自行使用普通 Web `<canvas>` 不改变 Weave 的 DOM 渲染模型。
-23. Scrollbar 是复用 ViewHost 通用能力的基础组件，不是伪元素样式。
+23. Scrollbar 复用 ViewHost 通用能力，不是伪元素样式。
 24. Scrollbar 由框架自动插入，不要求开发者显式使用。
 25. `selectable` 是 `ViewProps` 通用能力，不是 Text 专属。
 26. `Image` 不提供 `decorative`，且遵循对应 DOM 内容模型，不接受 `children`。
@@ -6485,8 +6412,8 @@ CSS variables + runtime classes + framework stylesheet
 29. 组件默认承担正确可访问性和键盘语义，不把标准行为推给业务开发者。
 30. 浮层使用语义 layer，普通用户不需要手工管理 portal 或全局 z-index。
 31. 具体组件已经提供同义语义状态属性时，该状态不在其 `viewProps` 中重复暴露，组件属性作为唯一真值。
-32. 框架自身的 playground、示例与组合组件必须优先 dogfood 已有 Weave 语义组件；已有 `Text`、`Progress` 等能力时，不再平行维护裸 DOM / 私有 CSS 的同义实现。
-33. 组合组件复用基础组件的视觉内核时，可以由组合组件自己承担更高层语义；不得因此重复暴露冲突的 ARIA 角色。
+32. 框架自身的 playground、示例与组件实现必须优先 dogfood 已有 Weave 语义组件；已有 `Text`、`Progress` 等能力时，不再平行维护裸 DOM / 私有 CSS 的同义实现。
+33. 组件复用其他组件的视觉或交互能力时，外层组件仍承担自己的高层语义；不得因此重复暴露冲突的 ARIA 角色。
 34. `Text.typo` 必须来自主题中的完整 type scale；不能退回 renderer 内部的少量硬编码 preset。
 35. Scrollbar 只绘制 thumb，不提供 tracked / trackColor；带圆角宿主必须把圆角曲线区域排除出 thumb 的运动区。
 36. 所有框架拥有的文字视觉必须选择或继承 `theme.tokens.typography.styles` 中的 typo；Button、Input 等组件不得平行维护 `fontSize / fontWeight / lineHeight / letterSpacing`。

@@ -11,9 +11,9 @@ const stylesheet = `
 :where(.weave-combobox) {
   --weave-component-padding-right:
     calc(
-      var(--weave-input-padding-x) +
-      var(--weave-combobox-action-size) +
-      0.25rem
+      var(--weave-combobox-action-inset) +
+      var(--weave-combobox-icon-size) +
+      var(--weave-combobox-action-gap)
     );
 }
 
@@ -24,20 +24,21 @@ const stylesheet = `
 ) {
   --weave-component-padding-right:
     calc(
-      var(--weave-input-padding-x) +
-      var(--weave-combobox-action-size) * 2 +
-      0.5rem
+      var(--weave-combobox-action-inset) +
+      var(--weave-combobox-action-size) +
+      var(--weave-combobox-icon-size) +
+      var(--weave-combobox-action-gap) * 2
     );
 }
 
 :where(.weave-combobox__actions) {
   position: absolute;
   top: 50%;
-  right: 0.25rem;
+  right: var(--weave-combobox-action-inset);
   translate: 0 -50%;
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: var(--weave-combobox-action-gap);
   pointer-events: none;
 }
 
