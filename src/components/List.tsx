@@ -10,6 +10,7 @@ import { ensureListStylesheet } from '../renderers/dom/list-stylesheet'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { useTheme } from '../theme/theme-context'
 import { Divider } from './Divider'
+import { Flex } from './Flex'
 import { assignRef } from './internal/assign-ref'
 import { View } from './View'
 import { ListContext } from './internal/list-context'
@@ -161,28 +162,27 @@ export function List(
         )
       : virtualEntries.map(
           (entry, index) => (
-            <div
+            <Flex
               key={entry.id}
               role="presentation"
-              data-weave-list-entry=""
-              data-weave-list-entry-index={
-                index
+              direction={
+                orientation ===
+                  'vertical'
+                  ? 'column'
+                  : 'row'
               }
-              style={{
-                display: 'flex',
-                flexDirection:
-                  orientation ===
-                    'vertical'
-                    ? 'column'
-                    : 'row',
-                alignItems:
-                  'stretch',
-                minWidth: 0,
-                width:
-                  orientation ===
-                    'vertical'
-                    ? '100%'
-                    : undefined,
+              align="stretch"
+              minWidth={0}
+              width={
+                orientation ===
+                  'vertical'
+                  ? 'fill'
+                  : undefined
+              }
+              data={{
+                'weave-list-entry': '',
+                'weave-list-entry-index':
+                  index,
               }}
             >
               {!noDividers &&
@@ -199,7 +199,7 @@ export function List(
               ) : null}
 
               {entry.node}
-            </div>
+            </Flex>
           ),
         )
 

@@ -14,6 +14,8 @@ import type {
   ListOrientation,
 } from '../../core/list-types'
 import { Divider } from '../Divider'
+import { Flex } from '../Flex'
+import { View } from '../View'
 import {
   createVirtualLayout,
   readVirtualViewport,
@@ -171,16 +173,22 @@ function VirtualItem({
         }
 
   return (
-    <div
+    <Flex
       ref={ref}
       role="presentation"
-      data-weave-list-virtual-item=""
-      data-weave-list-virtual-id={
-        entry.id
+      direction={
+        orientation === 'vertical'
+          ? 'column'
+          : 'row'
       }
-      data-weave-list-virtual-index={
-        index
-      }
+      align="stretch"
+      data={{
+        'weave-list-virtual-item': '',
+        'weave-list-virtual-id':
+          entry.id,
+        'weave-list-virtual-index':
+          index,
+      }}
       style={style}
     >
       {showDivider ? (
@@ -196,7 +204,7 @@ function VirtualItem({
       ) : null}
 
       {entry.node}
-    </div>
+    </Flex>
   )
 }
 
@@ -413,9 +421,11 @@ export function VirtualListWindow({
 
   return (
     <>
-      <div
+      <View
         aria-hidden="true"
-        data-weave-list-virtual-spacer=""
+        data={{
+          'weave-list-virtual-spacer': '',
+        }}
         style={spacerStyle}
       />
 
