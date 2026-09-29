@@ -1,18 +1,29 @@
 import {
   IconAlt,
+  IconAmpersand,
+  IconArrowBarToRight,
+  IconArrowBigDownLines,
+  IconArrowBigUp,
+  IconArrowBigUpLines,
   IconArrowDown,
   IconArrowLeft,
   IconArrowRight,
   IconArrowUp,
+  IconAsterisk,
+  IconBackslash,
   IconBackspace,
   IconBrandWindows,
   IconCommand,
   IconCornerDownLeft,
+  IconEqual,
   IconFunction,
+  IconGrave,
+  IconHash,
   IconHome,
   IconLetterA,
   IconLetterB,
   IconLetterC,
+  IconLetterCaseUpper,
   IconLetterD,
   IconLetterE,
   IconLetterF,
@@ -37,6 +48,7 @@ import {
   IconLetterY,
   IconLetterZ,
   IconMenu2,
+  IconMinus,
   IconNumber0,
   IconNumber1,
   IconNumber2,
@@ -48,8 +60,27 @@ import {
   IconNumber8,
   IconNumber9,
   IconOption,
+  IconPercentage,
+  IconPlayerPause,
+  IconPlus,
+  IconPoint,
+  IconQuestionMark,
+  IconQuote,
   IconScreenshot,
+  IconSlash,
   IconSpace,
+  IconSquareF1,
+  IconSquareF2,
+  IconSquareF3,
+  IconSquareF4,
+  IconSquareF5,
+  IconSquareF6,
+  IconSquareF7,
+  IconSquareF8,
+  IconSquareF9,
+  IconTextPlus,
+  IconTilde,
+  IconTrash,
 } from '@tabler/icons-react'
 import { type ReactNode, useInsertionEffect, useSyncExternalStore } from 'react'
 import type { IconComponent } from '../core/icon-types'
@@ -107,6 +138,35 @@ const NUMBER_ICONS: Readonly<Record<string, IconComponent>> = {
   '9': IconNumber9,
 }
 
+const FUNCTION_ICONS: Readonly<Record<string, IconComponent>> = {
+  F1: IconSquareF1,
+  F2: IconSquareF2,
+  F3: IconSquareF3,
+  F4: IconSquareF4,
+  F5: IconSquareF5,
+  F6: IconSquareF6,
+  F7: IconSquareF7,
+  F8: IconSquareF8,
+  F9: IconSquareF9,
+}
+
+const SYMBOL_ICONS: Readonly<Record<string, IconComponent>> = {
+  '~': IconTilde,
+  '`': IconGrave,
+  '-': IconMinus,
+  '=': IconEqual,
+  '\\': IconBackslash,
+  '/': IconSlash,
+  '*': IconAsterisk,
+  '+': IconPlus,
+  '.': IconPoint,
+  '&': IconAmpersand,
+  '#': IconHash,
+  '%': IconPercentage,
+  '?': IconQuestionMark,
+  '"': IconQuote,
+}
+
 interface NavigatorWithUserAgentData extends Navigator {
   userAgentData?: {
     platform?: string
@@ -151,6 +211,22 @@ function resolveKeyVisual(value: ReactNode, metaKey: ResolvedMetaKey): ResolvedK
   if (/^[0-9]$/.test(value)) {
     return {
       content: keyIcon(NUMBER_ICONS[value]),
+      label: value,
+    }
+  }
+
+  const functionIcon = FUNCTION_ICONS[value.toUpperCase()]
+  if (functionIcon !== undefined) {
+    return {
+      content: keyIcon(functionIcon),
+      label: value.toUpperCase(),
+    }
+  }
+
+  const symbolIcon = SYMBOL_ICONS[value]
+  if (symbolIcon !== undefined) {
+    return {
+      content: keyIcon(symbolIcon),
       label: value,
     }
   }
@@ -205,6 +281,62 @@ function resolveKeyVisual(value: ReactNode, metaKey: ResolvedMetaKey): ResolvedK
     return {
       content: keyIcon(IconOption),
       label: 'Option',
+    }
+  }
+
+  if (normalized === 'tab') {
+    return {
+      content: keyIcon(IconArrowBarToRight),
+      label: 'Tab',
+    }
+  }
+
+  if (normalized === 'capslock' || normalized === 'caps') {
+    return {
+      content: keyIcon(IconLetterCaseUpper),
+      label: 'Caps Lock',
+    }
+  }
+
+  if (normalized === 'shift') {
+    return {
+      content: keyIcon(IconArrowBigUp),
+      label: 'Shift',
+    }
+  }
+
+  if (normalized === 'pause' || normalized === 'break') {
+    return {
+      content: keyIcon(IconPlayerPause),
+      label: normalized === 'break' ? 'Break' : 'Pause',
+    }
+  }
+
+  if (normalized === 'insert' || normalized === 'ins') {
+    return {
+      content: keyIcon(IconTextPlus),
+      label: 'Insert',
+    }
+  }
+
+  if (normalized === 'pageup' || normalized === 'pgup') {
+    return {
+      content: keyIcon(IconArrowBigUpLines),
+      label: 'Page Up',
+    }
+  }
+
+  if (normalized === 'pagedown' || normalized === 'pgdn') {
+    return {
+      content: keyIcon(IconArrowBigDownLines),
+      label: 'Page Down',
+    }
+  }
+
+  if (normalized === 'delete' || normalized === 'del') {
+    return {
+      content: keyIcon(IconTrash),
+      label: 'Delete',
     }
   }
 

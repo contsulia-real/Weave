@@ -190,8 +190,8 @@ describe('Key', () => {
       />,
     )
 
-    expect(getByTestId('key').textContent).toBe('Shift')
-    expect(getByTestId('key').querySelector('[data-weave-icon]')).toBeNull()
+    expect(getByTestId('key').getAttribute('aria-label')).toBe('Shift')
+    expect(getByTestId('key').querySelector('.tabler-icon-arrow-big-up')).not.toBeNull()
   })
 
   it('uses Tabler icons for keyboard keys with exact semantic matches', () => {
@@ -213,6 +213,17 @@ describe('Key', () => {
     rerender(<Key value="fn" viewProps={{ data: { testid: 'special-key' } }} />)
     expect(key().getAttribute('aria-label')).toBe('Fn')
     expect(key().querySelector('.tabler-icon-function')).not.toBeNull()
+
+    rerender(<Key value="F1" viewProps={{ data: { testid: 'special-key' } }} />)
+    expect(key().getAttribute('aria-label')).toBe('F1')
+    expect(key().querySelector('.tabler-icon-square-f1')).not.toBeNull()
+
+    rerender(<Key value="F9" viewProps={{ data: { testid: 'special-key' } }} />)
+    expect(key().querySelector('.tabler-icon-square-f9')).not.toBeNull()
+
+    rerender(<Key value="F10" viewProps={{ data: { testid: 'special-key' } }} />)
+    expect(key().textContent).toBe('F10')
+    expect(key().querySelector('[data-weave-icon]')).toBeNull()
 
     rerender(<Key value="7" viewProps={{ data: { testid: 'special-key' } }} />)
     expect(key().getAttribute('aria-label')).toBe('7')
@@ -250,6 +261,63 @@ describe('Key', () => {
     expect(key().getAttribute('aria-label')).toBe('Arrow Right')
     expect(key().querySelector('.tabler-icon-arrow-right')).not.toBeNull()
 
+    rerender(<Key value="Tab" viewProps={{ data: { testid: 'special-key' } }} />)
+    expect(key().getAttribute('aria-label')).toBe('Tab')
+    expect(key().querySelector('.tabler-icon-arrow-bar-to-right')).not.toBeNull()
+
+    rerender(<Key value="CapsLock" viewProps={{ data: { testid: 'special-key' } }} />)
+    expect(key().getAttribute('aria-label')).toBe('Caps Lock')
+    expect(key().querySelector('.tabler-icon-letter-case-upper')).not.toBeNull()
+
+    rerender(<Key value="Shift" viewProps={{ data: { testid: 'special-key' } }} />)
+    expect(key().getAttribute('aria-label')).toBe('Shift')
+    expect(key().querySelector('.tabler-icon-arrow-big-up')).not.toBeNull()
+
+    rerender(<Key value="Pause" viewProps={{ data: { testid: 'special-key' } }} />)
+    expect(key().getAttribute('aria-label')).toBe('Pause')
+    expect(key().querySelector('.tabler-icon-player-pause')).not.toBeNull()
+
+    rerender(<Key value="Insert" viewProps={{ data: { testid: 'special-key' } }} />)
+    expect(key().getAttribute('aria-label')).toBe('Insert')
+    expect(key().querySelector('.tabler-icon-text-plus')).not.toBeNull()
+
+    rerender(<Key value="PageUp" viewProps={{ data: { testid: 'special-key' } }} />)
+    expect(key().getAttribute('aria-label')).toBe('Page Up')
+    expect(key().querySelector('.tabler-icon-arrow-big-up-lines')).not.toBeNull()
+
+    rerender(<Key value="PageDown" viewProps={{ data: { testid: 'special-key' } }} />)
+    expect(key().getAttribute('aria-label')).toBe('Page Down')
+    expect(key().querySelector('.tabler-icon-arrow-big-down-lines')).not.toBeNull()
+
+    rerender(<Key value="Delete" viewProps={{ data: { testid: 'special-key' } }} />)
+    expect(key().getAttribute('aria-label')).toBe('Delete')
+    expect(key().querySelector('.tabler-icon-trash')).not.toBeNull()
+
+    rerender(<Key value="*" viewProps={{ data: { testid: 'special-key' } }} />)
+    expect(key().getAttribute('aria-label')).toBe('*')
+    expect(key().querySelector('.tabler-icon-asterisk')).not.toBeNull()
+
+    rerender(<Key value="+" viewProps={{ data: { testid: 'special-key' } }} />)
+    expect(key().querySelector('.tabler-icon-plus')).not.toBeNull()
+
+    rerender(<Key value="-" viewProps={{ data: { testid: 'special-key' } }} />)
+    expect(key().querySelector('.tabler-icon-minus')).not.toBeNull()
+
+    rerender(<Key value="=" viewProps={{ data: { testid: 'special-key' } }} />)
+    expect(key().querySelector('.tabler-icon-equal')).not.toBeNull()
+
+    rerender(<Key value="~" viewProps={{ data: { testid: 'special-key' } }} />)
+    expect(key().querySelector('.tabler-icon-tilde')).not.toBeNull()
+
+    rerender(<Key value="." viewProps={{ data: { testid: 'special-key' } }} />)
+    expect(key().querySelector('.tabler-icon-point')).not.toBeNull()
+
+    rerender(<Key value="/" viewProps={{ data: { testid: 'special-key' } }} />)
+    expect(key().querySelector('.tabler-icon-slash')).not.toBeNull()
+
+    rerender(<Key value={'\\'} viewProps={{ data: { testid: 'special-key' } }} />)
+    expect(key().querySelector('.tabler-icon-backslash')).not.toBeNull()
+
     rerender(<Key value="Home" viewProps={{ data: { testid: 'special-key' } }} />)
     expect(key().getAttribute('aria-label')).toBe('Home')
     expect(key().querySelector('.tabler-icon-home')).not.toBeNull()
@@ -261,5 +329,13 @@ describe('Key', () => {
     rerender(<Key value="Menu" viewProps={{ data: { testid: 'special-key' } }} />)
     expect(key().getAttribute('aria-label')).toBe('Menu')
     expect(key().querySelector('.tabler-icon-menu-2')).not.toBeNull()
+
+    rerender(<Key value="Esc" viewProps={{ data: { testid: 'special-key' } }} />)
+    expect(key().textContent).toBe('Esc')
+    expect(key().querySelector('[data-weave-icon]')).toBeNull()
+
+    rerender(<Key value="Ctrl" viewProps={{ data: { testid: 'special-key' } }} />)
+    expect(key().textContent).toBe('Ctrl')
+    expect(key().querySelector('[data-weave-icon]')).toBeNull()
   })
 })

@@ -3675,6 +3675,21 @@ Key 的内容优先复用项目已有的 Tabler icon，而不是用文本字符�
 ```text
 A–Z                 → IconLetterA … IconLetterZ
 0–9                 → IconNumber0 … IconNumber9
+F1–F9               → IconSquareF1 … IconSquareF9
+~ / `               → IconTilde / IconGrave
+- / =                → IconMinus / IconEqual
+\\ / /               → IconBackslash / IconSlash
+* / + / .            → IconAsterisk / IconPlus / IconPoint
+& / # / % / ?        → IconAmpersand / IconHash / IconPercentage / IconQuestionMark
+"                   → IconQuote
+Tab                  → IconArrowBarToRight
+CapsLock             → IconLetterCaseUpper
+Shift                → IconArrowBigUp
+Pause / Break        → IconPlayerPause
+Insert / Ins         → IconTextPlus
+PageUp / PgUp        → IconArrowBigUpLines
+PageDown / PgDn      → IconArrowBigDownLines
+Delete / Del         → IconTrash
 meta → Apple        → IconCommand
 meta → Windows      → IconBrandWindows
 command / cmd       → IconCommand
@@ -3692,7 +3707,11 @@ printscreen / prtsc → IconScreenshot
 menu / contextmenu  → IconMenu2
 ```
 
-这些 icon 继续通过 Weave 的 `Icon` 渲染路径输出，并以 `size="xlarge"` 作为 Icon 语义档位；Key stylesheet 再按键帽 size 放大实际图形尺寸：small = 1.75rem、medium = 2rem、large = 2.25rem，避免 glyph 缩在键帽中央。外层 `<kbd>` 提供对应的 `aria-label`，SVG 自身保持 decorative。没有明确 Tabler 对应图标的键继续使用文本，不为了“图标化”使用语义不准确的替代图形。Playground 必须完整展示标准功能键区、主键盘、导航/方向区、数字小键盘和平台 modifier 变体，不能只展示少量样例。
+这些 icon 继续通过 Weave 的 `Icon` 渲染路径输出，并以 `size="xlarge"` 作为 Icon 语义档位；Key stylesheet 再按键帽 size 放大实际图形尺寸：small = 1.75rem、medium = 2rem、large = 2.25rem，避免 glyph 缩在键帽中央。外层 `<kbd>` 提供对应的 `aria-label`，SVG 自身保持 decorative。
+
+图标映射必须以当前安装的 `@tabler/icons-react` 实际 exports 为准逐键审查，不能只按少量关键词抽查。只有直接存在或与标准键盘符号高度一致的图标才可使用；例如当前版本只有 `IconSquareF0…F9`，因此 F1–F9 使用专用图标，而 F10–F12 保留文字。像 `IconBrandMeta` 属于公司品牌，不得冒充通用 Meta modifier。当前没有准确对应的 Esc、Ctrl、ScrollLock、F10–F12、End、NumLock、单独的 [ / ] / ; / ' / , 等继续使用文字。
+
+Playground 必须完整展示标准功能键区、主键盘、导航/方向区、数字小键盘和平台 modifier 变体，不能只展示少量样例。
 
 但 Key 只保留 Button 的 rest 外观：
 
