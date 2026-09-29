@@ -9,7 +9,6 @@ import {
 import type {
   TransitionEvent as ReactTransitionEvent,
 } from 'react'
-import { createPortal } from 'react-dom'
 import type {
   ToolTipProps,
 } from '../core/tooltip-types'
@@ -18,8 +17,8 @@ import { resolveToolTipTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { ensureToolTipStylesheet } from '../renderers/dom/tooltip-stylesheet'
 import { useTheme } from '../theme/theme-context'
-import { ThemeProvider } from '../theme/ThemeProvider'
 import { durationMilliseconds } from './internal/motion-duration'
+import { ThemedPortal } from './internal/ThemedPortal'
 import { useControllableBoolean } from './internal/use-controllable-boolean'
 import { useExitPresence } from './internal/use-exit-presence'
 import { useToolTipPosition } from './internal/use-tooltip-position'
@@ -66,7 +65,7 @@ export function ToolTip({
     viewProps.id ??
     `weave-tooltip-${reactId}`
 
-  const { theme, mode, reducedMotion } =
+  const { theme, reducedMotion } =
     useTheme()
   const base =
     theme.components.ToolTip?.base
@@ -403,11 +402,8 @@ export function ToolTip({
   )
 
   const tooltip = present
-    ? createPortal(
-        <ThemeProvider
-          theme={theme}
-          mode={mode}
-        >
+    ? (
+        <ThemedPortal>
           <View
             {...viewProps}
             id={tooltipId}
@@ -466,8 +462,7 @@ export function ToolTip({
               content
             )}
           </View>
-        </ThemeProvider>,
-        document.body,
+        </ThemedPortal>
       )
     : null
 

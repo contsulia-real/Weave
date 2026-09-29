@@ -10,7 +10,6 @@ import {
   type PointerEvent,
   type TransitionEvent,
 } from 'react'
-import { createPortal } from 'react-dom'
 import type {
   IconSvg,
 } from '../core/icon-types'
@@ -30,7 +29,6 @@ import {
 import {
   useTheme,
 } from '../theme/theme-context'
-import { ThemeProvider } from '../theme/ThemeProvider'
 import { Icon } from './Icon'
 import { renderIconSource } from './internal/render-icon-source'
 import {
@@ -41,6 +39,7 @@ import {
   syncMenuTabIndex,
 } from './internal/menu-navigation'
 import { MenuSurface } from './internal/MenuSurface'
+import { ThemedPortal } from './internal/ThemedPortal'
 import {
   durationMilliseconds,
 } from './internal/motion-duration'
@@ -130,7 +129,6 @@ export function MenuItem({
 
   const {
     theme,
-    mode,
     reducedMotion,
   } = useTheme()
   const itemTheme =
@@ -513,14 +511,9 @@ export function MenuItem({
   }
 
   const submenuPortal =
-    present &&
-    typeof document !==
-      'undefined'
-      ? createPortal(
-          <ThemeProvider
-            theme={theme}
-            mode={mode}
-          >
+    present
+      ? (
+          <ThemedPortal>
             <MenuSurface
               panelRef={
                 submenuPanelRef
@@ -566,8 +559,7 @@ export function MenuItem({
             >
               {submenu}
             </MenuSurface>
-          </ThemeProvider>,
-          document.body,
+          </ThemedPortal>
         )
       : null
 

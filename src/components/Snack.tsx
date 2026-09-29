@@ -4,7 +4,6 @@ import {
   type ReactNode,
   type TransitionEvent as ReactTransitionEvent,
 } from 'react'
-import { createPortal } from 'react-dom'
 import type {
   SnackProps,
   SnackVariant,
@@ -14,10 +13,10 @@ import { resolveSnackTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { ensureSnackStylesheet } from '../renderers/dom/snack-stylesheet'
 import { useTheme } from '../theme/theme-context'
-import { ThemeProvider } from '../theme/ThemeProvider'
 import { Progress } from './Progress'
 import { View } from './View'
 import { durationMilliseconds } from './internal/motion-duration'
+import { ThemedPortal } from './internal/ThemedPortal'
 import { SnackBody } from './internal/SnackBody'
 import { useControllableBoolean } from './internal/use-controllable-boolean'
 import { useExitPresence } from './internal/use-exit-presence'
@@ -73,7 +72,6 @@ export function Snack({
 
   const {
     theme,
-    mode,
     reducedMotion,
   } = useTheme()
   const base =
@@ -232,11 +230,8 @@ export function Snack({
     )
   }
 
-  return createPortal(
-    <ThemeProvider
-      theme={theme}
-      mode={mode}
-    >
+  return (
+    <ThemedPortal target={region}>
       <View
         {...viewProps}
         role={
@@ -326,7 +321,6 @@ export function Snack({
           />
         ) : null}
       </View>
-    </ThemeProvider>,
-    region,
+    </ThemedPortal>
   )
 }

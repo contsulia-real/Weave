@@ -10,7 +10,6 @@ import {
   type MouseEvent,
   type TransitionEvent,
 } from 'react'
-import { createPortal } from 'react-dom'
 import type {
   IconSvg,
 } from '../core/icon-types'
@@ -35,9 +34,9 @@ import {
 import {
   useTheme,
 } from '../theme/theme-context'
-import { ThemeProvider } from '../theme/ThemeProvider'
 import { Icon } from './Icon'
 import { assignRef } from './internal/assign-ref'
+import { ThemedPortal } from './internal/ThemedPortal'
 import { chevronDownIcon } from './internal/control-icons'
 import { renderIconSource } from './internal/render-icon-source'
 import {
@@ -159,7 +158,6 @@ export function Select({
 
   const {
     theme,
-    mode,
     reducedMotion,
   } = useTheme()
   const inputBaseTheme =
@@ -660,14 +658,9 @@ export function Select({
       : undefined
 
   const portal =
-    present &&
-    typeof document !==
-      'undefined'
-      ? createPortal(
-          <ThemeProvider
-            theme={theme}
-            mode={mode}
-          >
+    present
+      ? (
+          <ThemedPortal>
             <SelectContext.Provider
               value={contextValue}
             >
@@ -734,8 +727,7 @@ export function Select({
                 {children}
               </View>
             </SelectContext.Provider>
-          </ThemeProvider>,
-          document.body,
+          </ThemedPortal>
         )
       : null
 

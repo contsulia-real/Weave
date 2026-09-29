@@ -8,7 +8,6 @@ import {
   type KeyboardEvent,
   type TransitionEvent,
 } from 'react'
-import { createPortal } from 'react-dom'
 import type {
   MenuProps,
 } from '../core/menu-types'
@@ -25,7 +24,6 @@ import {
 import {
   useTheme,
 } from '../theme/theme-context'
-import { ThemeProvider } from '../theme/ThemeProvider'
 import {
   MenuRootContext,
 } from './internal/menu-state'
@@ -33,6 +31,7 @@ import {
   focusMenuItem,
 } from './internal/menu-navigation'
 import { MenuSurface } from './internal/MenuSurface'
+import { ThemedPortal } from './internal/ThemedPortal'
 import {
   durationMilliseconds,
 } from './internal/motion-duration'
@@ -99,7 +98,6 @@ export function Menu({
 
   const {
     theme,
-    mode,
     reducedMotion,
   } = useTheme()
   const exitDuration =
@@ -276,14 +274,9 @@ export function Menu({
   }
 
   const portal =
-    present &&
-    typeof document !==
-      'undefined'
-      ? createPortal(
-          <ThemeProvider
-            theme={theme}
-            mode={mode}
-          >
+    present
+      ? (
+          <ThemedPortal>
             <MenuRootContext.Provider
               value={rootContext}
             >
@@ -329,8 +322,7 @@ export function Menu({
                 {children}
               </MenuSurface>
             </MenuRootContext.Provider>
-          </ThemeProvider>,
-          document.body,
+          </ThemedPortal>
         )
       : null
 

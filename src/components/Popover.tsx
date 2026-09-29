@@ -5,7 +5,6 @@ import {
   useRef,
   type TransitionEvent as ReactTransitionEvent,
 } from 'react'
-import { createPortal } from 'react-dom'
 import type {
   PopoverProps,
 } from '../core/popover-types'
@@ -16,8 +15,8 @@ import {
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { ensurePopoverStylesheet } from '../renderers/dom/popover-stylesheet'
 import { useTheme } from '../theme/theme-context'
-import { ThemeProvider } from '../theme/ThemeProvider'
 import { assignRef } from './internal/assign-ref'
+import { ThemedPortal } from './internal/ThemedPortal'
 import { durationMilliseconds } from './internal/motion-duration'
 import { useControllableBoolean } from './internal/use-controllable-boolean'
 import { useExitPresence } from './internal/use-exit-presence'
@@ -61,7 +60,6 @@ export function Popover({
 
   const {
     theme,
-    mode,
     reducedMotion,
   } = useTheme()
   const exitDuration =
@@ -170,13 +168,9 @@ export function Popover({
   }
 
   const portal =
-    present &&
-    typeof document !== 'undefined'
-      ? createPortal(
-          <ThemeProvider
-            theme={theme}
-            mode={mode}
-          >
+    present
+      ? (
+          <ThemedPortal>
             <View
               {...viewProps}
               ref={setPanelRef}
@@ -225,8 +219,7 @@ export function Popover({
             >
               {content}
             </View>
-          </ThemeProvider>,
-          document.body,
+          </ThemedPortal>
         )
       : null
 

@@ -13,7 +13,6 @@ import {
   type PointerEvent,
   type TransitionEvent,
 } from 'react'
-import { createPortal } from 'react-dom'
 import type {
   IconSvg,
 } from '../core/icon-types'
@@ -34,9 +33,9 @@ import {
 import {
   useTheme,
 } from '../theme/theme-context'
-import { ThemeProvider } from '../theme/ThemeProvider'
 import { Button } from './Button'
 import { assignRef } from './internal/assign-ref'
+import { ThemedPortal } from './internal/ThemedPortal'
 import {
   chevronDownIcon,
   closeIcon,
@@ -249,7 +248,6 @@ export function Combobox({
 
   const {
     theme,
-    mode,
     reducedMotion,
   } = useTheme()
   const themeClassName =
@@ -804,14 +802,9 @@ export function Combobox({
     }
 
   const portal =
-    present &&
-    typeof document !==
-      'undefined'
-      ? createPortal(
-          <ThemeProvider
-            theme={theme}
-            mode={mode}
-          >
+    present
+      ? (
+          <ThemedPortal>
             <ComboboxContext.Provider
               value={contextValue}
             >
@@ -895,8 +888,7 @@ export function Combobox({
                   )}
               </View>
             </ComboboxContext.Provider>
-          </ThemeProvider>,
-          document.body,
+          </ThemedPortal>
         )
       : null
 
