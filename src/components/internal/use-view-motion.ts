@@ -8,6 +8,7 @@ import {
 import { useRuntimeStyleClass } from '../../renderers/dom/runtime-class'
 import type { ResolvedTheme } from '../../theme/theme-types'
 import { PresenceContext } from './presence-context'
+import { scheduleAnimationFrame } from './schedule-animation-frame'
 
 interface ViewMotionHostResult {
   className: string | undefined
@@ -16,16 +17,6 @@ interface ViewMotionHostResult {
 
 function definitionKey(value: unknown): string {
   return JSON.stringify(value ?? null)
-}
-
-function scheduleAnimationFrame(callback: FrameRequestCallback): () => void {
-  if (typeof window !== 'undefined' && typeof window.requestAnimationFrame === 'function') {
-    const id = window.requestAnimationFrame(callback)
-    return () => window.cancelAnimationFrame(id)
-  }
-
-  const id = globalThis.setTimeout(() => callback(Date.now()), 16)
-  return () => globalThis.clearTimeout(id)
 }
 
 function scheduleAfterPaint(callback: () => void): () => void {

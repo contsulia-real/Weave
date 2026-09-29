@@ -6319,7 +6319,7 @@ Weave 公开 API
 │  ├─ Text / Image / Icon
 │  ├─ Input / Button / Link
 │  ├─ Switch / Radio / Checkbox
-│  ├─ Progress / Scrollbar / Divider
+│  ├─ Progress / Divider
 │  ├─ Badge / ToolTip / Popover
 │  ├─ Select / SelectOption
 │  ├─ Combobox / ComboboxOption

@@ -7,6 +7,7 @@ import type {
 } from '../../core/motion-types'
 import { resolveMotionTiming } from '../../renderers/dom/motion-runtime'
 import type { ResolvedTheme } from '../../theme/theme-types'
+import { scheduleAnimationFrame } from './schedule-animation-frame'
 
 interface LayoutRect {
   left: number
@@ -30,16 +31,6 @@ function snapshot(element: HTMLElement): LayoutRect {
 
 function config(value: Exclude<ViewLayoutAnimation, false>): ViewLayoutAnimationConfig {
   return value === true ? {} : value
-}
-
-function scheduleFrame(callback: FrameRequestCallback): () => void {
-  if (typeof window !== 'undefined' && typeof window.requestAnimationFrame === 'function') {
-    const id = window.requestAnimationFrame(callback)
-    return () => window.cancelAnimationFrame(id)
-  }
-
-  const id = globalThis.setTimeout(() => callback(Date.now()), 16)
-  return () => globalThis.clearTimeout(id)
 }
 
 function nearlyEqual(previous: LayoutRect, next: LayoutRect): boolean {
@@ -154,9 +145,9 @@ export function useViewLayoutAnimation<TElement extends HTMLElement>(
     const sample = () => {
       if (animation.current !== current) return
       visualRect.current = snapshot(element)
-      cancelSample.current = scheduleFrame(sample)
+      cancelSample.current = scheduleAnimationFrame(sample)
     }
-    cancelSample.current = scheduleFrame(sample)
+    cancelSample.current = scheduleAnimationFrame(sample)
 
     current.onfinish = () => {
       if (animation.current !== current) return
@@ -182,7 +173,7 @@ export function useViewLayoutAnimation<TElement extends HTMLElement>(
       if (animation.current !== undefined) return
 
       cancelBaselineSync?.()
-      cancelBaselineSync = scheduleFrame(() => {
+      cancelBaselineSync = scheduleAnimationFrame(() => {
         cancelBaselineSync = undefined
         const current = elementRef.current
         if (current === null || animation.current !== undefined) {
