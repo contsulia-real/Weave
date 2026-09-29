@@ -140,7 +140,7 @@ pnpm test
 pnpm build
 ```
 
-`pnpm build` also emits declarations and verifies the built package entry, public runtime exports, important public type exports and ReactDOM externalization.
+`pnpm test` is self-contained and does not require a prior build. `pnpm build` emits only declarations reachable from the public entry and verifies the built runtime, public types, packed npm file set and ReactDOM externalization. `npm pack` runs the build automatically through `prepack`.
 
 ## Repository
 

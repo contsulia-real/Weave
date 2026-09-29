@@ -1,4 +1,7 @@
-import { readFile } from 'node:fs/promises'
+import { execFileSync } from 'node:child_process'
+import { readdir, readFile } from 'node:fs/promises'
+import { dirname, join, relative } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 function assert(condition, message) {
   if (!condition) {
@@ -6,6 +9,7 @@ function assert(condition, message) {
   }
 }
 
+const repositoryRoot = dirname(fileURLToPath(import.meta.url))
 const packageJson = JSON.parse(await readFile(new URL('./package.json', import.meta.url), 'utf8'))
 const packageEntry = packageJson.exports?.['.']
 
@@ -68,6 +72,14 @@ const expectedRuntimeExports = [
 for (const name of expectedRuntimeExports) {
   assert(name in weave, `Built package is missing runtime export: ${name}`)
 }
+
+const actualRuntimeExports = Object.keys(weave).sort()
+const sortedExpectedRuntimeExports = [...expectedRuntimeExports].sort()
+
+assert(
+  JSON.stringify(actualRuntimeExports) === JSON.stringify(sortedExpectedRuntimeExports),
+  `Built package runtime exports changed unexpectedly: ${actualRuntimeExports.join(', ')}`,
+)
 
 assert(
   /export\s*\{\s*List\s*\}\s*from\s*['"]\.\/components\/List['"]/.test(typeSource),
@@ -155,4 +167,67 @@ assert(
   'Built package contains bundled ReactDOM renderer internals',
 )
 
-console.log('Package verification passed.')
+execFileSync(process.execPath, ['scripts/prune-declarations.mjs', '--check'], {
+  cwd: repositoryRoot,
+  stdio: 'inherit',
+})
+
+const packArgs = ['pack', '--dry-run', '--json', '--ignore-scripts']
+const packJson =
+  process.platform === 'win32'
+    ? execFileSync(
+        process.env.ComSpec ?? 'cmd.exe',
+        ['/d', '/s', '/c', `npm ${packArgs.join(' ')}`],
+        {
+          cwd: repositoryRoot,
+          encoding: 'utf8',
+          stdio: ['ignore', 'pipe', 'pipe'],
+        },
+      )
+    : execFileSync('npm', packArgs, {
+        cwd: repositoryRoot,
+        encoding: 'utf8',
+        stdio: ['ignore', 'pipe', 'pipe'],
+      })
+const parsedPackResult = JSON.parse(packJson)
+const packResult = Array.isArray(parsedPackResult)
+  ? parsedPackResult[0]
+  : (parsedPackResult[packageJson.name] ?? Object.values(parsedPackResult)[0])
+
+assert(packResult?.files, 'npm pack did not return a package file manifest')
+
+const packedFiles = new Set(packResult.files.map((file) => file.path.replaceAll('\\', '/')))
+
+assert(packedFiles.has('dist/weave.js'), 'Packed npm artifact is missing dist/weave.js')
+assert(packedFiles.has('dist/index.d.ts'), 'Packed npm artifact is missing dist/index.d.ts')
+assert(
+  !packedFiles.has('dist/favicon.svg'),
+  'Packed npm artifact must not include the playground favicon',
+)
+assert(
+  ![...packedFiles].some((file) => file.endsWith('.d.ts.map')),
+  'Packed npm artifact must not include declaration maps without their source files',
+)
+
+async function listDeclarationFiles(directory) {
+  const files = []
+
+  for (const entry of await readdir(directory, { withFileTypes: true })) {
+    const path = join(directory, entry.name)
+
+    if (entry.isDirectory()) {
+      files.push(...(await listDeclarationFiles(path)))
+    } else if (entry.name.endsWith('.d.ts')) {
+      files.push(path)
+    }
+  }
+
+  return files
+}
+
+for (const declaration of await listDeclarationFiles(join(repositoryRoot, 'dist'))) {
+  const packagePath = relative(repositoryRoot, declaration).replaceAll('\\', '/')
+  assert(packedFiles.has(packagePath), `Packed npm artifact is missing declaration: ${packagePath}`)
+}
+
+console.log(`Package verification passed: ${packedFiles.size} packed files.`)
