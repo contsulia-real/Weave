@@ -22,26 +22,47 @@ afterEach(() => {
 })
 
 describe('Key', () => {
-  it('renders a semantic kbd with the static Button surface', () => {
-    const { getByText, queryByRole } = render(<Key value="K" />)
-    const element = getByText('K').closest('kbd')
+  it('renders a semantic kbd with the static Button surface and letter icon', () => {
+    const { getByTestId, queryByRole } = render(
+      <Key
+        value="K"
+        viewProps={{
+          data: {
+            testid: 'letter-key',
+          },
+        }}
+      />,
+    )
+    const element = getByTestId('letter-key')
 
-    expect(element?.tagName).toBe('KBD')
+    expect(element.tagName).toBe('KBD')
     expect(queryByRole('button')).toBeNull()
-    expect(element?.classList.contains('weave-key')).toBe(true)
-    expect(element?.classList.contains('weave-button')).toBe(true)
-    expect(element?.classList.contains('weave-button--secondary')).toBe(true)
-    expect(element?.classList.contains('weave-button--small')).toBe(true)
+    expect(element.classList.contains('weave-key')).toBe(true)
+    expect(element.classList.contains('weave-button')).toBe(true)
+    expect(element.classList.contains('weave-button--secondary')).toBe(true)
+    expect(element.classList.contains('weave-button--small')).toBe(true)
+    expect(element.getAttribute('aria-label')).toBe('K')
+    expect(element.querySelector('.tabler-icon-letter-k')).not.toBeNull()
+    expect(element.querySelector('[data-weave-icon]')?.getAttribute('data-weave-icon-size')).toBe(
+      'xlarge',
+    )
   })
 
   it('reuses Button variants and sizes without interactive visual feedback', () => {
-    const { getByText } = render(<Key value="Enter" variant="tertiary" size="large" />)
-    const element = getByText('Enter').closest('kbd')
+    const { getByTestId } = render(
+      <Key
+        value="Enter"
+        variant="tertiary"
+        size="large"
+        viewProps={{ data: { testid: 'large-key' } }}
+      />,
+    )
+    const element = getByTestId('large-key')
     const stylesheet =
       document.querySelector<HTMLStyleElement>('style[data-weave-key-styles]')?.textContent ?? ''
 
-    expect(element?.classList.contains('weave-button--tertiary')).toBe(true)
-    expect(element?.classList.contains('weave-button--large')).toBe(true)
+    expect(element.classList.contains('weave-button--tertiary')).toBe(true)
+    expect(element.classList.contains('weave-button--large')).toBe(true)
     expect(stylesheet).toContain('.weave-key:hover')
     expect(stylesheet).toContain('.weave-key:active')
     expect(stylesheet).toContain('var(--weave-feedback-rest-depth)')
@@ -99,7 +120,8 @@ describe('Key', () => {
       />,
     )
 
-    expect(getByTestId('meta-key').textContent).toBe('⌘')
+    expect(getByTestId('meta-key').getAttribute('aria-label')).toBe('Command')
+    expect(getByTestId('meta-key').querySelector('.tabler-icon-command')).not.toBeNull()
 
     rerender(
       <Key
@@ -112,7 +134,8 @@ describe('Key', () => {
         }}
       />,
     )
-    expect(getByTestId('meta-key').textContent).toBe('⊞')
+    expect(getByTestId('meta-key').getAttribute('aria-label')).toBe('Windows')
+    expect(getByTestId('meta-key').querySelector('.tabler-icon-brand-windows')).not.toBeNull()
 
     rerender(
       <Key
@@ -126,9 +149,10 @@ describe('Key', () => {
       />,
     )
     expect(getByTestId('meta-key').textContent).toBe('Meta')
+    expect(getByTestId('meta-key').querySelector('[data-weave-icon]')).toBeNull()
   })
 
-  it('maps Windows automatically and leaves non-meta values untouched', () => {
+  it('maps Windows automatically and leaves text-only keys untouched', () => {
     setPlatform('Win32')
 
     const { getByTestId, rerender } = render(
@@ -142,7 +166,8 @@ describe('Key', () => {
       />,
     )
 
-    expect(getByTestId('key').textContent).toBe('⊞')
+    expect(getByTestId('key').getAttribute('aria-label')).toBe('Windows')
+    expect(getByTestId('key').querySelector('.tabler-icon-brand-windows')).not.toBeNull()
 
     rerender(
       <Key
@@ -157,5 +182,75 @@ describe('Key', () => {
     )
 
     expect(getByTestId('key').textContent).toBe('Shift')
+    expect(getByTestId('key').querySelector('[data-weave-icon]')).toBeNull()
+  })
+
+  it('uses Tabler icons for keyboard keys with exact semantic matches', () => {
+    const { getByTestId, rerender } = render(
+      <Key
+        value="alt"
+        viewProps={{
+          data: {
+            testid: 'special-key',
+          },
+        }}
+      />,
+    )
+    const key = () => getByTestId('special-key')
+
+    expect(key().getAttribute('aria-label')).toBe('Alt')
+    expect(key().querySelector('.tabler-icon-alt')).not.toBeNull()
+
+    rerender(<Key value="fn" viewProps={{ data: { testid: 'special-key' } }} />)
+    expect(key().getAttribute('aria-label')).toBe('Fn')
+    expect(key().querySelector('.tabler-icon-function')).not.toBeNull()
+
+    rerender(<Key value="7" viewProps={{ data: { testid: 'special-key' } }} />)
+    expect(key().getAttribute('aria-label')).toBe('7')
+    expect(key().querySelector('.tabler-icon-number-7')).not.toBeNull()
+
+    rerender(<Key value="option" viewProps={{ data: { testid: 'special-key' } }} />)
+    expect(key().getAttribute('aria-label')).toBe('Option')
+    expect(key().querySelector('.tabler-icon-option')).not.toBeNull()
+
+    rerender(<Key value="Enter" viewProps={{ data: { testid: 'special-key' } }} />)
+    expect(key().getAttribute('aria-label')).toBe('Enter')
+    expect(key().querySelector('.tabler-icon-corner-down-left')).not.toBeNull()
+
+    rerender(<Key value="Backspace" viewProps={{ data: { testid: 'special-key' } }} />)
+    expect(key().getAttribute('aria-label')).toBe('Backspace')
+    expect(key().querySelector('.tabler-icon-backspace')).not.toBeNull()
+
+    rerender(<Key value="Space" viewProps={{ data: { testid: 'special-key' } }} />)
+    expect(key().getAttribute('aria-label')).toBe('Space')
+    expect(key().querySelector('.tabler-icon-space')).not.toBeNull()
+
+    rerender(<Key value="ArrowUp" viewProps={{ data: { testid: 'special-key' } }} />)
+    expect(key().getAttribute('aria-label')).toBe('Arrow Up')
+    expect(key().querySelector('.tabler-icon-arrow-up')).not.toBeNull()
+
+    rerender(<Key value="ArrowDown" viewProps={{ data: { testid: 'special-key' } }} />)
+    expect(key().getAttribute('aria-label')).toBe('Arrow Down')
+    expect(key().querySelector('.tabler-icon-arrow-down')).not.toBeNull()
+
+    rerender(<Key value="ArrowLeft" viewProps={{ data: { testid: 'special-key' } }} />)
+    expect(key().getAttribute('aria-label')).toBe('Arrow Left')
+    expect(key().querySelector('.tabler-icon-arrow-left')).not.toBeNull()
+
+    rerender(<Key value="ArrowRight" viewProps={{ data: { testid: 'special-key' } }} />)
+    expect(key().getAttribute('aria-label')).toBe('Arrow Right')
+    expect(key().querySelector('.tabler-icon-arrow-right')).not.toBeNull()
+
+    rerender(<Key value="Home" viewProps={{ data: { testid: 'special-key' } }} />)
+    expect(key().getAttribute('aria-label')).toBe('Home')
+    expect(key().querySelector('.tabler-icon-home')).not.toBeNull()
+
+    rerender(<Key value="PrintScreen" viewProps={{ data: { testid: 'special-key' } }} />)
+    expect(key().getAttribute('aria-label')).toBe('Print Screen')
+    expect(key().querySelector('.tabler-icon-screenshot')).not.toBeNull()
+
+    rerender(<Key value="Menu" viewProps={{ data: { testid: 'special-key' } }} />)
+    expect(key().getAttribute('aria-label')).toBe('Menu')
+    expect(key().querySelector('.tabler-icon-menu-2')).not.toBeNull()
   })
 })

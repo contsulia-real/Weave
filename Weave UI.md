@@ -3670,6 +3670,30 @@ theme.tokens.feedback.restDepth
 
 因此 Button 的 background、border、radius、depth、typography、variant 与 size 主题变化会同步影响 Key。
 
+Key 的内容优先复用项目已有的 Tabler icon，而不是用文本字符重新模拟已有图形。当前明确映射：
+
+```text
+A–Z                 → IconLetterA … IconLetterZ
+0–9                 → IconNumber0 … IconNumber9
+meta → Apple        → IconCommand
+meta → Windows      → IconBrandWindows
+command / cmd       → IconCommand
+windows / win       → IconBrandWindows
+alt                 → IconAlt
+option              → IconOption
+fn / function       → IconFunction
+enter / return      → IconCornerDownLeft
+backspace           → IconBackspace
+space               → IconSpace
+ArrowUp / Down      → IconArrowUp / IconArrowDown
+ArrowLeft / Right   → IconArrowLeft / IconArrowRight
+home                → IconHome
+printscreen / prtsc → IconScreenshot
+menu / contextmenu  → IconMenu2
+```
+
+这些 icon 继续通过 Weave 的 `Icon` 渲染路径输出，并统一使用 `size="xlarge"`，避免键帽里的 glyph 过小；外层 `<kbd>` 提供对应的 `aria-label`，SVG 自身保持 decorative。没有明确 Tabler 对应图标的键继续使用文本，不为了“图标化”使用语义不准确的替代图形。Playground 必须完整展示标准功能键区、主键盘、导航/方向区、数字小键盘和平台 modifier 变体，不能只展示少量样例。
+
 但 Key 只保留 Button 的 rest 外观：
 
 ```text
@@ -3699,9 +3723,9 @@ Key 不读取 `hoverDepth / hoverLift / hoverScale / pressDepth / pressOffset / 
 时，Key 根据浏览器报告的平台解析 Meta 键归属：
 
 ```text
-Apple platform  → ⌘
-Windows         → ⊞
-其他平台        → Meta
+Apple platform  → IconCommand
+Windows         → IconBrandWindows
+其他平台        → Meta 文本
 ```
 
 自动探测优先读取 `navigator.userAgentData.platform`，不可用时退回 `navigator.platform` / `navigator.userAgent`。
@@ -3709,9 +3733,9 @@ Windows         → ⊞
 可通过 `metaKey` 显式覆盖：
 
 ```tsx
-<Key value="meta" metaKey="command" />  // ⌘
-<Key value="meta" metaKey="windows" />  // ⊞
-<Key value="meta" metaKey="meta" />     // Meta
+<Key value="meta" metaKey="command" />  // IconCommand
+<Key value="meta" metaKey="windows" />  // IconBrandWindows
+<Key value="meta" metaKey="meta" />     // Meta 文本
 ```
 
 `metaKey` 的类型为：
@@ -3725,7 +3749,7 @@ meta
 
 显式覆盖只影响 `value="meta"`；其他 value 原样展示。
 
-SSR 无法读取浏览器平台时使用 `Meta` 作为稳定 fallback，客户端再同步到实际平台值，避免服务端直接猜测用户平台。
+SSR 无法读取浏览器平台时使用 `Meta` 文本作为稳定 fallback，客户端再同步到实际平台对应的 Command / Windows icon，避免服务端直接猜测用户平台。
 
 ---
 # 19. `ToolTip`
