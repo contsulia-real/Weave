@@ -54,6 +54,7 @@ export function resolveScrollbarTheme(
         : `color-mix(in srgb, ${resolvedColor} 76%, black)`,
     '--weave-scrollbar-radius': radius(config?.radius ?? base?.radius),
     '--weave-scrollbar-opacity': config?.opacity ?? base?.opacity,
+    '--weave-scrollbar-hover-scale': base?.hoverScale,
     '--weave-scrollbar-thumb-cursor': base?.thumbCursor,
   }
 }

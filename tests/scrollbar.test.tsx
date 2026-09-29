@@ -455,6 +455,7 @@ describe('automatic Scrollbar', () => {
       '--weave-scrollbar-hover-color:color-mix(insrgb,var(--weave-color-secondary)88%,transparent);',
     )
     expect(rule).toContain('--weave-scrollbar-drag-color:var(--weave-color-secondary);')
+    expect(rule).toContain('--weave-scrollbar-hover-scale:1.18;')
 
     const stylesheet =
       document.querySelector('style[data-weave-scrollbar-styles]')?.textContent ?? ''
@@ -466,7 +467,7 @@ describe('automatic Scrollbar', () => {
     expect(stylesheet).not.toContain('weave-scrollbar-thumb-shadow')
   })
 
-  it('uses global hover and drag feedback without touching scroll geometry', () => {
+  it('widens on hover and keeps global drag feedback off scroll geometry', () => {
     render(<View overflow="scroll" />)
 
     const track = document.body.querySelector('.weave-scrollbar--vertical') as HTMLDivElement
@@ -476,7 +477,8 @@ describe('automatic Scrollbar', () => {
 
     expect(stylesheet).toContain('--weave-component-background: var(--weave-scrollbar-hover-color)')
     expect(stylesheet).toContain('--weave-component-background: var(--weave-scrollbar-drag-color)')
-    expect(stylesheet).toContain('scale: var(--weave-feedback-hover-scale) 1')
+    expect(stylesheet).toContain('scale: var(--weave-scrollbar-hover-scale) 1')
+    expect(stylesheet).toContain('scale: 1 var(--weave-scrollbar-hover-scale)')
     expect(stylesheet).toContain('scale: var(--weave-feedback-drag-scale) 1')
 
     fireEvent.pointerDown(thumb, {
@@ -502,6 +504,7 @@ describe('automatic Scrollbar', () => {
           base: {
             color: 'danger',
             opacity: 0.6,
+            hoverScale: 1.25,
           },
           sizes: {
             medium: {
@@ -526,5 +529,6 @@ describe('automatic Scrollbar', () => {
     expect(rule).toContain('--weave-scrollbar-thickness:0.75rem;')
     expect(rule).toContain('--weave-scrollbar-color:var(--weave-color-danger')
     expect(rule).toContain('--weave-scrollbar-opacity:0.6;')
+    expect(rule).toContain('--weave-scrollbar-hover-scale:1.25;')
   })
 })

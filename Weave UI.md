@@ -3136,7 +3136,7 @@ Scrollbar 不再提供可见 track / rail。透明 HitRegion 只负责命中、�
 
 因此它可以拥有 `View` 的通用能力并接受主题。
 
-Scrollbar 的默认视觉刻意与 Switch / Progress 区分：它没有可见轨道，也没有凸起阴影，只保留平面的 thumb。hover / drag 仍可改变颜色和横截面尺度，但不会通过 shadow 模拟抬起。
+Scrollbar 的默认视觉刻意与 Switch / Progress 区分：它没有可见轨道，也没有凸起阴影，只保留平面的 thumb。hover / drag 仍可改变颜色和横截面尺度，但不会通过 shadow 模拟抬起。hover 的横截面放大使用 `theme.components.Scrollbar.base.hoverScale`，默认 `1.18`；vertical 只增宽 X 轴，horizontal 只增高 Y 轴，不改变滚动方向上的 thumb 长度和 scroll geometry。drag 继续使用全局 drag feedback。
 
 圆角宿主必须为角落保留安全区。右侧 Scrollbar 的运动区从 top-right 圆角结束处开始，到 bottom-right 圆角开始处结束；底部 Scrollbar 同理只占用 bottom-left 与 bottom-right 之间的直线段。DOM 实现根据宿主最终计算得到的四角半径和边框动态求出这个直线区域；圆角越大，可用滚动条长度越短。
 
@@ -4243,21 +4243,20 @@ Modal 默认视觉来自：
 theme.components.Dialog.base
 ```
 
-Modal surface 复用 Button 的全局 tactile feedback token 来表达“突起”，但它不是可按压控件：
+Modal surface 复用 Button 的 `feedback.restDepth` 表达静态“突起”实体厚度，但它不是可点击 surface，因此 hover 与 press 都不能改变几何或深度：
 
 ```text
 rest
 → 使用 feedback.restDepth 形成方向性实体厚度
 
 hover
-→ 使用 feedback.hoverLift / hoverScale / hoverDepth 轻微抬起
+→ 不抬起、不缩放、不改变 depth
 
 press / :active
-→ 不提供按压反馈
-→ 不使用 pressOffset / pressScale / pressDepth
+→ 不下沉、不缩放、不改变 depth
 ```
 
-这套动力学直接读取 `theme.tokens.feedback`，不在 Dialog 内复制另一组 motion 常量。Dialog 自己只提供 `depthColor`，同时保留原有 ambient `shadow`。
+Dialog 不使用 `hoverLift / hoverScale / hoverDepth / pressOffset / pressScale / pressDepth`。它自己只提供 `depthColor`，同时保留原有 ambient `shadow`。
 
 当前可主题化字段：
 

@@ -734,6 +734,7 @@ export const defaultTheme: ResolvedTheme = {
         radius: 'full',
         opacity: 1,
         hitSize: 1,
+        hoverScale: 1.18,
         thumbCursor: 'pointer',
       },
       sizes: {

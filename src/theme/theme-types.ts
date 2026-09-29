@@ -328,6 +328,7 @@ export interface ScrollbarThemeBase {
   radius?: ThemeScaleValue
   opacity?: number
   hitSize?: ThemeScaleValue
+  hoverScale?: number
   thumbCursor?: string
 }
 

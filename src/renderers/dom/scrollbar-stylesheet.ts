@@ -80,7 +80,7 @@ const stylesheet = `
 :where(.weave-scrollbar--vertical:hover)
   > :where(.weave-scrollbar__thumb) {
   --weave-component-background: var(--weave-scrollbar-hover-color);
-  scale: var(--weave-feedback-hover-scale) 1;
+  scale: var(--weave-scrollbar-hover-scale) 1;
 }
 
 :where(.weave-scrollbar--vertical[data-weave-scrollbar-dragging="true"])
@@ -97,7 +97,7 @@ const stylesheet = `
 :where(.weave-scrollbar--horizontal:hover)
   > :where(.weave-scrollbar__thumb) {
   --weave-component-background: var(--weave-scrollbar-hover-color);
-  scale: 1 var(--weave-feedback-hover-scale);
+  scale: 1 var(--weave-scrollbar-hover-scale);
 }
 
 :where(.weave-scrollbar--horizontal[data-weave-scrollbar-dragging="true"])

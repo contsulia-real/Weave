@@ -333,7 +333,7 @@ describe('Dialog', () => {
     expect(stylesheet).toContain('--weave-component-height: fit-content')
   })
 
-  it('uses Button-style raised rest and hover feedback without press feedback', () => {
+  it('uses Button-style raised rest depth without hover or press feedback', () => {
     const theme = createTheme({
       components: {
         Dialog: {
@@ -366,9 +366,10 @@ describe('Dialog', () => {
     expect(runtimeStyle).toContain('--weave-dialog-depth-color:')
     expect(runtimeStyle).toContain('rgb(12 34 56)')
     expect(stylesheet).toContain('var(--weave-feedback-rest-depth)')
-    expect(stylesheet).toContain('var(--weave-feedback-hover-depth)')
-    expect(stylesheet).toContain('var(--weave-feedback-hover-lift)')
-    expect(stylesheet).toContain('var(--weave-feedback-hover-scale)')
+    expect(stylesheet).not.toContain('.weave-dialog[data-weave-dialog-state="open"]:hover')
+    expect(stylesheet).not.toContain('--weave-feedback-hover-depth')
+    expect(stylesheet).not.toContain('--weave-feedback-hover-lift')
+    expect(stylesheet).not.toContain('--weave-feedback-hover-scale')
     expect(stylesheet).not.toContain('.weave-dialog:active')
     expect(stylesheet).not.toContain('--weave-feedback-press-depth')
     expect(stylesheet).not.toContain('--weave-feedback-press-offset')
