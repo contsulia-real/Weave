@@ -1,28 +1,18 @@
 import { cleanup, fireEvent, render } from '@testing-library/react'
 import { createRef } from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import {
-  Input,
-  ThemeProvider,
-  createTheme,
-} from '../src'
+import { createTheme, Input, ThemeProvider } from '../src'
 
 afterEach(cleanup)
 
-function runtimeRule(
-  element: Element,
-  prefix: string,
-): string {
-  const className = [...element.classList].find((name) =>
-    name.startsWith(prefix),
-  )
+function runtimeRule(element: Element, prefix: string): string {
+  const className = [...element.classList].find((name) => name.startsWith(prefix))
 
   expect(className).toBeDefined()
 
   return (
-    document.querySelector<HTMLStyleElement>(
-      `style[data-weave-runtime-class="${className}"]`,
-    )?.textContent ?? ''
+    document.querySelector<HTMLStyleElement>(`style[data-weave-runtime-class="${className}"]`)
+      ?.textContent ?? ''
   ).replace(/\s+/g, '')
 }
 
@@ -66,9 +56,7 @@ describe('Input', () => {
     expect(element.minLength).toBe(2)
     expect(element.maxLength).toBe(20)
     expect(element.pattern).toBe('[A-Za-z ]+')
-    expect(runtimeRule(element, 'weave-props-')).toContain(
-      '--weave-width:20rem;',
-    )
+    expect(runtimeRule(element, 'weave-props-')).toContain('--weave-width:20rem;')
     expect(element.style.getPropertyValue('--weave-width')).toBe('')
 
     fireEvent.change(element, {
@@ -130,10 +118,7 @@ describe('Input', () => {
         name: 'Hidden clear',
       }),
     ).toBeNull()
-    expect(
-      getByTestId('hidden-clear-input')
-        .closest('[data-weave-input-root]'),
-    ).toBeNull()
+    expect(getByTestId('hidden-clear-input').closest('[data-weave-input-root]')).toBeNull()
   })
 
   it('maps disabled to the real input and textarea controls', () => {
@@ -159,12 +144,8 @@ describe('Input', () => {
       </>,
     )
 
-    const input = getByTestId(
-      'disabled-input',
-    ) as HTMLInputElement
-    const textarea = getByTestId(
-      'disabled-textarea',
-    ) as HTMLTextAreaElement
+    const input = getByTestId('disabled-input') as HTMLInputElement
+    const textarea = getByTestId('disabled-textarea') as HTMLTextAreaElement
 
     expect(input.disabled).toBe(true)
     expect(textarea.disabled).toBe(true)
@@ -201,23 +182,13 @@ describe('Input', () => {
     expect(element.value).toBe('Line one')
     expect(element.getAttribute('type')).toBeNull()
 
-    const stylesheet = document.querySelector(
-      'style[data-weave-input-styles]',
-    )
-    expect(stylesheet?.textContent).toContain(
-      ':where([data-weave-input-multiline])',
-    )
+    const stylesheet = document.querySelector('style[data-weave-input-styles]')
+    expect(stylesheet?.textContent).toContain(':where([data-weave-input-multiline])')
     expect(stylesheet?.textContent).toContain('resize: none;')
 
-    const scrollbarStylesheet = document.querySelector(
-      'style[data-weave-scrollbar-styles]',
-    )
-    expect(scrollbarStylesheet?.textContent).toContain(
-      'scrollbar-width: none',
-    )
-    expect(
-      document.querySelectorAll('[data-weave-scrollbar]').length,
-    ).toBeGreaterThanOrEqual(2)
+    const scrollbarStylesheet = document.querySelector('style[data-weave-scrollbar-styles]')
+    expect(scrollbarStylesheet?.textContent).toContain('scrollbar-width: none')
+    expect(document.querySelectorAll('[data-weave-scrollbar]').length).toBeGreaterThanOrEqual(2)
 
     fireEvent.change(element, {
       target: {
@@ -251,9 +222,7 @@ describe('Input', () => {
       />,
     )
 
-    const element = getByTestId(
-      'inset-textarea',
-    ) as HTMLTextAreaElement
+    const element = getByTestId('inset-textarea') as HTMLTextAreaElement
 
     Object.defineProperties(element, {
       scrollHeight: {
@@ -274,10 +243,7 @@ describe('Input', () => {
       },
     })
 
-    const rectSpy = vi.spyOn(
-      element,
-      'getBoundingClientRect',
-    ).mockReturnValue({
+    const rectSpy = vi.spyOn(element, 'getBoundingClientRect').mockReturnValue({
       top: 100,
       right: 500,
       bottom: 300,
@@ -297,11 +263,7 @@ describe('Input', () => {
 
     expect(verticalTrack?.style.top).toBe('106px')
     expect(verticalTrack?.style.left).toBe('500px')
-    expect(
-      verticalTrack?.style.getPropertyValue(
-        '--weave-scrollbar-edge-inset',
-      ),
-    ).toBe('7px')
+    expect(verticalTrack?.style.getPropertyValue('--weave-scrollbar-edge-inset')).toBe('7px')
 
     rectSpy.mockRestore()
   })
@@ -319,25 +281,13 @@ describe('Input', () => {
 
     const element = getByTestId('themed-input')
     const rule = runtimeRule(element, 'weave-input-theme-')
-    const stylesheet = document.querySelector(
-      'style[data-weave-input-styles]',
-    )
+    const stylesheet = document.querySelector('style[data-weave-input-styles]')
 
-    expect(element.className).toContain(
-      'weave-input',
-    )
-    expect(rule).toContain(
-      '--weave-input-min-height:2.5rem;',
-    )
-    expect(rule).toContain(
-      '--weave-input-min-width:12rem;',
-    )
-    expect(rule).toContain(
-      '--weave-input-border-width:0.0625rem;',
-    )
-    expect(rule).toContain(
-      '--weave-input-radius:0.75rem;',
-    )
+    expect(element.className).toContain('weave-input')
+    expect(rule).toContain('--weave-input-min-height:2.5rem;')
+    expect(rule).toContain('--weave-input-min-width:12rem;')
+    expect(rule).toContain('--weave-input-border-width:0.0625rem;')
+    expect(rule).toContain('--weave-input-radius:0.75rem;')
     expect(rule).toContain(
       '--weave-input-font-size:var(--weave-typography-style-body-large-font-size);',
     )
@@ -350,9 +300,7 @@ describe('Input', () => {
     expect(rule).toContain(
       '--weave-input-letter-spacing:var(--weave-typography-style-body-large-letter-spacing);',
     )
-    expect(stylesheet?.textContent).toContain(
-      '--weave-component-border-style: solid',
-    )
+    expect(stylesheet?.textContent).toContain('--weave-component-border-style: solid')
     expect(rule).toContain(
       '--weave-input-shadow:inset00.0625rem0.125remrgb(584840/0.10),inset0000.0625remrgb(584840/0.05);',
     )
@@ -362,9 +310,7 @@ describe('Input', () => {
     expect(stylesheet?.textContent).toContain(
       '--weave-component-box-shadow:\n    var(--weave-input-shadow)',
     )
-    expect(stylesheet?.textContent).not.toContain(
-      '0 0.09375rem 0.15625rem',
-    )
+    expect(stylesheet?.textContent).not.toContain('0 0.09375rem 0.15625rem')
   })
 
   it('lets ThemeProvider select Input typography by typo', () => {
@@ -393,9 +339,7 @@ describe('Input', () => {
 
     const element = getByTestId('typo-input')
     const rule = runtimeRule(element, 'weave-input-theme-')
-    const stylesheet = document.querySelector(
-      'style[data-weave-input-styles]',
-    )?.textContent ?? ''
+    const stylesheet = document.querySelector('style[data-weave-input-styles]')?.textContent ?? ''
 
     expect(rule).toContain(
       '--weave-input-font-size:var(--weave-typography-style-body-small-font-size);',
@@ -409,12 +353,8 @@ describe('Input', () => {
     expect(rule).toContain(
       '--weave-input-letter-spacing:var(--weave-typography-style-body-small-letter-spacing);',
     )
-    expect(stylesheet).toContain(
-      'font-weight:',
-    )
-    expect(stylesheet).toContain(
-      'letter-spacing:',
-    )
+    expect(stylesheet).toContain('font-weight:')
+    expect(stylesheet).toContain('letter-spacing:')
   })
 
   it('keeps readOnly and required as Input-level native states', () => {
@@ -459,9 +399,7 @@ describe('Input', () => {
     expect(element.className).toContain('weave-input')
     expect(element.className).toContain('custom-input')
     expect(element.style.getPropertyValue('--weave-width')).toBe('')
-    expect(runtimeRule(element, 'weave-props-')).toContain(
-      '--weave-width:20rem;',
-    )
+    expect(runtimeRule(element, 'weave-props-')).toContain('--weave-width:20rem;')
     expect(element.style.width).toBe('120px')
     expect(element.getAttribute('style')).toContain('width: 120px')
   })

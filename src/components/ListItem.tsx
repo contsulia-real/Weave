@@ -1,33 +1,12 @@
-import {
-  useContext,
-  useInsertionEffect,
-} from 'react'
-import type {
-  FocusEvent,
-  KeyboardEvent,
-  MouseEvent,
-} from 'react'
-import type {
-  ListItemProps,
-} from '../core/list-types'
-import {
-  resolveListItemTheme,
-} from '../renderers/dom/resolve-component-theme'
-import {
-  ensureListStylesheet,
-} from '../renderers/dom/list-stylesheet'
-import {
-  useRuntimeStyleClass,
-} from '../renderers/dom/runtime-class'
-import {
-  useTheme,
-} from '../theme/theme-context'
-import {
-  ListContext,
-} from './internal/list-context'
-import {
-  View,
-} from './View'
+import type { FocusEvent, KeyboardEvent, MouseEvent } from 'react'
+import { useContext, useInsertionEffect } from 'react'
+import type { ListItemProps } from '../core/list-types'
+import { ensureListStylesheet } from '../renderers/dom/list-stylesheet'
+import { resolveListItemTheme } from '../renderers/dom/resolve-component-theme'
+import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
+import { useTheme } from '../theme/theme-context'
+import { ListContext } from './internal/list-context'
+import { View } from './View'
 
 const interactiveSelector = [
   'a[href]',
@@ -50,63 +29,29 @@ function fromInteractiveDescendant(
   eventTarget: EventTarget | null,
   currentTarget: HTMLElement,
 ): boolean {
-  if (
-    !(eventTarget instanceof Element) ||
-    eventTarget === currentTarget
-  ) {
+  if (!(eventTarget instanceof Element) || eventTarget === currentTarget) {
     return false
   }
 
-  const interactive =
-    eventTarget.closest(
-      interactiveSelector,
-    )
+  const interactive = eventTarget.closest(interactiveSelector)
 
-  return (
-    interactive !== null &&
-    interactive !== currentTarget
-  )
+  return interactive !== null && interactive !== currentTarget
 }
 
-export function ListItem({
-  id,
-  children,
-  disabled = false,
-  viewProps = {},
-}: ListItemProps) {
-  const context =
-    useContext(ListContext)
-  const { theme } =
-    useTheme()
+export function ListItem({ id, children, disabled = false, viewProps = {} }: ListItemProps) {
+  const context = useContext(ListContext)
+  const { theme } = useTheme()
 
-  useInsertionEffect(
-    ensureListStylesheet,
-    [],
-  )
+  useInsertionEffect(ensureListStylesheet, [])
 
-  const themeClassName =
-    useRuntimeStyleClass(
-      'list-item-theme',
-      resolveListItemTheme(theme),
-    )
+  const themeClassName = useRuntimeStyleClass('list-item-theme', resolveListItemTheme(theme))
 
-  const selectable =
-    context !== null &&
-    context.selection !== 'none'
-  const selected =
-    selectable &&
-    context.selectedIds.has(id)
-  const effectiveDisabled =
-    disabled ||
-    context?.disabled === true
-  const focusTarget =
-    selectable &&
-    context.focusId === id
+  const selectable = context !== null && context.selection !== 'none'
+  const selected = selectable && context.selectedIds.has(id)
+  const effectiveDisabled = disabled || context?.disabled === true
+  const focusTarget = selectable && context.focusId === id
 
-  const handleClick = (
-    event:
-      MouseEvent<HTMLDivElement>,
-  ) => {
+  const handleClick = (event: MouseEvent<HTMLDivElement>) => {
     if (effectiveDisabled) {
       event.preventDefault()
       return
@@ -118,10 +63,7 @@ export function ListItem({
       event.defaultPrevented ||
       !selectable ||
       context === null ||
-      fromInteractiveDescendant(
-        event.target,
-        event.currentTarget,
-      )
+      fromInteractiveDescendant(event.target, event.currentTarget)
     ) {
       return
     }
@@ -130,10 +72,7 @@ export function ListItem({
     context.selectItem(id)
   }
 
-  const handleFocus = (
-    event:
-      FocusEvent<HTMLDivElement>,
-  ) => {
+  const handleFocus = (event: FocusEvent<HTMLDivElement>) => {
     if (effectiveDisabled) {
       return
     }
@@ -144,8 +83,7 @@ export function ListItem({
       event.defaultPrevented ||
       !selectable ||
       context === null ||
-      event.target !==
-        event.currentTarget
+      event.target !== event.currentTarget
     ) {
       return
     }
@@ -153,10 +91,7 @@ export function ListItem({
     context.setFocusId(id)
   }
 
-  const handleKeyDown = (
-    event:
-      KeyboardEvent<HTMLDivElement>,
-  ) => {
+  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (effectiveDisabled) {
       event.preventDefault()
       return
@@ -168,118 +103,61 @@ export function ListItem({
       event.defaultPrevented ||
       !selectable ||
       context === null ||
-      fromInteractiveDescendant(
-        event.target,
-        event.currentTarget,
-      )
+      fromInteractiveDescendant(event.target, event.currentTarget)
     ) {
       return
     }
 
-    const previousKey =
-      context.orientation ===
-        'vertical'
-        ? 'ArrowUp'
-        : 'ArrowLeft'
-    const nextKey =
-      context.orientation ===
-        'vertical'
-        ? 'ArrowDown'
-        : 'ArrowRight'
+    const previousKey = context.orientation === 'vertical' ? 'ArrowUp' : 'ArrowLeft'
+    const nextKey = context.orientation === 'vertical' ? 'ArrowDown' : 'ArrowRight'
 
-    if (
-      event.key === 'Enter' ||
-      event.key === ' '
-    ) {
+    if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault()
       context.selectItem(id)
       return
     }
 
-    if (
-      event.key === previousKey
-    ) {
+    if (event.key === previousKey) {
       event.preventDefault()
-      context.moveFocus(
-        id,
-        'previous',
-      )
+      context.moveFocus(id, 'previous')
       return
     }
 
     if (event.key === nextKey) {
       event.preventDefault()
-      context.moveFocus(
-        id,
-        'next',
-      )
+      context.moveFocus(id, 'next')
       return
     }
 
     if (event.key === 'Home') {
       event.preventDefault()
-      context.moveFocus(
-        id,
-        'first',
-      )
+      context.moveFocus(id, 'first')
       return
     }
 
     if (event.key === 'End') {
       event.preventDefault()
-      context.moveFocus(
-        id,
-        'last',
-      )
+      context.moveFocus(id, 'last')
     }
   }
 
   return (
     <View
       {...viewProps}
-      role={
-        selectable
-          ? 'option'
-          : 'listitem'
-      }
-      selected={
-        selectable
-          ? selected
-          : undefined
-      }
-      disabled={
-        effectiveDisabled
-          ? true
-          : undefined
-      }
-      tabIndex={
-        selectable
-          ? (
-              viewProps.tabIndex ??
-              (focusTarget ? 0 : -1)
-            )
-          : viewProps.tabIndex
-      }
+      role={selectable ? 'option' : 'listitem'}
+      selected={selectable ? selected : undefined}
+      disabled={effectiveDisabled ? true : undefined}
+      tabIndex={selectable ? (viewProps.tabIndex ?? (focusTarget ? 0 : -1)) : viewProps.tabIndex}
       onClick={handleClick}
       onFocus={handleFocus}
       onKeyDown={handleKeyDown}
-      className={[
-        'weave-list-item',
-        themeClassName,
-        viewProps.className,
-      ].filter(Boolean).join(' ')}
+      className={['weave-list-item', themeClassName, viewProps.className].filter(Boolean).join(' ')}
       data={{
         ...viewProps.data,
         'weave-list-item': '',
         'weave-list-item-id': id,
-        'weave-list-item-selectable':
-          selectable
-            ? 'true'
-            : 'false',
-        'weave-list-item-selected':
-          selected
-            ? 'true'
-            : 'false',
+        'weave-list-item-selectable': selectable ? 'true' : 'false',
+        'weave-list-item-selected': selected ? 'true' : 'false',
       }}
     >
       {children}

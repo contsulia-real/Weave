@@ -1,45 +1,22 @@
-import type {
-  ReactElement,
-  ReactNode,
-} from 'react'
-import type {
-  ButtonIcon,
-} from './button-types'
-import type {
-  PopoverPlacement,
-} from './popover-types'
-import type {
-  Length,
-  ViewCoreProps,
-  ViewDynamicBreakpointProps,
-} from './view-types'
+import type { ReactElement, ReactNode } from 'react'
+import type { ButtonIcon } from './button-types'
+import type { PopoverPlacement } from './popover-types'
+import type { Length, ViewCoreProps, ViewDynamicBreakpointProps } from './view-types'
 
-export type MenuPlacement =
-  PopoverPlacement
+export type MenuPlacement = PopoverPlacement
 
-export type MenuItemIcon =
-  ButtonIcon
+export type MenuItemIcon = ButtonIcon
 
-export type MenuViewProps =
-  Omit<
-    ViewCoreProps<HTMLDivElement>,
-    | 'children'
-    | 'role'
-    | 'position'
-    | 'top'
-    | 'right'
-    | 'bottom'
-    | 'left'
-  > &
+export type MenuViewProps = Omit<
+  ViewCoreProps<HTMLDivElement>,
+  'children' | 'role' | 'position' | 'top' | 'right' | 'bottom' | 'left'
+> &
   ViewDynamicBreakpointProps
 
-export type MenuItemViewProps =
-  Omit<
-    ViewCoreProps<HTMLDivElement>,
-    | 'children'
-    | 'role'
-    | 'selected'
-  > &
+export type MenuItemViewProps = Omit<
+  ViewCoreProps<HTMLDivElement>,
+  'children' | 'role' | 'selected'
+> &
   ViewDynamicBreakpointProps
 
 export interface MenuProps {
@@ -51,9 +28,7 @@ export interface MenuProps {
   viewportPadding?: Length
   open?: boolean
   defaultOpen?: boolean
-  onOpenChange?: (
-    open: boolean,
-  ) => void
+  onOpenChange?: (open: boolean) => void
   closeOnSelect?: boolean
   viewProps?: MenuViewProps
 }
@@ -69,4 +44,3 @@ export interface MenuItemProps {
   submenu?: ReactNode
   viewProps?: MenuItemViewProps
 }
-

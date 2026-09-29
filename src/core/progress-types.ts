@@ -2,24 +2,14 @@ import type { ViewCoreProps, ViewDynamicBreakpointProps } from './view-types'
 
 export type ProgressSize = 'small' | 'medium' | 'large'
 export type ProgressColor = string
-export type ProgressSpeed =
-  | 'slow'
-  | 'normal'
-  | 'fast'
-  | number
+export type ProgressSpeed = 'slow' | 'normal' | 'fast' | number
 export type ProgressMode = 'spin' | 'linear'
 
 export type ProgressViewProps = Omit<
   ViewCoreProps<HTMLSpanElement>,
-  | 'children'
-  | 'role'
-  | 'busy'
-  | 'valueMin'
-  | 'valueMax'
-  | 'valueNow'
-  | 'valueText'
-  | 'color'
-> & ViewDynamicBreakpointProps
+  'children' | 'role' | 'busy' | 'valueMin' | 'valueMax' | 'valueNow' | 'valueText' | 'color'
+> &
+  ViewDynamicBreakpointProps
 
 interface ProgressBaseProps {
   mode?: ProgressMode
@@ -30,8 +20,7 @@ interface ProgressBaseProps {
   viewProps?: ProgressViewProps
 }
 
-export type ProgressProps =
-  ProgressBaseProps &
+export type ProgressProps = ProgressBaseProps &
   (
     | {
         undetermined: true

@@ -6,13 +6,10 @@ import type {
   ProgressSpeed,
 } from '../core/progress-types'
 import type { ViewProps } from '../core/view-types'
-import { resolveProgressTheme } from '../renderers/dom/resolve-component-theme'
-import {
-  resolveProgressStyle,
-  resolveProgressValueStyle,
-} from '../renderers/dom/resolve-progress'
-import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { ensureProgressStylesheet } from '../renderers/dom/progress-stylesheet'
+import { resolveProgressTheme } from '../renderers/dom/resolve-component-theme'
+import { resolveProgressStyle, resolveProgressValueStyle } from '../renderers/dom/resolve-progress'
+import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { useTheme } from '../theme/theme-context'
 import { useViewHost } from './internal/use-view-host'
 
@@ -39,24 +36,17 @@ export function ProgressVisual({
 }: ProgressVisualProps) {
   useInsertionEffect(ensureProgressStylesheet, [])
 
-  const normalizedProgress = undetermined
-    ? undefined
-    : Math.min(1, Math.max(0, progress ?? 0))
+  const normalizedProgress = undetermined ? undefined : Math.min(1, Math.max(0, progress ?? 0))
 
   const { theme } = useTheme()
   const themeClassName = useRuntimeStyleClass(
     'progress-theme',
     resolveProgressTheme(theme, mode, size),
   )
-  const speedClassName = useRuntimeStyleClass(
-    'progress-speed',
-    resolveProgressStyle(speed),
-  )
+  const speedClassName = useRuntimeStyleClass('progress-speed', resolveProgressStyle(speed))
   const valueClassName = useRuntimeStyleClass(
     'progress-value',
-    normalizedProgress === undefined
-      ? undefined
-      : resolveProgressValueStyle(normalizedProgress),
+    normalizedProgress === undefined ? undefined : resolveProgressValueStyle(normalizedProgress),
   )
 
   const hostProps: ViewProps<HTMLSpanElement> = {
@@ -64,13 +54,7 @@ export function ProgressVisual({
     color,
   }
 
-  const {
-    elementRef,
-    className,
-    inlineStyle,
-    resolved,
-  } = useViewHost(hostProps)
-
+  const { elementRef, className, inlineStyle, resolved } = useViewHost(hostProps)
 
   return (
     <span
@@ -86,12 +70,8 @@ export function ProgressVisual({
         `weave-progress--${mode}`,
         `weave-progress--${size}`,
         tracked ? 'weave-progress--tracked' : undefined,
-        undetermined
-          ? 'weave-progress--undetermined'
-          : 'weave-progress--determined',
-        typeof speed === 'string'
-          ? `weave-progress--speed-${speed}`
-          : undefined,
+        undetermined ? 'weave-progress--undetermined' : 'weave-progress--determined',
+        typeof speed === 'string' ? `weave-progress--speed-${speed}` : undefined,
         themeClassName,
         speedClassName,
         className,
@@ -110,10 +90,7 @@ export function ProgressVisual({
       <span
         data-weave-view=""
         data-weave-progress-value=""
-        className={[
-          'weave-progress__value',
-          valueClassName,
-        ].filter(Boolean).join(' ')}
+        className={['weave-progress__value', valueClassName].filter(Boolean).join(' ')}
         aria-hidden="true"
       />
     </span>
@@ -122,9 +99,7 @@ export function ProgressVisual({
 
 export function Progress(props: ProgressProps) {
   const undetermined = props.undetermined === true
-  const progress = undetermined
-    ? undefined
-    : Math.min(1, Math.max(0, props.progress))
+  const progress = undetermined ? undefined : Math.min(1, Math.max(0, props.progress))
 
   const semanticViewProps: ViewProps<HTMLSpanElement> = {
     ...props.viewProps,

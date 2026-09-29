@@ -1,7 +1,4 @@
-import type {
-  ViewAnimationConfig,
-} from '../../core/motion-types'
-import type { ResolvedTheme } from '../../theme/theme-types'
+import type { ViewAnimationConfig } from '../../core/motion-types'
 import {
   cyclePlaybackDirection,
   resolveMotionDurationMs,
@@ -9,6 +6,7 @@ import {
   resolveMotionTiming,
   totalAnimationCycles,
 } from '../../renderers/dom/motion-runtime'
+import type { ResolvedTheme } from '../../theme/theme-types'
 
 export interface MotionSequence {
   cancel: () => void
@@ -45,26 +43,18 @@ export function createMotionSequence(
   theme: ResolvedTheme,
   options: MotionSequenceOptions = {},
 ): MotionSequence | undefined {
-  if (
-    typeof element.animate !== 'function' ||
-    config.keyframes.length < 2
-  ) {
+  if (typeof element.animate !== 'function' || config.keyframes.length < 2) {
     return undefined
   }
 
   const baseFrames = resolveMotionKeyframes(config.keyframes)
-  const timing = resolveMotionTiming(
-    config,
-    theme,
-    'normal',
-    'standard',
-  )
-  const initialDelay = config.delay === undefined
-    ? 0
-    : resolveMotionDurationMs(config.delay, theme, 'instant')
-  const repeatDelay = config.repeatDelay === undefined
-    ? 0
-    : resolveMotionDurationMs(config.repeatDelay, theme, 'instant')
+  const timing = resolveMotionTiming(config, theme, 'normal', 'standard')
+  const initialDelay =
+    config.delay === undefined ? 0 : resolveMotionDurationMs(config.delay, theme, 'instant')
+  const repeatDelay =
+    config.repeatDelay === undefined
+      ? 0
+      : resolveMotionDurationMs(config.repeatDelay, theme, 'instant')
   const cycles = totalAnimationCycles(config.repeat)
 
   let cycle = 0
@@ -96,10 +86,7 @@ export function createMotionSequence(
   const startCycle = () => {
     if (cancelled) return
 
-    const playbackDirection = cyclePlaybackDirection(
-      config.direction,
-      cycle,
-    )
+    const playbackDirection = cyclePlaybackDirection(config.direction, cycle)
     const frames = withCapturedStart(
       baseFrames,
       cycle === 0 ? options.capturedFrame : undefined,
@@ -144,10 +131,7 @@ export function createMotionSequence(
       }
 
       if (repeatDelay > 0) {
-        repeatTimer = globalThis.setTimeout(
-          continueSequence,
-          repeatDelay,
-        )
+        repeatTimer = globalThis.setTimeout(continueSequence, repeatDelay)
       } else {
         continueSequence()
       }
@@ -173,10 +157,7 @@ export function createMotionSequence(
         return
       }
 
-      if (
-        animation === undefined ||
-        animation.playState === 'finished'
-      ) {
+      if (animation === undefined || animation.playState === 'finished') {
         callback()
         return
       }

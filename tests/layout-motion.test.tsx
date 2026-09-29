@@ -1,18 +1,6 @@
-import {
-  cleanup,
-  render,
-} from '@testing-library/react'
-import {
-  afterEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from 'vitest'
-import {
-  ThemeProvider,
-  View,
-} from '../src'
+import { cleanup, render } from '@testing-library/react'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { ThemeProvider, View } from '../src'
 
 afterEach(() => {
   cleanup()
@@ -50,10 +38,7 @@ function setupAnimationEnvironment(box: MutableRect) {
   const frames = new Map<number, FrameRequestCallback>()
   let frameId = 0
 
-  vi.spyOn(
-    HTMLElement.prototype,
-    'getBoundingClientRect',
-  ).mockImplementation(() => domRect(box))
+  vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(() => domRect(box))
 
   const animate = vi.fn(
     (
@@ -75,27 +60,21 @@ function setupAnimationEnvironment(box: MutableRect) {
     value: animate,
   })
 
-  vi.spyOn(window, 'requestAnimationFrame').mockImplementation(
-    (callback) => {
-      frameId += 1
-      frames.set(frameId, callback)
-      return frameId
-    },
-  )
-  vi.spyOn(window, 'cancelAnimationFrame').mockImplementation(
-    (id) => {
-      frames.delete(id)
-    },
-  )
+  vi.spyOn(window, 'requestAnimationFrame').mockImplementation((callback) => {
+    frameId += 1
+    frames.set(frameId, callback)
+    return frameId
+  })
+  vi.spyOn(window, 'cancelAnimationFrame').mockImplementation((id) => {
+    frames.delete(id)
+  })
 
   return {
     animate,
     animations,
     frames,
     runOneFrame(time = 16) {
-      const entry = frames.entries().next().value as
-        | [number, FrameRequestCallback]
-        | undefined
+      const entry = frames.entries().next().value as [number, FrameRequestCallback] | undefined
       if (entry === undefined) return
       frames.delete(entry[0])
       entry[1](time)
@@ -113,17 +92,10 @@ describe('View layoutAnimation', () => {
     }
     const { animate } = setupAnimationEnvironment(box)
 
-    const { getByTestId } = render(
-      <View
-        layoutAnimation
-        data={{ testid: 'layout-view' }}
-      />,
-    )
+    const { getByTestId } = render(<View layoutAnimation data={{ testid: 'layout-view' }} />)
 
     expect(animate).not.toHaveBeenCalled()
-    expect(
-      getByTestId('layout-view').dataset.weaveLayoutAnimating,
-    ).toBeUndefined()
+    expect(getByTestId('layout-view').dataset.weaveLayoutAnimating).toBeUndefined()
   })
 
   it('animates position and size changes with FLIP variables', () => {
@@ -136,10 +108,7 @@ describe('View layoutAnimation', () => {
     const { animate, animations } = setupAnimationEnvironment(box)
 
     const { getByTestId, rerender } = render(
-      <View
-        layoutAnimation
-        data={{ testid: 'layout-view' }}
-      />,
+      <View layoutAnimation data={{ testid: 'layout-view' }} />,
     )
 
     Object.assign(box, {
@@ -148,12 +117,7 @@ describe('View layoutAnimation', () => {
       width: 200,
       height: 100,
     })
-    rerender(
-      <View
-        layoutAnimation
-        data={{ testid: 'layout-view' }}
-      />,
-    )
+    rerender(<View layoutAnimation data={{ testid: 'layout-view' }} />)
 
     expect(animate).toHaveBeenCalledTimes(1)
     const [keyframes, options] = animate.mock.calls[0]
@@ -176,10 +140,7 @@ describe('View layoutAnimation', () => {
     const element = getByTestId('layout-view')
     expect(element.dataset.weaveLayoutAnimating).toBe('true')
 
-    animations[0].onfinish?.call(
-      animations[0],
-      {} as AnimationPlaybackEvent,
-    )
+    animations[0].onfinish?.call(animations[0], {} as AnimationPlaybackEvent)
     expect(element.dataset.weaveLayoutAnimating).toBeUndefined()
     expect(animations[0].cancel).toHaveBeenCalledTimes(1)
   })
@@ -227,9 +188,7 @@ describe('View layoutAnimation', () => {
     }
     const { animate } = setupAnimationEnvironment(box)
 
-    const { rerender } = render(
-      <View layoutAnimation={{ spring: 'snappy' }} />,
-    )
+    const { rerender } = render(<View layoutAnimation={{ spring: 'snappy' }} />)
 
     box.left = 80
     rerender(<View layoutAnimation={{ spring: 'snappy' }} />)
@@ -246,11 +205,7 @@ describe('View layoutAnimation', () => {
       width: 100,
       height: 50,
     }
-    const {
-      animate,
-      animations,
-      runOneFrame,
-    } = setupAnimationEnvironment(box)
+    const { animate, animations, runOneFrame } = setupAnimationEnvironment(box)
 
     const { rerender } = render(<View layoutAnimation />)
 
@@ -284,11 +239,7 @@ describe('View layoutAnimation', () => {
       width: 100,
       height: 50,
     }
-    const {
-      animate,
-      animations,
-      runOneFrame,
-    } = setupAnimationEnvironment(box)
+    const { animate, animations, runOneFrame } = setupAnimationEnvironment(box)
 
     const config = {
       duration: 300,
@@ -345,10 +296,7 @@ describe('View layoutAnimation', () => {
       width: 100,
       height: 50,
     }
-    const {
-      animate,
-      runOneFrame,
-    } = setupAnimationEnvironment(box)
+    const { animate, runOneFrame } = setupAnimationEnvironment(box)
 
     const { rerender } = render(<View layoutAnimation />)
 
@@ -382,10 +330,7 @@ describe('View layoutAnimation', () => {
 
     const { getByTestId, rerender } = render(
       <ThemeProvider reducedMotion="reduce">
-        <View
-          layoutAnimation
-          data={{ testid: 'reduced-layout' }}
-        />
+        <View layoutAnimation data={{ testid: 'reduced-layout' }} />
       </ThemeProvider>,
     )
 
@@ -393,30 +338,21 @@ describe('View layoutAnimation', () => {
     box.width = 180
     rerender(
       <ThemeProvider reducedMotion="reduce">
-        <View
-          layoutAnimation
-          data={{ testid: 'reduced-layout' }}
-        />
+        <View layoutAnimation data={{ testid: 'reduced-layout' }} />
       </ThemeProvider>,
     )
 
     expect(animate).not.toHaveBeenCalled()
-    expect(
-      getByTestId('reduced-layout').dataset.weaveLayoutAnimating,
-    ).toBeUndefined()
+    expect(getByTestId('reduced-layout').dataset.weaveLayoutAnimating).toBeUndefined()
   })
 
   it('installs a low-specificity layout-animation host state', () => {
     render(<View layoutAnimation />)
 
     const stylesheet =
-      document.querySelector<HTMLStyleElement>(
-        'style[data-weave-view-styles]',
-      )?.textContent ?? ''
+      document.querySelector<HTMLStyleElement>('style[data-weave-view-styles]')?.textContent ?? ''
 
-    expect(stylesheet).toContain(
-      ':where([data-weave-view][data-weave-layout-animating="true"])',
-    )
+    expect(stylesheet).toContain(':where([data-weave-view][data-weave-layout-animating="true"])')
     expect(stylesheet).toContain('transform-origin: 0 0;')
     expect(stylesheet).toContain('will-change: translate, scale;')
   })

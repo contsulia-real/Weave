@@ -77,8 +77,5 @@ const stylesheet = `
 
 export function ensureComboboxStylesheet(): void {
   ensureOptionListboxStylesheet()
-  ensureStaticStylesheet(
-    'combobox',
-    stylesheet,
-  )
+  ensureStaticStylesheet('combobox', stylesheet)
 }

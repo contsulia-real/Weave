@@ -1,17 +1,9 @@
-import type {
-  ReactEventHandler,
-  Ref,
-} from 'react'
+import type { ReactEventHandler, Ref } from 'react'
 import type { ViewCoreProps, ViewDynamicBreakpointProps } from './view-types'
 
 export type ImageSource = string | Blob
 
-export type ImageFit =
-  | 'contain'
-  | 'cover'
-  | 'fill'
-  | 'none'
-  | 'scale-down'
+export type ImageFit = 'contain' | 'cover' | 'fill' | 'none' | 'scale-down'
 
 export type ImagePosition =
   | 'center'

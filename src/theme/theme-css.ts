@@ -1,32 +1,19 @@
 import type { CSSProperties } from 'react'
 import { solveSpring } from '../core/spring'
-import type {
-  ResolvedTheme,
-  ThemeTypographyStyle,
-  ThemeTokens,
-} from './theme-types'
+import type { ResolvedTheme, ThemeTokens, ThemeTypographyStyle } from './theme-types'
 
-export type ThemeVariableStyle = CSSProperties &
-  Record<`--weave-${string}`, string | number>
+export type ThemeVariableStyle = CSSProperties & Record<`--weave-${string}`, string | number>
 
-const toRem = (value: number | string) =>
-  typeof value === 'number' ? `${value}rem` : value
+const toRem = (value: number | string) => (typeof value === 'number' ? `${value}rem` : value)
 
-const toMs = (value: number | string) =>
-  typeof value === 'number' ? `${value}ms` : value
+const toMs = (value: number | string) => (typeof value === 'number' ? `${value}ms` : value)
 
-const toCurve = (
-  value: string | readonly [number, number, number, number],
-) => (typeof value === 'string' ? value : `cubic-bezier(${value.join(', ')})`)
+const toCurve = (value: string | readonly [number, number, number, number]) =>
+  typeof value === 'string' ? value : `cubic-bezier(${value.join(', ')})`
 
-export type TypographyStyleProperty =
-  | 'fontSize'
-  | 'fontWeight'
-  | 'lineHeight'
-  | 'letterSpacing'
+export type TypographyStyleProperty = 'fontSize' | 'fontWeight' | 'lineHeight' | 'letterSpacing'
 
-const toKebab = (value: string) =>
-  value.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)
+const toKebab = (value: string) => value.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)
 
 export function typographyStyleVariableName(
   typo: string,
@@ -39,9 +26,7 @@ export function typographyStyleVariableReference(
   typo: string | undefined,
   property: TypographyStyleProperty,
 ): string | undefined {
-  return typo === undefined
-    ? undefined
-    : `var(${typographyStyleVariableName(typo, property)})`
+  return typo === undefined ? undefined : `var(${typographyStyleVariableName(typo, property)})`
 }
 
 function typographyStyleVariables(
@@ -50,20 +35,16 @@ function typographyStyleVariables(
   style: ThemeTypographyStyle,
 ): void {
   if (style.fontSize !== undefined) {
-    output[typographyStyleVariableName(name, 'fontSize')] =
-      toRem(style.fontSize)
+    output[typographyStyleVariableName(name, 'fontSize')] = toRem(style.fontSize)
   }
   if (style.fontWeight !== undefined) {
-    output[typographyStyleVariableName(name, 'fontWeight')] =
-      style.fontWeight
+    output[typographyStyleVariableName(name, 'fontWeight')] = style.fontWeight
   }
   if (style.lineHeight !== undefined) {
-    output[typographyStyleVariableName(name, 'lineHeight')] =
-      style.lineHeight
+    output[typographyStyleVariableName(name, 'lineHeight')] = style.lineHeight
   }
   if (style.letterSpacing !== undefined) {
-    output[typographyStyleVariableName(name, 'letterSpacing')] =
-      toRem(style.letterSpacing)
+    output[typographyStyleVariableName(name, 'letterSpacing')] = toRem(style.letterSpacing)
   }
 }
 
@@ -121,21 +102,10 @@ export function themeTokenVariables(tokens: ThemeTokens): ThemeVariableStyle {
   assignRecord(output, 'typography-family', tokens.typography?.family)
   assignRecord(output, 'typography-size', tokens.typography?.size, toRem)
   assignRecord(output, 'typography-weight', tokens.typography?.weight)
-  assignRecord(
-    output,
-    'typography-line-height',
-    tokens.typography?.lineHeight,
-  )
-  assignRecord(
-    output,
-    'typography-letter-spacing',
-    tokens.typography?.letterSpacing,
-    toRem,
-  )
+  assignRecord(output, 'typography-line-height', tokens.typography?.lineHeight)
+  assignRecord(output, 'typography-letter-spacing', tokens.typography?.letterSpacing, toRem)
 
-  for (const [name, style] of Object.entries(
-    tokens.typography?.styles ?? {},
-  )) {
+  for (const [name, style] of Object.entries(tokens.typography?.styles ?? {})) {
     typographyStyleVariables(output, name, style)
   }
 
@@ -150,8 +120,7 @@ export function themeTokenVariables(tokens: ThemeTokens): ThemeVariableStyle {
   if (tokens.motion?.spring !== undefined) {
     for (const [name, value] of Object.entries(tokens.motion.spring)) {
       const spring = solveSpring(value)
-      output[`--weave-motion-spring-${name}-duration`] =
-        `${spring.durationMs}ms`
+      output[`--weave-motion-spring-${name}-duration`] = `${spring.durationMs}ms`
       output[`--weave-motion-spring-${name}-easing`] = spring.easing
     }
   }

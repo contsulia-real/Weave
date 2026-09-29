@@ -1,22 +1,7 @@
+import { cleanup, fireEvent, render } from '@testing-library/react'
 import { act } from 'react'
-import {
-  cleanup,
-  fireEvent,
-  render,
-} from '@testing-library/react'
-import {
-  afterEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from 'vitest'
-import {
-  Badge,
-  Button,
-  View,
-  defaultTheme,
-} from '../src'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { Badge, Button, defaultTheme, View } from '../src'
 
 afterEach(() => {
   cleanup()
@@ -32,22 +17,13 @@ describe('Badge', () => {
     )
 
     const text = getByText('12')
-    const badge = text.closest(
-      '[data-weave-badge]',
-    ) as HTMLElement
-    const anchor = badge.closest(
-      '[data-weave-badge-anchor]',
-    ) as HTMLElement
+    const badge = text.closest('[data-weave-badge]') as HTMLElement
+    const anchor = badge.closest('[data-weave-badge-anchor]') as HTMLElement
 
     expect(anchor).not.toBeNull()
-    expect(
-      anchor.dataset.weaveBadgePlacement,
-    ).toBe('top-right')
-    expect(
-      badge.getAttribute('data-weave-badge-dot'),
-    ).toBe('false')
-    expect(text.dataset.weaveText)
-      .toBe('')
+    expect(anchor.dataset.weaveBadgePlacement).toBe('top-right')
+    expect(badge.getAttribute('data-weave-badge-dot')).toBe('false')
+    expect(text.dataset.weaveText).toBe('')
   })
 
   it('renders a small dot without text when dot is enabled', () => {
@@ -57,16 +33,10 @@ describe('Badge', () => {
       </Badge>,
     )
 
-    const anchor = container.querySelector(
-      '[data-weave-badge-anchor]',
-    ) as HTMLElement
-    const badge = container.querySelector(
-      '[data-weave-badge]',
-    ) as HTMLElement
+    const anchor = container.querySelector('[data-weave-badge-anchor]') as HTMLElement
+    const badge = container.querySelector('[data-weave-badge]') as HTMLElement
 
-    expect(anchor.dataset.weaveBadgePlacement).toBe(
-      'bottom-left',
-    )
+    expect(anchor.dataset.weaveBadgePlacement).toBe('bottom-left')
     expect(badge.dataset.weaveBadgeDot).toBe('true')
     expect(badge.getAttribute('aria-hidden')).toBe('true')
     expect(badge.textContent).toBe('')
@@ -75,38 +45,26 @@ describe('Badge', () => {
   it('plays popup and dismiss motion while preserving the wrapped target', () => {
     vi.useFakeTimers()
 
-    const {
-      getByRole,
-      queryByText,
-      rerender,
-    } = render(
+    const { getByRole, queryByText, rerender } = render(
       <Badge text="8" visible>
         <Button text="Inbox" />
       </Badge>,
     )
 
     const badgeText = queryByText('8') as HTMLElement
-    const badge = badgeText.closest(
-      '[data-weave-badge]',
-    ) as HTMLElement
+    const badge = badgeText.closest('[data-weave-badge]') as HTMLElement
     expect(badge.dataset.weaveBadgeState).toBe('open')
 
     const stylesheet =
-      document.querySelector<HTMLStyleElement>(
-        'style[data-weave-badge-styles]',
-      )?.textContent ?? ''
+      document.querySelector<HTMLStyleElement>('style[data-weave-badge-styles]')?.textContent ?? ''
     expect(stylesheet).toContain('@keyframes weave-badge-pop')
     expect(stylesheet).toContain('@keyframes weave-badge-dismiss')
     expect(stylesheet).toContain('var(--weave-badge-motion-x)')
     expect(stylesheet).toContain('var(--weave-badge-motion-y)')
     expect(stylesheet).toContain('--weave-badge-motion-distance: 0.5rem')
     expect(stylesheet).toContain('--weave-badge-motion-diagonal: 0.35rem')
-    expect(stylesheet).toContain(
-      'calc(-1 * var(--weave-badge-motion-distance))',
-    )
-    expect(stylesheet).toContain(
-      '--weave-badge-motion-y: var(--weave-badge-motion-distance)',
-    )
+    expect(stylesheet).toContain('calc(-1 * var(--weave-badge-motion-distance))')
+    expect(stylesheet).toContain('--weave-badge-motion-y: var(--weave-badge-motion-distance)')
 
     rerender(
       <Badge text="8" visible={false}>
@@ -115,9 +73,7 @@ describe('Badge', () => {
     )
 
     const closingText = queryByText('8') as HTMLElement
-    const closing = closingText.closest(
-      '[data-weave-badge]',
-    ) as HTMLElement
+    const closing = closingText.closest('[data-weave-badge]') as HTMLElement
     expect(closing.dataset.weaveBadgeState).toBe('closing')
     expect(getByRole('button').textContent).toContain('Inbox')
 
@@ -135,11 +91,8 @@ describe('Badge', () => {
     )
 
     const reopenedText = queryByText('8') as HTMLElement
-    const reopened = reopenedText.closest(
-      '[data-weave-badge]',
-    ) as HTMLElement
-    expect(reopened.dataset.weaveBadgeState)
-      .toBe('open')
+    const reopened = reopenedText.closest('[data-weave-badge]') as HTMLElement
+    expect(reopened.dataset.weaveBadgeState).toBe('open')
   })
 
   it('tracks the wrapped component visual box instead of the static wrapper box', () => {
@@ -150,9 +103,7 @@ describe('Badge', () => {
     )
 
     const target = getByTestId('badge-target')
-    const anchor = target.closest(
-      '[data-weave-badge-anchor]',
-    ) as HTMLElement
+    const anchor = target.closest('[data-weave-badge-anchor]') as HTMLElement
 
     anchor.getBoundingClientRect = () => ({
       x: 100,
@@ -180,15 +131,9 @@ describe('Badge', () => {
 
     fireEvent.transitionRun(target)
 
-    expect(
-      anchor.style.getPropertyValue('--weave-badge-target-top'),
-    ).toBe('4px')
-    expect(
-      anchor.style.getPropertyValue('--weave-badge-target-right'),
-    ).toBe('95px')
-    expect(
-      anchor.style.getPropertyValue('--weave-badge-target-center-x'),
-    ).toBe('50px')
+    expect(anchor.style.getPropertyValue('--weave-badge-target-top')).toBe('4px')
+    expect(anchor.style.getPropertyValue('--weave-badge-target-right')).toBe('95px')
+    expect(anchor.style.getPropertyValue('--weave-badge-target-center-x')).toBe('50px')
   })
 
   it('supports all eight edge placements in the stylesheet', () => {
@@ -199,9 +144,7 @@ describe('Badge', () => {
     )
 
     const stylesheet =
-      document.querySelector<HTMLStyleElement>(
-        'style[data-weave-badge-styles]',
-      )?.textContent ?? ''
+      document.querySelector<HTMLStyleElement>('style[data-weave-badge-styles]')?.textContent ?? ''
 
     for (const placement of [
       'top-left',
@@ -213,9 +156,7 @@ describe('Badge', () => {
       'bottom-left',
       'left',
     ]) {
-      expect(stylesheet).toContain(
-        `data-weave-badge-placement="${placement}"`,
-      )
+      expect(stylesheet).toContain(`data-weave-badge-placement="${placement}"`)
     }
   })
 

@@ -1,10 +1,4 @@
-import {
-  useId,
-  useInsertionEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import { useId, useInsertionEffect, useMemo, useRef, useState } from 'react'
 import type { SwitchProps } from '../core/switch-types'
 import type { ViewProps } from '../core/view-types'
 import { resolveSwitchTheme } from '../renderers/dom/resolve-component-theme'
@@ -29,58 +23,36 @@ export function Switch({
   useInsertionEffect(ensureSwitchStylesheet, [])
 
   const { theme } = useTheme()
-  const themeDeclarations = useMemo(
-    () => resolveSwitchTheme(theme, size),
-    [size, theme],
-  )
-  const themeClassName = useRuntimeStyleClass(
-    'switch-theme',
-    themeDeclarations,
-  )
+  const themeDeclarations = useMemo(() => resolveSwitchTheme(theme, size), [size, theme])
+  const themeClassName = useRuntimeStyleClass('switch-theme', themeDeclarations)
 
-  const [uncontrolledChecked, setUncontrolledChecked] =
-    useState(defaultChecked)
+  const [uncontrolledChecked, setUncontrolledChecked] = useState(defaultChecked)
   const isControlled = checked !== undefined
   const currentChecked = checked ?? uncontrolledChecked
   const generatedId = useId()
-  const switchId =
-    viewProps.id ?? `weave-switch-${generatedId}`
+  const switchId = viewProps.id ?? `weave-switch-${generatedId}`
   const labelId = `${switchId}-label`
   const labelledBy =
     label === undefined
       ? viewProps.labelledBy
-      : [viewProps.labelledBy, labelId]
-          .filter(Boolean)
-          .join(' ')
+      : [viewProps.labelledBy, labelId].filter(Boolean).join(' ')
 
   const hostProps: ViewProps<HTMLButtonElement> = {
     ...viewProps,
     id: switchId,
     checked: currentChecked,
     disabled,
-    focusable: disabled
-      ? false
-      : (viewProps.focusable ?? true),
+    focusable: disabled ? false : (viewProps.focusable ?? true),
     labelledBy,
   }
-  const {
-    elementRef,
-    className,
-    inlineStyle,
-    resolved,
-  } = useViewHost(hostProps)
+  const { elementRef, className, inlineStyle, resolved } = useViewHost(hostProps)
 
   const switchBase = theme.components.Switch?.base
-  const dragShrink =
-    switchBase?.thumbDragShrink ?? 0.68
-  const dragMaxWidth =
-    switchBase?.thumbDragMaxWidth ?? 1.35
+  const dragShrink = switchBase?.thumbDragShrink ?? 0.68
+  const dragMaxWidth = switchBase?.thumbDragMaxWidth ?? 1.35
   const autoDragDuration = Math.max(
     1,
-    durationMilliseconds(
-      theme.tokens.motion?.duration?.normal,
-      DEFAULT_AUTO_DRAG_DURATION,
-    ),
+    durationMilliseconds(theme.tokens.motion?.duration?.normal, DEFAULT_AUTO_DRAG_DURATION),
   )
 
   const thumbRef = useRef<HTMLDivElement>(null)
@@ -123,12 +95,9 @@ export function Switch({
       data-weave-switch=""
       data-weave-switch-size={size}
       data-weave-layout={resolved.layout}
-      className={[
-        'weave-switch',
-        `weave-switch--${size}`,
-        themeClassName,
-        className,
-      ].filter(Boolean).join(' ')}
+      className={['weave-switch', `weave-switch--${size}`, themeClassName, className]
+        .filter(Boolean)
+        .join(' ')}
       style={inlineStyle}
       onClick={interaction.handleClick}
       onKeyDown={interaction.handleKeyDown}
@@ -158,11 +127,7 @@ export function Switch({
       htmlFor={switchId}
     >
       {control}
-      <span
-        id={labelId}
-        className="weave-switch__label"
-        data-weave-switch-label=""
-      >
+      <span id={labelId} className="weave-switch__label" data-weave-switch-label="">
         {label}
       </span>
     </label>

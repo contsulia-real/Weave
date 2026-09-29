@@ -6,16 +6,11 @@ let media: MediaQueryList | undefined
 let listening = false
 
 function getMedia(): MediaQueryList | undefined {
-  if (
-    typeof window === 'undefined' ||
-    typeof window.matchMedia !== 'function'
-  ) {
+  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
     return undefined
   }
 
-  media ??= window.matchMedia(
-    '(prefers-reduced-motion: reduce)',
-  )
+  media ??= window.matchMedia('(prefers-reduced-motion: reduce)')
   return media
 }
 
@@ -45,14 +40,8 @@ function systemSnapshot(): boolean {
   return getMedia()?.matches ?? false
 }
 
-export function useResolvedReducedMotion(
-  preference: ReducedMotionPreference,
-): boolean {
-  const systemReducedMotion = useSyncExternalStore(
-    subscribe,
-    systemSnapshot,
-    () => false,
-  )
+export function useResolvedReducedMotion(preference: ReducedMotionPreference): boolean {
+  const systemReducedMotion = useSyncExternalStore(subscribe, systemSnapshot, () => false)
 
   if (preference === 'reduce') return true
   if (preference === 'no-preference') return false

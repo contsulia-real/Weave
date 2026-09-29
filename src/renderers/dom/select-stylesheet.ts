@@ -47,8 +47,5 @@ const stylesheet = `
 export function ensureSelectStylesheet(): void {
   ensureInputStylesheet()
   ensureOptionListboxStylesheet()
-  ensureStaticStylesheet(
-    'select',
-    stylesheet,
-  )
+  ensureStaticStylesheet('select', stylesheet)
 }

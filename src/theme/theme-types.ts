@@ -1,7 +1,4 @@
-import type {
-  MotionSpring,
-  ViewAnimationConfig,
-} from '../core/motion-types'
+import type { MotionSpring, ViewAnimationConfig } from '../core/motion-types'
 import type { TextTypo } from '../core/text-types'
 
 export type ThemeMode = 'light' | 'dark' | 'system'
@@ -50,9 +47,7 @@ export interface ThemeTokens {
   feedback?: ThemeFeedbackTokens
   motion?: {
     duration?: Readonly<Record<string, number | string>>
-    curve?: Readonly<
-      Record<string, string | readonly [number, number, number, number]>
-    >
+    curve?: Readonly<Record<string, string | readonly [number, number, number, number]>>
     spring?: Readonly<Record<string, MotionSpring>>
     animation?: Readonly<Record<string, ViewAnimationConfig>>
   }
@@ -137,11 +132,9 @@ export interface ComboboxThemeBase {
   actionInset?: ThemeScaleValue
 }
 
-export interface ComboboxThemeListbox
-  extends SelectThemeListbox {}
+export interface ComboboxThemeListbox extends SelectThemeListbox {}
 
-export interface ComboboxThemeOption
-  extends SelectThemeOption {}
+export interface ComboboxThemeOption extends SelectThemeOption {}
 
 export interface ComboboxTheme {
   base?: ComboboxThemeBase
@@ -176,9 +169,7 @@ export interface SwitchThemeSize {
 
 export interface SwitchTheme {
   base?: SwitchThemeBase
-  sizes?: Partial<
-    Record<'small' | 'medium' | 'large', SwitchThemeSize>
-  >
+  sizes?: Partial<Record<'small' | 'medium' | 'large', SwitchThemeSize>>
   states?: {
     checked?: {
       background?: string
@@ -219,9 +210,7 @@ export interface ChoiceControlThemeSize {
 
 export interface ChoiceControlTheme {
   base?: ChoiceControlThemeBase
-  sizes?: Partial<
-    Record<'small' | 'medium' | 'large', ChoiceControlThemeSize>
-  >
+  sizes?: Partial<Record<'small' | 'medium' | 'large', ChoiceControlThemeSize>>
   states?: {
     checked?: {
       background?: string
@@ -301,14 +290,9 @@ export interface ButtonThemeVariant {
 
 export interface ButtonTheme {
   base?: ButtonThemeBase
-  sizes?: Partial<
-    Record<'small' | 'medium' | 'large', ButtonThemeSize>
-  >
+  sizes?: Partial<Record<'small' | 'medium' | 'large', ButtonThemeSize>>
   variants?: Partial<
-    Record<
-      'primary' | 'secondary' | 'tertiary' | 'ghost' | 'danger',
-      ButtonThemeVariant
-    >
+    Record<'primary' | 'secondary' | 'tertiary' | 'ghost' | 'danger', ButtonThemeVariant>
   >
   states?: {
     disabled?: {
@@ -334,9 +318,7 @@ export interface ProgressThemeSize {
 
 export interface ProgressTheme {
   base?: ProgressThemeBase
-  sizes?: Partial<
-    Record<'small' | 'medium' | 'large', ProgressThemeSize>
-  >
+  sizes?: Partial<Record<'small' | 'medium' | 'large', ProgressThemeSize>>
 }
 
 export interface ScrollbarThemeBase {
@@ -355,9 +337,7 @@ export interface ScrollbarThemeSize {
 
 export interface ScrollbarTheme {
   base?: ScrollbarThemeBase
-  sizes?: Partial<
-    Record<'small' | 'medium' | 'large', ScrollbarThemeSize>
-  >
+  sizes?: Partial<Record<'small' | 'medium' | 'large', ScrollbarThemeSize>>
 }
 
 export interface ToolTipThemeBase {
@@ -462,10 +442,7 @@ export interface SnackThemeVariant {
 export interface SnackTheme {
   base?: SnackThemeBase
   variants?: Partial<
-    Record<
-      'default' | 'success' | 'warning' | 'danger' | 'info',
-      SnackThemeVariant
-    >
+    Record<'default' | 'success' | 'warning' | 'danger' | 'info', SnackThemeVariant>
   >
 }
 

@@ -1,9 +1,6 @@
 import type { Ref } from 'react'
 
-export function assignRef<T>(
-  ref: Ref<T> | undefined,
-  value: T | null,
-): void {
+export function assignRef<T>(ref: Ref<T> | undefined, value: T | null): void {
   if (ref === undefined || ref === null) {
     return
   }

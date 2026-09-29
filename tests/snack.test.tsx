@@ -1,47 +1,18 @@
-import {
-  act,
-} from 'react'
-import {
-  cleanup,
-  fireEvent,
-  render,
-} from '@testing-library/react'
-import {
-  afterEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from 'vitest'
-import {
-  Button,
-  Snack,
-  SnackProvider,
-  Text,
-  View,
-  useSnack,
-} from '../src'
+import { cleanup, fireEvent, render } from '@testing-library/react'
+import { act } from 'react'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { Button, Snack, SnackProvider, Text, useSnack, View } from '../src'
 
 afterEach(() => {
   cleanup()
   vi.useRealTimers()
-  delete (
-    HTMLElement.prototype as Partial<HTMLElement>
-  ).animate
+  delete (HTMLElement.prototype as Partial<HTMLElement>).animate
 
-  document
-    .querySelectorAll(
-      '[data-weave-snack-region]',
-    )
-    .forEach(
-      (element) =>
-        element.remove(),
-    )
+  document.querySelectorAll('[data-weave-snack-region]').forEach((element) => element.remove())
 })
 
 function SnackTriggerHarness() {
-  const snack =
-    useSnack()
+  const snack = useSnack()
 
   return (
     <Button
@@ -60,12 +31,9 @@ function SnackTriggerHarness() {
 }
 
 function SnackFifoHarness() {
-  const snack =
-    useSnack()
+  const snack = useSnack()
 
-  const push = (
-    text: string,
-  ) => {
+  const push = (text: string) => {
     snack.show({
       text,
       persistent: true,
@@ -105,23 +73,13 @@ function SnackFifoHarness() {
 
 describe('Snack', () => {
   it('mounts provider Snacks into an explicit container', () => {
-    const host =
-      document.createElement('div')
-    const root =
-      document.createElement('div')
+    const host = document.createElement('div')
+    const root = document.createElement('div')
 
-    document.body.append(
-      host,
-      root,
-    )
+    document.body.append(host, root)
 
-    const {
-      getByRole,
-      unmount,
-    } = render(
-      <SnackProvider
-        container={host}
-      >
+    const { getByRole, unmount } = render(
+      <SnackProvider container={host}>
         <SnackTriggerHarness />
       </SnackProvider>,
       {
@@ -130,68 +88,38 @@ describe('Snack', () => {
     )
 
     fireEvent.click(
-      getByRole(
-        'button',
-        {
-          name: 'Trigger',
-        },
-      ),
+      getByRole('button', {
+        name: 'Trigger',
+      }),
     )
 
-    const region =
-      host.querySelector<HTMLElement>(
-        '[data-weave-snack-region="top-left"]',
-      )
+    const region = host.querySelector<HTMLElement>('[data-weave-snack-region="top-left"]')
 
     expect(region).not.toBeNull()
-    expect(
-      region?.parentElement,
-    ).toBe(host)
-    expect(
-      region?.getAttribute(
-        'data-weave-snack-scope',
-      ),
-    ).toBe('container')
-    expect(
-      host.style.position,
-    ).toBe('relative')
+    expect(region?.parentElement).toBe(host)
+    expect(region?.getAttribute('data-weave-snack-scope')).toBe('container')
+    expect(host.style.position).toBe('relative')
 
     unmount()
 
-    expect(
-      host.querySelector(
-        '[data-weave-snack-region]',
-      ),
-    ).toBeNull()
-    expect(
-      host.style.position,
-    ).toBe('')
+    expect(host.querySelector('[data-weave-snack-region]')).toBeNull()
+    expect(host.style.position).toBe('')
 
     host.remove()
     root.remove()
   })
 
   it('accepts a ref object as the provider container', () => {
-    const host =
-      document.createElement('div')
-    const root =
-      document.createElement('div')
+    const host = document.createElement('div')
+    const root = document.createElement('div')
     const hostRef = {
       current: host,
     }
 
-    document.body.append(
-      host,
-      root,
-    )
+    document.body.append(host, root)
 
-    const {
-      getByRole,
-      unmount,
-    } = render(
-      <SnackProvider
-        container={hostRef}
-      >
+    const { getByRole, unmount } = render(
+      <SnackProvider container={hostRef}>
         <SnackTriggerHarness />
       </SnackProvider>,
       {
@@ -200,19 +128,12 @@ describe('Snack', () => {
     )
 
     fireEvent.click(
-      getByRole(
-        'button',
-        {
-          name: 'Trigger',
-        },
-      ),
+      getByRole('button', {
+        name: 'Trigger',
+      }),
     )
 
-    expect(
-      host.querySelector(
-        '[data-weave-snack-region="top-left"]',
-      ),
-    ).not.toBeNull()
+    expect(host.querySelector('[data-weave-snack-region="top-left"]')).not.toBeNull()
 
     unmount()
     host.remove()
@@ -220,23 +141,13 @@ describe('Snack', () => {
   })
 
   it('isolates providers sharing the same container and placement', () => {
-    const host =
-      document.createElement('div')
-    const root =
-      document.createElement('div')
+    const host = document.createElement('div')
+    const root = document.createElement('div')
 
-    document.body.append(
-      host,
-      root,
-    )
+    document.body.append(host, root)
 
-    function ProviderTrigger({
-      label,
-    }: {
-      label: string
-    }) {
-      const snack =
-        useSnack()
+    function ProviderTrigger({ label }: { label: string }) {
+      const snack = useSnack()
 
       return (
         <Button
@@ -254,25 +165,14 @@ describe('Snack', () => {
       )
     }
 
-    const {
-      getByRole,
-      unmount,
-    } = render(
+    const { getByRole, unmount } = render(
       <>
-        <SnackProvider
-          container={host}
-        >
-          <ProviderTrigger
-            label="First provider"
-          />
+        <SnackProvider container={host}>
+          <ProviderTrigger label="First provider" />
         </SnackProvider>
 
-        <SnackProvider
-          container={host}
-        >
-          <ProviderTrigger
-            label="Second provider"
-          />
+        <SnackProvider container={host}>
+          <ProviderTrigger label="Second provider" />
         </SnackProvider>
       </>,
       {
@@ -281,36 +181,21 @@ describe('Snack', () => {
     )
 
     fireEvent.click(
-      getByRole(
-        'button',
-        {
-          name: 'First provider',
-        },
-      ),
+      getByRole('button', {
+        name: 'First provider',
+      }),
     )
     fireEvent.click(
-      getByRole(
-        'button',
-        {
-          name: 'Second provider',
-        },
-      ),
+      getByRole('button', {
+        name: 'Second provider',
+      }),
     )
 
-    const regions =
-      host.querySelectorAll(
-        '[data-weave-snack-region="top-left"]',
-      )
+    const regions = host.querySelectorAll('[data-weave-snack-region="top-left"]')
 
     expect(regions).toHaveLength(2)
-    expect(
-      regions[0]?.getAttribute(
-        'data-weave-snack-provider-scope',
-      ),
-    ).not.toBe(
-      regions[1]?.getAttribute(
-        'data-weave-snack-provider-scope',
-      ),
+    expect(regions[0]?.getAttribute('data-weave-snack-provider-scope')).not.toBe(
+      regions[1]?.getAttribute('data-weave-snack-provider-scope'),
     )
 
     unmount()
@@ -319,221 +204,100 @@ describe('Snack', () => {
   })
 
   it('creates a fresh Snack on every queue trigger', () => {
-    const {
-      getByRole,
-    } = render(
+    const { getByRole } = render(
       <SnackProvider>
         <SnackTriggerHarness />
       </SnackProvider>,
     )
 
-    const trigger =
-      getByRole(
-        'button',
-        {
-          name: 'Trigger',
-        },
-      )
+    const trigger = getByRole('button', {
+      name: 'Trigger',
+    })
 
     fireEvent.click(trigger)
     fireEvent.click(trigger)
 
-    const region =
-      document.querySelector(
-        '[data-weave-snack-region="top-left"]',
-      )
+    const region = document.querySelector('[data-weave-snack-region="top-left"]')
 
-    expect(
-      region?.querySelectorAll(
-        '[data-weave-snack]',
-      ),
-    ).toHaveLength(2)
+    expect(region?.querySelectorAll('[data-weave-snack]')).toHaveLength(2)
   })
 
   it('uses the shared Weave surface material instead of a tinted toast card', () => {
-    render(
-      <Snack
-        text="Material"
-        variant="info"
-        persistent
-      />,
-    )
+    render(<Snack text="Material" variant="info" persistent />)
 
     const stylesheet =
-      document.querySelector<HTMLStyleElement>(
-        'style[data-weave-snack-styles]',
-      )?.textContent ?? ''
+      document.querySelector<HTMLStyleElement>('style[data-weave-snack-styles]')?.textContent ?? ''
 
-    expect(stylesheet).toContain(
-      '--weave-component-background: var(--weave-snack-background);',
-    )
-    expect(stylesheet).toContain(
-      '.weave-snack__icon-shell',
-    )
-    expect(stylesheet).not.toContain(
-      '--weave-snack-accent-width',
-    )
-    expect(stylesheet).not.toContain(
-      '--weave-snack-min-width',
-    )
-    expect(stylesheet).not.toContain(
-      '--weave-snack-max-width',
-    )
-    expect(stylesheet).not.toContain(
-      '--weave-snack-available-width',
-    )
+    expect(stylesheet).toContain('--weave-component-background: var(--weave-snack-background);')
+    expect(stylesheet).toContain('.weave-snack__icon-shell')
+    expect(stylesheet).not.toContain('--weave-snack-accent-width')
+    expect(stylesheet).not.toContain('--weave-snack-min-width')
+    expect(stylesheet).not.toContain('--weave-snack-max-width')
+    expect(stylesheet).not.toContain('--weave-snack-available-width')
   })
 
   it('renders shortcut content into the requested shared placement region', () => {
-    const {
-      getByRole,
-      getByText,
-    } = render(
-      <Snack
-        text="Saved"
-        variant="success"
-        placement="top-right"
-        persistent
-      />,
+    const { getByRole, getByText } = render(
+      <Snack text="Saved" variant="success" placement="top-right" persistent />,
     )
 
-    const snack =
-      getByRole('status')
-    const region =
-      document.querySelector(
-        '[data-weave-snack-region="top-right"]',
-      )
+    const snack = getByRole('status')
+    const region = document.querySelector('[data-weave-snack-region="top-right"]')
 
     expect(region).not.toBeNull()
-    expect(
-      region?.contains(snack),
-    ).toBe(true)
-    expect(
-      getByText('Saved'),
-    ).toBeDefined()
-    expect(
-      snack.getAttribute(
-        'data-variant',
-      ),
-    ).toBe('success')
+    expect(region?.contains(snack)).toBe(true)
+    expect(getByText('Saved')).toBeDefined()
+    expect(snack.getAttribute('data-variant')).toBe('success')
   })
 
   it('evicts the oldest visible Snack with exit motion when FIFO capacity overflows', () => {
-    const {
-      getByRole,
-    } = render(
+    const { getByRole } = render(
       <SnackProvider>
         <SnackFifoHarness />
       </SnackProvider>,
     )
 
-    fireEvent.click(
-      getByRole(
-        'button',
-        { name: 'Push A' },
-      ),
-    )
-    fireEvent.click(
-      getByRole(
-        'button',
-        { name: 'Push B' },
-      ),
-    )
-    fireEvent.click(
-      getByRole(
-        'button',
-        { name: 'Push C' },
-      ),
-    )
-    fireEvent.click(
-      getByRole(
-        'button',
-        { name: 'Push D' },
-      ),
+    fireEvent.click(getByRole('button', { name: 'Push A' }))
+    fireEvent.click(getByRole('button', { name: 'Push B' }))
+    fireEvent.click(getByRole('button', { name: 'Push C' }))
+    fireEvent.click(getByRole('button', { name: 'Push D' }))
+
+    const region = document.querySelector('[data-weave-snack-region="top-left"]')
+    const snacksBeforeRemoval = Array.from(
+      region?.querySelectorAll<HTMLElement>('[data-weave-snack]') ?? [],
     )
 
-    const region =
-      document.querySelector(
-        '[data-weave-snack-region="top-left"]',
-      )
-    const snacksBeforeRemoval =
-      Array.from(
-        region?.querySelectorAll<HTMLElement>(
-          '[data-weave-snack]',
-        ) ?? [],
-      )
+    expect(snacksBeforeRemoval.map((snack) => snack.textContent)).toEqual(['A', 'B', 'C'])
 
-    expect(
-      snacksBeforeRemoval.map(
-        (snack) =>
-          snack.textContent,
-      ),
-    ).toEqual([
-      'A',
-      'B',
-      'C',
-    ])
+    expect(snacksBeforeRemoval).toHaveLength(3)
 
-    expect(
-      snacksBeforeRemoval,
-    ).toHaveLength(3)
-
-    expect(
-      snacksBeforeRemoval[0]?.getAttribute(
-        'data-weave-snack-state',
-      ),
-    ).toBe('closing')
+    expect(snacksBeforeRemoval[0]?.getAttribute('data-weave-snack-state')).toBe('closing')
 
     expect(
       snacksBeforeRemoval
         .slice(1)
-        .every(
-          (snack) =>
-            snack.getAttribute(
-              'data-weave-snack-state',
-            ) === 'open',
-        ),
+        .every((snack) => snack.getAttribute('data-weave-snack-state') === 'open'),
     ).toBe(true)
 
-    expect(
-      region?.textContent,
-    ).not.toContain('D')
+    expect(region?.textContent).not.toContain('D')
 
-    const oldest =
-      snacksBeforeRemoval[0]
+    const oldest = snacksBeforeRemoval[0]
 
     if (oldest !== undefined) {
-      fireEvent.transitionEnd(
-        oldest,
-      )
+      fireEvent.transitionEnd(oldest)
     }
 
-    const snacksAfterRemoval =
-      Array.from(
-        region?.querySelectorAll<HTMLElement>(
-          '[data-weave-snack]',
-        ) ?? [],
-      )
+    const snacksAfterRemoval = Array.from(
+      region?.querySelectorAll<HTMLElement>('[data-weave-snack]') ?? [],
+    )
 
-    expect(
-      snacksAfterRemoval.map(
-        (snack) =>
-          snack.textContent,
-      ),
-    ).toEqual([
-      'B',
-      'C',
-      'D',
-    ])
+    expect(snacksAfterRemoval.map((snack) => snack.textContent)).toEqual(['B', 'C', 'D'])
   })
 
   it('reuses View layoutAnimation when FIFO removal reflows stable snacks', () => {
-    let phase: 'before' | 'after' =
-      'before'
+    let phase: 'before' | 'after' = 'before'
 
-    const topFor = (
-      text: string,
-    ) => {
+    const topFor = (text: string) => {
       const before = {
         A: 0,
         B: 40,
@@ -547,27 +311,13 @@ describe('Snack', () => {
       } as const
 
       return phase === 'before'
-        ? before[
-            text as keyof typeof before
-          ] ?? 0
-        : after[
-            text as keyof typeof after
-          ] ?? 0
+        ? (before[text as keyof typeof before] ?? 0)
+        : (after[text as keyof typeof after] ?? 0)
     }
 
-    vi.spyOn(
-      HTMLElement.prototype,
-      'getBoundingClientRect',
-    ).mockImplementation(function () {
-      const element =
-        this as HTMLElement
-      const top =
-        element.dataset.weaveSnack !==
-        undefined
-          ? topFor(
-              element.textContent ?? '',
-            )
-          : 0
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function () {
+      const element = this as HTMLElement
+      const top = element.dataset.weaveSnack !== undefined ? topFor(element.textContent ?? '') : 0
 
       return {
         x: 0,
@@ -583,22 +333,19 @@ describe('Snack', () => {
     })
 
     const animate = vi.fn(
-      () => ({
-        cancel: vi.fn(),
-        finish: vi.fn(),
-        onfinish: null,
-      }) as unknown as Animation,
+      () =>
+        ({
+          cancel: vi.fn(),
+          finish: vi.fn(),
+          onfinish: null,
+        }) as unknown as Animation,
     )
 
-    Object.defineProperty(
-      HTMLElement.prototype,
-      'animate',
-      {
-        configurable: true,
-        writable: true,
-        value: animate,
-      },
-    )
+    Object.defineProperty(HTMLElement.prototype, 'animate', {
+      configurable: true,
+      writable: true,
+      value: animate,
+    })
 
     const { getByRole } = render(
       <SnackProvider>
@@ -606,12 +353,7 @@ describe('Snack', () => {
       </SnackProvider>,
     )
 
-    for (const name of [
-      'Push A',
-      'Push B',
-      'Push C',
-      'Push D',
-    ]) {
+    for (const name of ['Push A', 'Push B', 'Push C', 'Push D']) {
       fireEvent.click(
         getByRole('button', {
           name,
@@ -619,14 +361,8 @@ describe('Snack', () => {
       )
     }
 
-    const region =
-      document.querySelector(
-        '[data-weave-snack-region="top-left"]',
-      )
-    const oldest =
-      region?.querySelector<HTMLElement>(
-        '[data-weave-snack-state="closing"]',
-      )
+    const region = document.querySelector('[data-weave-snack-region="top-left"]')
+    const oldest = region?.querySelector<HTMLElement>('[data-weave-snack-state="closing"]')
 
     expect(oldest).not.toBeNull()
 
@@ -635,93 +371,43 @@ describe('Snack', () => {
 
     fireEvent.transitionEnd(oldest!)
 
-    const layoutCalls =
-      animate.mock.calls.filter(
-        ([keyframes]) =>
-          Array.isArray(keyframes) &&
-          keyframes[0] !== undefined &&
-          'translate' in keyframes[0],
-      )
+    const layoutCalls = animate.mock.calls.filter(
+      ([keyframes]) =>
+        Array.isArray(keyframes) && keyframes[0] !== undefined && 'translate' in keyframes[0],
+    )
 
-    expect(layoutCalls.length)
-      .toBeGreaterThanOrEqual(2)
+    expect(layoutCalls.length).toBeGreaterThanOrEqual(2)
     expect(
-      layoutCalls.some(
-        ([keyframes]) =>
-          (
-            keyframes as Keyframe[]
-          )[0]?.translate ===
-          '0px 40px',
-      ),
+      layoutCalls.some(([keyframes]) => (keyframes as Keyframe[])[0]?.translate === '0px 40px'),
     ).toBe(true)
   })
 
   it('does not render lifetime progress unless progress is enabled', () => {
-    render(
-      <Snack
-        text="Timed without progress"
-        duration={1000}
-      />,
-    )
+    render(<Snack text="Timed without progress" duration={1000} />)
 
-    expect(
-      document.querySelector(
-        '[data-weave-snack-lifetime-progress]',
-      ),
-    ).toBeNull()
+    expect(document.querySelector('[data-weave-snack-lifetime-progress]')).toBeNull()
   })
 
   it('shows linear lifetime progress and pauses it with the Snack timer', () => {
     vi.useFakeTimers()
 
-    const {
-      getByRole,
-    } = render(
-      <Snack
-        text="Timed progress"
-        duration={1000}
-        progress
-      />,
-    )
+    const { getByRole } = render(<Snack text="Timed progress" duration={1000} progress />)
 
-    const snack =
-      getByRole('status')
-    const progress =
-      () =>
-        document.querySelector<HTMLElement>(
-          '[data-weave-snack-lifetime-progress]',
-        )
+    const snack = getByRole('status')
+    const progress = () =>
+      document.querySelector<HTMLElement>('[data-weave-snack-lifetime-progress]')
 
-    expect(
-      progress()?.getAttribute(
-        'role',
-      ),
-    ).toBe('progressbar')
-    expect(
-      Number(
-        progress()?.getAttribute(
-          'data-weave-snack-lifetime-progress',
-        ),
-      ),
-    ).toBe(1)
+    expect(progress()?.getAttribute('role')).toBe('progressbar')
+    expect(Number(progress()?.getAttribute('data-weave-snack-lifetime-progress'))).toBe(1)
 
     act(() => {
       vi.advanceTimersByTime(500)
     })
 
-    const halfway =
-      Number(
-        progress()?.getAttribute(
-          'data-weave-snack-lifetime-progress',
-        ),
-      )
+    const halfway = Number(progress()?.getAttribute('data-weave-snack-lifetime-progress'))
 
-    expect(halfway).toBeGreaterThan(
-      0.45,
-    )
-    expect(halfway).toBeLessThan(
-      0.55,
-    )
+    expect(halfway).toBeGreaterThan(0.45)
+    expect(halfway).toBeLessThan(0.55)
 
     fireEvent.pointerEnter(snack)
 
@@ -729,19 +415,9 @@ describe('Snack', () => {
       vi.advanceTimersByTime(300)
     })
 
-    const pausedProgress =
-      Number(
-        progress()?.getAttribute(
-          'data-weave-snack-lifetime-progress',
-        ),
-      )
+    const pausedProgress = Number(progress()?.getAttribute('data-weave-snack-lifetime-progress'))
 
-    expect(
-      Math.abs(
-        pausedProgress -
-          halfway,
-      ),
-    ).toBeLessThan(0.02)
+    expect(Math.abs(pausedProgress - halfway)).toBeLessThan(0.02)
 
     fireEvent.pointerLeave(snack)
 
@@ -749,35 +425,20 @@ describe('Snack', () => {
       vi.advanceTimersByTime(500)
     })
 
-    expect(
-      snack.getAttribute(
-        'data-weave-snack-state',
-      ),
-    ).toBe('closing')
+    expect(snack.getAttribute('data-weave-snack-state')).toBe('closing')
   })
 
   it('does not render lifetime progress for persistent Snacks', () => {
-    render(
-      <Snack
-        text="Persistent"
-        persistent
-        progress
-      />,
-    )
+    render(<Snack text="Persistent" persistent progress />)
 
-    expect(
-      document.querySelector(
-        '[data-weave-snack-lifetime-progress]',
-      ),
-    ).toBeNull()
+    expect(document.querySelector('[data-weave-snack-lifetime-progress]')).toBeNull()
   })
 
   it('keeps each queued Snack on its own creation-time timer', () => {
     vi.useFakeTimers()
 
     function TimedHarness() {
-      const snack =
-        useSnack()
+      const snack = useSnack()
 
       return (
         <Button
@@ -794,26 +455,14 @@ describe('Snack', () => {
       )
     }
 
-    const {
-      getByRole,
-    } = render(
+    const { getByRole } = render(
       <SnackProvider>
         <TimedHarness />
       </SnackProvider>,
     )
 
-    const trigger =
-      getByRole(
-        'button',
-        {
-          name: 'Timed',
-        },
-      )
-
-    fireEvent.click(trigger)
-
-    act(() => {
-      vi.advanceTimersByTime(500)
+    const trigger = getByRole('button', {
+      name: 'Timed',
     })
 
     fireEvent.click(trigger)
@@ -822,134 +471,74 @@ describe('Snack', () => {
       vi.advanceTimersByTime(500)
     })
 
-    const snacks =
-      document.querySelectorAll(
-        '[data-weave-snack]',
-      )
+    fireEvent.click(trigger)
+
+    act(() => {
+      vi.advanceTimersByTime(500)
+    })
+
+    const snacks = document.querySelectorAll('[data-weave-snack]')
 
     expect(snacks).toHaveLength(2)
-    expect(
-      snacks[0]?.getAttribute(
-        'data-weave-snack-state',
-      ),
-    ).toBe('closing')
-    expect(
-      snacks[1]?.getAttribute(
-        'data-weave-snack-state',
-      ),
-    ).toBe('open')
+    expect(snacks[0]?.getAttribute('data-weave-snack-state')).toBe('closing')
+    expect(snacks[1]?.getAttribute('data-weave-snack-state')).toBe('open')
   })
 
   it('stacks multiple snacks in one region', () => {
     render(
       <>
-        <Snack
-          text="First"
-          placement="bottom-center"
-          persistent
-        />
-        <Snack
-          text="Second"
-          placement="bottom-center"
-          persistent
-        />
+        <Snack text="First" placement="bottom-center" persistent />
+        <Snack text="Second" placement="bottom-center" persistent />
       </>,
     )
 
-    const regions =
-      document.querySelectorAll(
-        '[data-weave-snack-region="bottom-center"]',
-      )
+    const regions = document.querySelectorAll('[data-weave-snack-region="bottom-center"]')
 
     expect(regions).toHaveLength(1)
-    expect(
-      regions[0]?.querySelectorAll(
-        '[data-weave-snack]',
-      ),
-    ).toHaveLength(2)
+    expect(regions[0]?.querySelectorAll('[data-weave-snack]')).toHaveLength(2)
   })
 
   it('auto closes after duration and waits for exit motion before removal', () => {
     vi.useFakeTimers()
 
-    render(
-      <Snack
-        text="Temporary"
-        duration={1000}
-      />,
-    )
+    render(<Snack text="Temporary" duration={1000} />)
 
-    expect(
-      document.querySelector(
-        '[data-weave-snack-state="open"]',
-      ),
-    ).not.toBeNull()
+    expect(document.querySelector('[data-weave-snack-state="open"]')).not.toBeNull()
 
     act(() => {
       vi.advanceTimersByTime(1000)
     })
 
-    const closing =
-      document.querySelector<HTMLElement>(
-        '[data-weave-snack-state="closing"]',
-      )
+    const closing = document.querySelector<HTMLElement>('[data-weave-snack-state="closing"]')
 
     expect(closing).not.toBeNull()
-    expect(
-      closing?.getAttribute(
-        'aria-hidden',
-      ),
-    ).toBe('true')
+    expect(closing?.getAttribute('aria-hidden')).toBe('true')
 
     if (closing !== null) {
-      fireEvent.transitionEnd(
-        closing,
-      )
+      fireEvent.transitionEnd(closing)
     }
 
-    expect(
-      document.querySelector(
-        '[data-weave-snack]',
-      ),
-    ).toBeNull()
+    expect(document.querySelector('[data-weave-snack]')).toBeNull()
   })
 
   it('does not auto close while persistent', () => {
     vi.useFakeTimers()
 
-    render(
-      <Snack
-        text="Persistent"
-        duration={100}
-        persistent
-      />,
-    )
+    render(<Snack text="Persistent" duration={100} persistent />)
 
     act(() => {
       vi.advanceTimersByTime(5000)
     })
 
-    expect(
-      document.querySelector(
-        '[data-weave-snack-state="open"]',
-      ),
-    ).not.toBeNull()
+    expect(document.querySelector('[data-weave-snack-state="open"]')).not.toBeNull()
   })
 
   it('pauses auto close while hovered', () => {
     vi.useFakeTimers()
 
-    const {
-      getByRole,
-    } = render(
-      <Snack
-        text="Hover me"
-        duration={100}
-      />,
-    )
+    const { getByRole } = render(<Snack text="Hover me" duration={100} />)
 
-    const snack =
-      getByRole('status')
+    const snack = getByRole('status')
 
     fireEvent.pointerEnter(snack)
 
@@ -957,11 +546,7 @@ describe('Snack', () => {
       vi.advanceTimersByTime(1000)
     })
 
-    expect(
-      snack.getAttribute(
-        'data-weave-snack-state',
-      ),
-    ).toBe('open')
+    expect(snack.getAttribute('data-weave-snack-state')).toBe('open')
 
     fireEvent.pointerLeave(snack)
 
@@ -969,88 +554,50 @@ describe('Snack', () => {
       vi.advanceTimersByTime(100)
     })
 
-    expect(
-      snack.getAttribute(
-        'data-weave-snack-state',
-      ),
-    ).toBe('closing')
+    expect(snack.getAttribute('data-weave-snack-state')).toBe('closing')
   })
 
   it('runs an action and requests close', () => {
-    const onAction =
-      vi.fn()
-    const onOpenChange =
-      vi.fn()
+    const onAction = vi.fn()
+    const onOpenChange = vi.fn()
 
-    const {
-      getByRole,
-    } = render(
+    const { getByRole } = render(
       <Snack
         text="Deleted"
         action="Undo"
         onAction={onAction}
-        onOpenChange={
-          onOpenChange
-        }
+        onOpenChange={onOpenChange}
         persistent
       />,
     )
 
     fireEvent.click(
-      getByRole(
-        'button',
-        {
-          name: 'Undo',
-        },
-      ),
+      getByRole('button', {
+        name: 'Undo',
+      }),
     )
 
-    expect(
-      onAction,
-    ).toHaveBeenCalledTimes(1)
-    expect(
-      onOpenChange,
-    ).toHaveBeenCalledWith(false)
+    expect(onAction).toHaveBeenCalledTimes(1)
+    expect(onOpenChange).toHaveBeenCalledWith(false)
   })
 
   it('supports fully composed content', () => {
-    const {
-      getByText,
-    } = render(
+    const { getByText } = render(
       <Snack persistent>
         <View>
-          <Text>
-            Sync unavailable
-          </Text>
-          <Button
-            text="Retry"
-            variant="ghost"
-          />
+          <Text>Sync unavailable</Text>
+          <Button text="Retry" variant="ghost" />
         </View>
       </Snack>,
     )
 
-    expect(
-      getByText('Sync unavailable'),
-    ).toBeDefined()
-    expect(
-      getByText('Retry'),
-    ).toBeDefined()
+    expect(getByText('Sync unavailable')).toBeDefined()
+    expect(getByText('Retry')).toBeDefined()
   })
 
   it('uses alert semantics for urgent variants', () => {
-    const {
-      getByRole,
-    } = render(
-      <Snack
-        text="Connection lost"
-        variant="danger"
-        persistent
-      />,
-    )
+    const { getByRole } = render(<Snack text="Connection lost" variant="danger" persistent />)
 
-    expect(
-      getByRole('alert'),
-    ).toBeDefined()
+    expect(getByRole('alert')).toBeDefined()
   })
 })

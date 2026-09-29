@@ -1,12 +1,5 @@
-import type {
-  ReactElement,
-  ReactNode,
-} from 'react'
-import type {
-  Length,
-  ViewCoreProps,
-  ViewDynamicBreakpointProps,
-} from './view-types'
+import type { ReactElement, ReactNode } from 'react'
+import type { Length, ViewCoreProps, ViewDynamicBreakpointProps } from './view-types'
 
 export type PopoverPlacement =
   | 'top-left'
@@ -18,17 +11,10 @@ export type PopoverPlacement =
   | 'bottom-left'
   | 'left'
 
-export type PopoverViewProps =
-  Omit<
-    ViewCoreProps<HTMLDivElement>,
-    | 'children'
-    | 'role'
-    | 'position'
-    | 'top'
-    | 'right'
-    | 'bottom'
-    | 'left'
-  > &
+export type PopoverViewProps = Omit<
+  ViewCoreProps<HTMLDivElement>,
+  'children' | 'role' | 'position' | 'top' | 'right' | 'bottom' | 'left'
+> &
   ViewDynamicBreakpointProps
 
 export interface PopoverProps {
@@ -39,9 +25,7 @@ export interface PopoverProps {
   viewportPadding?: Length
   open?: boolean
   defaultOpen?: boolean
-  onOpenChange?: (
-    open: boolean,
-  ) => void
+  onOpenChange?: (open: boolean) => void
   autoFocus?: boolean
   restoreFocus?: boolean
   viewProps?: PopoverViewProps

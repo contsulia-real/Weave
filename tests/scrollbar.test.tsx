@@ -1,25 +1,15 @@
 import { cleanup, fireEvent, render } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
-import {
-  ThemeProvider,
-  View,
-  createTheme,
-} from '../src'
+import { createTheme, ThemeProvider, View } from '../src'
 
-function runtimeRule(
-  element: Element,
-  prefix: string,
-): string {
-  const className = [...element.classList].find((name) =>
-    name.startsWith(prefix),
-  )
+function runtimeRule(element: Element, prefix: string): string {
+  const className = [...element.classList].find((name) => name.startsWith(prefix))
 
   expect(className).toBeDefined()
 
   return (
-    document.querySelector<HTMLStyleElement>(
-      `style[data-weave-runtime-class="${className}"]`,
-    )?.textContent ?? ''
+    document.querySelector<HTMLStyleElement>(`style[data-weave-runtime-class="${className}"]`)
+      ?.textContent ?? ''
   ).replace(/\s+/g, '')
 }
 
@@ -47,53 +37,33 @@ describe('automatic Scrollbar', () => {
     const host = getByTestId('scroll-host')
 
     expect(host.className).toContain('weave-scroll-host')
-    expect(host.className).toContain(
-      'weave-scroll-host--overflow-auto',
-    )
+    expect(host.className).toContain('weave-scroll-host--overflow-auto')
     expect(host.getAttribute('scrollbar')).toBeNull()
 
-    const tracks = document.body.querySelectorAll(
-      '[data-weave-scrollbar]',
-    )
+    const tracks = document.body.querySelectorAll('[data-weave-scrollbar]')
 
     expect(tracks).toHaveLength(2)
-    expect(
-      document.body.querySelector('.weave-scrollbar--large'),
-    ).not.toBeNull()
+    expect(document.body.querySelector('.weave-scrollbar--large')).not.toBeNull()
 
-    const stylesheet = document.querySelector(
-      'style[data-weave-scrollbar-styles]',
-    )
+    const stylesheet = document.querySelector('style[data-weave-scrollbar-styles]')
 
-    expect(stylesheet?.textContent).toContain(
-      ':where(.weave-scroll-host)',
-    )
-    expect(stylesheet?.textContent).toContain(
-      'scrollbar-width: none',
-    )
+    expect(stylesheet?.textContent).toContain(':where(.weave-scroll-host)')
+    expect(stylesheet?.textContent).toContain('scrollbar-width: none')
   })
 
   it('guarantees native overflow clipping through a low-specificity class', () => {
     render(<View overflow="auto">content</View>)
 
-    const stylesheet = document.querySelector(
-      'style[data-weave-view-styles]',
-    )
+    const stylesheet = document.querySelector('style[data-weave-view-styles]')
 
-    expect(stylesheet?.textContent).toContain(
-      ':where(.weave-scroll-host--overflow-auto)',
-    )
-    expect(stylesheet?.textContent).toContain(
-      'overflow: auto;',
-    )
+    expect(stylesheet?.textContent).toContain(':where(.weave-scroll-host--overflow-auto)')
+    expect(stylesheet?.textContent).toContain('overflow: auto;')
   })
 
   it('does not mount for non-scroll overflow', () => {
     render(<View overflow="hidden">content</View>)
 
-    expect(
-      document.body.querySelector('[data-weave-scrollbar]'),
-    ).toBeNull()
+    expect(document.body.querySelector('[data-weave-scrollbar]')).toBeNull()
   })
 
   it('syncs vertical thumb geometry to native scroll state', () => {
@@ -150,16 +120,12 @@ describe('automatic Scrollbar', () => {
     const track = document.body.querySelector(
       '[data-weave-scrollbar-orientation="vertical"]',
     ) as HTMLDivElement
-    const thumb = track.querySelector(
-      '[data-weave-scrollbar-thumb]',
-    ) as HTMLDivElement
+    const thumb = track.querySelector('[data-weave-scrollbar-thumb]') as HTMLDivElement
 
     expect(track.dataset.weaveScrollbarVisible).toBe('true')
     expect(track.style.top).toBe('24px')
     expect(track.style.left).toBe('210px')
-    expect(
-      track.style.getPropertyValue('--weave-scrollbar-edge-inset'),
-    ).toBe('4px')
+    expect(track.style.getPropertyValue('--weave-scrollbar-edge-inset')).toBe('4px')
     expect(track.style.height).toBe('92px')
     expect(thumb.style.height).toBe('24px')
 
@@ -248,9 +214,7 @@ describe('automatic Scrollbar', () => {
       </View>,
     )
 
-    const host = getByTestId(
-      'rounded-horizontal-scroll-host',
-    ) as HTMLDivElement
+    const host = getByTestId('rounded-horizontal-scroll-host') as HTMLDivElement
 
     Object.defineProperties(host, {
       clientHeight: {
@@ -347,9 +311,7 @@ describe('automatic Scrollbar', () => {
     const track = document.body.querySelector(
       '[data-weave-scrollbar-orientation="vertical"]',
     ) as HTMLDivElement
-    const thumb = track.querySelector(
-      '[data-weave-scrollbar-thumb]',
-    ) as HTMLDivElement
+    const thumb = track.querySelector('[data-weave-scrollbar-thumb]') as HTMLDivElement
 
     track.getBoundingClientRect = () => ({
       x: 194,
@@ -492,20 +454,13 @@ describe('automatic Scrollbar', () => {
     expect(rule).toContain(
       '--weave-scrollbar-hover-color:color-mix(insrgb,var(--weave-color-secondary)88%,transparent);',
     )
-    expect(rule).toContain(
-      '--weave-scrollbar-drag-color:var(--weave-color-secondary);',
-    )
+    expect(rule).toContain('--weave-scrollbar-drag-color:var(--weave-color-secondary);')
 
-    const stylesheet = document.querySelector(
-      'style[data-weave-scrollbar-styles]',
-    )?.textContent ?? ''
+    const stylesheet =
+      document.querySelector('style[data-weave-scrollbar-styles]')?.textContent ?? ''
 
-    expect(stylesheet).toContain(
-      '--weave-component-width: var(--weave-scrollbar-hit-size)',
-    )
-    expect(stylesheet).toContain(
-      '--weave-component-width: var(--weave-scrollbar-thickness)',
-    )
+    expect(stylesheet).toContain('--weave-component-width: var(--weave-scrollbar-hit-size)')
+    expect(stylesheet).toContain('--weave-component-width: var(--weave-scrollbar-thickness)')
     expect(stylesheet).not.toContain('weave-scrollbar--tracked')
     expect(stylesheet).not.toContain('weave-scrollbar-track-color')
     expect(stylesheet).not.toContain('weave-scrollbar-thumb-shadow')
@@ -514,28 +469,15 @@ describe('automatic Scrollbar', () => {
   it('uses global hover and drag feedback without touching scroll geometry', () => {
     render(<View overflow="scroll" />)
 
-    const track = document.body.querySelector(
-      '.weave-scrollbar--vertical',
-    ) as HTMLDivElement
-    const thumb = track.querySelector(
-      '[data-weave-scrollbar-thumb]',
-    ) as HTMLDivElement
-    const stylesheet = document.querySelector(
-      'style[data-weave-scrollbar-styles]',
-    )?.textContent ?? ''
+    const track = document.body.querySelector('.weave-scrollbar--vertical') as HTMLDivElement
+    const thumb = track.querySelector('[data-weave-scrollbar-thumb]') as HTMLDivElement
+    const stylesheet =
+      document.querySelector('style[data-weave-scrollbar-styles]')?.textContent ?? ''
 
-    expect(stylesheet).toContain(
-      '--weave-component-background: var(--weave-scrollbar-hover-color)',
-    )
-    expect(stylesheet).toContain(
-      '--weave-component-background: var(--weave-scrollbar-drag-color)',
-    )
-    expect(stylesheet).toContain(
-      'scale: var(--weave-feedback-hover-scale) 1',
-    )
-    expect(stylesheet).toContain(
-      'scale: var(--weave-feedback-drag-scale) 1',
-    )
+    expect(stylesheet).toContain('--weave-component-background: var(--weave-scrollbar-hover-color)')
+    expect(stylesheet).toContain('--weave-component-background: var(--weave-scrollbar-drag-color)')
+    expect(stylesheet).toContain('scale: var(--weave-feedback-hover-scale) 1')
+    expect(stylesheet).toContain('scale: var(--weave-feedback-drag-scale) 1')
 
     fireEvent.pointerDown(thumb, {
       pointerId: 21,
@@ -582,9 +524,7 @@ describe('automatic Scrollbar', () => {
     const rule = runtimeRule(track, 'weave-scrollbar-theme-')
 
     expect(rule).toContain('--weave-scrollbar-thickness:0.75rem;')
-    expect(rule).toContain(
-      '--weave-scrollbar-color:var(--weave-color-danger',
-    )
+    expect(rule).toContain('--weave-scrollbar-color:var(--weave-color-danger')
     expect(rule).toContain('--weave-scrollbar-opacity:0.6;')
   })
 })

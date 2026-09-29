@@ -1,33 +1,24 @@
-import {
-  useInsertionEffect,
-} from 'react'
-import type {
-  ButtonIcon,
-  ButtonProps,
-  ButtonResponsiveProps,
-} from '../core/button-types'
+import { useInsertionEffect } from 'react'
+import type { ButtonIcon, ButtonProps, ButtonResponsiveProps } from '../core/button-types'
 import type { ViewProps } from '../core/view-types'
 import { breakpointEntries } from '../renderers/dom/breakpoint-utils'
-import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { ensureButtonStylesheet } from '../renderers/dom/button-stylesheet'
 import { resolveButtonTheme } from '../renderers/dom/resolve-component-theme'
+import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { useTheme } from '../theme/theme-context'
 import { renderIconSource } from './internal/render-icon-source'
-import { Text } from './Text'
 import { useViewHost } from './internal/use-view-host'
+import { Text } from './Text'
 
 function iconContent(icon: ButtonIcon) {
-  return renderIconSource(
-    icon,
-    {
-      size: 'medium',
-      stroke: 'regular',
-      viewProps: {
-        width: '1em',
-        height: '1em',
-      },
+  return renderIconSource(icon, {
+    size: 'medium',
+    stroke: 'regular',
+    viewProps: {
+      width: '1em',
+      height: '1em',
     },
-  )
+  })
 }
 
 function semanticContent(props: ButtonProps) {
@@ -40,8 +31,7 @@ function semanticContent(props: ButtonProps) {
   const iconNode = icon === undefined ? null : iconContent(icon)
   // The Button host establishes the active typo for its size.
   // Internal Text inherits that context so responsive size changes stay aligned.
-  const textNode =
-    props.text === undefined ? null : <Text>{props.text}</Text>
+  const textNode = props.text === undefined ? null : <Text>{props.text}</Text>
 
   return (
     <>
@@ -53,19 +43,10 @@ function semanticContent(props: ButtonProps) {
 }
 
 export function Button(props: ButtonProps) {
-  const {
-    variant = 'primary',
-    size = 'medium',
-    disabled = false,
-    pressed,
-    viewProps = {},
-  } = props
+  const { variant = 'primary', size = 'medium', disabled = false, pressed, viewProps = {} } = props
 
   const { theme } = useTheme()
-  const themeClassName = useRuntimeStyleClass(
-    'button-theme',
-    resolveButtonTheme(theme),
-  )
+  const themeClassName = useRuntimeStyleClass('button-theme', resolveButtonTheme(theme))
 
   const hostProps: ViewProps<HTMLButtonElement> = {
     ...viewProps,
@@ -73,12 +54,7 @@ export function Button(props: ButtonProps) {
     pressed,
   }
 
-  const {
-    elementRef,
-    className,
-    inlineStyle,
-    resolved,
-  } = useViewHost(hostProps)
+  const { elementRef, className, inlineStyle, resolved } = useViewHost(hostProps)
 
   useInsertionEffect(ensureButtonStylesheet, [])
 
@@ -86,27 +62,18 @@ export function Button(props: ButtonProps) {
   const propsRecord = props as Record<string, unknown>
 
   for (const breakpoint of breakpointEntries(theme.breakpoints)) {
-    const value = propsRecord[
-      breakpoint.name
-    ] as ButtonResponsiveProps | undefined
+    const value = propsRecord[breakpoint.name] as ButtonResponsiveProps | undefined
 
     if (value?.variant !== undefined) {
-      responsiveAttributes[
-        `data-weave-button-${breakpoint.cssName}-variant`
-      ] = value.variant
+      responsiveAttributes[`data-weave-button-${breakpoint.cssName}-variant`] = value.variant
     }
 
     if (value?.size !== undefined) {
-      responsiveAttributes[
-        `data-weave-button-${breakpoint.cssName}-size`
-      ] = value.size
+      responsiveAttributes[`data-weave-button-${breakpoint.cssName}-size`] = value.size
     }
   }
 
-  const iconOnly =
-    'icon' in props &&
-    props.icon !== undefined &&
-    props.text === undefined
+  const iconOnly = 'icon' in props && props.icon !== undefined && props.text === undefined
 
   return (
     <button
@@ -127,12 +94,12 @@ export function Button(props: ButtonProps) {
         iconOnly ? 'weave-button--icon-only' : undefined,
         themeClassName,
         className,
-      ].filter(Boolean).join(' ')}
+      ]
+        .filter(Boolean)
+        .join(' ')}
       style={inlineStyle}
     >
-      <span className="weave-button__content">
-        {semanticContent(props)}
-      </span>
+      <span className="weave-button__content">{semanticContent(props)}</span>
     </button>
   )
 }

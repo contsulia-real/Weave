@@ -1,8 +1,4 @@
-import {
-  describe,
-  expect,
-  it,
-} from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { solveSpring } from '../src/core/spring'
 
 describe('spring solver', () => {

@@ -1,7 +1,4 @@
-import type {
-  ResolvedTheme,
-  ThemeOverride,
-} from './theme-types'
+import type { ResolvedTheme, ThemeOverride } from './theme-types'
 
 const controlBaseline = {
   radius: 0.75,
@@ -15,7 +12,6 @@ const controlBaseline = {
 const controlMedium = {
   minHeight: 2.5,
 } as const
-
 
 const optionListboxBase = {
   background: 'surface',
@@ -90,28 +86,22 @@ export const defaultDarkTheme: ThemeOverride = {
       focus: '#b8adff',
     },
     shadow: {
-      small:
-        '0 0.125rem 0.5rem rgb(0 0 0 / 0.32)',
-      medium:
-        '0 0.5rem 1.75rem rgb(0 0 0 / 0.42)',
-      large:
-        '0 1rem 3.5rem rgb(0 0 0 / 0.52)',
+      small: '0 0.125rem 0.5rem rgb(0 0 0 / 0.32)',
+      medium: '0 0.5rem 1.75rem rgb(0 0 0 / 0.42)',
+      large: '0 1rem 3.5rem rgb(0 0 0 / 0.52)',
     },
   },
   components: {
     Button: {
       variants: {
         secondary: {
-          depthColor:
-            'color-mix(in srgb, var(--weave-color-outline) 72%, black)',
+          depthColor: 'color-mix(in srgb, var(--weave-color-outline) 72%, black)',
         },
         tertiary: {
-          depthColor:
-            'color-mix(in srgb, var(--weave-color-outline) 66%, black)',
+          depthColor: 'color-mix(in srgb, var(--weave-color-outline) 66%, black)',
         },
         danger: {
-          depthColor:
-            'color-mix(in srgb, var(--weave-color-danger) 38%, black)',
+          depthColor: 'color-mix(in srgb, var(--weave-color-danger) 38%, black)',
         },
       },
     },
@@ -160,8 +150,7 @@ export const defaultDarkTheme: ThemeOverride = {
       base: {
         trackShadow:
           'inset 0 0.0625rem 0.125rem rgb(0 0 0 / 0.42), inset 0 0 0 0.0625rem rgb(255 255 255 / 0.035)',
-        valueShadow:
-          '0 0.0625rem 0.125rem rgb(0 0 0 / 0.32), 0 0.125rem 0.25rem rgb(0 0 0 / 0.18)',
+        valueShadow: '0 0.0625rem 0.125rem rgb(0 0 0 / 0.32), 0 0.125rem 0.25rem rgb(0 0 0 / 0.18)',
       },
     },
   },
@@ -187,10 +176,8 @@ export const defaultTheme: ResolvedTheme = {
     },
     typography: {
       family: {
-        body:
-          'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-        mono:
-          'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace',
+        body: 'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+        mono: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace',
       },
       size: {
         xsmall: 0.75,
@@ -451,8 +438,7 @@ export const defaultTheme: ResolvedTheme = {
           background: 'primary',
           color: 'onPrimary',
           borderColor: 'primary',
-          depthColor:
-            'color-mix(in srgb, var(--weave-color-primary) 72%, black)',
+          depthColor: 'color-mix(in srgb, var(--weave-color-primary) 72%, black)',
           hoverBackground: 'primaryHover',
           activeBackground: 'primaryActive',
         },
@@ -460,8 +446,7 @@ export const defaultTheme: ResolvedTheme = {
           background: 'surface',
           color: 'inherit',
           borderColor: 'outline',
-          depthColor:
-            'color-mix(in srgb, var(--weave-color-outline) 76%, #8f8377)',
+          depthColor: 'color-mix(in srgb, var(--weave-color-outline) 76%, #8f8377)',
           hoverBackground: 'surfaceHover',
           activeBackground:
             'color-mix(in srgb, var(--weave-color-outline) 65%, var(--weave-color-surface))',
@@ -470,8 +455,7 @@ export const defaultTheme: ResolvedTheme = {
           background: 'surfaceHover',
           color: 'inherit',
           borderColor: 'outline',
-          depthColor:
-            'color-mix(in srgb, var(--weave-color-outline) 70%, #8f8377)',
+          depthColor: 'color-mix(in srgb, var(--weave-color-outline) 70%, #8f8377)',
           hoverBackground:
             'color-mix(in srgb, var(--weave-color-outline) 42%, var(--weave-color-surface))',
           activeBackground:
@@ -483,8 +467,7 @@ export const defaultTheme: ResolvedTheme = {
           borderColor: 'transparent',
           depthColor: 'transparent',
           hoverBackground: 'surfaceHover',
-          activeBackground:
-            'color-mix(in srgb, var(--weave-color-outline) 60%, transparent)',
+          activeBackground: 'color-mix(in srgb, var(--weave-color-outline) 60%, transparent)',
         },
         danger: {
           background:
@@ -492,8 +475,7 @@ export const defaultTheme: ResolvedTheme = {
           color: 'danger',
           borderColor:
             'color-mix(in srgb, var(--weave-color-danger) 28%, var(--weave-color-surface))',
-          depthColor:
-            'color-mix(in srgb, var(--weave-color-danger) 48%, #8f8377)',
+          depthColor: 'color-mix(in srgb, var(--weave-color-danger) 48%, #8f8377)',
           hoverBackground:
             'color-mix(in srgb, var(--weave-color-danger) 15%, var(--weave-color-surface))',
           activeBackground:
@@ -743,10 +725,8 @@ export const defaultTheme: ResolvedTheme = {
     },
     Scrollbar: {
       base: {
-        color:
-          'color-mix(in srgb, var(--weave-color-secondary) 72%, transparent)',
-        hoverColor:
-          'color-mix(in srgb, var(--weave-color-secondary) 88%, transparent)',
+        color: 'color-mix(in srgb, var(--weave-color-secondary) 72%, transparent)',
+        hoverColor: 'color-mix(in srgb, var(--weave-color-secondary) 88%, transparent)',
         dragColor: 'var(--weave-color-secondary)',
         radius: 'full',
         opacity: 1,

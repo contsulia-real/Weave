@@ -1,18 +1,6 @@
-import {
-  cleanup,
-  render,
-} from '@testing-library/react'
-import {
-  afterEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from 'vitest'
-import {
-  ThemeProvider,
-  View,
-} from '../src'
+import { cleanup, render } from '@testing-library/react'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { ThemeProvider, View } from '../src'
 
 interface FakeAnimation extends Animation {
   cancel: ReturnType<typeof vi.fn>
@@ -50,10 +38,7 @@ function installAnimationStub() {
 
 function finish(animation: FakeAnimation) {
   animation.playState = 'finished'
-  animation.onfinish?.call(
-    animation,
-    {} as AnimationPlaybackEvent,
-  )
+  animation.onfinish?.call(animation, {} as AnimationPlaybackEvent)
 }
 
 afterEach(() => {
@@ -128,10 +113,7 @@ describe('View keyframe animation', () => {
     render(
       <View
         animation={{
-          keyframes: [
-            { scale: 0.8 },
-            { scale: 1 },
-          ],
+          keyframes: [{ scale: 0.8 }, { scale: 1 }],
           spring: 'snappy',
         }}
       />,
@@ -150,10 +132,7 @@ describe('View keyframe animation', () => {
     render(
       <View
         animation={{
-          keyframes: [
-            { opacity: 0 },
-            { opacity: 1 },
-          ],
+          keyframes: [{ opacity: 0 }, { opacity: 1 }],
           duration: 100,
           repeat: 2,
           repeatDelay: 80,
@@ -240,14 +219,13 @@ describe('View keyframe animation', () => {
 
   it('continues an interrupted animation from the current computed visual value', () => {
     const { animate, animations } = installAnimationStub()
-    const computed = vi.spyOn(window, 'getComputedStyle')
-      .mockReturnValue({
-        opacity: '0.42',
-        backgroundColor: 'rgb(1, 2, 3)',
-        color: 'rgb(4, 5, 6)',
-        transform: 'matrix(1, 0, 0, 1, 18, 0)',
-        filter: 'none',
-      } as CSSStyleDeclaration)
+    const computed = vi.spyOn(window, 'getComputedStyle').mockReturnValue({
+      opacity: '0.42',
+      backgroundColor: 'rgb(1, 2, 3)',
+      color: 'rgb(4, 5, 6)',
+      transform: 'matrix(1, 0, 0, 1, 18, 0)',
+      filter: 'none',
+    } as CSSStyleDeclaration)
 
     const { rerender } = render(
       <View
@@ -357,9 +335,7 @@ describe('View keyframe animation', () => {
       interruption: 'finish' as const,
     }
 
-    const { rerender } = render(
-      <View animation={first} />,
-    )
+    const { rerender } = render(<View animation={first} />)
 
     rerender(<View animation={second} />)
     finish(animations[0])

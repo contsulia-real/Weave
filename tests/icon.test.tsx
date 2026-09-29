@@ -1,9 +1,5 @@
+import { IconSearch, IconSearchFilled, IconSettings } from '@tabler/icons-react'
 import { cleanup, render } from '@testing-library/react'
-import {
-  IconSearch,
-  IconSearchFilled,
-  IconSettings,
-} from '@tabler/icons-react'
 import { afterEach, describe, expect, it } from 'vitest'
 import { Icon, Text } from '../src'
 
@@ -69,9 +65,7 @@ describe('Icon', () => {
     expect(outline).not.toBeNull()
     expect(filled).not.toBeNull()
     expect(outline?.className.baseVal).toContain('tabler-icon-search')
-    expect(filled?.className.baseVal).toContain(
-      'tabler-icon-search-filled',
-    )
+    expect(filled?.className.baseVal).toContain('tabler-icon-search-filled')
   })
 
   it('renders and normalizes a custom SVG node', () => {
@@ -161,13 +155,9 @@ describe('Icon', () => {
     expect(element.className).toContain('custom-icon')
     expect(element.style.width).toBe('18px')
 
-    const stylesheet = document.querySelector(
-      'style[data-weave-icon-styles]',
-    )
+    const stylesheet = document.querySelector('style[data-weave-icon-styles]')
 
-    expect(stylesheet?.textContent).toContain(
-      '--weave-component-width: 1.5rem',
-    )
+    expect(stylesheet?.textContent).toContain('--weave-component-width: 1.5rem')
   })
 
   it('stays valid when nested inside Text', () => {

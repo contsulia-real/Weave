@@ -1,8 +1,5 @@
-import {
-  useLayoutEffect,
-  useRef,
-} from 'react'
 import type { RefObject } from 'react'
+import { useLayoutEffect, useRef } from 'react'
 import type {
   MotionStaggerConfig,
   ViewEnterExit,
@@ -16,9 +13,7 @@ import {
 import { resolveViewEnterExitDefinition } from '../../renderers/dom/resolve-motion'
 import type { ResolvedTheme } from '../../theme/theme-types'
 
-function staggerConfig(
-  definition: ViewEnterExitConfig,
-): MotionStaggerConfig | undefined {
+function staggerConfig(definition: ViewEnterExitConfig): MotionStaggerConfig | undefined {
   if (definition.children !== undefined) return definition.children
   if (definition.stagger === undefined) return undefined
 
@@ -28,11 +23,7 @@ function staggerConfig(
   }
 }
 
-function staggerIndex(
-  index: number,
-  count: number,
-  from: MotionStaggerConfig['from'],
-): number {
+function staggerIndex(index: number, count: number, from: MotionStaggerConfig['from']): number {
   if (from === 'last') return count - 1 - index
   if (from === 'center') {
     return Math.abs(index - (count - 1) / 2)
@@ -43,8 +34,7 @@ function staggerIndex(
 function directViewChildren(element: HTMLElement): HTMLElement[] {
   return Array.from(element.children).filter(
     (child): child is HTMLElement =>
-      child instanceof HTMLElement &&
-      child.hasAttribute('data-weave-view'),
+      child instanceof HTMLElement && child.hasAttribute('data-weave-view'),
   )
 }
 
@@ -68,11 +58,7 @@ export function useViewEnterStagger<TElement extends HTMLElement>(
 
     const definition = resolveViewEnterExitDefinition(enter, 'enter')
     const stagger = staggerConfig(definition)
-    if (
-      stagger === undefined ||
-      definition.from === undefined ||
-      definition.to === undefined
-    ) {
+    if (stagger === undefined || definition.from === undefined || definition.to === undefined) {
       started.current = true
       return
     }
@@ -83,34 +69,17 @@ export function useViewEnterStagger<TElement extends HTMLElement>(
       return
     }
 
-    const timing = resolveMotionTiming(
-      definition,
-      theme,
-      'normal',
-      'enter',
-    )
-    const staggerMs = resolveMotionDurationMs(
-      stagger.stagger,
-      theme,
-      'instant',
-    )
-    const delayMs = stagger.delay === undefined
-      ? 0
-      : resolveMotionDurationMs(stagger.delay, theme, 'instant')
-    const frames = [
-      motionStyleToKeyframe(definition.from),
-      motionStyleToKeyframe(definition.to),
-    ]
+    const timing = resolveMotionTiming(definition, theme, 'normal', 'enter')
+    const staggerMs = resolveMotionDurationMs(stagger.stagger, theme, 'instant')
+    const delayMs =
+      stagger.delay === undefined ? 0 : resolveMotionDurationMs(stagger.delay, theme, 'instant')
+    const frames = [motionStyleToKeyframe(definition.from), motionStyleToKeyframe(definition.to)]
 
     for (let index = 0; index < children.length; index += 1) {
       const child = children[index]
       if (typeof child.animate !== 'function') continue
 
-      const order = staggerIndex(
-        index,
-        children.length,
-        stagger.from,
-      )
+      const order = staggerIndex(index, children.length, stagger.from)
       const animation = child.animate(frames, {
         duration: timing.durationMs,
         delay: delayMs + order * staggerMs,

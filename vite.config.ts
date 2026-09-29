@@ -1,5 +1,5 @@
-import react from '@vitejs/plugin-react'
 import { fileURLToPath, URL } from 'node:url'
+import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
 export default defineConfig({
@@ -11,12 +11,7 @@ export default defineConfig({
       fileName: 'weave',
     },
     rollupOptions: {
-      external: [
-        'react',
-        'react-dom',
-        'react-dom/client',
-        'react/jsx-runtime',
-      ],
+      external: ['react', 'react-dom', 'react-dom/client', 'react/jsx-runtime'],
     },
   },
 })

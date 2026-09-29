@@ -1,30 +1,16 @@
-import {
-  useInsertionEffect,
-  type MouseEvent,
-  type PointerEvent,
-  type ReactNode,
-} from 'react'
-import type {
-  SelectIcon,
-  SelectOptionViewProps,
-} from '../../core/select-types'
-import type {
-  SelectThemeOption,
-} from '../../theme/theme-types'
+import { type MouseEvent, type PointerEvent, type ReactNode, useInsertionEffect } from 'react'
+import type { SelectIcon, SelectOptionViewProps } from '../../core/select-types'
+import type { SelectThemeOption } from '../../theme/theme-types'
 import { Icon } from '../Icon'
 import { Text } from '../Text'
 import { View } from '../View'
 import { checkIcon } from './control-icons'
-import type {
-  OptionContextValue,
-} from './option-context'
+import type { OptionContextValue } from './option-context'
 import { optionDomId } from './option-navigation'
 import { renderIconSource } from './render-icon-source'
 
 export interface OptionItemProps {
-  component:
-    | 'select'
-    | 'combobox'
+  component: 'select' | 'combobox'
   value: string
   text: ReactNode
   secondaryText?: ReactNode
@@ -32,9 +18,7 @@ export interface OptionItemProps {
   disabled: boolean
   viewProps: SelectOptionViewProps
   context: OptionContextValue
-  optionTheme:
-    | SelectThemeOption
-    | undefined
+  optionTheme: SelectThemeOption | undefined
   ensureStylesheet(): void
 }
 
@@ -50,52 +34,31 @@ export function OptionItem({
   optionTheme,
   ensureStylesheet,
 }: OptionItemProps) {
-  useInsertionEffect(
-    ensureStylesheet,
-    [ensureStylesheet],
-  )
+  useInsertionEffect(ensureStylesheet, [ensureStylesheet])
 
-  const selected =
-    context.selectedValue === value
-  const active =
-    context.activeValue === value
-  const prefix =
-    'weave-' + component + '-option'
+  const selected = context.selectedValue === value
+  const active = context.activeValue === value
+  const prefix = 'weave-' + component + '-option'
 
-  const handlePointerDown = (
-    event:
-      PointerEvent<HTMLDivElement>,
-  ) => {
+  const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
     viewProps.onPointerDown?.(event)
 
-    if (
-      !event.defaultPrevented &&
-      !disabled
-    ) {
+    if (!event.defaultPrevented && !disabled) {
       event.preventDefault()
     }
   }
 
-  const handlePointerEnter = (
-    event:
-      PointerEvent<HTMLDivElement>,
-  ) => {
+  const handlePointerEnter = (event: PointerEvent<HTMLDivElement>) => {
     viewProps.onPointerEnter?.(event)
 
-    if (
-      event.defaultPrevented ||
-      disabled
-    ) {
+    if (event.defaultPrevented || disabled) {
       return
     }
 
     context.setActiveValue(value)
   }
 
-  const handleClick = (
-    event:
-      MouseEvent<HTMLDivElement>,
-  ) => {
+  const handleClick = (event: MouseEvent<HTMLDivElement>) => {
     if (disabled) {
       event.preventDefault()
       return
@@ -113,104 +76,48 @@ export function OptionItem({
   return (
     <View
       {...viewProps}
-      id={
-        viewProps.id ??
-        optionDomId(
-          context.listboxId,
-          value,
-        )
-      }
+      id={viewProps.id ?? optionDomId(context.listboxId, value)}
       role="option"
       selected={selected}
-      disabled={
-        disabled
-          ? true
-          : undefined
-      }
-      onPointerDown={
-        handlePointerDown
-      }
-      onPointerEnter={
-        handlePointerEnter
-      }
+      disabled={disabled ? true : undefined}
+      onPointerDown={handlePointerDown}
+      onPointerEnter={handlePointerEnter}
       onClick={handleClick}
-      className={[
-        'weave-option',
-        prefix,
-        viewProps.className,
-      ].filter(Boolean).join(' ')}
+      className={['weave-option', prefix, viewProps.className].filter(Boolean).join(' ')}
       data={{
         ...viewProps.data,
         'weave-option': '',
-        'weave-option-value':
-          value,
-        'weave-option-active':
-          active
-            ? 'true'
-            : 'false',
+        'weave-option-value': value,
+        'weave-option-active': active ? 'true' : 'false',
         [prefix]: '',
-        [prefix + '-value']:
-          value,
-        [prefix + '-active']:
-          active
-            ? 'true'
-            : 'false',
+        [prefix + '-value']: value,
+        [prefix + '-active']: active ? 'true' : 'false',
       }}
     >
       {icon === undefined
         ? null
-        : renderIconSource(
-            icon,
-            {
-              size: 'small',
-              stroke: 'regular',
-              viewProps: {
-                className: [
-                  'weave-option__icon',
-                  prefix + '__icon',
-                ].join(' '),
-                'aria-hidden': true,
-              },
+        : renderIconSource(icon, {
+            size: 'small',
+            stroke: 'regular',
+            viewProps: {
+              className: ['weave-option__icon', prefix + '__icon'].join(' '),
+              'aria-hidden': true,
             },
-          )}
+          })}
 
-      <View
-        className={[
-          'weave-option__text',
-          prefix + '__text',
-        ].join(' ')}
-      >
-        <Text
-          typo={
-            optionTheme
-              ?.primaryTypo ??
-            'body-medium'
-          }
-        >
-          {text}
-        </Text>
+      <View className={['weave-option__text', prefix + '__text'].join(' ')}>
+        <Text typo={optionTheme?.primaryTypo ?? 'body-medium'}>{text}</Text>
 
-        {secondaryText ===
-        undefined
-          ? null
-          : (
-              <Text
-                typo={
-                  optionTheme
-                    ?.secondaryTypo ??
-                  'body-small'
-                }
-                viewProps={{
-                  className: [
-                    'weave-option__secondary',
-                    prefix +
-                      '__secondary',
-                  ].join(' '),
-                }}
-              >
-                {secondaryText}
-              </Text>
-            )}
+        {secondaryText === undefined ? null : (
+          <Text
+            typo={optionTheme?.secondaryTypo ?? 'body-small'}
+            viewProps={{
+              className: ['weave-option__secondary', prefix + '__secondary'].join(' '),
+            }}
+          >
+            {secondaryText}
+          </Text>
+        )}
       </View>
 
       <Icon
@@ -218,10 +125,7 @@ export function OptionItem({
         size="small"
         stroke="regular"
         viewProps={{
-          className: [
-            'weave-option__check',
-            prefix + '__check',
-          ].join(' '),
+          className: ['weave-option__check', prefix + '__check'].join(' '),
           'aria-hidden': true,
           pointerEvents: 'none',
         }}

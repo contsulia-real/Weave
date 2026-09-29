@@ -1,65 +1,38 @@
-import {
-  StrictMode,
-} from 'react'
-import {
-  act,
-  cleanup,
-  render,
-} from '@testing-library/react'
-import {
-  afterEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from 'vitest'
-import {
-  Button,
-  Presence,
-  ThemeProvider,
-  View,
-} from '../src'
+import { act, cleanup, render } from '@testing-library/react'
+import { StrictMode } from 'react'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { Button, Presence, ThemeProvider, View } from '../src'
 
 afterEach(cleanup)
 
 function motionRule(element: Element): string {
   const className = [...element.classList].find(
-    (name) =>
-      name.startsWith('weave-motion-') &&
-      !name.startsWith('weave-motion-frames-'),
+    (name) => name.startsWith('weave-motion-') && !name.startsWith('weave-motion-frames-'),
   )
 
   expect(className).toBeDefined()
 
   return (
-    document.querySelector<HTMLStyleElement>(
-      `style[data-weave-runtime-class="${className}"]`,
-    )?.textContent ?? ''
+    document.querySelector<HTMLStyleElement>(`style[data-weave-runtime-class="${className}"]`)
+      ?.textContent ?? ''
   ).replace(/\s+/g, '')
 }
 
 function motionFramesRule(element: Element): string {
-  const className = [...element.classList].find((name) =>
-    name.startsWith('weave-motion-frames-'),
-  )
+  const className = [...element.classList].find((name) => name.startsWith('weave-motion-frames-'))
 
   expect(className).toBeDefined()
 
   return (
-    document.querySelector<HTMLStyleElement>(
-      `style[data-weave-runtime-class="${className}"]`,
-    )?.textContent ?? ''
+    document.querySelector<HTMLStyleElement>(`style[data-weave-runtime-class="${className}"]`)
+      ?.textContent ?? ''
   ).replace(/\s+/g, '')
 }
 
 describe('View motion', () => {
   it('maps transition duration tokens through theme variables', () => {
     const { getByTestId } = render(
-      <View
-        transition="fast"
-        hover={{ scale: 1.03 }}
-        data={{ testid: 'motion' }}
-      />,
+      <View transition="fast" hover={{ scale: 1.03 }} data={{ testid: 'motion' }} />,
     )
 
     const element = getByTestId('motion')
@@ -67,12 +40,8 @@ describe('View motion', () => {
 
     expect(element.getAttribute('transition')).toBeNull()
     expect(rule).toContain('--weave-transition-property:all;')
-    expect(rule).toContain(
-      '--weave-transition-duration:var(--weave-motion-duration-fast);',
-    )
-    expect(rule).toContain(
-      '--weave-transition-timing-function:var(--weave-motion-curve-standard);',
-    )
+    expect(rule).toContain('--weave-transition-duration:var(--weave-motion-duration-fast);')
+    expect(rule).toContain('--weave-transition-timing-function:var(--weave-motion-curve-standard);')
     expect(rule).toContain('--weave-transition-delay:0ms;')
   })
 
@@ -91,14 +60,10 @@ describe('View motion', () => {
 
     const rule = motionRule(getByTestId('precise-motion'))
 
-    expect(rule).toContain(
-      '--weave-transition-property:opacity,background-color,transform;',
-    )
+    expect(rule).toContain('--weave-transition-property:opacity,background-color,transform;')
     expect(rule).toContain('--weave-transition-duration:240ms;')
     expect(rule).toContain('--weave-transition-delay:60ms;')
-    expect(rule).toContain(
-      '--weave-transition-timing-function:cubic-bezier(0.22,1,0.36,1);',
-    )
+    expect(rule).toContain('--weave-transition-timing-function:cubic-bezier(0.22,1,0.36,1);')
   })
 
   it('uses a physical spring for CSS transitions', () => {
@@ -156,11 +121,7 @@ describe('View motion', () => {
   it('disables framework transitions when reduced motion is forced', () => {
     const { getByTestId } = render(
       <ThemeProvider reducedMotion="reduce">
-        <View
-          transition="slow"
-          hover={{ scale: 1.08 }}
-          data={{ testid: 'reduced-motion' }}
-        />
+        <View transition="slow" hover={{ scale: 1.08 }} data={{ testid: 'reduced-motion' }} />
       </ThemeProvider>,
     )
 
@@ -179,10 +140,7 @@ describe('View motion', () => {
     const { getByTestId } = render(
       <ThemeProvider reducedMotion="reduce">
         <ThemeProvider reducedMotion="no-preference">
-          <View
-            transition="normal"
-            data={{ testid: 'nested-motion' }}
-          />
+          <View transition="normal" data={{ testid: 'nested-motion' }} />
         </ThemeProvider>
       </ThemeProvider>,
     )
@@ -192,9 +150,7 @@ describe('View motion', () => {
     const rule = motionRule(element)
 
     expect(scope.dataset.weaveReducedMotion).toBe('no-preference')
-    expect(rule).toContain(
-      '--weave-transition-duration:var(--weave-motion-duration-normal);',
-    )
+    expect(rule).toContain('--weave-transition-duration:var(--weave-motion-duration-normal);')
     expect(element.dataset.weaveReducedMotion).toBe('no-preference')
     expect(rule).not.toContain('--weave-transition-property:none;')
   })
@@ -210,9 +166,7 @@ describe('View motion', () => {
       />,
     )
 
-    expect(motionRule(getByTestId('zero-delay'))).toContain(
-      '--weave-transition-delay:0ms;',
-    )
+    expect(motionRule(getByTestId('zero-delay'))).toContain('--weave-transition-delay:0ms;')
   })
 
   it('lets viewProps transition override component motion defaults', () => {
@@ -234,31 +188,17 @@ describe('View motion', () => {
     })
     const rule = motionRule(button)
     const viewStyles =
-      document.querySelector<HTMLStyleElement>(
-        'style[data-weave-view-styles]',
-      )?.textContent ?? ''
+      document.querySelector<HTMLStyleElement>('style[data-weave-view-styles]')?.textContent ?? ''
     const buttonStyles =
-      document.querySelector<HTMLStyleElement>(
-        'style[data-weave-button-styles]',
-      )?.textContent ?? ''
+      document.querySelector<HTMLStyleElement>('style[data-weave-button-styles]')?.textContent ?? ''
 
     expect(rule).toContain('--weave-transition-property:opacity;')
     expect(rule).toContain('--weave-transition-duration:480ms;')
-    expect(rule).toContain(
-      '--weave-transition-timing-function:var(--weave-motion-curve-linear);',
-    )
-    expect(buttonStyles).toContain(
-      '--weave-component-transition-property',
-    )
-    expect(viewStyles).toContain(
-      'transition-property: var(',
-    )
-    expect(viewStyles).toContain(
-      '--weave-transition-property,',
-    )
-    expect(viewStyles).toContain(
-      '--weave-component-transition-property, none',
-    )
+    expect(rule).toContain('--weave-transition-timing-function:var(--weave-motion-curve-linear);')
+    expect(buttonStyles).toContain('--weave-component-transition-property')
+    expect(viewStyles).toContain('transition-property: var(')
+    expect(viewStyles).toContain('--weave-transition-property,')
+    expect(viewStyles).toContain('--weave-component-transition-property, none')
   })
 
   it('keeps enter-from painted for one frame before switching to enter-to', () => {
@@ -269,17 +209,10 @@ describe('View motion', () => {
         frames.push(callback)
         return frames.length
       })
-    const cancelFrame = vi
-      .spyOn(window, 'cancelAnimationFrame')
-      .mockImplementation(() => {})
+    const cancelFrame = vi.spyOn(window, 'cancelAnimationFrame').mockImplementation(() => {})
 
     try {
-      const { getByTestId } = render(
-        <View
-          enter="fade-up"
-          data={{ testid: 'enter-view' }}
-        />,
-      )
+      const { getByTestId } = render(<View enter="fade-up" data={{ testid: 'enter-view' }} />)
 
       const element = getByTestId('enter-view')
       const motionFrames = motionFramesRule(element)
@@ -287,9 +220,7 @@ describe('View motion', () => {
 
       expect(element.dataset.weaveMotionState).toBe('enter-from')
       expect(motionFrames).toContain('--weave-motion-enter-from-opacity:0;')
-      expect(motionFrames).toContain(
-        '--weave-motion-enter-from-transform:translate(0rem,0.5rem);',
-      )
+      expect(motionFrames).toContain('--weave-motion-enter-from-transform:translate(0rem,0.5rem);')
       expect(motionFrames).toContain('--weave-motion-enter-to-opacity:1;')
       expect(transition).toContain(
         '--weave-transition-timing-function:var(--weave-motion-curve-enter);',
@@ -320,17 +251,12 @@ describe('View motion', () => {
         frames.push(callback)
         return frames.length
       })
-    const cancelFrame = vi
-      .spyOn(window, 'cancelAnimationFrame')
-      .mockImplementation(() => {})
+    const cancelFrame = vi.spyOn(window, 'cancelAnimationFrame').mockImplementation(() => {})
 
     try {
       const { getByTestId } = render(
         <StrictMode>
-          <View
-            enter="fade-up"
-            data={{ testid: 'strict-enter' }}
-          />
+          <View enter="fade-up" data={{ testid: 'strict-enter' }} />
         </StrictMode>,
       )
 
@@ -383,15 +309,11 @@ describe('View motion', () => {
     const transition = motionRule(element)
 
     expect(frames).toContain('--weave-motion-enter-from-opacity:0;')
-    expect(frames).toContain(
-      '--weave-motion-enter-from-transform:translate(0rem,1rem)scale(0.96);',
-    )
+    expect(frames).toContain('--weave-motion-enter-from-transform:translate(0rem,1rem)scale(0.96);')
     expect(frames).toContain('--weave-motion-enter-to-opacity:1;')
     expect(transition).toContain('--weave-transition-duration:260ms;')
     expect(transition).toContain('--weave-transition-delay:40ms;')
-    expect(transition).toContain(
-      '--weave-transition-timing-function:cubic-bezier(0.22,1,0.36,1);',
-    )
+    expect(transition).toContain('--weave-transition-timing-function:cubic-bezier(0.22,1,0.36,1);')
   })
 
   it('keeps Presence content mounted until exit completes', () => {
@@ -400,19 +322,13 @@ describe('View motion', () => {
     try {
       const { queryByTestId, rerender } = render(
         <Presence present>
-          <View
-            exit="fade-down"
-            data={{ testid: 'presence-view' }}
-          />
+          <View exit="fade-down" data={{ testid: 'presence-view' }} />
         </Presence>,
       )
 
       rerender(
         <Presence present={false}>
-          <View
-            exit="fade-down"
-            data={{ testid: 'presence-view' }}
-          />
+          <View exit="fade-down" data={{ testid: 'presence-view' }} />
         </Presence>,
       )
 
@@ -434,26 +350,17 @@ describe('View motion', () => {
 
     try {
       const base = (
-        <View
-          enter="fade-up"
-          exit="fade-down"
-          data={{ testid: 'reversible-presence' }}
-        />
+        <View enter="fade-up" exit="fade-down" data={{ testid: 'reversible-presence' }} />
       )
       const { queryByTestId, rerender } = render(
         <Presence present>
-          <View
-            exit="fade-down"
-            data={{ testid: 'reversible-presence' }}
-          />
+          <View exit="fade-down" data={{ testid: 'reversible-presence' }} />
         </Presence>,
       )
 
       rerender(<Presence present>{base}</Presence>)
       rerender(<Presence present={false}>{base}</Presence>)
-      expect(
-        queryByTestId('reversible-presence')?.dataset.weaveMotionState,
-      ).toBe('exit-to')
+      expect(queryByTestId('reversible-presence')?.dataset.weaveMotionState).toBe('exit-to')
 
       act(() => {
         vi.advanceTimersByTime(80)
@@ -461,17 +368,13 @@ describe('View motion', () => {
       rerender(<Presence present>{base}</Presence>)
 
       expect(queryByTestId('reversible-presence')).not.toBeNull()
-      expect(
-        queryByTestId('reversible-presence')?.dataset.weaveMotionState,
-      ).toBe('enter-to')
+      expect(queryByTestId('reversible-presence')?.dataset.weaveMotionState).toBe('enter-to')
 
       act(() => {
         vi.advanceTimersByTime(240)
       })
       expect(queryByTestId('reversible-presence')).not.toBeNull()
-      expect(
-        queryByTestId('reversible-presence')?.dataset.weaveMotionState,
-      ).toBeUndefined()
+      expect(queryByTestId('reversible-presence')?.dataset.weaveMotionState).toBeUndefined()
     } finally {
       vi.useRealTimers()
     }
@@ -483,33 +386,23 @@ describe('View motion', () => {
     try {
       const { queryByRole, rerender } = render(
         <Presence present>
-          <Button
-            text="Presence button"
-            viewProps={{ exit: 'scale' }}
-          />
+          <Button text="Presence button" viewProps={{ exit: 'scale' }} />
         </Presence>,
       )
 
       rerender(
         <Presence present={false}>
-          <Button
-            text="Presence button"
-            viewProps={{ exit: 'scale' }}
-          />
+          <Button text="Presence button" viewProps={{ exit: 'scale' }} />
         </Presence>,
       )
 
-      expect(
-        queryByRole('button', { name: 'Presence button' }),
-      ).not.toBeNull()
+      expect(queryByRole('button', { name: 'Presence button' })).not.toBeNull()
 
       act(() => {
         vi.advanceTimersByTime(280)
       })
 
-      expect(
-        queryByRole('button', { name: 'Presence button' }),
-      ).toBeNull()
+      expect(queryByRole('button', { name: 'Presence button' })).toBeNull()
     } finally {
       vi.useRealTimers()
     }
@@ -577,10 +470,7 @@ describe('View motion', () => {
     const { queryByTestId, rerender } = render(
       <ThemeProvider reducedMotion="reduce">
         <Presence present>
-          <View
-            exit="fade"
-            data={{ testid: 'reduced-exit' }}
-          />
+          <View exit="fade" data={{ testid: 'reduced-exit' }} />
         </Presence>
       </ThemeProvider>,
     )
@@ -588,10 +478,7 @@ describe('View motion', () => {
     rerender(
       <ThemeProvider reducedMotion="reduce">
         <Presence present={false}>
-          <View
-            exit="fade"
-            data={{ testid: 'reduced-exit' }}
-          />
+          <View exit="fade" data={{ testid: 'reduced-exit' }} />
         </Presence>
       </ThemeProvider>,
     )
@@ -603,9 +490,7 @@ describe('View motion', () => {
     render(<View transition="fast" />)
 
     const viewStyles =
-      document.querySelector<HTMLStyleElement>(
-        'style[data-weave-view-styles]',
-      )?.textContent ?? ''
+      document.querySelector<HTMLStyleElement>('style[data-weave-view-styles]')?.textContent ?? ''
 
     expect(viewStyles).toContain(
       '@property --weave-transition-property { syntax: "*"; inherits: false; }',

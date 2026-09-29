@@ -1,68 +1,37 @@
-import type {
-  ReactElement,
-  ReactNode,
-} from 'react'
-import type {
-  ButtonIcon,
-} from './button-types'
-import type {
-  PopoverPlacement,
-} from './popover-types'
-import type {
-  Length,
-  ViewCoreProps,
-  ViewDynamicBreakpointProps,
-} from './view-types'
+import type { ReactElement, ReactNode } from 'react'
+import type { ButtonIcon } from './button-types'
+import type { PopoverPlacement } from './popover-types'
+import type { Length, ViewCoreProps, ViewDynamicBreakpointProps } from './view-types'
 
 export type SelectValue = string
 
-export type SelectIcon =
-  ButtonIcon
+export type SelectIcon = ButtonIcon
 
-export type SelectPlacement =
-  PopoverPlacement
+export type SelectPlacement = PopoverPlacement
 
-export type SelectViewProps =
-  Omit<
-    ViewCoreProps<HTMLButtonElement>,
-    | 'children'
-    | 'role'
-    | 'disabled'
-    | 'expanded'
-    | 'controls'
-  > &
+export type SelectViewProps = Omit<
+  ViewCoreProps<HTMLButtonElement>,
+  'children' | 'role' | 'disabled' | 'expanded' | 'controls'
+> &
   ViewDynamicBreakpointProps
 
-export type SelectListboxViewProps =
-  Omit<
-    ViewCoreProps<HTMLDivElement>,
-    | 'children'
-    | 'role'
-    | 'position'
-    | 'top'
-    | 'right'
-    | 'bottom'
-    | 'left'
-  > &
+export type SelectListboxViewProps = Omit<
+  ViewCoreProps<HTMLDivElement>,
+  'children' | 'role' | 'position' | 'top' | 'right' | 'bottom' | 'left'
+> &
   ViewDynamicBreakpointProps
 
-export type SelectOptionViewProps =
-  Omit<
-    ViewCoreProps<HTMLDivElement>,
-    | 'children'
-    | 'role'
-    | 'selected'
-    | 'disabled'
-  > &
+export type SelectOptionViewProps = Omit<
+  ViewCoreProps<HTMLDivElement>,
+  'children' | 'role' | 'selected' | 'disabled'
+> &
   ViewDynamicBreakpointProps
 
 export interface SelectProps {
   children?: ReactNode
   value?: SelectValue | null
   defaultValue?: SelectValue | null
-  onValueChange?: (
-    value: SelectValue,
-  ) => void
+  onValueChange?: (value: SelectValue) => void
   placeholder?: ReactNode
   disabled?: boolean
   placement?: SelectPlacement
@@ -70,12 +39,9 @@ export interface SelectProps {
   viewportPadding?: Length
   open?: boolean
   defaultOpen?: boolean
-  onOpenChange?: (
-    open: boolean,
-  ) => void
+  onOpenChange?: (open: boolean) => void
   viewProps?: SelectViewProps
-  listboxViewProps?:
-    SelectListboxViewProps
+  listboxViewProps?: SelectListboxViewProps
 }
 
 export interface SelectOptionProps {
@@ -97,11 +63,6 @@ export interface SelectOptionDescriptor {
   disabled: boolean
 }
 
-export type SelectTriggerContent =
-  Pick<
-    SelectOptionDescriptor,
-    'text' | 'icon'
-  >
+export type SelectTriggerContent = Pick<SelectOptionDescriptor, 'text' | 'icon'>
 
-export type SelectChild =
-  ReactElement<SelectOptionProps>
+export type SelectChild = ReactElement<SelectOptionProps>

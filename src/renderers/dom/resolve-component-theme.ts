@@ -1,30 +1,27 @@
 export {
+  resolveBadgeTheme,
+  resolveButtonTheme,
+  resolveLinkTheme,
+} from './component-theme/actions'
+export {
+  resolveChoiceControlTheme,
+  resolveComboboxTheme,
   resolveInputTheme,
   resolveSelectTheme,
-  resolveComboboxTheme,
   resolveSwitchTheme,
-  resolveChoiceControlTheme,
 } from './component-theme/controls'
+export {
+  resolveListItemTheme,
+  resolveListTheme,
+} from './component-theme/lists'
 
 export {
-  resolveBadgeTheme,
-  resolveLinkTheme,
-  resolveButtonTheme,
-} from './component-theme/actions'
-
+  resolveMenuTheme,
+  resolvePopoverTheme,
+  resolveSnackTheme,
+  resolveToolTipTheme,
+} from './component-theme/overlays'
 export {
   resolveProgressTheme,
   resolveScrollbarTheme,
 } from './component-theme/progress'
-
-export {
-  resolveToolTipTheme,
-  resolvePopoverTheme,
-  resolveMenuTheme,
-  resolveSnackTheme,
-} from './component-theme/overlays'
-
-export {
-  resolveListTheme,
-  resolveListItemTheme,
-} from './component-theme/lists'

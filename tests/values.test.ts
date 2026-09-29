@@ -34,9 +34,7 @@ describe('Weave value normalization', () => {
   })
 
   it('normalizes mask images without treating resource URLs as colors', () => {
-    expect(maskImage('url("/mask.svg#shape")')).toBe(
-      'url("/mask.svg#shape")',
-    )
+    expect(maskImage('url("/mask.svg#shape")')).toBe('url("/mask.svg#shape")')
     expect(
       maskImage({
         type: 'linear',
@@ -69,11 +67,7 @@ describe('Weave value normalization', () => {
 
     expect(
       transformValue({
-        transform: [
-          { translateX: 1 },
-          { rotate: 5 },
-          { scale: 1.05 },
-        ],
+        transform: [{ translateX: 1 }, { rotate: 5 }, { scale: 1.05 }],
       }),
     ).toBe('translateX(1rem) rotate(5deg) scale(1.05)')
   })

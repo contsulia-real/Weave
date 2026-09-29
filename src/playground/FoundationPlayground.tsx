@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import {
   IconArrowRight,
   IconBell,
@@ -8,6 +7,7 @@ import {
   IconSettings,
   IconUser,
 } from '@tabler/icons-react'
+import { useState } from 'react'
 import {
   Absolute,
   Badge,
@@ -15,6 +15,8 @@ import {
   Column,
   Combobox,
   ComboboxOption,
+  createTheme,
+  Divider,
   Flex,
   Grid,
   Icon,
@@ -22,9 +24,8 @@ import {
   Link,
   Menu,
   MenuItem,
-  Divider,
-  Presence,
   Popover,
+  Presence,
   Row,
   Select,
   SelectOption,
@@ -33,12 +34,8 @@ import {
   ThemeProvider,
   ToolTip,
   View,
-  createTheme,
 } from '../index'
-import {
-  DemoBox,
-  PlaygroundSection,
-} from './PlaygroundSection'
+import { DemoBox, PlaygroundSection } from './PlaygroundSection'
 
 const diagnosticImage =
   'data:image/svg+xml,' +
@@ -80,9 +77,7 @@ const diagnosticTheme = createTheme({
 
 function LayoutAnimationPlayground() {
   const [alternate, setAlternate] = useState(false)
-  const order = alternate
-    ? ['C', 'B', 'A'] as const
-    : ['A', 'B', 'C'] as const
+  const order = alternate ? (['C', 'B', 'A'] as const) : (['A', 'B', 'C'] as const)
 
   return (
     <Column gap={0.75} align="start">
@@ -108,11 +103,7 @@ function LayoutAnimationPlayground() {
         {order.map((label) => (
           <Column
             key={label}
-            width={
-              label === 'B'
-                ? alternate ? 9 : 5
-                : 5
-            }
+            width={label === 'B' ? (alternate ? 9 : 5) : 5}
             height={4}
             align="center"
             justify="center"
@@ -333,8 +324,7 @@ const popoverPlacements = [
 ] as const
 
 function PopoverPlayground() {
-  const [controlledOpen, setControlledOpen] =
-    useState(false)
+  const [controlledOpen, setControlledOpen] = useState(false)
 
   return (
     <Column gap={1.25} align="start">
@@ -350,25 +340,16 @@ function PopoverPlayground() {
               placement={placement}
               content={
                 <Column gap={0.5} width={13}>
-                  <Text typo="label-medium">
-                    {placement}
-                  </Text>
+                  <Text typo="label-medium">{placement}</Text>
                   <Text typo="body-small" color="secondary">
-                    Interactive content stays clickable. Escape or outside
-                    pointer input closes the popover.
+                    Interactive content stays clickable. Escape or outside pointer input closes the
+                    popover.
                   </Text>
-                  <Button
-                    text="Popover action"
-                    size="small"
-                    variant="secondary"
-                  />
+                  <Button text="Popover action" size="small" variant="secondary" />
                 </Column>
               }
             >
-              <Button
-                text={placement}
-                variant="secondary"
-              />
+              <Button text={placement} variant="secondary" />
             </Popover>
           ))}
         </Row>
@@ -386,9 +367,7 @@ function PopoverPlayground() {
             placement="bottom-left"
             content={
               <Column gap={0.5} width={14}>
-                <Text typo="label-medium">
-                  Controlled popover
-                </Text>
+                <Text typo="label-medium">Controlled popover</Text>
                 <Text typo="body-small" color="secondary">
                   open / onOpenChange are owned by the playground state.
                 </Text>
@@ -404,11 +383,7 @@ function PopoverPlayground() {
             }
           >
             <Button
-              text={
-                controlledOpen
-                  ? 'Controlled · open'
-                  : 'Controlled · closed'
-              }
+              text={controlledOpen ? 'Controlled · open' : 'Controlled · closed'}
               variant="primary"
             />
           </Popover>
@@ -423,8 +398,7 @@ function PopoverPlayground() {
 }
 
 function SelectPlayground() {
-  const [value, setValue] =
-    useState('design')
+  const [value, setValue] = useState('design')
 
   return (
     <Column gap={0.75} align="start">
@@ -452,37 +426,22 @@ function SelectPlayground() {
           secondaryText="Find indexed content"
           icon={IconSearch}
         />
-        <SelectOption
-          value="disabled"
-          text="Unavailable"
-          disabled
-        />
+        <SelectOption value="disabled" text="Unavailable" disabled />
       </Select>
 
-      <Text
-        typo="body-small"
-        color="secondary"
-      >
+      <Text typo="body-small" color="secondary">
         value: {value} · type letters while focused to jump
       </Text>
 
-      <Select
-        disabled
-        placeholder="Disabled select"
-        viewProps={{ width: 20 }}
-      >
-        <SelectOption
-          value="one"
-          text="One"
-        />
+      <Select disabled placeholder="Disabled select" viewProps={{ width: 20 }}>
+        <SelectOption value="one" text="One" />
       </Select>
     </Column>
   )
 }
 
 function ComboboxPlayground() {
-  const [value, setValue] =
-    useState<string | null>('design')
+  const [value, setValue] = useState<string | null>('design')
 
   return (
     <Column gap={0.75} align="start">
@@ -510,17 +469,10 @@ function ComboboxPlayground() {
           secondaryText="Find indexed content"
           icon={IconSearch}
         />
-        <ComboboxOption
-          value="disabled"
-          text="Unavailable"
-          disabled
-        />
+        <ComboboxOption value="disabled" text="Unavailable" disabled />
       </Combobox>
 
-      <Text
-        typo="body-small"
-        color="secondary"
-      >
+      <Text typo="body-small" color="secondary">
         selected value: {value ?? 'null'} · typing only filters; Enter commits
       </Text>
 
@@ -528,20 +480,10 @@ function ComboboxPlayground() {
         placeholder="Filter by value prefix"
         emptyContent="No matching command"
         viewProps={{ width: 20 }}
-        filter={(option, input) =>
-          option.value.startsWith(
-            input.toLowerCase(),
-          )
-        }
+        filter={(option, input) => option.value.startsWith(input.toLowerCase())}
       >
-        <ComboboxOption
-          value="alpha"
-          text="Alpha"
-        />
-        <ComboboxOption
-          value="beta"
-          text="Beta"
-        />
+        <ComboboxOption value="alpha" text="Alpha" />
+        <ComboboxOption value="beta" text="Beta" />
       </Combobox>
     </Column>
   )
@@ -550,26 +492,15 @@ function ComboboxPlayground() {
 function DividerPlayground() {
   return (
     <Column gap={1} width={18}>
-      <Text typo="label-medium">
-        Horizontal
-      </Text>
+      <Text typo="label-medium">Horizontal</Text>
       <Divider />
       <Divider gap={0.5} />
       <Divider gap={0.5} size={2} />
 
-      <Text typo="label-medium">
-        Vertical
-      </Text>
-      <Row
-        height={4}
-        align="stretch"
-      >
+      <Text typo="label-medium">Vertical</Text>
+      <Row height={4} align="stretch">
         <Text>A</Text>
-        <Divider
-          direction="vertical"
-          gap={0.5}
-          size={2}
-        />
+        <Divider direction="vertical" gap={0.5} size={2} />
         <Text>B</Text>
       </Row>
     </Column>
@@ -577,40 +508,21 @@ function DividerPlayground() {
 }
 
 function MenuPlayground() {
-  const [lastAction, setLastAction] =
-    useState('None')
+  const [lastAction, setLastAction] = useState('None')
 
   return (
     <Column gap={0.75} align="start">
-      <Menu
-        trigger={
-          <Button
-            text="Open menu"
-            variant="secondary"
-          />
-        }
-      >
+      <Menu trigger={<Button text="Open menu" variant="secondary" />}>
         <MenuItem
           text="Profile"
           secondaryText="Account details"
           icon={IconUser}
-          onSelect={() =>
-            setLastAction('Profile')
-          }
+          onSelect={() => setLastAction('Profile')}
         />
 
-        <MenuItem
-          text="Settings"
-          icon={IconSettings}
-          onSelect={() =>
-            setLastAction('Settings')
-          }
-        />
+        <MenuItem text="Settings" icon={IconSettings} onSelect={() => setLastAction('Settings')} />
 
-        <MenuItem
-          text="Unavailable"
-          disabled
-        />
+        <MenuItem text="Unavailable" disabled />
 
         <Divider gap={0.25} />
 
@@ -618,29 +530,14 @@ function MenuPlayground() {
           text="Share"
           submenu={
             <>
-              <MenuItem
-                text="Copy link"
-                onSelect={() =>
-                  setLastAction('Copy link')
-                }
-              />
+              <MenuItem text="Copy link" onSelect={() => setLastAction('Copy link')} />
 
               <MenuItem
                 text="Export"
                 submenu={
                   <>
-                    <MenuItem
-                      text="PDF"
-                      onSelect={() =>
-                        setLastAction('Export PDF')
-                      }
-                    />
-                    <MenuItem
-                      text="PNG"
-                      onSelect={() =>
-                        setLastAction('Export PNG')
-                      }
-                    />
+                    <MenuItem text="PDF" onSelect={() => setLastAction('Export PDF')} />
+                    <MenuItem text="PNG" onSelect={() => setLastAction('Export PNG')} />
                   </>
                 }
               />
@@ -650,19 +547,10 @@ function MenuPlayground() {
 
         <Divider gap={0.25} />
 
-        <MenuItem
-          text="Delete"
-          danger
-          onSelect={() =>
-            setLastAction('Delete')
-          }
-        />
+        <MenuItem text="Delete" danger onSelect={() => setLastAction('Delete')} />
       </Menu>
 
-      <Text
-        typo="body-small"
-        color="secondary"
-      >
+      <Text typo="body-small" color="secondary">
         last action: {lastAction}
       </Text>
     </Column>
@@ -834,20 +722,8 @@ export function FoundationPlayground() {
             </Text>
           </Stack>
 
-          <Absolute
-            width={8}
-            height={4}
-            radius="medium"
-            background="surfaceHover"
-          >
-            <View
-              top={0.5}
-              right={0.5}
-              width={2}
-              height={2}
-              radius="full"
-              background="primary"
-            />
+          <Absolute width={8} height={4} radius="medium" background="surfaceHover">
+            <View top={0.5} right={0.5} width={2} height={2} radius="full" background="primary" />
           </Absolute>
         </Column>
       </PlaygroundSection>
@@ -979,39 +855,16 @@ export function FoundationPlayground() {
         title="Theme inheritance"
         description='两块都使用 background="primary"；右侧只通过 mode="dark" 改变同一 token。'
       >
-        <Row
-          gap={0.75}
-          wrap
-        >
-          <ThemeProvider
-            theme={diagnosticTheme}
-            mode="light"
-          >
-            <View
-              padding={1}
-              radius="medium"
-              background="primary"
-              color="onPrimary"
-            >
-              <Text typo="label-large">
-                Light primary
-              </Text>
+        <Row gap={0.75} wrap>
+          <ThemeProvider theme={diagnosticTheme} mode="light">
+            <View padding={1} radius="medium" background="primary" color="onPrimary">
+              <Text typo="label-large">Light primary</Text>
             </View>
           </ThemeProvider>
 
-          <ThemeProvider
-            theme={diagnosticTheme}
-            mode="dark"
-          >
-            <View
-              padding={1}
-              radius="medium"
-              background="primary"
-              color="onPrimary"
-            >
-              <Text typo="label-large">
-                Dark primary
-              </Text>
+          <ThemeProvider theme={diagnosticTheme} mode="dark">
+            <View padding={1} radius="medium" background="primary" color="onPrimary">
+              <Text typo="label-large">Dark primary</Text>
             </View>
           </ThemeProvider>
         </Row>
@@ -1021,60 +874,27 @@ export function FoundationPlayground() {
         title="Global typography"
         description="ThemeProvider 默认建立 body-large 排版上下文；Text、Button、Input 都从同一套 typography.styles / typo 取完整字号、字重、行高与字距。"
       >
-        <Column
-          gap={0.75}
-        >
-          <Text typo="display-large">
-            Display large
-          </Text>
-          <Text typo="display-medium">
-            Display medium
-          </Text>
-          <Text typo="display-small">
-            Display small
-          </Text>
-          <Text typo="headline-large">
-            Headline large
-          </Text>
-          <Text typo="headline-medium">
-            Headline medium
-          </Text>
-          <Text typo="headline-small">
-            Headline small
-          </Text>
-          <Text typo="title-large">
-            Title large
-          </Text>
-          <Text typo="title-medium">
-            Title medium
-          </Text>
-          <Text typo="title-small">
-            Title small
-          </Text>
-          <Text typo="body-large">
-            Body large
-          </Text>
-          <Text typo="body-medium">
-            Body medium
-          </Text>
-          <Text typo="body-small">
-            Body small
-          </Text>
-          <Text typo="label-large">
-            Label large
-          </Text>
-          <Text typo="label-medium">
-            Label medium
-          </Text>
-          <Text typo="label-small">
-            Label small
-          </Text>
+        <Column gap={0.75}>
+          <Text typo="display-large">Display large</Text>
+          <Text typo="display-medium">Display medium</Text>
+          <Text typo="display-small">Display small</Text>
+          <Text typo="headline-large">Headline large</Text>
+          <Text typo="headline-medium">Headline medium</Text>
+          <Text typo="headline-small">Headline small</Text>
+          <Text typo="title-large">Title large</Text>
+          <Text typo="title-medium">Title medium</Text>
+          <Text typo="title-small">Title small</Text>
+          <Text typo="body-large">Body large</Text>
+          <Text typo="body-medium">Body medium</Text>
+          <Text typo="body-small">Body small</Text>
+          <Text typo="label-large">Label large</Text>
+          <Text typo="label-medium">Label medium</Text>
+          <Text typo="label-small">Label small</Text>
           <Text
             typo="body-medium"
             viewProps={{
               style: {
-                fontFamily:
-                  'var(--weave-typography-family-mono)',
+                fontFamily: 'var(--weave-typography-family-mono)',
               },
             }}
           >
@@ -1087,10 +907,7 @@ export function FoundationPlayground() {
         title="Image"
         description="方形源图放进横向容器：contain 应完整显示并留空，cover 应填满并裁切；尺寸和圆角来自 viewProps。"
       >
-        <Row
-          gap={1}
-          wrap
-        >
+        <Row gap={1} wrap>
           <Image
             src={diagnosticImage}
             alt="Weave gradient diagnostic"
@@ -1119,11 +936,7 @@ export function FoundationPlayground() {
         title="Mask"
         description="Mask 是 ViewProps 通用视觉能力。左侧保留原图作为对照；中间用结构化 Gradient 从透明渐入；右侧直接使用原生 CSS mask-image 字符串形成径向遮罩。"
       >
-        <Row
-          gap={1}
-          wrap
-          align="start"
-        >
+        <Row gap={1} wrap align="start">
           <Column gap={0.5}>
             <Text typo="label-medium" color="secondary">
               Original
@@ -1177,8 +990,7 @@ export function FoundationPlayground() {
                 width: 14,
                 height: 8,
                 radius: 'medium',
-                mask:
-                  'radial-gradient(circle at center, black 0 42%, transparent 72%)',
+                mask: 'radial-gradient(circle at center, black 0 42%, transparent 72%)',
               }}
             />
           </Column>
@@ -1189,18 +1001,9 @@ export function FoundationPlayground() {
         title="Icon"
         description="Outline / Filled 由调用方传入的 Tabler 图标组件决定；size / stroke 由 Weave 统一，颜色和其他通用视觉继续走 viewProps。"
       >
-        <Column
-          gap={1}
-        >
-          <Row
-            gap={1.5}
-            align="center"
-            wrap
-          >
-            <Row
-              gap={0.75}
-              align="center"
-            >
+        <Column gap={1}>
+          <Row gap={1.5} align="center" wrap>
+            <Row gap={0.75} align="center">
               <Icon
                 icon={IconSearch}
                 size="large"
@@ -1209,15 +1012,10 @@ export function FoundationPlayground() {
                   color: 'primary',
                 }}
               />
-              <Text typo="body-medium">
-                Outline
-              </Text>
+              <Text typo="body-medium">Outline</Text>
             </Row>
 
-            <Row
-              gap={0.75}
-              align="center"
-            >
+            <Row gap={0.75} align="center">
               <Icon
                 icon={IconSearchFilled}
                 size="large"
@@ -1226,21 +1024,12 @@ export function FoundationPlayground() {
                   color: 'primary',
                 }}
               />
-              <Text typo="body-medium">
-                Filled
-              </Text>
+              <Text typo="body-medium">Filled</Text>
             </Row>
           </Row>
 
-          <Row
-            gap={1.5}
-            align="center"
-            wrap
-          >
-            <Row
-              gap={0.5}
-              align="center"
-            >
+          <Row gap={1.5} align="center" wrap>
+            <Row gap={0.5} align="center">
               <Icon
                 icon={IconSearch}
                 size="small"
@@ -1249,15 +1038,10 @@ export function FoundationPlayground() {
                   color: 'secondary',
                 }}
               />
-              <Text typo="body-medium">
-                Small / thin
-              </Text>
+              <Text typo="body-medium">Small / thin</Text>
             </Row>
 
-            <Row
-              gap={0.5}
-              align="center"
-            >
+            <Row gap={0.5} align="center">
               <Icon
                 icon={IconUser}
                 size="medium"
@@ -1266,15 +1050,10 @@ export function FoundationPlayground() {
                   color: 'primary',
                 }}
               />
-              <Text typo="body-medium">
-                Medium / regular
-              </Text>
+              <Text typo="body-medium">Medium / regular</Text>
             </Row>
 
-            <Row
-              gap={0.5}
-              align="center"
-            >
+            <Row gap={0.5} align="center">
               <Icon
                 icon={IconBell}
                 size="large"
@@ -1283,15 +1062,10 @@ export function FoundationPlayground() {
                   color: 'success',
                 }}
               />
-              <Text typo="body-medium">
-                Large / bold
-              </Text>
+              <Text typo="body-medium">Large / bold</Text>
             </Row>
 
-            <Row
-              gap={0.5}
-              align="center"
-            >
+            <Row gap={0.5} align="center">
               <Icon
                 icon={IconSettings}
                 size="xlarge"
@@ -1301,44 +1075,25 @@ export function FoundationPlayground() {
                   label: 'Settings',
                 }}
               />
-              <Text typo="body-medium">
-                Xlarge / labelled
-              </Text>
+              <Text typo="body-medium">Xlarge / labelled</Text>
             </Row>
           </Row>
 
-          <Row
-            gap={0.75}
-            align="center"
-          >
+          <Row gap={0.75} align="center">
             <Icon
               size="large"
               stroke="regular"
               svg={
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                >
-                  <circle
-                    cx="12"
-                    cy="12"
-                    r="8"
-                    stroke="currentColor"
-                  />
-                  <path
-                    d="M8 12h8M12 8v8"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                  />
+                <svg viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="8" stroke="currentColor" />
+                  <path d="M8 12h8M12 8v8" stroke="currentColor" strokeLinecap="round" />
                 </svg>
               }
               viewProps={{
                 color: '#0f766e',
               }}
             />
-            <Text typo="body-medium">
-              Custom SVG
-            </Text>
+            <Text typo="body-medium">Custom SVG</Text>
           </Row>
         </Column>
       </PlaygroundSection>
@@ -1347,72 +1102,25 @@ export function FoundationPlayground() {
         title="Button"
         description="Weave 的 tactile control 基准：hover 会抬起，按住会下沉并压缩，释放使用 spring 回弹；variant / size 仍可由主题和 breakpoint 覆盖。"
       >
-        <Column
-          gap={1}
-        >
-          <Row
-            gap={0.75}
-            align="center"
-            wrap
-          >
-            <Button
-              text="Primary"
-              variant="primary"
-            />
-            <Button
-              text="Secondary"
-              variant="secondary"
-            />
-            <Button
-              text="Tertiary"
-              variant="tertiary"
-            />
-            <Button
-              text="Ghost"
-              variant="ghost"
-            />
-            <Button
-              text="Danger"
-              variant="danger"
-            />
+        <Column gap={1}>
+          <Row gap={0.75} align="center" wrap>
+            <Button text="Primary" variant="primary" />
+            <Button text="Secondary" variant="secondary" />
+            <Button text="Tertiary" variant="tertiary" />
+            <Button text="Ghost" variant="ghost" />
+            <Button text="Danger" variant="danger" />
           </Row>
 
-          <Row
-            gap={0.75}
-            align="center"
-            wrap
-          >
-            <Button
-              text="Small"
-              size="small"
-            />
-            <Button
-              text="Medium"
-              size="medium"
-            />
-            <Button
-              text="Large"
-              size="large"
-            />
+          <Row gap={0.75} align="center" wrap>
+            <Button text="Small" size="small" />
+            <Button text="Medium" size="medium" />
+            <Button text="Large" size="large" />
           </Row>
 
-          <Row
-            gap={0.75}
-            align="center"
-            wrap
-          >
-            <Button
-              text="Add item"
-              icon={IconPlus}
-              iconPosition="start"
-              variant="secondary"
-            />
+          <Row gap={0.75} align="center" wrap>
+            <Button text="Add item" icon={IconPlus} iconPosition="start" variant="secondary" />
 
-            <Button
-              text="Continue"
-              icon={IconArrowRight}
-              iconPosition="end"
-            />
+            <Button text="Continue" icon={IconArrowRight} iconPosition="end" />
 
             <Button
               icon={IconSearchFilled}
@@ -1422,27 +1130,13 @@ export function FoundationPlayground() {
               }}
             />
 
-            <Button
-              text="Disabled"
-              disabled
-            />
+            <Button text="Disabled" disabled />
 
-            <Button
-              text="Pressed"
-              variant="secondary"
-              pressed
-            />
+            <Button text="Pressed" variant="secondary" pressed />
 
             <Button variant="secondary">
-              <Icon
-                icon={IconSettings}
-                size="small"
-                stroke="regular"
-              />
-              <Text
-                typo="label-medium"
-                weight="bold"
-              >
+              <Icon icon={IconSettings} size="small" stroke="regular" />
+              <Text typo="label-medium" weight="bold">
                 Custom children
               </Text>
             </Button>
@@ -1467,11 +1161,7 @@ export function FoundationPlayground() {
         title="Badge"
         description="跟随被包裹组件的实际视觉边界定位，包括 hover / press / transform；默认 top-right。正常模式显示 text，dot 模式只显示小圆点。"
       >
-        <Row
-          gap={2}
-          align="center"
-          wrap
-        >
+        <Row gap={2} align="center" wrap>
           <Badge text="8">
             <Button text="Inbox" variant="secondary" />
           </Badge>
@@ -1501,17 +1191,10 @@ export function FoundationPlayground() {
         title="Link"
         description="真实 <a> 语义；text 可覆盖显示内容，默认末尾带 link icon；底部链接线按 45% → 60% → 80% 响应 rest / hover / active。"
       >
-        <Column
-          gap={1}
-          align="start"
-        >
+        <Column gap={1} align="start">
           <Link href="https://example.com/docs" target="_blank" />
 
-          <Link
-            href="https://example.com/docs"
-            text="Documentation"
-            target="_self"
-          />
+          <Link href="https://example.com/docs" text="Documentation" target="_self" />
 
           <Link
             href="https://example.com/changelog"
@@ -1534,61 +1217,29 @@ export function FoundationPlayground() {
         title="ToolTip"
         description="hover 或 focus 后自动显示；定位和 tooltip layer 由框架处理，业务不创建 portal。"
       >
-        <Row
-          gap={1}
-          align="center"
-          wrap
-        >
-          <ToolTip
-            content="Top tooltip"
-            placement="top"
-          >
-            <Button
-              text="Top"
-              variant="secondary"
-            />
+        <Row gap={1} align="center" wrap>
+          <ToolTip content="Top tooltip" placement="top">
+            <Button text="Top" variant="secondary" />
           </ToolTip>
 
-          <ToolTip
-            content="Bottom tooltip"
-            placement="bottom"
-          >
-            <Button
-              text="Bottom"
-              variant="secondary"
-            />
+          <ToolTip content="Bottom tooltip" placement="bottom">
+            <Button text="Bottom" variant="secondary" />
           </ToolTip>
 
-          <ToolTip
-            content="Left tooltip"
-            placement="left"
-            delay={0}
-          >
-            <Button
-              text="Left / instant"
-              variant="secondary"
-            />
+          <ToolTip content="Left tooltip" placement="left" delay={0}>
+            <Button text="Left / instant" variant="secondary" />
           </ToolTip>
 
           <ToolTip
             placement="right"
             content={
-              <Column
-                gap={0.25}
-              >
-                <Text typo="label-small">
-                  Complex tooltip
-                </Text>
-                <Text typo="body-xsmall">
-                  View + Text content
-                </Text>
+              <Column gap={0.25}>
+                <Text typo="label-small">Complex tooltip</Text>
+                <Text typo="body-xsmall">View + Text content</Text>
               </Column>
             }
           >
-            <Button
-              text="Right / complex"
-              variant="secondary"
-            />
+            <Button text="Right / complex" variant="secondary" />
           </ToolTip>
         </Row>
       </PlaygroundSection>

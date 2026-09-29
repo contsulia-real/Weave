@@ -1,12 +1,6 @@
-import type {
-  OptionContextValue,
-} from './option-context'
-import {
-  createOptionContext,
-} from './option-context'
+import type { OptionContextValue } from './option-context'
+import { createOptionContext } from './option-context'
 
-export type SelectContextValue =
-  OptionContextValue
+export type SelectContextValue = OptionContextValue
 
-export const SelectContext =
-  createOptionContext()
+export const SelectContext = createOptionContext()

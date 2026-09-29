@@ -3,12 +3,7 @@ import { useViewHost } from './use-view-host'
 
 export function ScrollbarView(props: ViewProps<HTMLDivElement>) {
   const { children } = props
-  const {
-    elementRef,
-    className,
-    inlineStyle,
-    resolved,
-  } = useViewHost(props)
+  const { elementRef, className, inlineStyle, resolved } = useViewHost(props)
 
   return (
     <div

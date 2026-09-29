@@ -1,18 +1,12 @@
 import type { CSSProperties } from 'react'
-import type {
-  TextResponsiveProps,
-  TextStyleProps,
-} from '../../core/text-types'
+import type { TextResponsiveProps, TextStyleProps } from '../../core/text-types'
 import { length } from '../../core/values'
 import { typographyStyleVariableReference } from '../../theme/theme-css'
 
 export type TextVariableStyle = CSSProperties &
   Record<`--weave-text-${string}`, string | number | undefined>
 
-const variable = (
-  property: string,
-  breakpoint?: string,
-): `--weave-text-${string}` =>
+const variable = (property: string, breakpoint?: string): `--weave-text-${string}` =>
   `--weave-text-${breakpoint === undefined ? '' : `${breakpoint}-`}${property}`
 
 function textWrapValues(
@@ -43,14 +37,13 @@ function applyTypographyPreset(
 ): void {
   if (typo === undefined) return
 
-  output[variable('font-size', breakpoint)] =
-    typographyStyleVariableReference(typo, 'fontSize')
-  output[variable('font-weight', breakpoint)] =
-    typographyStyleVariableReference(typo, 'fontWeight')
-  output[variable('line-height', breakpoint)] =
-    typographyStyleVariableReference(typo, 'lineHeight')
-  output[variable('letter-spacing', breakpoint)] =
-    typographyStyleVariableReference(typo, 'letterSpacing')
+  output[variable('font-size', breakpoint)] = typographyStyleVariableReference(typo, 'fontSize')
+  output[variable('font-weight', breakpoint)] = typographyStyleVariableReference(typo, 'fontWeight')
+  output[variable('line-height', breakpoint)] = typographyStyleVariableReference(typo, 'lineHeight')
+  output[variable('letter-spacing', breakpoint)] = typographyStyleVariableReference(
+    typo,
+    'letterSpacing',
+  )
 }
 
 export function resolveTextStyle(
@@ -63,13 +56,11 @@ export function resolveTextStyle(
   applyTypographyPreset(output, props.typo, breakpoint)
 
   if (props.size !== undefined) {
-    output[variable('font-size', breakpoint)] =
-      `var(--weave-typography-size-${props.size})`
+    output[variable('font-size', breakpoint)] = `var(--weave-typography-size-${props.size})`
   }
 
   if (props.weight !== undefined) {
-    output[variable('font-weight', breakpoint)] =
-      `var(--weave-typography-weight-${props.weight})`
+    output[variable('font-weight', breakpoint)] = `var(--weave-typography-weight-${props.weight})`
   }
 
   if (props.align !== undefined) {
@@ -81,9 +72,7 @@ export function resolveTextStyle(
   }
 
   if (props.letterSpacing !== undefined) {
-    output[variable('letter-spacing', breakpoint)] = length(
-      props.letterSpacing,
-    )
+    output[variable('letter-spacing', breakpoint)] = length(props.letterSpacing)
   }
 
   const wrapping = textWrapValues(props.wrap, props.overflow)
@@ -111,19 +100,12 @@ export function resolveTextStyle(
 
 export function resolveTextResponsiveStyle(input: {
   base: TextStyleProps
-  responsive?: Readonly<
-    Record<string, TextResponsiveProps | undefined>
-  >
+  responsive?: Readonly<Record<string, TextResponsiveProps | undefined>>
 }): TextVariableStyle {
   const output = resolveTextStyle(input.base)
 
-  for (const [breakpoint, value] of Object.entries(
-    input.responsive ?? {},
-  )) {
-    Object.assign(
-      output,
-      resolveTextStyle(value, breakpoint),
-    )
+  for (const [breakpoint, value] of Object.entries(input.responsive ?? {})) {
+    Object.assign(output, resolveTextStyle(value, breakpoint))
   }
 
   return output

@@ -1,9 +1,5 @@
-import type {
-  ReactNode,
-} from 'react'
-import type {
-  SelectOptionDescriptor,
-} from '../../core/select-types'
+import type { ReactNode } from 'react'
+import type { SelectOptionDescriptor } from '../../core/select-types'
 import { SelectOption } from '../SelectOption'
 import {
   assertUniqueOptionValues,
@@ -12,27 +8,14 @@ import {
   selectedOptionDescriptor,
 } from './option-collection'
 
-export function selectOptionDescriptors(
-  children: ReactNode,
-): readonly SelectOptionDescriptor[] {
-  const options =
-    collectOptionElements(
-      children,
-      SelectOption,
-    ).map(
-      (element) =>
-        optionDescriptor(
-          element.props,
-        ),
-    )
-
-  assertUniqueOptionValues(
-    options,
-    'Select',
+export function selectOptionDescriptors(children: ReactNode): readonly SelectOptionDescriptor[] {
+  const options = collectOptionElements(children, SelectOption).map((element) =>
+    optionDescriptor(element.props),
   )
+
+  assertUniqueOptionValues(options, 'Select')
 
   return options
 }
 
-export const selectedDescriptor =
-  selectedOptionDescriptor
+export const selectedDescriptor = selectedOptionDescriptor

@@ -7,13 +7,7 @@ import type {
   ViewResponsiveStyle,
 } from './view-types'
 
-export type TextSize =
-  | 'xsmall'
-  | 'small'
-  | 'medium'
-  | 'large'
-  | 'xlarge'
-  | 'xxlarge'
+export type TextSize = 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' | 'xxlarge'
 
 export type TextTypo =
   | 'display-large'
@@ -33,12 +27,7 @@ export type TextTypo =
   | 'label-medium'
   | 'label-small'
 
-export type TextWeight =
-  | 'light'
-  | 'regular'
-  | 'medium'
-  | 'semibold'
-  | 'bold'
+export type TextWeight = 'light' | 'regular' | 'medium' | 'semibold' | 'bold'
 
 export type TextColor =
   | 'inherit'
@@ -72,24 +61,14 @@ export interface TextStyleProps {
 
 export type TextResponsiveProps = Partial<TextStyleProps>
 
-export type TextViewProps = Omit<
-  ViewCoreProps<HTMLSpanElement>,
-  'children' | 'color'
-> &
+export type TextViewProps = Omit<ViewCoreProps<HTMLSpanElement>, 'children' | 'color'> &
   ViewDynamicBreakpointProps & {
     ref?: Ref<HTMLSpanElement>
   }
 
-export type TextBreakpointProps =
-  Partial<
-    Record<
-      DefaultBreakpointName,
-      TextResponsiveProps
-    >
-  >
+export type TextBreakpointProps = Partial<Record<DefaultBreakpointName, TextResponsiveProps>>
 
-export type TextProps =
-  TextStyleProps &
+export type TextProps = TextStyleProps &
   TextBreakpointProps &
   ViewDynamicBreakpointProps & {
     children?: ReactNode

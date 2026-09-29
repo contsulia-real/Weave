@@ -1,11 +1,8 @@
-import {
-  useInsertionEffect,
-  useLayoutEffect,
-} from 'react'
+import { useInsertionEffect, useLayoutEffect } from 'react'
 import type { ImageProps } from '../core/image-types'
 import type { ViewProps } from '../core/view-types'
-import { resolveImageStyle } from '../renderers/dom/resolve-image'
 import { ensureImageStylesheet } from '../renderers/dom/image-stylesheet'
+import { resolveImageStyle } from '../renderers/dom/resolve-image'
 import { useViewHost } from './internal/use-view-host'
 
 export function Image({
@@ -24,12 +21,11 @@ export function Image({
     position,
   })
 
-  const {
-    elementRef,
-    className,
-    inlineStyle,
-    resolved,
-  } = useViewHost(hostProps, componentStyle, 'image')
+  const { elementRef, className, inlineStyle, resolved } = useViewHost(
+    hostProps,
+    componentStyle,
+    'image',
+  )
 
   useInsertionEffect(ensureImageStylesheet, [])
 

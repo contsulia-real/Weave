@@ -13,15 +13,10 @@ const TEXT_STYLE_PROPERTIES = [
 
 export type TextStyleProperty = (typeof TEXT_STYLE_PROPERTIES)[number]
 
-const variableName = (
-  property: TextStyleProperty,
-  breakpoint?: string,
-): `--weave-text-${string}` =>
+const variableName = (property: TextStyleProperty, breakpoint?: string): `--weave-text-${string}` =>
   `--weave-text-${breakpoint === undefined ? '' : `${breakpoint}-`}${property}`
 
-const responsiveVariableName = (
-  property: TextStyleProperty,
-): `--weave-text-responsive-${string}` =>
+const responsiveVariableName = (property: TextStyleProperty): `--weave-text-responsive-${string}` =>
   `--weave-text-responsive-${property}`
 
 const propertyRegistrationBlock = () =>
@@ -29,10 +24,7 @@ const propertyRegistrationBlock = () =>
     variableName(property),
     responsiveVariableName(property),
   ])
-    .map(
-      (variable) =>
-        `@property ${variable} { syntax: "*"; inherits: false; }`,
-    )
+    .map((variable) => `@property ${variable} { syntax: "*"; inherits: false; }`)
     .join('')
 
 const fallbackFor = (property: TextStyleProperty) => {
@@ -61,8 +53,7 @@ const sourceChain = (property: TextStyleProperty) =>
 
 const declarationBlock = () =>
   TEXT_STYLE_PROPERTIES.map(
-    (property) =>
-      `${cssProperty(property)}: ${sourceChain(property)};`,
+    (property) => `${cssProperty(property)}: ${sourceChain(property)};`,
   ).join('')
 
 import { ensureStaticStylesheet } from './static-stylesheet'
@@ -90,7 +81,7 @@ export function ensureTextStylesheet(): void {
 }
 
 export {
-  TEXT_STYLE_PROPERTIES,
   responsiveVariableName as textResponsiveVariableName,
+  TEXT_STYLE_PROPERTIES,
   variableName as textVariableName,
 }

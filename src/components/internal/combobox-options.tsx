@@ -1,7 +1,4 @@
-import type {
-  ReactElement,
-  ReactNode,
-} from 'react'
+import type { ReactElement, ReactNode } from 'react'
 import type {
   ComboboxFilter,
   ComboboxFilterOption,
@@ -17,34 +14,18 @@ import {
 } from './option-collection'
 
 export interface ComboboxOptionEntry {
-  descriptor:
-    ComboboxOptionDescriptor
-  node:
-    ReactElement<ComboboxOptionProps>
+  descriptor: ComboboxOptionDescriptor
+  node: ReactElement<ComboboxOptionProps>
 }
 
-export function comboboxOptionEntries(
-  children: ReactNode,
-): readonly ComboboxOptionEntry[] {
-  const output =
-    collectOptionElements(
-      children,
-      ComboboxOption,
-    ).map(
-      (node) => ({
-        descriptor:
-          optionDescriptor(
-            node.props,
-          ),
-        node,
-      }),
-    )
+export function comboboxOptionEntries(children: ReactNode): readonly ComboboxOptionEntry[] {
+  const output = collectOptionElements(children, ComboboxOption).map((node) => ({
+    descriptor: optionDescriptor(node.props),
+    node,
+  }))
 
   assertUniqueOptionValues(
-    output.map(
-      (entry) =>
-        entry.descriptor,
-    ),
+    output.map((entry) => entry.descriptor),
     'Combobox',
   )
 
@@ -52,61 +33,38 @@ export function comboboxOptionEntries(
 }
 
 export function comboboxOptionDescriptors(
-  entries:
-    readonly ComboboxOptionEntry[],
+  entries: readonly ComboboxOptionEntry[],
 ): readonly ComboboxOptionDescriptor[] {
-  return entries.map(
-    (entry) =>
-      entry.descriptor,
-  )
+  return entries.map((entry) => entry.descriptor)
 }
 
-export const selectedComboboxDescriptor =
-  selectedOptionDescriptor
+export const selectedComboboxDescriptor = selectedOptionDescriptor
 
-export function defaultComboboxFilter(
-  option:
-    ComboboxFilterOption,
-  inputValue: string,
-): boolean {
-  const query =
-    inputValue
-      .trim()
-      .toLocaleLowerCase()
+export function defaultComboboxFilter(option: ComboboxFilterOption, inputValue: string): boolean {
+  const query = inputValue.trim().toLocaleLowerCase()
 
   if (query.length === 0) {
     return true
   }
 
-  return option.textValue
-    .trim()
-    .toLocaleLowerCase()
-    .includes(query)
+  return option.textValue.trim().toLocaleLowerCase().includes(query)
 }
 
 export function filteredComboboxEntries(
-  entries:
-    readonly ComboboxOptionEntry[],
+  entries: readonly ComboboxOptionEntry[],
   inputValue: string,
-  filter:
-    ComboboxFilter | undefined,
+  filter: ComboboxFilter | undefined,
 ): readonly ComboboxOptionEntry[] {
-  const applyFilter =
-    filter ??
-    defaultComboboxFilter
+  const applyFilter = filter ?? defaultComboboxFilter
 
-  return entries.filter(
-    (entry) =>
-      applyFilter(
-        {
-          value:
-            entry.descriptor.value,
-          textValue:
-            entry.descriptor.textValue,
-          disabled:
-            entry.descriptor.disabled,
-        },
-        inputValue,
-      ),
+  return entries.filter((entry) =>
+    applyFilter(
+      {
+        value: entry.descriptor.value,
+        textValue: entry.descriptor.textValue,
+        disabled: entry.descriptor.disabled,
+      },
+      inputValue,
+    ),
   )
 }

@@ -1,11 +1,5 @@
-import type {
-  ReactNode,
-} from 'react'
-import {
-  Column,
-  Text,
-  View,
-} from '../index'
+import type { ReactNode } from 'react'
+import { Column, Text, View } from '../index'
 
 export function PlaygroundSection({
   title,
@@ -17,9 +11,7 @@ export function PlaygroundSection({
   children: ReactNode
 }) {
   return (
-    <Column
-      gap={0.75}
-    >
+    <Column gap={0.75}>
       <Text
         typo="headline-small"
         viewProps={{
@@ -30,36 +22,21 @@ export function PlaygroundSection({
         {title}
       </Text>
 
-      {description === undefined
-        ? null
-        : (
-            <Text
-              typo="body-medium"
-              color="secondary"
-            >
-              {description}
-            </Text>
-          )}
+      {description === undefined ? null : (
+        <Text typo="body-medium" color="secondary">
+          {description}
+        </Text>
+      )}
 
       {children}
     </Column>
   )
 }
 
-export function DemoBox({
-  label,
-}: {
-  label: string
-}) {
+export function DemoBox({ label }: { label: string }) {
   return (
-    <View
-      padding={1}
-      radius="medium"
-      background="surfaceHover"
-    >
-      <Text typo="label-medium">
-        {label}
-      </Text>
+    <View padding={1} radius="medium" background="surfaceHover">
+      <Text typo="label-medium">{label}</Text>
     </View>
   )
 }

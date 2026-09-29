@@ -1,151 +1,95 @@
-import {
-  useEffect,
-  type RefObject,
-} from 'react'
-import {
-  trackVisualAnchor,
-  visualAnchorInteractionEvents,
-} from './visual-anchor-tracker'
+import { type RefObject, useEffect } from 'react'
+import { trackVisualAnchor, visualAnchorInteractionEvents } from './visual-anchor-tracker'
 
-function anchorFullyOutsideViewport(
-  target: HTMLElement,
-): boolean {
-  const view =
-    target.ownerDocument
-      .defaultView
+function anchorFullyOutsideViewport(target: HTMLElement): boolean {
+  const view = target.ownerDocument.defaultView
 
   if (view === null) {
     return false
   }
 
-  const rect =
-    target.getBoundingClientRect()
+  const rect = target.getBoundingClientRect()
 
-  if (
-    rect.width <= 0 &&
-    rect.height <= 0
-  ) {
+  if (rect.width <= 0 && rect.height <= 0) {
     return false
   }
 
   return (
     rect.bottom <= 0 ||
-    rect.top >=
-      view.innerHeight ||
+    rect.top >= view.innerHeight ||
     rect.right <= 0 ||
-    rect.left >=
-      view.innerWidth
+    rect.left >= view.innerWidth
   )
 }
 
 export function useOutsideInteractionDismiss(
-  anchorRef:
-    RefObject<HTMLElement | null>,
-  surfaceRef:
-    | RefObject<HTMLElement | null>
-    | undefined,
+  anchorRef: RefObject<HTMLElement | null>,
+  surfaceRef: RefObject<HTMLElement | null> | undefined,
   active: boolean,
   onDismiss: () => void,
   dismissOnFocusOutside = false,
-  isInsideExtra?: (
-    target: Node,
-  ) => boolean,
+  isInsideExtra?: (target: Node) => boolean,
 ): void {
   useEffect(() => {
     if (!active) return
 
-    const anchor =
-      anchorRef.current
+    const anchor = anchorRef.current
 
     if (anchor === null) {
       return
     }
 
-    const document =
-      anchor.ownerDocument
+    const document = anchor.ownerDocument
 
-    const inside = (
-      target: EventTarget | null,
-    ) => {
+    const inside = (target: EventTarget | null) => {
       if (!(target instanceof Node)) {
         return false
       }
 
       return (
-        anchorRef.current
-          ?.contains(target) === true ||
-        surfaceRef?.current
-          ?.contains(target) === true ||
+        anchorRef.current?.contains(target) === true ||
+        surfaceRef?.current?.contains(target) === true ||
         isInsideExtra?.(target) === true
       )
     }
 
-    const pointerDown = (
-      event: PointerEvent,
-    ) => {
+    const pointerDown = (event: PointerEvent) => {
       if (!inside(event.target)) {
         onDismiss()
       }
     }
 
-    const focusIn = (
-      event: FocusEvent,
-    ) => {
+    const focusIn = (event: FocusEvent) => {
       if (!inside(event.target)) {
         onDismiss()
       }
     }
 
-    document.addEventListener(
-      'pointerdown',
-      pointerDown,
-      true,
-    )
+    document.addEventListener('pointerdown', pointerDown, true)
 
     if (dismissOnFocusOutside) {
-      document.addEventListener(
-        'focusin',
-        focusIn,
-        true,
-      )
+      document.addEventListener('focusin', focusIn, true)
     }
 
     return () => {
-      document.removeEventListener(
-        'pointerdown',
-        pointerDown,
-        true,
-      )
+      document.removeEventListener('pointerdown', pointerDown, true)
 
       if (dismissOnFocusOutside) {
-        document.removeEventListener(
-          'focusin',
-          focusIn,
-          true,
-        )
+        document.removeEventListener('focusin', focusIn, true)
       }
     }
-  }, [
-    active,
-    anchorRef,
-    dismissOnFocusOutside,
-    isInsideExtra,
-    onDismiss,
-    surfaceRef,
-  ])
+  }, [active, anchorRef, dismissOnFocusOutside, isInsideExtra, onDismiss, surfaceRef])
 }
 
 export function useAnchorViewportDismiss(
-  targetRef:
-    RefObject<HTMLElement | null>,
+  targetRef: RefObject<HTMLElement | null>,
   active: boolean,
   onDismiss: () => void,
 ): void {
   useEffect(() => {
     if (!active) return
 
-    const target =
-      targetRef.current
+    const target = targetRef.current
 
     if (target === null) {
       return
@@ -154,12 +98,7 @@ export function useAnchorViewportDismiss(
     let dismissed = false
 
     const checkViewport = () => {
-      if (
-        dismissed ||
-        !anchorFullyOutsideViewport(
-          target,
-        )
-      ) {
+      if (dismissed || !anchorFullyOutsideViewport(target)) {
         return
       }
 
@@ -167,21 +106,11 @@ export function useAnchorViewportDismiss(
       onDismiss()
     }
 
-    return trackVisualAnchor(
-      target,
-      checkViewport,
-      {
-        trackScroll: true,
-        trackMutations: true,
-        interactionEvents:
-          visualAnchorInteractionEvents,
-        continuousAnimations:
-          true,
-      },
-    )
-  }, [
-    active,
-    onDismiss,
-    targetRef,
-  ])
+    return trackVisualAnchor(target, checkViewport, {
+      trackScroll: true,
+      trackMutations: true,
+      interactionEvents: visualAnchorInteractionEvents,
+      continuousAnimations: true,
+    })
+  }, [active, onDismiss, targetRef])
 }

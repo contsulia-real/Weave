@@ -1,8 +1,4 @@
-import {
-  useCallback,
-  useState,
-  type RefObject,
-} from 'react'
+import { type RefObject, useCallback, useState } from 'react'
 import type { ListFocusMove } from './list-context'
 
 function initialFocusId(
@@ -21,16 +17,12 @@ export function useListFocus(
   selectedIds: ReadonlySet<string>,
   rootRef: RefObject<HTMLDivElement | null>,
 ) {
-  const [
-    storedFocusId,
-    setStoredFocusId,
-  ] = useState<string | null>(
-    () => initialFocusId(enabledIds, selectedIds),
+  const [storedFocusId, setStoredFocusId] = useState<string | null>(() =>
+    initialFocusId(enabledIds, selectedIds),
   )
 
   const focusId =
-    storedFocusId !== null &&
-    enabledIds.includes(storedFocusId)
+    storedFocusId !== null && enabledIds.includes(storedFocusId)
       ? storedFocusId
       : initialFocusId(enabledIds, selectedIds)
 
@@ -44,16 +36,10 @@ export function useListFocus(
   )
 
   const moveFocus = useCallback(
-    (
-      id: string,
-      move: ListFocusMove,
-    ) => {
+    (id: string, move: ListFocusMove) => {
       if (enabledIds.length === 0) return
 
-      const currentIndex = Math.max(
-        0,
-        enabledIds.indexOf(id),
-      )
+      const currentIndex = Math.max(0, enabledIds.indexOf(id))
       let nextIndex = currentIndex
 
       if (move === 'first') {
@@ -63,10 +49,7 @@ export function useListFocus(
       } else if (move === 'previous') {
         nextIndex = Math.max(0, currentIndex - 1)
       } else {
-        nextIndex = Math.min(
-          enabledIds.length - 1,
-          currentIndex + 1,
-        )
+        nextIndex = Math.min(enabledIds.length - 1, currentIndex + 1)
       }
 
       const nextId = enabledIds[nextIndex]
@@ -75,17 +58,12 @@ export function useListFocus(
       setStoredFocusId(nextId)
 
       const focusItem = () => {
-        const items =
-          rootRef.current?.querySelectorAll<HTMLElement>(
-            '[data-weave-list-item-id]',
-          )
+        const items = rootRef.current?.querySelectorAll<HTMLElement>('[data-weave-list-item-id]')
 
         if (items === undefined) return false
 
         for (const item of items) {
-          if (
-            item.dataset.weaveListItemId === nextId
-          ) {
+          if (item.dataset.weaveListItemId === nextId) {
             item.focus()
             return true
           }
@@ -96,14 +74,9 @@ export function useListFocus(
 
       if (focusItem()) return
 
-      const view =
-        rootRef.current?.ownerDocument.defaultView
+      const view = rootRef.current?.ownerDocument.defaultView
 
-      if (
-        view !== null &&
-        view !== undefined &&
-        typeof view.requestAnimationFrame === 'function'
-      ) {
+      if (view !== null && view !== undefined && typeof view.requestAnimationFrame === 'function') {
         view.requestAnimationFrame(focusItem)
       } else {
         queueMicrotask(focusItem)

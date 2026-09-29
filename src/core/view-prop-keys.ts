@@ -1,7 +1,4 @@
-import type {
-  ViewSemanticProps,
-  ViewStyleProps,
-} from './view-types'
+import type { ViewSemanticProps, ViewStyleProps } from './view-types'
 
 export const VIEW_STYLE_PROP_KEYS = [
   'layout',
@@ -142,11 +139,7 @@ export const VIEW_DEFAULT_BREAKPOINT_PROP_KEYS = [
   'containerXl',
 ] as const
 
-export const VIEW_NATIVE_NORMALIZED_PROP_KEYS = [
-  'hidden',
-  'draggable',
-  'tabIndex',
-] as const
+export const VIEW_NATIVE_NORMALIZED_PROP_KEYS = ['hidden', 'draggable', 'tabIndex'] as const
 
 export const VIEW_CONTROL_PROP_KEYS = [
   'children',
@@ -181,15 +174,9 @@ export const VIEW_INTERNAL_PROP_KEYS = new Set<string>([
 type AssertNoMissingKeys<T extends never> = T
 
 export type ViewStylePropKeyCoverage = AssertNoMissingKeys<
-  Exclude<
-    keyof ViewStyleProps,
-    (typeof VIEW_STYLE_PROP_KEYS)[number]
-  >
+  Exclude<keyof ViewStyleProps, (typeof VIEW_STYLE_PROP_KEYS)[number]>
 >
 
 export type ViewSemanticPropKeyCoverage = AssertNoMissingKeys<
-  Exclude<
-    keyof ViewSemanticProps,
-    (typeof VIEW_SEMANTIC_PROP_KEYS)[number]
-  >
+  Exclude<keyof ViewSemanticProps, (typeof VIEW_SEMANTIC_PROP_KEYS)[number]>
 >

@@ -1,11 +1,5 @@
-import {
-  useInsertionEffect,
-  useState,
-} from 'react'
-import type {
-  ChangeEvent,
-  CSSProperties,
-} from 'react'
+import type { ChangeEvent, CSSProperties } from 'react'
+import { useInsertionEffect, useState } from 'react'
 import type {
   InputProps,
   InputType,
@@ -22,15 +16,11 @@ import { AutoScrollbar } from './internal/AutoScrollbar'
 import { closeIcon } from './internal/control-icons'
 import { useViewHost } from './internal/use-view-host'
 
-function cssString(
-  value: CSSProperties['overflow'] | undefined,
-): string | undefined {
+function cssString(value: CSSProperties['overflow'] | undefined): string | undefined {
   return typeof value === 'string' ? value : undefined
 }
 
-function inputOverflowIntent(
-  style: CSSProperties | undefined,
-) {
+function inputOverflowIntent(style: CSSProperties | undefined) {
   return {
     styleOverflow: cssString(style?.overflow),
     styleOverflowX: cssString(style?.overflowX),
@@ -41,10 +31,7 @@ function inputOverflowIntent(
 function useInputThemeClassName(): string | undefined {
   const { theme } = useTheme()
 
-  return useRuntimeStyleClass(
-    'input-theme',
-    resolveInputTheme(theme),
-  )
+  return useRuntimeStyleClass('input-theme', resolveInputTheme(theme))
 }
 
 interface SingleLineInputHostProps {
@@ -89,33 +76,14 @@ function SingleLineInput({
     disabled,
   }
   const themeClassName = useInputThemeClassName()
-  const {
-    elementRef,
-    className,
-    inlineStyle,
-    resolved,
-  } = useViewHost(hostProps)
-  const controlled =
-    value !== undefined
-  const [
-    uncontrolledText,
-    setUncontrolledText,
-  ] = useState(
-    String(defaultValue ?? ''),
-  )
-  const currentText =
-    controlled
-      ? String(value ?? '')
-      : uncontrolledText
-  const hasClear =
-    clearable &&
-    !disabled &&
-    !readOnly &&
-    currentText.length > 0
+  const { elementRef, className, inlineStyle, resolved } = useViewHost(hostProps)
+  const controlled = value !== undefined
+  const [uncontrolledText, setUncontrolledText] = useState(String(defaultValue ?? ''))
+  const currentText = controlled ? String(value ?? '') : uncontrolledText
+  const hasClear = clearable && !disabled && !readOnly && currentText.length > 0
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const next =
-      event.currentTarget.value
+    const next = event.currentTarget.value
 
     if (!controlled) {
       setUncontrolledText(next)
@@ -156,17 +124,9 @@ function SingleLineInput({
       pattern={pattern}
       data-weave-view=""
       data-weave-input=""
-      data-weave-input-has-clear={
-        hasClear
-          ? 'true'
-          : undefined
-      }
+      data-weave-input-has-clear={hasClear ? 'true' : undefined}
       data-weave-layout={resolved.layout}
-      className={[
-        'weave-input',
-        themeClassName,
-        className,
-      ].filter(Boolean).join(' ')}
+      className={['weave-input', themeClassName, className].filter(Boolean).join(' ')}
       style={inlineStyle}
     />
   )
@@ -177,21 +137,10 @@ function SingleLineInput({
 
   return (
     <span
-      className={[
-        'weave-input-root',
-        themeClassName,
-      ].filter(Boolean).join(' ')}
+      className={['weave-input-root', themeClassName].filter(Boolean).join(' ')}
       data-weave-input-root=""
-      data-weave-input-root-fill={
-        viewProps.width === 'fill'
-          ? 'true'
-          : undefined
-      }
-      data-weave-input-has-clear={
-        hasClear
-          ? 'true'
-          : 'false'
-      }
+      data-weave-input-root-fill={viewProps.width === 'fill' ? 'true' : undefined}
+      data-weave-input-has-clear={hasClear ? 'true' : 'false'}
     >
       {input}
 
@@ -201,8 +150,7 @@ function SingleLineInput({
           variant="ghost"
           size="small"
           viewProps={{
-            className:
-              'weave-input__clear',
+            className: 'weave-input__clear',
             label: clearLabel,
             onPointerDown: (event) => {
               event.preventDefault()
@@ -251,12 +199,7 @@ function MultilineInput({
     disabled,
   }
   const themeClassName = useInputThemeClassName()
-  const {
-    elementRef,
-    className,
-    inlineStyle,
-    resolved,
-  } = useViewHost(hostProps)
+  const { elementRef, className, inlineStyle, resolved } = useViewHost(hostProps)
 
   const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     onChange?.(event.currentTarget.value)
@@ -285,12 +228,14 @@ function MultilineInput({
         data-weave-scroll-host=""
         data-weave-layout={resolved.layout}
         className={[
-            'weave-input',
+          'weave-input',
           'weave-input--multiline',
           'weave-scroll-host',
           themeClassName,
           className,
-        ].filter(Boolean).join(' ')}
+        ]
+          .filter(Boolean)
+          .join(' ')}
         style={inlineStyle}
       />
 

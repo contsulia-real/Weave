@@ -13,10 +13,7 @@ export interface MotionCurveSteps {
   position?: MotionCurveStepsPosition
 }
 
-export type MotionCurve =
-  | string
-  | readonly [number, number, number, number]
-  | MotionCurveSteps
+export type MotionCurve = string | readonly [number, number, number, number] | MotionCurveSteps
 
 export interface MotionSpring {
   stiffness?: number
@@ -29,23 +26,13 @@ export interface MotionSpring {
 
 export type MotionSpringValue = MotionSpring | string
 
-export type MotionInterruption =
-  | 'continue'
-  | 'restart'
-  | 'finish'
+export type MotionInterruption = 'continue' | 'restart' | 'finish'
 
 export type MotionRepeat = number | 'infinite'
 
-export type MotionDirection =
-  | 'normal'
-  | 'reverse'
-  | 'alternate'
-  | 'alternate-reverse'
+export type MotionDirection = 'normal' | 'reverse' | 'alternate' | 'alternate-reverse'
 
-export type ReducedMotionPreference =
-  | 'system'
-  | 'reduce'
-  | 'no-preference'
+export type ReducedMotionPreference = 'system' | 'reduce' | 'no-preference'
 
 export interface MotionStyle {
   opacity?: number
@@ -97,18 +84,11 @@ type ViewTransitionBase = {
   delay?: MotionDuration
 }
 
-export type ViewTransitionConfig =
-  ViewTransitionBase & MotionTiming
+export type ViewTransitionConfig = ViewTransitionBase & MotionTiming
 
-export type ViewTransition =
-  | MotionDuration
-  | ViewTransitionConfig
+export type ViewTransition = MotionDuration | ViewTransitionConfig
 
-export type ViewMotionPreset =
-  | 'fade'
-  | 'fade-up'
-  | 'fade-down'
-  | 'scale'
+export type ViewMotionPreset = 'fade' | 'fade-up' | 'fade-down' | 'scale'
 
 type ViewEnterExitBase = {
   from?: MotionStyle
@@ -119,23 +99,17 @@ type ViewEnterExitBase = {
   children?: MotionStaggerConfig
 }
 
-export type ViewEnterExitConfig =
-  ViewEnterExitBase & MotionTiming
+export type ViewEnterExitConfig = ViewEnterExitBase & MotionTiming
 
-export type ViewEnterExit =
-  | ViewMotionPreset
-  | ViewEnterExitConfig
+export type ViewEnterExit = ViewMotionPreset | ViewEnterExitConfig
 
 type ViewLayoutAnimationBase = {
   interruption?: MotionInterruption
 }
 
-export type ViewLayoutAnimationConfig =
-  ViewLayoutAnimationBase & MotionTiming
+export type ViewLayoutAnimationConfig = ViewLayoutAnimationBase & MotionTiming
 
-export type ViewLayoutAnimation =
-  | boolean
-  | ViewLayoutAnimationConfig
+export type ViewLayoutAnimation = boolean | ViewLayoutAnimationConfig
 
 type ViewAnimationBase = {
   keyframes: readonly MotionKeyframe[]
@@ -146,8 +120,7 @@ type ViewAnimationBase = {
   interruption?: MotionInterruption
 }
 
-export type ViewAnimationConfig =
-  ViewAnimationBase & MotionTiming
+export type ViewAnimationConfig = ViewAnimationBase & MotionTiming
 
 export type ViewAnimation = string | ViewAnimationConfig
 

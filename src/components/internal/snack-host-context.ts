@@ -1,19 +1,12 @@
-import {
-  createContext,
-} from 'react'
-import type {
-  SnackContainer,
-} from '../../core/snack-types'
+import { createContext } from 'react'
+import type { SnackContainer } from '../../core/snack-types'
 
 export interface SnackHostContextValue {
   target: SnackContainer | undefined
   scopeId: string
 }
 
-export const SnackHostContext =
-  createContext<
-    SnackHostContextValue | undefined
-  >(undefined)
+export const SnackHostContext = createContext<SnackHostContextValue | undefined>(undefined)
 
 export function resolveSnackHost(
   target: SnackContainer | undefined,

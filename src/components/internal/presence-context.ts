@@ -6,5 +6,4 @@ export interface PresenceContextValue {
   completeExit: (id: symbol) => void
 }
 
-export const PresenceContext =
-  createContext<PresenceContextValue | null>(null)
+export const PresenceContext = createContext<PresenceContextValue | null>(null)

@@ -1,7 +1,4 @@
-import type {
-  ScrollbarOverflowIntent,
-  ScrollMetrics,
-} from './scrollbar-types'
+import type { ScrollbarOverflowIntent, ScrollMetrics } from './scrollbar-types'
 
 const SCROLLBAR_INSET_PX = 4
 const MIN_THUMB_LENGTH_PX = 24
@@ -29,39 +26,25 @@ function isAutoScrolling(value: string): boolean {
   return value === 'auto' || value === 'overlay'
 }
 
-function scrollbarVisible(
-  overflow: string,
-  scrollSize: number,
-  clientSize: number,
-): boolean {
+function scrollbarVisible(overflow: string, scrollSize: number, clientSize: number): boolean {
   if (overflow === 'scroll') return true
 
-  return (
-    isAutoScrolling(overflow) &&
-    scrollSize > clientSize + 1
-  )
+  return isAutoScrolling(overflow) && scrollSize > clientSize + 1
 }
 
 function cssLengthPixels(value: string, reference: number): number {
   const trimmed = value.trim()
   if (trimmed.endsWith('%')) {
     const percent = Number.parseFloat(trimmed)
-    return Number.isFinite(percent)
-      ? reference * percent / 100
-      : 0
+    return Number.isFinite(percent) ? (reference * percent) / 100 : 0
   }
 
   const numeric = Number.parseFloat(trimmed)
   return Number.isFinite(numeric) ? numeric : 0
 }
 
-function radiusAxes(
-  value: string,
-  width: number,
-  height: number,
-): RadiusAxes {
-  const [xValue = '0', yValue = xValue] =
-    value.trim().split(/\s+/)
+function radiusAxes(value: string, width: number, height: number): RadiusAxes {
+  const [xValue = '0', yValue = xValue] = value.trim().split(/\s+/)
 
   return {
     x: Math.max(0, cssLengthPixels(xValue, width)),
@@ -69,31 +52,12 @@ function radiusAxes(
   }
 }
 
-function effectiveCornerRadii(
-  computed: CSSStyleDeclaration,
-  rect: DOMRect,
-): CornerRadii {
+function effectiveCornerRadii(computed: CSSStyleDeclaration, rect: DOMRect): CornerRadii {
   const radii: CornerRadii = {
-    topLeft: radiusAxes(
-      computed.borderTopLeftRadius,
-      rect.width,
-      rect.height,
-    ),
-    topRight: radiusAxes(
-      computed.borderTopRightRadius,
-      rect.width,
-      rect.height,
-    ),
-    bottomRight: radiusAxes(
-      computed.borderBottomRightRadius,
-      rect.width,
-      rect.height,
-    ),
-    bottomLeft: radiusAxes(
-      computed.borderBottomLeftRadius,
-      rect.width,
-      rect.height,
-    ),
+    topLeft: radiusAxes(computed.borderTopLeftRadius, rect.width, rect.height),
+    topRight: radiusAxes(computed.borderTopRightRadius, rect.width, rect.height),
+    bottomRight: radiusAxes(computed.borderBottomRightRadius, rect.width, rect.height),
+    bottomLeft: radiusAxes(computed.borderBottomLeftRadius, rect.width, rect.height),
   }
 
   const ratio = (available: number, requested: number) =>
@@ -117,10 +81,7 @@ function effectiveCornerRadii(
   return radii
 }
 
-function syncScrollbarLayer(
-  hitRegion: HTMLElement,
-  target: HTMLElement,
-): void {
+function syncScrollbarLayer(hitRegion: HTMLElement, target: HTMLElement): void {
   let node: HTMLElement | null = target
   let layer: number | null = null
 
@@ -129,9 +90,7 @@ function syncScrollbarLayer(
     const numeric = Number(value)
 
     if (Number.isFinite(numeric)) {
-      layer = layer === null
-        ? numeric
-        : Math.max(layer, numeric)
+      layer = layer === null ? numeric : Math.max(layer, numeric)
     }
 
     node = node.parentElement
@@ -146,32 +105,21 @@ function syncScrollbarLayer(
 
 export function syncScrollbarThumbOffsets(
   target: HTMLElement,
-  elements: Pick<
-    ScrollbarElements,
-    'verticalThumb' | 'horizontalThumb'
-  >,
+  elements: Pick<ScrollbarElements, 'verticalThumb' | 'horizontalThumb'>,
   metrics: ScrollMetrics,
 ): void {
   const verticalOffset =
     metrics.verticalMaxScroll === 0
       ? 0
-      : (
-          target.scrollTop /
-          metrics.verticalMaxScroll
-        ) * metrics.verticalAvailable
+      : (target.scrollTop / metrics.verticalMaxScroll) * metrics.verticalAvailable
 
   const horizontalOffset =
     metrics.horizontalMaxScroll === 0
       ? 0
-      : (
-          target.scrollLeft /
-          metrics.horizontalMaxScroll
-        ) * metrics.horizontalAvailable
+      : (target.scrollLeft / metrics.horizontalMaxScroll) * metrics.horizontalAvailable
 
-  elements.verticalThumb.style.transform =
-    `translateY(${verticalOffset}px)`
-  elements.horizontalThumb.style.transform =
-    `translateX(${horizontalOffset}px)`
+  elements.verticalThumb.style.transform = `translateY(${verticalOffset}px)`
+  elements.horizontalThumb.style.transform = `translateX(${horizontalOffset}px)`
 }
 
 export function updateScrollbarGeometry(
@@ -179,12 +127,7 @@ export function updateScrollbarGeometry(
   elements: ScrollbarElements,
   overflowIntent: ScrollbarOverflowIntent,
 ): ScrollMetrics {
-  const {
-    verticalHitRegion,
-    horizontalHitRegion,
-    verticalThumb,
-    horizontalThumb,
-  } = elements
+  const { verticalHitRegion, horizontalHitRegion, verticalThumb, horizontalThumb } = elements
 
   const computed = getComputedStyle(target)
   const rect = target.getBoundingClientRect()
@@ -199,38 +142,22 @@ export function updateScrollbarGeometry(
   syncScrollbarLayer(horizontalHitRegion, target)
 
   const verticalOverflow =
-    (
-      overflowIntent.styleOverflowY ??
-      overflowIntent.styleOverflow
-    ) ||
+    (overflowIntent.styleOverflowY ?? overflowIntent.styleOverflow) ||
     computed.overflowY ||
     computed.overflow ||
     'visible'
 
   const horizontalOverflow =
-    (
-      overflowIntent.styleOverflowX ??
-      overflowIntent.styleOverflow
-    ) ||
+    (overflowIntent.styleOverflowX ?? overflowIntent.styleOverflow) ||
     computed.overflowX ||
     computed.overflow ||
     'visible'
 
   const verticalVisible =
-    scrollbarVisible(
-      verticalOverflow,
-      target.scrollHeight,
-      target.clientHeight,
-    ) &&
-    rect.height > 0
+    scrollbarVisible(verticalOverflow, target.scrollHeight, target.clientHeight) && rect.height > 0
 
   const horizontalVisible =
-    scrollbarVisible(
-      horizontalOverflow,
-      target.scrollWidth,
-      target.clientWidth,
-    ) &&
-    rect.width > 0
+    scrollbarVisible(horizontalOverflow, target.scrollWidth, target.clientWidth) && rect.width > 0
 
   verticalHitRegion.dataset.weaveScrollbarVisible = String(verticalVisible)
   horizontalHitRegion.dataset.weaveScrollbarVisible = String(horizontalVisible)
@@ -242,27 +169,17 @@ export function updateScrollbarGeometry(
     ? parseFloat(getComputedStyle(horizontalThumb).height) || 0
     : 0
 
-  const verticalStartInset = Math.max(
-    borderTop + inset,
-    radii.topRight.y,
-  )
+  const verticalStartInset = Math.max(borderTop + inset, radii.topRight.y)
   const verticalEndInset = Math.max(
     borderBottom + inset,
     radii.bottomRight.y,
-    horizontalVisible
-      ? borderBottom + inset * 2 + horizontalThickness
-      : 0,
+    horizontalVisible ? borderBottom + inset * 2 + horizontalThickness : 0,
   )
-  const horizontalStartInset = Math.max(
-    borderLeft + inset,
-    radii.bottomLeft.x,
-  )
+  const horizontalStartInset = Math.max(borderLeft + inset, radii.bottomLeft.x)
   const horizontalEndInset = Math.max(
     borderRight + inset,
     radii.bottomRight.x,
-    verticalVisible
-      ? borderRight + inset * 2 + verticalThickness
-      : 0,
+    verticalVisible ? borderRight + inset * 2 + verticalThickness : 0,
   )
 
   let verticalAvailable = 0
@@ -271,56 +188,33 @@ export function updateScrollbarGeometry(
   let horizontalMaxScroll = 0
 
   if (verticalVisible) {
-    const hitRegionLength = Math.max(
-      0,
-      rect.height - verticalStartInset - verticalEndInset,
-    )
+    const hitRegionLength = Math.max(0, rect.height - verticalStartInset - verticalEndInset)
     const thumbLength = Math.min(
       hitRegionLength,
-      Math.max(
-        MIN_THUMB_LENGTH_PX,
-        hitRegionLength * (target.clientHeight / target.scrollHeight),
-      ),
+      Math.max(MIN_THUMB_LENGTH_PX, hitRegionLength * (target.clientHeight / target.scrollHeight)),
     )
 
     verticalAvailable = Math.max(0, hitRegionLength - thumbLength)
-    verticalMaxScroll = Math.max(
-      0,
-      target.scrollHeight - target.clientHeight,
-    )
+    verticalMaxScroll = Math.max(0, target.scrollHeight - target.clientHeight)
 
-    verticalHitRegion.style.top =
-      `${rect.top + verticalStartInset}px`
+    verticalHitRegion.style.top = `${rect.top + verticalStartInset}px`
     verticalHitRegion.style.left = `${rect.right}px`
     verticalHitRegion.style.height = `${hitRegionLength}px`
-    verticalHitRegion.style.setProperty(
-      '--weave-scrollbar-edge-inset',
-      `${borderRight + inset}px`,
-    )
+    verticalHitRegion.style.setProperty('--weave-scrollbar-edge-inset', `${borderRight + inset}px`)
     verticalThumb.style.height = `${thumbLength}px`
   }
 
   if (horizontalVisible) {
-    const hitRegionLength = Math.max(
-      0,
-      rect.width - horizontalStartInset - horizontalEndInset,
-    )
+    const hitRegionLength = Math.max(0, rect.width - horizontalStartInset - horizontalEndInset)
     const thumbLength = Math.min(
       hitRegionLength,
-      Math.max(
-        MIN_THUMB_LENGTH_PX,
-        hitRegionLength * (target.clientWidth / target.scrollWidth),
-      ),
+      Math.max(MIN_THUMB_LENGTH_PX, hitRegionLength * (target.clientWidth / target.scrollWidth)),
     )
 
     horizontalAvailable = Math.max(0, hitRegionLength - thumbLength)
-    horizontalMaxScroll = Math.max(
-      0,
-      target.scrollWidth - target.clientWidth,
-    )
+    horizontalMaxScroll = Math.max(0, target.scrollWidth - target.clientWidth)
 
-    horizontalHitRegion.style.left =
-      `${rect.left + horizontalStartInset}px`
+    horizontalHitRegion.style.left = `${rect.left + horizontalStartInset}px`
     horizontalHitRegion.style.top = `${rect.bottom}px`
     horizontalHitRegion.style.width = `${hitRegionLength}px`
     horizontalHitRegion.style.setProperty(

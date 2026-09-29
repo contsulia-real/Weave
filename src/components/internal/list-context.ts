@@ -1,16 +1,7 @@
-import {
-  createContext,
-} from 'react'
-import type {
-  ListOrientation,
-  ListSelection,
-} from '../../core/list-types'
+import { createContext } from 'react'
+import type { ListOrientation, ListSelection } from '../../core/list-types'
 
-export type ListFocusMove =
-  | 'previous'
-  | 'next'
-  | 'first'
-  | 'last'
+export type ListFocusMove = 'previous' | 'next' | 'first' | 'last'
 
 export interface ListContextValue {
   selection: ListSelection
@@ -20,13 +11,7 @@ export interface ListContextValue {
   focusId: string | null
   setFocusId(id: string): void
   selectItem(id: string): void
-  moveFocus(
-    id: string,
-    move: ListFocusMove,
-  ): void
+  moveFocus(id: string, move: ListFocusMove): void
 }
 
-export const ListContext =
-  createContext<ListContextValue | null>(
-    null,
-  )
+export const ListContext = createContext<ListContextValue | null>(null)

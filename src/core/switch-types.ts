@@ -6,7 +6,8 @@ export type SwitchSize = 'small' | 'medium' | 'large'
 export type SwitchViewProps = Omit<
   ViewCoreProps<HTMLButtonElement>,
   'children' | 'checked' | 'disabled'
-> & ViewDynamicBreakpointProps
+> &
+  ViewDynamicBreakpointProps
 
 export interface SwitchProps {
   checked?: boolean

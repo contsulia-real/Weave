@@ -1,10 +1,10 @@
 import {
-  useEffect,
-  useRef,
   type KeyboardEvent,
   type MouseEvent,
   type PointerEvent as ReactPointerEvent,
   type RefObject,
+  useEffect,
+  useRef,
 } from 'react'
 import type { ViewProps } from '../../core/view-types'
 import {
@@ -12,8 +12,8 @@ import {
   applySwitchDragShape,
   clearSwitchDragShape,
   moveSwitchDrag,
-  switchDragGeometry,
   type SwitchDragState,
+  switchDragGeometry,
 } from './switch-drag'
 
 interface SwitchInteractionCallbacks {
@@ -58,10 +58,7 @@ export function useSwitchInteraction({
     const root = rootRef.current
     const thumb = thumbRef.current
 
-    if (
-      autoDragFrameRef.current !== null &&
-      typeof window !== 'undefined'
-    ) {
+    if (autoDragFrameRef.current !== null && typeof window !== 'undefined') {
       window.cancelAnimationFrame(autoDragFrameRef.current)
       autoDragFrameRef.current = null
     }
@@ -79,17 +76,11 @@ export function useSwitchInteraction({
     () => () => {
       nativeDragCleanupRef.current?.()
 
-      if (
-        autoDragFrameRef.current !== null &&
-        typeof window !== 'undefined'
-      ) {
+      if (autoDragFrameRef.current !== null && typeof window !== 'undefined') {
         window.cancelAnimationFrame(autoDragFrameRef.current)
       }
 
-      if (
-        suppressClickTimerRef.current !== null &&
-        typeof window !== 'undefined'
-      ) {
+      if (suppressClickTimerRef.current !== null && typeof window !== 'undefined') {
         window.clearTimeout(suppressClickTimerRef.current)
       }
     },
@@ -130,39 +121,20 @@ export function useSwitchInteraction({
     let startedAt: number | null = null
 
     root.dataset.weaveSwitchDragging = 'true'
-    applySwitchDragShape(
-      thumb,
-      drag,
-      geometry.startOffset,
-      dragShrink,
-      dragMaxWidth,
-    )
+    applySwitchDragShape(thumb, drag, geometry.startOffset, dragShrink, dragMaxWidth)
 
     const frame = (time: number) => {
       if (startedAt === null) startedAt = time
 
-      const linear = Math.min(
-        1,
-        Math.max(0, (time - startedAt) / autoDragDuration),
-      )
+      const linear = Math.min(1, Math.max(0, (time - startedAt) / autoDragDuration))
       const progress = 1 - Math.pow(1 - linear, 3)
-      const offset =
-        geometry.startOffset +
-        (endOffset - geometry.startOffset) * progress
+      const offset = geometry.startOffset + (endOffset - geometry.startOffset) * progress
 
       drag.currentOffset = offset
-      applySwitchAutoDragShape(
-        thumb,
-        drag,
-        offset,
-        linear,
-        dragShrink,
-        dragMaxWidth,
-      )
+      applySwitchAutoDragShape(thumb, drag, offset, linear, dragShrink, dragMaxWidth)
 
       if (linear < 1) {
-        autoDragFrameRef.current =
-          window.requestAnimationFrame(frame)
+        autoDragFrameRef.current = window.requestAnimationFrame(frame)
         return
       }
 
@@ -173,8 +145,7 @@ export function useSwitchInteraction({
       }
     }
 
-    autoDragFrameRef.current =
-      window.requestAnimationFrame(frame)
+    autoDragFrameRef.current = window.requestAnimationFrame(frame)
   }
 
   const toggle = () => {
@@ -188,10 +159,7 @@ export function useSwitchInteraction({
   const suppressFollowUpClick = () => {
     suppressClickRef.current = true
 
-    if (
-      suppressClickTimerRef.current !== null &&
-      typeof window !== 'undefined'
-    ) {
+    if (suppressClickTimerRef.current !== null && typeof window !== 'undefined') {
       window.clearTimeout(suppressClickTimerRef.current)
     }
 
@@ -203,30 +171,17 @@ export function useSwitchInteraction({
     }
   }
 
-  const moveDrag = (
-    pointerId: number,
-    clientX: number,
-  ): boolean => {
+  const moveDrag = (pointerId: number, clientX: number): boolean => {
     const drag = dragRef.current
     const thumb = thumbRef.current
 
-    if (
-      drag === null ||
-      thumb === null ||
-      drag.pointerId !== pointerId
-    ) {
+    if (drag === null || thumb === null || drag.pointerId !== pointerId) {
       return false
     }
 
     const nextOffset = moveSwitchDrag(drag, clientX)
 
-    applySwitchDragShape(
-      thumb,
-      drag,
-      nextOffset,
-      dragShrink,
-      dragMaxWidth,
-    )
+    applySwitchDragShape(thumb, drag, nextOffset, dragShrink, dragMaxWidth)
 
     return true
   }
@@ -240,21 +195,14 @@ export function useSwitchInteraction({
     const drag = dragRef.current
     const thumb = thumbRef.current
 
-    if (
-      drag === null ||
-      thumb === null ||
-      drag.pointerId !== pointerId
-    ) {
+    if (drag === null || thumb === null || drag.pointerId !== pointerId) {
       return
     }
 
     nativeDragCleanupRef.current?.()
     nativeDragCleanupRef.current = null
 
-    const nextChecked =
-      drag.maxOffset > 0
-        ? drag.currentOffset >= drag.maxOffset / 2
-        : checked
+    const nextChecked = drag.maxOffset > 0 ? drag.currentOffset >= drag.maxOffset / 2 : checked
 
     clearSwitchDragShape(thumb)
     delete root.dataset.weaveSwitchDragging
@@ -270,18 +218,12 @@ export function useSwitchInteraction({
       preventDefault?.()
     }
 
-    if (
-      applyValue &&
-      drag.moved &&
-      nextChecked !== checked
-    ) {
+    if (applyValue && drag.moved && nextChecked !== checked) {
       onCommit(nextChecked)
     }
   }
 
-  const handleClick = (
-    event: MouseEvent<HTMLButtonElement>,
-  ) => {
+  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
     if (disabled) {
       event.preventDefault()
       return
@@ -298,9 +240,7 @@ export function useSwitchInteraction({
     toggle()
   }
 
-  const handleKeyDown = (
-    event: KeyboardEvent<HTMLButtonElement>,
-  ) => {
+  const handleKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
     if (disabled) {
       event.preventDefault()
       return
@@ -320,9 +260,7 @@ export function useSwitchInteraction({
     callbacks.onPointerUp !== undefined ||
     callbacks.onPointerCancel !== undefined
 
-  const handlePointerDown = (
-    event: ReactPointerEvent<HTMLButtonElement>,
-  ) => {
+  const handlePointerDown = (event: ReactPointerEvent<HTMLButtonElement>) => {
     if (disabled) {
       event.preventDefault()
       return
@@ -330,10 +268,7 @@ export function useSwitchInteraction({
 
     callbacks.onPointerDown?.(event)
 
-    if (
-      event.defaultPrevented ||
-      event.button !== 0
-    ) {
+    if (event.defaultPrevented || event.button !== 0) {
       return
     }
 
@@ -359,13 +294,7 @@ export function useSwitchInteraction({
     root.focus()
     root.dataset.weaveSwitchDragging = 'true'
 
-    applySwitchDragShape(
-      thumb,
-      drag,
-      geometry.startOffset,
-      dragShrink,
-      dragMaxWidth,
-    )
+    applySwitchDragShape(thumb, drag, geometry.startOffset, dragShrink, dragMaxWidth)
 
     root.setPointerCapture?.(event.pointerId)
 
@@ -375,9 +304,7 @@ export function useSwitchInteraction({
     if (!usesReactDragHandlers) {
       const pointerId = event.pointerId
 
-      const onMove = (
-        nativeEvent: globalThis.PointerEvent,
-      ) => {
+      const onMove = (nativeEvent: globalThis.PointerEvent) => {
         if (nativeEvent.pointerId !== pointerId) return
 
         if (moveDrag(pointerId, nativeEvent.clientX)) {
@@ -385,22 +312,13 @@ export function useSwitchInteraction({
         }
       }
 
-      const onUp = (
-        nativeEvent: globalThis.PointerEvent,
-      ) => {
+      const onUp = (nativeEvent: globalThis.PointerEvent) => {
         if (nativeEvent.pointerId !== pointerId) return
 
-        finishDrag(
-          root,
-          pointerId,
-          true,
-          () => nativeEvent.preventDefault(),
-        )
+        finishDrag(root, pointerId, true, () => nativeEvent.preventDefault())
       }
 
-      const onCancel = (
-        nativeEvent: globalThis.PointerEvent,
-      ) => {
+      const onCancel = (nativeEvent: globalThis.PointerEvent) => {
         if (nativeEvent.pointerId !== pointerId) return
         finishDrag(root, pointerId, false)
       }
@@ -417,9 +335,7 @@ export function useSwitchInteraction({
     }
   }
 
-  const handlePointerMove = (
-    event: ReactPointerEvent<HTMLButtonElement>,
-  ) => {
+  const handlePointerMove = (event: ReactPointerEvent<HTMLButtonElement>) => {
     callbacks.onPointerMove?.(event)
     if (event.defaultPrevented) return
 
@@ -428,39 +344,25 @@ export function useSwitchInteraction({
     }
   }
 
-  const handlePointerUp = (
-    event: ReactPointerEvent<HTMLButtonElement>,
-  ) => {
+  const handlePointerUp = (event: ReactPointerEvent<HTMLButtonElement>) => {
     callbacks.onPointerUp?.(event)
 
-    finishDrag(
-      event.currentTarget,
-      event.pointerId,
-      !event.defaultPrevented,
-      () => event.preventDefault(),
+    finishDrag(event.currentTarget, event.pointerId, !event.defaultPrevented, () =>
+      event.preventDefault(),
     )
   }
 
-  const handlePointerCancel = (
-    event: ReactPointerEvent<HTMLButtonElement>,
-  ) => {
+  const handlePointerCancel = (event: ReactPointerEvent<HTMLButtonElement>) => {
     callbacks.onPointerCancel?.(event)
-    finishDrag(
-      event.currentTarget,
-      event.pointerId,
-      false,
-    )
+    finishDrag(event.currentTarget, event.pointerId, false)
   }
 
   return {
     handleClick,
     handleKeyDown,
     handlePointerDown,
-    handlePointerMove:
-      usesReactDragHandlers ? handlePointerMove : undefined,
-    handlePointerUp:
-      usesReactDragHandlers ? handlePointerUp : undefined,
-    handlePointerCancel:
-      usesReactDragHandlers ? handlePointerCancel : undefined,
+    handlePointerMove: usesReactDragHandlers ? handlePointerMove : undefined,
+    handlePointerUp: usesReactDragHandlers ? handlePointerUp : undefined,
+    handlePointerCancel: usesReactDragHandlers ? handlePointerCancel : undefined,
   }
 }

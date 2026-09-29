@@ -1,6 +1,4 @@
-import {
-  useInsertionEffect,
-} from 'react'
+import { useInsertionEffect } from 'react'
 import type { LinkProps } from '../core/link-types'
 import type { ViewProps } from '../core/view-types'
 import { ensureLinkStylesheet } from '../renderers/dom/link-stylesheet'
@@ -8,8 +6,8 @@ import { resolveLinkTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { useTheme } from '../theme/theme-context'
 import { Icon } from './Icon'
-import { Text } from './Text'
 import { useViewHost } from './internal/use-view-host'
+import { Text } from './Text'
 
 const linkIcon = (
   <svg
@@ -33,17 +31,9 @@ export function Link({
   viewProps = {},
 }: LinkProps) {
   const { theme } = useTheme()
-  const themeClassName = useRuntimeStyleClass(
-    'link-theme',
-    resolveLinkTheme(theme),
-  )
+  const themeClassName = useRuntimeStyleClass('link-theme', resolveLinkTheme(theme))
   const hostProps: ViewProps<HTMLAnchorElement> = viewProps
-  const {
-    elementRef,
-    className,
-    inlineStyle,
-    resolved,
-  } = useViewHost(hostProps)
+  const { elementRef, className, inlineStyle, resolved } = useViewHost(hostProps)
 
   useInsertionEffect(ensureLinkStylesheet, [])
 
@@ -57,11 +47,7 @@ export function Link({
       data-weave-link=""
       data-weave-link-underline={hideUnderline ? 'hidden' : 'visible'}
       data-weave-layout={resolved.layout}
-      className={[
-        'weave-link',
-        themeClassName,
-        className,
-      ].filter(Boolean).join(' ')}
+      className={['weave-link', themeClassName, className].filter(Boolean).join(' ')}
       style={inlineStyle}
     >
       <Text

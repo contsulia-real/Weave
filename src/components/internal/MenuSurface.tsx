@@ -5,16 +5,10 @@ import {
   type RefObject,
   type TransitionEvent,
 } from 'react'
-import type {
-  MenuViewProps,
-} from '../../core/menu-types'
+import type { MenuViewProps } from '../../core/menu-types'
 import { View } from '../View'
-import {
-  MenuLevelProvider,
-} from './menu-context'
-import type {
-  ExitPresenceState,
-} from './use-exit-presence'
+import { MenuLevelProvider } from './menu-context'
+import type { ExitPresenceState } from './use-exit-presence'
 
 export function MenuSurface({
   children,
@@ -36,13 +30,11 @@ export function MenuSurface({
   onTransitionEnd,
 }: {
   children?: ReactNode
-  panelRef:
-    RefObject<HTMLDivElement | null>
+  panelRef: RefObject<HTMLDivElement | null>
   viewProps?: MenuViewProps
   rootId: string
   levelId: string
-  parentItemRef?:
-    RefObject<HTMLDivElement | null>
+  parentItemRef?: RefObject<HTMLDivElement | null>
   closeLevel(): void
   active: boolean
   placement: string
@@ -52,76 +44,42 @@ export function MenuSurface({
   themeClassName?: string
   reducedMotion: boolean
   id?: string
-  onKeyDown?(
-    event:
-      KeyboardEvent<HTMLDivElement>,
-  ): void
-  onTransitionEnd?(
-    event:
-      TransitionEvent<HTMLDivElement>,
-  ): void
+  onKeyDown?(event: KeyboardEvent<HTMLDivElement>): void
+  onTransitionEnd?(event: TransitionEvent<HTMLDivElement>): void
 }) {
   return (
     <MenuLevelProvider
       levelId={levelId}
       panelRef={panelRef}
-      parentItemRef={
-        parentItemRef
-      }
+      parentItemRef={parentItemRef}
       closeLevel={closeLevel}
       active={active}
     >
       <View
         {...viewProps}
         ref={panelRef}
-        id={
-          id ??
-          viewProps.id
-        }
+        id={id ?? viewProps.id}
         role="menu"
         tabIndex={-1}
-        aria-hidden={
-          visualState ===
-            'closing'
-            ? true
-            : undefined
-        }
+        aria-hidden={visualState === 'closing' ? true : undefined}
         onKeyDown={onKeyDown}
-        onTransitionEnd={
-          onTransitionEnd
-        }
+        onTransitionEnd={onTransitionEnd}
         position="fixed"
-        layer={
-          viewProps.layer ??
-          'overlay'
-        }
-        className={[
-          'weave-menu',
-          themeClassName,
-          viewProps.className,
-        ].filter(Boolean).join(' ')}
+        layer={viewProps.layer ?? 'overlay'}
+        className={['weave-menu', themeClassName, viewProps.className].filter(Boolean).join(' ')}
         data={{
           ...viewProps.data,
           'weave-menu': '',
-          'weave-menu-root':
-            rootId,
-          'weave-menu-level':
-            levelId,
-          'weave-menu-state':
-            visualState,
+          'weave-menu-root': rootId,
+          'weave-menu-level': levelId,
+          'weave-menu-state': visualState,
           placement,
-          'weave-reduced-motion':
-            reducedMotion
-              ? 'reduce'
-              : undefined,
+          'weave-reduced-motion': reducedMotion ? 'reduce' : undefined,
         }}
         style={{
           ...viewProps.style,
           ...placementStyle,
-          visibility:
-            positioned
-              ? 'visible'
-              : 'hidden',
+          visibility: positioned ? 'visible' : 'hidden',
         }}
       >
         {children}

@@ -1,15 +1,8 @@
-import {
-  createContext,
-  useContext,
-} from 'react'
+import { createContext, useContext } from 'react'
 import type { ReducedMotionPreference } from '../core/motion-types'
 import { defaultTheme } from './default-theme'
-import type {
-  ResolvedTheme,
-  ThemeDefinition,
-  ThemeMode,
-} from './theme-types'
 import { useResolvedReducedMotion } from './reduced-motion'
+import type { ResolvedTheme, ThemeDefinition, ThemeMode } from './theme-types'
 
 export interface ThemeContextValue {
   definition: ThemeDefinition
@@ -34,14 +27,8 @@ export interface UseThemeResult {
 }
 
 export function useTheme(): UseThemeResult {
-  const {
-    theme,
-    mode,
-    requestedReducedMotion,
-  } = useContext(ThemeContext)
-  const reducedMotion = useResolvedReducedMotion(
-    requestedReducedMotion,
-  )
+  const { theme, mode, requestedReducedMotion } = useContext(ThemeContext)
+  const reducedMotion = useResolvedReducedMotion(requestedReducedMotion)
 
   return { theme, mode, reducedMotion }
 }

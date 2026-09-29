@@ -64,8 +64,5 @@ const stylesheet = `
 `
 
 export function ensureDividerStylesheet(): void {
-  ensureStaticStylesheet(
-    'divider',
-    stylesheet,
-  )
+  ensureStaticStylesheet('divider', stylesheet)
 }

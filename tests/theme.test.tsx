@@ -1,46 +1,30 @@
 import { cleanup, render } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
-import {
-  ThemeProvider,
-  View,
-  createTheme,
-  defaultTheme,
-} from '../src'
-import {
-  defaultDarkTheme,
-} from '../src/theme/default-theme'
+import { createTheme, defaultTheme, ThemeProvider, View } from '../src'
+import { defaultDarkTheme } from '../src/theme/default-theme'
 import { themeTokenVariables } from '../src/theme/theme-css'
 
 afterEach(cleanup)
 
-function runtimeRule(
-  element: Element,
-  prefix: string,
-): string {
-  const className = [...element.classList].find((name) =>
-    name.startsWith(prefix),
-  )
+function runtimeRule(element: Element, prefix: string): string {
+  const className = [...element.classList].find((name) => name.startsWith(prefix))
 
   expect(className).toBeDefined()
 
   return (
-    document.querySelector<HTMLStyleElement>(
-      `style[data-weave-runtime-class="${className}"]`,
-    )?.textContent ?? ''
+    document.querySelector<HTMLStyleElement>(`style[data-weave-runtime-class="${className}"]`)
+      ?.textContent ?? ''
   ).replace(/\s+/g, '')
 }
 
 function breakpointStyles(element: Element): string {
-  const className = [...element.classList].find((name) =>
-    name.startsWith('weave-breakpoints-'),
-  )
+  const className = [...element.classList].find((name) => name.startsWith('weave-breakpoints-'))
 
   expect(className).toBeDefined()
 
   return (
-    document.querySelector<HTMLStyleElement>(
-      `style[data-weave-breakpoint-styles="${className}"]`,
-    )?.textContent ?? ''
+    document.querySelector<HTMLStyleElement>(`style[data-weave-breakpoint-styles="${className}"]`)
+      ?.textContent ?? ''
   ).replace(/\s+/g, '')
 }
 
@@ -98,27 +82,15 @@ describe('Theme', () => {
       },
     })
 
-    expect(variables['--weave-typography-family-body']).toBe(
-      'Inter, sans-serif',
-    )
+    expect(variables['--weave-typography-family-body']).toBe('Inter, sans-serif')
     expect(variables['--weave-typography-size-medium']).toBe('1rem')
     expect(variables['--weave-typography-weight-regular']).toBe(400)
     expect(variables['--weave-typography-line-height-body']).toBe(1.5)
-    expect(variables['--weave-typography-letter-spacing-normal']).toBe(
-      '0.01em',
-    )
-    expect(
-      variables['--weave-typography-style-body-medium-font-size'],
-    ).toBe('1rem')
-    expect(
-      variables['--weave-typography-style-body-medium-font-weight'],
-    ).toBe(400)
-    expect(
-      variables['--weave-typography-style-body-medium-line-height'],
-    ).toBe('1.5')
-    expect(
-      variables['--weave-typography-style-body-medium-letter-spacing'],
-    ).toBe('0.01em')
+    expect(variables['--weave-typography-letter-spacing-normal']).toBe('0.01em')
+    expect(variables['--weave-typography-style-body-medium-font-size']).toBe('1rem')
+    expect(variables['--weave-typography-style-body-medium-font-weight']).toBe(400)
+    expect(variables['--weave-typography-style-body-medium-line-height']).toBe('1.5')
+    expect(variables['--weave-typography-style-body-medium-letter-spacing']).toBe('0.01em')
     expect(variables['--weave-spacing-compact']).toBe('0.5rem')
     expect(variables['--weave-radius-card']).toBe('1rem')
     expect(variables['--weave-feedback-rest-depth']).toBe('0.1875rem')
@@ -126,15 +98,9 @@ describe('Theme', () => {
     expect(variables['--weave-feedback-press-offset']).toBe('0.125rem')
     expect(variables['--weave-feedback-press-scale']).toBe(0.985)
     expect(variables['--weave-motion-duration-fast']).toBe('120ms')
-    expect(
-      variables['--weave-motion-spring-snappy-duration'],
-    ).toMatch(/^\d+ms$/)
-    expect(
-      variables['--weave-motion-spring-snappy-easing'],
-    ).toMatch(/^linear\(/)
-    expect(
-      String(variables['--weave-motion-spring-snappy-easing']),
-    ).toContain('100%')
+    expect(variables['--weave-motion-spring-snappy-duration']).toMatch(/^\d+ms$/)
+    expect(variables['--weave-motion-spring-snappy-easing']).toMatch(/^linear\(/)
+    expect(String(variables['--weave-motion-spring-snappy-easing'])).toContain('100%')
   })
 
   it('keeps component typography mapped to typo instead of private font fields', () => {
@@ -170,21 +136,13 @@ describe('Theme', () => {
   })
 
   it('keeps the default typography baseline without ThemeProvider', () => {
-    const { getByTestId } = render(
-      <View data={{ testid: 'default-typography' }} />,
-    )
+    const { getByTestId } = render(<View data={{ testid: 'default-typography' }} />)
 
-    const stylesheet = document.querySelector(
-      'style[data-weave-view-styles]',
-    )?.textContent ?? ''
+    const stylesheet = document.querySelector('style[data-weave-view-styles]')?.textContent ?? ''
 
     expect(getByTestId('default-typography')).not.toBeNull()
-    expect(stylesheet).toContain(
-      'font-family: var(--weave-typography-family-body)',
-    )
-    expect(stylesheet).toContain(
-      'font-size: var(--weave-typography-style-body-large-font-size)',
-    )
+    expect(stylesheet).toContain('font-family: var(--weave-typography-family-body)')
+    expect(stylesheet).toContain('font-size: var(--weave-typography-style-body-large-font-size)')
     expect(stylesheet).toContain(
       'font-weight: var(--weave-typography-style-body-large-font-weight)',
     )
@@ -207,23 +165,13 @@ describe('Theme', () => {
       </ThemeProvider>,
     )
 
-    const scope = getByTestId(
-      'typography-child',
-    ).parentElement as HTMLElement
+    const scope = getByTestId('typography-child').parentElement as HTMLElement
     const rule = runtimeRule(scope, 'weave-theme-')
 
-    expect(rule).toContain(
-      'font-family:var(--weave-typography-family-body);',
-    )
-    expect(rule).toContain(
-      'font-size:var(--weave-typography-style-body-large-font-size);',
-    )
-    expect(rule).toContain(
-      'font-weight:var(--weave-typography-style-body-large-font-weight);',
-    )
-    expect(rule).toContain(
-      'line-height:var(--weave-typography-style-body-large-line-height);',
-    )
+    expect(rule).toContain('font-family:var(--weave-typography-family-body);')
+    expect(rule).toContain('font-size:var(--weave-typography-style-body-large-font-size);')
+    expect(rule).toContain('font-weight:var(--weave-typography-style-body-large-font-weight);')
+    expect(rule).toContain('line-height:var(--weave-typography-style-body-large-line-height);')
     expect(rule).toContain(
       'letter-spacing:var(--weave-typography-style-body-large-letter-spacing);',
     )
@@ -280,15 +228,9 @@ describe('Theme', () => {
 
     const { getByTestId } = render(
       <ThemeProvider theme={outer} mode="light">
-        <View
-          md={{ width: 20 }}
-          data={{ testid: 'outer-breakpoint' }}
-        />
+        <View md={{ width: 20 }} data={{ testid: 'outer-breakpoint' }} />
         <ThemeProvider theme={inner}>
-          <View
-            md={{ width: 30 }}
-            data={{ testid: 'inner-breakpoint' }}
-          />
+          <View md={{ width: 30 }} data={{ testid: 'inner-breakpoint' }} />
         </ThemeProvider>
       </ThemeProvider>,
     )
@@ -305,12 +247,8 @@ describe('Theme', () => {
     expect(outerClass).toBeDefined()
     expect(innerClass).toBeDefined()
     expect(outerClass).not.toBe(innerClass)
-    expect(breakpointStyles(outerView)).toContain(
-      '@media(min-width:52rem)',
-    )
-    expect(breakpointStyles(innerView)).toContain(
-      '@media(min-width:60rem)',
-    )
+    expect(breakpointStyles(outerView)).toContain('@media(min-width:52rem)')
+    expect(breakpointStyles(innerView)).toContain('@media(min-width:60rem)')
   })
 
   it('ships a complete default dark palette and dark color scheme', () => {
@@ -324,77 +262,31 @@ describe('Theme', () => {
       </ThemeProvider>,
     )
 
-    const scope =
-      getByTestId('default-dark')
-        .parentElement as HTMLElement
-    const rule =
-      runtimeRule(
-        scope,
-        'weave-theme-',
-      )
+    const scope = getByTestId('default-dark').parentElement as HTMLElement
+    const rule = runtimeRule(scope, 'weave-theme-')
 
-    expect(rule).toContain(
-      '--weave-color-primary:#a99cff;',
-    )
-    expect(rule).toContain(
-      '--weave-color-onPrimary:#1b1633;',
-    )
-    expect(rule).toContain(
-      '--weave-color-surface:#18161b;',
-    )
-    expect(rule).toContain(
-      '--weave-color-surfaceHover:#242129;',
-    )
-    expect(rule).toContain(
-      '--weave-color-tertiary:#e9e5ef;',
-    )
-    expect(rule).toContain(
-      '--weave-color-outline:#5b5262;',
-    )
-    expect(rule).toContain(
-      'color:var(--weave-color-tertiary);',
-    )
-    expect(rule).toContain(
-      'color-scheme:dark;',
-    )
-    expect(
-      scope.getAttribute(
-        'data-weave-theme-mode',
-      ),
-    ).toBe('dark')
+    expect(rule).toContain('--weave-color-primary:#a99cff;')
+    expect(rule).toContain('--weave-color-onPrimary:#1b1633;')
+    expect(rule).toContain('--weave-color-surface:#18161b;')
+    expect(rule).toContain('--weave-color-surfaceHover:#242129;')
+    expect(rule).toContain('--weave-color-tertiary:#e9e5ef;')
+    expect(rule).toContain('--weave-color-outline:#5b5262;')
+    expect(rule).toContain('color:var(--weave-color-tertiary);')
+    expect(rule).toContain('color-scheme:dark;')
+    expect(scope.getAttribute('data-weave-theme-mode')).toBe('dark')
   })
 
   it('preserves the light control language in dark mode instead of replacing it with outlines', () => {
-    const button =
-      defaultDarkTheme.components?.Button
-    const switchTheme =
-      defaultDarkTheme.components?.Switch
+    const button = defaultDarkTheme.components?.Button
+    const switchTheme = defaultDarkTheme.components?.Switch
 
-    expect(
-      button?.variants?.secondary?.background,
-    ).toBeUndefined()
-    expect(
-      button?.variants?.secondary?.borderColor,
-    ).toBeUndefined()
-    expect(
-      button?.variants?.tertiary?.background,
-    ).toBeUndefined()
-    expect(
-      button?.variants?.ghost,
-    ).toBeUndefined()
-    expect(
-      switchTheme?.base?.background,
-    ).toBeUndefined()
-    expect(
-      switchTheme?.base?.trackShadow,
-    ).toContain(
-      'inset 0 0.125rem 0.1875rem',
-    )
-    expect(
-      switchTheme?.base?.thumbShadow,
-    ).toContain(
-      '0 0.1875rem 0.375rem',
-    )
+    expect(button?.variants?.secondary?.background).toBeUndefined()
+    expect(button?.variants?.secondary?.borderColor).toBeUndefined()
+    expect(button?.variants?.tertiary?.background).toBeUndefined()
+    expect(button?.variants?.ghost).toBeUndefined()
+    expect(switchTheme?.base?.background).toBeUndefined()
+    expect(switchTheme?.base?.trackShadow).toContain('inset 0 0.125rem 0.1875rem')
+    expect(switchTheme?.base?.thumbShadow).toContain('0 0.1875rem 0.375rem')
   })
 
   it('keeps base brand colors authoritative while inheriting other dark defaults', () => {
@@ -406,10 +298,7 @@ describe('Theme', () => {
       },
     })
     const { getByTestId } = render(
-      <ThemeProvider
-        theme={branded}
-        mode="dark"
-      >
+      <ThemeProvider theme={branded} mode="dark">
         <View
           data={{
             testid: 'branded-dark',
@@ -418,21 +307,11 @@ describe('Theme', () => {
       </ThemeProvider>,
     )
 
-    const scope =
-      getByTestId('branded-dark')
-        .parentElement as HTMLElement
-    const rule =
-      runtimeRule(
-        scope,
-        'weave-theme-',
-      )
+    const scope = getByTestId('branded-dark').parentElement as HTMLElement
+    const rule = runtimeRule(scope, 'weave-theme-')
 
-    expect(rule).toContain(
-      '--weave-color-primary:#ff4f87;',
-    )
-    expect(rule).toContain(
-      '--weave-color-surface:#18161b;',
-    )
+    expect(rule).toContain('--weave-color-primary:#ff4f87;')
+    expect(rule).toContain('--weave-color-surface:#18161b;')
   })
 
   it('inherits the parent mode when a nested provider omits mode', () => {
@@ -444,9 +323,7 @@ describe('Theme', () => {
       </ThemeProvider>,
     )
 
-    const scopes = container.querySelectorAll<HTMLElement>(
-      '[data-weave-theme]',
-    )
+    const scopes = container.querySelectorAll<HTMLElement>('[data-weave-theme]')
 
     expect(scopes).toHaveLength(2)
     expect(scopes[0]?.getAttribute('data-weave-theme-mode')).toBe('dark')
@@ -479,17 +356,11 @@ describe('Theme', () => {
       </ThemeProvider>,
     )
 
-    const scopes = container.querySelectorAll<HTMLElement>(
-      '[data-weave-theme]',
-    )
+    const scopes = container.querySelectorAll<HTMLElement>('[data-weave-theme]')
 
     expect(scopes).toHaveLength(2)
-    expect(runtimeRule(scopes[0]!, 'weave-theme-')).toContain(
-      '--weave-color-primary:#6d5dfc;',
-    )
-    expect(runtimeRule(scopes[1]!, 'weave-theme-')).toContain(
-      '--weave-color-primary:#b9adff;',
-    )
+    expect(runtimeRule(scopes[0]!, 'weave-theme-')).toContain('--weave-color-primary:#6d5dfc;')
+    expect(runtimeRule(scopes[1]!, 'weave-theme-')).toContain('--weave-color-primary:#b9adff;')
     expect(scopes[1]?.getAttribute('data-weave-theme-mode')).toBe('dark')
   })
 })

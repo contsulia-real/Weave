@@ -3,58 +3,31 @@ export interface NavigableOption {
   disabled: boolean
 }
 
-function enabledOptions<
-  TOption extends NavigableOption,
->(
-  options:
-    readonly TOption[],
+function enabledOptions<TOption extends NavigableOption>(
+  options: readonly TOption[],
 ): readonly TOption[] {
-  return options.filter(
-    (option) =>
-      !option.disabled,
-  )
+  return options.filter((option) => !option.disabled)
 }
 
-export function initialOptionActiveValue<
-  TOption extends NavigableOption,
->(
-  options:
-    readonly TOption[],
-  selectedValue:
-    string | null,
+export function initialOptionActiveValue<TOption extends NavigableOption>(
+  options: readonly TOption[],
+  selectedValue: string | null,
 ): string | null {
-  const enabled =
-    enabledOptions(options)
+  const enabled = enabledOptions(options)
 
-  if (
-    selectedValue !== null &&
-    enabled.some(
-      (option) =>
-        option.value ===
-        selectedValue,
-    )
-  ) {
+  if (selectedValue !== null && enabled.some((option) => option.value === selectedValue)) {
     return selectedValue
   }
 
   return enabled[0]?.value ?? null
 }
 
-export function moveOptionActiveValue<
-  TOption extends NavigableOption,
->(
-  options:
-    readonly TOption[],
-  current:
-    string | null,
-  move:
-    | 'previous'
-    | 'next'
-    | 'first'
-    | 'last',
+export function moveOptionActiveValue<TOption extends NavigableOption>(
+  options: readonly TOption[],
+  current: string | null,
+  move: 'previous' | 'next' | 'first' | 'last',
 ): string | null {
-  const enabled =
-    enabledOptions(options)
+  const enabled = enabledOptions(options)
 
   if (enabled.length === 0) {
     return null
@@ -68,45 +41,18 @@ export function moveOptionActiveValue<
     return enabled.at(-1)!.value
   }
 
-  const index =
-    current === null
-      ? -1
-      : enabled.findIndex(
-          (option) =>
-            option.value ===
-            current,
-        )
-  const delta =
-    move === 'next'
-      ? 1
-      : -1
+  const index = current === null ? -1 : enabled.findIndex((option) => option.value === current)
+  const delta = move === 'next' ? 1 : -1
   const nextIndex =
     index < 0
-      ? (
-          move === 'next'
-            ? 0
-            : enabled.length - 1
-        )
-      : (
-          index +
-          delta +
-          enabled.length
-        ) %
-        enabled.length
+      ? move === 'next'
+        ? 0
+        : enabled.length - 1
+      : (index + delta + enabled.length) % enabled.length
 
-  return (
-    enabled[nextIndex]?.value ??
-    null
-  )
+  return enabled[nextIndex]?.value ?? null
 }
 
-export function optionDomId(
-  listboxId: string,
-  value: string,
-): string {
-  return (
-    listboxId +
-    '-option-' +
-    encodeURIComponent(value)
-  )
+export function optionDomId(listboxId: string, value: string): string {
+  return listboxId + '-option-' + encodeURIComponent(value)
 }

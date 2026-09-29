@@ -1,22 +1,18 @@
 import {
   Children,
-  Fragment,
   cloneElement,
+  Fragment,
   isValidElement,
   type ReactElement,
   type ReactNode,
 } from 'react'
-import type {
-  ListDataItem,
-  ListItemIcon,
-  ListItemProps,
-} from '../../core/list-types'
+import type { ListDataItem, ListItemIcon, ListItemProps } from '../../core/list-types'
 import type { TextTypo } from '../../core/text-types'
 import { ListItem } from '../ListItem'
 import { Text } from '../Text'
 import { View } from '../View'
-import type { VirtualListEntry } from './VirtualListWindow'
 import { renderIconSource } from './render-icon-source'
+import type { VirtualListEntry } from './VirtualListWindow'
 
 export interface ListDescriptor {
   id: string
@@ -44,18 +40,12 @@ export function listDescriptors(
   return output
 }
 
-function collectCompositeDescriptors(
-  children: ReactNode,
-  output: ListDescriptor[],
-): void {
+function collectCompositeDescriptors(children: ReactNode, output: ListDescriptor[]): void {
   Children.forEach(children, (child) => {
     if (!isValidElement(child)) return
 
     if (child.type === Fragment) {
-      collectCompositeDescriptors(
-        (child.props as { children?: ReactNode }).children,
-        output,
-      )
+      collectCompositeDescriptors((child.props as { children?: ReactNode }).children, output)
       return
     }
 
@@ -69,42 +59,30 @@ function collectCompositeDescriptors(
   })
 }
 
-function assertUniqueIds(
-  descriptors: readonly ListDescriptor[],
-): void {
+function assertUniqueIds(descriptors: readonly ListDescriptor[]): void {
   const seen = new Set<string>()
 
   for (const item of descriptors) {
     if (seen.has(item.id)) {
-      throw new Error(
-        `List item id "${item.id}" is duplicated`,
-      )
+      throw new Error(`List item id "${item.id}" is duplicated`)
     }
 
     seen.add(item.id)
   }
 }
 
-export function compositeVirtualEntries(
-  children: ReactNode,
-): VirtualListEntry[] {
+export function compositeVirtualEntries(children: ReactNode): VirtualListEntry[] {
   const output: VirtualListEntry[] = []
   collectVirtualEntries(children, output)
   return output
 }
 
-function collectVirtualEntries(
-  children: ReactNode,
-  output: VirtualListEntry[],
-): void {
+function collectVirtualEntries(children: ReactNode, output: VirtualListEntry[]): void {
   Children.forEach(children, (child) => {
     if (!isValidElement(child)) return
 
     if (child.type === Fragment) {
-      collectVirtualEntries(
-        (child.props as { children?: ReactNode }).children,
-        output,
-      )
+      collectVirtualEntries((child.props as { children?: ReactNode }).children, output)
       return
     }
 
@@ -121,22 +99,16 @@ function collectVirtualEntries(
 }
 
 function listIcon(icon: ListItemIcon) {
-  return renderIconSource(
-    icon,
-    {
-      size: 'medium',
-      stroke: 'regular',
-      viewProps: {
-        className:
-          'weave-list-item__icon',
-        width:
-          'var(--weave-list-item-icon-size)',
-        height:
-          'var(--weave-list-item-icon-size)',
-        'aria-hidden': true,
-      },
+  return renderIconSource(icon, {
+    size: 'medium',
+    stroke: 'regular',
+    viewProps: {
+      className: 'weave-list-item__icon',
+      width: 'var(--weave-list-item-icon-size)',
+      height: 'var(--weave-list-item-icon-size)',
+      'aria-hidden': true,
     },
-  )
+  })
 }
 
 function dataItemContent(
@@ -146,37 +118,26 @@ function dataItemContent(
 ) {
   return (
     <>
-      {item.icon === undefined
-        ? null
-        : listIcon(item.icon)}
+      {item.icon === undefined ? null : listIcon(item.icon)}
 
       <View className="weave-list-item__text">
-        <Text typo={primaryTypo ?? 'body-medium'}>
-          {item.text}
-        </Text>
+        <Text typo={primaryTypo ?? 'body-medium'}>{item.text}</Text>
 
-        {item.secondaryText === undefined
-          ? null
-          : (
-              <Text
-                typo={secondaryTypo ?? 'body-small'}
-                viewProps={{
-                  className:
-                    'weave-list-item__secondary',
-                }}
-              >
-                {item.secondaryText}
-              </Text>
-            )}
+        {item.secondaryText === undefined ? null : (
+          <Text
+            typo={secondaryTypo ?? 'body-small'}
+            viewProps={{
+              className: 'weave-list-item__secondary',
+            }}
+          >
+            {item.secondaryText}
+          </Text>
+        )}
       </View>
 
-      {item.trailing === undefined
-        ? null
-        : (
-            <View className="weave-list-item__trailing">
-              {item.trailing}
-            </View>
-          )}
+      {item.trailing === undefined ? null : (
+        <View className="weave-list-item__trailing">{item.trailing}</View>
+      )}
     </>
   )
 }
@@ -190,16 +151,8 @@ export function dataVirtualEntries(
   return items.map((item) => ({
     id: item.id,
     node: (
-      <ListItem
-        key={item.id}
-        id={item.id}
-        disabled={disabled || item.disabled}
-      >
-        {dataItemContent(
-          item,
-          primaryTypo,
-          secondaryTypo,
-        )}
+      <ListItem key={item.id} id={item.id} disabled={disabled || item.disabled}>
+        {dataItemContent(item, primaryTypo, secondaryTypo)}
       </ListItem>
     ),
   }))

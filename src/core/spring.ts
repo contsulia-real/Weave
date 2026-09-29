@@ -31,15 +31,11 @@ interface NormalizedSpring {
 }
 
 function positive(value: number | undefined, fallback: number): number {
-  return value !== undefined && Number.isFinite(value) && value > 0
-    ? value
-    : fallback
+  return value !== undefined && Number.isFinite(value) && value > 0 ? value : fallback
 }
 
 function finite(value: number | undefined, fallback: number): number {
-  return value !== undefined && Number.isFinite(value)
-    ? value
-    : fallback
+  return value !== undefined && Number.isFinite(value) ? value : fallback
 }
 
 function normalizedSpring(input: MotionSpring): NormalizedSpring {
@@ -53,16 +49,8 @@ function normalizedSpring(input: MotionSpring): NormalizedSpring {
   }
 }
 
-function springStateAt(
-  spring: NormalizedSpring,
-  seconds: number,
-): SpringState {
-  const {
-    stiffness,
-    damping,
-    mass,
-    velocity: initialVelocity,
-  } = spring
+function springStateAt(spring: NormalizedSpring, seconds: number): SpringState {
+  const { stiffness, damping, mass, velocity: initialVelocity } = spring
   const omega0 = Math.sqrt(stiffness / mass)
   const zeta = damping / (2 * Math.sqrt(stiffness * mass))
   const y0 = -1
@@ -75,10 +63,8 @@ function springStateAt(
     const cos = Math.cos(omegaD * seconds)
     const sin = Math.sin(omegaD * seconds)
     const y = decay * (a * cos + b * sin)
-    const velocity = decay * (
-      -zeta * omega0 * (a * cos + b * sin) +
-      (-a * omegaD * sin + b * omegaD * cos)
-    )
+    const velocity =
+      decay * (-zeta * omega0 * (a * cos + b * sin) + (-a * omegaD * sin + b * omegaD * cos))
 
     return {
       value: 1 + y,
@@ -106,9 +92,7 @@ function springStateAt(
   const b = initialVelocity + omega0 * a
   const decay = Math.exp(-omega0 * seconds)
   const y = (a + b * seconds) * decay
-  const velocity = (
-    b - omega0 * (a + b * seconds)
-  ) * decay
+  const velocity = (b - omega0 * (a + b * seconds)) * decay
 
   return {
     value: 1 + y,
@@ -120,15 +104,10 @@ function settleDuration(spring: NormalizedSpring): number {
   const frame = 1 / SAMPLE_RATE
   let settledFrames = 0
 
-  for (
-    let seconds = frame;
-    seconds <= MAX_DURATION_SECONDS;
-    seconds += frame
-  ) {
+  for (let seconds = frame; seconds <= MAX_DURATION_SECONDS; seconds += frame) {
     const state = springStateAt(spring, seconds)
     const settled =
-      Math.abs(1 - state.value) <= spring.restDelta &&
-      Math.abs(state.velocity) <= spring.restSpeed
+      Math.abs(1 - state.value) <= spring.restDelta && Math.abs(state.velocity) <= spring.restSpeed
 
     settledFrames = settled ? settledFrames + 1 : 0
     if (settledFrames >= 3) return seconds
@@ -142,10 +121,7 @@ function rounded(value: number): string {
   return Number(normalized.toFixed(5)).toString()
 }
 
-function samplesFor(
-  spring: NormalizedSpring,
-  durationSeconds: number,
-): number[] {
+function samplesFor(spring: NormalizedSpring, durationSeconds: number): number[] {
   const naturalPoints = Math.ceil(durationSeconds * SAMPLE_RATE) + 1
   const count = Math.max(2, Math.min(MAX_EASING_POINTS, naturalPoints))
   const output: number[] = []

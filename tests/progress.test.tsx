@@ -1,40 +1,24 @@
 import { cleanup, render } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
-import {
-  Progress,
-  ThemeProvider,
-  createTheme,
-} from '../src'
+import { createTheme, Progress, ThemeProvider } from '../src'
 
 afterEach(cleanup)
 
-function runtimeRule(
-  element: Element,
-  prefix: string,
-): string {
-  const className = [...element.classList].find((name) =>
-    name.startsWith(prefix),
-  )
+function runtimeRule(element: Element, prefix: string): string {
+  const className = [...element.classList].find((name) => name.startsWith(prefix))
 
   expect(className).toBeDefined()
 
   return (
-    document.querySelector<HTMLStyleElement>(
-      `style[data-weave-runtime-class="${className}"]`,
-    )?.textContent ?? ''
+    document.querySelector<HTMLStyleElement>(`style[data-weave-runtime-class="${className}"]`)
+      ?.textContent ?? ''
   ).replace(/\s+/g, '')
 }
 
 describe('Progress', () => {
   it('exposes undetermined semantics without a numeric value', () => {
     const { getByRole } = render(
-      <Progress
-        undetermined
-        mode="spin"
-        size="small"
-        color="success"
-        speed="fast"
-      />,
+      <Progress undetermined mode="spin" size="small" color="success" speed="fast" />,
     )
 
     const element = getByRole('progressbar')
@@ -45,117 +29,63 @@ describe('Progress', () => {
     expect(element.getAttribute('aria-valuemax')).toBeNull()
     expect(element.getAttribute('aria-valuenow')).toBeNull()
     expect(element.className).toContain('weave-progress--spin')
-    expect(element.className).toContain(
-      'weave-progress--undetermined',
-    )
+    expect(element.className).toContain('weave-progress--undetermined')
     expect(element.getAttribute('data-weave-progress-mode')).toBe('spin')
   })
 
   it('exposes determined progress semantics from 0 to 1', () => {
     const { getByRole } = render(
-      <Progress
-        progress={0.68}
-        mode="linear"
-        size="large"
-        speed={800}
-      />,
+      <Progress progress={0.68} mode="linear" size="large" speed={800} />,
     )
 
     const element = getByRole('progressbar')
-    const value = element.querySelector(
-      '[data-weave-progress-value]',
-    ) as HTMLSpanElement
+    const value = element.querySelector('[data-weave-progress-value]') as HTMLSpanElement
 
     expect(element.getAttribute('aria-busy')).toBeNull()
     expect(element.getAttribute('aria-valuemin')).toBe('0')
     expect(element.getAttribute('aria-valuemax')).toBe('1')
     expect(element.getAttribute('aria-valuenow')).toBe('0.68')
     expect(element.className).toContain('weave-progress--linear')
-    expect(element.className).toContain(
-      'weave-progress--determined',
-    )
-    expect(runtimeRule(value, 'weave-progress-value-')).toContain(
-      '--weave-progress-value:68%;',
-    )
+    expect(element.className).toContain('weave-progress--determined')
+    expect(runtimeRule(value, 'weave-progress-value-')).toContain('--weave-progress-value:68%;')
     expect(runtimeRule(element, 'weave-progress-speed-')).toContain(
       '--weave-progress-duration:800ms;',
     )
-    expect(
-      value.style.getPropertyValue('--weave-progress-value'),
-    ).toBe('')
-    expect(
-      element.style.getPropertyValue('--weave-progress-duration'),
-    ).toBe('')
+    expect(value.style.getPropertyValue('--weave-progress-value')).toBe('')
+    expect(element.style.getPropertyValue('--weave-progress-duration')).toBe('')
   })
 
   it('shows a continuous track only when tracked', () => {
-    const { getByRole, rerender } = render(
-      <Progress
-        progress={0.58}
-        mode="spin"
-        tracked
-      />,
-    )
+    const { getByRole, rerender } = render(<Progress progress={0.58} mode="spin" tracked />)
 
     const element = getByRole('progressbar')
-    const track = element.querySelector(
-      '[data-weave-progress-track]',
-    ) as HTMLSpanElement
+    const track = element.querySelector('[data-weave-progress-track]') as HTMLSpanElement
 
     expect(element.className).toContain('weave-progress--tracked')
-    expect(
-      element.getAttribute('data-weave-progress-tracked'),
-    ).toBe('true')
+    expect(element.getAttribute('data-weave-progress-tracked')).toBe('true')
     expect(track).not.toBeNull()
 
-    rerender(
-      <Progress
-        progress={0.58}
-        mode="spin"
-      />,
-    )
+    rerender(<Progress progress={0.58} mode="spin" />)
 
     expect(element.className).not.toContain('weave-progress--tracked')
-    expect(
-      element.getAttribute('data-weave-progress-tracked'),
-    ).toBeNull()
+    expect(element.getAttribute('data-weave-progress-tracked')).toBeNull()
   })
 
   it('transitions determined progress when the value changes', () => {
-    const { getByRole, rerender } = render(
-      <Progress
-        progress={0.2}
-        mode="spin"
-      />,
-    )
+    const { getByRole, rerender } = render(<Progress progress={0.2} mode="spin" />)
 
     const element = getByRole('progressbar')
-    const value = element.querySelector(
-      '[data-weave-progress-value]',
-    ) as HTMLSpanElement
+    const value = element.querySelector('[data-weave-progress-value]') as HTMLSpanElement
 
-    expect(runtimeRule(value, 'weave-progress-value-')).toContain(
-      '--weave-progress-value:20%;',
-    )
+    expect(runtimeRule(value, 'weave-progress-value-')).toContain('--weave-progress-value:20%;')
 
-    rerender(
-      <Progress
-        progress={0.75}
-        mode="spin"
-      />,
-    )
+    rerender(<Progress progress={0.75} mode="spin" />)
 
-    expect(runtimeRule(value, 'weave-progress-value-')).toContain(
-      '--weave-progress-value:75%;',
-    )
+    expect(runtimeRule(value, 'weave-progress-value-')).toContain('--weave-progress-value:75%;')
 
-    const stylesheet = document.querySelector(
-      'style[data-weave-progress-styles]',
-    )
+    const stylesheet = document.querySelector('style[data-weave-progress-styles]')
 
-    expect(stylesheet?.textContent).toContain(
-      '@property --weave-progress-value',
-    )
+    expect(stylesheet?.textContent).toContain('@property --weave-progress-value')
     expect(stylesheet?.textContent).toContain('transition:')
   })
 
@@ -167,40 +97,18 @@ describe('Progress', () => {
       </>,
     )
 
-    const stylesheet = document.querySelector(
-      'style[data-weave-progress-styles]',
-    )
+    const stylesheet = document.querySelector('style[data-weave-progress-styles]')
 
-    expect(stylesheet?.textContent).toContain(
-      'weave-progress-spin-rotate',
-    )
-    expect(stylesheet?.textContent).not.toContain(
-      'weave-progress-spin-sweep',
-    )
-    expect(stylesheet?.textContent).not.toContain(
-      '@property --weave-progress-spin-start',
-    )
-    expect(stylesheet?.textContent).not.toContain(
-      '@property --weave-progress-spin-end',
-    )
-    expect(stylesheet?.textContent).toContain(
-      'currentColor 0deg 96deg',
-    )
-    expect(stylesheet?.textContent).toContain(
-      'weave-progress-linear-leading',
-    )
-    expect(stylesheet?.textContent).toContain(
-      'weave-progress-linear-trailing',
-    )
-    expect(stylesheet?.textContent).toContain(
-      '--weave-overflow-x: hidden',
-    )
-    expect(stylesheet?.textContent).toContain(
-      '--weave-overflow-y: hidden',
-    )
-    expect(stylesheet?.textContent).toContain(
-      'translateX(',
-    )
+    expect(stylesheet?.textContent).toContain('weave-progress-spin-rotate')
+    expect(stylesheet?.textContent).not.toContain('weave-progress-spin-sweep')
+    expect(stylesheet?.textContent).not.toContain('@property --weave-progress-spin-start')
+    expect(stylesheet?.textContent).not.toContain('@property --weave-progress-spin-end')
+    expect(stylesheet?.textContent).toContain('currentColor 0deg 96deg')
+    expect(stylesheet?.textContent).toContain('weave-progress-linear-leading')
+    expect(stylesheet?.textContent).toContain('weave-progress-linear-trailing')
+    expect(stylesheet?.textContent).toContain('--weave-overflow-x: hidden')
+    expect(stylesheet?.textContent).toContain('--weave-overflow-y: hidden')
+    expect(stylesheet?.textContent).toContain('translateX(')
 
     const compact = stylesheet?.textContent.replace(/\s+/g, '') ?? ''
     expect(compact).toContain(
@@ -209,37 +117,23 @@ describe('Progress', () => {
   })
 
   it('clamps determined progress to the public 0 to 1 range', () => {
-    const { getByRole, rerender } = render(
-      <Progress progress={1.5} />,
-    )
+    const { getByRole, rerender } = render(<Progress progress={1.5} />)
 
     const element = getByRole('progressbar')
-    const value = element.querySelector(
-      '[data-weave-progress-value]',
-    ) as HTMLSpanElement
+    const value = element.querySelector('[data-weave-progress-value]') as HTMLSpanElement
 
     expect(element.getAttribute('aria-valuenow')).toBe('1')
-    expect(runtimeRule(value, 'weave-progress-value-')).toContain(
-      '--weave-progress-value:100%;',
-    )
+    expect(runtimeRule(value, 'weave-progress-value-')).toContain('--weave-progress-value:100%;')
 
     rerender(<Progress progress={-0.5} />)
 
     expect(element.getAttribute('aria-valuenow')).toBe('0')
-    expect(runtimeRule(value, 'weave-progress-value-')).toContain(
-      '--weave-progress-value:0%;',
-    )
+    expect(runtimeRule(value, 'weave-progress-value-')).toContain('--weave-progress-value:0%;')
   })
 
   it('takes mode and size defaults from the component theme', () => {
     const { getByRole } = render(
-      <Progress
-        undetermined
-        mode="linear"
-        tracked
-        size="large"
-        speed="slow"
-      />,
+      <Progress undetermined mode="linear" tracked size="large" speed="slow" />,
     )
 
     const element = getByRole('progressbar')
@@ -255,16 +149,11 @@ describe('Progress', () => {
     expect(rule).toContain('--weave-progress-track-shadow:')
     expect(rule).toContain('--weave-progress-value-shadow:')
 
-    const stylesheet = document.querySelector(
-      'style[data-weave-progress-styles]',
-    )?.textContent ?? ''
+    const stylesheet =
+      document.querySelector('style[data-weave-progress-styles]')?.textContent ?? ''
 
-    expect(stylesheet).toContain(
-      '--weave-component-box-shadow: var(--weave-progress-track-shadow)',
-    )
-    expect(stylesheet).toContain(
-      '--weave-component-box-shadow: var(--weave-progress-value-shadow)',
-    )
+    expect(stylesheet).toContain('--weave-component-box-shadow: var(--weave-progress-track-shadow)')
+    expect(stylesheet).toContain('--weave-component-box-shadow: var(--weave-progress-value-shadow)')
   })
 
   it('lets ThemeProvider replace Progress component defaults', () => {
@@ -293,20 +182,13 @@ describe('Progress', () => {
       </ThemeProvider>,
     )
 
-    const rule = runtimeRule(
-      getByRole('progressbar'),
-      'weave-progress-theme-',
-    )
+    const rule = runtimeRule(getByRole('progressbar'), 'weave-progress-theme-')
 
     expect(rule).toContain('--weave-progress-width:3rem;')
     expect(rule).toContain('--weave-progress-height:3rem;')
     expect(rule).toContain('--weave-progress-thickness:0.25rem;')
-    expect(rule).toContain(
-      '--weave-progress-track-shadow:inset01px2pxblack;',
-    )
-    expect(rule).toContain(
-      '--weave-progress-value-shadow:01px2pxblack;',
-    )
+    expect(rule).toContain('--weave-progress-track-shadow:inset01px2pxblack;')
+    expect(rule).toContain('--weave-progress-value-shadow:01px2pxblack;')
   })
 
   it('keeps viewProps className and style above component defaults', () => {
@@ -344,16 +226,10 @@ describe('Progress', () => {
     )
 
     const progress = getByRole('progressbar')
-    const stylesheet = document.querySelector(
-      'style[data-weave-progress-styles]',
-    )
+    const stylesheet = document.querySelector('style[data-weave-progress-styles]')
 
     expect(progress.dataset.weaveReducedMotion).toBe('reduce')
-    expect(stylesheet?.textContent).toContain(
-      'data-weave-reduced-motion="reduce"',
-    )
-    expect(stylesheet?.textContent).not.toContain(
-      '@media (prefers-reduced-motion: reduce)',
-    )
+    expect(stylesheet?.textContent).toContain('data-weave-reduced-motion="reduce"')
+    expect(stylesheet?.textContent).not.toContain('@media (prefers-reduced-motion: reduce)')
   })
 })

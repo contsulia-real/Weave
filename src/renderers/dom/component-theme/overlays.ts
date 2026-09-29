@@ -1,27 +1,12 @@
-import type { ResolvedTheme } from '../../../theme/theme-types'
 import type { SnackVariant } from '../../../core/snack-types'
-import {
-  color,
-  length,
-  radius,
-} from '../../../core/values'
-import type {
-  RuntimeStyleDeclarations,
-  RuntimeStyleValue,
-} from '../runtime-class'
+import { color, length, radius } from '../../../core/values'
+import type { ResolvedTheme } from '../../../theme/theme-types'
+import type { RuntimeStyleDeclarations, RuntimeStyleValue } from '../runtime-class'
 import { shadowToken } from './shared'
 
-const SNACK_VARIANTS: readonly SnackVariant[] = [
-  'default',
-  'success',
-  'warning',
-  'danger',
-  'info',
-]
+const SNACK_VARIANTS: readonly SnackVariant[] = ['default', 'success', 'warning', 'danger', 'info']
 
-export function resolveToolTipTheme(
-  theme: ResolvedTheme,
-): RuntimeStyleDeclarations {
+export function resolveToolTipTheme(theme: ResolvedTheme): RuntimeStyleDeclarations {
   const base = theme.components.ToolTip?.base
 
   return {
@@ -39,9 +24,7 @@ export function resolveToolTipTheme(
   }
 }
 
-export function resolvePopoverTheme(
-  theme: ResolvedTheme,
-): RuntimeStyleDeclarations {
+export function resolvePopoverTheme(theme: ResolvedTheme): RuntimeStyleDeclarations {
   const base = theme.components.Popover?.base
 
   return {
@@ -59,9 +42,7 @@ export function resolvePopoverTheme(
   }
 }
 
-export function resolveMenuTheme(
-  theme: ResolvedTheme,
-): RuntimeStyleDeclarations {
+export function resolveMenuTheme(theme: ResolvedTheme): RuntimeStyleDeclarations {
   const component = theme.components.Menu
   const base = component?.base
   const item = component?.item
@@ -91,24 +72,15 @@ export function resolveMenuTheme(
     '--weave-menu-item-gap': length(item?.gap),
     '--weave-menu-item-icon-size': length(item?.iconSize),
     '--weave-menu-item-submenu-icon-size': length(item?.submenuIconSize),
-    '--weave-menu-item-focus-outline-width': length(
-      item?.focusOutlineWidth,
-    ),
-    '--weave-menu-item-focus-outline-color': color(
-      item?.focusOutlineColor,
-    ),
-    '--weave-menu-item-focus-outline-style':
-      item?.focusOutlineStyle,
-    '--weave-menu-item-focus-outline-offset': length(
-      item?.focusOutlineOffset,
-    ),
+    '--weave-menu-item-focus-outline-width': length(item?.focusOutlineWidth),
+    '--weave-menu-item-focus-outline-color': color(item?.focusOutlineColor),
+    '--weave-menu-item-focus-outline-style': item?.focusOutlineStyle,
+    '--weave-menu-item-focus-outline-offset': length(item?.focusOutlineOffset),
     '--weave-menu-item-disabled-opacity': item?.disabledOpacity,
   }
 }
 
-export function resolveSnackTheme(
-  theme: ResolvedTheme,
-): RuntimeStyleDeclarations {
+export function resolveSnackTheme(theme: ResolvedTheme): RuntimeStyleDeclarations {
   const component = theme.components.Snack
   const base = component?.base
   const output: Record<string, RuntimeStyleValue> = {
@@ -127,9 +99,7 @@ export function resolveSnackTheme(
   }
 
   for (const variant of SNACK_VARIANTS) {
-    output[`--weave-snack-${variant}-accent`] = color(
-      component?.variants?.[variant]?.accentColor,
-    )
+    output[`--weave-snack-${variant}-accent`] = color(component?.variants?.[variant]?.accentColor)
   }
 
   return output

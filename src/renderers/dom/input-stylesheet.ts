@@ -169,8 +169,5 @@ const stylesheet = `
 `
 
 export function ensureInputStylesheet(): void {
-  ensureStaticStylesheet(
-    'input',
-    stylesheet,
-  )
+  ensureStaticStylesheet('input', stylesheet)
 }

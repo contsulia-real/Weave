@@ -1,20 +1,6 @@
-import {
-  cleanup,
-  fireEvent,
-  render,
-} from '@testing-library/react'
-import {
-  afterEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from 'vitest'
-import {
-  Checkbox,
-  Radio,
-  defaultTheme,
-} from '../src'
+import { cleanup, fireEvent, render } from '@testing-library/react'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { Checkbox, defaultTheme, Radio } from '../src'
 
 afterEach(cleanup)
 
@@ -49,16 +35,12 @@ describe('Radio and Checkbox', () => {
     expect(radio.type).toBe('radio')
     expect(radio.name).toBe('theme')
     expect(radio.value).toBe('dark')
-    expect(
-      radio.dataset.weaveChoiceGroup,
-    ).toBe('theme')
+    expect(radio.dataset.weaveChoiceGroup).toBe('theme')
 
     expect(checkbox.type).toBe('checkbox')
     expect(checkbox.name).toBe('permissions')
     expect(checkbox.value).toBe('write')
-    expect(
-      checkbox.dataset.weaveChoiceGroup,
-    ).toBe('permissions')
+    expect(checkbox.dataset.weaveChoiceGroup).toBe('permissions')
   })
 
   it('binds visible labels so clicking label text toggles the native controls', () => {
@@ -84,74 +66,37 @@ describe('Radio and Checkbox', () => {
   })
 
   it('lets the halo itself provide label spacing and keeps label hover inside the same state layer', () => {
-    const { getByText } = render(
-      <Radio
-        label="Scoped option"
-        size="medium"
-      />,
-    )
+    const { getByText } = render(<Radio label="Scoped option" size="medium" />)
 
-    const field = getByText('Scoped option').closest(
-      '[data-weave-choice-field]',
-    ) as HTMLElement
-    const shell = field.querySelector(
-      '[data-weave-choice-shell]',
-    ) as HTMLElement
-    const themeClass = [...field.classList].find((name) =>
-      name.startsWith('weave-radio-theme-'),
-    )
+    const field = getByText('Scoped option').closest('[data-weave-choice-field]') as HTMLElement
+    const shell = field.querySelector('[data-weave-choice-shell]') as HTMLElement
+    const themeClass = [...field.classList].find((name) => name.startsWith('weave-radio-theme-'))
 
     expect(themeClass).toBeDefined()
-    expect(
-      [...shell.classList].some((name) =>
-        name.startsWith('weave-radio-theme-'),
-      ),
-    ).toBe(false)
+    expect([...shell.classList].some((name) => name.startsWith('weave-radio-theme-'))).toBe(false)
 
     const rule = (
-      document.querySelector<HTMLStyleElement>(
-        `style[data-weave-runtime-class="${themeClass}"]`,
-      )?.textContent ?? ''
+      document.querySelector<HTMLStyleElement>(`style[data-weave-runtime-class="${themeClass}"]`)
+        ?.textContent ?? ''
     ).replace(/\s+/g, '')
 
-    expect(rule).not.toContain(
-      '--weave-choice-label-gap:',
-    )
-    expect(rule).toContain(
-      '--weave-choice-state-layer-size:2.375rem;',
-    )
-    expect(
-      defaultTheme.components.Radio?.base
-        ?.stateLayerHoverOpacity,
-    ).toBe(0.1)
+    expect(rule).not.toContain('--weave-choice-label-gap:')
+    expect(rule).toContain('--weave-choice-state-layer-size:2.375rem;')
+    expect(defaultTheme.components.Radio?.base?.stateLayerHoverOpacity).toBe(0.1)
 
     const stylesheet =
-      document.querySelector<HTMLStyleElement>(
-        'style[data-weave-choice-control-styles]',
-      )?.textContent ?? ''
+      document.querySelector<HTMLStyleElement>('style[data-weave-choice-control-styles]')
+        ?.textContent ?? ''
     expect(stylesheet).toContain('gap: 0;')
-    expect(stylesheet).toContain(
-      'width: var(--weave-choice-state-layer-size);',
-    )
-    expect(stylesheet).toContain(
-      '.weave-choice-field:hover',
-    )
+    expect(stylesheet).toContain('width: var(--weave-choice-state-layer-size);')
+    expect(stylesheet).toContain('.weave-choice-field:hover')
   })
 
   it('treats radios with the same group as one native radio group', () => {
     const { getByRole } = render(
       <>
-        <Radio
-          group="theme"
-          value="light"
-          defaultChecked
-          viewProps={{ label: 'Light' }}
-        />
-        <Radio
-          group="theme"
-          value="dark"
-          viewProps={{ label: 'Dark' }}
-        />
+        <Radio group="theme" value="light" defaultChecked viewProps={{ label: 'Light' }} />
+        <Radio group="theme" value="dark" viewProps={{ label: 'Dark' }} />
       </>,
     )
 
@@ -174,44 +119,32 @@ describe('Radio and Checkbox', () => {
   it('keeps radios from different groups independent', () => {
     const { getByRole } = render(
       <>
-        <Radio
-          group="theme"
-          defaultChecked
-          viewProps={{ label: 'Theme' }}
-        />
-        <Radio
-          group="density"
-          defaultChecked
-          viewProps={{ label: 'Density' }}
-        />
+        <Radio group="theme" defaultChecked viewProps={{ label: 'Theme' }} />
+        <Radio group="density" defaultChecked viewProps={{ label: 'Density' }} />
       </>,
     )
 
     expect(
-      (getByRole('radio', {
-        name: 'Theme',
-      }) as HTMLInputElement).checked,
+      (
+        getByRole('radio', {
+          name: 'Theme',
+        }) as HTMLInputElement
+      ).checked,
     ).toBe(true)
     expect(
-      (getByRole('radio', {
-        name: 'Density',
-      }) as HTMLInputElement).checked,
+      (
+        getByRole('radio', {
+          name: 'Density',
+        }) as HTMLInputElement
+      ).checked,
     ).toBe(true)
   })
 
   it('treats same-group checkboxes as one form group without coupling checked state', () => {
     const { getByRole } = render(
       <>
-        <Checkbox
-          group="permissions"
-          value="read"
-          viewProps={{ label: 'Read' }}
-        />
-        <Checkbox
-          group="permissions"
-          value="write"
-          viewProps={{ label: 'Write' }}
-        />
+        <Checkbox group="permissions" value="read" viewProps={{ label: 'Read' }} />
+        <Checkbox group="permissions" value="write" viewProps={{ label: 'Write' }} />
       </>,
     )
 
@@ -248,9 +181,7 @@ describe('Radio and Checkbox', () => {
     }) as HTMLInputElement
 
     expect(checkbox.disabled).toBe(true)
-    expect(
-      checkbox.getAttribute('aria-disabled'),
-    ).toBe('true')
+    expect(checkbox.getAttribute('aria-disabled')).toBe('true')
 
     checkbox.click()
 
@@ -259,61 +190,25 @@ describe('Radio and Checkbox', () => {
   })
 
   it('ships three visibly distinct sizes with a thicker tactile border', () => {
-    expect(
-      defaultTheme.components.Radio?.base
-        ?.borderWidth,
-    ).toBe(0.125)
-    expect(
-      defaultTheme.components.Checkbox?.base
-        ?.borderWidth,
-    ).toBe(0.125)
+    expect(defaultTheme.components.Radio?.base?.borderWidth).toBe(0.125)
+    expect(defaultTheme.components.Checkbox?.base?.borderWidth).toBe(0.125)
 
-    expect(
-      defaultTheme.components.Radio?.sizes
-        ?.small?.size,
-    ).toBe(1.125)
-    expect(
-      defaultTheme.components.Radio?.sizes
-        ?.medium?.size,
-    ).toBe(1.375)
-    expect(
-      defaultTheme.components.Radio?.sizes
-        ?.large?.size,
-    ).toBe(1.625)
+    expect(defaultTheme.components.Radio?.sizes?.small?.size).toBe(1.125)
+    expect(defaultTheme.components.Radio?.sizes?.medium?.size).toBe(1.375)
+    expect(defaultTheme.components.Radio?.sizes?.large?.size).toBe(1.625)
 
-    expect(
-      defaultTheme.components.Checkbox?.sizes
-        ?.small?.size,
-    ).toBe(1.125)
-    expect(
-      defaultTheme.components.Checkbox?.sizes
-        ?.medium?.size,
-    ).toBe(1.375)
-    expect(
-      defaultTheme.components.Checkbox?.sizes
-        ?.large?.size,
-    ).toBe(1.625)
+    expect(defaultTheme.components.Checkbox?.sizes?.small?.size).toBe(1.125)
+    expect(defaultTheme.components.Checkbox?.sizes?.medium?.size).toBe(1.375)
+    expect(defaultTheme.components.Checkbox?.sizes?.large?.size).toBe(1.625)
 
-    expect(
-      defaultTheme.components.Radio?.sizes
-        ?.small?.stateLayerSize,
-    ).toBe(2.125)
-    expect(
-      defaultTheme.components.Radio?.sizes
-        ?.medium?.stateLayerSize,
-    ).toBe(2.375)
-    expect(
-      defaultTheme.components.Radio?.sizes
-        ?.large?.stateLayerSize,
-    ).toBe(2.625)
+    expect(defaultTheme.components.Radio?.sizes?.small?.stateLayerSize).toBe(2.125)
+    expect(defaultTheme.components.Radio?.sizes?.medium?.stateLayerSize).toBe(2.375)
+    expect(defaultTheme.components.Radio?.sizes?.large?.stateLayerSize).toBe(2.625)
   })
 
   it('fills the checked Checkbox and draws its checkmark path instead of revealing a padded inner square', () => {
     const { getByRole } = render(
-      <Checkbox
-        defaultChecked
-        viewProps={{ label: 'Checked checkbox' }}
-      />,
+      <Checkbox defaultChecked viewProps={{ label: 'Checked checkbox' }} />,
     )
 
     const checkbox = getByRole('checkbox', {
@@ -321,64 +216,31 @@ describe('Radio and Checkbox', () => {
     })
     const shell = checkbox.parentElement as HTMLElement
     const visual = checkbox.nextElementSibling as HTMLElement
-    const path = shell.querySelector(
-      '[data-weave-checkbox-check]',
-    )
+    const path = shell.querySelector('[data-weave-checkbox-check]')
     const stylesheet =
-      document.querySelector<HTMLStyleElement>(
-        'style[data-weave-choice-control-styles]',
-      )?.textContent ?? ''
+      document.querySelector<HTMLStyleElement>('style[data-weave-choice-control-styles]')
+        ?.textContent ?? ''
 
     expect(shell.getAttribute('aria-hidden')).toBeNull()
     expect(visual.getAttribute('aria-hidden')).toBe('true')
     expect(path?.getAttribute('pathLength')).toBe('1')
-    expect(
-      defaultTheme.components.Checkbox?.states
-        ?.checked?.background,
-    ).toBe('primary')
-    expect(
-      defaultTheme.components.Checkbox?.states
-        ?.checked?.indicatorBackground,
-    ).toBeUndefined()
+    expect(defaultTheme.components.Checkbox?.states?.checked?.background).toBe('primary')
+    expect(defaultTheme.components.Checkbox?.states?.checked?.indicatorBackground).toBeUndefined()
 
     expect(stylesheet).toContain(
       '--weave-component-background: var(--weave-choice-checked-background)',
     )
-    expect(stylesheet).toContain(
-      'stroke-dasharray: 1;',
-    )
-    expect(stylesheet).toContain(
-      'stroke-dashoffset: 1;',
-    )
-    expect(stylesheet).toContain(
-      'stroke-dashoffset: 0;',
-    )
-    expect(stylesheet).toContain(
-      'transform: scale(0);',
-    )
-    expect(stylesheet).toContain(
-      'transform: scale(1);',
-    )
-    expect(stylesheet).toContain(
-      'var(--weave-motion-duration-normal)',
-    )
-    expect(stylesheet).toContain(
-      ':active:not([aria-disabled="true"])',
-    )
-    expect(stylesheet).toContain(
-      'transform: translateY(0.03125rem) scale(0.94);',
-    )
-    expect(stylesheet).toContain(
-      'var(--weave-motion-duration-slow)',
-    )
-    expect(stylesheet).toContain(
-      '.weave-choice-state-layer',
-    )
-    expect(stylesheet).toContain(
-      '--weave-choice-state-layer-hover-opacity',
-    )
-    expect(stylesheet).toContain(
-      '--weave-choice-state-layer-press-opacity',
-    )
+    expect(stylesheet).toContain('stroke-dasharray: 1;')
+    expect(stylesheet).toContain('stroke-dashoffset: 1;')
+    expect(stylesheet).toContain('stroke-dashoffset: 0;')
+    expect(stylesheet).toContain('transform: scale(0);')
+    expect(stylesheet).toContain('transform: scale(1);')
+    expect(stylesheet).toContain('var(--weave-motion-duration-normal)')
+    expect(stylesheet).toContain(':active:not([aria-disabled="true"])')
+    expect(stylesheet).toContain('transform: translateY(0.03125rem) scale(0.94);')
+    expect(stylesheet).toContain('var(--weave-motion-duration-slow)')
+    expect(stylesheet).toContain('.weave-choice-state-layer')
+    expect(stylesheet).toContain('--weave-choice-state-layer-hover-opacity')
+    expect(stylesheet).toContain('--weave-choice-state-layer-press-opacity')
   })
 })

@@ -1,17 +1,9 @@
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  type RefObject,
-} from 'react'
+import { type RefObject, useCallback, useEffect, useLayoutEffect, useRef } from 'react'
 import {
   useAnchorViewportDismiss,
   useOutsideInteractionDismiss,
 } from './use-anchor-viewport-dismiss'
-import {
-  useAnchoredTrigger,
-} from './use-anchored-trigger'
+import { useAnchoredTrigger } from './use-anchored-trigger'
 
 const FOCUSABLE_SELECTOR = [
   'button:not([disabled])',
@@ -24,12 +16,9 @@ const FOCUSABLE_SELECTOR = [
 ].join(',')
 
 export function usePopoverInteraction(
-  wrapperRef:
-    RefObject<HTMLSpanElement | null>,
-  targetRef:
-    RefObject<HTMLElement | null>,
-  panelRef:
-    RefObject<HTMLDivElement | null>,
+  wrapperRef: RefObject<HTMLSpanElement | null>,
+  targetRef: RefObject<HTMLElement | null>,
+  panelRef: RefObject<HTMLDivElement | null>,
   popoverId: string,
   open: boolean,
   autoFocus: boolean,
@@ -38,35 +27,30 @@ export function usePopoverInteraction(
   close: () => void,
   children: unknown,
 ): void {
-  const skipRestoreRef =
-    useRef(false)
-  const previousOpenRef =
-    useRef(false)
+  const skipRestoreRef = useRef(false)
+  const previousOpenRef = useRef(false)
 
-  const dismissForAnchorExit =
-    useCallback(() => {
-      skipRestoreRef.current = true
-      close()
-    }, [close])
+  const dismissForAnchorExit = useCallback(() => {
+    skipRestoreRef.current = true
+    close()
+  }, [close])
 
-  const dismissForOutside =
-    useCallback(() => {
-      skipRestoreRef.current = true
-      close()
-    }, [close])
+  const dismissForOutside = useCallback(() => {
+    skipRestoreRef.current = true
+    close()
+  }, [close])
 
-  const handleTriggerClick =
-    useCallback(
-      (event: MouseEvent) => {
-        if (event.defaultPrevented) {
-          return
-        }
+  const handleTriggerClick = useCallback(
+    (event: MouseEvent) => {
+      if (event.defaultPrevented) {
+        return
+      }
 
-        skipRestoreRef.current = false
-        toggleOpen()
-      },
-      [toggleOpen],
-    )
+      skipRestoreRef.current = false
+      toggleOpen()
+    },
+    [toggleOpen],
+  )
 
   useAnchoredTrigger({
     wrapperRef,
@@ -78,35 +62,22 @@ export function usePopoverInteraction(
     onClick: handleTriggerClick,
   })
 
-  useAnchorViewportDismiss(
-    targetRef,
-    open,
-    dismissForAnchorExit,
-  )
+  useAnchorViewportDismiss(targetRef, open, dismissForAnchorExit)
 
-  useOutsideInteractionDismiss(
-    targetRef,
-    panelRef,
-    open,
-    dismissForOutside,
-  )
+  useOutsideInteractionDismiss(targetRef, panelRef, open, dismissForOutside)
 
   useEffect(() => {
     if (!open) return
 
-    const target =
-      targetRef.current
+    const target = targetRef.current
 
     if (target === null) {
       return
     }
 
-    const document =
-      target.ownerDocument
+    const document = target.ownerDocument
 
-    const handleKeyDown = (
-      event: KeyboardEvent,
-    ) => {
+    const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key !== 'Escape') {
         return
       }
@@ -116,107 +87,62 @@ export function usePopoverInteraction(
       close()
     }
 
-    document.addEventListener(
-      'keydown',
-      handleKeyDown,
-    )
+    document.addEventListener('keydown', handleKeyDown)
 
     return () => {
-      document.removeEventListener(
-        'keydown',
-        handleKeyDown,
-      )
+      document.removeEventListener('keydown', handleKeyDown)
     }
-  }, [
-    close,
-    open,
-    targetRef,
-  ])
+  }, [close, open, targetRef])
 
   useLayoutEffect(() => {
-    const wasOpen =
-      previousOpenRef.current
+    const wasOpen = previousOpenRef.current
 
     previousOpenRef.current = open
 
-    if (
-      open &&
-      !wasOpen &&
-      autoFocus
-    ) {
+    if (open && !wasOpen && autoFocus) {
       queueMicrotask(() => {
-        const panel =
-          panelRef.current
+        const panel = panelRef.current
 
-        if (
-          panel === null ||
-          !panel.isConnected
-        ) {
+        if (panel === null || !panel.isConnected) {
           return
         }
 
-        const focusable =
-          panel.querySelector<HTMLElement>(
-            FOCUSABLE_SELECTOR,
-          )
+        const focusable = panel.querySelector<HTMLElement>(FOCUSABLE_SELECTOR)
 
-        ;(
-          focusable ??
-          panel
-        ).focus()
+        ;(focusable ?? panel).focus()
       })
 
       return
     }
 
-    if (
-      !open &&
-      wasOpen
-    ) {
-      const skipRestore =
-        skipRestoreRef.current
+    if (!open && wasOpen) {
+      const skipRestore = skipRestoreRef.current
 
       skipRestoreRef.current = false
 
-      if (
-        !restoreFocus ||
-        skipRestore
-      ) {
+      if (!restoreFocus || skipRestore) {
         return
       }
 
       queueMicrotask(() => {
-        const target =
-          targetRef.current
-        const panel =
-          panelRef.current
+        const target = targetRef.current
+        const panel = panelRef.current
 
         if (target === null) {
           return
         }
 
-        const document =
-          target.ownerDocument
-        const active =
-          document.activeElement
+        const document = target.ownerDocument
+        const active = document.activeElement
 
         if (
           active === null ||
           active === document.body ||
-          (
-            panel !== null &&
-            panel.contains(active)
-          )
+          (panel !== null && panel.contains(active))
         ) {
           target.focus()
         }
       })
     }
-  }, [
-    autoFocus,
-    open,
-    panelRef,
-    restoreFocus,
-    targetRef,
-  ])
+  }, [autoFocus, open, panelRef, restoreFocus, targetRef])
 }

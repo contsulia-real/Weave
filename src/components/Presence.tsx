@@ -1,14 +1,6 @@
-import {
-  useMemo,
-  type ReactNode,
-} from 'react'
-import {
-  useExitPresence,
-} from './internal/use-exit-presence'
-import {
-  PresenceContext,
-  type PresenceContextValue,
-} from './internal/presence-context'
+import { type ReactNode, useMemo } from 'react'
+import { PresenceContext, type PresenceContextValue } from './internal/presence-context'
+import { useExitPresence } from './internal/use-exit-presence'
 
 export interface PresenceProps {
   present: boolean
@@ -16,47 +8,24 @@ export interface PresenceProps {
   onExitComplete?: () => void
 }
 
-export function Presence({
-  present,
-  children,
-  onExitComplete,
-}: PresenceProps) {
+export function Presence({ present, children, onExitComplete }: PresenceProps) {
   const {
     present: mounted,
     visualState,
     registerExit,
     completeExit,
-  } = useExitPresence(
-    present,
-    false,
-    0,
-    onExitComplete,
-    true,
-  )
+  } = useExitPresence(present, false, 0, onExitComplete, true)
 
-  const context =
-    useMemo<PresenceContextValue>(
-      () => ({
-        exiting:
-          visualState ===
-          'closing',
-        registerExit,
-        completeExit,
-      }),
-      [
-        completeExit,
-        registerExit,
-        visualState,
-      ],
-    )
+  const context = useMemo<PresenceContextValue>(
+    () => ({
+      exiting: visualState === 'closing',
+      registerExit,
+      completeExit,
+    }),
+    [completeExit, registerExit, visualState],
+  )
 
   if (!mounted) return null
 
-  return (
-    <PresenceContext.Provider
-      value={context}
-    >
-      {children}
-    </PresenceContext.Provider>
-  )
+  return <PresenceContext.Provider value={context}>{children}</PresenceContext.Provider>
 }

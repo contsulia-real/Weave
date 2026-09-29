@@ -1,14 +1,8 @@
 import { useInsertionEffect } from 'react'
 
-export type RuntimeStyleValue =
-  | string
-  | number
-  | null
-  | undefined
+export type RuntimeStyleValue = string | number | null | undefined
 
-export type RuntimeStyleDeclarations = Readonly<
-  Record<string, RuntimeStyleValue>
->
+export type RuntimeStyleDeclarations = Readonly<Record<string, RuntimeStyleValue>>
 
 type RuntimeEntry = readonly [string, string | number]
 
@@ -24,20 +18,14 @@ interface RuntimeClassEntry {
 }
 
 const runtimeClasses = new Map<string, RuntimeClassEntry>()
-const runtimeRuleCache = new WeakMap<
-  object,
-  Map<string, RuntimeClassRule | null>
->()
+const runtimeRuleCache = new WeakMap<object, Map<string, RuntimeClassRule | null>>()
 
-function entries(
-  declarations: Readonly<object> | undefined,
-): readonly RuntimeEntry[] {
+function entries(declarations: Readonly<object> | undefined): readonly RuntimeEntry[] {
   if (declarations === undefined) return []
 
   return Object.entries(declarations)
     .filter(
-      (entry): entry is [string, string | number] =>
-        entry[1] !== undefined && entry[1] !== null,
+      (entry): entry is [string, string | number] => entry[1] !== undefined && entry[1] !== null,
     )
     .sort(([left], [right]) => left.localeCompare(right))
 }
@@ -75,8 +63,7 @@ export function createRuntimeStyleClass(
   }
 
   const signature = JSON.stringify(normalized)
-  const className =
-    'weave-' + prefix + '-' + hashRuntimeValue(signature)
+  const className = 'weave-' + prefix + '-' + hashRuntimeValue(signature)
 
   const rule = {
     className,

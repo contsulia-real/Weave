@@ -208,8 +208,5 @@ const stylesheet = `
 `
 
 export function ensureOptionListboxStylesheet(): void {
-  ensureStaticStylesheet(
-    'option-listbox',
-    stylesheet,
-  )
+  ensureStaticStylesheet('option-listbox', stylesheet)
 }

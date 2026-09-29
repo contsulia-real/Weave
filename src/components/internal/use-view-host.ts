@@ -1,26 +1,15 @@
-import {
-  useImperativeHandle,
-  useInsertionEffect,
-  useLayoutEffect,
-  useRef,
-} from 'react'
-import type {
-  CSSProperties,
-  RefObject,
-} from 'react'
+import type { CSSProperties, RefObject } from 'react'
+import { useImperativeHandle, useInsertionEffect, useLayoutEffect, useRef } from 'react'
 import type { ViewProps } from '../../core/view-types'
-import {
-  resolveDOMView,
-  type ResolvedDOMView,
-} from '../../renderers/dom/resolve-view'
 import { useBreakpointStylesheet } from '../../renderers/dom/breakpoint-stylesheet'
+import { type ResolvedDOMView, resolveDOMView } from '../../renderers/dom/resolve-view'
 import { useRuntimeStyleClass } from '../../renderers/dom/runtime-class'
+import { ensureViewStylesheet } from '../../renderers/dom/view-stylesheet'
+import { useTheme } from '../../theme/theme-context'
 import { useViewAnimation } from './use-view-animation'
 import { useViewLayoutAnimation } from './use-view-layout-animation'
 import { useViewMotion } from './use-view-motion'
 import { useViewEnterStagger } from './use-view-stagger'
-import { ensureViewStylesheet } from '../../renderers/dom/view-stylesheet'
-import { useTheme } from '../../theme/theme-context'
 
 export interface ViewHostResult<TElement extends HTMLElement> {
   elementRef: RefObject<TElement | null>
@@ -36,12 +25,7 @@ export function useViewHost<TElement extends HTMLElement>(
 ): ViewHostResult<TElement> {
   useInsertionEffect(ensureViewStylesheet, [])
 
-  const {
-    autoFocus,
-    ref,
-    className,
-    style,
-  } = props
+  const { autoFocus, ref, className, style } = props
 
   const elementRef = useRef<TElement>(null)
   useImperativeHandle(ref, () => elementRef.current as TElement)
@@ -54,50 +38,29 @@ export function useViewHost<TElement extends HTMLElement>(
   const breakpointClassName = useBreakpointStylesheet(theme.breakpoints)
   const resolved = resolveDOMView(props, theme.breakpoints)
   const motion = useViewMotion(props, theme, reducedMotion)
-  useViewAnimation(
-    elementRef,
-    props.animation,
-    theme,
-    reducedMotion,
-  )
-  useViewEnterStagger(
-    elementRef,
-    props.enter,
-    theme,
-    reducedMotion,
-  )
-  useViewLayoutAnimation(
-    elementRef,
-    props.layoutAnimation,
-    theme,
-    reducedMotion,
-  )
-  ;(resolved.domProps as Record<string, unknown>)[
-    'data-weave-reduced-motion'
-  ] = reducedMotion ? 'reduce' : 'no-preference'
-  ;(resolved.domProps as Record<string, unknown>)[
-    'data-weave-motion-state'
-  ] = motion.state
+  useViewAnimation(elementRef, props.animation, theme, reducedMotion)
+  useViewEnterStagger(elementRef, props.enter, theme, reducedMotion)
+  useViewLayoutAnimation(elementRef, props.layoutAnimation, theme, reducedMotion)
+  ;(resolved.domProps as Record<string, unknown>)['data-weave-reduced-motion'] = reducedMotion
+    ? 'reduce'
+    : 'no-preference'
+  ;(resolved.domProps as Record<string, unknown>)['data-weave-motion-state'] = motion.state
   const componentClassName = useRuntimeStyleClass(
-    componentName === undefined
-      ? 'component-props'
-      : `${componentName}-props`,
+    componentName === undefined ? 'component-props' : `${componentName}-props`,
     componentStyle,
   )
-  const attributeClassName = useRuntimeStyleClass(
-    'props',
-    resolved.attributeStyle,
-  )
-  const resolvedClassName = [
-    'weave-view',
-    breakpointClassName,
-    componentClassName,
-    attributeClassName,
-    motion.className,
-    className,
-  ]
-    .filter(Boolean)
-    .join(' ') || undefined
+  const attributeClassName = useRuntimeStyleClass('props', resolved.attributeStyle)
+  const resolvedClassName =
+    [
+      'weave-view',
+      breakpointClassName,
+      componentClassName,
+      attributeClassName,
+      motion.className,
+      className,
+    ]
+      .filter(Boolean)
+      .join(' ') || undefined
 
   return {
     elementRef,

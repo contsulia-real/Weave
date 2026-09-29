@@ -1,13 +1,5 @@
-import {
-  Column,
-  Flex,
-  Text,
-  View,
-} from '../index'
-import {
-  DemoBox,
-  PlaygroundSection,
-} from './PlaygroundSection'
+import { Column, Flex, Text, View } from '../index'
+import { DemoBox, PlaygroundSection } from './PlaygroundSection'
 
 export function LayoutPlayground() {
   return (
@@ -30,11 +22,7 @@ export function LayoutPlayground() {
             opacity: 0.9,
           }}
         >
-          <Column
-            width={44}
-            gap={0.5}
-            padding={1}
-          >
+          <Column width={44} gap={0.5} padding={1}>
             {Array.from(
               {
                 length: 12,
@@ -44,18 +32,11 @@ export function LayoutPlayground() {
                   key={index}
                   width="fill"
                   padding={0.75}
-                  background={
-                    index % 2 === 0
-                      ? 'surfaceHover'
-                      : 'surface'
-                  }
+                  background={index % 2 === 0 ? 'surfaceHover' : 'surface'}
                   radius="small"
                 >
                   <Text typo="body-medium">
-                    Scroll row{' '}
-                    {index + 1} —
-                    horizontal content width
-                    44rem
+                    Scroll row {index + 1} — horizontal content width 44rem
                   </Text>
                 </View>
               ),

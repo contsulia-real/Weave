@@ -1,20 +1,7 @@
-import type {
-  ResolvedTheme,
-  ScrollbarTheme,
-} from '../../../theme/theme-types'
-import type {
-  ScrollbarConfig,
-  ScrollbarSize,
-} from '../../../core/view-types'
-import type {
-  ProgressMode,
-  ProgressSize,
-} from '../../../core/progress-types'
-import {
-  color,
-  length,
-  radius,
-} from '../../../core/values'
+import type { ProgressMode, ProgressSize } from '../../../core/progress-types'
+import { color, length, radius } from '../../../core/values'
+import type { ScrollbarConfig, ScrollbarSize } from '../../../core/view-types'
+import type { ResolvedTheme, ScrollbarTheme } from '../../../theme/theme-types'
 import type { RuntimeStyleDeclarations } from '../runtime-class'
 
 export function resolveProgressTheme(
@@ -28,12 +15,8 @@ export function resolveProgressTheme(
   const spin = mode === 'spin'
 
   return {
-    '--weave-progress-width': length(
-      spin ? sized?.spinSize : sized?.linearWidth,
-    ),
-    '--weave-progress-height': length(
-      spin ? sized?.spinSize : sized?.linearHeight,
-    ),
+    '--weave-progress-width': length(spin ? sized?.spinSize : sized?.linearWidth),
+    '--weave-progress-height': length(spin ? sized?.spinSize : sized?.linearHeight),
     '--weave-progress-thickness': length(sized?.spinThickness),
     '--weave-progress-track-color': color(base?.trackColor),
     '--weave-progress-track-shadow': base?.trackShadow,
@@ -42,9 +25,7 @@ export function resolveProgressTheme(
   }
 }
 
-function scrollbarTheme(
-  theme: ResolvedTheme,
-): ScrollbarTheme | undefined {
+function scrollbarTheme(theme: ResolvedTheme): ScrollbarTheme | undefined {
   return theme.components.Scrollbar
 }
 

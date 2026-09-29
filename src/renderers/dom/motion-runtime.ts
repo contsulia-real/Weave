@@ -11,13 +11,8 @@ import type {
   ViewAnimationConfig,
 } from '../../core/motion-types'
 import { solveSpring } from '../../core/spring'
+import { background, color, filterValue, transformValue } from '../../core/values'
 import type { ViewStyleProps } from '../../core/view-types'
-import {
-  background,
-  color,
-  filterValue,
-  transformValue,
-} from '../../core/values'
 import type { ResolvedTheme } from '../../theme/theme-types'
 
 export interface ResolvedMotionTiming {
@@ -28,9 +23,7 @@ export interface ResolvedMotionTiming {
 }
 
 export function kebab(value: string): string {
-  return value.replace(/[A-Z]/g, (letter) =>
-    `-${letter.toLowerCase()}`,
-  )
+  return value.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)
 }
 
 export function resolveMotionDurationCss(
@@ -44,12 +37,7 @@ export function resolveMotionDurationCss(
 
   if (typeof value === 'number') return `${value}ms`
 
-  if (
-    Object.prototype.hasOwnProperty.call(
-      theme.tokens.motion?.duration ?? {},
-      value,
-    )
-  ) {
+  if (Object.prototype.hasOwnProperty.call(theme.tokens.motion?.duration ?? {}, value)) {
     return `var(--weave-motion-duration-${value})`
   }
 
@@ -65,10 +53,7 @@ export function resolveMotionDurationMs(
     value === undefined
       ? theme.tokens.motion?.duration?.[fallback]
       : typeof value === 'string' &&
-          Object.prototype.hasOwnProperty.call(
-            theme.tokens.motion?.duration ?? {},
-            value,
-          )
+          Object.prototype.hasOwnProperty.call(theme.tokens.motion?.duration ?? {}, value)
         ? theme.tokens.motion?.duration?.[value]
         : value
 
@@ -99,9 +84,7 @@ export function resolveMotionCurveCss(
       if (themeVariable) {
         return `var(--weave-motion-curve-${resolvedValue})`
       }
-      return typeof token === 'string'
-        ? token
-        : `cubic-bezier(${token.join(', ')})`
+      return typeof token === 'string' ? token : `cubic-bezier(${token.join(', ')})`
     }
     return resolvedValue
   }
@@ -110,17 +93,11 @@ export function resolveMotionCurveCss(
     return `cubic-bezier(${resolvedValue.join(', ')})`
   }
 
-  const steps = resolvedValue as Exclude<
-    MotionCurve,
-    string | readonly number[]
-  >
+  const steps = resolvedValue as Exclude<MotionCurve, string | readonly number[]>
   return `steps(${steps.steps}, ${steps.position ?? 'end'})`
 }
 
-export function resolveMotionSpring(
-  value: MotionSpringValue,
-  theme: ResolvedTheme,
-): MotionSpring {
+export function resolveMotionSpring(value: MotionSpringValue, theme: ResolvedTheme): MotionSpring {
   if (typeof value !== 'string') return value
   return theme.tokens.motion?.spring?.[value] ?? {}
 }
@@ -133,9 +110,7 @@ export function resolveMotionTiming(
   themeVariables = false,
 ): ResolvedMotionTiming {
   if ('spring' in timing && timing.spring !== undefined) {
-    const solution = solveSpring(
-      resolveMotionSpring(timing.spring, theme),
-    )
+    const solution = solveSpring(resolveMotionSpring(timing.spring, theme))
     return {
       durationMs: solution.durationMs,
       durationCss: `${solution.durationMs}ms`,
@@ -145,30 +120,14 @@ export function resolveMotionTiming(
   }
 
   return {
-    durationMs: resolveMotionDurationMs(
-      timing.duration,
-      theme,
-      fallbackDuration,
-    ),
-    durationCss: resolveMotionDurationCss(
-      timing.duration,
-      theme,
-      fallbackDuration,
-    ),
-    easing: resolveMotionCurveCss(
-      timing.curve,
-      theme,
-      fallbackCurve,
-      themeVariables,
-    ),
+    durationMs: resolveMotionDurationMs(timing.duration, theme, fallbackDuration),
+    durationCss: resolveMotionDurationCss(timing.duration, theme, fallbackDuration),
+    easing: resolveMotionCurveCss(timing.curve, theme, fallbackCurve, themeVariables),
     spring: false,
   }
 }
 
-export function motionStyleToKeyframe(
-  style: MotionStyle,
-  offset?: number,
-): Keyframe {
+export function motionStyleToKeyframe(style: MotionStyle, offset?: number): Keyframe {
   const viewStyle = style as ViewStyleProps
   const output: Keyframe = {}
 
@@ -188,9 +147,7 @@ export function motionStyleToKeyframe(
   return output
 }
 
-export function motionStyleProperties(
-  styles: readonly (MotionStyle | undefined)[],
-): Set<string> {
+export function motionStyleProperties(styles: readonly (MotionStyle | undefined)[]): Set<string> {
   const properties = new Set<string>()
 
   for (const style of styles) {
@@ -226,16 +183,12 @@ export function motionStyleProperties(
   return properties
 }
 
-function normalizedOffsets(
-  frames: readonly MotionKeyframe[],
-): number[] {
+function normalizedOffsets(frames: readonly MotionKeyframe[]): number[] {
   const count = frames.length
   if (count <= 1) return count === 0 ? [] : [1]
 
   const offsets = frames.map((frame) =>
-    frame.at === undefined
-      ? undefined
-      : Math.max(0, Math.min(1, frame.at)),
+    frame.at === undefined ? undefined : Math.max(0, Math.min(1, frame.at)),
   )
   offsets[0] ??= 0
   offsets[count - 1] ??= 1
@@ -258,13 +211,11 @@ function normalizedOffsets(
   }
 
   return offsets.map((value, index) =>
-    Math.max(index === 0 ? 0 : offsets[index - 1] ?? 0, value ?? 1),
+    Math.max(index === 0 ? 0 : (offsets[index - 1] ?? 0), value ?? 1),
   )
 }
 
-export function resolveMotionKeyframes(
-  frames: readonly MotionKeyframe[],
-): Keyframe[] {
+export function resolveMotionKeyframes(frames: readonly MotionKeyframe[]): Keyframe[] {
   const offsets = normalizedOffsets(frames)
   return frames.map((frame, index) => {
     const { at: _at, ...style } = frame
@@ -312,9 +263,7 @@ export function cyclePlaybackDirection(
   }
 }
 
-export function totalAnimationCycles(
-  repeat: ViewAnimationConfig['repeat'],
-): number {
+export function totalAnimationCycles(repeat: ViewAnimationConfig['repeat']): number {
   if (repeat === 'infinite') return Number.POSITIVE_INFINITY
   if (repeat === undefined) return 1
   return Math.max(1, Math.floor(repeat) + 1)

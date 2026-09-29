@@ -21,11 +21,8 @@ export function trackVisualAnchor(
   onUpdate: () => void,
   options: VisualAnchorTrackerOptions = {},
 ): () => void {
-  const view =
-    target.ownerDocument.defaultView
-  let frame:
-    | number
-    | undefined
+  const view = target.ownerDocument.defaultView
+  let frame: number | undefined
   let settleFrames = 0
   let visualEffects = 0
 
@@ -34,18 +31,10 @@ export function trackVisualAnchor(
     typeof target.getAnimations === 'function' &&
     target
       .getAnimations({ subtree: true })
-      .some((animation) =>
-        animation.playState === 'running' ||
-        animation.pending,
-      )
+      .some((animation) => animation.playState === 'running' || animation.pending)
 
   const queueFrame = () => {
-    if (
-      frame !== undefined ||
-      view === null ||
-      typeof view.requestAnimationFrame !==
-        'function'
-    ) {
+    if (frame !== undefined || view === null || typeof view.requestAnimationFrame !== 'function') {
       return
     }
 
@@ -57,11 +46,7 @@ export function trackVisualAnchor(
         settleFrames -= 1
       }
 
-      if (
-        settleFrames > 0 ||
-        visualEffects > 0 ||
-        hasRunningAnimation()
-      ) {
+      if (settleFrames > 0 || visualEffects > 0 || hasRunningAnimation()) {
         queueFrame()
       }
     })
@@ -79,27 +64,19 @@ export function trackVisualAnchor(
   }
 
   const endVisualEffect = () => {
-    visualEffects =
-      Math.max(0, visualEffects - 1)
+    visualEffects = Math.max(0, visualEffects - 1)
     schedule()
   }
 
-  const resizeObserver =
-    typeof ResizeObserver === 'undefined'
-      ? null
-      : new ResizeObserver(schedule)
+  const resizeObserver = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(schedule)
 
   resizeObserver?.observe(target)
-  for (
-    const element of
-    options.additionalTargets ?? []
-  ) {
+  for (const element of options.additionalTargets ?? []) {
     resizeObserver?.observe(element)
   }
 
   const mutationObserver =
-    options.trackMutations !== true ||
-    typeof MutationObserver === 'undefined'
+    options.trackMutations !== true || typeof MutationObserver === 'undefined'
       ? null
       : new MutationObserver(schedule)
 
@@ -109,56 +86,23 @@ export function trackVisualAnchor(
     subtree: true,
   })
 
-  for (
-    const eventName of
-    options.interactionEvents ?? []
-  ) {
-    target.addEventListener(
-      eventName,
-      schedule,
-    )
+  for (const eventName of options.interactionEvents ?? []) {
+    target.addEventListener(eventName, schedule)
   }
 
-  if (
-    options.continuousAnimations === true
-  ) {
-    target.addEventListener(
-      'transitionrun',
-      beginVisualEffect,
-    )
-    target.addEventListener(
-      'transitionend',
-      endVisualEffect,
-    )
-    target.addEventListener(
-      'transitioncancel',
-      endVisualEffect,
-    )
-    target.addEventListener(
-      'animationstart',
-      beginVisualEffect,
-    )
-    target.addEventListener(
-      'animationend',
-      endVisualEffect,
-    )
-    target.addEventListener(
-      'animationcancel',
-      endVisualEffect,
-    )
+  if (options.continuousAnimations === true) {
+    target.addEventListener('transitionrun', beginVisualEffect)
+    target.addEventListener('transitionend', endVisualEffect)
+    target.addEventListener('transitioncancel', endVisualEffect)
+    target.addEventListener('animationstart', beginVisualEffect)
+    target.addEventListener('animationend', endVisualEffect)
+    target.addEventListener('animationcancel', endVisualEffect)
   }
 
-  view?.addEventListener(
-    'resize',
-    schedule,
-  )
+  view?.addEventListener('resize', schedule)
 
   if (options.trackScroll === true) {
-    view?.addEventListener(
-      'scroll',
-      schedule,
-      true,
-    )
+    view?.addEventListener('scroll', schedule, true)
   }
 
   schedule()
@@ -167,64 +111,26 @@ export function trackVisualAnchor(
     resizeObserver?.disconnect()
     mutationObserver?.disconnect()
 
-    for (
-      const eventName of
-      options.interactionEvents ?? []
-    ) {
-      target.removeEventListener(
-        eventName,
-        schedule,
-      )
+    for (const eventName of options.interactionEvents ?? []) {
+      target.removeEventListener(eventName, schedule)
     }
 
-    if (
-      options.continuousAnimations === true
-    ) {
-      target.removeEventListener(
-        'transitionrun',
-        beginVisualEffect,
-      )
-      target.removeEventListener(
-        'transitionend',
-        endVisualEffect,
-      )
-      target.removeEventListener(
-        'transitioncancel',
-        endVisualEffect,
-      )
-      target.removeEventListener(
-        'animationstart',
-        beginVisualEffect,
-      )
-      target.removeEventListener(
-        'animationend',
-        endVisualEffect,
-      )
-      target.removeEventListener(
-        'animationcancel',
-        endVisualEffect,
-      )
+    if (options.continuousAnimations === true) {
+      target.removeEventListener('transitionrun', beginVisualEffect)
+      target.removeEventListener('transitionend', endVisualEffect)
+      target.removeEventListener('transitioncancel', endVisualEffect)
+      target.removeEventListener('animationstart', beginVisualEffect)
+      target.removeEventListener('animationend', endVisualEffect)
+      target.removeEventListener('animationcancel', endVisualEffect)
     }
 
-    view?.removeEventListener(
-      'resize',
-      schedule,
-    )
+    view?.removeEventListener('resize', schedule)
 
     if (options.trackScroll === true) {
-      view?.removeEventListener(
-        'scroll',
-        schedule,
-        true,
-      )
+      view?.removeEventListener('scroll', schedule, true)
     }
 
-    if (
-      frame !== undefined &&
-      view !== null &&
-      typeof view.cancelAnimationFrame ===
-        'function'
-    ) {
+    if (frame !== undefined && view !== null && typeof view.cancelAnimationFrame === 'function') {
       view.cancelAnimationFrame(frame)
     }
   }

@@ -1,21 +1,12 @@
-import {
-  useCallback,
-  useLayoutEffect,
-  useRef,
-  type RefObject,
-} from 'react'
-import {
-  syncScrollbarThumbOffsets,
-  updateScrollbarGeometry,
-} from './scrollbar-geometry'
+import { type RefObject, useCallback, useLayoutEffect, useRef } from 'react'
+import { syncScrollbarThumbOffsets, updateScrollbarGeometry } from './scrollbar-geometry'
 import {
   EMPTY_SCROLL_METRICS,
   type ScrollbarElementRefs,
   type ScrollbarOverflowIntent,
 } from './scrollbar-types'
 
-interface UseAutoScrollbarSyncProps<TTarget extends HTMLElement>
-  extends ScrollbarElementRefs {
+interface UseAutoScrollbarSyncProps<TTarget extends HTMLElement> extends ScrollbarElementRefs {
   targetRef: RefObject<TTarget | null>
   overflowIntent: ScrollbarOverflowIntent
   themeTokenClassName?: string
@@ -92,11 +83,7 @@ export function useAutoScrollbarSync<TTarget extends HTMLElement>({
 
     if (target === null || elements === null) return
 
-    metricsRef.current = updateScrollbarGeometry(
-      target,
-      elements,
-      overflowIntent,
-    )
+    metricsRef.current = updateScrollbarGeometry(target, elements, overflowIntent)
     syncScrollbarThumbOffsets(target, elements, metricsRef.current)
   }, [
     horizontalHitRegionRef,
@@ -129,9 +116,7 @@ export function useAutoScrollbarSync<TTarget extends HTMLElement>({
     document.addEventListener('scroll', onDocumentScroll, true)
 
     const resizeObserver =
-      typeof ResizeObserver === 'undefined'
-        ? null
-        : new ResizeObserver(updateGeometry)
+      typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(updateGeometry)
 
     const observeTargetAndChildren = () => {
       resizeObserver?.disconnect()

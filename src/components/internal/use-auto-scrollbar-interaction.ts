@@ -1,13 +1,5 @@
-import {
-  useCallback,
-  useRef,
-  type PointerEvent,
-  type RefObject,
-} from 'react'
-import type {
-  ScrollbarElementRefs,
-  ScrollbarOrientation,
-} from './scrollbar-types'
+import { type PointerEvent, type RefObject, useCallback, useRef } from 'react'
+import type { ScrollbarElementRefs, ScrollbarOrientation } from './scrollbar-types'
 
 interface DragState {
   orientation: ScrollbarOrientation
@@ -33,184 +25,144 @@ export function useAutoScrollbarInteraction<TTarget extends HTMLElement>({
 }: UseAutoScrollbarInteractionProps<TTarget>) {
   const dragRef = useRef<DragState | null>(null)
 
-  const beginDrag = useCallback((
-    orientation: ScrollbarOrientation,
-    event: PointerEvent<HTMLDivElement>,
-  ) => {
-    const target = targetRef.current
-    const hitRegion =
-      orientation === 'vertical'
-        ? verticalHitRegionRef.current
-        : horizontalHitRegionRef.current
-    const thumb =
-      orientation === 'vertical'
-        ? verticalThumbRef.current
-        : horizontalThumbRef.current
+  const beginDrag = useCallback(
+    (orientation: ScrollbarOrientation, event: PointerEvent<HTMLDivElement>) => {
+      const target = targetRef.current
+      const hitRegion =
+        orientation === 'vertical' ? verticalHitRegionRef.current : horizontalHitRegionRef.current
+      const thumb =
+        orientation === 'vertical' ? verticalThumbRef.current : horizontalThumbRef.current
 
-    if (target === null || hitRegion === null || thumb === null) return
+      if (target === null || hitRegion === null || thumb === null) return
 
-    event.preventDefault()
-    event.stopPropagation()
-    hitRegion.setPointerCapture?.(event.pointerId)
-    hitRegion.dataset.weaveScrollbarDragging = 'true'
+      event.preventDefault()
+      event.stopPropagation()
+      hitRegion.setPointerCapture?.(event.pointerId)
+      hitRegion.dataset.weaveScrollbarDragging = 'true'
 
-    const hitRegionRect = hitRegion.getBoundingClientRect()
-    const thumbRect = thumb.getBoundingClientRect()
-    const hitRegionLength =
-      orientation === 'vertical'
-        ? hitRegionRect.height
-        : hitRegionRect.width
-    const thumbLength =
-      orientation === 'vertical'
-        ? thumbRect.height
-        : thumbRect.width
-    const available = Math.max(0, hitRegionLength - thumbLength)
-    const maxScroll =
-      orientation === 'vertical'
-        ? Math.max(0, target.scrollHeight - target.clientHeight)
-        : Math.max(0, target.scrollWidth - target.clientWidth)
-
-    dragRef.current = {
-      orientation,
-      pointerId: event.pointerId,
-      startPointer:
-        orientation === 'vertical' ? event.clientY : event.clientX,
-      startScroll:
+      const hitRegionRect = hitRegion.getBoundingClientRect()
+      const thumbRect = thumb.getBoundingClientRect()
+      const hitRegionLength =
+        orientation === 'vertical' ? hitRegionRect.height : hitRegionRect.width
+      const thumbLength = orientation === 'vertical' ? thumbRect.height : thumbRect.width
+      const available = Math.max(0, hitRegionLength - thumbLength)
+      const maxScroll =
         orientation === 'vertical'
-          ? target.scrollTop
-          : target.scrollLeft,
-      scrollPerPixel: available === 0 ? 0 : maxScroll / available,
-    }
-  }, [
-    horizontalHitRegionRef,
-    horizontalThumbRef,
-    targetRef,
-    verticalHitRegionRef,
-    verticalThumbRef,
-  ])
+          ? Math.max(0, target.scrollHeight - target.clientHeight)
+          : Math.max(0, target.scrollWidth - target.clientWidth)
 
-  const continueDrag = useCallback((
-    orientation: ScrollbarOrientation,
-    event: PointerEvent<HTMLDivElement>,
-  ) => {
-    const target = targetRef.current
-    const drag = dragRef.current
+      dragRef.current = {
+        orientation,
+        pointerId: event.pointerId,
+        startPointer: orientation === 'vertical' ? event.clientY : event.clientX,
+        startScroll: orientation === 'vertical' ? target.scrollTop : target.scrollLeft,
+        scrollPerPixel: available === 0 ? 0 : maxScroll / available,
+      }
+    },
+    [horizontalHitRegionRef, horizontalThumbRef, targetRef, verticalHitRegionRef, verticalThumbRef],
+  )
 
-    if (
-      target === null ||
-      drag === null ||
-      drag.orientation !== orientation ||
-      drag.pointerId !== event.pointerId
-    ) {
-      return
-    }
+  const continueDrag = useCallback(
+    (orientation: ScrollbarOrientation, event: PointerEvent<HTMLDivElement>) => {
+      const target = targetRef.current
+      const drag = dragRef.current
 
-    event.preventDefault()
+      if (
+        target === null ||
+        drag === null ||
+        drag.orientation !== orientation ||
+        drag.pointerId !== event.pointerId
+      ) {
+        return
+      }
 
-    const pointer =
-      orientation === 'vertical' ? event.clientY : event.clientX
-    const next =
-      drag.startScroll +
-      (pointer - drag.startPointer) * drag.scrollPerPixel
+      event.preventDefault()
 
-    if (orientation === 'vertical') {
-      target.scrollTop = next
-    } else {
-      target.scrollLeft = next
-    }
+      const pointer = orientation === 'vertical' ? event.clientY : event.clientX
+      const next = drag.startScroll + (pointer - drag.startPointer) * drag.scrollPerPixel
 
-    syncThumbOffsets()
-  }, [syncThumbOffsets, targetRef])
+      if (orientation === 'vertical') {
+        target.scrollTop = next
+      } else {
+        target.scrollLeft = next
+      }
 
-  const endDrag = useCallback((
-    event: PointerEvent<HTMLDivElement>,
-  ) => {
-    const drag = dragRef.current
-    if (drag === null || drag.pointerId !== event.pointerId) return
+      syncThumbOffsets()
+    },
+    [syncThumbOffsets, targetRef],
+  )
 
-    const hitRegion =
-      drag.orientation === 'vertical'
-        ? verticalHitRegionRef.current
-        : horizontalHitRegionRef.current
+  const endDrag = useCallback(
+    (event: PointerEvent<HTMLDivElement>) => {
+      const drag = dragRef.current
+      if (drag === null || drag.pointerId !== event.pointerId) return
 
-    hitRegion?.releasePointerCapture?.(event.pointerId)
-    if (hitRegion !== null) {
-      delete hitRegion.dataset.weaveScrollbarDragging
-    }
+      const hitRegion =
+        drag.orientation === 'vertical'
+          ? verticalHitRegionRef.current
+          : horizontalHitRegionRef.current
 
-    dragRef.current = null
-  }, [horizontalHitRegionRef, verticalHitRegionRef])
+      hitRegion?.releasePointerCapture?.(event.pointerId)
+      if (hitRegion !== null) {
+        delete hitRegion.dataset.weaveScrollbarDragging
+      }
 
-  const pageHitRegion = useCallback((
-    orientation: ScrollbarOrientation,
-    event: PointerEvent<HTMLDivElement>,
-  ) => {
-    if (event.target !== event.currentTarget) return
+      dragRef.current = null
+    },
+    [horizontalHitRegionRef, verticalHitRegionRef],
+  )
 
-    const target = targetRef.current
-    const thumb =
-      orientation === 'vertical'
-        ? verticalThumbRef.current
-        : horizontalThumbRef.current
+  const pageHitRegion = useCallback(
+    (orientation: ScrollbarOrientation, event: PointerEvent<HTMLDivElement>) => {
+      if (event.target !== event.currentTarget) return
 
-    if (target === null || thumb === null) return
+      const target = targetRef.current
+      const thumb =
+        orientation === 'vertical' ? verticalThumbRef.current : horizontalThumbRef.current
 
-    event.preventDefault()
+      if (target === null || thumb === null) return
 
-    const thumbRect = thumb.getBoundingClientRect()
-    const before =
-      orientation === 'vertical'
-        ? event.clientY < thumbRect.top
-        : event.clientX < thumbRect.left
-    const direction = before ? -1 : 1
+      event.preventDefault()
 
-    if (orientation === 'vertical') {
-      target.scrollTop += direction * target.clientHeight * 0.9
-    } else {
-      target.scrollLeft += direction * target.clientWidth * 0.9
-    }
+      const thumbRect = thumb.getBoundingClientRect()
+      const before =
+        orientation === 'vertical' ? event.clientY < thumbRect.top : event.clientX < thumbRect.left
+      const direction = before ? -1 : 1
 
-    syncThumbOffsets()
-  }, [
-    horizontalThumbRef,
-    syncThumbOffsets,
-    targetRef,
-    verticalThumbRef,
-  ])
+      if (orientation === 'vertical') {
+        target.scrollTop += direction * target.clientHeight * 0.9
+      } else {
+        target.scrollLeft += direction * target.clientWidth * 0.9
+      }
 
-  const handleHitRegionPointerDown = useCallback((
-    orientation: ScrollbarOrientation,
-    event: PointerEvent<HTMLDivElement>,
-  ) => {
-    if (event.target !== event.currentTarget) return
+      syncThumbOffsets()
+    },
+    [horizontalThumbRef, syncThumbOffsets, targetRef, verticalThumbRef],
+  )
 
-    const thumb =
-      orientation === 'vertical'
-        ? verticalThumbRef.current
-        : horizontalThumbRef.current
+  const handleHitRegionPointerDown = useCallback(
+    (orientation: ScrollbarOrientation, event: PointerEvent<HTMLDivElement>) => {
+      if (event.target !== event.currentTarget) return
 
-    if (thumb === null) return
+      const thumb =
+        orientation === 'vertical' ? verticalThumbRef.current : horizontalThumbRef.current
 
-    const thumbRect = thumb.getBoundingClientRect()
-    const pointer =
-      orientation === 'vertical' ? event.clientY : event.clientX
-    const start =
-      orientation === 'vertical' ? thumbRect.top : thumbRect.left
-    const end =
-      orientation === 'vertical' ? thumbRect.bottom : thumbRect.right
+      if (thumb === null) return
 
-    if (pointer >= start && pointer <= end) {
-      beginDrag(orientation, event)
-      return
-    }
+      const thumbRect = thumb.getBoundingClientRect()
+      const pointer = orientation === 'vertical' ? event.clientY : event.clientX
+      const start = orientation === 'vertical' ? thumbRect.top : thumbRect.left
+      const end = orientation === 'vertical' ? thumbRect.bottom : thumbRect.right
 
-    pageHitRegion(orientation, event)
-  }, [
-    beginDrag,
-    horizontalThumbRef,
-    pageHitRegion,
-    verticalThumbRef,
-  ])
+      if (pointer >= start && pointer <= end) {
+        beginDrag(orientation, event)
+        return
+      }
+
+      pageHitRegion(orientation, event)
+    },
+    [beginDrag, horizontalThumbRef, pageHitRegion, verticalThumbRef],
+  )
 
   return {
     beginDrag,

@@ -1,12 +1,6 @@
-import {
-  useInsertionEffect,
-} from 'react'
 import type { ChangeEvent } from 'react'
-import type {
-  CheckboxProps,
-  ChoiceControlKind,
-  RadioProps,
-} from '../../core/choice-types'
+import { useInsertionEffect } from 'react'
+import type { CheckboxProps, ChoiceControlKind, RadioProps } from '../../core/choice-types'
 import type { ViewProps } from '../../core/view-types'
 import { ensureChoiceControlStylesheet } from '../../renderers/dom/choice-control-stylesheet'
 import { resolveChoiceControlTheme } from '../../renderers/dom/resolve-component-theme'
@@ -14,9 +8,7 @@ import { useRuntimeStyleClass } from '../../renderers/dom/runtime-class'
 import { useTheme } from '../../theme/theme-context'
 import { useViewHost } from './use-view-host'
 
-type ChoiceControlProps =
-  | ({ kind: 'radio' } & RadioProps)
-  | ({ kind: 'checkbox' } & CheckboxProps)
+type ChoiceControlProps = ({ kind: 'radio' } & RadioProps) | ({ kind: 'checkbox' } & CheckboxProps)
 
 export function ChoiceControl({
   kind,
@@ -33,31 +25,17 @@ export function ChoiceControl({
   const { theme, reducedMotion } = useTheme()
   const themeClassName = useRuntimeStyleClass(
     `${kind}-theme`,
-    resolveChoiceControlTheme(
-      theme,
-      kind as ChoiceControlKind,
-      size,
-    ),
+    resolveChoiceControlTheme(theme, kind as ChoiceControlKind, size),
   )
   const hostProps: ViewProps<HTMLInputElement> = {
     ...viewProps,
     disabled,
   }
-  const {
-    elementRef,
-    className,
-    inlineStyle,
-    resolved,
-  } = useViewHost(hostProps)
+  const { elementRef, className, inlineStyle, resolved } = useViewHost(hostProps)
 
-  useInsertionEffect(
-    ensureChoiceControlStylesheet,
-    [],
-  )
+  useInsertionEffect(ensureChoiceControlStylesheet, [])
 
-  const handleChange = (
-    event: ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     onChange?.(event.currentTarget.checked)
   }
 
@@ -65,9 +43,7 @@ export function ChoiceControl({
     <label
       data-weave-choice-field=""
       data-weave-choice-disabled={disabled ? 'true' : 'false'}
-      data-weave-reduced-motion={
-        reducedMotion ? 'reduce' : 'no-preference'
-      }
+      data-weave-reduced-motion={reducedMotion ? 'reduce' : 'no-preference'}
       className={[
         'weave-choice-field',
         `weave-choice-field--${kind}`,
@@ -103,29 +79,19 @@ export function ChoiceControl({
             `weave-${kind}`,
             `weave-choice-control--${size}`,
             className,
-          ].filter(Boolean).join(' ')}
+          ]
+            .filter(Boolean)
+            .join(' ')}
           style={inlineStyle}
         />
 
-        <span
-          className="weave-choice-state-layer"
-          aria-hidden="true"
-        />
+        <span className="weave-choice-state-layer" aria-hidden="true" />
 
-        <span
-          className="weave-choice-visual"
-          aria-hidden="true"
-        >
+        <span className="weave-choice-visual" aria-hidden="true">
           {kind === 'radio' ? (
-            <span
-              className="weave-radio__dot"
-            />
+            <span className="weave-radio__dot" />
           ) : (
-            <svg
-              className="weave-checkbox__mark"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
+            <svg className="weave-checkbox__mark" viewBox="0 0 24 24" aria-hidden="true">
               <path
                 className="weave-checkbox__mark-path"
                 data-weave-checkbox-check=""
@@ -138,10 +104,7 @@ export function ChoiceControl({
       </span>
 
       {label !== undefined ? (
-        <span
-          className="weave-choice-label"
-          data-weave-choice-label=""
-        >
+        <span className="weave-choice-label" data-weave-choice-label="">
           {label}
         </span>
       ) : null}

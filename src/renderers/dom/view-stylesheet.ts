@@ -1,6 +1,4 @@
-import {
-  defaultTheme,
-} from '../../theme/default-theme'
+import { defaultTheme } from '../../theme/default-theme'
 import { themeVariableDeclarations } from '../../theme/theme-css'
 
 const VIEW_STYLE_PROPERTIES = [
@@ -81,13 +79,7 @@ const VIEW_STYLE_PROPERTIES = [
 
 export type ViewStyleProperty = (typeof VIEW_STYLE_PROPERTIES)[number]
 
-const VIEW_STYLE_STATES = [
-  'hover',
-  'active',
-  'focus',
-  'focus-visible',
-  'disabled',
-] as const
+const VIEW_STYLE_STATES = ['hover', 'active', 'focus', 'focus-visible', 'disabled'] as const
 
 const VIEW_MOTION_STATES = [
   'motion-enter-from',
@@ -96,32 +88,23 @@ const VIEW_MOTION_STATES = [
   'motion-exit-to',
 ] as const
 
-const toKebab = (value: string) =>
-  value.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)
+const toKebab = (value: string) => value.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)
 
-const variableName = (
-  property: ViewStyleProperty,
-  prefix?: string,
-): `--weave-${string}` =>
+const variableName = (property: ViewStyleProperty, prefix?: string): `--weave-${string}` =>
   `--weave-${prefix === undefined ? '' : `${prefix}-`}${toKebab(property)}`
 
-const componentVariableName = (
-  property: ViewStyleProperty,
-): `--weave-component-${string}` =>
+const componentVariableName = (property: ViewStyleProperty): `--weave-component-${string}` =>
   `--weave-component-${toKebab(property)}`
 
 const responsiveVariableName = (
   scope: 'viewport' | 'container',
   property: ViewStyleProperty,
-): `--weave-${string}` =>
-  `--weave-${scope}-responsive-${toKebab(property)}`
+): `--weave-${string}` => `--weave-${scope}-responsive-${toKebab(property)}`
 
-const componentFallback = (property: ViewStyleProperty) =>
-  `var(${componentVariableName(property)})`
+const componentFallback = (property: ViewStyleProperty) => `var(${componentVariableName(property)})`
 
 const baseValue = (property: ViewStyleProperty, state?: string) => {
-  const base =
-    `var(${variableName(property)}, ${componentFallback(property)})`
+  const base = `var(${variableName(property)}, ${componentFallback(property)})`
 
   if (state === undefined) return base
 
@@ -145,27 +128,22 @@ const propertyRegistrationBlock = () =>
     responsiveVariableName('viewport', property),
     responsiveVariableName('container', property),
   ])
-    .map(
-      (variable) =>
-        `@property ${variable} { syntax: "*"; inherits: false; }`,
-    )
+    .map((variable) => `@property ${variable} { syntax: "*"; inherits: false; }`)
     .join('')
 
-const motionPropertyRegistrationBlock = () => [
-  '--weave-component-transition-property',
-  '--weave-component-transition-duration',
-  '--weave-component-transition-timing-function',
-  '--weave-component-transition-delay',
-  '--weave-transition-property',
-  '--weave-transition-duration',
-  '--weave-transition-timing-function',
-  '--weave-transition-delay',
-]
-  .map(
-    (variable) =>
-      `@property ${variable} { syntax: "*"; inherits: false; }`,
-  )
-  .join('')
+const motionPropertyRegistrationBlock = () =>
+  [
+    '--weave-component-transition-property',
+    '--weave-component-transition-duration',
+    '--weave-component-transition-timing-function',
+    '--weave-component-transition-delay',
+    '--weave-transition-property',
+    '--weave-transition-duration',
+    '--weave-transition-timing-function',
+    '--weave-transition-delay',
+  ]
+    .map((variable) => `@property ${variable} { syntax: "*"; inherits: false; }`)
+    .join('')
 
 import { ensureStaticStylesheet } from './static-stylesheet'
 
@@ -386,9 +364,4 @@ export function ensureViewStylesheet(): void {
   ensureStaticStylesheet('view', stylesheet)
 }
 
-export {
-  VIEW_STYLE_PROPERTIES,
-  componentVariableName,
-  responsiveVariableName,
-  variableName,
-}
+export { componentVariableName, responsiveVariableName, VIEW_STYLE_PROPERTIES, variableName }

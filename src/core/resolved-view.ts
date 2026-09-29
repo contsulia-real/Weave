@@ -1,3 +1,4 @@
+import { VIEW_STYLE_PROP_KEYS } from './view-prop-keys'
 import type {
   TransformOperation,
   ViewProps,
@@ -5,7 +6,6 @@ import type {
   ViewStateStyle,
   ViewStyleProps,
 } from './view-types'
-import { VIEW_STYLE_PROP_KEYS } from './view-prop-keys'
 
 type ViewStyleAlias =
   | 'margin'
@@ -29,9 +29,7 @@ type ViewStyleAlias =
   | 'skewX'
   | 'skewY'
 
-export type ResolvedViewStyle = Readonly<
-  Omit<ViewStyleProps, ViewStyleAlias>
->
+export type ResolvedViewStyle = Readonly<Omit<ViewStyleProps, ViewStyleAlias>>
 
 export interface ResolvedViewBreakpoint {
   name: string
@@ -61,18 +59,9 @@ function breakpointList(
   breakpoints: Readonly<Record<string, number>>,
 ): readonly Readonly<{ name: string; minWidth: number }>[] {
   return Object.entries(breakpoints)
-    .filter(
-      ([name, minWidth]) =>
-        name.length > 0 &&
-        Number.isFinite(minWidth) &&
-        minWidth >= 0,
-    )
+    .filter(([name, minWidth]) => name.length > 0 && Number.isFinite(minWidth) && minWidth >= 0)
     .map(([name, minWidth]) => ({ name, minWidth }))
-    .sort(
-      (left, right) =>
-        left.minWidth - right.minWidth ||
-        left.name.localeCompare(right.name),
-    )
+    .sort((left, right) => left.minWidth - right.minWidth || left.name.localeCompare(right.name))
 }
 
 function containerBreakpointProp(name: string): string {
@@ -80,9 +69,7 @@ function containerBreakpointProp(name: string): string {
   return `container${name[0]?.toUpperCase() ?? ''}${name.slice(1)}`
 }
 
-function pickStyleProps(
-  input: Partial<ViewStyleProps>,
-): ViewStyleProps {
+function pickStyleProps(input: Partial<ViewStyleProps>): ViewStyleProps {
   const output: Partial<ViewStyleProps> = {}
   const writable = output as Record<string, unknown>
   const record = input as Record<string, unknown>
@@ -103,33 +90,18 @@ function canonicalSides<T>(
   right: T | undefined,
   bottom: T | undefined,
   left: T | undefined,
-): readonly [
-  T | undefined,
-  T | undefined,
-  T | undefined,
-  T | undefined,
-] {
-  return [
-    top ?? y ?? all,
-    right ?? x ?? all,
-    bottom ?? y ?? all,
-    left ?? x ?? all,
-  ]
+): readonly [T | undefined, T | undefined, T | undefined, T | undefined] {
+  return [top ?? y ?? all, right ?? x ?? all, bottom ?? y ?? all, left ?? x ?? all]
 }
 
-function canonicalTransform(
-  props: ViewStyleProps,
-): readonly TransformOperation[] | undefined {
+function canonicalTransform(props: ViewStyleProps): readonly TransformOperation[] | undefined {
   if (props.transform !== undefined) return props.transform
 
   const output: TransformOperation[] = []
 
   if (props.translateX !== undefined || props.translateY !== undefined) {
     output.push({
-      translate: [
-        props.translateX ?? 0,
-        props.translateY ?? 0,
-      ],
+      translate: [props.translateX ?? 0, props.translateY ?? 0],
     })
   }
   if (props.rotate !== undefined) output.push({ rotate: props.rotate })
@@ -146,9 +118,7 @@ function canonicalTransform(
   return output.length === 0 ? undefined : output
 }
 
-export function resolveViewStyle(
-  input: Partial<ViewStyleProps> | undefined,
-): ResolvedViewStyle {
+export function resolveViewStyle(input: Partial<ViewStyleProps> | undefined): ResolvedViewStyle {
   const props = pickStyleProps(input ?? {})
   const {
     margin,
@@ -174,27 +144,25 @@ export function resolveViewStyle(
     ...rest
   } = props
 
-  const [marginTop, marginRight, marginBottom, marginLeft] =
-    canonicalSides(
-      margin,
-      marginX,
-      marginY,
-      props.marginTop,
-      props.marginRight,
-      props.marginBottom,
-      props.marginLeft,
-    )
+  const [marginTop, marginRight, marginBottom, marginLeft] = canonicalSides(
+    margin,
+    marginX,
+    marginY,
+    props.marginTop,
+    props.marginRight,
+    props.marginBottom,
+    props.marginLeft,
+  )
 
-  const [paddingTop, paddingRight, paddingBottom, paddingLeft] =
-    canonicalSides(
-      padding,
-      paddingX,
-      paddingY,
-      props.paddingTop,
-      props.paddingRight,
-      props.paddingBottom,
-      props.paddingLeft,
-    )
+  const [paddingTop, paddingRight, paddingBottom, paddingLeft] = canonicalSides(
+    padding,
+    paddingX,
+    paddingY,
+    props.paddingTop,
+    props.paddingRight,
+    props.paddingBottom,
+    props.paddingLeft,
+  )
 
   const [top, right, bottom, left] = canonicalSides(
     inset,
@@ -236,9 +204,7 @@ export function resolveViewStyle(
   }
 }
 
-function resolvedState(
-  value: ViewStateStyle | undefined,
-): ResolvedViewStyle | undefined {
+function resolvedState(value: ViewStateStyle | undefined): ResolvedViewStyle | undefined {
   return value === undefined ? undefined : resolveViewStyle(value)
 }
 
@@ -287,15 +253,11 @@ export function resolveView<TElement extends HTMLElement>(
       responsive.push({
         ...breakpoint,
         scope: 'viewport',
-        style: resolveViewStyle(
-          viewportValue as ViewStyleProps,
-        ),
+        style: resolveViewStyle(viewportValue as ViewStyleProps),
       })
     }
 
-    const containerValue = record[
-      containerBreakpointProp(breakpoint.name)
-    ]
+    const containerValue = record[containerBreakpointProp(breakpoint.name)]
     if (
       typeof containerValue === 'object' &&
       containerValue !== null &&
@@ -304,9 +266,7 @@ export function resolveView<TElement extends HTMLElement>(
       responsive.push({
         ...breakpoint,
         scope: 'container',
-        style: resolveViewStyle(
-          containerValue as ViewStyleProps,
-        ),
+        style: resolveViewStyle(containerValue as ViewStyleProps),
       })
     }
   }

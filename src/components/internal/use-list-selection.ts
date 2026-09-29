@@ -1,8 +1,4 @@
-import {
-  useCallback,
-  useMemo,
-  useState,
-} from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import type { ListProps } from '../../core/list-types'
 
 interface SingleListSelectionState {
@@ -21,37 +17,20 @@ interface MultipleListSelectionState {
 
 const EMPTY_SELECTED_IDS: readonly string[] = []
 
-export function useListSelection(
-  props: ListProps,
-  enabledIds: readonly string[],
-) {
+export function useListSelection(props: ListProps, enabledIds: readonly string[]) {
   const selection = props.selection ?? 'none'
-  const singleProps =
-    selection === 'single'
-      ? (props as SingleListSelectionState)
-      : undefined
-  const multipleProps =
-    selection === 'multiple'
-      ? (props as MultipleListSelectionState)
-      : undefined
+  const singleProps = selection === 'single' ? (props as SingleListSelectionState) : undefined
+  const multipleProps = selection === 'multiple' ? (props as MultipleListSelectionState) : undefined
 
-  const [
-    uncontrolledSingle,
-    setUncontrolledSingle,
-  ] = useState<string | null>(
+  const [uncontrolledSingle, setUncontrolledSingle] = useState<string | null>(
     singleProps?.defaultSelected ?? null,
   )
-  const [
-    uncontrolledMultiple,
-    setUncontrolledMultiple,
-  ] = useState<readonly string[]>(
+  const [uncontrolledMultiple, setUncontrolledMultiple] = useState<readonly string[]>(
     multipleProps?.defaultSelected ?? [],
   )
 
   const currentSingle =
-    selection === 'single'
-      ? (singleProps?.selected ?? uncontrolledSingle)
-      : null
+    selection === 'single' ? (singleProps?.selected ?? uncontrolledSingle) : null
   const currentMultiple =
     selection === 'multiple'
       ? (multipleProps?.selected ?? uncontrolledMultiple)
@@ -59,9 +38,7 @@ export function useListSelection(
 
   const selectedIds = useMemo(() => {
     if (selection === 'single') {
-      return new Set(
-        currentSingle === null ? [] : [currentSingle],
-      )
+      return new Set(currentSingle === null ? [] : [currentSingle])
     }
 
     if (selection === 'multiple') {
@@ -69,19 +46,14 @@ export function useListSelection(
     }
 
     return new Set<string>()
-  }, [
-    currentMultiple,
-    currentSingle,
-    selection,
-  ])
+  }, [currentMultiple, currentSingle, selection])
 
   const selectItem = useCallback(
     (id: string) => {
       if (!enabledIds.includes(id)) return
 
       if (selection === 'single') {
-        const selectionProps =
-          props as SingleListSelectionState
+        const selectionProps = props as SingleListSelectionState
 
         if (currentSingle === id) return
 
@@ -94,12 +66,9 @@ export function useListSelection(
       }
 
       if (selection === 'multiple') {
-        const selectionProps =
-          props as MultipleListSelectionState
+        const selectionProps = props as MultipleListSelectionState
         const next = currentMultiple.includes(id)
-          ? currentMultiple.filter(
-              (selectedId) => selectedId !== id,
-            )
+          ? currentMultiple.filter((selectedId) => selectedId !== id)
           : [...currentMultiple, id]
 
         if (selectionProps.selected === undefined) {
@@ -109,13 +78,7 @@ export function useListSelection(
         selectionProps.onSelect?.(next)
       }
     },
-    [
-      currentMultiple,
-      currentSingle,
-      enabledIds,
-      props,
-      selection,
-    ],
+    [currentMultiple, currentSingle, enabledIds, props, selection],
   )
 
   return {

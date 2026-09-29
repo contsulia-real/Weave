@@ -1,11 +1,6 @@
-import type {
-  ButtonSize,
-  ButtonVariant,
-} from '../../core/button-types'
+import type { ButtonSize, ButtonVariant } from '../../core/button-types'
 
-const variantDeclarations: Readonly<
-  Record<ButtonVariant, string>
-> = {
+const variantDeclarations: Readonly<Record<ButtonVariant, string>> = {
   primary: `
     --weave-button-background: var(--weave-button-theme-primary-background);
     --weave-button-color: var(--weave-button-theme-primary-color);
@@ -247,9 +242,7 @@ const stylesheet = `
 }
 `
 
-export function buttonVariantDeclarations(
-  variant: ButtonVariant,
-): string {
+export function buttonVariantDeclarations(variant: ButtonVariant): string {
   return variantDeclarations[variant]
 }
 

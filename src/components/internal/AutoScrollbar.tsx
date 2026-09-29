@@ -1,18 +1,11 @@
-import {
-  useInsertionEffect,
-  useRef,
-  type RefObject,
-} from 'react'
+import { type RefObject, useInsertionEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
-import type {
-  ScrollbarConfig,
-  ScrollbarSize,
-} from '../../core/view-types'
+import type { ScrollbarConfig, ScrollbarSize } from '../../core/view-types'
 import { resolveScrollbarTheme } from '../../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../../renderers/dom/runtime-class'
 import { ensureScrollbarStylesheet } from '../../renderers/dom/scrollbar-stylesheet'
-import { themeVariables } from '../../theme/theme-css'
 import { useTheme } from '../../theme/theme-context'
+import { themeVariables } from '../../theme/theme-css'
 import { ScrollbarAxis } from './ScrollbarAxis'
 import type { ScrollbarOverflowIntent } from './scrollbar-types'
 import { useAutoScrollbarInteraction } from './use-auto-scrollbar-interaction'
@@ -38,10 +31,7 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
 
   const size: ScrollbarSize = config?.size ?? 'medium'
   const { theme } = useTheme()
-  const themeTokenClassName = useRuntimeStyleClass(
-    'scrollbar-tokens',
-    themeVariables(theme),
-  )
+  const themeTokenClassName = useRuntimeStyleClass('scrollbar-tokens', themeVariables(theme))
   const scrollbarThemeClassName = useRuntimeStyleClass(
     'scrollbar-theme',
     resolveScrollbarTheme(theme, size, config),
@@ -58,19 +48,15 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
     scrollbarThemeClassName,
   })
 
-  const {
-    beginDrag,
-    continueDrag,
-    endDrag,
-    handleHitRegionPointerDown,
-  } = useAutoScrollbarInteraction({
-    targetRef,
-    verticalHitRegionRef,
-    horizontalHitRegionRef,
-    verticalThumbRef,
-    horizontalThumbRef,
-    syncThumbOffsets,
-  })
+  const { beginDrag, continueDrag, endDrag, handleHitRegionPointerDown } =
+    useAutoScrollbarInteraction({
+      targetRef,
+      verticalHitRegionRef,
+      horizontalHitRegionRef,
+      verticalThumbRef,
+      horizontalThumbRef,
+      syncThumbOffsets,
+    })
 
   if (typeof document === 'undefined') return null
 

@@ -1,11 +1,5 @@
-import type {
-  ReactNode,
-  Ref,
-} from 'react'
-import type {
-  ViewCoreProps,
-  ViewDynamicBreakpointProps,
-} from './view-types'
+import type { ReactNode, Ref } from 'react'
+import type { ViewCoreProps, ViewDynamicBreakpointProps } from './view-types'
 
 export type BadgePlacement =
   | 'top-left'
@@ -17,10 +11,7 @@ export type BadgePlacement =
   | 'bottom-left'
   | 'left'
 
-export type BadgeViewProps = Omit<
-  ViewCoreProps<HTMLSpanElement>,
-  'children'
-> &
+export type BadgeViewProps = Omit<ViewCoreProps<HTMLSpanElement>, 'children'> &
   ViewDynamicBreakpointProps & {
     ref?: Ref<HTMLSpanElement>
   }
@@ -42,6 +33,4 @@ type BadgeDotContent = {
   text?: never
 }
 
-export type BadgeProps =
-  BadgeBaseProps &
-  (BadgeTextContent | BadgeDotContent)
+export type BadgeProps = BadgeBaseProps & (BadgeTextContent | BadgeDotContent)

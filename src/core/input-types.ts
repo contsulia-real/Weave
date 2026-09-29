@@ -1,14 +1,7 @@
 import type { Ref } from 'react'
 import type { ViewCoreProps, ViewDynamicBreakpointProps } from './view-types'
 
-export type InputType =
-  | 'text'
-  | 'password'
-  | 'email'
-  | 'number'
-  | 'search'
-  | 'tel'
-  | 'url'
+export type InputType = 'text' | 'password' | 'email' | 'number' | 'search' | 'tel' | 'url'
 
 export type InputValue = string | number
 
@@ -53,8 +46,6 @@ export type InputProps =
       viewProps?: InputViewProps<HTMLTextAreaElement>
     })
 
-export type SingleLineInputViewProps =
-  InputViewProps<HTMLInputElement>
+export type SingleLineInputViewProps = InputViewProps<HTMLInputElement>
 
-export type MultilineInputViewProps =
-  InputViewProps<HTMLTextAreaElement>
+export type MultilineInputViewProps = InputViewProps<HTMLTextAreaElement>

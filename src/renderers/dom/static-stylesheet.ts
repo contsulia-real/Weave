@@ -1,13 +1,8 @@
-export function ensureStaticStylesheet(
-  name: string,
-  stylesheet: string,
-): void {
+export function ensureStaticStylesheet(name: string, stylesheet: string): void {
   if (typeof document === 'undefined') return
 
   const attribute = `data-weave-${name}-styles`
-  const existing = document.querySelector<HTMLStyleElement>(
-    `style[${attribute}]`,
-  )
+  const existing = document.querySelector<HTMLStyleElement>(`style[${attribute}]`)
 
   if (existing !== null) {
     if (existing.textContent !== stylesheet) {

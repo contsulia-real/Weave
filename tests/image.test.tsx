@@ -7,41 +7,26 @@ afterEach(() => {
   vi.restoreAllMocks()
 })
 
-function runtimeRule(
-  element: Element,
-  prefix: string,
-): string {
-  const className = [...element.classList].find((name) =>
-    name.startsWith(prefix),
-  )
+function runtimeRule(element: Element, prefix: string): string {
+  const className = [...element.classList].find((name) => name.startsWith(prefix))
 
   expect(className).toBeDefined()
 
   return (
-    document.querySelector<HTMLStyleElement>(
-      `style[data-weave-runtime-class="${className}"]`,
-    )?.textContent ?? ''
+    document.querySelector<HTMLStyleElement>(`style[data-weave-runtime-class="${className}"]`)
+      ?.textContent ?? ''
   ).replace(/\s+/g, '')
 }
 
-function runtimeProperty(
-  element: Element,
-  prefix: string,
-  property: string,
-): string {
-  const className = [...element.classList].find((name) =>
-    name.startsWith(prefix),
-  )
+function runtimeProperty(element: Element, prefix: string, property: string): string {
+  const className = [...element.classList].find((name) => name.startsWith(prefix))
 
   expect(className).toBeDefined()
 
   const styleElement = document.querySelector<HTMLStyleElement>(
     `style[data-weave-runtime-class="${className}"]`,
   )
-  const rule = styleElement?.sheet?.cssRules.item(0) as
-    | CSSStyleRule
-    | null
-    | undefined
+  const rule = styleElement?.sheet?.cssRules.item(0) as CSSStyleRule | null | undefined
 
   expect(rule).toBeDefined()
 
@@ -87,13 +72,9 @@ describe('Image', () => {
     expect(element.getAttribute('position')).toBeNull()
 
     expect(imageRule).toContain('--weave-image-fit:cover;')
-    expect(
-      runtimeProperty(
-        element,
-        'weave-image-props-',
-        '--weave-image-position',
-      ),
-    ).toBe('left top')
+    expect(runtimeProperty(element, 'weave-image-props-', '--weave-image-position')).toBe(
+      'left top',
+    )
     expect(viewRule).toContain('--weave-width:20rem;')
     expect(viewRule).toContain('--weave-height:12rem;')
     expect(element.style.getPropertyValue('--weave-image-fit')).toBe('')
@@ -129,9 +110,7 @@ describe('Image', () => {
     const element = getByTestId('masked-image')
     const viewRule = runtimeRule(element, 'weave-props-')
 
-    expect(viewRule).toContain(
-      '--weave-mask-image:linear-gradient(90deg',
-    )
+    expect(viewRule).toContain('--weave-mask-image:linear-gradient(90deg')
     expect(element.getAttribute('mask')).toBeNull()
   })
 
@@ -162,15 +141,9 @@ describe('Image', () => {
     expect(element.getAttribute('style')).toContain('object-fit: contain')
     expect(imageRule).toContain('--weave-image-fit:cover;')
 
-    const stylesheet = document.querySelector(
-      'style[data-weave-image-styles]',
-    )
-    expect(stylesheet?.textContent).toContain(
-      ':where([data-weave-image])',
-    )
-    expect(stylesheet?.textContent).toContain(
-      'var(--weave-overflow, clip)',
-    )
+    const stylesheet = document.querySelector('style[data-weave-image-styles]')
+    expect(stylesheet?.textContent).toContain(':where([data-weave-image])')
+    expect(stylesheet?.textContent).toContain('var(--weave-overflow, clip)')
   })
 
   it('passes precise object-position values through unchanged', () => {
@@ -188,13 +161,7 @@ describe('Image', () => {
     )
 
     const element = getByTestId('position-image')
-    expect(
-      runtimeProperty(
-        element,
-        'weave-image-props-',
-        '--weave-image-position',
-      ),
-    ).toBe('25% 75%')
+    expect(runtimeProperty(element, 'weave-image-props-', '--weave-image-position')).toBe('25% 75%')
   })
 
   it('revokes the previous object URL when Blob source changes', () => {

@@ -4,9 +4,7 @@ import type { ProgressSpeed } from '../../core/progress-types'
 export type ProgressVariableStyle = CSSProperties &
   Record<`--weave-progress-${string}`, string | number | undefined>
 
-export function resolveProgressStyle(
-  speed: ProgressSpeed | undefined,
-): ProgressVariableStyle {
+export function resolveProgressStyle(speed: ProgressSpeed | undefined): ProgressVariableStyle {
   if (typeof speed !== 'number') return {}
 
   return {
@@ -14,9 +12,7 @@ export function resolveProgressStyle(
   }
 }
 
-export function resolveProgressValueStyle(
-  progress: number,
-): ProgressVariableStyle {
+export function resolveProgressValueStyle(progress: number): ProgressVariableStyle {
   return {
     '--weave-progress-value': `${progress * 100}%`,
   }

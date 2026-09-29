@@ -1,12 +1,6 @@
-import type {
-  ViewDirection,
-  ViewProps,
-} from './view-types'
+import type { ViewDirection, ViewProps } from './view-types'
 
-type FixedLayoutProps = Omit<
-  ViewProps<HTMLDivElement>,
-  'layout'
-> & {
+type FixedLayoutProps = Omit<ViewProps<HTMLDivElement>, 'layout'> & {
   layout?: never
 }
 
@@ -14,10 +8,7 @@ export type FlexProps = FixedLayoutProps & {
   direction?: ViewDirection
 }
 
-export type RowProps = Omit<
-  FixedLayoutProps,
-  'direction'
-> & {
+export type RowProps = Omit<FixedLayoutProps, 'direction'> & {
   direction?: never
 }
 

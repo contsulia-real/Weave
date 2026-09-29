@@ -1,43 +1,29 @@
-import { cleanup, fireEvent, render } from '@testing-library/react'
 import { IconPlus } from '@tabler/icons-react'
+import { cleanup, fireEvent, render } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import {
-  Button,
-  Text,
-  ThemeProvider,
-  createTheme,
-} from '../src'
+import { Button, createTheme, Text, ThemeProvider } from '../src'
 
 afterEach(cleanup)
 
-function runtimeRule(
-  element: Element,
-  prefix: string,
-): string {
-  const className = [...element.classList].find((name) =>
-    name.startsWith(prefix),
-  )
+function runtimeRule(element: Element, prefix: string): string {
+  const className = [...element.classList].find((name) => name.startsWith(prefix))
 
   expect(className).toBeDefined()
 
   return (
-    document.querySelector<HTMLStyleElement>(
-      `style[data-weave-runtime-class="${className}"]`,
-    )?.textContent ?? ''
+    document.querySelector<HTMLStyleElement>(`style[data-weave-runtime-class="${className}"]`)
+      ?.textContent ?? ''
   ).replace(/\s+/g, '')
 }
 
 function breakpointStyles(element: Element): string {
-  const className = [...element.classList].find((name) =>
-    name.startsWith('weave-breakpoints-'),
-  )
+  const className = [...element.classList].find((name) => name.startsWith('weave-breakpoints-'))
 
   expect(className).toBeDefined()
 
   return (
-    document.querySelector<HTMLStyleElement>(
-      `style[data-weave-breakpoint-styles="${className}"]`,
-    )?.textContent ?? ''
+    document.querySelector<HTMLStyleElement>(`style[data-weave-breakpoint-styles="${className}"]`)
+      ?.textContent ?? ''
   ).replace(/\s+/g, '')
 }
 
@@ -107,12 +93,8 @@ describe('Button', () => {
     const tablerContent = tabler.querySelector('.weave-button__content')
     const customContent = custom.querySelector('.weave-button__content')
 
-    expect(tablerContent?.firstElementChild?.matches('[data-weave-icon]')).toBe(
-      true,
-    )
-    expect(customContent?.lastElementChild?.matches('[data-weave-icon]')).toBe(
-      true,
-    )
+    expect(tablerContent?.firstElementChild?.matches('[data-weave-icon]')).toBe(true)
+    expect(customContent?.lastElementChild?.matches('[data-weave-icon]')).toBe(true)
   })
 
   it('gives icon-only buttons square control geometry', () => {
@@ -127,26 +109,20 @@ describe('Button', () => {
     )
 
     const element = getByRole('button', { name: 'Add' })
-    const stylesheet = document.querySelector(
-      'style[data-weave-button-styles]',
-    )?.textContent ?? ''
+    const stylesheet = document.querySelector('style[data-weave-button-styles]')?.textContent ?? ''
 
     expect(element.className).toContain('weave-button--icon-only')
-    expect(stylesheet).toContain(
-      '--weave-component-min-width: var(--weave-button-min-height)',
-    )
-    expect(stylesheet).toContain(
-      '--weave-component-padding-left: 0',
-    )
-    expect(stylesheet).toContain(
-      '--weave-component-padding-right: 0',
-    )
+    expect(stylesheet).toContain('--weave-component-min-width: var(--weave-button-min-height)')
+    expect(stylesheet).toContain('--weave-component-padding-left: 0')
+    expect(stylesheet).toContain('--weave-component-padding-right: 0')
   })
 
   it('keeps custom children as the complete content entry', () => {
     const { getByRole } = render(
       <Button>
-        <Text typo="label-medium" weight="bold">Custom content</Text>
+        <Text typo="label-medium" weight="bold">
+          Custom content
+        </Text>
       </Button>,
     )
 
@@ -180,48 +156,26 @@ describe('Button', () => {
   })
 
   it('supports a persistent pressed toggle state without changing ordinary buttons', () => {
-    const { getByRole, rerender } = render(
-      <Button
-        text="Pin"
-        pressed
-      />,
-    )
+    const { getByRole, rerender } = render(<Button text="Pin" pressed />)
 
     const button = getByRole('button', {
       name: 'Pin',
     })
-    const stylesheet = document.querySelector(
-      'style[data-weave-button-styles]',
-    )?.textContent ?? ''
+    const stylesheet = document.querySelector('style[data-weave-button-styles]')?.textContent ?? ''
 
-    expect(
-      button.getAttribute('aria-pressed'),
-    ).toBe('true')
-    expect(stylesheet).toContain(
-      '[aria-pressed="true"]',
-    )
-    expect(stylesheet).toContain(
-      'var(--weave-feedback-press-offset)',
-    )
-    expect(stylesheet).toContain(
-      'var(--weave-feedback-press-depth)',
-    )
+    expect(button.getAttribute('aria-pressed')).toBe('true')
+    expect(stylesheet).toContain('[aria-pressed="true"]')
+    expect(stylesheet).toContain('var(--weave-feedback-press-offset)')
+    expect(stylesheet).toContain('var(--weave-feedback-press-depth)')
 
-    rerender(
-      <Button
-        text="Pin"
-        pressed={false}
-      />,
-    )
+    rerender(<Button text="Pin" pressed={false} />)
     expect(
       getByRole('button', {
         name: 'Pin',
       }).getAttribute('aria-pressed'),
     ).toBe('false')
 
-    rerender(
-      <Button text="Pin" />,
-    )
+    rerender(<Button text="Pin" />)
     expect(
       getByRole('button', {
         name: 'Pin',
@@ -275,77 +229,41 @@ describe('Button', () => {
 
     const element = getByRole('button', { name: 'States' })
     const propsRule = runtimeRule(element, 'weave-props-')
-    const stylesheet = document.querySelector(
-      'style[data-weave-button-styles]',
-    )?.textContent ?? ''
+    const stylesheet = document.querySelector('style[data-weave-button-styles]')?.textContent ?? ''
 
-    expect(propsRule).toContain(
-      '--weave-hover-background:var(--weave-color-success',
-    )
-    expect(propsRule).toContain(
-      '--weave-focus-visible-outline-color:var(--weave-color-danger',
-    )
+    expect(propsRule).toContain('--weave-hover-background:var(--weave-color-success')
+    expect(propsRule).toContain('--weave-focus-visible-outline-color:var(--weave-color-danger')
     expect(propsRule).toContain('--weave-disabled-opacity:0.25;')
 
     expect(stylesheet).toContain(
       '--weave-component-background: var(--weave-button-hover-background)',
     )
-    expect(stylesheet).not.toContain(
-      '--weave-hover-background: var(--weave-button-theme-',
-    )
+    expect(stylesheet).not.toContain('--weave-hover-background: var(--weave-button-theme-')
   })
 
   it('uses global feedback tokens for tactile press behavior', () => {
     render(<Button text="Press me" />)
 
-    const stylesheet = document.querySelector(
-      'style[data-weave-button-styles]',
-    )?.textContent ?? ''
+    const stylesheet = document.querySelector('style[data-weave-button-styles]')?.textContent ?? ''
 
-    expect(stylesheet).toContain(
-      '--weave-feedback-rest-depth',
-    )
-    expect(stylesheet).toContain(
-      '--weave-feedback-hover-lift',
-    )
-    expect(stylesheet).toContain(
-      '--weave-feedback-press-offset',
-    )
-    expect(stylesheet).toContain(
-      '--weave-feedback-press-scale',
-    )
-    expect(stylesheet).toContain(
-      'var(--weave-motion-spring-snappy-duration)',
-    )
-    expect(stylesheet).toContain(
-      'var(--weave-motion-spring-snappy-easing)',
-    )
-    expect(stylesheet).toContain(
-      ':where(.weave-button:active:not([aria-disabled="true"]))',
-    )
+    expect(stylesheet).toContain('--weave-feedback-rest-depth')
+    expect(stylesheet).toContain('--weave-feedback-hover-lift')
+    expect(stylesheet).toContain('--weave-feedback-press-offset')
+    expect(stylesheet).toContain('--weave-feedback-press-scale')
+    expect(stylesheet).toContain('var(--weave-motion-spring-snappy-duration)')
+    expect(stylesheet).toContain('var(--weave-motion-spring-snappy-easing)')
+    expect(stylesheet).toContain(':where(.weave-button:active:not([aria-disabled="true"]))')
   })
 
   it('takes visual defaults from the Button component theme', () => {
-    const { getByRole } = render(
-      <Button
-        text="Theme"
-        variant="primary"
-        size="medium"
-      />,
-    )
+    const { getByRole } = render(<Button text="Theme" variant="primary" size="medium" />)
 
     const element = getByRole('button', { name: 'Theme' })
     const rule = runtimeRule(element, 'weave-button-theme-')
 
-    expect(rule).toContain(
-      '--weave-button-theme-medium-min-height:2.125rem;',
-    )
-    expect(rule).toContain(
-      '--weave-button-theme-primary-background:var(--weave-color-primary',
-    )
-    expect(rule).toContain(
-      '--weave-button-theme-radius:0.75rem;',
-    )
+    expect(rule).toContain('--weave-button-theme-medium-min-height:2.125rem;')
+    expect(rule).toContain('--weave-button-theme-primary-background:var(--weave-color-primary')
+    expect(rule).toContain('--weave-button-theme-radius:0.75rem;')
     expect(rule).toContain(
       '--weave-button-theme-medium-font-size:var(--weave-typography-style-label-medium-font-size);',
     )
@@ -357,10 +275,7 @@ describe('Button', () => {
   it('keeps the same tactile variant recipe in dark mode', () => {
     const { getByRole } = render(
       <ThemeProvider mode="dark">
-        <Button
-          text="Dark secondary"
-          variant="secondary"
-        />
+        <Button text="Dark secondary" variant="secondary" />
       </ThemeProvider>,
     )
 
@@ -386,18 +301,11 @@ describe('Button', () => {
   })
 
   it('uses the redesigned three-step Button size scale', () => {
-    const { getByRole, rerender } = render(
-      <Button text="Sized" size="small" />,
-    )
+    const { getByRole, rerender } = render(<Button text="Sized" size="small" />)
 
-    let rule = runtimeRule(
-      getByRole('button', { name: 'Sized' }),
-      'weave-button-theme-',
-    )
+    let rule = runtimeRule(getByRole('button', { name: 'Sized' }), 'weave-button-theme-')
 
-    expect(rule).toContain(
-      '--weave-button-theme-small-min-height:1.75rem;',
-    )
+    expect(rule).toContain('--weave-button-theme-small-min-height:1.75rem;')
     expect(rule).toContain(
       '--weave-button-theme-small-font-size:var(--weave-typography-style-label-small-font-size);',
     )
@@ -413,14 +321,9 @@ describe('Button', () => {
 
     rerender(<Button text="Sized" size="large" />)
 
-    rule = runtimeRule(
-      getByRole('button', { name: 'Sized' }),
-      'weave-button-theme-',
-    )
+    rule = runtimeRule(getByRole('button', { name: 'Sized' }), 'weave-button-theme-')
 
-    expect(rule).toContain(
-      '--weave-button-theme-large-min-height:2.5rem;',
-    )
+    expect(rule).toContain('--weave-button-theme-large-min-height:2.5rem;')
     expect(rule).toContain(
       '--weave-button-theme-large-font-size:var(--weave-typography-style-label-large-font-size);',
     )
@@ -455,17 +358,10 @@ describe('Button', () => {
       </ThemeProvider>,
     )
 
-    const rule = runtimeRule(
-      getByRole('button', { name: 'Themed' }),
-      'weave-button-theme-',
-    )
+    const rule = runtimeRule(getByRole('button', { name: 'Themed' }), 'weave-button-theme-')
 
-    expect(rule).toContain(
-      '--weave-button-theme-medium-min-height:4rem;',
-    )
-    expect(rule).toContain(
-      '--weave-button-theme-medium-padding-x:2rem;',
-    )
+    expect(rule).toContain('--weave-button-theme-medium-min-height:4rem;')
+    expect(rule).toContain('--weave-button-theme-medium-padding-x:2rem;')
     expect(rule).toContain(
       '--weave-button-theme-medium-font-size:var(--weave-typography-style-title-small-font-size);',
     )
@@ -478,9 +374,7 @@ describe('Button', () => {
     expect(rule).toContain(
       '--weave-button-theme-medium-letter-spacing:var(--weave-typography-style-title-small-letter-spacing);',
     )
-    expect(rule).toContain(
-      '--weave-button-theme-primary-background:var(--weave-color-success',
-    )
+    expect(rule).toContain('--weave-button-theme-primary-background:var(--weave-color-success')
   })
 
   it('uses active ThemeProvider breakpoint names for responsive size and variant', () => {
@@ -507,19 +401,11 @@ describe('Button', () => {
     const element = getByRole('button', { name: 'Responsive' })
     const styles = breakpointStyles(element)
 
-    expect(
-      element.getAttribute('data-weave-button-compact-size'),
-    ).toBe('large')
-    expect(
-      element.getAttribute('data-weave-button-compact-variant'),
-    ).toBe('danger')
+    expect(element.getAttribute('data-weave-button-compact-size')).toBe('large')
+    expect(element.getAttribute('data-weave-button-compact-variant')).toBe('danger')
     expect(styles).toContain('@media(min-width:36rem)')
-    expect(styles).toContain(
-      '[data-weave-button-compact-size="large"]',
-    )
-    expect(styles).toContain(
-      '--weave-button-font-size:var(--weave-button-theme-large-font-size)',
-    )
+    expect(styles).toContain('[data-weave-button-compact-size="large"]')
+    expect(styles).toContain('--weave-button-font-size:var(--weave-button-theme-large-font-size)')
     expect(styles).toContain(
       '--weave-button-font-weight:var(--weave-button-theme-large-font-weight)',
     )
@@ -529,36 +415,19 @@ describe('Button', () => {
     expect(styles).toContain(
       '--weave-button-letter-spacing:var(--weave-button-theme-large-letter-spacing)',
     )
-    expect(styles).toContain(
-      '[data-weave-button-compact-variant="danger"]',
-    )
+    expect(styles).toContain('[data-weave-button-compact-variant="danger"]')
   })
 
   it('uses the global tactile feedback language for press and release', () => {
     render(<Button text="Tactile" />)
 
-    const stylesheet = document.querySelector(
-      'style[data-weave-button-styles]',
-    )?.textContent ?? ''
+    const stylesheet = document.querySelector('style[data-weave-button-styles]')?.textContent ?? ''
 
-    expect(stylesheet).toContain(
-      'var(--weave-feedback-rest-depth)',
-    )
-    expect(stylesheet).toContain(
-      'var(--weave-feedback-hover-lift)',
-    )
-    expect(stylesheet).toContain(
-      'var(--weave-feedback-press-offset)',
-    )
-    expect(stylesheet).toContain(
-      'var(--weave-feedback-press-scale)',
-    )
-    expect(stylesheet).toContain(
-      'var(--weave-motion-spring-snappy-duration)',
-    )
-    expect(stylesheet).toContain(
-      'var(--weave-motion-spring-snappy-easing)',
-    )
+    expect(stylesheet).toContain('var(--weave-feedback-rest-depth)')
+    expect(stylesheet).toContain('var(--weave-feedback-hover-lift)')
+    expect(stylesheet).toContain('var(--weave-feedback-press-offset)')
+    expect(stylesheet).toContain('var(--weave-feedback-press-scale)')
+    expect(stylesheet).toContain('var(--weave-motion-spring-snappy-duration)')
+    expect(stylesheet).toContain('var(--weave-motion-spring-snappy-easing)')
   })
-
 })

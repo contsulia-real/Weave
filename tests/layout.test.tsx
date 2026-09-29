@@ -1,49 +1,24 @@
-import {
-  cleanup,
-  render,
-} from '@testing-library/react'
-import {
-  afterEach,
-  describe,
-  expect,
-  it,
-} from 'vitest'
-import {
-  Absolute,
-  Column,
-  Flex,
-  Grid,
-  Row,
-  Stack,
-  View,
-} from '../src'
+import { cleanup, render } from '@testing-library/react'
+import { afterEach, describe, expect, it } from 'vitest'
+import { Absolute, Column, Flex, Grid, Row, Stack, View } from '../src'
 
 afterEach(cleanup)
 
-function runtimeRule(
-  element: Element,
-): string {
-  const className = [...element.classList].find((name) =>
-    name.startsWith('weave-props-'),
-  )
+function runtimeRule(element: Element): string {
+  const className = [...element.classList].find((name) => name.startsWith('weave-props-'))
 
   expect(className).toBeDefined()
 
   return (
-    document.querySelector<HTMLStyleElement>(
-      `style[data-weave-runtime-class="${className}"]`,
-    )?.textContent ?? ''
+    document.querySelector<HTMLStyleElement>(`style[data-weave-runtime-class="${className}"]`)
+      ?.textContent ?? ''
   ).replace(/\s+/g, '')
 }
 
 describe('formal layout components', () => {
   it('maps Flex directly onto the View flex layout without an extra wrapper', () => {
     const { getByTestId } = render(
-      <Flex
-        direction="row-reverse"
-        gap={1}
-        data={{ testid: 'flex' }}
-      >
+      <Flex direction="row-reverse" gap={1} data={{ testid: 'flex' }}>
         <span>one</span>
       </Flex>,
     )
@@ -60,13 +35,7 @@ describe('formal layout components', () => {
 
   it('keeps Flex configurable and exposes wrapping through the View flex backend', () => {
     const { getByTestId } = render(
-      <Flex
-        direction="row-reverse"
-        wrap
-        gap={0.5}
-        width={14}
-        data={{ testid: 'flex-wrap' }}
-      />,
+      <Flex direction="row-reverse" wrap gap={0.5} width={14} data={{ testid: 'flex-wrap' }} />,
     )
 
     const flex = getByTestId('flex-wrap')
@@ -99,9 +68,7 @@ describe('formal layout components', () => {
 
     expect(row.dataset.weaveLayout).toBe('flex')
     expect(column.dataset.weaveLayout).toBe('flex')
-    expect(runtimeRule(row)).toContain(
-      '--weave-flex-direction:row;',
-    )
+    expect(runtimeRule(row)).toContain('--weave-flex-direction:row;')
     expect(columnRule).toContain('--weave-flex-direction:column;')
     expect(columnRule).toContain('--weave-align-items:end;')
     expect(columnRule).toContain('--weave-justify-content:space-between;')
@@ -112,10 +79,7 @@ describe('formal layout components', () => {
   it('maps Grid, Stack, and Absolute to the existing View layout engine', () => {
     const { getByTestId } = render(
       <>
-        <Grid
-          columns={3}
-          data={{ testid: 'grid' }}
-        />
+        <Grid columns={3} data={{ testid: 'grid' }} />
         <Stack data={{ testid: 'stack' }} />
         <Absolute data={{ testid: 'absolute' }} />
       </>,
@@ -128,28 +92,14 @@ describe('formal layout components', () => {
     expect(grid.dataset.weaveLayout).toBe('grid')
     expect(stack.dataset.weaveLayout).toBe('stack')
     expect(absolute.dataset.weaveLayout).toBe('absolute')
-    expect(runtimeRule(grid)).toContain(
-      '--weave-grid-template-columns:repeat(3,minmax(0,1fr));',
-    )
-    expect(runtimeRule(absolute)).toContain(
-      '--weave-position:relative;',
-    )
+    expect(runtimeRule(grid)).toContain('--weave-grid-template-columns:repeat(3,minmax(0,1fr));')
+    expect(runtimeRule(absolute)).toContain('--weave-position:relative;')
   })
 
   it('keeps Stack as a full-size stacking plane and maps justify to item alignment', () => {
     const { getByTestId } = render(
-      <Stack
-        width={8}
-        height={4}
-        align="center"
-        justify="center"
-        data={{ testid: 'stack-plane' }}
-      >
-        <View
-          width="fill"
-          height="fill"
-          data={{ testid: 'stack-background' }}
-        />
+      <Stack width={8} height={4} align="center" justify="center" data={{ testid: 'stack-plane' }}>
+        <View width="fill" height="fill" data={{ testid: 'stack-background' }} />
         <View
           width={4}
           height={2}
@@ -164,26 +114,18 @@ describe('formal layout components', () => {
     const stack = getByTestId('stack-plane')
     const rule = runtimeRule(stack)
     const stylesheet =
-      document.querySelector<HTMLStyleElement>(
-        'style[data-weave-view-styles]',
-      )?.textContent ?? ''
+      document.querySelector<HTMLStyleElement>('style[data-weave-view-styles]')?.textContent ?? ''
 
     expect(rule).toContain('--weave-width:8rem;')
     expect(rule).toContain('--weave-height:4rem;')
     expect(rule).toContain('--weave-align-items:center;')
     expect(rule).toContain('--weave-justify-content:center;')
 
-    expect(stylesheet).toContain(
-      'grid-template-columns: minmax(0, 1fr);',
-    )
-    expect(stylesheet).toContain(
-      'grid-template-rows: minmax(0, 1fr);',
-    )
+    expect(stylesheet).toContain('grid-template-columns: minmax(0, 1fr);')
+    expect(stylesheet).toContain('grid-template-rows: minmax(0, 1fr);')
     expect(stylesheet).toContain('justify-content: stretch;')
     expect(stylesheet).toContain('justify-items: var(')
-    expect(stylesheet).toContain(
-      '--weave-justify-content,',
-    )
+    expect(stylesheet).toContain('--weave-justify-content,')
     expect(stylesheet).toContain('grid-area: 1 / 1;')
 
     const background = getByTestId('stack-background')
@@ -203,11 +145,7 @@ describe('formal layout components', () => {
 
   it('keeps responsive View layout styles available through Flex', () => {
     const { getByTestId } = render(
-      <Flex
-        direction="column"
-        md={{ direction: 'row' }}
-        data={{ testid: 'responsive-flex' }}
-      />,
+      <Flex direction="column" md={{ direction: 'row' }} data={{ testid: 'responsive-flex' }} />,
     )
 
     const element = getByTestId('responsive-flex')

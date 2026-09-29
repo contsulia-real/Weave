@@ -1,21 +1,10 @@
+import type { CSSProperties, HTMLAttributes, ReactNode, Ref } from 'react'
 import type { ViewMotionProps } from './motion-types'
-import type {
-  CSSProperties,
-  HTMLAttributes,
-  ReactNode,
-  Ref,
-} from 'react'
 
 export type Length = number | string
 export type Dimension = Length | 'fill' | 'fit' | 'content'
 export type ColorValue = string
-export type RadiusValue =
-  | Length
-  | 'none'
-  | 'small'
-  | 'medium'
-  | 'large'
-  | 'full'
+export type RadiusValue = Length | 'none' | 'small' | 'medium' | 'large' | 'full'
 
 export type ScrollbarSize = 'small' | 'medium' | 'large'
 
@@ -27,11 +16,7 @@ export interface ScrollbarConfig {
 }
 
 export type ViewLayout = 'flex' | 'grid' | 'stack' | 'absolute'
-export type ViewDirection =
-  | 'row'
-  | 'row-reverse'
-  | 'column'
-  | 'column-reverse'
+export type ViewDirection = 'row' | 'row-reverse' | 'column' | 'column-reverse'
 export type ViewWrap = boolean | 'reverse'
 export type ViewAlign = 'start' | 'center' | 'end' | 'stretch' | 'baseline'
 export type ViewJustify =
@@ -253,17 +238,10 @@ export type ViewResponsiveStyle = Partial<ViewStyleProps>
 
 export type DefaultBreakpointName = 'sm' | 'md' | 'lg' | 'xl'
 
-export type ViewBreakpointProps =
-  Partial<Record<DefaultBreakpointName, ViewResponsiveStyle>> &
-  Partial<
-    Record<
-      `container${Capitalize<DefaultBreakpointName>}`,
-      ViewResponsiveStyle
-    >
-  >
+export type ViewBreakpointProps = Partial<Record<DefaultBreakpointName, ViewResponsiveStyle>> &
+  Partial<Record<`container${Capitalize<DefaultBreakpointName>}`, ViewResponsiveStyle>>
 
-export type ViewDynamicBreakpointProps =
-  Readonly<Record<string, unknown>>
+export type ViewDynamicBreakpointProps = Readonly<Record<string, unknown>>
 
 export interface ViewSemanticProps {
   role?: HTMLAttributes<HTMLDivElement>['role']
@@ -297,50 +275,38 @@ export type ViewData = Readonly<Record<string, ViewDataValue>>
 
 type NativeElementProps<TElement extends HTMLElement> = Omit<
   HTMLAttributes<TElement>,
-  | 'children'
-  | 'className'
-  | 'style'
-  | 'color'
-  | 'role'
-  | 'hidden'
-  | 'draggable'
-  | 'tabIndex'
+  'children' | 'className' | 'style' | 'color' | 'role' | 'hidden' | 'draggable' | 'tabIndex'
 >
 
-export type ViewCoreProps<
-  TElement extends HTMLElement = HTMLDivElement,
-> =
+export type ViewCoreProps<TElement extends HTMLElement = HTMLDivElement> =
   NativeElementProps<TElement> &
-  ViewStyleProps &
-  ViewSemanticProps &
-  ViewMotionProps &
-  ViewBreakpointProps & {
-  children?: ReactNode
-  ref?: Ref<TElement>
-  className?: string
-  style?: CSSProperties
+    ViewStyleProps &
+    ViewSemanticProps &
+    ViewMotionProps &
+    ViewBreakpointProps & {
+      children?: ReactNode
+      ref?: Ref<TElement>
+      className?: string
+      style?: CSSProperties
 
-  id?: string
-  data?: ViewData
+      id?: string
+      data?: ViewData
 
-  focusable?: boolean
-  hidden?: boolean
-  draggable?: boolean
-  tabIndex?: number
-  autoFocus?: boolean
+      focusable?: boolean
+      hidden?: boolean
+      draggable?: boolean
+      tabIndex?: number
+      autoFocus?: boolean
 
-  container?: string
-  scrollbar?: ScrollbarConfig
+      container?: string
+      scrollbar?: ScrollbarConfig
 
-  hover?: ViewStateStyle
-  active?: ViewStateStyle
-  focus?: ViewStateStyle
-  focusVisible?: ViewStateStyle
-  disabledStyle?: ViewStateStyle
-}
+      hover?: ViewStateStyle
+      active?: ViewStateStyle
+      focus?: ViewStateStyle
+      focusVisible?: ViewStateStyle
+      disabledStyle?: ViewStateStyle
+    }
 
-export type ViewProps<
-  TElement extends HTMLElement = HTMLDivElement,
-> =
-  ViewCoreProps<TElement> &
+export type ViewProps<TElement extends HTMLElement = HTMLDivElement> = ViewCoreProps<TElement> &
   ViewDynamicBreakpointProps

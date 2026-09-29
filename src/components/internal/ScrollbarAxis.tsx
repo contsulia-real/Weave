@@ -1,10 +1,7 @@
-import type {
-  PointerEvent,
-  RefObject,
-} from 'react'
+import type { PointerEvent, RefObject } from 'react'
 import type { ScrollbarSize } from '../../core/view-types'
-import type { ScrollbarOrientation } from './scrollbar-types'
 import { ScrollbarView } from './ScrollbarView'
+import type { ScrollbarOrientation } from './scrollbar-types'
 
 interface ScrollbarAxisProps {
   orientation: ScrollbarOrientation
@@ -17,10 +14,7 @@ interface ScrollbarAxisProps {
     orientation: ScrollbarOrientation,
     event: PointerEvent<HTMLDivElement>,
   ) => void
-  onPointerMove: (
-    orientation: ScrollbarOrientation,
-    event: PointerEvent<HTMLDivElement>,
-  ) => void
+  onPointerMove: (orientation: ScrollbarOrientation, event: PointerEvent<HTMLDivElement>) => void
   onPointerEnd: (event: PointerEvent<HTMLDivElement>) => void
   onThumbPointerDown: (
     orientation: ScrollbarOrientation,
@@ -50,10 +44,10 @@ export function ScrollbarAxis({
         themeTokenClassName,
         scrollbarThemeClassName,
         `weave-scrollbar--${orientation}`,
-      ].filter(Boolean).join(' ')}
-      onPointerDown={(event) =>
-        onHitRegionPointerDown(orientation, event)
-      }
+      ]
+        .filter(Boolean)
+        .join(' ')}
+      onPointerDown={(event) => onHitRegionPointerDown(orientation, event)}
       onPointerMove={(event) => onPointerMove(orientation, event)}
       onPointerUp={onPointerEnd}
       onPointerCancel={onPointerEnd}
@@ -66,9 +60,7 @@ export function ScrollbarAxis({
       <ScrollbarView
         ref={thumbRef}
         className="weave-scrollbar__thumb"
-        onPointerDown={(event) =>
-          onThumbPointerDown(orientation, event)
-        }
+        onPointerDown={(event) => onThumbPointerDown(orientation, event)}
         data={{
           'weave-scrollbar-thumb': '',
         }}

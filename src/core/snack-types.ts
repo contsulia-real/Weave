@@ -1,21 +1,8 @@
-import type {
-  ReactNode,
-  RefObject,
-} from 'react'
-import type {
-  ButtonIcon,
-} from './button-types'
-import type {
-  ViewCoreProps,
-  ViewDynamicBreakpointProps,
-} from './view-types'
+import type { ReactNode, RefObject } from 'react'
+import type { ButtonIcon } from './button-types'
+import type { ViewCoreProps, ViewDynamicBreakpointProps } from './view-types'
 
-export type SnackVariant =
-  | 'default'
-  | 'success'
-  | 'warning'
-  | 'danger'
-  | 'info'
+export type SnackVariant = 'default' | 'success' | 'warning' | 'danger' | 'info'
 
 export type SnackPlacement =
   | 'top-left'
@@ -33,13 +20,7 @@ export type SnackContainer =
   | (() => HTMLElement | null)
   | null
 
-export type SnackViewProps =
-  Omit<
-    ViewCoreProps<HTMLDivElement>,
-    | 'children'
-    | 'role'
-    | 'busy'
-  > &
+export type SnackViewProps = Omit<ViewCoreProps<HTMLDivElement>, 'children' | 'role' | 'busy'> &
   ViewDynamicBreakpointProps
 
 interface SnackRequestBase {
@@ -75,27 +56,17 @@ type SnackCustomContent = {
   onAction?: never
 }
 
-export type SnackRequest =
-  SnackRequestBase &
-  (
-    | SnackShortcutContent
-    | SnackCustomContent
-  )
+export type SnackRequest = SnackRequestBase & (SnackShortcutContent | SnackCustomContent)
 
-export type SnackProps =
-  SnackRequest & {
-    open?: boolean
-    defaultOpen?: boolean
-    onOpenChange?: (
-      open: boolean,
-    ) => void
-    onDismissed?: () => void
-  }
+export type SnackProps = SnackRequest & {
+  open?: boolean
+  defaultOpen?: boolean
+  onOpenChange?: (open: boolean) => void
+  onDismissed?: () => void
+}
 
 export interface SnackController {
-  show(
-    request: SnackRequest,
-  ): string
+  show(request: SnackRequest): string
   dismiss(id: string): void
   dismissAll(): void
 }

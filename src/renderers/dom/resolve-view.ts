@@ -1,14 +1,7 @@
 import type { CSSProperties, HTMLAttributes } from 'react'
-import type {
-  ViewData,
-  ViewProps,
-  ViewStateStyle,
-  ViewStyleProps,
-} from '../../core/view-types'
-import { VIEW_INTERNAL_PROP_KEYS } from '../../core/view-prop-keys'
 import {
-  background,
   backdropFilterValue,
+  background,
   clipPath,
   color,
   dimension,
@@ -20,26 +13,18 @@ import {
   transformOrigin,
   transformValue,
 } from '../../core/values'
+import { VIEW_INTERNAL_PROP_KEYS } from '../../core/view-prop-keys'
+import type { ViewData, ViewProps, ViewStateStyle, ViewStyleProps } from '../../core/view-types'
 import { defaultBreakpoints } from '../../theme/default-theme'
-import {
-  breakpointEntries,
-  containerBreakpointProp,
-} from './breakpoint-utils'
+import { breakpointEntries, containerBreakpointProp } from './breakpoint-utils'
 import { variableName } from './view-stylesheet'
 
-type CSSVariableStyle = CSSProperties &
-  Record<`--weave-${string}`, string | number | undefined>
+type CSSVariableStyle = CSSProperties & Record<`--weave-${string}`, string | number | undefined>
 
-const NATIVE_OBJECT_PROP_KEYS = new Set<string>([
-  'dangerouslySetInnerHTML',
-])
+const NATIVE_OBJECT_PROP_KEYS = new Set<string>(['dangerouslySetInnerHTML'])
 
 function isBreakpointLikeValue(value: unknown): boolean {
-  return (
-    typeof value === 'object' &&
-    value !== null &&
-    !Array.isArray(value)
-  )
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
 
 function setVariable(
@@ -54,15 +39,10 @@ function setVariable(
 
 function gridTrack(value: number | string | undefined): string | undefined {
   if (value === undefined) return undefined
-  return typeof value === 'number'
-    ? `repeat(${value}, minmax(0, 1fr))`
-    : value
+  return typeof value === 'number' ? `repeat(${value}, minmax(0, 1fr))` : value
 }
 
-function gridPlacement(
-  start: number | undefined,
-  span: number | undefined,
-): string | undefined {
+function gridPlacement(start: number | undefined, span: number | undefined): string | undefined {
   if (start !== undefined && span !== undefined) {
     return `${start} / span ${span}`
   }
@@ -79,12 +59,7 @@ function resolveSides(
   right: ViewStyleProps['paddingRight'],
   bottom: ViewStyleProps['paddingBottom'],
   left: ViewStyleProps['paddingLeft'],
-): readonly [
-  string | undefined,
-  string | undefined,
-  string | undefined,
-  string | undefined,
-] {
+): readonly [string | undefined, string | undefined, string | undefined, string | undefined] {
   return [
     length(top ?? y ?? all),
     length(right ?? x ?? all),
@@ -93,10 +68,7 @@ function resolveSides(
   ]
 }
 
-function resolveStyleProps(
-  props: ViewStyleProps,
-  state?: string,
-): CSSVariableStyle {
+function resolveStyleProps(props: ViewStyleProps, state?: string): CSSVariableStyle {
   const output: CSSVariableStyle = {}
 
   const display =
@@ -135,12 +107,7 @@ function resolveStyleProps(
 
   setVariable(output, 'gridTemplateColumns', gridTrack(props.columns), state)
   setVariable(output, 'gridTemplateRows', gridTrack(props.rows), state)
-  setVariable(
-    output,
-    'gridColumn',
-    gridPlacement(props.column, props.columnSpan),
-    state,
-  )
+  setVariable(output, 'gridColumn', gridPlacement(props.column, props.columnSpan), state)
   setVariable(output, 'gridRow', gridPlacement(props.row, props.rowSpan), state)
 
   setVariable(output, 'width', dimension(props.width), state)
@@ -200,18 +167,8 @@ function resolveStyleProps(
   setVariable(output, 'left', left, state)
 
   setVariable(output, 'overflow', props.overflow, state)
-  setVariable(
-    output,
-    'overflowX',
-    props.overflowX ?? props.overflow,
-    state,
-  )
-  setVariable(
-    output,
-    'overflowY',
-    props.overflowY ?? props.overflow,
-    state,
-  )
+  setVariable(output, 'overflowX', props.overflowX ?? props.overflow, state)
+  setVariable(output, 'overflowY', props.overflowY ?? props.overflow, state)
 
   setVariable(output, 'background', background(props.background), state)
   setVariable(output, 'color', color(props.color), state)
@@ -225,44 +182,19 @@ function resolveStyleProps(
   setVariable(output, 'borderBottomWidth', borderBottom, state)
   setVariable(output, 'borderLeftWidth', borderLeft, state)
 
-  setVariable(
-    output,
-    'borderTopColor',
-    color(props.borderTopColor ?? props.borderColor),
-    state,
-  )
-  setVariable(
-    output,
-    'borderRightColor',
-    color(props.borderRightColor ?? props.borderColor),
-    state,
-  )
+  setVariable(output, 'borderTopColor', color(props.borderTopColor ?? props.borderColor), state)
+  setVariable(output, 'borderRightColor', color(props.borderRightColor ?? props.borderColor), state)
   setVariable(
     output,
     'borderBottomColor',
     color(props.borderBottomColor ?? props.borderColor),
     state,
   )
-  setVariable(
-    output,
-    'borderLeftColor',
-    color(props.borderLeftColor ?? props.borderColor),
-    state,
-  )
+  setVariable(output, 'borderLeftColor', color(props.borderLeftColor ?? props.borderColor), state)
   setVariable(output, 'borderStyle', props.borderStyle, state)
 
-  setVariable(
-    output,
-    'borderTopLeftRadius',
-    radius(props.radiusTopLeft ?? props.radius),
-    state,
-  )
-  setVariable(
-    output,
-    'borderTopRightRadius',
-    radius(props.radiusTopRight ?? props.radius),
-    state,
-  )
+  setVariable(output, 'borderTopLeftRadius', radius(props.radiusTopLeft ?? props.radius), state)
+  setVariable(output, 'borderTopRightRadius', radius(props.radiusTopRight ?? props.radius), state)
   setVariable(
     output,
     'borderBottomRightRadius',
@@ -281,12 +213,7 @@ function resolveStyleProps(
   setVariable(output, 'filter', filterValue(props), state)
   setVariable(output, 'backdropFilter', backdropFilterValue(props), state)
   setVariable(output, 'transform', transformValue(props), state)
-  setVariable(
-    output,
-    'transformOrigin',
-    transformOrigin(props.transformOrigin),
-    state,
-  )
+  setVariable(output, 'transformOrigin', transformOrigin(props.transformOrigin), state)
   setVariable(output, 'maskImage', maskImage(props.mask), state)
   setVariable(output, 'clipPath', clipPath(props.clip), state)
   setVariable(output, 'mixBlendMode', props.blend, state)
@@ -299,10 +226,7 @@ function resolveStyleProps(
   setVariable(
     output,
     'zIndex',
-    props.zIndex ??
-      (props.layer === undefined
-        ? undefined
-        : `var(--weave-layer-${props.layer})`),
+    props.zIndex ?? (props.layer === undefined ? undefined : `var(--weave-layer-${props.layer})`),
     state,
   )
   setVariable(output, 'pointerEvents', props.pointerEvents, state)
@@ -310,11 +234,7 @@ function resolveStyleProps(
   setVariable(
     output,
     'userSelect',
-    props.selectable === undefined
-      ? undefined
-      : props.selectable
-        ? 'text'
-        : 'none',
+    props.selectable === undefined ? undefined : props.selectable ? 'text' : 'none',
     state,
   )
 
@@ -363,16 +283,12 @@ export function resolveDOMView<TElement extends HTMLElement>(
   const writableDOMProps = domProps as Record<string, unknown>
   const breakpointList = breakpointEntries(breakpoints)
   const responsivePropKeys = new Set(
-    breakpointList.flatMap(({ name }) => [
-      name,
-      containerBreakpointProp(name),
-    ]),
+    breakpointList.flatMap(({ name }) => [name, containerBreakpointProp(name)]),
   )
 
   for (const [key, value] of Object.entries(props)) {
     const inactiveBreakpointLikeProp =
-      !NATIVE_OBJECT_PROP_KEYS.has(key) &&
-      isBreakpointLikeValue(value)
+      !NATIVE_OBJECT_PROP_KEYS.has(key) && isBreakpointLikeValue(value)
 
     if (
       !VIEW_INTERNAL_PROP_KEYS.has(key) &&
@@ -440,9 +356,7 @@ export function resolveDOMView<TElement extends HTMLElement>(
     responsiveStyles(
       attributeStyle,
       `container-${breakpoint.cssName}`,
-      responsiveProps[
-        containerBreakpointProp(breakpoint.name)
-      ] as ViewStyleProps | undefined,
+      responsiveProps[containerBreakpointProp(breakpoint.name)] as ViewStyleProps | undefined,
     )
   }
 

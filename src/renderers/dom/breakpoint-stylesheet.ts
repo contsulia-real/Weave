@@ -1,29 +1,16 @@
 import { useInsertionEffect } from 'react'
-import type {
-  ButtonSize,
-  ButtonVariant,
-} from '../../core/button-types'
-import {
-  buttonSizeDeclarations,
-  buttonVariantDeclarations,
-} from './button-stylesheet'
-import type { ViewStyleProperty } from './view-stylesheet'
-import {
-  VIEW_STYLE_PROPERTIES,
-  responsiveVariableName,
-  variableName,
-} from './view-stylesheet'
+import type { ButtonSize, ButtonVariant } from '../../core/button-types'
+import { type BreakpointEntry, breakpointEntries } from './breakpoint-utils'
+import { buttonSizeDeclarations, buttonVariantDeclarations } from './button-stylesheet'
+import { hashRuntimeValue } from './runtime-class'
 import type { TextStyleProperty } from './text-stylesheet'
 import {
   TEXT_STYLE_PROPERTIES,
   textResponsiveVariableName,
   textVariableName,
 } from './text-stylesheet'
-import {
-  breakpointEntries,
-  type BreakpointEntry,
-} from './breakpoint-utils'
-import { hashRuntimeValue } from './runtime-class'
+import type { ViewStyleProperty } from './view-stylesheet'
+import { responsiveVariableName, VIEW_STYLE_PROPERTIES, variableName } from './view-stylesheet'
 
 interface BreakpointRule {
   className: string
@@ -37,10 +24,7 @@ interface BreakpointRuleEntry {
 }
 
 const breakpointRules = new Map<string, BreakpointRuleEntry>()
-const breakpointRuleCache = new WeakMap<
-  object,
-  BreakpointRule | null
->()
+const breakpointRuleCache = new WeakMap<object, BreakpointRule | null>()
 
 function sourceChain(
   entries: readonly BreakpointEntry[],
@@ -51,9 +35,7 @@ function sourceChain(
     .slice(0, index + 1)
     .reduce(
       (current, entry) =>
-        current.length === 0
-          ? `var(${variable(entry)})`
-          : `var(${variable(entry)}, ${current})`,
+        current.length === 0 ? `var(${variable(entry)})` : `var(${variable(entry)}, ${current})`,
       '',
     )
 }
@@ -64,61 +46,36 @@ function viewAssignmentBlock(
   scope: 'viewport' | 'container',
 ): string {
   return VIEW_STYLE_PROPERTIES.map((property: ViewStyleProperty) => {
-    const chain = sourceChain(
-      entries,
-      index,
-      (entry) =>
-        variableName(
-          property,
-          scope === 'viewport'
-            ? entry.cssName
-            : `container-${entry.cssName}`,
-        ),
+    const chain = sourceChain(entries, index, (entry) =>
+      variableName(property, scope === 'viewport' ? entry.cssName : `container-${entry.cssName}`),
     )
 
     return `${responsiveVariableName(scope, property)}: ${chain};`
   }).join('')
 }
 
-function textAssignmentBlock(
-  entries: readonly BreakpointEntry[],
-  index: number,
-): string {
+function textAssignmentBlock(entries: readonly BreakpointEntry[], index: number): string {
   return TEXT_STYLE_PROPERTIES.map((property: TextStyleProperty) => {
-    const chain = sourceChain(
-      entries,
-      index,
-      (entry) => textVariableName(property, entry.cssName),
-    )
+    const chain = sourceChain(entries, index, (entry) => textVariableName(property, entry.cssName))
 
     return `${textResponsiveVariableName(property)}: ${chain};`
   }).join('')
 }
 
-function propertyRegistrationBlock(
-  entries: readonly BreakpointEntry[],
-): string {
+function propertyRegistrationBlock(entries: readonly BreakpointEntry[]): string {
   return entries
     .flatMap((entry) => [
       ...VIEW_STYLE_PROPERTIES.flatMap((property) => [
         variableName(property, entry.cssName),
         variableName(property, `container-${entry.cssName}`),
       ]),
-      ...TEXT_STYLE_PROPERTIES.map((property) =>
-        textVariableName(property, entry.cssName),
-      ),
+      ...TEXT_STYLE_PROPERTIES.map((property) => textVariableName(property, entry.cssName)),
     ])
-    .map(
-      (variable) =>
-        `@property ${variable} { syntax: "*"; inherits: false; }`,
-    )
+    .map((variable) => `@property ${variable} { syntax: "*"; inherits: false; }`)
     .join('')
 }
 
-function textResponsiveBehavior(
-  className: string,
-  entry: BreakpointEntry,
-): string {
+function textResponsiveBehavior(className: string, entry: BreakpointEntry): string {
   return `
   :where(.${className}[data-weave-text][data-weave-text-${entry.cssName}-overflow="ellipsis"]),
   :where(.${className}[data-weave-text][data-weave-text-${entry.cssName}-max-lines]) {
@@ -132,7 +89,6 @@ function textResponsiveBehavior(
 `
 }
 
-
 const BUTTON_VARIANTS: readonly ButtonVariant[] = [
   'primary',
   'secondary',
@@ -141,16 +97,9 @@ const BUTTON_VARIANTS: readonly ButtonVariant[] = [
   'danger',
 ]
 
-const BUTTON_SIZES: readonly ButtonSize[] = [
-  'small',
-  'medium',
-  'large',
-]
+const BUTTON_SIZES: readonly ButtonSize[] = ['small', 'medium', 'large']
 
-function buttonResponsiveBehavior(
-  className: string,
-  entry: BreakpointEntry,
-): string {
+function buttonResponsiveBehavior(className: string, entry: BreakpointEntry): string {
   const variants = BUTTON_VARIANTS.map(
     (variant) => `
   .${className}[data-weave-button][data-weave-button-${entry.cssName}-variant="${variant}"] {
@@ -170,10 +119,7 @@ function buttonResponsiveBehavior(
   return variants + sizes
 }
 
-function viewportBlocks(
-  className: string,
-  entries: readonly BreakpointEntry[],
-): string {
+function viewportBlocks(className: string, entries: readonly BreakpointEntry[]): string {
   return entries
     .map(
       (entry, index) => `
@@ -194,10 +140,7 @@ function viewportBlocks(
     .join('')
 }
 
-function containerBlocks(
-  className: string,
-  entries: readonly BreakpointEntry[],
-): string {
+function containerBlocks(className: string, entries: readonly BreakpointEntry[]): string {
   return entries
     .map(
       (entry, index) => `
@@ -227,14 +170,9 @@ function createBreakpointRule(
   }
 
   const signature = JSON.stringify(
-    entries.map(({ name, cssName, minWidth }) => [
-      name,
-      cssName,
-      minWidth,
-    ]),
+    entries.map(({ name, cssName, minWidth }) => [name, cssName, minWidth]),
   )
-  const className =
-    `weave-breakpoints-${hashRuntimeValue(signature)}`
+  const className = `weave-breakpoints-${hashRuntimeValue(signature)}`
 
   const rule = {
     className,

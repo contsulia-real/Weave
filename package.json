@@ -39,7 +39,9 @@
     "typecheck": "tsc -b",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint": "oxlint",
+    "format": "biome check --write .",
+    "format:check": "biome check .",
+    "lint": "pnpm run format:check && oxlint",
     "verify:package": "node verify-package.mjs",
     "verify:task": "node scripts/verify-task-complete.mjs",
     "preview": "vite preview"
@@ -49,6 +51,7 @@
     "react-dom": "^19.3.0"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.5.14",
     "@tabler/icons-react": "^3.48.0",
     "@testing-library/dom": "^10.4.2",
     "@testing-library/react": "^16.3.3",

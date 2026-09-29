@@ -1,42 +1,29 @@
 import { cleanup, render } from '@testing-library/react'
 import { createRef } from 'react'
 import { afterEach, describe, expect, it } from 'vitest'
-import {
-  Text,
-  ThemeProvider,
-  createTheme,
-} from '../src'
+import { createTheme, Text, ThemeProvider } from '../src'
 
 afterEach(cleanup)
 
-function runtimeRule(
-  element: Element,
-  prefix: string,
-): string {
-  const className = [...element.classList].find((name) =>
-    name.startsWith(prefix),
-  )
+function runtimeRule(element: Element, prefix: string): string {
+  const className = [...element.classList].find((name) => name.startsWith(prefix))
 
   expect(className).toBeDefined()
 
   return (
-    document.querySelector<HTMLStyleElement>(
-      `style[data-weave-runtime-class="${className}"]`,
-    )?.textContent ?? ''
+    document.querySelector<HTMLStyleElement>(`style[data-weave-runtime-class="${className}"]`)
+      ?.textContent ?? ''
   ).replace(/\s+/g, '')
 }
 
 function breakpointStyles(element: Element): string {
-  const className = [...element.classList].find((name) =>
-    name.startsWith('weave-breakpoints-'),
-  )
+  const className = [...element.classList].find((name) => name.startsWith('weave-breakpoints-'))
 
   expect(className).toBeDefined()
 
   return (
-    document.querySelector<HTMLStyleElement>(
-      `style[data-weave-breakpoint-styles="${className}"]`,
-    )?.textContent ?? ''
+    document.querySelector<HTMLStyleElement>(`style[data-weave-breakpoint-styles="${className}"]`)
+      ?.textContent ?? ''
   ).replace(/\s+/g, '')
 }
 
@@ -76,19 +63,13 @@ describe('Text', () => {
     expect(element.getAttribute('size')).toBeNull()
     expect(element.getAttribute('weight')).toBeNull()
 
-    expect(textRule).toContain(
-      '--weave-text-font-size:var(--weave-typography-size-large);',
-    )
-    expect(textRule).toContain(
-      '--weave-text-font-weight:var(--weave-typography-weight-bold);',
-    )
+    expect(textRule).toContain('--weave-text-font-size:var(--weave-typography-size-large);')
+    expect(textRule).toContain('--weave-text-font-weight:var(--weave-typography-weight-bold);')
     expect(textRule).toContain('--weave-text-line-height:1.5rem;')
     expect(textRule).toContain('--weave-text-letter-spacing:0.02rem;')
     expect(viewRule).toContain('--weave-padding-top:1rem;')
     expect(viewRule).toContain('--weave-color:var(--weave-color-primary')
-    expect(viewRule).toContain(
-      '--weave-hover-color:var(--weave-color-danger',
-    )
+    expect(viewRule).toContain('--weave-hover-color:var(--weave-color-danger')
     expect(element.style.getPropertyValue('--weave-text-font-size')).toBe('')
   })
 
@@ -109,16 +90,12 @@ describe('Text', () => {
     const element = getByRole('heading', { level: 1 })
     const textRule = runtimeRule(element, 'weave-text-props-')
 
-    expect(element.getAttribute('data-weave-text-typo')).toBe(
-      'display-large',
-    )
+    expect(element.getAttribute('data-weave-text-typo')).toBe('display-large')
     expect(element.getAttribute('aria-level')).toBe('1')
     expect(textRule).toContain(
       '--weave-text-font-size:var(--weave-typography-style-display-large-font-size);',
     )
-    expect(textRule).toContain(
-      '--weave-text-font-weight:var(--weave-typography-weight-semibold);',
-    )
+    expect(textRule).toContain('--weave-text-font-weight:var(--weave-typography-weight-semibold);')
     expect(textRule).toContain(
       '--weave-text-line-height:var(--weave-typography-style-display-large-line-height);',
     )
@@ -169,18 +146,10 @@ describe('Text', () => {
     expect(textRule).toContain(
       '--weave-text-font-weight:var(--weave-typography-style-title-medium-font-weight);',
     )
-    expect(themeRule).toContain(
-      '--weave-typography-style-title-medium-font-size:2rem;',
-    )
-    expect(themeRule).toContain(
-      '--weave-typography-style-title-medium-font-weight:500;',
-    )
-    expect(themeRule).toContain(
-      '--weave-typography-style-title-medium-line-height:1.4;',
-    )
-    expect(themeRule).toContain(
-      '--weave-typography-style-title-medium-letter-spacing:0.03em;',
-    )
+    expect(themeRule).toContain('--weave-typography-style-title-medium-font-size:2rem;')
+    expect(themeRule).toContain('--weave-typography-style-title-medium-font-weight:500;')
+    expect(themeRule).toContain('--weave-typography-style-title-medium-line-height:1.4;')
+    expect(themeRule).toContain('--weave-typography-style-title-medium-letter-spacing:0.03em;')
   })
 
   it('encodes responsive text semantics at the default breakpoints', () => {
@@ -206,9 +175,7 @@ describe('Text', () => {
     const element = getByTestId('responsive-text')
     const textRule = runtimeRule(element, 'weave-text-props-')
     const viewRule = runtimeRule(element, 'weave-props-')
-    const stylesheet = document.querySelector(
-      'style[data-weave-text-styles]',
-    )
+    const stylesheet = document.querySelector('style[data-weave-text-styles]')
     const responsiveStyles = breakpointStyles(element)
 
     expect(textRule).toContain(
@@ -217,12 +184,8 @@ describe('Text', () => {
     expect(textRule).toContain(
       '--weave-text-md-font-size:var(--weave-typography-style-body-large-font-size);',
     )
-    expect(viewRule).toContain(
-      '--weave-md-color:var(--weave-color-success',
-    )
-    expect(element.getAttribute('data-weave-text-md-overflow')).toBe(
-      'ellipsis',
-    )
+    expect(viewRule).toContain('--weave-md-color:var(--weave-color-success')
+    expect(element.getAttribute('data-weave-text-md-overflow')).toBe('ellipsis')
     expect(element.getAttribute('data-weave-text-md-max-lines')).toBe('2')
     expect(stylesheet?.textContent).not.toContain('@media')
     expect(responsiveStyles).toContain('@media(min-width:48rem)')
@@ -264,20 +227,12 @@ describe('Text', () => {
     const viewRule = runtimeRule(element, 'weave-props-')
     const responsiveStyles = breakpointStyles(element)
 
-    expect(textRule).toContain(
-      '--weave-text-compact-font-size:var(--weave-typography-size-large);',
-    )
-    expect(viewRule).toContain(
-      '--weave-compact-color:var(--weave-color-success',
-    )
+    expect(textRule).toContain('--weave-text-compact-font-size:var(--weave-typography-size-large);')
+    expect(viewRule).toContain('--weave-compact-color:var(--weave-color-success')
     expect(viewRule).toContain('--weave-compact-padding-top:2rem;')
     expect(element.getAttribute('compact')).toBeNull()
-    expect(
-      element.getAttribute('data-weave-text-compact-overflow'),
-    ).toBe('ellipsis')
-    expect(
-      element.getAttribute('data-weave-text-compact-max-lines'),
-    ).toBe('2')
+    expect(element.getAttribute('data-weave-text-compact-overflow')).toBe('ellipsis')
+    expect(element.getAttribute('data-weave-text-compact-max-lines')).toBe('2')
     expect(responsiveStyles).toContain('@media(min-width:36rem)')
   })
 
@@ -306,19 +261,13 @@ describe('Text', () => {
     expect(element.className).toContain('custom-text')
     expect(element.style.fontSize).toBe('13px')
     expect(element.getAttribute('style')).toContain('font-size: 13px')
-    expect(textRule).toContain(
-      '--weave-text-font-size:var(--weave-typography-size-large);',
-    )
+    expect(textRule).toContain('--weave-text-font-size:var(--weave-typography-size-large);')
   })
 
   it('exposes the real span through viewProps.ref', () => {
     const ref = createRef<HTMLSpanElement>()
 
-    render(
-      <Text viewProps={{ ref }}>
-        Ref
-      </Text>,
-    )
+    render(<Text viewProps={{ ref }}>Ref</Text>)
 
     expect(ref.current?.tagName).toBe('SPAN')
   })

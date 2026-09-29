@@ -20,9 +20,7 @@ export function length(value: Length | undefined): string | undefined {
   return typeof value === 'number' ? `${value}rem` : value
 }
 
-export function dimension(
-  value: Dimension | undefined,
-): string | undefined {
+export function dimension(value: Dimension | undefined): string | undefined {
   if (value === undefined) return undefined
   if (typeof value === 'number') return length(value)
 
@@ -85,16 +83,12 @@ export function gradient(value: Gradient): string {
   return `radial-gradient(${stops})`
 }
 
-export function background(
-  value: BackgroundValue | undefined,
-): string | undefined {
+export function background(value: BackgroundValue | undefined): string | undefined {
   if (value === undefined) return undefined
   return typeof value === 'string' ? color(value) : gradient(value)
 }
 
-export function maskImage(
-  value: MaskValue | undefined,
-): string | undefined {
+export function maskImage(value: MaskValue | undefined): string | undefined {
   if (value === undefined) return undefined
   return typeof value === 'string' ? value : gradient(value)
 }
@@ -127,9 +121,7 @@ export function shadow(value: ShadowValue | undefined): string | undefined {
     return `var(--weave-shadow-${value})`
   }
 
-  const values: readonly ShadowDefinition[] = isShadowArray(value)
-    ? value
-    : [value]
+  const values: readonly ShadowDefinition[] = isShadowArray(value) ? value : [value]
 
   return values.map(shadowPart).join(', ')
 }
@@ -214,9 +206,7 @@ export function transformValue(input: {
   const parts: string[] = []
 
   if (input.translateX !== undefined || input.translateY !== undefined) {
-    parts.push(
-      `translate(${length(input.translateX ?? 0)}, ${length(input.translateY ?? 0)})`,
-    )
+    parts.push(`translate(${length(input.translateX ?? 0)}, ${length(input.translateY ?? 0)})`)
   }
   if (input.rotate !== undefined) parts.push(`rotate(${angle(input.rotate)})`)
   if (input.skewX !== undefined) parts.push(`skewX(${angle(input.skewX)})`)
@@ -231,9 +221,7 @@ export function transformValue(input: {
   return parts.length > 0 ? parts.join(' ') : undefined
 }
 
-export function transformOrigin(
-  value: TransformOriginValue | undefined,
-): string | undefined {
+export function transformOrigin(value: TransformOriginValue | undefined): string | undefined {
   if (value === undefined) return undefined
   if (typeof value === 'string') return value
   return `${length(value.x)} ${length(value.y)}`
@@ -247,9 +235,7 @@ export function clipPath(value: ClipValue | undefined): string | undefined {
     case 'circle':
       return `circle(${length(value.radius)})`
     case 'polygon':
-      return `polygon(${value.points
-        .map(([x, y]) => `${length(x)} ${length(y)}`)
-        .join(', ')})`
+      return `polygon(${value.points.map(([x, y]) => `${length(x)} ${length(y)}`).join(', ')})`
     case 'path':
       return `path("${value.path.replaceAll('"', '\\"')}")`
   }

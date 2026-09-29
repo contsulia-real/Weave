@@ -1,72 +1,32 @@
-import {
-  useState,
-} from 'react'
-import {
-  IconBell,
-  IconHome,
-  IconSettings,
-  IconUser,
-  IconWifi,
-} from '@tabler/icons-react'
-import {
-  Column,
-  List,
-  Switch,
-  Text,
-} from '../index'
-import {
-  PlaygroundSection,
-} from './PlaygroundSection'
+import { IconBell, IconHome, IconSettings, IconUser, IconWifi } from '@tabler/icons-react'
+import { useState } from 'react'
+import { Column, List, Switch, Text } from '../index'
+import { PlaygroundSection } from './PlaygroundSection'
 
 export function ListPlayground() {
-  const [
-    selected,
-    setSelected,
-  ] = useState<string | null>(
-    'home',
-  )
-  const [
-    multiple,
-    setMultiple,
-  ] = useState<
-    readonly string[]
-  >([
-    'alerts',
-  ])
-  const [
-    wifi,
-    setWifi,
-  ] = useState(true)
+  const [selected, setSelected] = useState<string | null>('home')
+  const [multiple, setMultiple] = useState<readonly string[]>(['alerts'])
+  const [wifi, setWifi] = useState(true)
 
-  const virtualItems =
-    Array.from(
-      {
-        length: 100,
-      },
-      (_, index) => ({
-        id:
-          `virtual-${index}`,
-        text:
-          `Virtual row ${index + 1}`,
-        secondaryText:
-          `Only the visible window is mounted · #${index + 1}`,
-      }),
-    )
+  const virtualItems = Array.from(
+    {
+      length: 100,
+    },
+    (_, index) => ({
+      id: `virtual-${index}`,
+      text: `Virtual row ${index + 1}`,
+      secondaryText: `Only the visible window is mounted · #${index + 1}`,
+    }),
+  )
 
   return (
     <PlaygroundSection
       title="List / ListItem"
       description="List 管理数据、选择、方向键、焦点与虚拟化；ListItem 只表达单项内容和状态。"
     >
-      <Column
-        gap={1.5}
-      >
-        <Column
-          gap={0.5}
-        >
-          <Text typo="label-medium">
-            Data-driven · single selection
-          </Text>
+      <Column gap={1.5}>
+        <Column gap={0.5}>
+          <Text typo="label-medium">Data-driven · single selection</Text>
 
           <List
             selection="single"
@@ -81,22 +41,19 @@ export function ListPlayground() {
               {
                 id: 'profile',
                 text: 'Profile',
-                secondaryText:
-                  'Identity and personal details',
+                secondaryText: 'Identity and personal details',
                 icon: IconUser,
               },
               {
                 id: 'settings',
                 text: 'Settings',
-                secondaryText:
-                  'Application preferences',
+                secondaryText: 'Application preferences',
                 icon: IconSettings,
               },
               {
                 id: 'disabled',
                 text: 'Unavailable',
-                secondaryText:
-                  'Disabled rows are skipped by keyboard navigation',
+                secondaryText: 'Disabled rows are skipped by keyboard navigation',
                 icon: IconBell,
                 disabled: true,
               },
@@ -106,20 +63,13 @@ export function ListPlayground() {
             }}
           />
 
-          <Text
-            typo="body-small"
-            color="secondary"
-          >
+          <Text typo="body-small" color="secondary">
             selected: {selected ?? 'none'}
           </Text>
         </Column>
 
-        <Column
-          gap={0.5}
-        >
-          <Text typo="label-medium">
-            Trailing control · noDividers
-          </Text>
+        <Column gap={0.5}>
+          <Text typo="label-medium">Trailing control · noDividers</Text>
 
           <List
             noDividers
@@ -127,38 +77,23 @@ export function ListPlayground() {
               {
                 id: 'wifi',
                 text: 'Wi-Fi',
-                secondaryText:
-                  'Nested Switch handles its own interaction',
+                secondaryText: 'Nested Switch handles its own interaction',
                 icon: IconWifi,
-                trailing:
-                  <Switch
-                    checked={wifi}
-                    onChange={setWifi}
-                    size="small"
-                  />,
+                trailing: <Switch checked={wifi} onChange={setWifi} size="small" />,
               },
               {
                 id: 'notifications',
                 text: 'Notifications',
-                secondaryText:
-                  'Interactive trailing content does not trigger the row',
+                secondaryText: 'Interactive trailing content does not trigger the row',
                 icon: IconBell,
-                trailing:
-                  <Switch
-                    defaultChecked
-                    size="small"
-                  />,
+                trailing: <Switch defaultChecked size="small" />,
               },
             ]}
           />
         </Column>
 
-        <Column
-          gap={0.5}
-        >
-          <Text typo="label-medium">
-            Multiple selection
-          </Text>
+        <Column gap={0.5}>
+          <Text typo="label-medium">Multiple selection</Text>
 
           <List
             selection="multiple"
@@ -186,29 +121,15 @@ export function ListPlayground() {
             }}
           />
 
-          <Text
-            typo="body-small"
-            color="secondary"
-          >
-            selected: {
-              multiple.length === 0
-                ? 'none'
-                : multiple.join(', ')
-            }
+          <Text typo="body-small" color="secondary">
+            selected: {multiple.length === 0 ? 'none' : multiple.join(', ')}
           </Text>
         </Column>
 
-        <Column
-          gap={0.5}
-        >
-          <Text typo="label-medium">
-            Virtualized · 100 rows
-          </Text>
+        <Column gap={0.5}>
+          <Text typo="label-medium">Virtualized · 100 rows</Text>
 
-          <Text
-            typo="body-small"
-            color="secondary"
-          >
+          <Text typo="body-small" color="secondary">
             List 自己维护窗口化渲染；滚动仍然使用 viewProps + Weave Scrollbar。
           </Text>
 
@@ -220,8 +141,7 @@ export function ListPlayground() {
               height: 16,
               overflow: 'auto',
               border: 0.0625,
-              borderColor:
-                'outline',
+              borderColor: 'outline',
               radius: 'medium',
               padding: 0.5,
               scrollbar: {

@@ -1,9 +1,4 @@
-import {
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import type { ViewProps } from '../../core/view-types'
 import {
   resolveViewEnterExit,
@@ -23,27 +18,17 @@ function definitionKey(value: unknown): string {
   return JSON.stringify(value ?? null)
 }
 
-function scheduleAnimationFrame(
-  callback: FrameRequestCallback,
-): () => void {
-  if (
-    typeof window !== 'undefined' &&
-    typeof window.requestAnimationFrame === 'function'
-  ) {
+function scheduleAnimationFrame(callback: FrameRequestCallback): () => void {
+  if (typeof window !== 'undefined' && typeof window.requestAnimationFrame === 'function') {
     const id = window.requestAnimationFrame(callback)
     return () => window.cancelAnimationFrame(id)
   }
 
-  const id = globalThis.setTimeout(
-    () => callback(Date.now()),
-    16,
-  )
+  const id = globalThis.setTimeout(() => callback(Date.now()), 16)
   return () => globalThis.clearTimeout(id)
 }
 
-function scheduleAfterPaint(
-  callback: () => void,
-): () => void {
+function scheduleAfterPaint(callback: () => void): () => void {
   let cancelSecond: (() => void) | undefined
   const cancelFirst = scheduleAnimationFrame(() => {
     cancelSecond = scheduleAnimationFrame(() => {
@@ -67,24 +52,11 @@ export function useViewMotion<TElement extends HTMLElement>(
   const enterCommitted = useRef(false)
   const exitKey = definitionKey(props.exit)
 
-  const enterMotion = resolveViewEnterExit(
-    props.enter,
-    'enter',
-    theme,
-    reducedMotion,
-  )
-  const exitMotion = resolveViewEnterExit(
-    props.exit,
-    'exit',
-    theme,
-    reducedMotion,
-  )
+  const enterMotion = resolveViewEnterExit(props.enter, 'enter', theme, reducedMotion)
+  const exitMotion = resolveViewEnterExit(props.exit, 'exit', theme, reducedMotion)
 
-  const [state, setState] = useState<ViewMotionState | undefined>(
-    () =>
-      enterMotion !== undefined && !reducedMotion
-        ? 'enter-from'
-        : undefined,
+  const [state, setState] = useState<ViewMotionState | undefined>(() =>
+    enterMotion !== undefined && !reducedMotion ? 'enter-from' : undefined,
   )
   const stateRef = useRef<ViewMotionState | undefined>(state)
 
@@ -103,16 +75,9 @@ export function useViewMotion<TElement extends HTMLElement>(
       ? enterMotion?.transition
       : state?.startsWith('exit') === true
         ? exitMotion?.transition
-        : resolveViewTransition(
-            props.transition,
-            theme,
-            reducedMotion,
-          )
+        : resolveViewTransition(props.transition, theme, reducedMotion)
 
-  const transitionClassName = useRuntimeStyleClass(
-    'motion',
-    activeTransition,
-  )
+  const transitionClassName = useRuntimeStyleClass('motion', activeTransition)
 
   const registerExit = presence?.registerExit
   const completeExit = presence?.completeExit
@@ -243,9 +208,7 @@ export function useViewMotion<TElement extends HTMLElement>(
   /* oxlint-enable react/set-state-in-effect */
 
   return {
-    className: [framesClassName, transitionClassName]
-      .filter(Boolean)
-      .join(' ') || undefined,
+    className: [framesClassName, transitionClassName].filter(Boolean).join(' ') || undefined,
     state,
   }
 }

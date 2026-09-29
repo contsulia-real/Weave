@@ -1,4 +1,7 @@
 import {
+  type KeyboardEvent,
+  type MouseEvent,
+  type TransitionEvent,
   useCallback,
   useEffect,
   useId,
@@ -6,83 +9,41 @@ import {
   useMemo,
   useRef,
   useState,
-  type KeyboardEvent,
-  type MouseEvent,
-  type TransitionEvent,
 } from 'react'
-import type {
-  SelectProps,
-  SelectValue,
-} from '../core/select-types'
-import type {
-  ViewProps,
-} from '../core/view-types'
-import {
-  resolveInputTheme,
-  resolveSelectTheme,
-} from '../renderers/dom/resolve-component-theme'
-import {
-  ensureSelectStylesheet,
-} from '../renderers/dom/select-stylesheet'
-import {
-  useRuntimeStyleClass,
-} from '../renderers/dom/runtime-class'
-import {
-  useTheme,
-} from '../theme/theme-context'
+import type { SelectProps, SelectValue } from '../core/select-types'
+import type { ViewProps } from '../core/view-types'
+import { resolveInputTheme, resolveSelectTheme } from '../renderers/dom/resolve-component-theme'
+import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
+import { ensureSelectStylesheet } from '../renderers/dom/select-stylesheet'
+import { useTheme } from '../theme/theme-context'
 import { Icon } from './Icon'
 import { assignRef } from './internal/assign-ref'
-import { ThemedPortal } from './internal/ThemedPortal'
 import { chevronDownIcon } from './internal/control-icons'
-import { renderIconSource } from './internal/render-icon-source'
-import {
-  SelectContext,
-} from './internal/select-context'
+import { durationMilliseconds } from './internal/motion-duration'
 import {
   initialOptionActiveValue,
   moveOptionActiveValue,
   optionDomId,
 } from './internal/option-navigation'
-import {
-  selectOptionDescriptors,
-  selectedDescriptor,
-} from './internal/select-options'
-import {
-  durationMilliseconds,
-} from './internal/motion-duration'
-import {
-  useControllableBoolean,
-} from './internal/use-controllable-boolean'
-import {
-  finishExitOnTransition,
-  useExitPresence,
-} from './internal/use-exit-presence'
-import {
-  usePopoverPosition,
-} from './internal/use-popover-position'
+import { renderIconSource } from './internal/render-icon-source'
+import { SelectContext } from './internal/select-context'
+import { selectedDescriptor, selectOptionDescriptors } from './internal/select-options'
+import { ThemedPortal } from './internal/ThemedPortal'
 import {
   useAnchorViewportDismiss,
   useOutsideInteractionDismiss,
 } from './internal/use-anchor-viewport-dismiss'
-import {
-  useSelectTypeahead,
-} from './internal/use-select-typeahead'
+import { useControllableBoolean } from './internal/use-controllable-boolean'
+import { finishExitOnTransition, useExitPresence } from './internal/use-exit-presence'
+import { usePopoverPosition } from './internal/use-popover-position'
+import { useSelectTypeahead } from './internal/use-select-typeahead'
+import { useViewHost } from './internal/use-view-host'
 import { Text } from './Text'
 import { View } from './View'
-import {
-  useViewHost,
-} from './internal/use-view-host'
 
-function printableKey(
-  event:
-    KeyboardEvent<HTMLButtonElement>,
-): boolean {
+function printableKey(event: KeyboardEvent<HTMLButtonElement>): boolean {
   return (
-    event.key.length === 1 &&
-    event.key !== ' ' &&
-    !event.altKey &&
-    !event.ctrlKey &&
-    !event.metaKey
+    event.key.length === 1 && event.key !== ' ' && !event.altKey && !event.ctrlKey && !event.metaKey
   )
 }
 
@@ -102,296 +63,134 @@ export function Select({
   viewProps = {},
   listboxViewProps = {},
 }: SelectProps) {
-  const options = useMemo(
-    () =>
-      selectOptionDescriptors(
-        children,
-      ),
-    [children],
-  )
+  const options = useMemo(() => selectOptionDescriptors(children), [children])
 
-  const controlledValue =
-    value !== undefined
-  const [
-    uncontrolledValue,
-    setUncontrolledValue,
-  ] = useState<
-    SelectValue | null
-  >(defaultValue)
-  const selectedValue =
-    controlledValue
-      ? value ?? null
-      : uncontrolledValue
+  const controlledValue = value !== undefined
+  const [uncontrolledValue, setUncontrolledValue] = useState<SelectValue | null>(defaultValue)
+  const selectedValue = controlledValue ? (value ?? null) : uncontrolledValue
 
-  const {
-    value: resolvedOpen,
-    request: setOpenState,
-  } = useControllableBoolean(
+  const { value: resolvedOpen, request: setOpenState } = useControllableBoolean(
     open,
     defaultOpen,
     onOpenChange,
   )
 
-  const [
-    activeValue,
-    setActiveValue,
-  ] = useState<
-    SelectValue | null
-  >(null)
+  const [activeValue, setActiveValue] = useState<SelectValue | null>(null)
 
   const reactId = useId()
-  const triggerId =
-    viewProps.id ??
-    'weave-select-' +
-      reactId
-  const listboxId =
-    listboxViewProps.id ??
-    triggerId +
-      '-listbox'
-  const listboxRef =
-    useRef<HTMLDivElement>(
-      null,
-    )
+  const triggerId = viewProps.id ?? 'weave-select-' + reactId
+  const listboxId = listboxViewProps.id ?? triggerId + '-listbox'
+  const listboxRef = useRef<HTMLDivElement>(null)
 
-  const {
-    theme,
-    reducedMotion,
-  } = useTheme()
-  const inputBaseTheme =
-    theme.components.Input
-      ?.base
-  const inputThemeClassName =
-    useRuntimeStyleClass(
-      'input-theme',
-      resolveInputTheme(theme),
-    )
-  const themeClassName =
-    useRuntimeStyleClass(
-      'select-theme',
-      resolveSelectTheme(theme),
-    )
-  const exitDuration =
-    durationMilliseconds(
-      theme.tokens.motion
-        ?.duration?.fast,
-      120,
-    )
-  const {
-    present,
-    visualState,
-    finishExit,
-  } = useExitPresence(
+  const { theme, reducedMotion } = useTheme()
+  const inputBaseTheme = theme.components.Input?.base
+  const inputThemeClassName = useRuntimeStyleClass('input-theme', resolveInputTheme(theme))
+  const themeClassName = useRuntimeStyleClass('select-theme', resolveSelectTheme(theme))
+  const exitDuration = durationMilliseconds(theme.tokens.motion?.duration?.fast, 120)
+  const { present, visualState, finishExit } = useExitPresence(
     resolvedOpen,
     reducedMotion,
     exitDuration,
   )
 
-  useInsertionEffect(
-    ensureSelectStylesheet,
-    [],
+  useInsertionEffect(ensureSelectStylesheet, [])
+
+  const selected = selectedDescriptor(options, selectedValue)
+  const resolvedActiveValue = resolvedOpen
+    ? (activeValue ?? initialOptionActiveValue(options, selectedValue))
+    : null
+
+  const close = useCallback(() => {
+    setOpenState(false)
+    setActiveValue(null)
+  }, [setOpenState])
+
+  const openSelect = useCallback(
+    (preferred?: SelectValue | null) => {
+      if (disabled) return
+
+      setActiveValue(preferred ?? initialOptionActiveValue(options, selectedValue))
+      setOpenState(true)
+    },
+    [disabled, options, selectedValue, setOpenState],
   )
 
-  const selected =
-    selectedDescriptor(
-      options,
-      selectedValue,
-    )
-  const resolvedActiveValue =
-    resolvedOpen
-      ? (
-          activeValue ??
-          initialOptionActiveValue(
-            options,
-            selectedValue,
-          )
-        )
-      : null
+  const selectValue = useCallback(
+    (nextValue: SelectValue) => {
+      const option = options.find((candidate) => candidate.value === nextValue)
 
-  const close =
-    useCallback(() => {
-      setOpenState(false)
-      setActiveValue(null)
-    }, [setOpenState])
+      if (option === undefined || option.disabled) {
+        return
+      }
 
-  const openSelect =
-    useCallback(
-      (
-        preferred?:
-          SelectValue | null,
-      ) => {
-        if (disabled) return
-
-        setActiveValue(
-          preferred ??
-          initialOptionActiveValue(
-            options,
-            selectedValue,
-          ),
-        )
-        setOpenState(true)
-      },
-      [
-        disabled,
-        options,
-        selectedValue,
-        setOpenState,
-      ],
-    )
-
-  const selectValue =
-    useCallback(
-      (
-        nextValue:
-          SelectValue,
-      ) => {
-        const option =
-          options.find(
-            (candidate) =>
-              candidate.value ===
-              nextValue,
-          )
-
-        if (
-          option === undefined ||
-          option.disabled
-        ) {
-          return
+      if (nextValue !== selectedValue) {
+        if (!controlledValue) {
+          setUncontrolledValue(nextValue)
         }
 
-        if (
-          nextValue !==
-          selectedValue
-        ) {
-          if (!controlledValue) {
-            setUncontrolledValue(
-              nextValue,
-            )
-          }
+        onValueChange?.(nextValue)
+      }
 
-          onValueChange?.(
-            nextValue,
-          )
-        }
+      close()
+    },
+    [close, controlledValue, onValueChange, options, selectedValue],
+  )
 
-        close()
-      },
-      [
-        close,
-        controlledValue,
-        onValueChange,
-        options,
-        selectedValue,
-      ],
-    )
+  const setEnabledActiveValue = useCallback(
+    (nextValue: SelectValue) => {
+      const option = options.find((candidate) => candidate.value === nextValue)
 
-  const setEnabledActiveValue =
-    useCallback(
-      (
-        nextValue:
-          SelectValue,
-      ) => {
-        const option =
-          options.find(
-            (candidate) =>
-              candidate.value ===
-              nextValue,
-          )
+      if (option !== undefined && !option.disabled) {
+        setActiveValue(nextValue)
+      }
+    },
+    [options],
+  )
 
-        if (
-          option !== undefined &&
-          !option.disabled
-        ) {
-          setActiveValue(
-            nextValue,
-          )
-        }
-      },
-      [options],
-    )
+  const handleTypeahead = useSelectTypeahead(
+    options,
+    resolvedActiveValue ?? selectedValue,
+    (match) => {
+      if (!resolvedOpen) {
+        openSelect(match)
+        return
+      }
 
-  const handleTypeahead =
-    useSelectTypeahead(
-      options,
-      resolvedActiveValue ??
-        selectedValue,
-      (match) => {
-        if (!resolvedOpen) {
-          openSelect(match)
-          return
-        }
+      setActiveValue(match)
+    },
+  )
 
-        setActiveValue(match)
-      },
-    )
-
-  const hostProps:
-    ViewProps<HTMLButtonElement> = {
-      ...viewProps,
-      disabled,
-      expanded:
-        resolvedOpen,
-      controls:
-        listboxId,
-    }
+  const hostProps: ViewProps<HTMLButtonElement> = {
+    ...viewProps,
+    disabled,
+    expanded: resolvedOpen,
+    controls: listboxId,
+  }
   const {
-    elementRef:
-      triggerRef,
-    className:
-      triggerClassName,
-    inlineStyle:
-      triggerInlineStyle,
-    resolved:
-      triggerResolved,
-  } = useViewHost(
-    hostProps,
-  )
+    elementRef: triggerRef,
+    className: triggerClassName,
+    inlineStyle: triggerInlineStyle,
+    resolved: triggerResolved,
+  } = useViewHost(hostProps)
 
-  useAnchorViewportDismiss(
-    triggerRef,
-    resolvedOpen,
-    close,
-  )
-  useOutsideInteractionDismiss(
-    triggerRef,
-    listboxRef,
-    resolvedOpen,
-    close,
-  )
+  useAnchorViewportDismiss(triggerRef, resolvedOpen, close)
+  useOutsideInteractionDismiss(triggerRef, listboxRef, resolvedOpen, close)
 
   useEffect(() => {
-    if (
-      !resolvedOpen ||
-      resolvedActiveValue === null
-    ) {
+    if (!resolvedOpen || resolvedActiveValue === null) {
       return
     }
 
-    const option =
-      triggerRef.current
-        ?.ownerDocument
-        .getElementById(
-          optionDomId(
-            listboxId,
-            resolvedActiveValue,
-          ),
-        )
+    const option = triggerRef.current?.ownerDocument.getElementById(
+      optionDomId(listboxId, resolvedActiveValue),
+    )
 
-    if (
-      option !== null &&
-      option !== undefined &&
-      typeof option.scrollIntoView ===
-        'function'
-    ) {
+    if (option !== null && option !== undefined && typeof option.scrollIntoView === 'function') {
       option.scrollIntoView({
         block: 'nearest',
       })
     }
-  }, [
-    listboxId,
-    resolvedActiveValue,
-    resolvedOpen,
-    triggerRef,
-  ])
+  }, [listboxId, resolvedActiveValue, resolvedOpen, triggerRef])
 
   /*
    * Controlled open can close without passing through close().
@@ -400,44 +199,22 @@ export function Select({
    */
   /* oxlint-disable react/set-state-in-effect */
   useEffect(() => {
-    if (
-      !resolvedOpen &&
-      activeValue !== null
-    ) {
+    if (!resolvedOpen && activeValue !== null) {
       setActiveValue(null)
     }
-  }, [
-    activeValue,
-    resolvedOpen,
-  ])
+  }, [activeValue, resolvedOpen])
   /* oxlint-enable react/set-state-in-effect */
 
   const {
     positioned,
-    placement:
-      resolvedPlacement,
+    placement: resolvedPlacement,
     placementStyle,
-  } = usePopoverPosition(
-    triggerRef,
-    listboxRef,
-    present,
-    placement,
-    offset,
-    viewportPadding,
-  )
+  } = usePopoverPosition(triggerRef, listboxRef, present, placement, offset, viewportPadding)
 
-  const handleClick = (
-    event:
-      MouseEvent<HTMLButtonElement>,
-  ) => {
-    viewProps.onClick?.(
-      event,
-    )
+  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
+    viewProps.onClick?.(event)
 
-    if (
-      event.defaultPrevented ||
-      disabled
-    ) {
+    if (event.defaultPrevented || disabled) {
       return
     }
 
@@ -448,48 +225,26 @@ export function Select({
     }
   }
 
-  const moveActive = (
-    move:
-      | 'previous'
-      | 'next'
-      | 'first'
-      | 'last',
-  ) => {
-    const next =
-      moveOptionActiveValue(
-        options,
-        resolvedActiveValue,
-        move,
-      )
+  const moveActive = (move: 'previous' | 'next' | 'first' | 'last') => {
+    const next = moveOptionActiveValue(options, resolvedActiveValue, move)
 
     if (next !== null) {
       setActiveValue(next)
     }
   }
 
-  const handleKeyDown = (
-    event:
-      KeyboardEvent<HTMLButtonElement>,
-  ) => {
-    viewProps.onKeyDown?.(
-      event,
-    )
+  const handleKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
+    viewProps.onKeyDown?.(event)
 
-    if (
-      event.defaultPrevented ||
-      disabled
-    ) {
+    if (event.defaultPrevented || disabled) {
       return
     }
 
     if (!resolvedOpen) {
       if (
-        event.key ===
-          'ArrowDown' ||
-        event.key ===
-          'ArrowUp' ||
-        event.key ===
-          'Enter' ||
+        event.key === 'ArrowDown' ||
+        event.key === 'ArrowUp' ||
+        event.key === 'Enter' ||
         event.key === ' '
       ) {
         event.preventDefault()
@@ -497,81 +252,50 @@ export function Select({
         return
       }
 
-      if (
-        event.key === 'Home' ||
-        event.key === 'End'
-      ) {
+      if (event.key === 'Home' || event.key === 'End') {
         event.preventDefault()
-        const next =
-          moveOptionActiveValue(
-            options,
-            null,
-            event.key ===
-              'Home'
-              ? 'first'
-              : 'last',
-          )
+        const next = moveOptionActiveValue(options, null, event.key === 'Home' ? 'first' : 'last')
         openSelect(next)
         return
       }
 
       if (printableKey(event)) {
         event.preventDefault()
-        handleTypeahead(
-          event.key,
-        )
+        handleTypeahead(event.key)
       }
 
       return
     }
 
     if (
-      event.key ===
-        'ArrowDown' ||
-      event.key ===
-        'ArrowUp' ||
-      event.key ===
-        'Home' ||
-      event.key ===
-        'End'
+      event.key === 'ArrowDown' ||
+      event.key === 'ArrowUp' ||
+      event.key === 'Home' ||
+      event.key === 'End'
     ) {
       event.preventDefault()
       moveActive(
-        event.key ===
-          'ArrowDown'
+        event.key === 'ArrowDown'
           ? 'next'
-          : event.key ===
-              'ArrowUp'
+          : event.key === 'ArrowUp'
             ? 'previous'
-            : event.key ===
-                'Home'
+            : event.key === 'Home'
               ? 'first'
               : 'last',
       )
       return
     }
 
-    if (
-      event.key ===
-        'Enter' ||
-      event.key === ' '
-    ) {
+    if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault()
 
-      if (
-        resolvedActiveValue !==
-        null
-      ) {
-        selectValue(
-          resolvedActiveValue,
-        )
+      if (resolvedActiveValue !== null) {
+        selectValue(resolvedActiveValue)
       }
       return
     }
 
-    if (
-      event.key === 'Escape'
-    ) {
+    if (event.key === 'Escape') {
       event.preventDefault()
       close()
       return
@@ -579,143 +303,80 @@ export function Select({
 
     if (printableKey(event)) {
       event.preventDefault()
-      handleTypeahead(
-        event.key,
-      )
+      handleTypeahead(event.key)
     }
   }
 
-  const contextValue =
-    useMemo(
-      () => ({
-        listboxId,
-        selectedValue,
-        activeValue:
-          resolvedActiveValue,
-        setActiveValue:
-          setEnabledActiveValue,
-        selectValue,
-      }),
-      [
-        listboxId,
-        resolvedActiveValue,
-        selectValue,
-        selectedValue,
-        setEnabledActiveValue,
-      ],
-    )
+  const contextValue = useMemo(
+    () => ({
+      listboxId,
+      selectedValue,
+      activeValue: resolvedActiveValue,
+      setActiveValue: setEnabledActiveValue,
+      selectValue,
+    }),
+    [listboxId, resolvedActiveValue, selectValue, selectedValue, setEnabledActiveValue],
+  )
 
-  const handleTransitionEnd = (
-    event:
-      TransitionEvent<HTMLDivElement>,
-  ) => {
-    listboxViewProps
-      .onTransitionEnd?.(
-        event,
-      )
+  const handleTransitionEnd = (event: TransitionEvent<HTMLDivElement>) => {
+    listboxViewProps.onTransitionEnd?.(event)
 
-    finishExitOnTransition(
-      event,
-      resolvedOpen,
-      visualState,
-      finishExit,
-    )
+    finishExitOnTransition(event, resolvedOpen, visualState, finishExit)
   }
 
-  const setListboxRef = (
-    element:
-      HTMLDivElement | null,
-  ) => {
-    listboxRef.current =
-      element
-    assignRef(
-      listboxViewProps.ref,
-      element,
-    )
+  const setListboxRef = (element: HTMLDivElement | null) => {
+    listboxRef.current = element
+    assignRef(listboxViewProps.ref, element)
   }
 
   const activeDescendant =
-    resolvedOpen &&
-    resolvedActiveValue !== null
-      ? optionDomId(
-          listboxId,
-          resolvedActiveValue,
-        )
+    resolvedOpen && resolvedActiveValue !== null
+      ? optionDomId(listboxId, resolvedActiveValue)
       : undefined
 
-  const portal =
-    present
-      ? (
-          <ThemedPortal>
-            <SelectContext.Provider
-              value={contextValue}
-            >
-              <View
-                {...listboxViewProps}
-                ref={setListboxRef}
-                id={listboxId}
-                role="listbox"
-                labelledBy={
-                  triggerId
-                }
-                tabIndex={-1}
-                aria-hidden={
-                  visualState ===
-                    'closing'
-                    ? true
-                    : undefined
-                }
-                onTransitionEnd={
-                  handleTransitionEnd
-                }
-                position="fixed"
-                layer={
-                  listboxViewProps
-                    .layer ??
-                  'overlay'
-                }
-                className={[
-                  'weave-option-listbox',
-                  'weave-select-listbox',
-                  inputThemeClassName,
-          themeClassName,
-                  listboxViewProps
-                    .className,
-                ].filter(Boolean).join(' ')}
-                data={{
-                  ...listboxViewProps
-                    .data,
-                  'weave-option-listbox':
-                    '',
-                  'weave-option-listbox-state':
-                    visualState,
-                  'weave-select-listbox':
-                    '',
-                  'weave-select-state':
-                    visualState,
-                  placement:
-                    resolvedPlacement,
-                  'weave-reduced-motion':
-                    reducedMotion
-                      ? 'reduce'
-                      : undefined,
-                }}
-                style={{
-                  ...listboxViewProps
-                    .style,
-                  ...placementStyle,
-                  visibility:
-                    positioned
-                      ? 'visible'
-                      : 'hidden',
-                }}
-              >
-                {children}
-              </View>
-            </SelectContext.Provider>
-          </ThemedPortal>
-        )
-      : null
+  const portal = present ? (
+    <ThemedPortal>
+      <SelectContext.Provider value={contextValue}>
+        <View
+          {...listboxViewProps}
+          ref={setListboxRef}
+          id={listboxId}
+          role="listbox"
+          labelledBy={triggerId}
+          tabIndex={-1}
+          aria-hidden={visualState === 'closing' ? true : undefined}
+          onTransitionEnd={handleTransitionEnd}
+          position="fixed"
+          layer={listboxViewProps.layer ?? 'overlay'}
+          className={[
+            'weave-option-listbox',
+            'weave-select-listbox',
+            inputThemeClassName,
+            themeClassName,
+            listboxViewProps.className,
+          ]
+            .filter(Boolean)
+            .join(' ')}
+          data={{
+            ...listboxViewProps.data,
+            'weave-option-listbox': '',
+            'weave-option-listbox-state': visualState,
+            'weave-select-listbox': '',
+            'weave-select-state': visualState,
+            placement: resolvedPlacement,
+            'weave-reduced-motion': reducedMotion ? 'reduce' : undefined,
+          }}
+          style={{
+            ...listboxViewProps.style,
+            ...placementStyle,
+            visibility: positioned ? 'visible' : 'hidden',
+          }}
+        >
+          {children}
+        </View>
+      </SelectContext.Provider>
+    </ThemedPortal>
+  ) : null
 
   return (
     <>
@@ -726,87 +387,50 @@ export function Select({
         type="button"
         role="combobox"
         aria-haspopup="listbox"
-        aria-expanded={
-          resolvedOpen
-        }
-        aria-controls={
-          listboxId
-        }
-        aria-activedescendant={
-          activeDescendant
-        }
+        aria-expanded={resolvedOpen}
+        aria-controls={listboxId}
+        aria-activedescendant={activeDescendant}
         aria-autocomplete="none"
         disabled={disabled}
         data-weave-view=""
         data-weave-select=""
-        data-weave-select-open={
-          resolvedOpen
-            ? 'true'
-            : 'false'
-        }
-        data-weave-layout={
-          triggerResolved.layout
-        }
-        className={[
-          'weave-select',
-          inputThemeClassName,
-          themeClassName,
-          triggerClassName,
-        ].filter(Boolean).join(' ')}
+        data-weave-select-open={resolvedOpen ? 'true' : 'false'}
+        data-weave-layout={triggerResolved.layout}
+        className={['weave-select', inputThemeClassName, themeClassName, triggerClassName]
+          .filter(Boolean)
+          .join(' ')}
         style={triggerInlineStyle}
         onClick={handleClick}
-        onKeyDown={
-          handleKeyDown
-        }
+        onKeyDown={handleKeyDown}
       >
-        <View
-          className="weave-select__value"
-          pointerEvents="none"
-        >
-          {selected?.icon ===
-          undefined
+        <View className="weave-select__value" pointerEvents="none">
+          {selected?.icon === undefined
             ? null
-            : renderIconSource(
-              selected.icon,
-              {
+            : renderIconSource(selected.icon, {
                 size: 'small',
                 stroke: 'regular',
                 viewProps: {
-                  className:
-                    'weave-select__value-icon',
+                  className: 'weave-select__value-icon',
                   'aria-hidden': true,
                 },
-              },
-            )}
+              })}
 
           <Text
-            typo={
-              inputBaseTheme
-                ?.typo ??
-              'body-large'
-            }
+            typo={inputBaseTheme?.typo ?? 'body-large'}
             viewProps={{
-              className:
-                selected ===
-                undefined
-                  ? 'weave-select__placeholder'
-                  : undefined,
+              className: selected === undefined ? 'weave-select__placeholder' : undefined,
             }}
           >
-            {selected?.text ??
-              placeholder}
+            {selected?.text ?? placeholder}
           </Text>
         </View>
 
         <Icon
-          svg={
-            chevronDownIcon
-          }
+          svg={chevronDownIcon}
           size="small"
           stroke="regular"
           viewProps={{
-            className:
-              'weave-select__chevron',
+            className: 'weave-select__chevron',
             'aria-hidden': true,
             pointerEvents: 'none',
           }}

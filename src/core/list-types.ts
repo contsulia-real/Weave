@@ -1,26 +1,12 @@
-import type {
-  ReactNode,
-} from 'react'
-import type {
-  ButtonIcon,
-} from './button-types'
-import type {
-  ViewCoreProps,
-  ViewDynamicBreakpointProps,
-  ViewStyleProps,
-} from './view-types'
+import type { ReactNode } from 'react'
+import type { ButtonIcon } from './button-types'
+import type { ViewCoreProps, ViewDynamicBreakpointProps, ViewStyleProps } from './view-types'
 
-export type ListSelection =
-  | 'none'
-  | 'single'
-  | 'multiple'
+export type ListSelection = 'none' | 'single' | 'multiple'
 
-export type ListOrientation =
-  | 'vertical'
-  | 'horizontal'
+export type ListOrientation = 'vertical' | 'horizontal'
 
-export type ListItemIcon =
-  ButtonIcon
+export type ListItemIcon = ButtonIcon
 
 export interface ListDataItem {
   id: string
@@ -31,24 +17,16 @@ export interface ListDataItem {
   disabled?: boolean
 }
 
-export type ListViewProps =
-  Omit<
-    ViewCoreProps<HTMLDivElement>,
-    | 'children'
-    | 'role'
-    | 'selected'
-    | 'disabled'
-  > &
+export type ListViewProps = Omit<
+  ViewCoreProps<HTMLDivElement>,
+  'children' | 'role' | 'selected' | 'disabled'
+> &
   ViewDynamicBreakpointProps
 
-export type ListItemViewProps =
-  Omit<
-    ViewCoreProps<HTMLDivElement>,
-    | 'children'
-    | 'role'
-    | 'selected'
-    | 'disabled'
-  > &
+export type ListItemViewProps = Omit<
+  ViewCoreProps<HTMLDivElement>,
+  'children' | 'role' | 'selected' | 'disabled'
+> &
   ViewDynamicBreakpointProps
 
 export interface ListItemProps {
@@ -88,25 +66,16 @@ interface ListSingleSelectionProps {
   selection: 'single'
   selected?: string | null
   defaultSelected?: string | null
-  onSelect?: (
-    selected: string | null,
-  ) => void
+  onSelect?: (selected: string | null) => void
 }
 
 interface ListMultipleSelectionProps {
   selection: 'multiple'
   selected?: readonly string[]
   defaultSelected?: readonly string[]
-  onSelect?: (
-    selected: readonly string[],
-  ) => void
+  onSelect?: (selected: readonly string[]) => void
 }
 
-export type ListProps =
-  ListBaseProps &
+export type ListProps = ListBaseProps &
   ListContentProps &
-  (
-    | ListNoSelectionProps
-    | ListSingleSelectionProps
-    | ListMultipleSelectionProps
-  )
+  (ListNoSelectionProps | ListSingleSelectionProps | ListMultipleSelectionProps)

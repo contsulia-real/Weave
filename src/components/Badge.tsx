@@ -1,6 +1,4 @@
-import {
-  useInsertionEffect,
-} from 'react'
+import { useInsertionEffect } from 'react'
 import type { BadgeProps } from '../core/badge-types'
 import type { ViewProps } from '../core/view-types'
 import { ensureBadgeStylesheet } from '../renderers/dom/badge-stylesheet'
@@ -21,31 +19,12 @@ export function Badge({
   ...content
 }: BadgeProps) {
   const { theme, reducedMotion } = useTheme()
-  const themeClassName = useRuntimeStyleClass(
-    'badge-theme',
-    resolveBadgeTheme(theme),
-  )
+  const themeClassName = useRuntimeStyleClass('badge-theme', resolveBadgeTheme(theme))
   const hostProps: ViewProps<HTMLSpanElement> = viewProps
-  const {
-    elementRef,
-    className,
-    inlineStyle,
-    resolved,
-  } = useViewHost(hostProps)
+  const { elementRef, className, inlineStyle, resolved } = useViewHost(hostProps)
   const dot = content.dot === true
-  const exitDuration = durationMilliseconds(
-    theme.tokens.motion?.duration?.fast,
-    120,
-  )
-  const {
-    present,
-    visualState,
-    finishExit,
-  } = useExitPresence(
-    visible,
-    reducedMotion,
-    exitDuration,
-  )
+  const exitDuration = durationMilliseconds(theme.tokens.motion?.duration?.fast, 120)
+  const { present, visualState, finishExit } = useExitPresence(visible, reducedMotion, exitDuration)
 
   useBadgeAnchor(elementRef, children)
   useInsertionEffect(ensureBadgeStylesheet, [])
@@ -58,11 +37,7 @@ export function Badge({
       data-weave-badge-anchor=""
       data-weave-badge-placement={placement}
       data-weave-layout={resolved.layout}
-      className={[
-        'weave-badge-anchor',
-        themeClassName,
-        className,
-      ].filter(Boolean).join(' ')}
+      className={['weave-badge-anchor', themeClassName, className].filter(Boolean).join(' ')}
       style={inlineStyle}
     >
       {children}
@@ -73,10 +48,9 @@ export function Badge({
           data-weave-badge-dot={dot ? 'true' : 'false'}
           data-weave-badge-state={visualState}
           data-weave-reduced-motion={reducedMotion ? 'reduce' : undefined}
-          className={[
-            'weave-badge',
-            dot ? 'weave-badge--dot' : undefined,
-          ].filter(Boolean).join(' ')}
+          className={['weave-badge', dot ? 'weave-badge--dot' : undefined]
+            .filter(Boolean)
+            .join(' ')}
           aria-hidden={dot ? true : undefined}
           onAnimationEnd={(event) => {
             if (
@@ -88,16 +62,7 @@ export function Badge({
             }
           }}
         >
-          {dot ? null : (
-            <Text
-              typo={
-                theme.components.Badge
-                  ?.base?.typo
-              }
-            >
-              {content.text}
-            </Text>
-          )}
+          {dot ? null : <Text typo={theme.components.Badge?.base?.typo}>{content.text}</Text>}
         </span>
       ) : null}
     </span>

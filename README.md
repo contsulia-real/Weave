@@ -133,6 +133,7 @@ The library entry is `src/index.ts`; production output is generated under `dist/
 ## Verification
 
 ```bash
+pnpm format:check
 pnpm typecheck
 pnpm lint
 pnpm test

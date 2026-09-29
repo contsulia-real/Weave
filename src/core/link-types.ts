@@ -1,20 +1,9 @@
-import type {
-  AnchorHTMLAttributes,
-  ReactNode,
-  Ref,
-} from 'react'
-import type {
-  ViewCoreProps,
-  ViewDynamicBreakpointProps,
-} from './view-types'
+import type { AnchorHTMLAttributes, ReactNode, Ref } from 'react'
+import type { ViewCoreProps, ViewDynamicBreakpointProps } from './view-types'
 
-export type LinkTarget =
-  AnchorHTMLAttributes<HTMLAnchorElement>['target']
+export type LinkTarget = AnchorHTMLAttributes<HTMLAnchorElement>['target']
 
-export type LinkViewProps = Omit<
-  ViewCoreProps<HTMLAnchorElement>,
-  'children'
-> &
+export type LinkViewProps = Omit<ViewCoreProps<HTMLAnchorElement>, 'children'> &
   ViewDynamicBreakpointProps & {
     ref?: Ref<HTMLAnchorElement>
   }

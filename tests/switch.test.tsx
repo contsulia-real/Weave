@@ -1,32 +1,22 @@
 import { cleanup, fireEvent, render } from '@testing-library/react'
 import type { MouseEvent } from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { Switch, ThemeProvider, createTheme } from '../src'
+import { createTheme, Switch, ThemeProvider } from '../src'
 
 afterEach(cleanup)
 
-function runtimeRule(
-  element: Element,
-  prefix: string,
-): string {
-  const className = [...element.classList].find((name) =>
-    name.startsWith(prefix),
-  )
+function runtimeRule(element: Element, prefix: string): string {
+  const className = [...element.classList].find((name) => name.startsWith(prefix))
 
   expect(className).toBeDefined()
 
   return (
-    document.querySelector<HTMLStyleElement>(
-      `style[data-weave-runtime-class="${className}"]`,
-    )?.textContent ?? ''
+    document.querySelector<HTMLStyleElement>(`style[data-weave-runtime-class="${className}"]`)
+      ?.textContent ?? ''
   ).replace(/\s+/g, '')
 }
 
-function setupGeometry(
-  element: HTMLButtonElement,
-  thumb: HTMLDivElement,
-  checked = false,
-) {
+function setupGeometry(element: HTMLButtonElement, thumb: HTMLDivElement, checked = false) {
   element.getBoundingClientRect = () => ({
     x: 0,
     y: 0,
@@ -55,9 +45,7 @@ function setupGeometry(
 describe('Switch', () => {
   it('supports uncontrolled state and emits boolean changes', () => {
     const onChange = vi.fn()
-    const { getByRole } = render(
-      <Switch defaultChecked onChange={onChange} />,
-    )
+    const { getByRole } = render(<Switch defaultChecked onChange={onChange} />)
 
     const element = getByRole('switch')
     fireEvent.click(element)
@@ -68,12 +56,7 @@ describe('Switch', () => {
 
   it('binds a visible label that toggles and names the native button host', () => {
     const onChange = vi.fn()
-    const { getByRole, getByText } = render(
-      <Switch
-        label="Wi-Fi"
-        onChange={onChange}
-      />,
-    )
+    const { getByRole, getByText } = render(<Switch label="Wi-Fi" onChange={onChange} />)
 
     const element = getByRole('switch', {
       name: 'Wi-Fi',
@@ -85,16 +68,12 @@ describe('Switch', () => {
     fireEvent.click(getByText('Wi-Fi'))
 
     expect(onChange).toHaveBeenCalledWith(true)
-    expect(
-      element.getAttribute('aria-checked'),
-    ).toBe('true')
+    expect(element.getAttribute('aria-checked')).toBe('true')
   })
 
   it('supports controlled state without mutating its own value', () => {
     const onChange = vi.fn()
-    const { getByRole, rerender } = render(
-      <Switch checked={false} onChange={onChange} />,
-    )
+    const { getByRole, rerender } = render(<Switch checked={false} onChange={onChange} />)
 
     const element = getByRole('switch')
     fireEvent.click(element)
@@ -112,12 +91,7 @@ describe('Switch', () => {
       event.preventDefault()
     })
 
-    const { getByRole } = render(
-      <Switch
-        onChange={onChange}
-        viewProps={{ onClick }}
-      />,
-    )
+    const { getByRole } = render(<Switch onChange={onChange} viewProps={{ onClick }} />)
 
     fireEvent.click(getByRole('switch'))
 
@@ -128,9 +102,7 @@ describe('Switch', () => {
   it('starts the manual drag shape from the track as well as the thumb', () => {
     const { getByRole } = render(<Switch />)
     const element = getByRole('switch') as HTMLButtonElement
-    const thumb = element.querySelector(
-      '[data-weave-switch-thumb]',
-    ) as HTMLDivElement
+    const thumb = element.querySelector('[data-weave-switch-thumb]') as HTMLDivElement
 
     setupGeometry(element, thumb)
 
@@ -162,9 +134,7 @@ describe('Switch', () => {
 
     const { getByRole } = render(<Switch />)
     const element = getByRole('switch') as HTMLButtonElement
-    const thumb = element.querySelector(
-      '[data-weave-switch-thumb]',
-    ) as HTMLDivElement
+    const thumb = element.querySelector('[data-weave-switch-thumb]') as HTMLDivElement
 
     setupGeometry(element, thumb)
     fireEvent.click(element)
@@ -201,9 +171,7 @@ describe('Switch', () => {
     const onChange = vi.fn()
     const { getByRole } = render(<Switch onChange={onChange} />)
     const element = getByRole('switch') as HTMLButtonElement
-    const thumb = element.querySelector(
-      '[data-weave-switch-thumb]',
-    ) as HTMLDivElement
+    const thumb = element.querySelector('[data-weave-switch-thumb]') as HTMLDivElement
 
     setupGeometry(element, thumb)
 
@@ -256,13 +224,9 @@ describe('Switch', () => {
 
   it('switches off when a checked thumb crosses the midpoint', () => {
     const onChange = vi.fn()
-    const { getByRole } = render(
-      <Switch defaultChecked onChange={onChange} />,
-    )
+    const { getByRole } = render(<Switch defaultChecked onChange={onChange} />)
     const element = getByRole('switch') as HTMLButtonElement
-    const thumb = element.querySelector(
-      '[data-weave-switch-thumb]',
-    ) as HTMLDivElement
+    const thumb = element.querySelector('[data-weave-switch-thumb]') as HTMLDivElement
 
     setupGeometry(element, thumb, true)
 
@@ -288,9 +252,7 @@ describe('Switch', () => {
     const onChange = vi.fn()
     const { getByRole } = render(<Switch onChange={onChange} />)
     const element = getByRole('switch') as HTMLButtonElement
-    const thumb = element.querySelector(
-      '[data-weave-switch-thumb]',
-    ) as HTMLDivElement
+    const thumb = element.querySelector('[data-weave-switch-thumb]') as HTMLDivElement
 
     setupGeometry(element, thumb)
 
@@ -326,9 +288,7 @@ describe('Switch', () => {
     )
 
     const element = getByRole('switch') as HTMLButtonElement
-    const thumb = element.querySelector(
-      '[data-weave-switch-thumb]',
-    ) as HTMLDivElement
+    const thumb = element.querySelector('[data-weave-switch-thumb]') as HTMLDivElement
 
     expect(element.getAttribute('aria-disabled')).toBe('true')
     expect(element.disabled).toBe(true)
@@ -348,14 +308,9 @@ describe('Switch', () => {
   it('does no layout reads during pointermove after the initial geometry read', () => {
     const { getByRole } = render(<Switch />)
     const element = getByRole('switch') as HTMLButtonElement
-    const thumb = element.querySelector(
-      '[data-weave-switch-thumb]',
-    ) as HTMLDivElement
+    const thumb = element.querySelector('[data-weave-switch-thumb]') as HTMLDivElement
 
-    const rootRect = vi.spyOn(
-      element,
-      'getBoundingClientRect',
-    ).mockReturnValue({
+    const rootRect = vi.spyOn(element, 'getBoundingClientRect').mockReturnValue({
       x: 0,
       y: 0,
       top: 0,
@@ -366,10 +321,7 @@ describe('Switch', () => {
       height: 24,
       toJSON: () => ({}),
     })
-    const thumbRect = vi.spyOn(
-      thumb,
-      'getBoundingClientRect',
-    ).mockReturnValue({
+    const thumbRect = vi.spyOn(thumb, 'getBoundingClientRect').mockReturnValue({
       x: 2,
       y: 2,
       top: 2,
@@ -411,36 +363,22 @@ describe('Switch', () => {
     const { getByRole } = render(<Switch size="medium" />)
     const element = getByRole('switch')
     const themeRule = runtimeRule(element, 'weave-switch-theme-')
-    const stylesheet = document.querySelector(
-      'style[data-weave-switch-styles]',
-    )?.textContent ?? ''
+    const stylesheet = document.querySelector('style[data-weave-switch-styles]')?.textContent ?? ''
 
     expect(themeRule).toContain(
       '--weave-switch-background:color-mix(insrgb,var(--weave-color-outline)34%,var(--weave-color-surface));',
     )
-    expect(themeRule).toContain(
-      '--weave-switch-checked-background:var(--weave-color-primary',
-    )
+    expect(themeRule).toContain('--weave-switch-checked-background:var(--weave-color-primary')
     expect(themeRule).toContain('--weave-switch-thumb-drag-shrink:0.68;')
     expect(themeRule).toContain('--weave-switch-thumb-drag-max-width:1.35;')
     expect(themeRule).toContain('--weave-switch-track-shadow:')
     expect(themeRule).toContain('--weave-switch-thumb-shadow:')
     expect(themeRule).toContain('--weave-switch-thumb-hover-shadow:')
-    expect(stylesheet).toContain(
-      '--weave-component-box-shadow: var(--weave-switch-track-shadow)',
-    )
-    expect(stylesheet).toContain(
-      '--weave-component-box-shadow: var(--weave-switch-thumb-shadow)',
-    )
-    expect(stylesheet).toContain(
-      '--weave-switch-thumb-hover-shadow',
-    )
-    expect(stylesheet).toContain(
-      '--weave-component-top: 50%;',
-    )
-    expect(stylesheet).toContain(
-      '--weave-component-transform: translate(0, -50%);',
-    )
+    expect(stylesheet).toContain('--weave-component-box-shadow: var(--weave-switch-track-shadow)')
+    expect(stylesheet).toContain('--weave-component-box-shadow: var(--weave-switch-thumb-shadow)')
+    expect(stylesheet).toContain('--weave-switch-thumb-hover-shadow')
+    expect(stylesheet).toContain('--weave-component-top: 50%;')
+    expect(stylesheet).toContain('--weave-component-transform: translate(0, -50%);')
     expect(stylesheet).toContain(
       '--weave-component-transform: translate(var(--weave-switch-shift), -50%);',
     )
@@ -453,23 +391,16 @@ describe('Switch', () => {
       </ThemeProvider>,
     )
 
-    const rule = runtimeRule(
-      getByRole('switch'),
-      'weave-switch-theme-',
-    )
+    const rule = runtimeRule(getByRole('switch'), 'weave-switch-theme-')
 
     expect(rule).toContain(
       '--weave-switch-background:color-mix(insrgb,var(--weave-color-outline)34%,var(--weave-color-surface));',
     )
-    expect(rule).toContain(
-      '--weave-switch-checked-background:var(--weave-color-primary',
-    )
+    expect(rule).toContain('--weave-switch-checked-background:var(--weave-color-primary')
     expect(rule).toContain(
       '--weave-switch-track-shadow:inset00.125rem0.1875remrgb(000/0.58),inset0-0.0625rem0rgb(255255255/0.045);',
     )
-    expect(rule).toContain(
-      '--weave-switch-thumb-background:var(--weave-color-tertiary,tertiary);',
-    )
+    expect(rule).toContain('--weave-switch-thumb-background:var(--weave-color-tertiary,tertiary);')
     expect(rule).toContain(
       '--weave-switch-thumb-shadow:00.0625rem0.125remrgb(000/0.52),00.1875rem0.375remrgb(000/0.34),inset00.0625rem0rgb(255255255/0.18);',
     )
@@ -505,10 +436,7 @@ describe('Switch', () => {
       </ThemeProvider>,
     )
 
-    const rule = runtimeRule(
-      getByRole('switch'),
-      'weave-switch-theme-',
-    )
+    const rule = runtimeRule(getByRole('switch'), 'weave-switch-theme-')
 
     expect(rule).toContain('--weave-switch-width:4rem;')
     expect(rule).toContain('--weave-switch-thumb-drag-shrink:0.6;')

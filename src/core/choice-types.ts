@@ -1,29 +1,15 @@
 import type { ReactNode, Ref } from 'react'
-import type {
-  ViewCoreProps,
-  ViewDynamicBreakpointProps,
-} from './view-types'
+import type { ViewCoreProps, ViewDynamicBreakpointProps } from './view-types'
 
-export type ChoiceControlKind =
-  | 'radio'
-  | 'checkbox'
+export type ChoiceControlKind = 'radio' | 'checkbox'
 
-export type ChoiceControlSize =
-  | 'small'
-  | 'medium'
-  | 'large'
+export type ChoiceControlSize = 'small' | 'medium' | 'large'
 
 export type ChoiceControlValue = string | number
 
 type ChoiceControlViewProps = Omit<
   ViewCoreProps<HTMLInputElement>,
-  | 'children'
-  | 'checked'
-  | 'disabled'
-  | 'name'
-  | 'onChange'
-  | 'type'
-  | 'value'
+  'children' | 'checked' | 'disabled' | 'name' | 'onChange' | 'type' | 'value'
 > &
   ViewDynamicBreakpointProps & {
     ref?: Ref<HTMLInputElement>

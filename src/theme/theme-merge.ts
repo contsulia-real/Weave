@@ -1,13 +1,5 @@
-import {
-  defaultDarkTheme,
-  defaultTheme,
-} from './default-theme'
-import type {
-  ResolvedTheme,
-  ThemeDefinition,
-  ThemeMode,
-  ThemeOverride,
-} from './theme-types'
+import { defaultDarkTheme, defaultTheme } from './default-theme'
+import type { ResolvedTheme, ThemeDefinition, ThemeMode, ThemeOverride } from './theme-types'
 
 type PlainObject = Record<string, unknown>
 
@@ -21,8 +13,7 @@ function mergeValue<T>(base: T, override: unknown): T {
     const output: PlainObject = { ...base }
 
     for (const [key, value] of Object.entries(override)) {
-      output[key] =
-        key in output ? mergeValue(output[key], value) : value
+      output[key] = key in output ? mergeValue(output[key], value) : value
     }
 
     return output as T
@@ -48,20 +39,9 @@ export function resolveTheme(
   activeMode: Exclude<ThemeMode, 'system'>,
 ): ResolvedTheme {
   const defaultForMode =
-    activeMode === 'dark'
-      ? mergeValue(
-          defaultTheme,
-          defaultDarkTheme,
-        )
-      : defaultTheme
-  const base = mergeValue(
-    defaultForMode,
-    withoutModes(definition),
-  )
-  const modeOverride =
-    definition.modes?.[activeMode]
+    activeMode === 'dark' ? mergeValue(defaultTheme, defaultDarkTheme) : defaultTheme
+  const base = mergeValue(defaultForMode, withoutModes(definition))
+  const modeOverride = definition.modes?.[activeMode]
 
-  return modeOverride === undefined
-    ? base
-    : mergeValue(base, modeOverride)
+  return modeOverride === undefined ? base : mergeValue(base, modeOverride)
 }

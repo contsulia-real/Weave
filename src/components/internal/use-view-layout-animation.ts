@@ -1,9 +1,5 @@
-import {
-  useEffect,
-  useLayoutEffect,
-  useRef,
-} from 'react'
 import type { RefObject } from 'react'
+import { useEffect, useLayoutEffect, useRef } from 'react'
 import type {
   MotionInterruption,
   ViewLayoutAnimation,
@@ -32,32 +28,21 @@ function snapshot(element: HTMLElement): LayoutRect {
   }
 }
 
-function config(
-  value: Exclude<ViewLayoutAnimation, false>,
-): ViewLayoutAnimationConfig {
+function config(value: Exclude<ViewLayoutAnimation, false>): ViewLayoutAnimationConfig {
   return value === true ? {} : value
 }
 
 function scheduleFrame(callback: FrameRequestCallback): () => void {
-  if (
-    typeof window !== 'undefined' &&
-    typeof window.requestAnimationFrame === 'function'
-  ) {
+  if (typeof window !== 'undefined' && typeof window.requestAnimationFrame === 'function') {
     const id = window.requestAnimationFrame(callback)
     return () => window.cancelAnimationFrame(id)
   }
 
-  const id = globalThis.setTimeout(
-    () => callback(Date.now()),
-    16,
-  )
+  const id = globalThis.setTimeout(() => callback(Date.now()), 16)
   return () => globalThis.clearTimeout(id)
 }
 
-function nearlyEqual(
-  previous: LayoutRect,
-  next: LayoutRect,
-): boolean {
+function nearlyEqual(previous: LayoutRect, next: LayoutRect): boolean {
   return (
     Math.abs(previous.left - next.left) < POSITION_EPSILON &&
     Math.abs(previous.top - next.top) < POSITION_EPSILON &&
@@ -71,10 +56,7 @@ function scale(previous: number, next: number): number {
   return previous / next
 }
 
-function layoutKeyframes(
-  previous: LayoutRect,
-  next: LayoutRect,
-): Keyframe[] {
+function layoutKeyframes(previous: LayoutRect, next: LayoutRect): Keyframe[] {
   const x = previous.left - next.left
   const y = previous.top - next.top
   const scaleX = scale(previous.width, next.width)
@@ -122,18 +104,14 @@ export function useViewLayoutAnimation<TElement extends HTMLElement>(
     if (element === null) return
 
     const running = animation.current
-    const resolved =
-      value === undefined || value === false
-        ? undefined
-        : config(value)
-    const interruption: MotionInterruption =
-      resolved?.interruption ?? 'continue'
+    const resolved = value === undefined || value === false ? undefined : config(value)
+    const interruption: MotionInterruption = resolved?.interruption ?? 'continue'
     const logicalPrevious = targetRect.current
     const previous =
       running === undefined
         ? logicalPrevious
         : interruption === 'continue'
-          ? visualRect.current ?? logicalPrevious
+          ? (visualRect.current ?? logicalPrevious)
           : logicalPrevious
 
     if (running !== undefined) {
@@ -162,23 +140,15 @@ export function useViewLayoutAnimation<TElement extends HTMLElement>(
       return
     }
 
-    const timing = resolveMotionTiming(
-      resolved,
-      theme,
-      'normal',
-      'standard',
-    )
+    const timing = resolveMotionTiming(resolved, theme, 'normal', 'standard')
     element.dataset.weaveLayoutAnimating = 'true'
     visualRect.current = previous
 
-    const current = element.animate(
-      layoutKeyframes(previous, next),
-      {
-        duration: timing.durationMs,
-        easing: timing.easing,
-        fill: 'both',
-      },
-    )
+    const current = element.animate(layoutKeyframes(previous, next), {
+      duration: timing.durationMs,
+      easing: timing.easing,
+      fill: 'both',
+    })
     animation.current = current
 
     const sample = () => {
@@ -215,10 +185,7 @@ export function useViewLayoutAnimation<TElement extends HTMLElement>(
       cancelBaselineSync = scheduleFrame(() => {
         cancelBaselineSync = undefined
         const current = elementRef.current
-        if (
-          current === null ||
-          animation.current !== undefined
-        ) {
+        if (current === null || animation.current !== undefined) {
           return
         }
 
@@ -232,9 +199,7 @@ export function useViewLayoutAnimation<TElement extends HTMLElement>(
     view?.addEventListener('resize', syncBaseline)
 
     const observer =
-      typeof ResizeObserver === 'function'
-        ? new ResizeObserver(syncBaseline)
-        : undefined
+      typeof ResizeObserver === 'function' ? new ResizeObserver(syncBaseline) : undefined
     observer?.observe(element)
 
     return () => {

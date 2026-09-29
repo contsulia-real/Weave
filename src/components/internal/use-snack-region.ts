@@ -1,21 +1,8 @@
-import {
-  useLayoutEffect,
-  useState,
-} from 'react'
-import type {
-  SnackContainer,
-  SnackPlacement,
-} from '../../core/snack-types'
-import {
-  resolveSnackHost,
-} from './snack-host-context'
-import {
-  retainSnackRegion,
-  syncSnackRegion,
-} from './snack-region'
-import type {
-  ExitPresenceState,
-} from './use-exit-presence'
+import { useLayoutEffect, useState } from 'react'
+import type { SnackContainer, SnackPlacement } from '../../core/snack-types'
+import { resolveSnackHost } from './snack-host-context'
+import { retainSnackRegion, syncSnackRegion } from './snack-region'
+import type { ExitPresenceState } from './use-exit-presence'
 
 export function useSnackRegion(
   present: boolean,
@@ -24,64 +11,38 @@ export function useSnackRegion(
   placement: SnackPlacement,
   visualState: ExitPresenceState,
 ) {
-  const [
-    region,
-    setRegion,
-  ] = useState<HTMLDivElement | null>(
-    null,
-  )
+  const [region, setRegion] = useState<HTMLDivElement | null>(null)
 
   // The shared portal region is external DOM state. React
   // needs one synchronization render after retaining it.
   /* oxlint-disable react/set-state-in-effect */
   useLayoutEffect(() => {
-    if (
-      !present ||
-      typeof document ===
-        'undefined'
-    ) {
+    if (!present || typeof document === 'undefined') {
       setRegion(null)
       return
     }
 
-    const host =
-      resolveSnackHost(
-        target,
-        document,
-      )
+    const host = resolveSnackHost(target, document)
 
     if (host === null) {
       setRegion(null)
       return
     }
 
-    const handle =
-      retainSnackRegion(
-        host,
-        scopeId,
-        placement,
-      )
+    const handle = retainSnackRegion(host, scopeId, placement)
 
     setRegion(handle.element)
 
     return () => {
       handle.release()
     }
-  }, [
-    placement,
-    present,
-    scopeId,
-    target,
-  ])
+  }, [placement, present, scopeId, target])
   /* oxlint-enable react/set-state-in-effect */
 
   useLayoutEffect(() => {
     if (region === null) return
     syncSnackRegion(region)
-  }, [
-    region,
-    visualState,
-  ])
+  }, [region, visualState])
 
   return region
 }

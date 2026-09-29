@@ -125,8 +125,5 @@ const stylesheet = `
 `
 
 export function ensurePopoverStylesheet(): void {
-  ensureStaticStylesheet(
-    'popover',
-    stylesheet,
-  )
+  ensureStaticStylesheet('popover', stylesheet)
 }

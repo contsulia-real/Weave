@@ -1,5 +1,10 @@
 import {
+  type CSSProperties,
   cloneElement,
+  type KeyboardEvent,
+  type MouseEvent,
+  type PointerEvent,
+  type TransitionEvent,
   useCallback,
   useEffect,
   useId,
@@ -7,79 +12,45 @@ import {
   useMemo,
   useRef,
   useState,
-  type CSSProperties,
-  type KeyboardEvent,
-  type MouseEvent,
-  type PointerEvent,
-  type TransitionEvent,
 } from 'react'
-import type {
-  ComboboxProps,
-  ComboboxValue,
-} from '../core/combobox-types'
-import {
-  resolveComboboxTheme,
-} from '../renderers/dom/resolve-component-theme'
-import {
-  ensureComboboxStylesheet,
-} from '../renderers/dom/combobox-stylesheet'
-import {
-  useRuntimeStyleClass,
-} from '../renderers/dom/runtime-class'
-import {
-  useTheme,
-} from '../theme/theme-context'
+import type { ComboboxProps, ComboboxValue } from '../core/combobox-types'
+import { ensureComboboxStylesheet } from '../renderers/dom/combobox-stylesheet'
+import { resolveComboboxTheme } from '../renderers/dom/resolve-component-theme'
+import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
+import { useTheme } from '../theme/theme-context'
 import { Button } from './Button'
-import { assignRef } from './internal/assign-ref'
-import { ThemedPortal } from './internal/ThemedPortal'
-import {
-  chevronDownIcon,
-  closeIcon,
-} from './internal/control-icons'
 import { Icon } from './Icon'
 import { Input } from './Input'
-import {
-  ComboboxContext,
-} from './internal/combobox-context'
+import { assignRef } from './internal/assign-ref'
+import { ComboboxContext } from './internal/combobox-context'
 import {
   comboboxOptionDescriptors,
   comboboxOptionEntries,
   filteredComboboxEntries,
   selectedComboboxDescriptor,
 } from './internal/combobox-options'
+import { chevronDownIcon, closeIcon } from './internal/control-icons'
+import { durationMilliseconds } from './internal/motion-duration'
 import {
   initialOptionActiveValue,
   moveOptionActiveValue,
   optionDomId,
 } from './internal/option-navigation'
-import {
-  durationMilliseconds,
-} from './internal/motion-duration'
-import {
-  useAnchorWidth,
-} from './internal/use-anchor-width'
+import { ThemedPortal } from './internal/ThemedPortal'
 import {
   useAnchorViewportDismiss,
   useOutsideInteractionDismiss,
 } from './internal/use-anchor-viewport-dismiss'
-import {
-  useControllableBoolean,
-} from './internal/use-controllable-boolean'
-import {
-  finishExitOnTransition,
-  useExitPresence,
-} from './internal/use-exit-presence'
-import {
-  usePopoverPosition,
-} from './internal/use-popover-position'
+import { useAnchorWidth } from './internal/use-anchor-width'
+import { useControllableBoolean } from './internal/use-controllable-boolean'
+import { finishExitOnTransition, useExitPresence } from './internal/use-exit-presence'
+import { usePopoverPosition } from './internal/use-popover-position'
 import { Text } from './Text'
 import { View } from './View'
 
-type ComboboxListboxStyle =
-  CSSProperties & {
-    '--weave-option-listbox-anchor-width'?:
-      string
-  }
+type ComboboxListboxStyle = CSSProperties & {
+  '--weave-option-listbox-anchor-width'?: string
+}
 
 export function Combobox({
   children,
@@ -104,326 +75,140 @@ export function Combobox({
   viewProps = {},
   listboxViewProps = {},
 }: ComboboxProps) {
-  const entries =
-    useMemo(
-      () =>
-        comboboxOptionEntries(
-          children,
-        ),
-      [children],
-    )
-  const options =
-    useMemo(
-      () =>
-        comboboxOptionDescriptors(
-          entries,
-        ),
-      [entries],
-    )
+  const entries = useMemo(() => comboboxOptionEntries(children), [children])
+  const options = useMemo(() => comboboxOptionDescriptors(entries), [entries])
 
-  const controlledValue =
-    value !== undefined
-  const initialSelectedValue =
-    controlledValue
-      ? value ?? null
-      : defaultValue
-  const [
-    uncontrolledValue,
-    setUncontrolledValue,
-  ] = useState<
-    ComboboxValue | null
-  >(initialSelectedValue)
-  const selectedValue =
-    controlledValue
-      ? value ?? null
-      : uncontrolledValue
-  const selected =
-    selectedComboboxDescriptor(
-      options,
-      selectedValue,
-    )
-
-  const controlledInput =
-    inputValue !== undefined
-  const [
-    uncontrolledInput,
-    setUncontrolledInput,
-  ] = useState(
-    defaultInputValue ??
-    selectedComboboxDescriptor(
-      options,
-      initialSelectedValue,
-    )?.textValue ??
-    '',
+  const controlledValue = value !== undefined
+  const initialSelectedValue = controlledValue ? (value ?? null) : defaultValue
+  const [uncontrolledValue, setUncontrolledValue] = useState<ComboboxValue | null>(
+    initialSelectedValue,
   )
-  const resolvedInputValue =
-    controlledInput
-      ? inputValue
-      : uncontrolledInput
+  const selectedValue = controlledValue ? (value ?? null) : uncontrolledValue
+  const selected = selectedComboboxDescriptor(options, selectedValue)
 
-  const {
-    value: resolvedOpen,
-    request: setOpenState,
-  } = useControllableBoolean(
+  const controlledInput = inputValue !== undefined
+  const [uncontrolledInput, setUncontrolledInput] = useState(
+    defaultInputValue ?? selectedComboboxDescriptor(options, initialSelectedValue)?.textValue ?? '',
+  )
+  const resolvedInputValue = controlledInput ? inputValue : uncontrolledInput
+
+  const { value: resolvedOpen, request: setOpenState } = useControllableBoolean(
     open,
     defaultOpen,
     onOpenChange,
   )
 
-  const [
-    activeValue,
-    setActiveValue,
-  ] = useState<
-    ComboboxValue | null
-  >(null)
+  const [activeValue, setActiveValue] = useState<ComboboxValue | null>(null)
 
-  const filteredEntries =
-    useMemo(
-      () =>
-        filteredComboboxEntries(
-          entries,
-          resolvedInputValue,
-          filter,
-        ),
-      [
-        entries,
-        filter,
-        resolvedInputValue,
-      ],
-    )
-  const filteredOptions =
-    useMemo(
-      () =>
-        comboboxOptionDescriptors(
-          filteredEntries,
-        ),
-      [filteredEntries],
-    )
+  const filteredEntries = useMemo(
+    () => filteredComboboxEntries(entries, resolvedInputValue, filter),
+    [entries, filter, resolvedInputValue],
+  )
+  const filteredOptions = useMemo(
+    () => comboboxOptionDescriptors(filteredEntries),
+    [filteredEntries],
+  )
 
   const activeStillAvailable =
     activeValue !== null &&
-    filteredOptions.some(
-      (option) =>
-        option.value ===
-          activeValue &&
-        !option.disabled,
-    )
-  const resolvedActiveValue =
-    resolvedOpen
-      ? (
-          activeStillAvailable
-            ? activeValue
-            : initialOptionActiveValue(
-                filteredOptions,
-                selectedValue,
-              )
-        )
-      : null
+    filteredOptions.some((option) => option.value === activeValue && !option.disabled)
+  const resolvedActiveValue = resolvedOpen
+    ? activeStillAvailable
+      ? activeValue
+      : initialOptionActiveValue(filteredOptions, selectedValue)
+    : null
 
   const reactId = useId()
-  const inputId =
-    viewProps.id ??
-    'weave-combobox-' +
-      reactId
-  const listboxId =
-    listboxViewProps.id ??
-    inputId +
-      '-listbox'
+  const inputId = viewProps.id ?? 'weave-combobox-' + reactId
+  const listboxId = listboxViewProps.id ?? inputId + '-listbox'
 
-  const rootRef =
-    useRef<HTMLSpanElement>(
-      null,
-    )
-  const inputRef =
-    useRef<HTMLInputElement>(
-      null,
-    )
-  const listboxRef =
-    useRef<HTMLDivElement>(
-      null,
-    )
+  const rootRef = useRef<HTMLSpanElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const listboxRef = useRef<HTMLDivElement>(null)
 
-  const {
-    theme,
-    reducedMotion,
-  } = useTheme()
-  const themeClassName =
-    useRuntimeStyleClass(
-      'combobox-theme',
-      resolveComboboxTheme(
-        theme,
-      ),
-    )
-  const exitDuration =
-    durationMilliseconds(
-      theme.tokens.motion
-        ?.duration?.fast,
-      120,
-    )
-  const {
-    present,
-    visualState,
-    finishExit,
-  } = useExitPresence(
+  const { theme, reducedMotion } = useTheme()
+  const themeClassName = useRuntimeStyleClass('combobox-theme', resolveComboboxTheme(theme))
+  const exitDuration = durationMilliseconds(theme.tokens.motion?.duration?.fast, 120)
+  const { present, visualState, finishExit } = useExitPresence(
     resolvedOpen,
     reducedMotion,
     exitDuration,
   )
 
-  useInsertionEffect(
-    ensureComboboxStylesheet,
-    [],
+  useInsertionEffect(ensureComboboxStylesheet, [])
+
+  const close = useCallback(() => {
+    setOpenState(false)
+    setActiveValue(null)
+  }, [setOpenState])
+
+  const setInputState = useCallback(
+    (next: string) => {
+      if (next === resolvedInputValue) {
+        return
+      }
+
+      if (!controlledInput) {
+        setUncontrolledInput(next)
+      }
+
+      onInputValueChange?.(next)
+    },
+    [controlledInput, onInputValueChange, resolvedInputValue],
   )
 
-  const close =
-    useCallback(() => {
-      setOpenState(false)
-      setActiveValue(null)
-    }, [setOpenState])
+  const setValueState = useCallback(
+    (next: ComboboxValue | null) => {
+      if (next === selectedValue) {
+        return
+      }
 
-  const setInputState =
-    useCallback(
-      (next: string) => {
-        if (
-          next ===
-          resolvedInputValue
-        ) {
-          return
-        }
+      if (!controlledValue) {
+        setUncontrolledValue(next)
+      }
 
-        if (!controlledInput) {
-          setUncontrolledInput(
-            next,
-          )
-        }
+      onValueChange?.(next)
+    },
+    [controlledValue, onValueChange, selectedValue],
+  )
 
-        onInputValueChange?.(
-          next,
-        )
-      },
-      [
-        controlledInput,
-        onInputValueChange,
-        resolvedInputValue,
-      ],
-    )
+  const openCombobox = useCallback(
+    (preferred?: ComboboxValue | null) => {
+      if (disabled) return
 
-  const setValueState =
-    useCallback(
-      (
-        next:
-          ComboboxValue | null,
-      ) => {
-        if (
-          next ===
-          selectedValue
-        ) {
-          return
-        }
+      setActiveValue(preferred ?? initialOptionActiveValue(filteredOptions, selectedValue))
+      setOpenState(true)
+    },
+    [disabled, filteredOptions, selectedValue, setOpenState],
+  )
 
-        if (!controlledValue) {
-          setUncontrolledValue(
-            next,
-          )
-        }
+  const selectValue = useCallback(
+    (nextValue: ComboboxValue) => {
+      const option = options.find((candidate) => candidate.value === nextValue)
 
-        onValueChange?.(next)
-      },
-      [
-        controlledValue,
-        onValueChange,
-        selectedValue,
-      ],
-    )
+      if (option === undefined || option.disabled) {
+        return
+      }
 
-  const openCombobox =
-    useCallback(
-      (
-        preferred?:
-          ComboboxValue | null,
-      ) => {
-        if (disabled) return
+      setValueState(nextValue)
+      setInputState(option.textValue)
+      close()
+    },
+    [close, options, setInputState, setValueState],
+  )
 
-        setActiveValue(
-          preferred ??
-          initialOptionActiveValue(
-            filteredOptions,
-            selectedValue,
-          ),
-        )
-        setOpenState(true)
-      },
-      [
-        disabled,
-        filteredOptions,
-        selectedValue,
-        setOpenState,
-      ],
-    )
+  const setEnabledActiveValue = useCallback(
+    (nextValue: ComboboxValue) => {
+      const option = filteredOptions.find((candidate) => candidate.value === nextValue)
 
-  const selectValue =
-    useCallback(
-      (
-        nextValue:
-          ComboboxValue,
-      ) => {
-        const option =
-          options.find(
-            (candidate) =>
-              candidate.value ===
-              nextValue,
-          )
+      if (option !== undefined && !option.disabled) {
+        setActiveValue(nextValue)
+      }
+    },
+    [filteredOptions],
+  )
 
-        if (
-          option === undefined ||
-          option.disabled
-        ) {
-          return
-        }
-
-        setValueState(
-          nextValue,
-        )
-        setInputState(
-          option.textValue,
-        )
-        close()
-      },
-      [
-        close,
-        options,
-        setInputState,
-        setValueState,
-      ],
-    )
-
-  const setEnabledActiveValue =
-    useCallback(
-      (
-        nextValue:
-          ComboboxValue,
-      ) => {
-        const option =
-          filteredOptions.find(
-            (candidate) =>
-              candidate.value ===
-              nextValue,
-          )
-
-        if (
-          option !== undefined &&
-          !option.disabled
-        ) {
-          setActiveValue(
-            nextValue,
-          )
-        }
-      },
-      [filteredOptions],
-    )
-
-  const previousSelectedValueRef =
-    useRef(selectedValue)
+  const previousSelectedValueRef = useRef(selectedValue)
 
   /*
    * External value changes update an uncontrolled input display.
@@ -431,220 +216,105 @@ export function Combobox({
    */
   /* oxlint-disable react/set-state-in-effect */
   useEffect(() => {
-    if (
-      previousSelectedValueRef
-        .current ===
-      selectedValue
-    ) {
+    if (previousSelectedValueRef.current === selectedValue) {
       return
     }
 
-    previousSelectedValueRef.current =
-      selectedValue
+    previousSelectedValueRef.current = selectedValue
 
     if (!controlledInput) {
-      setUncontrolledInput(
-        selected?.textValue ??
-        '',
-      )
+      setUncontrolledInput(selected?.textValue ?? '')
     }
-  }, [
-    controlledInput,
-    selected?.textValue,
-    selectedValue,
-  ])
+  }, [controlledInput, selected?.textValue, selectedValue])
   /* oxlint-enable react/set-state-in-effect */
 
-  useAnchorViewportDismiss(
-    inputRef,
-    resolvedOpen,
-    close,
-  )
-  useOutsideInteractionDismiss(
-    rootRef,
-    listboxRef,
-    resolvedOpen,
-    close,
-    true,
-  )
+  useAnchorViewportDismiss(inputRef, resolvedOpen, close)
+  useOutsideInteractionDismiss(rootRef, listboxRef, resolvedOpen, close, true)
 
-  const anchorWidth =
-    useAnchorWidth(
-      inputRef,
-      present,
-    )
+  const anchorWidth = useAnchorWidth(inputRef, present)
 
   useEffect(() => {
-    if (
-      !resolvedOpen ||
-      resolvedActiveValue === null
-    ) {
+    if (!resolvedOpen || resolvedActiveValue === null) {
       return
     }
 
-    const option =
-      inputRef.current
-        ?.ownerDocument
-        .getElementById(
-          optionDomId(
-            listboxId,
-            resolvedActiveValue,
-          ),
-        )
+    const option = inputRef.current?.ownerDocument.getElementById(
+      optionDomId(listboxId, resolvedActiveValue),
+    )
 
     option?.scrollIntoView?.({
       block: 'nearest',
     })
-  }, [
-    inputRef,
-    listboxId,
-    resolvedActiveValue,
-    resolvedOpen,
-  ])
+  }, [inputRef, listboxId, resolvedActiveValue, resolvedOpen])
 
   const {
     positioned,
-    placement:
-      resolvedPlacement,
+    placement: resolvedPlacement,
     placementStyle,
-  } = usePopoverPosition(
-    inputRef,
-    listboxRef,
-    present,
-    placement,
-    offset,
-    viewportPadding,
-  )
+  } = usePopoverPosition(inputRef, listboxRef, present, placement, offset, viewportPadding)
 
-  const handleChange = (
-    next: string,
-  ) => {
-    const nextEntries =
-      filteredComboboxEntries(
-        entries,
-        next,
-        filter,
-      )
-    const nextOptions =
-      comboboxOptionDescriptors(
-        nextEntries,
-      )
+  const handleChange = (next: string) => {
+    const nextEntries = filteredComboboxEntries(entries, next, filter)
+    const nextOptions = comboboxOptionDescriptors(nextEntries)
 
     setInputState(next)
-    setActiveValue(
-      initialOptionActiveValue(
-        nextOptions,
-        selectedValue,
-      ),
-    )
+    setActiveValue(initialOptionActiveValue(nextOptions, selectedValue))
     setOpenState(true)
   }
 
-  const handleClick = (
-    event:
-      MouseEvent<HTMLInputElement>,
-  ) => {
-    viewProps.onClick?.(
-      event,
-    )
+  const handleClick = (event: MouseEvent<HTMLInputElement>) => {
+    viewProps.onClick?.(event)
 
-    if (
-      event.defaultPrevented ||
-      disabled ||
-      resolvedOpen
-    ) {
+    if (event.defaultPrevented || disabled || resolvedOpen) {
       return
     }
 
     openCombobox()
   }
 
-  const moveActive = (
-    move:
-      | 'previous'
-      | 'next'
-      | 'first'
-      | 'last',
-  ) => {
-    const next =
-      moveOptionActiveValue(
-        filteredOptions,
-        resolvedActiveValue,
-        move,
-      )
+  const moveActive = (move: 'previous' | 'next' | 'first' | 'last') => {
+    const next = moveOptionActiveValue(filteredOptions, resolvedActiveValue, move)
 
     if (next !== null) {
       setActiveValue(next)
     }
   }
 
-  const handleKeyDown = (
-    event:
-      KeyboardEvent<HTMLInputElement>,
-  ) => {
-    viewProps.onKeyDown?.(
-      event,
-    )
+  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    viewProps.onKeyDown?.(event)
 
-    if (
-      event.defaultPrevented ||
-      disabled
-    ) {
+    if (event.defaultPrevented || disabled) {
       return
     }
 
     if (!resolvedOpen) {
-      if (
-        event.key ===
-        'ArrowDown'
-      ) {
+      if (event.key === 'ArrowDown') {
         event.preventDefault()
-        openCombobox(
-          initialOptionActiveValue(
-            filteredOptions,
-            selectedValue,
-          ),
-        )
+        openCombobox(initialOptionActiveValue(filteredOptions, selectedValue))
         return
       }
 
-      if (
-        event.key ===
-        'ArrowUp'
-      ) {
+      if (event.key === 'ArrowUp') {
         event.preventDefault()
-        openCombobox(
-          moveOptionActiveValue(
-            filteredOptions,
-            null,
-            'last',
-          ),
-        )
+        openCombobox(moveOptionActiveValue(filteredOptions, null, 'last'))
       }
 
       return
     }
 
     if (
-      event.key ===
-        'ArrowDown' ||
-      event.key ===
-        'ArrowUp' ||
-      event.key ===
-        'Home' ||
-      event.key ===
-        'End'
+      event.key === 'ArrowDown' ||
+      event.key === 'ArrowUp' ||
+      event.key === 'Home' ||
+      event.key === 'End'
     ) {
       event.preventDefault()
       moveActive(
-        event.key ===
-          'ArrowDown'
+        event.key === 'ArrowDown'
           ? 'next'
-          : event.key ===
-              'ArrowUp'
+          : event.key === 'ArrowUp'
             ? 'previous'
-            : event.key ===
-                'Home'
+            : event.key === 'Home'
               ? 'first'
               : 'last',
       )
@@ -652,14 +322,9 @@ export function Combobox({
     }
 
     if (event.key === 'Enter') {
-      if (
-        resolvedActiveValue !==
-        null
-      ) {
+      if (resolvedActiveValue !== null) {
         event.preventDefault()
-        selectValue(
-          resolvedActiveValue,
-        )
+        selectValue(resolvedActiveValue)
       }
       return
     }
@@ -670,244 +335,130 @@ export function Combobox({
     }
   }
 
-  const clearSelection =
-    useCallback(() => {
-      setValueState(null)
-      setInputState('')
-      setActiveValue(null)
-      close()
+  const clearSelection = useCallback(() => {
+    setValueState(null)
+    setInputState('')
+    setActiveValue(null)
+    close()
 
-      queueMicrotask(() => {
-        inputRef.current
-          ?.focus()
-      })
-    }, [
-      close,
-      inputRef,
-      setInputState,
-      setValueState,
-    ])
+    queueMicrotask(() => {
+      inputRef.current?.focus()
+    })
+  }, [close, inputRef, setInputState, setValueState])
 
-  const handleClearPointerDown = (
-    event:
-      PointerEvent<HTMLButtonElement>,
-  ) => {
+  const handleClearPointerDown = (event: PointerEvent<HTMLButtonElement>) => {
     event.preventDefault()
   }
 
-  const contextValue =
-    useMemo(
-      () => ({
-        listboxId,
-        selectedValue,
-        activeValue:
-          resolvedActiveValue,
-        setActiveValue:
-          setEnabledActiveValue,
-        selectValue,
-      }),
-      [
-        listboxId,
-        resolvedActiveValue,
-        selectValue,
-        selectedValue,
-        setEnabledActiveValue,
-      ],
-    )
+  const contextValue = useMemo(
+    () => ({
+      listboxId,
+      selectedValue,
+      activeValue: resolvedActiveValue,
+      setActiveValue: setEnabledActiveValue,
+      selectValue,
+    }),
+    [listboxId, resolvedActiveValue, selectValue, selectedValue, setEnabledActiveValue],
+  )
 
-  const handleTransitionEnd = (
-    event:
-      TransitionEvent<HTMLDivElement>,
-  ) => {
-    listboxViewProps
-      .onTransitionEnd?.(
-        event,
-      )
+  const handleTransitionEnd = (event: TransitionEvent<HTMLDivElement>) => {
+    listboxViewProps.onTransitionEnd?.(event)
 
-    finishExitOnTransition(
-      event,
-      resolvedOpen,
-      visualState,
-      finishExit,
-    )
+    finishExitOnTransition(event, resolvedOpen, visualState, finishExit)
   }
 
-  const setInputRef = (
-    element:
-      HTMLInputElement | null,
-  ) => {
-    inputRef.current =
-      element
-    assignRef(
-      viewProps.ref,
-      element,
-    )
+  const setInputRef = (element: HTMLInputElement | null) => {
+    inputRef.current = element
+    assignRef(viewProps.ref, element)
   }
 
-  const setListboxRef = (
-    element:
-      HTMLDivElement | null,
-  ) => {
-    listboxRef.current =
-      element
-    assignRef(
-      listboxViewProps.ref,
-      element,
-    )
+  const setListboxRef = (element: HTMLDivElement | null) => {
+    listboxRef.current = element
+    assignRef(listboxViewProps.ref, element)
   }
 
   const activeDescendant =
-    resolvedOpen &&
-    resolvedActiveValue !== null
-      ? optionDomId(
-          listboxId,
-          resolvedActiveValue,
-        )
+    resolvedOpen && resolvedActiveValue !== null
+      ? optionDomId(listboxId, resolvedActiveValue)
       : undefined
 
   const hasClear =
-    clearable &&
-    !disabled &&
-    (
-      resolvedInputValue
-        .length > 0 ||
-      selectedValue !== null
-    )
+    clearable && !disabled && (resolvedInputValue.length > 0 || selectedValue !== null)
 
-  const listboxStyle:
-    ComboboxListboxStyle = {
-      ...listboxViewProps.style,
-      ...placementStyle,
-      '--weave-option-listbox-anchor-width':
-        String(anchorWidth) +
-        'px',
-      visibility:
-        positioned
-          ? 'visible'
-          : 'hidden',
-    }
+  const listboxStyle: ComboboxListboxStyle = {
+    ...listboxViewProps.style,
+    ...placementStyle,
+    '--weave-option-listbox-anchor-width': String(anchorWidth) + 'px',
+    visibility: positioned ? 'visible' : 'hidden',
+  }
 
-  const portal =
-    present
-      ? (
-          <ThemedPortal>
-            <ComboboxContext.Provider
-              value={contextValue}
+  const portal = present ? (
+    <ThemedPortal>
+      <ComboboxContext.Provider value={contextValue}>
+        <View
+          {...listboxViewProps}
+          ref={setListboxRef}
+          id={listboxId}
+          role="listbox"
+          labelledBy={inputId}
+          tabIndex={-1}
+          aria-hidden={visualState === 'closing' ? true : undefined}
+          onTransitionEnd={handleTransitionEnd}
+          position="fixed"
+          layer={listboxViewProps.layer ?? 'overlay'}
+          className={[
+            'weave-option-listbox',
+            'weave-combobox-listbox',
+            themeClassName,
+            listboxViewProps.className,
+          ]
+            .filter(Boolean)
+            .join(' ')}
+          data={{
+            ...listboxViewProps.data,
+            'weave-option-listbox': '',
+            'weave-option-listbox-state': visualState,
+            'weave-combobox-listbox': '',
+            'weave-combobox-state': visualState,
+            placement: resolvedPlacement,
+            'weave-reduced-motion': reducedMotion ? 'reduce' : undefined,
+          }}
+          style={listboxStyle}
+        >
+          {filteredEntries.length === 0 ? (
+            <View
+              className="weave-combobox-empty"
+              data={{
+                'weave-combobox-empty': '',
+              }}
             >
-              <View
-                {...listboxViewProps}
-                ref={setListboxRef}
-                id={listboxId}
-                role="listbox"
-                labelledBy={
-                  inputId
-                }
-                tabIndex={-1}
-                aria-hidden={
-                  visualState ===
-                    'closing'
-                    ? true
-                    : undefined
-                }
-                onTransitionEnd={
-                  handleTransitionEnd
-                }
-                position="fixed"
-                layer={
-                  listboxViewProps
-                    .layer ??
-                  'overlay'
-                }
-                className={[
-                  'weave-option-listbox',
-                  'weave-combobox-listbox',
-                  themeClassName,
-                  listboxViewProps
-                    .className,
-                ].filter(Boolean).join(' ')}
-                data={{
-                  ...listboxViewProps
-                    .data,
-                  'weave-option-listbox':
-                    '',
-                  'weave-option-listbox-state':
-                    visualState,
-                  'weave-combobox-listbox':
-                    '',
-                  'weave-combobox-state':
-                    visualState,
-                  placement:
-                    resolvedPlacement,
-                  'weave-reduced-motion':
-                    reducedMotion
-                      ? 'reduce'
-                      : undefined,
-                }}
-                style={listboxStyle}
-              >
-                {filteredEntries
-                  .length === 0 ? (
-                    <View
-                      className="weave-combobox-empty"
-                      data={{
-                        'weave-combobox-empty':
-                          '',
-                      }}
-                    >
-                      <Text typo="body-small">
-                        {emptyContent}
-                      </Text>
-                    </View>
-                  ) : (
-                    filteredEntries.map(
-                      (entry) =>
-                        cloneElement(
-                          entry.node,
-                          {
-                            key:
-                              entry
-                                .descriptor
-                                .value,
-                          },
-                        ),
-                    )
-                  )}
-              </View>
-            </ComboboxContext.Provider>
-          </ThemedPortal>
-        )
-      : null
+              <Text typo="body-small">{emptyContent}</Text>
+            </View>
+          ) : (
+            filteredEntries.map((entry) =>
+              cloneElement(entry.node, {
+                key: entry.descriptor.value,
+              }),
+            )
+          )}
+        </View>
+      </ComboboxContext.Provider>
+    </ThemedPortal>
+  ) : null
 
   return (
     <>
       <span
         ref={rootRef}
-        className={[
-          'weave-combobox-root',
-          themeClassName,
-        ].filter(Boolean).join(' ')}
+        className={['weave-combobox-root', themeClassName].filter(Boolean).join(' ')}
         data-weave-combobox-root=""
-        data-weave-combobox-open={
-          resolvedOpen
-            ? 'true'
-            : 'false'
-        }
-        data-weave-combobox-has-clear={
-          hasClear
-            ? 'true'
-            : 'false'
-        }
+        data-weave-combobox-open={resolvedOpen ? 'true' : 'false'}
+        data-weave-combobox-has-clear={hasClear ? 'true' : 'false'}
       >
         <Input
-          value={
-            resolvedInputValue
-          }
-          onChange={
-            handleChange
-          }
-          placeholder={
-            placeholder
-          }
+          value={resolvedInputValue}
+          onChange={handleChange}
+          placeholder={placeholder}
           disabled={disabled}
           type="text"
           clearable={false}
@@ -917,23 +468,14 @@ export function Combobox({
             ref: setInputRef,
             id: inputId,
             role: 'combobox',
-            expanded:
-              resolvedOpen,
-            controls:
-              listboxId,
-            'aria-haspopup':
-              'listbox',
-            'aria-activedescendant':
-              activeDescendant,
-            'aria-autocomplete':
-              'list',
+            expanded: resolvedOpen,
+            controls: listboxId,
+            'aria-haspopup': 'listbox',
+            'aria-activedescendant': activeDescendant,
+            'aria-autocomplete': 'list',
             onClick: handleClick,
-            onKeyDown:
-              handleKeyDown,
-            className: [
-              'weave-combobox',
-              viewProps.className,
-            ].filter(Boolean).join(' '),
+            onKeyDown: handleKeyDown,
+            className: ['weave-combobox', viewProps.className].filter(Boolean).join(' '),
             data: {
               ...viewProps.data,
               'weave-combobox': '',
@@ -941,46 +483,30 @@ export function Combobox({
           }}
         />
 
-        <span
-          className="weave-combobox__actions"
-          aria-hidden={
-            disabled
-              ? true
-              : undefined
-          }
-        >
+        <span className="weave-combobox__actions" aria-hidden={disabled ? true : undefined}>
           {hasClear ? (
             <Button
-              icon={
-                closeIcon
-              }
+              icon={closeIcon}
               variant="ghost"
               size="small"
               viewProps={{
-                className:
-                  'weave-combobox__action',
+                className: 'weave-combobox__action',
                 label: clearLabel,
-                onPointerDown:
-                  handleClearPointerDown,
+                onPointerDown: handleClearPointerDown,
                 onFocus: close,
-                onClick:
-                  clearSelection,
+                onClick: clearSelection,
               }}
             />
           ) : null}
 
           <Icon
-            svg={
-              chevronDownIcon
-            }
+            svg={chevronDownIcon}
             size="small"
             stroke="regular"
             viewProps={{
-              className:
-                'weave-combobox__chevron',
+              className: 'weave-combobox__chevron',
               'aria-hidden': true,
-              pointerEvents:
-                'none',
+              pointerEvents: 'none',
             }}
           />
         </span>

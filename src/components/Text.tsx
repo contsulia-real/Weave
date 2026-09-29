@@ -1,18 +1,13 @@
 import { useInsertionEffect } from 'react'
+import type { TextProps, TextResponsiveProps } from '../core/text-types'
 import type { ViewProps, ViewResponsiveStyle } from '../core/view-types'
-import type {
-  TextProps,
-  TextResponsiveProps,
-} from '../core/text-types'
 import { breakpointEntries } from '../renderers/dom/breakpoint-utils'
 import { resolveTextResponsiveStyle } from '../renderers/dom/resolve-text'
 import { ensureTextStylesheet } from '../renderers/dom/text-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { useViewHost } from './internal/use-view-host'
 
-function colorStyle(
-  value: TextResponsiveProps | undefined,
-): ViewResponsiveStyle | undefined {
+function colorStyle(value: TextResponsiveProps | undefined): ViewResponsiveStyle | undefined {
   return value?.color === undefined ? undefined : { color: value.color }
 }
 
@@ -62,10 +57,7 @@ export function Text(props: TextProps) {
   const breakpoints = breakpointEntries(theme.breakpoints)
   const propsRecord = props as Record<string, unknown>
   const viewPropsRecord = viewProps as Record<string, unknown>
-  const responsiveText: Record<
-    string,
-    TextResponsiveProps | undefined
-  > = {}
+  const responsiveText: Record<string, TextResponsiveProps | undefined> = {}
   const responsiveAttributes: Record<string, string> = {}
 
   const hostProps: ViewProps<HTMLSpanElement> = {
@@ -75,28 +67,18 @@ export function Text(props: TextProps) {
   const writableHostProps = hostProps as Record<string, unknown>
 
   for (const breakpoint of breakpoints) {
-    const textResponsive = propsRecord[
-      breakpoint.name
-    ] as TextResponsiveProps | undefined
-    const viewResponsive = viewPropsRecord[
-      breakpoint.name
-    ] as ViewResponsiveStyle | undefined
+    const textResponsive = propsRecord[breakpoint.name] as TextResponsiveProps | undefined
+    const viewResponsive = viewPropsRecord[breakpoint.name] as ViewResponsiveStyle | undefined
 
     responsiveText[breakpoint.cssName] = textResponsive
 
-    const merged = mergeResponsive(
-      viewResponsive,
-      colorStyle(textResponsive),
-    )
+    const merged = mergeResponsive(viewResponsive, colorStyle(textResponsive))
 
     if (merged !== undefined) {
       writableHostProps[breakpoint.name] = merged
     }
 
-    Object.assign(
-      responsiveAttributes,
-      responsiveData(breakpoint.cssName, textResponsive),
-    )
+    Object.assign(responsiveAttributes, responsiveData(breakpoint.cssName, textResponsive))
   }
 
   const componentStyle = resolveTextResponsiveStyle({
@@ -115,12 +97,11 @@ export function Text(props: TextProps) {
     responsive: responsiveText,
   })
 
-  const {
-    elementRef,
-    className,
-    inlineStyle,
-    resolved,
-  } = useViewHost(hostProps, componentStyle, 'text')
+  const { elementRef, className, inlineStyle, resolved } = useViewHost(
+    hostProps,
+    componentStyle,
+    'text',
+  )
 
   useInsertionEffect(ensureTextStylesheet, [])
 
@@ -134,9 +115,7 @@ export function Text(props: TextProps) {
       data-weave-text-typo={typo}
       data-weave-layout={resolved.layout}
       data-weave-text-overflow={overflow}
-      data-weave-text-max-lines={
-        maxLines === undefined ? undefined : String(maxLines)
-      }
+      data-weave-text-max-lines={maxLines === undefined ? undefined : String(maxLines)}
       className={['weave-text', className].filter(Boolean).join(' ')}
       style={inlineStyle}
     >

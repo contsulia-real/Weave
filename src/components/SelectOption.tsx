@@ -1,19 +1,9 @@
-import {
-  useContext,
-} from 'react'
-import type {
-  SelectOptionProps,
-} from '../core/select-types'
-import {
-  ensureSelectStylesheet,
-} from '../renderers/dom/select-stylesheet'
-import {
-  useTheme,
-} from '../theme/theme-context'
+import { useContext } from 'react'
+import type { SelectOptionProps } from '../core/select-types'
+import { ensureSelectStylesheet } from '../renderers/dom/select-stylesheet'
+import { useTheme } from '../theme/theme-context'
 import { OptionItem } from './internal/OptionItem'
-import {
-  SelectContext,
-} from './internal/select-context'
+import { SelectContext } from './internal/select-context'
 
 export function SelectOption({
   value,
@@ -23,13 +13,10 @@ export function SelectOption({
   disabled = false,
   viewProps = {},
 }: SelectOptionProps) {
-  const context =
-    useContext(SelectContext)
+  const context = useContext(SelectContext)
 
   if (context === null) {
-    throw new Error(
-      'SelectOption must be rendered inside Select',
-    )
+    throw new Error('SelectOption must be rendered inside Select')
   }
 
   const { theme } = useTheme()
@@ -44,13 +31,8 @@ export function SelectOption({
       disabled={disabled}
       viewProps={viewProps}
       context={context}
-      optionTheme={
-        theme.components.Select
-          ?.option
-      }
-      ensureStylesheet={
-        ensureSelectStylesheet
-      }
+      optionTheme={theme.components.Select?.option}
+      ensureStylesheet={ensureSelectStylesheet}
     />
   )
 }

@@ -222,8 +222,5 @@ const stylesheet = `
 `
 
 export function ensureMenuStylesheet(): void {
-  ensureStaticStylesheet(
-    'menu',
-    stylesheet,
-  )
+  ensureStaticStylesheet('menu', stylesheet)
 }

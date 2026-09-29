@@ -1,25 +1,15 @@
 import type { CSSProperties } from 'react'
-import type {
-  ViewProps,
-  ViewStyleProps,
-} from '../core/view-types'
-import {
-  breakpointEntries,
-  containerBreakpointProp,
-} from '../renderers/dom/breakpoint-utils'
+import type { ViewProps, ViewStyleProps } from '../core/view-types'
+import { breakpointEntries, containerBreakpointProp } from '../renderers/dom/breakpoint-utils'
 import { useTheme } from '../theme/theme-context'
 import { AutoScrollbar } from './internal/AutoScrollbar'
 import { useViewHost } from './internal/use-view-host'
 
-function scrollableOverflow(
-  value: string | undefined,
-): boolean {
+function scrollableOverflow(value: string | undefined): boolean {
   return value === 'auto' || value === 'scroll'
 }
 
-function styleMayScroll(
-  style: ViewStyleProps | undefined,
-): boolean {
+function styleMayScroll(style: ViewStyleProps | undefined): boolean {
   if (style === undefined) return false
 
   return (
@@ -29,9 +19,7 @@ function styleMayScroll(
   )
 }
 
-function rawStyleMayScroll(
-  style: CSSProperties | undefined,
-): boolean {
+function rawStyleMayScroll(style: CSSProperties | undefined): boolean {
   if (style === undefined) return false
 
   return (
@@ -41,10 +29,7 @@ function rawStyleMayScroll(
   )
 }
 
-function scrollOverflowClass(
-  axis: '' | 'x' | 'y',
-  value: string | undefined,
-): string | undefined {
+function scrollOverflowClass(axis: '' | 'x' | 'y', value: string | undefined): string | undefined {
   if (!scrollableOverflow(value)) return undefined
 
   const suffix = value === 'scroll' ? 'scroll' : 'auto'
@@ -53,15 +38,11 @@ function scrollOverflowClass(
   return `weave-scroll-host--overflow${axisPart}-${suffix}`
 }
 
-function cssString(
-  value: CSSProperties['overflow'] | undefined,
-): string | undefined {
+function cssString(value: CSSProperties['overflow'] | undefined): string | undefined {
   return typeof value === 'string' ? value : undefined
 }
 
-function overflowIntent(
-  props: ViewProps<HTMLDivElement>,
-) {
+function overflowIntent(props: ViewProps<HTMLDivElement>) {
   return {
     styleOverflow: cssString(props.style?.overflow),
     styleOverflowX: cssString(props.style?.overflowX),
@@ -75,49 +56,35 @@ function viewMayScroll(
 ): boolean {
   if (props.scrollbar !== undefined) return true
 
-  if (
-    styleMayScroll(props) ||
-    rawStyleMayScroll(props.style)
-  ) {
+  if (styleMayScroll(props) || rawStyleMayScroll(props.style)) {
     return true
   }
 
   const propsRecord = props as Record<string, unknown>
 
-  return breakpointEntries(breakpoints).some(({ name }) =>
-    styleMayScroll(
-      propsRecord[name] as ViewStyleProps | undefined,
-    ) ||
-    styleMayScroll(
-      propsRecord[
-        containerBreakpointProp(name)
-      ] as ViewStyleProps | undefined,
-    ),
+  return breakpointEntries(breakpoints).some(
+    ({ name }) =>
+      styleMayScroll(propsRecord[name] as ViewStyleProps | undefined) ||
+      styleMayScroll(propsRecord[containerBreakpointProp(name)] as ViewStyleProps | undefined),
   )
 }
 
-export function View(
-  props: ViewProps<HTMLDivElement>,
-) {
+export function View(props: ViewProps<HTMLDivElement>) {
   const { children } = props
   const { theme } = useTheme()
-  const {
-    elementRef,
-    className,
-    inlineStyle,
-    resolved,
-  } = useViewHost(props)
+  const { elementRef, className, inlineStyle, resolved } = useViewHost(props)
 
   const mountsScrollbar = viewMayScroll(props, theme.breakpoints)
-  const resolvedClassName = [
-    mountsScrollbar ? 'weave-scroll-host' : undefined,
-    scrollOverflowClass('', props.overflow),
-    scrollOverflowClass('x', props.overflowX),
-    scrollOverflowClass('y', props.overflowY),
-    className,
-  ]
-    .filter(Boolean)
-    .join(' ') || undefined
+  const resolvedClassName =
+    [
+      mountsScrollbar ? 'weave-scroll-host' : undefined,
+      scrollOverflowClass('', props.overflow),
+      scrollOverflowClass('x', props.overflowX),
+      scrollOverflowClass('y', props.overflowY),
+      className,
+    ]
+      .filter(Boolean)
+      .join(' ') || undefined
 
   return (
     <>

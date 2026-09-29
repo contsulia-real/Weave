@@ -1,18 +1,6 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
-import type {
-  CSSProperties,
-  ReactNode,
-  RefObject,
-} from 'react'
-import type {
-  ListOrientation,
-} from '../../core/list-types'
+import type { CSSProperties, ReactNode, RefObject } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import type { ListOrientation } from '../../core/list-types'
 import { Divider } from '../Divider'
 import { Flex } from '../Flex'
 import { View } from '../View'
@@ -20,9 +8,9 @@ import {
   createVirtualLayout,
   readVirtualViewport,
   sameVirtualViewport,
-  visibleVirtualIndices,
   type VirtualMeasurement,
   type VirtualViewport,
+  visibleVirtualIndices,
 } from './virtual-list-layout'
 
 export interface VirtualListEntry {
@@ -31,14 +19,10 @@ export interface VirtualListEntry {
 }
 
 interface VirtualListWindowProps {
-  entries:
-    readonly VirtualListEntry[]
-  orientation:
-    ListOrientation
-  rootRef:
-    RefObject<HTMLDivElement | null>
-  focusId:
-    string | null
+  entries: readonly VirtualListEntry[]
+  orientation: ListOrientation
+  rootRef: RefObject<HTMLDivElement | null>
+  focusId: string | null
   showDividers: boolean
 }
 
@@ -53,106 +37,58 @@ function VirtualItem({
   entry: VirtualListEntry
   index: number
   offset: number
-  orientation:
-    ListOrientation
-  onMeasure(
-    id: string,
-    measurement:
-      VirtualMeasurement,
-  ): void
+  orientation: ListOrientation
+  onMeasure(id: string, measurement: VirtualMeasurement): void
   showDivider: boolean
 }) {
-  const ref =
-    useRef<HTMLDivElement>(null)
+  const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const element = ref.current
     if (element === null) return
 
     const measure = () => {
-      const rect =
-        element.getBoundingClientRect()
+      const rect = element.getBoundingClientRect()
       const main =
         orientation === 'vertical'
-          ? (
-              element.offsetHeight ||
-              rect.height
-            )
-          : (
-              element.offsetWidth ||
-              rect.width
-            )
+          ? element.offsetHeight || rect.height
+          : element.offsetWidth || rect.width
       const cross =
         orientation === 'vertical'
-          ? (
-              element.offsetWidth ||
-              rect.width
-            )
-          : (
-              element.offsetHeight ||
-              rect.height
-            )
+          ? element.offsetWidth || rect.width
+          : element.offsetHeight || rect.height
 
       if (main <= 0) return
 
-      onMeasure(
-        entry.id,
-        {
-          main,
-          cross: Math.max(0, cross),
-        },
-      )
+      onMeasure(entry.id, {
+        main,
+        cross: Math.max(0, cross),
+      })
     }
 
-    const view =
-      element.ownerDocument.defaultView
-    let frame:
-      | number
-      | undefined
+    const view = element.ownerDocument.defaultView
+    let frame: number | undefined
 
-    if (
-      view !== null &&
-      typeof view.requestAnimationFrame ===
-        'function'
-    ) {
-      frame =
-        view.requestAnimationFrame(
-          measure,
-        )
+    if (view !== null && typeof view.requestAnimationFrame === 'function') {
+      frame = view.requestAnimationFrame(measure)
     } else {
       queueMicrotask(measure)
     }
 
-    const observer =
-      typeof ResizeObserver ===
-        'undefined'
-        ? undefined
-        : new ResizeObserver(
-            measure,
-          )
+    const observer = typeof ResizeObserver === 'undefined' ? undefined : new ResizeObserver(measure)
 
     observer?.observe(element)
 
     return () => {
-      if (
-        frame !== undefined &&
-        view !== null &&
-        typeof view.cancelAnimationFrame ===
-          'function'
-      ) {
+      if (frame !== undefined && view !== null && typeof view.cancelAnimationFrame === 'function') {
         view.cancelAnimationFrame(frame)
       }
 
       observer?.disconnect()
     }
-  }, [
-    entry.id,
-    onMeasure,
-    orientation,
-  ])
+  }, [entry.id, onMeasure, orientation])
 
-  const style:
-    CSSProperties =
+  const style: CSSProperties =
     orientation === 'vertical'
       ? {
           position: 'absolute',
@@ -176,31 +112,17 @@ function VirtualItem({
     <Flex
       ref={ref}
       role="presentation"
-      direction={
-        orientation === 'vertical'
-          ? 'column'
-          : 'row'
-      }
+      direction={orientation === 'vertical' ? 'column' : 'row'}
       align="stretch"
       data={{
         'weave-list-virtual-item': '',
-        'weave-list-virtual-id':
-          entry.id,
-        'weave-list-virtual-index':
-          index,
+        'weave-list-virtual-id': entry.id,
+        'weave-list-virtual-index': index,
       }}
       style={style}
     >
       {showDivider ? (
-        <Divider
-          direction={
-            orientation ===
-              'vertical'
-              ? 'horizontal'
-              : 'vertical'
-          }
-          gap={0}
-        />
+        <Divider direction={orientation === 'vertical' ? 'horizontal' : 'vertical'} gap={0} />
       ) : null}
 
       {entry.node}
@@ -215,21 +137,10 @@ export function VirtualListWindow({
   focusId,
   showDividers,
 }: VirtualListWindowProps) {
-  const [
-    measurements,
-    setMeasurements,
-  ] = useState<
-    ReadonlyMap<
-      string,
-      VirtualMeasurement
-    >
-  >(
+  const [measurements, setMeasurements] = useState<ReadonlyMap<string, VirtualMeasurement>>(
     () => new Map(),
   )
-  const [
-    viewport,
-    setViewport,
-  ] = useState<VirtualViewport>({
+  const [viewport, setViewport] = useState<VirtualViewport>({
     offset: 0,
     size: 0,
     gap: 0,
@@ -239,184 +150,91 @@ export function VirtualListWindow({
     const root = rootRef.current
     if (root === null) return
 
-    const view =
-      root.ownerDocument.defaultView
-    let frame:
-      | number
-      | undefined
+    const view = root.ownerDocument.defaultView
+    let frame: number | undefined
 
     const read = () => {
-      const next =
-        readVirtualViewport(
-          root,
-          orientation,
-        )
+      const next = readVirtualViewport(root, orientation)
 
-      setViewport(
-        (current) =>
-          sameVirtualViewport(
-            current,
-            next,
-          )
-            ? current
-            : next,
-      )
+      setViewport((current) => (sameVirtualViewport(current, next) ? current : next))
     }
 
     const scheduleRead = () => {
-      if (
-        view === null ||
-        typeof view.requestAnimationFrame !==
-          'function'
-      ) {
+      if (view === null || typeof view.requestAnimationFrame !== 'function') {
         queueMicrotask(read)
         return
       }
 
       if (frame !== undefined) return
 
-      frame =
-        view.requestAnimationFrame(
-          () => {
-            frame = undefined
-            read()
-          },
-        )
+      frame = view.requestAnimationFrame(() => {
+        frame = undefined
+        read()
+      })
     }
 
     scheduleRead()
 
-    root.addEventListener(
-      'scroll',
-      scheduleRead,
-      {
-        passive: true,
-      },
-    )
+    root.addEventListener('scroll', scheduleRead, {
+      passive: true,
+    })
 
     const observer =
-      typeof ResizeObserver ===
-        'undefined'
-        ? undefined
-        : new ResizeObserver(
-            scheduleRead,
-          )
+      typeof ResizeObserver === 'undefined' ? undefined : new ResizeObserver(scheduleRead)
 
     observer?.observe(root)
 
     return () => {
-      root.removeEventListener(
-        'scroll',
-        scheduleRead,
-      )
+      root.removeEventListener('scroll', scheduleRead)
 
-      if (
-        frame !== undefined &&
-        view !== null &&
-        typeof view.cancelAnimationFrame ===
-          'function'
-      ) {
+      if (frame !== undefined && view !== null && typeof view.cancelAnimationFrame === 'function') {
         view.cancelAnimationFrame(frame)
       }
 
       observer?.disconnect()
     }
-  }, [
-    orientation,
-    rootRef,
-  ])
+  }, [orientation, rootRef])
 
-  const onMeasure =
-    useCallback(
-      (
-        id: string,
-        next:
-          VirtualMeasurement,
-      ) => {
-        setMeasurements(
-          (current) => {
-            const previous =
-              current.get(id)
+  const onMeasure = useCallback((id: string, next: VirtualMeasurement) => {
+    setMeasurements((current) => {
+      const previous = current.get(id)
 
-            if (
-              previous !== undefined &&
-              Math.abs(
-                previous.main -
-                  next.main,
-              ) < 0.5 &&
-              Math.abs(
-                previous.cross -
-                  next.cross,
-              ) < 0.5
-            ) {
-              return current
-            }
+      if (
+        previous !== undefined &&
+        Math.abs(previous.main - next.main) < 0.5 &&
+        Math.abs(previous.cross - next.cross) < 0.5
+      ) {
+        return current
+      }
 
-            const updated =
-              new Map(current)
-            updated.set(
-              id,
-              next,
-            )
+      const updated = new Map(current)
+      updated.set(id, next)
 
-            return updated
-          },
-        )
-      },
-      [],
-    )
+      return updated
+    })
+  }, [])
 
-  const layout =
-    useMemo(
-      () =>
-        createVirtualLayout(
-          entries,
-          measurements,
-          orientation,
-          viewport.gap,
-        ),
-      [
-        entries,
-        measurements,
-        orientation,
-        viewport.gap,
-      ],
-    )
+  const layout = useMemo(
+    () => createVirtualLayout(entries, measurements, orientation, viewport.gap),
+    [entries, measurements, orientation, viewport.gap],
+  )
 
-  const visibleIndices =
-    useMemo(
-      () =>
-        visibleVirtualIndices(
-          entries,
-          focusId,
-          layout,
-          viewport,
-        ),
-      [
-        entries,
-        focusId,
-        layout,
-        viewport,
-      ],
-    )
+  const visibleIndices = useMemo(
+    () => visibleVirtualIndices(entries, focusId, layout, viewport),
+    [entries, focusId, layout, viewport],
+  )
 
-  const spacerStyle:
-    CSSProperties =
+  const spacerStyle: CSSProperties =
     orientation === 'vertical'
       ? {
           height: layout.total,
           width: '100%',
-          pointerEvents:
-            'none',
+          pointerEvents: 'none',
         }
       : {
           width: layout.total,
-          height: Math.max(
-            1,
-            layout.maxCross,
-          ),
-          pointerEvents:
-            'none',
+          height: Math.max(1, layout.maxCross),
+          pointerEvents: 'none',
         }
 
   return (
@@ -429,41 +247,25 @@ export function VirtualListWindow({
         style={spacerStyle}
       />
 
-      {visibleIndices.map(
-        (index) => {
-          const entry =
-            entries[index]
+      {visibleIndices.map((index) => {
+        const entry = entries[index]
 
-          if (
-            entry === undefined
-          ) {
-            return null
-          }
+        if (entry === undefined) {
+          return null
+        }
 
-          return (
-            <VirtualItem
-              key={entry.id}
-              entry={entry}
-              index={index}
-              offset={
-                layout.offsets[
-                  index
-                ] ?? 0
-              }
-              orientation={
-                orientation
-              }
-              onMeasure={
-                onMeasure
-              }
-              showDivider={
-                showDividers &&
-                index > 0
-              }
-            />
-          )
-        },
-      )}
+        return (
+          <VirtualItem
+            key={entry.id}
+            entry={entry}
+            index={index}
+            offset={layout.offsets[index] ?? 0}
+            orientation={orientation}
+            onMeasure={onMeasure}
+            showDivider={showDividers && index > 0}
+          />
+        )
+      })}
     </>
   )
 }

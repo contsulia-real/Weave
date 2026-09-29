@@ -1,41 +1,28 @@
 import { cleanup, fireEvent, render } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import {
-  ThemeProvider,
-  View,
-  createTheme,
-} from '../src'
+import { createTheme, ThemeProvider, View } from '../src'
 
 afterEach(cleanup)
 
-function runtimeRule(
-  element: Element,
-  prefix: string,
-): string {
-  const className = [...element.classList].find((name) =>
-    name.startsWith(prefix),
-  )
+function runtimeRule(element: Element, prefix: string): string {
+  const className = [...element.classList].find((name) => name.startsWith(prefix))
 
   expect(className).toBeDefined()
 
   return (
-    document.querySelector<HTMLStyleElement>(
-      `style[data-weave-runtime-class="${className}"]`,
-    )?.textContent ?? ''
+    document.querySelector<HTMLStyleElement>(`style[data-weave-runtime-class="${className}"]`)
+      ?.textContent ?? ''
   ).replace(/\s+/g, '')
 }
 
 function breakpointStyles(element: Element): string {
-  const className = [...element.classList].find((name) =>
-    name.startsWith('weave-breakpoints-'),
-  )
+  const className = [...element.classList].find((name) => name.startsWith('weave-breakpoints-'))
 
   expect(className).toBeDefined()
 
   return (
-    document.querySelector<HTMLStyleElement>(
-      `style[data-weave-breakpoint-styles="${className}"]`,
-    )?.textContent ?? ''
+    document.querySelector<HTMLStyleElement>(`style[data-weave-breakpoint-styles="${className}"]`)
+      ?.textContent ?? ''
   ).replace(/\s+/g, '')
 }
 
@@ -74,9 +61,9 @@ describe('View DOM backend', () => {
     expect(rule).toContain('--weave-background:var(--weave-color-primary')
     expect(rule).toContain('--weave-mask-image:linear-gradient(90deg')
     expect(element.getAttribute('mask')).toBeNull()
-    expect(
-      document.querySelector('style[data-weave-view-styles]')?.textContent,
-    ).toContain('mask-image: var(--weave-container-responsive-mask-image')
+    expect(document.querySelector('style[data-weave-view-styles]')?.textContent).toContain(
+      'mask-image: var(--weave-container-responsive-mask-image',
+    )
   })
 
   it('applies mask across state and responsive style paths', () => {
@@ -113,18 +100,10 @@ describe('View DOM backend', () => {
     const rule = runtimeRule(element, 'weave-props-')
     const responsiveRule = breakpointStyles(element)
 
-    expect(rule).toContain(
-      '--weave-mask-image:url("/mask.svg#shape");',
-    )
-    expect(rule).toContain(
-      '--weave-hover-mask-image:radial-gradient(',
-    )
-    expect(rule).toContain(
-      '--weave-sm-mask-image:linear-gradient(180deg',
-    )
-    expect(rule).toContain(
-      '--weave-container-sm-mask-image:url("/container-mask.svg")',
-    )
+    expect(rule).toContain('--weave-mask-image:url("/mask.svg#shape");')
+    expect(rule).toContain('--weave-hover-mask-image:radial-gradient(')
+    expect(rule).toContain('--weave-sm-mask-image:linear-gradient(180deg')
+    expect(rule).toContain('--weave-container-sm-mask-image:url("/container-mask.svg")')
     expect(responsiveRule).toContain(
       '--weave-viewport-responsive-mask-image:var(--weave-sm-mask-image)',
     )
@@ -155,67 +134,32 @@ describe('View DOM backend', () => {
     expect(rule).toContain('--weave-width:20rem;')
     expect(rule).not.toContain('10px')
 
-    const frameworkStyles = document.querySelector(
-      'style[data-weave-view-styles]',
-    )
-    expect(frameworkStyles?.textContent).toContain(
-      ':where([data-weave-view])',
-    )
+    const frameworkStyles = document.querySelector('style[data-weave-view-styles]')
+    expect(frameworkStyles?.textContent).toContain(':where([data-weave-view])')
     expect(frameworkStyles?.textContent).toContain(
       'var(--weave-width, var(--weave-component-width))',
     )
   })
 
   it('maps semantic layer to the theme z-index and lets zIndex override it', () => {
-    const { getByTestId, rerender } = render(
-      <View
-        layer="tooltip"
-        data={{ testid: 'layered' }}
-      />,
-    )
+    const { getByTestId, rerender } = render(<View layer="tooltip" data={{ testid: 'layered' }} />)
 
     const element = getByTestId('layered')
-    expect(
-      runtimeRule(
-        element,
-        'weave-props-',
-      ),
-    ).toContain(
+    expect(runtimeRule(element, 'weave-props-')).toContain(
       '--weave-z-index:var(--weave-layer-tooltip);',
     )
-    expect(
-      element.getAttribute('layer'),
-    ).toBeNull()
+    expect(element.getAttribute('layer')).toBeNull()
 
-    rerender(
-      <View
-        layer="tooltip"
-        zIndex={777}
-        data={{ testid: 'layered' }}
-      />,
-    )
+    rerender(<View layer="tooltip" zIndex={777} data={{ testid: 'layered' }} />)
 
-    expect(
-      runtimeRule(
-        element,
-        'weave-props-',
-      ),
-    ).toContain(
-      '--weave-z-index:777;',
-    )
+    expect(runtimeRule(element, 'weave-props-')).toContain('--weave-z-index:777;')
   })
 
   it('forwards React events and high-level semantics', () => {
     const onClick = vi.fn()
 
     const { getByTestId } = render(
-      <View
-        focusable
-        disabled
-        label="Sidebar"
-        onClick={onClick}
-        data={{ testid: 'semantic' }}
-      />,
+      <View focusable disabled label="Sidebar" onClick={onClick} data={{ testid: 'semantic' }} />,
     )
 
     const element = getByTestId('semantic')
@@ -229,13 +173,7 @@ describe('View DOM backend', () => {
 
   it('keeps normalized native host props when internal props are filtered', () => {
     const { getByTestId } = render(
-      <View
-        role="region"
-        hidden
-        draggable
-        tabIndex={3}
-        data={{ testid: 'native-host-props' }}
-      />,
+      <View role="region" hidden draggable tabIndex={3} data={{ testid: 'native-host-props' }} />,
     )
 
     const element = getByTestId('native-host-props')
@@ -265,9 +203,7 @@ describe('View DOM backend', () => {
       </View>,
     )
 
-    const frameworkStyles = document.querySelector(
-      'style[data-weave-view-styles]',
-    )
+    const frameworkStyles = document.querySelector('style[data-weave-view-styles]')
 
     expect(frameworkStyles?.textContent).toContain(
       '@property --weave-min-height { syntax: "*"; inherits: false; }',
@@ -282,18 +218,12 @@ describe('View DOM backend', () => {
 
   it('encodes viewport breakpoint overrides with default theme breakpoints', () => {
     const { getByTestId } = render(
-      <View
-        width={20}
-        md={{ width: 30, padding: 2 }}
-        data={{ testid: 'responsive' }}
-      />,
+      <View width={20} md={{ width: 30, padding: 2 }} data={{ testid: 'responsive' }} />,
     )
 
     const element = getByTestId('responsive')
     const rule = runtimeRule(element, 'weave-props-')
-    const frameworkStyles = document.querySelector(
-      'style[data-weave-view-styles]',
-    )
+    const frameworkStyles = document.querySelector('style[data-weave-view-styles]')
     const responsiveStyles = breakpointStyles(element)
 
     expect(element.style.getPropertyValue('--weave-width')).toBe('')
@@ -302,24 +232,15 @@ describe('View DOM backend', () => {
     expect(rule).toContain('--weave-md-padding-top:2rem;')
     expect(element.getAttribute('md')).toBeNull()
 
-    expect(responsiveStyles).toContain(
-      '@media(min-width:48rem)',
-    )
-    expect(responsiveStyles).toContain(
-      '@property--weave-md-width{syntax:"*";inherits:false;}',
-    )
-    expect(frameworkStyles?.textContent).toContain(
-      '--weave-viewport-responsive-width',
-    )
+    expect(responsiveStyles).toContain('@media(min-width:48rem)')
+    expect(responsiveStyles).toContain('@property--weave-md-width{syntax:"*";inherits:false;}')
+    expect(frameworkStyles?.textContent).toContain('--weave-viewport-responsive-width')
   })
 
   it('creates a named CSS container and container breakpoint overrides', () => {
     const { getByTestId } = render(
       <View container="sidebar" data={{ testid: 'container' }}>
-        <View
-          containerMd={{ direction: 'row', gap: 1.5 }}
-          data={{ testid: 'container-child' }}
-        />
+        <View containerMd={{ direction: 'row', gap: 1.5 }} data={{ testid: 'container-child' }} />
       </View>,
     )
 
@@ -327,32 +248,20 @@ describe('View DOM backend', () => {
     const child = getByTestId('container-child')
     const containerRule = runtimeRule(container, 'weave-props-')
     const childRule = runtimeRule(child, 'weave-props-')
-    const frameworkStyles = document.querySelector(
-      'style[data-weave-view-styles]',
-    )
+    const frameworkStyles = document.querySelector('style[data-weave-view-styles]')
     const responsiveStyles = breakpointStyles(child)
 
     expect(container.style.getPropertyValue('--weave-container-type')).toBe('')
-    expect(containerRule).toContain(
-      '--weave-container-type:inline-size;',
-    )
-    expect(containerRule).toContain(
-      '--weave-container-name:sidebar;',
-    )
+    expect(containerRule).toContain('--weave-container-type:inline-size;')
+    expect(containerRule).toContain('--weave-container-name:sidebar;')
     expect(container.getAttribute('container')).toBeNull()
 
-    expect(childRule).toContain(
-      '--weave-container-md-flex-direction:row;',
-    )
+    expect(childRule).toContain('--weave-container-md-flex-direction:row;')
     expect(childRule).toContain('--weave-container-md-gap:1.5rem;')
     expect(child.getAttribute('containerMd')).toBeNull()
 
-    expect(responsiveStyles).toContain(
-      '@container(min-width:48rem)',
-    )
-    expect(frameworkStyles?.textContent).toContain(
-      '--weave-container-responsive-gap',
-    )
+    expect(responsiveStyles).toContain('@container(min-width:48rem)')
+    expect(frameworkStyles?.textContent).toContain('--weave-container-responsive-gap')
   })
 
   it('uses ThemeProvider breakpoint values and custom names', () => {
@@ -385,36 +294,21 @@ describe('View DOM backend', () => {
     expect(element.getAttribute('containerWide')).toBeNull()
     expect(element.getAttribute('data-weave-scroll-host')).toBe('')
 
-    expect(responsiveStyles).toContain(
-      '@media(min-width:36rem)',
-    )
-    expect(responsiveStyles).toContain(
-      '@media(min-width:52rem)',
-    )
-    expect(responsiveStyles).not.toContain(
-      '@media(min-width:48rem)',
-    )
-    expect(responsiveStyles).toContain(
-      '@container(min-width:72rem)',
-    )
+    expect(responsiveStyles).toContain('@media(min-width:36rem)')
+    expect(responsiveStyles).toContain('@media(min-width:52rem)')
+    expect(responsiveStyles).not.toContain('@media(min-width:48rem)')
+    expect(responsiveStyles).toContain('@container(min-width:72rem)')
   })
 
   it('does not leak inactive custom breakpoint props to the DOM', () => {
     const { getByTestId } = render(
-      <View
-        compact={{ width: 22 }}
-        data={{ testid: 'inactive-breakpoint' }}
-      />,
+      <View compact={{ width: 22 }} data={{ testid: 'inactive-breakpoint' }} />,
     )
 
     const element = getByTestId('inactive-breakpoint')
 
     expect(element.getAttribute('compact')).toBeNull()
-    expect(
-      [...element.classList].some((name) =>
-        name.startsWith('weave-props-'),
-      ),
-    ).toBe(false)
+    expect([...element.classList].some((name) => name.startsWith('weave-props-'))).toBe(false)
   })
 
   it('still forwards native object-valued DOM props', () => {
@@ -425,9 +319,7 @@ describe('View DOM backend', () => {
       />,
     )
 
-    expect(getByTestId('native-object-prop').innerHTML).toBe(
-      '<b>Native</b>',
-    )
+    expect(getByTestId('native-object-prop').innerHTML).toBe('<b>Native</b>')
   })
 
   it('encodes state styles in generated property classes', () => {
@@ -444,24 +336,15 @@ describe('View DOM backend', () => {
 
     expect(rule).toContain('--weave-hover-transform:scale(1.03);')
     expect(rule).toContain('--weave-hover-opacity:0.8;')
-    expect(rule).toContain(
-      '--weave-focus-visible-outline-width:0.125rem;',
-    )
+    expect(rule).toContain('--weave-focus-visible-outline-width:0.125rem;')
     expect(element.style.getPropertyValue('--weave-hover-opacity')).toBe('')
   })
 
   it('does not force layout measurement on the scrollbar scroll hot path', () => {
-    const rectSpy = vi.spyOn(
-      HTMLElement.prototype,
-      'getBoundingClientRect',
-    )
+    const rectSpy = vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect')
 
     const { getByTestId } = render(
-      <View
-        height={6}
-        overflow="auto"
-        data={{ testid: 'scroll-hot-path' }}
-      >
+      <View height={6} overflow="auto" data={{ testid: 'scroll-hot-path' }}>
         <View height={20} />
       </View>,
     )

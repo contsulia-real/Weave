@@ -1,18 +1,11 @@
-import type {
-  Length,
-  ViewCoreProps,
-  ViewDynamicBreakpointProps,
-} from './view-types'
+import type { Length, ViewCoreProps, ViewDynamicBreakpointProps } from './view-types'
 
-export type DividerDirection =
-  | 'horizontal'
-  | 'vertical'
+export type DividerDirection = 'horizontal' | 'vertical'
 
-export type DividerViewProps =
-  Omit<
-    ViewCoreProps<HTMLDivElement>,
-    'children' | 'role' | 'direction'
-  > &
+export type DividerViewProps = Omit<
+  ViewCoreProps<HTMLDivElement>,
+  'children' | 'role' | 'direction'
+> &
   ViewDynamicBreakpointProps
 
 export interface DividerProps {

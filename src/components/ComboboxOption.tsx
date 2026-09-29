@@ -1,19 +1,9 @@
-import {
-  useContext,
-} from 'react'
-import type {
-  ComboboxOptionProps,
-} from '../core/combobox-types'
-import {
-  ensureComboboxStylesheet,
-} from '../renderers/dom/combobox-stylesheet'
-import {
-  useTheme,
-} from '../theme/theme-context'
+import { useContext } from 'react'
+import type { ComboboxOptionProps } from '../core/combobox-types'
+import { ensureComboboxStylesheet } from '../renderers/dom/combobox-stylesheet'
+import { useTheme } from '../theme/theme-context'
+import { ComboboxContext } from './internal/combobox-context'
 import { OptionItem } from './internal/OptionItem'
-import {
-  ComboboxContext,
-} from './internal/combobox-context'
 
 export function ComboboxOption({
   value,
@@ -23,13 +13,10 @@ export function ComboboxOption({
   disabled = false,
   viewProps = {},
 }: ComboboxOptionProps) {
-  const context =
-    useContext(ComboboxContext)
+  const context = useContext(ComboboxContext)
 
   if (context === null) {
-    throw new Error(
-      'ComboboxOption must be rendered inside Combobox',
-    )
+    throw new Error('ComboboxOption must be rendered inside Combobox')
   }
 
   const { theme } = useTheme()
@@ -44,13 +31,8 @@ export function ComboboxOption({
       disabled={disabled}
       viewProps={viewProps}
       context={context}
-      optionTheme={
-        theme.components.Combobox
-          ?.option
-      }
-      ensureStylesheet={
-        ensureComboboxStylesheet
-      }
+      optionTheme={theme.components.Combobox?.option}
+      ensureStylesheet={ensureComboboxStylesheet}
     />
   )
 }

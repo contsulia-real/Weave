@@ -1,25 +1,16 @@
+import { cleanup, render } from '@testing-library/react'
 import { StrictMode } from 'react'
-import {
-  cleanup,
-  render,
-} from '@testing-library/react'
-import {
-  afterEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from 'vitest'
-import {
-  ThemeProvider,
-  View,
-} from '../src'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { ThemeProvider, View } from '../src'
 
 function installAnimationStub() {
-  const animate = vi.fn(() => ({
-    cancel: vi.fn(),
-    onfinish: null,
-  }) as unknown as Animation)
+  const animate = vi.fn(
+    () =>
+      ({
+        cancel: vi.fn(),
+        onfinish: null,
+      }) as unknown as Animation,
+  )
 
   Object.defineProperty(HTMLElement.prototype, 'animate', {
     configurable: true,
@@ -79,11 +70,7 @@ describe('enter stagger orchestration', () => {
       </View>,
     )
 
-    expect(animate.mock.calls.map((call) => call[1]?.delay)).toEqual([
-      80,
-      40,
-      0,
-    ])
+    expect(animate.mock.calls.map((call) => call[1]?.delay)).toEqual([80, 40, 0])
     unmount()
 
     const center = installAnimationStub()
@@ -100,11 +87,7 @@ describe('enter stagger orchestration', () => {
       </View>,
     )
 
-    expect(center.mock.calls.map((call) => call[1]?.delay)).toEqual([
-      40,
-      0,
-      40,
-    ])
+    expect(center.mock.calls.map((call) => call[1]?.delay)).toEqual([40, 0, 40])
   })
 
   it('uses spring timing for the staggered child sequence', () => {

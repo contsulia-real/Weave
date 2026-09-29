@@ -1,43 +1,28 @@
 import type { ReactNode } from 'react'
-import {
-  createRoot as createDOMRoot,
-  type Root as DOMRoot,
-} from 'react-dom/client'
+import { createRoot as createDOMRoot, type Root as DOMRoot } from 'react-dom/client'
 
 export interface Root {
   render(node: ReactNode): void
   unmount(): void
 }
 
-function assertContainer(
-  container: HTMLElement,
-): void {
-  if (
-    typeof HTMLElement !== 'undefined' &&
-    !(container instanceof HTMLElement)
-  ) {
-    throw new TypeError(
-      'Weave createRoot() requires an HTMLElement container',
-    )
+function assertContainer(container: HTMLElement): void {
+  if (typeof HTMLElement !== 'undefined' && !(container instanceof HTMLElement)) {
+    throw new TypeError('Weave createRoot() requires an HTMLElement container')
   }
 }
 
-export function createRoot(
-  container: HTMLElement,
-): Root {
+export function createRoot(container: HTMLElement): Root {
   assertContainer(container)
 
   container.replaceChildren()
 
-  const root: DOMRoot =
-    createDOMRoot(container)
+  const root: DOMRoot = createDOMRoot(container)
   let unmounted = false
 
   const assertMounted = () => {
     if (unmounted) {
-      throw new Error(
-        'Cannot render into an unmounted Weave root',
-      )
+      throw new Error('Cannot render into an unmounted Weave root')
     }
   }
 

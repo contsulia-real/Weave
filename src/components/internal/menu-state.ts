@@ -1,7 +1,4 @@
-import {
-  createContext,
-  type RefObject,
-} from 'react'
+import { createContext, type RefObject } from 'react'
 import type { Length } from '../../core/view-types'
 
 export interface MenuRootContextValue {
@@ -12,37 +9,18 @@ export interface MenuRootContextValue {
   viewportPadding: Length
 }
 
-export const MenuRootContext =
-  createContext<MenuRootContextValue | null>(
-    null,
-  )
+export const MenuRootContext = createContext<MenuRootContextValue | null>(null)
 
 export interface MenuLevelContextValue {
   levelId: string
-  panelRef:
-    RefObject<HTMLDivElement | null>
-  parentItemRef?:
-    RefObject<HTMLDivElement | null>
-  openSubmenuId:
-    string | null
-  setOpenSubmenuId(
-    id: string | null,
-  ): void
-  moveFocus(
-    current:
-      HTMLDivElement | null,
-    move:
-      | 'previous'
-      | 'next'
-      | 'first'
-      | 'last',
-  ): void
+  panelRef: RefObject<HTMLDivElement | null>
+  parentItemRef?: RefObject<HTMLDivElement | null>
+  openSubmenuId: string | null
+  setOpenSubmenuId(id: string | null): void
+  moveFocus(current: HTMLDivElement | null, move: 'previous' | 'next' | 'first' | 'last'): void
   focusFirst(): void
   focusLast(): void
   closeLevel(): void
 }
 
-export const MenuLevelContext =
-  createContext<MenuLevelContextValue | null>(
-    null,
-  )
+export const MenuLevelContext = createContext<MenuLevelContextValue | null>(null)

@@ -1,13 +1,6 @@
-import {
-  useEffect,
-  useLayoutEffect,
-  useRef,
-} from 'react'
 import type { RefObject } from 'react'
-import type {
-  MotionInterruption,
-  ViewAnimationConfig,
-} from '../../core/motion-types'
+import { useEffect, useLayoutEffect, useRef } from 'react'
+import type { MotionInterruption, ViewAnimationConfig } from '../../core/motion-types'
 import {
   captureComputedMotionKeyframe,
   cyclePlaybackDirection,
@@ -16,10 +9,7 @@ import {
   resolveViewAnimation,
 } from '../../renderers/dom/motion-runtime'
 import type { ResolvedTheme } from '../../theme/theme-types'
-import {
-  createMotionSequence,
-  type MotionSequence,
-} from './motion-sequence'
+import { createMotionSequence, type MotionSequence } from './motion-sequence'
 
 function animationKey(
   config: ViewAnimationConfig | undefined,
@@ -35,19 +25,14 @@ function animationKey(
   ])
 }
 
-function finalFrame(
-  config: ViewAnimationConfig,
-): Keyframe | undefined {
+function finalFrame(config: ViewAnimationConfig): Keyframe | undefined {
   const frames = resolveMotionKeyframes(config.keyframes)
   if (frames.length === 0) return undefined
 
   if (config.repeat === 'infinite') return { ...frames[0] }
 
   const lastCycle = Math.max(0, Math.floor(config.repeat ?? 0))
-  const reverse = cyclePlaybackDirection(
-    config.direction,
-    lastCycle,
-  ) === 'reverse'
+  const reverse = cyclePlaybackDirection(config.direction, lastCycle) === 'reverse'
   return { ...(reverse ? frames[0] : frames[frames.length - 1]) }
 }
 
@@ -55,10 +40,7 @@ function applyReducedMotionFrame(
   element: HTMLElement,
   config: ViewAnimationConfig | undefined,
 ): Animation | undefined {
-  if (
-    config === undefined ||
-    typeof element.animate !== 'function'
-  ) {
+  if (config === undefined || typeof element.animate !== 'function') {
     return undefined
   }
 
@@ -94,10 +76,7 @@ export function useViewAnimation<TElement extends HTMLElement>(
     // A finish interruption may already have a queued target. If the newest
     // render returns to the animation that is currently active, that active
     // animation is now the latest target and the old queued retarget is stale.
-    if (
-      waitingForFinish.current &&
-      activeKey.current === key
-    ) {
+    if (waitingForFinish.current && activeKey.current === key) {
       pendingKey.current = undefined
       pendingStart.current = undefined
       return
@@ -105,9 +84,7 @@ export function useViewAnimation<TElement extends HTMLElement>(
 
     if (activeKey.current === key || pendingKey.current === key) return
 
-    const start = (
-      capturedFrame?: Keyframe,
-    ) => {
+    const start = (capturedFrame?: Keyframe) => {
       sequence.current?.cancel()
       sequence.current = undefined
       reducedAnimation.current?.cancel()
@@ -120,19 +97,11 @@ export function useViewAnimation<TElement extends HTMLElement>(
       if (config === undefined) return
 
       if (reducedMotion) {
-        reducedAnimation.current = applyReducedMotionFrame(
-          element,
-          config,
-        )
+        reducedAnimation.current = applyReducedMotionFrame(element, config)
         return
       }
 
-      sequence.current = createMotionSequence(
-        element,
-        config,
-        theme,
-        { capturedFrame },
-      )
+      sequence.current = createMotionSequence(element, config, theme, { capturedFrame })
     }
 
     const current = sequence.current
@@ -141,8 +110,7 @@ export function useViewAnimation<TElement extends HTMLElement>(
       return
     }
 
-    const interruption: MotionInterruption =
-      config?.interruption ?? 'continue'
+    const interruption: MotionInterruption = config?.interruption ?? 'continue'
 
     if (interruption === 'finish') {
       pendingKey.current = key

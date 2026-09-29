@@ -6,13 +6,17 @@ function assert(condition, message) {
   }
 }
 
-const packageJson = JSON.parse(
-  await readFile(new URL('./package.json', import.meta.url), 'utf8'),
-)
+const packageJson = JSON.parse(await readFile(new URL('./package.json', import.meta.url), 'utf8'))
 const packageEntry = packageJson.exports?.['.']
 
-assert(packageEntry?.import === './dist/weave.js', 'Package import entry must point to ./dist/weave.js')
-assert(packageEntry?.types === './dist/index.d.ts', 'Package type entry must point to ./dist/index.d.ts')
+assert(
+  packageEntry?.import === './dist/weave.js',
+  'Package import entry must point to ./dist/weave.js',
+)
+assert(
+  packageEntry?.types === './dist/index.d.ts',
+  'Package type entry must point to ./dist/index.d.ts',
+)
 
 const runtimeEntry = new URL(packageEntry.import, import.meta.url)
 const typeEntry = new URL(packageEntry.types, import.meta.url)
@@ -75,10 +79,19 @@ assert(
 )
 assert(typeSource.includes('ViewTransition'), 'Built declarations are missing ViewTransition')
 assert(typeSource.includes('ViewEnterExit'), 'Built declarations are missing ViewEnterExit')
-assert(typeSource.includes('ViewLayoutAnimation'), 'Built declarations are missing ViewLayoutAnimation')
-assert(typeSource.includes('ViewAnimationConfig'), 'Built declarations are missing ViewAnimationConfig')
+assert(
+  typeSource.includes('ViewLayoutAnimation'),
+  'Built declarations are missing ViewLayoutAnimation',
+)
+assert(
+  typeSource.includes('ViewAnimationConfig'),
+  'Built declarations are missing ViewAnimationConfig',
+)
 assert(typeSource.includes('MotionSpring'), 'Built declarations are missing MotionSpring')
-assert(typeSource.includes('MotionInterruption'), 'Built declarations are missing MotionInterruption')
+assert(
+  typeSource.includes('MotionInterruption'),
+  'Built declarations are missing MotionInterruption',
+)
 assert(typeSource.includes('PresenceProps'), 'Built declarations are missing PresenceProps')
 assert(typeSource.includes('PopoverProps'), 'Built declarations are missing PopoverProps')
 assert(typeSource.includes('MenuProps'), 'Built declarations are missing MenuProps')
@@ -87,8 +100,14 @@ assert(typeSource.includes('DividerProps'), 'Built declarations are missing Divi
 assert(typeSource.includes('SelectProps'), 'Built declarations are missing SelectProps')
 assert(typeSource.includes('SelectOptionProps'), 'Built declarations are missing SelectOptionProps')
 assert(typeSource.includes('ComboboxProps'), 'Built declarations are missing ComboboxProps')
-assert(typeSource.includes('ComboboxOptionProps'), 'Built declarations are missing ComboboxOptionProps')
-assert(typeSource.includes('ReducedMotionPreference'), 'Built declarations are missing ReducedMotionPreference')
+assert(
+  typeSource.includes('ComboboxOptionProps'),
+  'Built declarations are missing ComboboxOptionProps',
+)
+assert(
+  typeSource.includes('ReducedMotionPreference'),
+  'Built declarations are missing ReducedMotionPreference',
+)
 assert(typeSource.includes('AbsoluteProps'), 'Built declarations are missing AbsoluteProps')
 assert(typeSource.includes('FlexProps'), 'Built declarations are missing FlexProps')
 assert(typeSource.includes('GridProps'), 'Built declarations are missing GridProps')
@@ -123,10 +142,7 @@ const expectedThemeTypeExports = [
 ]
 
 for (const name of expectedThemeTypeExports) {
-  assert(
-    typeSource.includes(name),
-    `Built declarations are missing theme type export: ${name}`,
-  )
+  assert(typeSource.includes(name), `Built declarations are missing theme type export: ${name}`)
 }
 
 assert(
