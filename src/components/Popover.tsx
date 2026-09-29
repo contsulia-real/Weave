@@ -1,10 +1,8 @@
 import {
   useCallback,
-  useEffect,
   useId,
   useInsertionEffect,
   useRef,
-  useState,
   type TransitionEvent as ReactTransitionEvent,
 } from 'react'
 import { createPortal } from 'react-dom'
@@ -21,6 +19,7 @@ import { useTheme } from '../theme/theme-context'
 import { ThemeProvider } from '../theme/ThemeProvider'
 import { assignRef } from './internal/assign-ref'
 import { durationMilliseconds } from './internal/motion-duration'
+import { useControllableBoolean } from './internal/use-controllable-boolean'
 import { useExitPresence } from './internal/use-exit-presence'
 import { usePopoverInteraction } from './internal/use-popover-interaction'
 import { usePopoverPosition } from './internal/use-popover-position'
@@ -39,16 +38,16 @@ export function Popover({
   restoreFocus = true,
   viewProps = {},
 }: PopoverProps) {
-  const controlled =
-    open !== undefined
-  const [
-    uncontrolledOpen,
-    setUncontrolledOpen,
-  ] = useState(defaultOpen)
-  const resolvedOpen =
-    open ?? uncontrolledOpen
-  const requestedOpenRef =
-    useRef(resolvedOpen)
+  const {
+    value: resolvedOpen,
+    requestedValueRef:
+      requestedOpenRef,
+    request: requestOpen,
+  } = useControllableBoolean(
+    open,
+    defaultOpen,
+    onOpenChange,
+  )
   const wrapperRef =
     useRef<HTMLSpanElement>(null)
   const targetRef =
@@ -91,42 +90,15 @@ export function Popover({
     [],
   )
 
-  useEffect(() => {
-    requestedOpenRef.current =
-      resolvedOpen
-  }, [resolvedOpen])
-
-  const requestOpen =
-    useCallback(
-      (next: boolean) => {
-        if (
-          requestedOpenRef.current ===
-          next
-        ) {
-          return
-        }
-
-        requestedOpenRef.current =
-          next
-
-        if (!controlled) {
-          setUncontrolledOpen(next)
-        }
-
-        onOpenChange?.(next)
-      },
-      [
-        controlled,
-        onOpenChange,
-      ],
-    )
-
   const toggleOpen =
     useCallback(() => {
       requestOpen(
         !requestedOpenRef.current,
       )
-    }, [requestOpen])
+    }, [
+      requestOpen,
+      requestedOpenRef,
+    ])
 
   const close =
     useCallback(() => {

@@ -5,7 +5,6 @@ import {
   useInsertionEffect,
   useMemo,
   useRef,
-  useState,
   type KeyboardEvent,
   type TransitionEvent,
 } from 'react'
@@ -38,6 +37,9 @@ import {
   durationMilliseconds,
 } from './internal/motion-duration'
 import {
+  useControllableBoolean,
+} from './internal/use-controllable-boolean'
+import {
   useExitPresence,
 } from './internal/use-exit-presence'
 import {
@@ -61,16 +63,14 @@ export function Menu({
   closeOnSelect = true,
   viewProps = {},
 }: MenuProps) {
-  const controlled =
-    open !== undefined
-  const [
-    uncontrolledOpen,
-    setUncontrolledOpen,
-  ] = useState(defaultOpen)
-  const resolvedOpen =
-    open ?? uncontrolledOpen
-  const requestedOpenRef =
-    useRef(resolvedOpen)
+  const {
+    value: resolvedOpen,
+    request: requestOpenState,
+  } = useControllableBoolean(
+    open,
+    defaultOpen,
+    onOpenChange,
+  )
   const pendingFocusRef =
     useRef<MenuInitialFocus>(
       'first',
@@ -128,11 +128,6 @@ export function Menu({
     [],
   )
 
-  useEffect(() => {
-    requestedOpenRef.current =
-      resolvedOpen
-  }, [resolvedOpen])
-
   const requestOpen =
     useCallback(
       (
@@ -144,35 +139,22 @@ export function Menu({
         pendingFocusRef.current =
           focus
 
-        if (
-          requestedOpenRef.current ===
-          next
-        ) {
-          if (next) {
-            queueMicrotask(() => {
-              focusMenuItem(
-                panelRef.current,
-                levelId,
-                focus,
-              )
-            })
-          }
-          return
+        const changed =
+          requestOpenState(next)
+
+        if (!changed && next) {
+          queueMicrotask(() => {
+            focusMenuItem(
+              panelRef.current,
+              levelId,
+              focus,
+            )
+          })
         }
-
-        requestedOpenRef.current =
-          next
-
-        if (!controlled) {
-          setUncontrolledOpen(next)
-        }
-
-        onOpenChange?.(next)
       },
       [
-        controlled,
         levelId,
-        onOpenChange,
+        requestOpenState,
       ],
     )
 

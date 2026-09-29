@@ -56,6 +56,9 @@ import {
   durationMilliseconds,
 } from './internal/motion-duration'
 import {
+  useControllableBoolean,
+} from './internal/use-controllable-boolean'
+import {
   useExitPresence,
 } from './internal/use-exit-presence'
 import {
@@ -123,15 +126,14 @@ export function Select({
       ? value ?? null
       : uncontrolledValue
 
-  const controlledOpen =
-    open !== undefined
-  const [
-    uncontrolledOpen,
-    setUncontrolledOpen,
-  ] = useState(defaultOpen)
-  const resolvedOpen =
-    open ??
-    uncontrolledOpen
+  const {
+    value: resolvedOpen,
+    request: setOpenState,
+  } = useControllableBoolean(
+    open,
+    defaultOpen,
+    onOpenChange,
+  )
 
   const [
     activeValue,
@@ -208,31 +210,6 @@ export function Select({
           )
         )
       : null
-
-  const setOpenState =
-    useCallback(
-      (next: boolean) => {
-        if (
-          next ===
-          resolvedOpen
-        ) {
-          return
-        }
-
-        if (!controlledOpen) {
-          setUncontrolledOpen(
-            next,
-          )
-        }
-
-        onOpenChange?.(next)
-      },
-      [
-        controlledOpen,
-        onOpenChange,
-        resolvedOpen,
-      ],
-    )
 
   const close =
     useCallback(() => {

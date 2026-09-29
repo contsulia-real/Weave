@@ -67,6 +67,9 @@ import {
   useComboboxInteraction,
 } from './internal/use-combobox-interaction'
 import {
+  useControllableBoolean,
+} from './internal/use-controllable-boolean'
+import {
   useExitPresence,
 } from './internal/use-exit-presence'
 import {
@@ -161,17 +164,14 @@ export function Combobox({
       ? inputValue
       : uncontrolledInput
 
-  const controlledOpen =
-    open !== undefined
-  const [
-    uncontrolledOpen,
-    setUncontrolledOpen,
-  ] = useState(defaultOpen)
-  const resolvedOpen =
-    open ??
-    uncontrolledOpen
-  const requestedOpenRef =
-    useRef(resolvedOpen)
+  const {
+    value: resolvedOpen,
+    request: setOpenState,
+  } = useControllableBoolean(
+    open,
+    defaultOpen,
+    onOpenChange,
+  )
 
   const [
     activeValue,
@@ -278,38 +278,6 @@ export function Combobox({
     ensureComboboxStylesheet,
     [],
   )
-
-  useEffect(() => {
-    requestedOpenRef.current =
-      resolvedOpen
-  }, [resolvedOpen])
-
-  const setOpenState =
-    useCallback(
-      (next: boolean) => {
-        if (
-          requestedOpenRef.current ===
-          next
-        ) {
-          return
-        }
-
-        requestedOpenRef.current =
-          next
-
-        if (!controlledOpen) {
-          setUncontrolledOpen(
-            next,
-          )
-        }
-
-        onOpenChange?.(next)
-      },
-      [
-        controlledOpen,
-        onOpenChange,
-      ],
-    )
 
   const close =
     useCallback(() => {

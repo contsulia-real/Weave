@@ -1,10 +1,6 @@
 import {
-  useCallback,
   useContext,
-  useEffect,
   useInsertionEffect,
-  useRef,
-  useState,
   type ReactNode,
   type TransitionEvent as ReactTransitionEvent,
 } from 'react'
@@ -23,6 +19,7 @@ import { Progress } from './Progress'
 import { View } from './View'
 import { durationMilliseconds } from './internal/motion-duration'
 import { SnackBody } from './internal/SnackBody'
+import { useControllableBoolean } from './internal/use-controllable-boolean'
 import { useExitPresence } from './internal/use-exit-presence'
 import {
   SnackHostContext,
@@ -55,23 +52,16 @@ export function Snack({
   viewProps = {},
   ...contentProps
 }: SnackProps) {
-  const controlled =
-    open !== undefined
-  const [
-    uncontrolledOpen,
-    setUncontrolledOpen,
-  ] = useState(defaultOpen)
-  const resolvedOpen =
-    open ?? uncontrolledOpen
+  const {
+    value: resolvedOpen,
+    request: requestOpen,
+  } = useControllableBoolean(
+    open,
+    defaultOpen,
+    onOpenChange,
+  )
   const durationMs =
     Math.max(0, duration)
-
-  const requestedOpenRef =
-    useRef(resolvedOpen)
-  const controlledRef =
-    useRef(controlled)
-  const onOpenChangeRef =
-    useRef(onOpenChange)
 
   const snackHostContext =
     useContext(SnackHostContext)
@@ -114,45 +104,6 @@ export function Snack({
     ensureSnackStylesheet,
     [],
   )
-
-  useEffect(() => {
-    requestedOpenRef.current =
-      resolvedOpen
-  }, [resolvedOpen])
-
-  useEffect(() => {
-    controlledRef.current =
-      controlled
-    onOpenChangeRef.current =
-      onOpenChange
-  }, [
-    controlled,
-    onOpenChange,
-  ])
-
-  const requestOpen =
-    useCallback(
-      (next: boolean) => {
-        if (
-          requestedOpenRef.current ===
-          next
-        ) {
-          return
-        }
-
-        requestedOpenRef.current =
-          next
-
-        if (!controlledRef.current) {
-          setUncontrolledOpen(next)
-        }
-
-        onOpenChangeRef.current?.(
-          next,
-        )
-      },
-      [],
-    )
 
   const {
     paused,

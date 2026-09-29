@@ -5,7 +5,6 @@ import {
   useInsertionEffect,
   useLayoutEffect,
   useRef,
-  useState,
 } from 'react'
 import type {
   TransitionEvent as ReactTransitionEvent,
@@ -21,6 +20,7 @@ import { ensureToolTipStylesheet } from '../renderers/dom/tooltip-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { ThemeProvider } from '../theme/ThemeProvider'
 import { durationMilliseconds } from './internal/motion-duration'
+import { useControllableBoolean } from './internal/use-controllable-boolean'
 import { useExitPresence } from './internal/use-exit-presence'
 import { useToolTipPosition } from './internal/use-tooltip-position'
 import { Text } from './Text'
@@ -37,14 +37,14 @@ export function ToolTip({
   onOpenChange,
   viewProps = {},
 }: ToolTipProps) {
-  const controlled =
-    open !== undefined
-  const [
-    uncontrolledOpen,
-    setUncontrolledOpen,
-  ] = useState(defaultOpen)
-  const resolvedOpen =
-    open ?? uncontrolledOpen
+  const {
+    value: resolvedOpen,
+    request: requestOpen,
+  } = useControllableBoolean(
+    open,
+    defaultOpen,
+    onOpenChange,
+  )
 
   const wrapperRef =
     useRef<HTMLSpanElement>(null)
@@ -60,8 +60,6 @@ export function ToolTip({
     useRef(false)
   const pointerFocusRef =
     useRef(false)
-  const requestedOpenRef =
-    useRef(resolvedOpen)
 
   const reactId = useId()
   const tooltipId =
@@ -98,11 +96,6 @@ export function ToolTip({
     [],
   )
 
-  useEffect(() => {
-    requestedOpenRef.current =
-      resolvedOpen
-  }, [resolvedOpen])
-
   const clearOpenTimer =
     useCallback(() => {
       if (
@@ -118,31 +111,6 @@ export function ToolTip({
       openTimerRef.current =
         undefined
     }, [])
-
-  const requestOpen =
-    useCallback(
-      (next: boolean) => {
-        if (
-          requestedOpenRef.current ===
-          next
-        ) {
-          return
-        }
-
-        requestedOpenRef.current =
-          next
-
-        if (!controlled) {
-          setUncontrolledOpen(next)
-        }
-
-        onOpenChange?.(next)
-      },
-      [
-        controlled,
-        onOpenChange,
-      ],
-    )
 
   const scheduleOpen =
     useCallback(() => {
