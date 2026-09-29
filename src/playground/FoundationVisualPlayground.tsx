@@ -1,5 +1,5 @@
 import { IconBell, IconSearch, IconSearchFilled, IconSettings, IconUser } from '@tabler/icons-react'
-import { Column, createTheme, Icon, Image, Key, Row, Text, ThemeProvider, View } from '../index'
+import { Column, createTheme, Icon, Image, Row, Text, ThemeProvider, View } from '../index'
 import { PlaygroundSection } from './PlaygroundSection'
 
 const diagnosticImage =
@@ -22,65 +22,6 @@ const diagnosticImage =
       </text>
     </svg>
   `)
-
-const keyRows = [
-  [
-    'Esc',
-    'F1',
-    'F2',
-    'F3',
-    'F4',
-    'F5',
-    'F6',
-    'F7',
-    'F8',
-    'F9',
-    'F10',
-    'F11',
-    'F12',
-    'PrintScreen',
-    'ScrollLock',
-    'Pause',
-  ],
-  ['~', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace'],
-  ['Tab', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '[', ']', '\\'],
-  ['CapsLock', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';', "'", 'Enter'],
-  ['Shift', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '/', 'Shift'],
-  ['Ctrl', 'Fn', 'Meta', 'Alt', 'Space', 'Alt', 'Meta', 'Menu', 'Ctrl'],
-] as const
-
-const navigationKeys = [
-  'Insert',
-  'Home',
-  'PageUp',
-  'Delete',
-  'End',
-  'PageDown',
-  'ArrowUp',
-  'ArrowLeft',
-  'ArrowDown',
-  'ArrowRight',
-] as const
-
-const numpadKeys = [
-  'NumLock',
-  '/',
-  '*',
-  '-',
-  '7',
-  '8',
-  '9',
-  '+',
-  '4',
-  '5',
-  '6',
-  '1',
-  '2',
-  '3',
-  'Enter',
-  '0',
-  '.',
-] as const
 
 const diagnosticTheme = createTheme({
   tokens: {
@@ -246,71 +187,6 @@ export function FoundationVisualPlayground() {
             />
           </Column>
         </Row>
-      </PlaygroundSection>
-
-      <PlaygroundSection
-        title="Key"
-        description="完整键盘展示：能由 Tabler 准确表达的键优先用大号图标，其余保留文字；所有 Key 只展示 Button 的静态实体样式，不响应 hover / press。"
-      >
-        <Column gap={1}>
-          <Column gap={0.5}>
-            {keyRows.map((row, rowIndex) => (
-              <Row key={rowIndex} gap={0.375} align="center" wrap>
-                {row.map((key, keyIndex) => (
-                  <Key
-                    key={key + keyIndex}
-                    value={key}
-                    viewProps={
-                      key === 'Space'
-                        ? {
-                            width: 9,
-                          }
-                        : undefined
-                    }
-                  />
-                ))}
-              </Row>
-            ))}
-          </Column>
-
-          <Column gap={0.5}>
-            <Text typo="label-small" color="secondary">
-              Navigation
-            </Text>
-            <Row gap={0.375} align="center" wrap>
-              {navigationKeys.map((key) => (
-                <Key key={key} value={key} />
-              ))}
-            </Row>
-          </Column>
-
-          <Column gap={0.5}>
-            <Text typo="label-small" color="secondary">
-              Numpad
-            </Text>
-            <Row gap={0.375} align="center" wrap>
-              {numpadKeys.map((key, index) => (
-                <Key key={key + index} value={key} />
-              ))}
-            </Row>
-          </Column>
-
-          <Column gap={0.5}>
-            <Text typo="label-small" color="secondary">
-              Platform variants
-            </Text>
-            <Row gap={0.375} align="center" wrap>
-              <Key value="meta" />
-              <Key value="meta" metaKey="command" />
-              <Key value="meta" metaKey="windows" />
-              <Key value="meta" metaKey="meta" />
-              <Key value="option" />
-              <Key value="alt" />
-              <Key value="fn" />
-              <Key value="Shift" />
-            </Row>
-          </Column>
-        </Column>
       </PlaygroundSection>
 
       <PlaygroundSection
