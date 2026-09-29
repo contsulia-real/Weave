@@ -54,10 +54,10 @@ const optionItemBase = {
 const inputBase = {
   ...controlBaseline,
   ...controlMedium,
-  background: 'surface',
   color: 'inherit',
   placeholderColor: 'secondary',
   borderColor: 'outline',
+  borderWidth: 0,
   minWidth: 12,
   paddingX: 0.875,
   typo: 'body-large',

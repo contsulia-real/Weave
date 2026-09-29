@@ -46,18 +46,7 @@ const stylesheet = `
     var(--weave-input-radius);
   --weave-component-outline-width: 0;
   --weave-component-box-shadow:
-    inset 0 0.0625rem 0.125rem
-    color-mix(
-      in srgb,
-      var(--weave-input-border-color) 28%,
-      transparent
-    ),
-    inset 0 0 0 0.0625rem
-    color-mix(
-      in srgb,
-      var(--weave-input-border-color) 10%,
-      transparent
-    );
+    var(--weave-input-shadow);
 
   appearance: none;
   font: inherit;
@@ -134,42 +123,10 @@ const stylesheet = `
   opacity: 1;
 }
 
-:where(
-  .weave-input:hover:not(:disabled),
-  .weave-select:hover:not(:disabled):not(
-    [aria-disabled="true"]
-  )
-) {
-  --weave-component-box-shadow:
-    inset 0 0.09375rem 0.15625rem
-    color-mix(
-      in srgb,
-      var(--weave-input-border-color) 34%,
-      transparent
-    ),
-    inset 0 0 0 0.0625rem
-    color-mix(
-      in srgb,
-      var(--weave-input-border-color) 14%,
-      transparent
-    );
-}
-
 :where(.weave-input:focus-visible),
 :where(.weave-select:focus-visible) {
   --weave-component-box-shadow:
-    inset 0 0.0625rem 0.125rem
-    color-mix(
-      in srgb,
-      var(--weave-input-focus-outline-color) 18%,
-      transparent
-    ),
-    inset 0 0 0 0.0625rem
-    color-mix(
-      in srgb,
-      var(--weave-input-focus-outline-color) 12%,
-      transparent
-    );
+    var(--weave-input-shadow);
   --weave-component-border-top-color:
     var(--weave-input-focus-outline-color);
   --weave-component-border-right-color:

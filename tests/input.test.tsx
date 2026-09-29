@@ -333,7 +333,7 @@ describe('Input', () => {
       '--weave-input-min-width:12rem;',
     )
     expect(rule).toContain(
-      '--weave-input-border-width:0.0625rem;',
+      '--weave-input-border-width:0rem;',
     )
     expect(rule).toContain(
       '--weave-input-radius:0.75rem;',
@@ -353,11 +353,17 @@ describe('Input', () => {
     expect(stylesheet?.textContent).toContain(
       '--weave-component-border-style: solid',
     )
-    expect(stylesheet?.textContent).toContain(
-      'inset 0 0.0625rem 0.125rem',
+    expect(rule).toContain(
+      '--weave-input-shadow:inset00.0625rem0.125remrgb(584840/0.10),inset0000.0625remrgb(584840/0.05);',
+    )
+    expect(rule).toContain(
+      '--weave-input-background:color-mix(insrgb,var(--weave-color-outline)34%,var(--weave-color-surface));',
     )
     expect(stylesheet?.textContent).toContain(
-      'inset 0 0.09375rem 0.15625rem',
+      '--weave-component-box-shadow:\n    var(--weave-input-shadow)',
+    )
+    expect(stylesheet?.textContent).not.toContain(
+      '0 0.09375rem 0.15625rem',
     )
   })
 
