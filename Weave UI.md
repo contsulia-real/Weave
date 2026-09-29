@@ -3692,7 +3692,7 @@ printscreen / prtsc → IconScreenshot
 menu / contextmenu  → IconMenu2
 ```
 
-这些 icon 继续通过 Weave 的 `Icon` 渲染路径输出，并统一使用 `size="xlarge"`，避免键帽里的 glyph 过小；外层 `<kbd>` 提供对应的 `aria-label`，SVG 自身保持 decorative。没有明确 Tabler 对应图标的键继续使用文本，不为了“图标化”使用语义不准确的替代图形。Playground 必须完整展示标准功能键区、主键盘、导航/方向区、数字小键盘和平台 modifier 变体，不能只展示少量样例。
+这些 icon 继续通过 Weave 的 `Icon` 渲染路径输出，并以 `size="xlarge"` 作为 Icon 语义档位；Key stylesheet 再按键帽 size 放大实际图形尺寸：small = 1.75rem、medium = 2rem、large = 2.25rem，避免 glyph 缩在键帽中央。外层 `<kbd>` 提供对应的 `aria-label`，SVG 自身保持 decorative。没有明确 Tabler 对应图标的键继续使用文本，不为了“图标化”使用语义不准确的替代图形。Playground 必须完整展示标准功能键区、主键盘、导航/方向区、数字小键盘和平台 modifier 变体，不能只展示少量样例。
 
 但 Key 只保留 Button 的 rest 外观：
 

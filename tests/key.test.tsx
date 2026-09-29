@@ -46,6 +46,15 @@ describe('Key', () => {
     expect(element.querySelector('[data-weave-icon]')?.getAttribute('data-weave-icon-size')).toBe(
       'xlarge',
     )
+
+    const stylesheet =
+      document.querySelector<HTMLStyleElement>('style[data-weave-key-styles]')?.textContent ?? ''
+    expect(stylesheet).toContain('--weave-component-width: 1.75rem')
+    expect(stylesheet).toContain('--weave-component-height: 1.75rem')
+    expect(stylesheet).toContain('--weave-component-width: 2rem')
+    expect(stylesheet).toContain('--weave-component-height: 2rem')
+    expect(stylesheet).toContain('--weave-component-width: 2.25rem')
+    expect(stylesheet).toContain('--weave-component-height: 2.25rem')
   })
 
   it('reuses Button variants and sizes without interactive visual feedback', () => {

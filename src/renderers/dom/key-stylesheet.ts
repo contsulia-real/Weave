@@ -8,6 +8,21 @@ const stylesheet = `
   --weave-component-transition-delay: 0ms;
 }
 
+.weave-key.weave-button--small .weave-icon {
+  --weave-component-width: 1.75rem;
+  --weave-component-height: 1.75rem;
+}
+
+.weave-key.weave-button--medium .weave-icon {
+  --weave-component-width: 2rem;
+  --weave-component-height: 2rem;
+}
+
+.weave-key.weave-button--large .weave-icon {
+  --weave-component-width: 2.25rem;
+  --weave-component-height: 2.25rem;
+}
+
 :where(.weave-key:hover),
 :where(.weave-key:active),
 :where(.weave-key:focus-visible) {
