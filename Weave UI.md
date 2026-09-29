@@ -4057,7 +4057,7 @@ submenuOffset = 0.25rem
 viewportPadding = 0.5rem
 ```
 
-submenu 使用 side-start 语义：默认从父 item 右侧、顶部对齐展开；右侧空间不足时自动 flip 到左侧，并沿纵轴 shift 保持在 viewport 内。任意祖先 scroll、viewport resize、anchor / panel resize 或视觉动画变化都会重新定位。root Menu 不自己实现 viewport-exit 判断，而是继承 anchored-overlay 的统一 anchor-hidden dismiss：trigger 仍与 viewport 有交集时保持打开，完全离开 viewport 后关闭整棵菜单树，并且不把 focus 强行拉回已经离屏的 trigger。
+submenu 使用 side-start 语义：默认从父 item 右侧、顶部对齐展开；右侧空间不足时自动 flip 到左侧，并沿纵轴 shift 保持在 viewport 内。submenu 不维护第二套 positioning engine，而是直接复用 Popover 的 placement / flip / shift resolver，并只把 cross-axis alignment 设为 `start`。任意祖先 scroll、viewport resize、anchor / panel resize 或视觉动画变化都会重新定位。root Menu 不自己实现 viewport-exit 判断，而是继承 anchored-overlay 的统一 anchor-hidden dismiss：trigger 仍与 viewport 有交集时保持打开，完全离开 viewport 后关闭整棵菜单树，并且不把 focus 强行拉回已经离屏的 trigger。
 
 root 和所有 submenu 都使用同一个 semantic `overlay` layer、ThemeProvider 上下文与 exit-presence 生命周期。collision flip 后 motion 方向跟随最终实际方向。
 

@@ -48,8 +48,8 @@ import {
   useExitPresence,
 } from './internal/use-exit-presence'
 import {
-  useSubmenuPosition,
-} from './internal/use-submenu-position'
+  usePopoverPosition,
+} from './internal/use-popover-position'
 import { Text } from './Text'
 import { View } from './View'
 
@@ -167,15 +167,22 @@ export function MenuItem({
     root.viewportPadding
   const {
     positioned,
-    side,
+    placement:
+      submenuPlacement,
     placementStyle,
-  } = useSubmenuPosition(
+  } = usePopoverPosition(
     itemRef,
     submenuPanelRef,
     present,
+    'right',
     offsetValue,
     viewportPaddingValue,
+    'start',
   )
+  const side =
+    submenuPlacement === 'left'
+      ? 'left'
+      : 'right'
 
   const openSubmenu =
     useCallback(

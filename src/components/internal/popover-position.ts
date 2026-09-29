@@ -19,6 +19,10 @@ export interface ResolvedPopoverPosition {
   placement: PopoverPlacement
 }
 
+export type PopoverCrossAlignment =
+  | 'center'
+  | 'start'
+
 export function oppositePopoverPlacement(
   placement: PopoverPlacement,
 ): PopoverPlacement {
@@ -47,6 +51,7 @@ function candidatePosition(
   panel: PopoverSize,
   placement: PopoverPlacement,
   offset: number,
+  crossAlignment: PopoverCrossAlignment,
 ): {
   left: number
   top: number
@@ -93,8 +98,10 @@ function candidatePosition(
           target.right +
           offset,
         top:
-          centerY -
-          panel.height / 2,
+          crossAlignment === 'start'
+            ? target.top
+            : centerY -
+              panel.height / 2,
       }
     case 'bottom-right':
       return {
@@ -128,8 +135,10 @@ function candidatePosition(
           panel.width -
           offset,
         top:
-          centerY -
-          panel.height / 2,
+          crossAlignment === 'start'
+            ? target.top
+            : centerY -
+              panel.height / 2,
       }
   }
 }
@@ -205,6 +214,9 @@ export function resolvePopoverPosition(
   placement: PopoverPlacement,
   offset: number,
   viewport: PopoverViewport,
+  crossAlignment:
+    PopoverCrossAlignment =
+      'center',
 ): ResolvedPopoverPosition {
   const requested =
     candidatePosition(
@@ -212,6 +224,7 @@ export function resolvePopoverPosition(
       panel,
       placement,
       offset,
+      crossAlignment,
     )
   const opposite =
     oppositePopoverPlacement(
@@ -223,6 +236,7 @@ export function resolvePopoverPosition(
       panel,
       opposite,
       offset,
+      crossAlignment,
     )
 
   const requestedOverflow =

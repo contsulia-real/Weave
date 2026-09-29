@@ -10,6 +10,7 @@ import type {
 import { cssLengthPixels } from './css-length-pixels'
 import {
   resolvePopoverPosition,
+  type PopoverCrossAlignment,
 } from './popover-position'
 import { trackVisualAnchor } from './visual-anchor-tracker'
 
@@ -57,6 +58,9 @@ export function usePopoverPosition(
   placement: PopoverPlacement,
   offset: string,
   viewportPadding: string,
+  crossAlignment:
+    PopoverCrossAlignment =
+      'center',
 ) {
   const [
     state,
@@ -132,6 +136,7 @@ export function usePopoverPosition(
                 viewportPadding,
               ),
           },
+          crossAlignment,
         )
       const resolved = {
         ...next,
@@ -164,6 +169,7 @@ export function usePopoverPosition(
       },
     )
   }, [
+    crossAlignment,
     offset,
     panelRef,
     placement,
