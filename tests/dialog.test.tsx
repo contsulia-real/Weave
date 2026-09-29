@@ -1,21 +1,16 @@
 import { act, cleanup, fireEvent, render, waitFor } from '@testing-library/react'
-import { createRef } from 'react'
+import { createRef, type SyntheticEvent } from 'react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { createTheme, Dialog, Text, ThemeProvider } from '../src'
+import { Button, createTheme, Dialog, Text, ThemeProvider } from '../src'
 
 const dialogPrototype = HTMLDialogElement.prototype
-const originalShow = Object.getOwnPropertyDescriptor(dialogPrototype, 'show')
 const originalShowModal = Object.getOwnPropertyDescriptor(dialogPrototype, 'showModal')
 const originalClose = Object.getOwnPropertyDescriptor(dialogPrototype, 'close')
 
-let showSpy: ReturnType<typeof vi.fn>
 let showModalSpy: ReturnType<typeof vi.fn>
 let closeSpy: ReturnType<typeof vi.fn>
 
-function restoreDialogMethod(
-  name: 'show' | 'showModal' | 'close',
-  descriptor?: PropertyDescriptor,
-) {
+function restoreDialogMethod(name: 'showModal' | 'close', descriptor?: PropertyDescriptor) {
   if (descriptor === undefined) {
     Reflect.deleteProperty(dialogPrototype, name)
     return
@@ -25,9 +20,6 @@ function restoreDialogMethod(
 }
 
 beforeEach(() => {
-  showSpy = vi.fn(function (this: HTMLDialogElement) {
-    this.open = true
-  })
   showModalSpy = vi.fn(function (this: HTMLDialogElement) {
     this.open = true
   })
@@ -36,11 +28,6 @@ beforeEach(() => {
     this.dispatchEvent(new Event('close'))
   })
 
-  Object.defineProperty(dialogPrototype, 'show', {
-    configurable: true,
-    writable: true,
-    value: showSpy,
-  })
   Object.defineProperty(dialogPrototype, 'showModal', {
     configurable: true,
     writable: true,
@@ -55,27 +42,34 @@ beforeEach(() => {
 
 afterEach(() => {
   cleanup()
-  restoreDialogMethod('show', originalShow)
   restoreDialogMethod('showModal', originalShowModal)
   restoreDialogMethod('close', originalClose)
 })
 
 describe('Dialog', () => {
-  it('uses the native non-modal show path by default', () => {
-    const { getByRole } = render(
-      <Dialog defaultOpen>
+  it('wraps Popover for non-modal Dialog', async () => {
+    const { getByRole, queryByRole } = render(
+      <Dialog defaultOpen placement="right" trigger={<Button text="Reference trigger" />}>
         <Text>Reference panel</Text>
       </Dialog>,
     )
 
-    const dialog = getByRole('dialog') as HTMLDialogElement
+    const trigger = getByRole('button', { name: 'Reference trigger' })
+    const panel = getByRole('dialog')
 
-    expect(dialog.tagName).toBe('DIALOG')
-    expect(dialog.open).toBe(true)
-    expect(showSpy).toHaveBeenCalledTimes(1)
+    expect(panel.tagName).toBe('DIV')
+    expect(panel.classList.contains('weave-popover')).toBe(true)
+    expect(document.querySelector('dialog')).toBeNull()
+    expect(trigger.getAttribute('aria-haspopup')).toBe('dialog')
+    expect(trigger.getAttribute('aria-expanded')).toBe('true')
     expect(showModalSpy).not.toHaveBeenCalled()
-    expect(dialog.dataset.weaveDialogModal).toBe('false')
-    expect(document.body.contains(dialog)).toBe(true)
+
+    fireEvent.keyDown(document, { key: 'Escape' })
+
+    await waitFor(() => {
+      expect(trigger.getAttribute('aria-expanded')).toBe('false')
+    })
+    expect(queryByRole('dialog')).toBeDefined()
   })
 
   it('uses showModal and keeps native cancel under React state control', async () => {
@@ -92,7 +86,6 @@ describe('Dialog', () => {
     })
 
     expect(showModalSpy).toHaveBeenCalledTimes(1)
-    expect(showSpy).not.toHaveBeenCalled()
     expect(dialog.dataset.weaveDialogModal).toBe('true')
 
     act(() => {
@@ -117,7 +110,7 @@ describe('Dialog', () => {
 
   it('keeps modal Escape open when closeOnEscape is disabled or user-cancelled', () => {
     const onOpenChange = vi.fn()
-    const onCancel = vi.fn((event: React.SyntheticEvent<HTMLDialogElement>) => {
+    const onCancel = vi.fn((event: SyntheticEvent<HTMLDialogElement>) => {
       event.preventDefault()
     })
     const { getByRole, rerender } = render(
@@ -190,56 +183,7 @@ describe('Dialog', () => {
     })
   })
 
-  it('does not close non-modal Dialog on Escape unless explicitly enabled', async () => {
-    const onOpenChange = vi.fn()
-    const { getByRole, rerender } = render(
-      <Dialog defaultOpen onOpenChange={onOpenChange}>
-        <Text>Panel</Text>
-      </Dialog>,
-    )
-    const dialog = getByRole('dialog')
-
-    fireEvent.keyDown(dialog, { key: 'Escape' })
-    expect(onOpenChange).not.toHaveBeenCalled()
-
-    rerender(
-      <Dialog defaultOpen closeOnEscape onOpenChange={onOpenChange}>
-        <Text>Panel</Text>
-      </Dialog>,
-    )
-
-    fireEvent.keyDown(dialog, { key: 'Escape' })
-
-    expect(onOpenChange).toHaveBeenCalledWith(false)
-
-    await waitFor(() => {
-      expect(dialog.dataset.weaveDialogState).toBe('closing')
-    })
-  })
-
-  it('switches the same native dialog between show and showModal', () => {
-    const { getByRole, rerender } = render(
-      <Dialog defaultOpen>
-        <Text>Mode</Text>
-      </Dialog>,
-    )
-    const dialog = getByRole('dialog') as HTMLDialogElement
-
-    expect(showSpy).toHaveBeenCalledTimes(1)
-
-    rerender(
-      <Dialog defaultOpen modal>
-        <Text>Mode</Text>
-      </Dialog>,
-    )
-
-    expect(closeSpy).toHaveBeenCalledTimes(1)
-    expect(showModalSpy).toHaveBeenCalledTimes(1)
-    expect(dialog.open).toBe(true)
-    expect(dialog.dataset.weaveDialogModal).toBe('true')
-  })
-
-  it('focuses initialFocus and restores the previous focus after exit', async () => {
+  it('focuses initialFocus and restores the previous focus after modal exit', async () => {
     const triggerRef = createRef<HTMLButtonElement>()
     const initialFocusRef = createRef<HTMLButtonElement>()
     const { rerender } = render(
@@ -247,7 +191,7 @@ describe('Dialog', () => {
         <button ref={triggerRef} type="button">
           Before
         </button>
-        <Dialog open={false} initialFocus={initialFocusRef}>
+        <Dialog modal open={false} initialFocus={initialFocusRef}>
           <button ref={initialFocusRef} type="button">
             Inside
           </button>
@@ -263,7 +207,7 @@ describe('Dialog', () => {
         <button ref={triggerRef} type="button">
           Before
         </button>
-        <Dialog open initialFocus={initialFocusRef}>
+        <Dialog modal open initialFocus={initialFocusRef}>
           <button ref={initialFocusRef} type="button">
             Inside
           </button>
@@ -280,7 +224,7 @@ describe('Dialog', () => {
         <button ref={triggerRef} type="button">
           Before
         </button>
-        <Dialog open={false} initialFocus={initialFocusRef}>
+        <Dialog modal open={false} initialFocus={initialFocusRef}>
           <button ref={initialFocusRef} type="button">
             Inside
           </button>
@@ -298,10 +242,10 @@ describe('Dialog', () => {
     })
   })
 
-  it('syncs native close requests back through onOpenChange', () => {
+  it('syncs native modal close requests back through onOpenChange', async () => {
     const onOpenChange = vi.fn()
     const { getByRole } = render(
-      <Dialog open onOpenChange={onOpenChange}>
+      <Dialog modal open onOpenChange={onOpenChange}>
         <Text>Controlled</Text>
       </Dialog>,
     )
@@ -312,11 +256,14 @@ describe('Dialog', () => {
     })
 
     expect(onOpenChange).toHaveBeenCalledWith(false)
-    expect(showSpy).toHaveBeenCalledTimes(2)
+
+    await waitFor(() => {
+      expect(showModalSpy).toHaveBeenCalledTimes(2)
+    })
     expect(dialog.open).toBe(true)
   })
 
-  it('is themeable and preserves viewProps escape hatches', () => {
+  it('themes the modal surface and preserves modal viewProps escape hatches', () => {
     const theme = createTheme({
       components: {
         Dialog: {
@@ -363,9 +310,9 @@ describe('Dialog', () => {
     expect(stylesheet).toContain('@starting-style')
   })
 
-  it('preserves centered dialog geometry through the View host defaults', () => {
+  it('keeps the modal surface centered through the View host defaults', () => {
     render(
-      <Dialog defaultOpen>
+      <Dialog defaultOpen modal>
         <Text>Geometry</Text>
       </Dialog>,
     )

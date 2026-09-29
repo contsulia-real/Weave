@@ -3898,7 +3898,7 @@ viewportPadding = 0.5rem
 - exit transition 完成前 panel 保留在 DOM 中，随后才卸载；
 - `prefers-reduced-motion: reduce` 时跳过退出等待与位移 / scale motion。
 
-Popover 不实现 focus trap，也不是 modal。需要独立窗口或模态阻断时使用 `Dialog`；`Dialog modal` 直接复用浏览器原生 `<dialog>.showModal()` 提供 top layer、背景 inert 与 focus containment，不由 Weave 手写第二套 focus trap。
+Popover 不实现 modal 语义。非模态 `Dialog` 直接封装 Popover，继续使用同一套 trigger、placement、collision、outside dismiss 与 focus restore；`Dialog modal` 才使用浏览器原生 `<dialog>.showModal()` 提供 top layer、背景 inert 与 focus containment，不由 Weave 手写第二套 focus trap。
 
 ## 19.5.3 Portal、collision 与视觉
 
@@ -4077,21 +4077,72 @@ theme.components.Menu.item
 ---
 # 19.7 `Dialog`
 
-`Dialog` 是不依附 trigger 的独立窗口组件，语义宿主固定为浏览器原生 `<dialog>`。Weave 不另外公开一套 `Modal` 组件；modal 是 Dialog 的打开模式，而不是第二种内容模型。
+`Dialog` 有两条明确分支，但只公开一个组件名：
 
-## 19.7.1 API
+```text
+modal=false
+→ Popover wrapper
+
+modal=true
+→ 原生 <dialog>.showModal()
+```
+
+Weave 不另外公开 `Modal` 组件，也不再使用 `<dialog>.show()` 实现 non-modal Dialog。
+
+## 19.7.1 Non-modal Dialog = Popover wrapper
+
+非模态 Dialog 必须直接复用公开 `Popover`，不能复制一套定位、collision、outside dismiss、Escape、focus restore 或 portal 系统。
 
 ```tsx
 <Dialog
-  open={open}
-  onOpenChange={setOpen}
+  trigger={<Button text="Reference" />}
+  placement="bottom-left"
 >
   <Column gap={1}>
     <Text typo="title-medium">Reference</Text>
     <Text>Background work can continue.</Text>
   </Column>
 </Dialog>
+```
 
+此时：
+
+```text
+trigger
+children
+placement
+offset
+viewportPadding
+open
+defaultOpen
+onOpenChange
+autoFocus
+restoreFocus
+viewProps
+```
+
+分别直接映射到 Popover 的 trigger / content 与同名 props。
+
+因此 non-modal Dialog：
+
+- 不默认放在屏幕中央；
+- 相对 `trigger` 定位；
+- 使用 Popover 的 8 向 placement 与 viewport flip / shift collision；
+- 使用 Popover 的 click toggle、outside dismiss、Escape 与 focus restore；
+- surface 宿主仍是 Popover 的 `<div role="dialog">`；
+- 不创建原生 `<dialog>`；
+- 不进入 top layer；
+- 不产生 `::backdrop`；
+- 不让背景 inert；
+- 不提供 modal focus containment。
+
+`Dialog` 的 non-modal 分支本身不维护第二套主题、motion 或定位实现；这些全部以 Popover 为单一实现来源。
+
+## 19.7.2 Modal Dialog = native showModal()
+
+Modal 分支：
+
+```tsx
 <Dialog
   modal
   open={confirming}
@@ -4104,14 +4155,14 @@ theme.components.Menu.item
 </Dialog>
 ```
 
-公开属性：
+公开 modal 专属属性：
 
 ```text
+modal = true
 children
 open
 defaultOpen
 onOpenChange
-modal
 closeOnEscape
 closeOnBackdrop
 initialFocus
@@ -4122,60 +4173,35 @@ viewProps
 默认值：
 
 ```text
-modal = false
-closeOnEscape = modal
+closeOnEscape = true
 closeOnBackdrop = false
 restoreFocus = true
 ```
 
-`initialFocus` 接收 `RefObject<HTMLElement | null>`。不提供时不重新实现浏览器的 dialog focusing steps；提供时，在原生 `show() / showModal()` 完成后显式聚焦该目标。
+Modal 固定使用浏览器原生 `<dialog>.showModal()`：
 
-## 19.7.2 非模态与模态是同一个原生元素
+- 浏览器负责 top layer；
+- 浏览器负责背景 inert；
+- 浏览器负责 modal focus containment；
+- 浏览器提供 `::backdrop`；
+- Escape 产生原生 `cancel` 事件。
 
-Weave 必须保持 HTML 自身的模型：
+禁止为了 modal 再实现一套 div + portal + inert + focus trap。
 
-```text
-Dialog modal=false
-→ <dialog>.show()
-→ 非模态
-→ 背景仍可交互
-→ 不进入 modal top layer
-→ 没有可交互的 ::backdrop
-→ 不由 Weave 强制 focus containment
-→ Escape 默认不关闭
-
-Dialog modal=true
-→ <dialog>.showModal()
-→ 模态
-→ 浏览器负责 top layer
-→ 浏览器负责背景 inert
-→ 浏览器负责 modal focus containment
-→ 获得 ::backdrop
-→ Escape 产生原生 cancel 事件
-```
-
-禁止为了 modal 再实现一套 div + portal + inert + focus trap。浏览器已经提供的模态语义由原生 `showModal()` 负责。
-
-`modal` 在打开状态下变化时仍复用当前同一个 `<dialog>`：框架先关闭当前原生打开模式，再用目标 `show() / showModal()` 重新同步，不创建另一种 Dialog DOM。
-
-## 19.7.3 打开、关闭与事件
+## 19.7.3 Modal 打开、关闭与事件
 
 `open / defaultOpen / onOpenChange` 使用与其他受控组件一致的模型。父级拒绝一次受控请求时，下一次相同请求仍必须正常发出。
 
-Modal 的 Escape 使用原生 `cancel` 事件：
+Escape 使用原生 `cancel` 事件：
 
 - Weave 始终 `preventDefault()` 阻止浏览器绕过 React 状态直接关闭；
 - `closeOnEscape=true` 时请求 `onOpenChange(false)`；
 - `closeOnEscape=false` 时保持打开；
 - `viewProps.onCancel` 先执行；用户已经 `preventDefault()` 时，框架不再发关闭请求。
 
-非模态 Dialog 默认不因 Escape 关闭；显式 `closeOnEscape=true` 时，只在 focus / key event 位于当前 Dialog 内时请求关闭。
+原生 `close` 事件（包括调用 dialog.close() 或原生 dialog form 流程）必须同步回 `onOpenChange(false)`。对于仍保持 `open=true` 的受控 Dialog，框架重新调用 `showModal()`，不能让 DOM 与受控 prop 永久分叉。
 
-原生 `close` 事件（包括调用 dialog.close() 或原生 dialog form 流程）必须同步回 `onOpenChange(false)`。对于仍保持 `open=true` 的受控 Dialog，框架重新同步原生打开状态，不能让 DOM 与受控 prop 永久分叉。
-
-## 19.7.4 Backdrop
-
-只有 modal Dialog 才存在原生 `::backdrop`。
+## 19.7.4 Modal Backdrop
 
 `closeOnBackdrop=false` 是默认值，避免确认删除、登录和必须完成的步骤因误点遮罩消失。
 
@@ -4185,32 +4211,33 @@ Modal 的 Escape 使用原生 `cancel` 事件：
 <Dialog modal closeOnBackdrop />
 ```
 
-只有真正落在 Dialog 外部 backdrop 区域的点击才请求关闭；Dialog surface 内部空白区域、padding 和 children 点击都不算 backdrop click。用户 `viewProps.onClick` 已经 `preventDefault()` 时不执行框架默认关闭。
+只有真正落在 Dialog surface 外部 backdrop 区域的点击才请求关闭。用户 `viewProps.onClick` 已经 `preventDefault()` 时不执行框架默认关闭。
 
 ## 19.7.5 Focus
 
-打开前记录当前 active element。关闭并完成 exit 后，`restoreFocus=true` 时恢复该元素；`restoreFocus=false` 时不主动恢复。
+Non-modal 的 autofocus / restoreFocus 完全复用 Popover。
 
-Modal 的 focus containment 本身由浏览器 `showModal()` 提供。Weave 不维护 tabbable 列表，不监听 Tab 循环，也不向页面其他节点手工写 `inert`。
+Modal 打开前记录当前 active element。提供 `initialFocus` 时，在原生 `showModal()` 完成后显式聚焦该目标；不提供时不重写浏览器自身的 dialog focusing steps。关闭并完成 exit 后，`restoreFocus=true` 时恢复之前的 active element。
 
-## 19.7.6 Portal、Layer 与 Motion
+Modal 的 focus containment 本身由浏览器提供。Weave 不维护 tabbable 列表，不监听 Tab 循环，也不向页面其他节点手工写 `inert`。
 
-Dialog portal 到 `document.body`，portal 内重新建立当前 ThemeProvider。
+## 19.7.6 Modal Portal、Layer、Geometry 与 Motion
 
-默认 semantic layer：
+Modal Dialog portal 到 `document.body`，portal 内重新建立当前 ThemeProvider；默认 semantic layer 为 `modal`，真正的模态堆叠仍以浏览器 top layer 为权威。
+
+Modal 使用 ViewHost，因此 stylesheet 必须显式提供不会被通用 View style declaration 重置掉的居中几何 fallback：
 
 ```text
-modal=false → overlay
-modal=true  → modal
+display: block
+position: fixed
+inset: 0
+margin: auto
+height: fit-content
 ```
 
-对 modal 而言，真正的模态堆叠仍以浏览器 top layer 为权威，`layer="modal"` 只保持 Weave 自身语义一致。
+关闭时不能立即调用原生 `close()`：先进入 `closing` 视觉状态并保持 `<dialog open>`，完成 exit transition 后才调用 `close()` 并卸载。Reduced Motion 下跳过等待并立即完成关闭。
 
-Dialog 仍然使用 ViewHost，因此 Dialog stylesheet 必须显式提供不会被通用 View style declaration 重置掉的几何 fallback。默认 surface 使用 `display:block + position:fixed + inset:0 + margin:auto + height:fit-content`，因此 non-modal 与 modal 都以 viewport 中央作为默认视觉位置，不依赖 portal 在 `body` 中的静态文档位置。这里的 fixed 居中只属于视觉几何：`modal=false` 仍然通过原生 `show()` 打开，不进入 top layer、不让背景 inert、也不获得 modal focus containment；`modal=true` 仍然通过 `showModal()` 获得这些浏览器模态语义。显式 `viewProps.display / position / margin / top / right / bottom / left / height` 仍具有更高优先级。
-
-关闭时不能立即调用原生 `close()`：Dialog 先进入 `closing` 视觉状态并保持 `<dialog open>`，完成 exit transition 后才调用 `close()` 并卸载。这样 `::backdrop` 与 surface 可以一起完成退出。Reduced Motion 下跳过等待并立即完成关闭。
-
-默认视觉来自：
+Modal 默认视觉来自：
 
 ```text
 theme.components.Dialog.base
@@ -4234,7 +4261,7 @@ backdropColor
 motionOffset
 ```
 
-Dialog 使用 surface / outline / large ambient shadow；modal backdrop 使用独立 `backdropColor`。通用布局、ARIA、className、style、事件和响应式覆盖继续通过 `viewProps`，但原生 dialog 打开模式、modal 语义与 close 生命周期由 Dialog 自己拥有。
+这些 Dialog theme 字段只作用于 modal 原生 Dialog；non-modal 直接继承 Popover 的 theme 与 stylesheet。
 
 ---
 # 20. `Snack`

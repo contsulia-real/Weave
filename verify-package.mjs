@@ -111,6 +111,15 @@ assert(typeSource.includes('MenuProps'), 'Built declarations are missing MenuPro
 assert(typeSource.includes('MenuItemProps'), 'Built declarations are missing MenuItemProps')
 assert(typeSource.includes('DialogProps'), 'Built declarations are missing DialogProps')
 assert(typeSource.includes('DialogViewProps'), 'Built declarations are missing DialogViewProps')
+assert(typeSource.includes('ModalDialogProps'), 'Built declarations are missing ModalDialogProps')
+assert(
+  typeSource.includes('ModalDialogViewProps'),
+  'Built declarations are missing ModalDialogViewProps',
+)
+assert(
+  typeSource.includes('NonModalDialogProps'),
+  'Built declarations are missing NonModalDialogProps',
+)
 assert(typeSource.includes('DividerProps'), 'Built declarations are missing DividerProps')
 assert(typeSource.includes('SelectProps'), 'Built declarations are missing SelectProps')
 assert(typeSource.includes('SelectOptionProps'), 'Built declarations are missing SelectOptionProps')

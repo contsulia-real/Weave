@@ -103,20 +103,25 @@ function PopoverPlayground() {
 }
 
 function DialogPlayground() {
-  const [dialogOpen, setDialogOpen] = useState(false)
   const [modalOpen, setModalOpen] = useState(false)
   const modalFocusRef = useRef<HTMLButtonElement>(null)
 
   return (
     <Column gap={1} align="start">
       <Row gap={0.75} wrap>
-        <Button
-          text="Open non-modal Dialog"
-          variant="secondary"
-          viewProps={{
-            onClick: () => setDialogOpen(true),
-          }}
-        />
+        <Dialog
+          placement="bottom-left"
+          trigger={<Button text="Open non-modal Dialog" variant="secondary" />}
+        >
+          <Column gap={0.75}>
+            <Text typo="title-medium">Non-modal Dialog</Text>
+            <Text typo="body-small" color="secondary">
+              This branch is a Popover wrapper: anchored to its trigger with the same placement,
+              collision and dismiss behavior.
+            </Text>
+          </Column>
+        </Dialog>
+
         <Button
           text="Open modal Dialog"
           viewProps={{
@@ -124,23 +129,6 @@ function DialogPlayground() {
           }}
         />
       </Row>
-
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <Column gap={0.75}>
-          <Text typo="title-medium">Non-modal Dialog</Text>
-          <Text typo="body-small" color="secondary">
-            This uses the native dialog.show() path. Background controls remain interactive.
-          </Text>
-          <Button
-            text="Close"
-            size="small"
-            variant="secondary"
-            viewProps={{
-              onClick: () => setDialogOpen(false),
-            }}
-          />
-        </Column>
-      </Dialog>
 
       <Dialog
         modal
@@ -351,7 +339,7 @@ export function FoundationControlPlayground() {
 
       <PlaygroundSection
         title="Dialog"
-        description="同一个原生 <dialog>：默认走 show() 非模态；modal 走 showModal()，由浏览器提供 top layer、backdrop、背景 inert 与 focus containment。"
+        description="非模态 Dialog 直接封装 Popover，跟随 trigger 定位；modal 才使用原生 <dialog>.showModal()，由浏览器提供 top layer、backdrop、背景 inert 与 focus containment。"
       >
         <DialogPlayground />
       </PlaygroundSection>

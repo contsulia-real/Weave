@@ -70,7 +70,13 @@ export type {
   ComboboxProps,
   ComboboxValue,
 } from './core/combobox-types'
-export type { DialogProps, DialogViewProps } from './core/dialog-types'
+export type {
+  DialogProps,
+  DialogViewProps,
+  ModalDialogProps,
+  ModalDialogViewProps,
+  NonModalDialogProps,
+} from './core/dialog-types'
 export type {
   DividerDirection,
   DividerProps,
