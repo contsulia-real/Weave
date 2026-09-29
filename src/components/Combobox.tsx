@@ -14,9 +14,6 @@ import {
   type TransitionEvent,
 } from 'react'
 import type {
-  IconSvg,
-} from '../core/icon-types'
-import type {
   ComboboxProps,
   ComboboxValue,
 } from '../core/combobox-types'
@@ -962,7 +959,7 @@ export function Combobox({
           {hasClear ? (
             <Button
               icon={
-                closeIcon as IconSvg
+                closeIcon
               }
               variant="ghost"
               size="small"
@@ -981,7 +978,7 @@ export function Combobox({
 
           <Icon
             svg={
-              chevronDownIcon as IconSvg
+              chevronDownIcon
             }
             size="small"
             stroke="regular"

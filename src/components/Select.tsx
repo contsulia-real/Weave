@@ -11,9 +11,6 @@ import {
   type TransitionEvent,
 } from 'react'
 import type {
-  IconSvg,
-} from '../core/icon-types'
-import type {
   SelectProps,
   SelectValue,
 } from '../core/select-types'
@@ -810,7 +807,7 @@ export function Select({
 
         <Icon
           svg={
-            chevronDownIcon as IconSvg
+            chevronDownIcon
           }
           size="small"
           stroke="regular"

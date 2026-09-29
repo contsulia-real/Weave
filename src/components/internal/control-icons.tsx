@@ -1,4 +1,6 @@
-export const checkIcon = (
+import type { IconSvg } from '../../core/icon-types'
+
+export const checkIcon: IconSvg = (
   <svg
     viewBox="0 0 24 24"
     fill="none"
@@ -10,7 +12,7 @@ export const checkIcon = (
   </svg>
 )
 
-export const chevronDownIcon = (
+export const chevronDownIcon: IconSvg = (
   <svg
     viewBox="0 0 24 24"
     fill="none"
@@ -22,7 +24,19 @@ export const chevronDownIcon = (
   </svg>
 )
 
-export const closeIcon = (
+export const chevronRightIcon: IconSvg = (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="m9 18 6-6-6-6" />
+  </svg>
+)
+
+export const closeIcon: IconSvg = (
   <svg
     viewBox="0 0 24 24"
     fill="none"

@@ -11,9 +11,6 @@ import {
   type TransitionEvent,
 } from 'react'
 import type {
-  IconSvg,
-} from '../core/icon-types'
-import type {
   MenuItemIcon,
   MenuItemProps,
 } from '../core/menu-types'
@@ -30,6 +27,9 @@ import {
   useTheme,
 } from '../theme/theme-context'
 import { Icon } from './Icon'
+import {
+  chevronRightIcon,
+} from './internal/control-icons'
 import { renderIconSource } from './internal/render-icon-source'
 import {
   MenuLevelContext,
@@ -52,18 +52,6 @@ import {
 } from './internal/use-popover-position'
 import { Text } from './Text'
 import { View } from './View'
-
-const submenuArrow = (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="m9 18 6-6-6-6" />
-  </svg>
-)
 
 function menuIcon(
   icon: MenuItemIcon,
@@ -672,7 +660,7 @@ export function MenuItem({
         {hasSubmenu ? (
           <Icon
             svg={
-              submenuArrow as IconSvg
+              chevronRightIcon
             }
             size="small"
             stroke="regular"
