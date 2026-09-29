@@ -26,7 +26,8 @@ export function Menu({
   trigger,
   children,
   placement = 'bottom-left',
-  offset = 0.375,
+  offset,
+  overlapTrigger = false,
   submenuOffset = 0.25,
   viewportPadding = 0.5,
   open,
@@ -98,11 +99,21 @@ export function Menu({
     })
   }, [levelId, resolvedOpen])
 
+  const resolvedOffset = offset ?? (overlapTrigger ? 0 : 0.375)
   const {
     positioned,
     placement: resolvedPlacement,
     placementStyle,
-  } = usePopoverPosition(targetRef, panelRef, present, placement, offset, viewportPadding)
+  } = usePopoverPosition(
+    targetRef,
+    panelRef,
+    present,
+    placement,
+    resolvedOffset,
+    viewportPadding,
+    'center',
+    overlapTrigger,
+  )
 
   const rootContext = useMemo(
     () => ({

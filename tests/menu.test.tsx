@@ -567,6 +567,53 @@ describe('Menu', () => {
     })
   })
 
+  it('can overlap its trigger instead of opening below it', async () => {
+    const { getByRole } = render(
+      <Menu
+        defaultOpen
+        overlapTrigger
+        placement="bottom-left"
+        trigger={<Button text="Overlap menu" />}
+      >
+        <MenuItem text="Item" />
+      </Menu>,
+    )
+    const trigger = getByRole('button')
+    const menu = getByRole('menu')
+
+    trigger.getBoundingClientRect = () =>
+      ({
+        x: 100,
+        y: 100,
+        left: 100,
+        top: 100,
+        right: 220,
+        bottom: 140,
+        width: 120,
+        height: 40,
+        toJSON: () => ({}),
+      }) as DOMRect
+    menu.getBoundingClientRect = () =>
+      ({
+        x: 0,
+        y: 0,
+        left: 0,
+        top: 0,
+        right: 180,
+        bottom: 100,
+        width: 180,
+        height: 100,
+        toJSON: () => ({}),
+      }) as DOMRect
+
+    fireEvent.scroll(window)
+
+    await waitFor(() => {
+      expect(menu.style.left).toBe('100px')
+      expect(menu.style.top).toBe('100px')
+    })
+  })
+
   it('uses custom submenuOffset for submenu positioning', async () => {
     const { getByRole, getAllByRole } = render(
       <Menu defaultOpen submenuOffset={1} trigger={<Button text="Offset menu" />}>

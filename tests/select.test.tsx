@@ -403,6 +403,48 @@ describe('Select', () => {
     expect(listboxRef).toHaveBeenCalledWith(listbox)
   })
 
+  it('can overlap its trigger instead of opening below it', async () => {
+    const { getByRole } = render(
+      <Select defaultOpen overlapTrigger placement="bottom-left">
+        <SelectOption value="alpha" text="Alpha" />
+      </Select>,
+    )
+    const trigger = getByRole('combobox')
+    const listbox = getByRole('listbox')
+
+    trigger.getBoundingClientRect = () =>
+      ({
+        x: 100,
+        y: 100,
+        left: 100,
+        top: 100,
+        right: 220,
+        bottom: 140,
+        width: 120,
+        height: 40,
+        toJSON: () => ({}),
+      }) as DOMRect
+    listbox.getBoundingClientRect = () =>
+      ({
+        x: 0,
+        y: 0,
+        left: 0,
+        top: 0,
+        right: 180,
+        bottom: 100,
+        width: 180,
+        height: 100,
+        toJSON: () => ({}),
+      }) as DOMRect
+
+    fireEvent.scroll(window)
+
+    await waitFor(() => {
+      expect(listbox.style.left).toBe('100px')
+      expect(listbox.style.top).toBe('100px')
+    })
+  })
+
   it('rejects duplicate option values', () => {
     expect(() =>
       render(

@@ -528,6 +528,48 @@ describe('Combobox', () => {
     expect(listboxRef).toHaveBeenCalledWith(listbox)
   })
 
+  it('can overlap its input instead of opening below it', async () => {
+    const { getByRole } = render(
+      <Combobox defaultOpen overlapTrigger placement="bottom-left">
+        <ComboboxOption value="alpha" text="Alpha" />
+      </Combobox>,
+    )
+    const input = getByRole('combobox')
+    const listbox = getByRole('listbox')
+
+    input.getBoundingClientRect = () =>
+      ({
+        x: 100,
+        y: 100,
+        left: 100,
+        top: 100,
+        right: 300,
+        bottom: 140,
+        width: 200,
+        height: 40,
+        toJSON: () => ({}),
+      }) as DOMRect
+    listbox.getBoundingClientRect = () =>
+      ({
+        x: 0,
+        y: 0,
+        left: 0,
+        top: 0,
+        right: 200,
+        bottom: 100,
+        width: 200,
+        height: 100,
+        toJSON: () => ({}),
+      }) as DOMRect
+
+    fireEvent.scroll(window)
+
+    await waitFor(() => {
+      expect(listbox.style.left).toBe('100px')
+      expect(listbox.style.top).toBe('100px')
+    })
+  })
+
   it('rejects duplicate option values', () => {
     expect(() =>
       render(

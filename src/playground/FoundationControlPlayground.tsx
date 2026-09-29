@@ -173,6 +173,7 @@ function SelectPlayground() {
   return (
     <Column gap={0.75} align="start">
       <Select
+        overlapTrigger
         value={value}
         onValueChange={setValue}
         placeholder="Choose workspace"
@@ -216,6 +217,7 @@ function ComboboxPlayground() {
   return (
     <Column gap={0.75} align="start">
       <Combobox
+        overlapTrigger
         value={value}
         onValueChange={setValue}
         placeholder="Search workspace"
@@ -282,7 +284,7 @@ function MenuPlayground() {
 
   return (
     <Column gap={0.75} align="start">
-      <Menu trigger={<Button text="Open menu" variant="secondary" />}>
+      <Menu overlapTrigger trigger={<Button text="Open menu" variant="secondary" />}>
         <MenuItem
           text="Profile"
           secondaryText="Account details"

@@ -46,52 +46,57 @@ function candidatePosition(
   placement: PopoverPlacement,
   offset: number,
   crossAlignment: PopoverCrossAlignment,
+  overlapTarget: boolean,
 ): {
   left: number
   top: number
 } {
   const centerX = target.left + target.width / 2
   const centerY = target.top + target.height / 2
+  const topAnchor = overlapTarget ? target.bottom : target.top
+  const rightAnchor = overlapTarget ? target.left : target.right
+  const bottomAnchor = overlapTarget ? target.top : target.bottom
+  const leftAnchor = overlapTarget ? target.right : target.left
 
   switch (placement) {
     case 'top-left':
       return {
         left: target.left,
-        top: target.top - panel.height - offset,
+        top: topAnchor - panel.height - offset,
       }
     case 'top':
       return {
         left: centerX - panel.width / 2,
-        top: target.top - panel.height - offset,
+        top: topAnchor - panel.height - offset,
       }
     case 'top-right':
       return {
         left: target.right - panel.width,
-        top: target.top - panel.height - offset,
+        top: topAnchor - panel.height - offset,
       }
     case 'right':
       return {
-        left: target.right + offset,
+        left: rightAnchor + offset,
         top: crossAlignment === 'start' ? target.top : centerY - panel.height / 2,
       }
     case 'bottom-right':
       return {
         left: target.right - panel.width,
-        top: target.bottom + offset,
+        top: bottomAnchor + offset,
       }
     case 'bottom':
       return {
         left: centerX - panel.width / 2,
-        top: target.bottom + offset,
+        top: bottomAnchor + offset,
       }
     case 'bottom-left':
       return {
         left: target.left,
-        top: target.bottom + offset,
+        top: bottomAnchor + offset,
       }
     case 'left':
       return {
-        left: target.left - panel.width - offset,
+        left: leftAnchor - panel.width - offset,
         top: crossAlignment === 'start' ? target.top : centerY - panel.height / 2,
       }
   }
@@ -138,10 +143,18 @@ export function resolvePopoverPosition(
   offset: number,
   viewport: PopoverViewport,
   crossAlignment: PopoverCrossAlignment = 'center',
+  overlapTarget = false,
 ): ResolvedPopoverPosition {
-  const requested = candidatePosition(target, panel, placement, offset, crossAlignment)
+  const requested = candidatePosition(
+    target,
+    panel,
+    placement,
+    offset,
+    crossAlignment,
+    overlapTarget,
+  )
   const opposite = oppositePopoverPlacement(placement)
-  const flipped = candidatePosition(target, panel, opposite, offset, crossAlignment)
+  const flipped = candidatePosition(target, panel, opposite, offset, crossAlignment, overlapTarget)
 
   const requestedOverflow = mainOverflow(requested, panel, placement, viewport)
   const flippedOverflow = mainOverflow(flipped, panel, opposite, viewport)

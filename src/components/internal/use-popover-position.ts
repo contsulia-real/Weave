@@ -30,6 +30,7 @@ export function usePopoverPosition(
   offset: Length,
   viewportPadding: Length,
   crossAlignment: PopoverCrossAlignment = 'center',
+  overlapTarget = false,
 ) {
   const [state, setState] = useState<PopoverPositionState>({
     left: 0,
@@ -79,6 +80,7 @@ export function usePopoverPosition(
           padding: cssLengthPixels(panel, length(viewportPadding) ?? '0rem'),
         },
         crossAlignment,
+        overlapTarget,
       )
       const resolved = {
         ...next,
@@ -93,7 +95,16 @@ export function usePopoverPosition(
       trackScroll: true,
       trackMutations: true,
     })
-  }, [crossAlignment, offset, panelRef, placement, present, targetRef, viewportPadding])
+  }, [
+    crossAlignment,
+    offset,
+    overlapTarget,
+    panelRef,
+    placement,
+    present,
+    targetRef,
+    viewportPadding,
+  ])
 
   const style: CSSProperties = {
     left: state.left,

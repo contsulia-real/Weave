@@ -63,7 +63,8 @@ export function Combobox({
   clearable = true,
   clearLabel = 'Clear selection',
   placement = 'bottom-left',
-  offset = 0.375,
+  offset,
+  overlapTrigger = false,
   viewportPadding = 0.5,
   open,
   defaultOpen = false,
@@ -231,11 +232,21 @@ export function Combobox({
 
   useActiveOptionScrollIntoView(inputRef, listboxId, resolvedActiveValue, resolvedOpen)
 
+  const resolvedOffset = offset ?? (overlapTrigger ? 0 : 0.375)
   const {
     positioned,
     placement: resolvedPlacement,
     placementStyle,
-  } = usePopoverPosition(inputRef, listboxRef, present, placement, offset, viewportPadding)
+  } = usePopoverPosition(
+    inputRef,
+    listboxRef,
+    present,
+    placement,
+    resolvedOffset,
+    viewportPadding,
+    'center',
+    overlapTrigger,
+  )
 
   const handleChange = (next: string) => {
     const nextEntries = filteredComboboxEntries(entries, next, filter)

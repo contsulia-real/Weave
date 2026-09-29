@@ -36,6 +36,7 @@ export interface SelectProps {
   disabled?: boolean
   placement?: SelectPlacement
   offset?: Length
+  overlapTrigger?: boolean
   viewportPadding?: Length
   open?: boolean
   defaultOpen?: boolean

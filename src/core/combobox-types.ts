@@ -55,6 +55,7 @@ export interface ComboboxProps {
 
   placement?: ComboboxPlacement
   offset?: Length
+  overlapTrigger?: boolean
   viewportPadding?: Length
 
   open?: boolean

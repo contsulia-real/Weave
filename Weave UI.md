@@ -2498,6 +2498,7 @@ Select 不实现第二套 popup 系统。listbox 复用 anchored-overlay infrast
 
 - placement 支持与 Popover 相同的八向位置；默认 `bottom-left`；
 - 默认 `offset = 0.375rem`；
+- `overlapTrigger=false` 为默认；设为 `true` 时，popup 的主轴基准改为 trigger 自身，从而覆盖 trigger，而不是从 trigger 外侧再留出默认间距；未显式传 `offset` 时 overlap 模式使用 `0`；
 - 默认 `viewportPadding = 0.5rem`；
 - 使用实时 anchor rect + panel 尺寸执行 flip / shift；
 - scroll / resize / mutation 后重新定位；hover / press / transition / animation 产生的瞬时视觉 transform 不改变 overlay 锚点；
@@ -2700,7 +2701,7 @@ Escape                → 关闭，不改变 value / inputValue
 
 Combobox 复用统一 anchored-overlay 基础设施：8 向 placement、flip / shift、scroll / resize / mutation 跟踪、anchor 完全离开 viewport 后 dismiss、outside pointer dismiss 与 exit presence。hover / press / transition / animation 产生的瞬时视觉 transform 不改变 listbox 锚点。
 
-listbox 默认至少和 input anchor 一样宽；input 宽度变化时会实时更新最小宽度。`offset` 默认 0.375rem，`viewportPadding` 默认 0.5rem。
+listbox 默认至少和 input anchor 一样宽；input 宽度变化时会实时更新最小宽度。`offset` 默认 0.375rem，`viewportPadding` 默认 0.5rem。`overlapTrigger=false` 为默认；设为 `true` 时 listbox 以 input 自身作为主轴定位基准并覆盖 input，未显式传 `offset` 时使用 0。
 
 focus 移出整个 Combobox root / listbox 时 popup 关闭；clear action 属于 root 内部交互。
 
@@ -3977,6 +3978,7 @@ trigger
 children
 placement
 offset
+overlapTrigger
 submenuOffset
 viewportPadding
 open
@@ -4053,9 +4055,12 @@ root Menu 使用和 Popover 相同的八向 placement / flip / shift 几何；�
 ```text
 placement = bottom-left
 offset = 0.375rem
+overlapTrigger = false
 submenuOffset = 0.25rem
 viewportPadding = 0.5rem
 ```
+
+root Menu 可选 `overlapTrigger=true`：此时主轴定位基准改为 trigger 自身，因此默认 `bottom-left` 会让 menu 从 trigger 左上角开始覆盖，而不是从 trigger 下方开始；未显式传 `offset` 时 overlap 模式使用 0。submenu 不受该 root 开关影响。
 
 submenu 使用 side-start 语义：默认从父 item 右侧、顶部对齐展开；右侧空间不足时自动 flip 到左侧，并沿纵轴 shift 保持在 viewport 内。submenu 不维护第二套 positioning engine，而是直接复用 Popover 的 placement / flip / shift resolver，并只把 cross-axis alignment 设为 `start`。任意祖先 scroll、viewport resize、anchor / panel resize 或视觉动画变化都会重新定位。root Menu 不自己实现 viewport-exit 判断，而是继承 anchored-overlay 的统一 anchor-hidden dismiss：trigger 仍与 viewport 有交集时保持打开，完全离开 viewport 后关闭整棵菜单树，并且不把 focus 强行拉回已经离屏的 trigger。
 

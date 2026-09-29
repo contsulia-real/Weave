@@ -56,7 +56,8 @@ export function Select({
   placeholder = 'Select…',
   disabled = false,
   placement = 'bottom-left',
-  offset = 0.375,
+  offset,
+  overlapTrigger = false,
   viewportPadding = 0.5,
   open,
   defaultOpen = false,
@@ -192,11 +193,21 @@ export function Select({
   }, [activeValue, resolvedOpen])
   /* oxlint-enable react/set-state-in-effect */
 
+  const resolvedOffset = offset ?? (overlapTrigger ? 0 : 0.375)
   const {
     positioned,
     placement: resolvedPlacement,
     placementStyle,
-  } = usePopoverPosition(triggerRef, listboxRef, present, placement, offset, viewportPadding)
+  } = usePopoverPosition(
+    triggerRef,
+    listboxRef,
+    present,
+    placement,
+    resolvedOffset,
+    viewportPadding,
+    'center',
+    overlapTrigger,
+  )
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
     viewProps.onClick?.(event)

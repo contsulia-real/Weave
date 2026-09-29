@@ -24,6 +24,7 @@ export interface MenuProps {
   children?: ReactNode
   placement?: MenuPlacement
   offset?: Length
+  overlapTrigger?: boolean
   submenuOffset?: Length
   viewportPadding?: Length
   open?: boolean
