@@ -469,11 +469,20 @@ describe('Snack', () => {
     expect(progress()?.getAttribute('role')).toBe('progressbar')
     expect(Number(progress()?.getAttribute('data-weave-snack-lifetime-progress'))).toBe(1)
 
+    const progressValue = progress()?.querySelector<HTMLElement>('[data-weave-progress-value]')
+    const progressValueClassName = progressValue?.className
+
+    expect(progressValue?.style.getPropertyValue('--weave-progress-value')).toBe('100%')
+
     act(() => {
       vi.advanceTimersByTime(500)
     })
 
     const halfway = Number(progress()?.getAttribute('data-weave-snack-lifetime-progress'))
+
+    expect(progressValue?.className).toBe(progressValueClassName)
+    expect(progressValue?.className).not.toContain('weave-progress-value-')
+    expect(progressValue?.style.getPropertyValue('--weave-progress-value')).not.toBe('100%')
 
     expect(halfway).toBeGreaterThan(0.45)
     expect(halfway).toBeLessThan(0.55)

@@ -44,10 +44,8 @@ function ProgressVisual({
     resolveProgressTheme(theme, mode, size),
   )
   const speedClassName = useRuntimeStyleClass('progress-speed', resolveProgressStyle(speed))
-  const valueClassName = useRuntimeStyleClass(
-    'progress-value',
-    normalizedProgress === undefined ? undefined : resolveProgressValueStyle(normalizedProgress),
-  )
+  const valueStyle =
+    normalizedProgress === undefined ? undefined : resolveProgressValueStyle(normalizedProgress)
 
   const hostProps: ViewProps<HTMLSpanElement> = {
     ...viewProps,
@@ -90,7 +88,8 @@ function ProgressVisual({
       <span
         data-weave-view=""
         data-weave-progress-value=""
-        className={['weave-progress__value', valueClassName].filter(Boolean).join(' ')}
+        className="weave-progress__value"
+        style={valueStyle}
         aria-hidden="true"
       />
     </span>

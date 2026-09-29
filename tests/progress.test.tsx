@@ -47,11 +47,10 @@ describe('Progress', () => {
     expect(element.getAttribute('aria-valuenow')).toBe('0.68')
     expect(element.className).toContain('weave-progress--linear')
     expect(element.className).toContain('weave-progress--determined')
-    expect(runtimeRule(value, 'weave-progress-value-')).toContain('--weave-progress-value:68%;')
+    expect(value.style.getPropertyValue('--weave-progress-value')).toBe('68%')
     expect(runtimeRule(element, 'weave-progress-speed-')).toContain(
       '--weave-progress-duration:800ms;',
     )
-    expect(value.style.getPropertyValue('--weave-progress-value')).toBe('')
     expect(element.style.getPropertyValue('--weave-progress-duration')).toBe('')
   })
 
@@ -77,11 +76,15 @@ describe('Progress', () => {
     const element = getByRole('progressbar')
     const value = element.querySelector('[data-weave-progress-value]') as HTMLSpanElement
 
-    expect(runtimeRule(value, 'weave-progress-value-')).toContain('--weave-progress-value:20%;')
+    const initialClassName = value.className
+
+    expect(value.style.getPropertyValue('--weave-progress-value')).toBe('20%')
 
     rerender(<Progress progress={0.75} mode="spin" />)
 
-    expect(runtimeRule(value, 'weave-progress-value-')).toContain('--weave-progress-value:75%;')
+    expect(value.className).toBe(initialClassName)
+    expect(value.className).not.toContain('weave-progress-value-')
+    expect(value.style.getPropertyValue('--weave-progress-value')).toBe('75%')
 
     const stylesheet = document.querySelector('style[data-weave-progress-styles]')
 
@@ -123,12 +126,12 @@ describe('Progress', () => {
     const value = element.querySelector('[data-weave-progress-value]') as HTMLSpanElement
 
     expect(element.getAttribute('aria-valuenow')).toBe('1')
-    expect(runtimeRule(value, 'weave-progress-value-')).toContain('--weave-progress-value:100%;')
+    expect(value.style.getPropertyValue('--weave-progress-value')).toBe('100%')
 
     rerender(<Progress progress={-0.5} />)
 
     expect(element.getAttribute('aria-valuenow')).toBe('0')
-    expect(runtimeRule(value, 'weave-progress-value-')).toContain('--weave-progress-value:0%;')
+    expect(value.style.getPropertyValue('--weave-progress-value')).toBe('0%')
   })
 
   it('takes mode and size defaults from the component theme', () => {
