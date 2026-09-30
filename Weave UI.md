@@ -4515,7 +4515,7 @@ Trigger：
 - 文本使用 Theme typography；
 - focus-visible 使用统一 focus outline。
 
-Panel 只提供内容 padding，不额外套 Card。
+Panel 只提供内容 padding，不额外套 Card。对应 Item 展开时，Panel 内容区域与 Trigger 一样使用 `triggerOpenBackground`；收起状态不保留该展开背景。
 
 默认 chevron 位于 trigger 尾部。默认图标使用同一个向右 chevron，并在展开时平滑旋转 90° 成向下状态；当调用方提供 `expandIcon` / `collapseIcon` 时按状态替换自定义图标，不附加默认旋转。
 

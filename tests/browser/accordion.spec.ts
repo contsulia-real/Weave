@@ -10,19 +10,26 @@ test('Accordion keeps native button keyboard behavior and can fully collapse in 
   const security = accordion.getByRole('button', { name: 'Security' })
 
   await expect(account).toHaveAttribute('aria-expanded', 'true')
+  const accountPanel = accordion.locator('[data-weave-accordion-panel-value="account"]')
+  await expect(accountPanel).toBeVisible()
   await expect(accordion.getByRole('region', { name: 'Account' })).toBeVisible()
   const openBackground = await account.evaluate(
     (element) => getComputedStyle(element).backgroundColor,
   )
+  await expect(accountPanel).toHaveCSS('background-color', openBackground)
 
   await account.focus()
   await page.keyboard.press('Space')
   await expect(account).toHaveAttribute('aria-expanded', 'false')
-  await expect(accordion.getByRole('region', { name: 'Account' })).toBeHidden()
+  await expect(accountPanel).toBeHidden()
   const closedBackground = await account.evaluate(
     (element) => getComputedStyle(element).backgroundColor,
   )
+  const closedPanelBackground = await accountPanel.evaluate(
+    (element) => getComputedStyle(element).backgroundColor,
+  )
   expect(closedBackground).not.toBe(openBackground)
+  expect(closedPanelBackground).not.toBe(openBackground)
 
   await security.focus()
   await page.keyboard.press('Enter')

@@ -98,6 +98,10 @@ const stylesheet = `
   min-width: 0;
 }
 
+:where(.weave-accordion-panel[data-weave-accordion-panel-open="true"]) {
+  --weave-component-background: var(--weave-accordion-trigger-open-background);
+}
+
 :where(.weave-accordion-panel__content) {
   --weave-component-padding-top: var(--weave-accordion-panel-padding-y);
   --weave-component-padding-right: var(--weave-accordion-panel-padding-x);
