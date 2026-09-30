@@ -1,5 +1,6 @@
 import type { MotionSpring, ViewAnimationConfig } from '../core/motion-types'
 import type { TextTypo } from '../core/text-types'
+import type { ShadowValue } from '../core/view-types'
 
 export type ThemeMode = 'light' | 'dark' | 'system'
 
@@ -260,6 +261,26 @@ export interface LinkThemeBase {
 
 export interface LinkTheme {
   base?: LinkThemeBase
+}
+
+export interface CardThemeBase {
+  background?: string
+  borderColor?: string
+  borderWidth?: ThemeScaleValue
+  radius?: ThemeScaleValue
+  padding?: ThemeScaleValue
+  shadow?: ShadowValue
+  selectedBackground?: string
+  selectedBorderColor?: string
+  cursor?: string
+  focusOutlineWidth?: ThemeScaleValue
+  focusOutlineColor?: string
+  focusOutlineStyle?: string
+  focusOutlineOffset?: ThemeScaleValue
+}
+
+export interface CardTheme {
+  base?: CardThemeBase
 }
 
 export interface ButtonThemeBase {
@@ -537,6 +558,7 @@ export interface ThemeComponents {
   Badge?: BadgeTheme
   Link?: LinkTheme
   Button?: ButtonTheme
+  Card?: CardTheme
   Input?: InputTheme
   Select?: SelectTheme
   Combobox?: ComboboxTheme

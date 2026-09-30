@@ -3822,6 +3822,166 @@ disabledOpacity
 Underline Tab 不复用 Button 的 press / depth 反馈；hover 只使用轻量 state background。Pill variant 的凹槽**必须来自 Input/Select field surface**，active moving surface **必须来自 Button primary / medium 的 rest surface**。Tabs 只负责组合这两个既有视觉源与 shared-indicator 位移，不得拥有 `pillListShadow / pillSelectedShadow / pillSelectedBackground` 等平行视觉实现。moving surface 不是可交互 Button，因此不响应 Button hover-lift / press-depth。
 
 ---
+
+# 18.12 `Card`
+
+`Card` 是通用实体表面容器。它默认只负责视觉容器能力，也可以按需独立开启点击激活与选择能力。
+
+## 18.12.1 API
+
+```tsx
+<Card>
+  <Text typo="title-medium">普通 Card</Text>
+</Card>
+
+<Card clickable viewProps={{ onClick: openDetails }}>
+  ...
+</Card>
+
+<Card
+  selectable
+  selected={selected}
+  onSelectedChange={setSelected}
+>
+  ...
+</Card>
+
+<Card
+  clickable
+  selectable
+  onSelectedChange={setSelected}
+  viewProps={{ onClick: openDetails }}
+>
+  ...
+</Card>
+```
+
+当前高层属性：
+
+```text
+children
+clickable
+selectable
+selected
+defaultSelected
+onSelectedChange
+viewProps
+```
+
+`clickable` 与 `selectable` 是两个彼此独立的可选能力，四种组合都合法：
+
+```text
+clickable=false + selectable=false → 普通实体容器
+clickable=true  + selectable=false → 可激活 Card
+clickable=false + selectable=true  → 可选择 Card
+clickable=true  + selectable=true  → 同时可激活、可选择
+```
+
+只有 `selectable=true` 时才能使用 `selected / defaultSelected / onSelectedChange`。
+
+## 18.12.2 点击与选择
+
+`selectable` 使用标准受控 / 非受控 boolean 模型：
+
+- `selected` 存在时为 controlled；
+- `defaultSelected` 只设置 uncontrolled 初始状态；
+- 状态请求通过 `onSelectedChange(next)` 上报；
+- controlled 父级拒绝一次状态请求后，再次请求同一个值仍会再次触发 callback。
+
+`clickable + selectable` 同时开启时，同一次 Card 激活同时执行两个能力：
+
+```text
+activation
+├─ clickable → viewProps.onClick
+└─ selectable → toggle selected
+```
+
+如果 `viewProps.onClick` 调用了 `preventDefault()`，本次默认 selection toggle 被取消；这与已有 ListItem 的可取消选择行为一致。
+
+Card 内可以组合 Button、Link、Input、Switch 等交互子元素。来自交互子元素的 pointer / click 不得冒泡成 Card 自身 activation，也不得切换 Card selection。该判定与 ListItem 复用同一个内部 interactive-descendant helper，不维护第二套 selector。
+
+## 18.12.3 DOM、键盘与 ARIA
+
+Card 继续使用普通 View / `<div>` 宿主，不改成 native `<button>`，因此允许内部合法组合 Button、Link、Input 等交互控件。
+
+当 `clickable || selectable` 时：
+
+```text
+role="button"
+tabIndex=0（除非 viewProps 显式覆盖）
+Enter → activation
+Space → activation
+```
+
+当 `selectable=true` 时：
+
+```text
+aria-pressed = selected
+```
+
+Card 不伪造 listbox / option 关系；独立 Card 的选择状态使用 button + `aria-pressed` 表达。
+
+`viewProps.disabled=true` 沿用 View 通用 disabled 语义，并阻止 Card activation 与 selection change。
+
+## 18.12.4 默认视觉
+
+默认 Card 是标准实体表面：
+
+```text
+background  = surface
+border      = outline / 0.0625rem
+radius      = large
+shadow      = small
+padding     = 1rem
+```
+
+交互 Card 直接复用 Weave 全局 feedback token 的 hover / press 位移与缩放：
+
+```text
+hover → feedback.hoverLift + feedback.hoverScale
+press → feedback.pressOffset + feedback.pressScale
+```
+
+不创建 Card 私有的另一套 hover / press motion token。
+
+`selectable=true && selected=true` 时：
+
+```text
+background  = primary 轻量染色 surface
+borderColor = primary
+```
+
+选中态不自动插入勾选图标或额外装饰 UI。
+
+## 18.12.5 Theme
+
+默认视觉来自：
+
+```text
+theme.components.Card.base
+```
+
+当前字段：
+
+```text
+background
+borderColor
+borderWidth
+radius
+padding
+shadow
+selectedBackground
+selectedBorderColor
+cursor
+focusOutlineWidth
+focusOutlineColor
+focusOutlineStyle
+focusOutlineOffset
+```
+
+Card 没有 `variant`、`size`、header/footer 等额外高层 API；内容结构继续由 children 与现有 Weave 组件组合。
+
+---
 # 19. `ToolTip`
 
 `ToolTip` 是目标附着的辅助说明组件。
@@ -6695,7 +6855,7 @@ Weave 公开 API
 │
 ├─ 公开组件
 │  ├─ Text / Image / Icon
-│  ├─ Input / Button / Link
+│  ├─ Input / Button / Link / Card
 │  ├─ Switch / Radio / Checkbox
 │  ├─ Progress / Divider
 │  ├─ Badge / ToolTip / Popover

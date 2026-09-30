@@ -1,6 +1,7 @@
 export { Absolute } from './components/Absolute'
 export { Badge } from './components/Badge'
 export { Button } from './components/Button'
+export { Card } from './components/Card'
 export { Checkbox } from './components/Checkbox'
 export { Column } from './components/Column'
 export { Combobox } from './components/Combobox'
@@ -53,6 +54,10 @@ export type {
   ButtonVariant,
   ButtonViewProps,
 } from './core/button-types'
+export type {
+  CardProps,
+  CardViewProps,
+} from './core/card-types'
 export type {
   CheckboxProps,
   CheckboxViewProps,
@@ -291,6 +296,8 @@ export type {
   ButtonThemeBase,
   ButtonThemeSize,
   ButtonThemeVariant,
+  CardTheme,
+  CardThemeBase,
   ChoiceControlTheme,
   ChoiceControlThemeBase,
   ChoiceControlThemeSize,

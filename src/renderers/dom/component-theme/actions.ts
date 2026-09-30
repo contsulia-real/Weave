@@ -1,5 +1,5 @@
 import type { ButtonVariant } from '../../../core/button-types'
-import { color, length, radius } from '../../../core/values'
+import { color, length, radius, shadow } from '../../../core/values'
 import { typographyStyleVariableReference } from '../../../theme/theme-css'
 import type { ResolvedTheme } from '../../../theme/theme-types'
 import type { RuntimeStyleDeclarations, RuntimeStyleValue } from '../runtime-class'
@@ -49,6 +49,26 @@ export function resolveLinkTheme(theme: ResolvedTheme): RuntimeStyleDeclarations
     '--weave-link-theme-focus-outline-color': color(base?.focusOutlineColor),
     '--weave-link-theme-focus-outline-style': base?.focusOutlineStyle,
     '--weave-link-theme-focus-outline-offset': length(base?.focusOutlineOffset),
+  }
+}
+
+export function resolveCardTheme(theme: ResolvedTheme): RuntimeStyleDeclarations {
+  const base = theme.components.Card?.base
+
+  return {
+    '--weave-card-theme-background': color(base?.background),
+    '--weave-card-theme-border-color': color(base?.borderColor),
+    '--weave-card-theme-border-width': length(base?.borderWidth),
+    '--weave-card-theme-radius': radius(base?.radius),
+    '--weave-card-theme-padding': length(base?.padding),
+    '--weave-card-theme-shadow': shadow(base?.shadow),
+    '--weave-card-theme-selected-background': color(base?.selectedBackground),
+    '--weave-card-theme-selected-border-color': color(base?.selectedBorderColor),
+    '--weave-card-theme-cursor': base?.cursor,
+    '--weave-card-theme-focus-outline-width': length(base?.focusOutlineWidth),
+    '--weave-card-theme-focus-outline-color': color(base?.focusOutlineColor),
+    '--weave-card-theme-focus-outline-style': base?.focusOutlineStyle,
+    '--weave-card-theme-focus-outline-offset': length(base?.focusOutlineOffset),
   }
 }
 

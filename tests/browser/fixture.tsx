@@ -1,10 +1,27 @@
-import { Button, Column, createRoot, Popover, Text, ThemeProvider, View } from '../../src'
+import { Button, Card, Column, createRoot, Popover, Text, ThemeProvider, View } from '../../src'
 
 function BrowserFixture() {
   return (
     <ThemeProvider mode="light">
       <Column gap={2}>
         <Text typo="title-large">Firefox scroll regression fixture</Text>
+
+        <Card
+          clickable
+          selectable
+          defaultSelected
+          viewProps={{
+            label: 'Interactive Card',
+            width: 20,
+            data: { testid: 'interactive-card' },
+          }}
+        >
+          <Column gap={0.5}>
+            <Text typo="title-small">Interactive Card</Text>
+            <Text>Clickable and selectable are enabled independently on the same surface.</Text>
+            <Button text="Inner action" />
+          </Column>
+        </Card>
 
         <View
           overflow="auto"

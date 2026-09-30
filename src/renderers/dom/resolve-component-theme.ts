@@ -1,6 +1,7 @@
 export {
   resolveBadgeTheme,
   resolveButtonTheme,
+  resolveCardTheme,
   resolveLinkTheme,
 } from './component-theme/actions'
 export {

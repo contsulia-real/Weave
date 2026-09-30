@@ -5,38 +5,9 @@ import { ensureListStylesheet } from '../renderers/dom/list-stylesheet'
 import { resolveListItemTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { useTheme } from '../theme/theme-context'
+import { fromInteractiveDescendant } from './internal/interactive-descendant'
 import { ListContext } from './internal/list-context'
 import { View } from './View'
-
-const interactiveSelector = [
-  'a[href]',
-  'button',
-  'input',
-  'select',
-  'textarea',
-  '[contenteditable="true"]',
-  '[role="button"]',
-  '[role="checkbox"]',
-  '[role="link"]',
-  '[role="radio"]',
-  '[role="slider"]',
-  '[role="spinbutton"]',
-  '[role="switch"]',
-  '[role="textbox"]',
-].join(',')
-
-function fromInteractiveDescendant(
-  eventTarget: EventTarget | null,
-  currentTarget: HTMLElement,
-): boolean {
-  if (!(eventTarget instanceof Element) || eventTarget === currentTarget) {
-    return false
-  }
-
-  const interactive = eventTarget.closest(interactiveSelector)
-
-  return interactive !== null && interactive !== currentTarget
-}
 
 export function ListItem({ id, children, disabled = false, viewProps = {} }: ListItemProps) {
   const context = useContext(ListContext)

@@ -32,6 +32,7 @@ const expectedRuntimeExports = [
   'Absolute',
   'Badge',
   'Button',
+  'Card',
   'Checkbox',
   'Column',
   'Combobox',
@@ -142,6 +143,7 @@ assert(typeSource.includes('GridProps'), 'Built declarations are missing GridPro
 assert(typeSource.includes('RowProps'), 'Built declarations are missing RowProps')
 assert(typeSource.includes('StackProps'), 'Built declarations are missing StackProps')
 assert(typeSource.includes('BadgeProps'), 'Built declarations are missing BadgeProps')
+assert(typeSource.includes('CardProps'), 'Built declarations are missing CardProps')
 assert(typeSource.includes('ListProps'), 'Built declarations are missing ListProps')
 assert(typeSource.includes('LinkProps'), 'Built declarations are missing LinkProps')
 assert(typeSource.includes('TabsProps'), 'Built declarations are missing TabsProps')
@@ -165,6 +167,7 @@ const expectedThemeTypeExports = [
   'BadgeTheme',
   'LinkTheme',
   'ButtonTheme',
+  'CardTheme',
   'DialogTheme',
   'TabsTheme',
   'TabsThemeBase',

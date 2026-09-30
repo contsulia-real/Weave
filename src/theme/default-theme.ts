@@ -506,6 +506,24 @@ export const defaultTheme: ResolvedTheme = {
         },
       },
     },
+    Card: {
+      base: {
+        background: 'surface',
+        borderColor: 'outline',
+        borderWidth: 0.0625,
+        radius: 'large',
+        padding: 1,
+        shadow: 'small',
+        selectedBackground:
+          'color-mix(in srgb, var(--weave-color-primary) 10%, var(--weave-color-surface))',
+        selectedBorderColor: 'primary',
+        cursor: 'pointer',
+        focusOutlineWidth: 0.125,
+        focusOutlineColor: 'focus',
+        focusOutlineStyle: 'solid',
+        focusOutlineOffset: controlBaseline.focusOutlineOffset,
+      },
+    },
     Input: {
       base: {
         ...inputBase,
