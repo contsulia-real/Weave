@@ -30,6 +30,10 @@ export type { SnackProviderProps } from './components/SnackProvider'
 export { SnackProvider } from './components/SnackProvider'
 export { Stack } from './components/Stack'
 export { Switch } from './components/Switch'
+export { Tab } from './components/Tab'
+export { TabList } from './components/TabList'
+export { TabPanel } from './components/TabPanel'
+export { Tabs } from './components/Tabs'
 export { Text } from './components/Text'
 export { ToolTip } from './components/ToolTip'
 export { useSnack } from './components/useSnack'
@@ -200,6 +204,19 @@ export type {
   SwitchViewProps,
 } from './core/switch-types'
 export type {
+  TabListProps,
+  TabListViewProps,
+  TabPanelProps,
+  TabPanelViewProps,
+  TabProps,
+  TabsActivation,
+  TabsOrientation,
+  TabsProps,
+  TabsVariant,
+  TabsViewProps,
+  TabViewProps,
+} from './core/tabs-types'
+export type {
   TextAlign,
   TextBreakpointProps,
   TextCase,
@@ -307,6 +324,8 @@ export type {
   SwitchTheme,
   SwitchThemeBase,
   SwitchThemeSize,
+  TabsTheme,
+  TabsThemeBase,
   ThemeComponents,
   ThemeDefinition,
   ThemeFeedbackTokens,

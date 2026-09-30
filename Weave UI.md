@@ -3622,6 +3622,186 @@ bottom-left  bottom  bottom-right
 
 ---
 
+# 18.11 `Tabs`
+
+`Tabs` 是标准 compound selection / navigation 组件，由 `Tabs / TabList / Tab / TabPanel` 四个公开组件组成。
+
+## 18.11.1 组合 API
+
+```tsx
+<Tabs value={tab} onValueChange={setTab}>
+  <TabList>
+    <Tab value="general">General</Tab>
+    <Tab value="appearance">Appearance</Tab>
+    <Tab value="advanced" disabled>
+      Advanced
+    </Tab>
+  </TabList>
+
+  <TabPanel value="general">...</TabPanel>
+  <TabPanel value="appearance">...</TabPanel>
+  <TabPanel value="advanced">...</TabPanel>
+</Tabs>
+```
+
+`Tabs` 当前高层属性：
+
+```text
+children
+value
+defaultValue
+onValueChange
+orientation
+activation
+variant
+indicatorThickness
+viewProps
+```
+
+默认：
+
+```text
+orientation = horizontal
+activation = automatic
+variant = underline
+indicatorThickness = theme.components.Tabs.base.indicatorThickness (默认 2px)
+```
+
+如果既没有 `value` 也没有 `defaultValue`，默认选择声明顺序中的第一个 enabled Tab。disabled Tab 不参与默认选择与 roving focus。
+
+## 18.11.2 variant
+
+默认视觉是 underline：
+
+```tsx
+<Tabs>
+  ...
+</Tabs>
+```
+
+选中 Tab 使用 primary 文字与一个共享 indicator。整个 TabList 只渲染一个 indicator 元素；选中值变化时根据目标 Tab 的真实几何更新该元素的位置与长度，并直接复用 View 的 `layoutAnimation`（spring snappy + interruption=continue）完成连续 FLIP 位移，因此 indicator 不是旧 indicator 淡出、新 indicator 淡入。horizontal 时 indicator 位于底部并沿 X 轴移动，vertical 时位于左侧并沿 Y 轴移动。
+
+需要 pill 时显式：
+
+```tsx
+<Tabs variant="pill">
+  ...
+</Tabs>
+```
+
+pill 只改变视觉，不改变选择、focus、ARIA 或键盘语义。整个 TabList 使用方向性 inset shadow 形成凹槽；active / selected Tab 使用 surface + raised shadow 从凹槽中突起。未选中的 Tab 保持槽内平面状态。
+
+`variant`：
+
+```text
+underline
+pill
+```
+
+## 18.11.3 受控与非受控
+
+`value / defaultValue / onValueChange` 使用单值选择模型：
+
+- `value` 存在时为 controlled；
+- controlled 请求只触发 `onValueChange(next)`，不会自行篡改父级值；
+- 父级拒绝一次请求后，再次请求同一个 next value 仍必须再次触发 callback；
+- uncontrolled 时点击或激活 Tab 直接更新内部值。
+
+所有 TabPanel 保持挂载；未选中 Panel 使用原生 `hidden`，避免切换时无意义销毁内部状态。
+
+## 18.11.4 Focus 与键盘
+
+Tab 使用 roving tabindex：
+
+```text
+当前 roving focus target → tabIndex=0
+其他 enabled Tab          → tabIndex=-1
+disabled Tab               → disabled + aria-disabled=true
+```
+
+horizontal：
+
+```text
+ArrowLeft  → previous enabled Tab
+ArrowRight → next enabled Tab
+```
+
+vertical：
+
+```text
+ArrowUp   → previous enabled Tab
+ArrowDown → next enabled Tab
+```
+
+两种方向都支持：
+
+```text
+Home → first enabled Tab
+End  → last enabled Tab
+```
+
+previous / next 在首尾循环，并跳过 disabled。
+
+`activation="automatic"` 时，Arrow / Home / End 移动 focus 后同时激活目标 Tab。
+
+`activation="manual"` 时，Arrow / Home / End 只移动 focus 与 roving tabindex，不改变 selected value；Enter / Space 才激活当前 focused Tab。Pointer click 在两种 activation 模式下都会同时更新 roving focus 与 selected value。
+
+## 18.11.5 ARIA
+
+DOM 语义固定为：
+
+```text
+TabList  → role="tablist" + aria-orientation
+Tab      → native button + role="tab"
+           aria-selected
+           aria-controls
+TabPanel → role="tabpanel"
+           aria-labelledby
+           hidden when inactive
+```
+
+同一 Tabs root 使用稳定 id namespace 将每个 `Tab value` 与同 value 的 `TabPanel` 双向关联。Tab 与 TabPanel 必须处于同一个 Tabs context；脱离 Tabs 单独使用属于开发错误。
+
+## 18.11.6 Theme
+
+默认视觉来自：
+
+```text
+theme.components.Tabs.base
+```
+
+当前字段：
+
+```text
+gap
+listGap
+tabBackground
+tabHoverBackground
+tabColor
+tabSelectedColor
+pillListBackground
+pillListShadow
+pillListPadding
+pillSelectedBackground
+pillSelectedShadow
+tabRadius
+tabPaddingX
+tabPaddingY
+indicatorColor
+indicatorThickness
+typo
+focusOutlineWidth
+focusOutlineColor
+focusOutlineStyle
+focusOutlineOffset
+disabledOpacity
+```
+
+`indicatorThickness` 与 Divider 的 `size` 一样以 px 为唯一数字单位：`indicatorThickness={3}` 就是 3px；theme 中的数字同样直接输出 px，不经过 rem scale。
+
+Underline Tab 不复用 Button 的 press / depth 反馈；hover 只使用轻量 state background。Pill variant 例外地使用“凹槽 + 突起 active item”的静态材质层级，但不会复制 Button 的 hover-lift / press-depth 交互模型。
+
+---
 # 19. `ToolTip`
 
 `ToolTip` 是目标附着的辅助说明组件。

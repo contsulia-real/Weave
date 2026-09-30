@@ -469,6 +469,35 @@ export interface SnackTheme {
   >
 }
 
+export interface TabsThemeBase {
+  gap?: ThemeScaleValue
+  listGap?: ThemeScaleValue
+  tabBackground?: string
+  tabHoverBackground?: string
+  tabColor?: string
+  tabSelectedColor?: string
+  pillListBackground?: string
+  pillListShadow?: string
+  pillListPadding?: ThemeScaleValue
+  pillSelectedBackground?: string
+  pillSelectedShadow?: string
+  tabRadius?: ThemeScaleValue
+  tabPaddingX?: ThemeScaleValue
+  tabPaddingY?: ThemeScaleValue
+  indicatorColor?: string
+  indicatorThickness?: number
+  typo?: TextTypo
+  focusOutlineWidth?: ThemeScaleValue
+  focusOutlineColor?: string
+  focusOutlineStyle?: string
+  focusOutlineOffset?: ThemeScaleValue
+  disabledOpacity?: number
+}
+
+export interface TabsTheme {
+  base?: TabsThemeBase
+}
+
 export interface ListThemeBase {
   background?: string
   borderColor?: string
@@ -526,6 +555,7 @@ export interface ThemeComponents {
   Popover?: PopoverTheme
   Menu?: MenuTheme
   Snack?: SnackTheme
+  Tabs?: TabsTheme
   List?: ListTheme
   ListItem?: ListItemTheme
   readonly [name: string]: unknown

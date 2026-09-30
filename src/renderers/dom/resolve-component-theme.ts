@@ -14,7 +14,6 @@ export {
   resolveListItemTheme,
   resolveListTheme,
 } from './component-theme/lists'
-
 export {
   resolveDialogTheme,
   resolveMenuTheme,
@@ -26,3 +25,4 @@ export {
   resolveProgressTheme,
   resolveScrollbarTheme,
 } from './component-theme/progress'
+export { resolveTabsTheme } from './component-theme/tabs'

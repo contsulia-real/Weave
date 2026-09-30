@@ -59,6 +59,10 @@ const expectedRuntimeExports = [
   'Stack',
   'SnackProvider',
   'Switch',
+  'Tab',
+  'TabList',
+  'TabPanel',
+  'Tabs',
   'Text',
   'ThemeProvider',
   'ToolTip',
@@ -140,6 +144,12 @@ assert(typeSource.includes('StackProps'), 'Built declarations are missing StackP
 assert(typeSource.includes('BadgeProps'), 'Built declarations are missing BadgeProps')
 assert(typeSource.includes('ListProps'), 'Built declarations are missing ListProps')
 assert(typeSource.includes('LinkProps'), 'Built declarations are missing LinkProps')
+assert(typeSource.includes('TabsProps'), 'Built declarations are missing TabsProps')
+assert(typeSource.includes('TabListProps'), 'Built declarations are missing TabListProps')
+assert(typeSource.includes('TabProps'), 'Built declarations are missing TabProps')
+assert(typeSource.includes('TabPanelProps'), 'Built declarations are missing TabPanelProps')
+assert(typeSource.includes('TabsVariant'), 'Built declarations are missing TabsVariant')
+assert(typeSource.includes('TabsActivation'), 'Built declarations are missing TabsActivation')
 assert(typeSource.includes('RadioProps'), 'Built declarations are missing RadioProps')
 assert(typeSource.includes('CheckboxProps'), 'Built declarations are missing CheckboxProps')
 
@@ -156,6 +166,8 @@ const expectedThemeTypeExports = [
   'LinkTheme',
   'ButtonTheme',
   'DialogTheme',
+  'TabsTheme',
+  'TabsThemeBase',
   'PopoverTheme',
   'MenuTheme',
   'ProgressTheme',

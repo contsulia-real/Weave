@@ -13,6 +13,10 @@ import {
   Row,
   Select,
   SelectOption,
+  Tab,
+  TabList,
+  TabPanel,
+  Tabs,
   Text,
 } from '../index'
 import { PlaygroundSection } from './PlaygroundSection'
@@ -97,6 +101,82 @@ function PopoverPlayground() {
             state: {controlledOpen ? 'open' : 'closed'}
           </Text>
         </Row>
+      </Column>
+    </Column>
+  )
+}
+
+function TabsPlayground() {
+  const [value, setValue] = useState('general')
+
+  return (
+    <Column gap={1.5}>
+      <Column gap={0.75}>
+        <Text typo="label-medium" color="secondary">
+          Underline · automatic activation
+        </Text>
+        <Tabs value={value} onValueChange={setValue} indicatorThickness={3}>
+          <TabList>
+            <Tab value="general">General</Tab>
+            <Tab value="appearance">Appearance</Tab>
+            <Tab value="advanced" disabled>
+              Advanced
+            </Tab>
+          </TabList>
+          <TabPanel value="general">
+            <Text typo="body-small">General settings panel.</Text>
+          </TabPanel>
+          <TabPanel value="appearance">
+            <Text typo="body-small">Appearance settings panel.</Text>
+          </TabPanel>
+          <TabPanel value="advanced">
+            <Text typo="body-small">Advanced settings panel.</Text>
+          </TabPanel>
+        </Tabs>
+      </Column>
+
+      <Column gap={0.75}>
+        <Text typo="label-medium" color="secondary">
+          Pill · manual activation
+        </Text>
+        <Tabs variant="pill" activation="manual" defaultValue="overview">
+          <TabList>
+            <Tab value="overview">Overview</Tab>
+            <Tab value="activity">Activity</Tab>
+            <Tab value="billing">Billing</Tab>
+          </TabList>
+          <TabPanel value="overview">
+            <Text typo="body-small">Overview panel.</Text>
+          </TabPanel>
+          <TabPanel value="activity">
+            <Text typo="body-small">Activity panel.</Text>
+          </TabPanel>
+          <TabPanel value="billing">
+            <Text typo="body-small">Billing panel.</Text>
+          </TabPanel>
+        </Tabs>
+      </Column>
+
+      <Column gap={0.75}>
+        <Text typo="label-medium" color="secondary">
+          Vertical
+        </Text>
+        <Tabs orientation="vertical" defaultValue="profile">
+          <TabList>
+            <Tab value="profile">Profile</Tab>
+            <Tab value="security">Security</Tab>
+            <Tab value="notifications">Notifications</Tab>
+          </TabList>
+          <TabPanel value="profile">
+            <Text typo="body-small">Profile panel.</Text>
+          </TabPanel>
+          <TabPanel value="security">
+            <Text typo="body-small">Security panel.</Text>
+          </TabPanel>
+          <TabPanel value="notifications">
+            <Text typo="body-small">Notifications panel.</Text>
+          </TabPanel>
+        </Tabs>
       </Column>
     </Column>
   )
@@ -337,6 +417,13 @@ export function FoundationControlPlayground() {
         description="交互式锚定浮层：click toggle、outside / Escape dismiss、focus restore、8 向 placement，以及 viewport flip / shift collision。"
       >
         <PopoverPlayground />
+      </PlaygroundSection>
+
+      <PlaygroundSection
+        title="Tabs"
+        description="Compound tabs：默认 underline，可选 pill；支持 automatic / manual activation、horizontal / vertical、disabled、roving focus 与完整 tab / tabpanel ARIA 关联。"
+      >
+        <TabsPlayground />
       </PlaygroundSection>
 
       <PlaygroundSection
