@@ -15,7 +15,12 @@ export function AccordionTrigger({
   const accordion = useAccordionContext('AccordionTrigger')
   const item = useAccordionItemContext('AccordionTrigger')
   const open = accordion.isOpen(item.value)
-  const icon = open ? (collapseIcon ?? chevronDownIcon) : (expandIcon ?? chevronRightIcon)
+  const usesDefaultIcons = expandIcon === undefined && collapseIcon === undefined
+  const icon = usesDefaultIcons
+    ? chevronRightIcon
+    : open
+      ? (collapseIcon ?? chevronDownIcon)
+      : (expandIcon ?? chevronRightIcon)
 
   const hostProps: ViewProps<HTMLButtonElement> = {
     ...viewProps,
@@ -43,6 +48,7 @@ export function AccordionTrigger({
       data-weave-view=""
       data-weave-accordion-trigger=""
       data-weave-accordion-open={open ? 'true' : 'false'}
+      data-weave-accordion-default-icons={usesDefaultIcons ? 'true' : 'false'}
       data-weave-layout={resolved.layout}
       className={['weave-accordion-trigger', className].filter(Boolean).join(' ')}
       style={inlineStyle}

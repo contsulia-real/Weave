@@ -115,7 +115,7 @@ function AccordionPlayground() {
     <Column gap={1.5}>
       <Column gap={0.5}>
         <Text typo="label-medium" color="secondary">
-          Single · non-collapsible by default
+          Single · fully collapsible by default
         </Text>
         <Accordion
           defaultValue="account"
@@ -125,7 +125,7 @@ function AccordionPlayground() {
             <AccordionTrigger>Account</AccordionTrigger>
             <AccordionPanel>
               <Text typo="body-small" color="secondary">
-                Account details stay open until another item is selected.
+                Account details can be collapsed without opening another item.
               </Text>
             </AccordionPanel>
           </AccordionItem>
@@ -180,10 +180,9 @@ function AccordionPlayground() {
 
       <Column gap={0.5}>
         <Text typo="label-medium" color="secondary">
-          Single · collapsible
+          Single · initially collapsed
         </Text>
         <Accordion
-          collapsible
           defaultValue={null}
           viewProps={{ width: 30, data: { testid: 'accordion-collapsible' } }}
         >
@@ -516,7 +515,7 @@ export function FoundationControlPlayground() {
 
       <PlaygroundSection
         title="Accordion"
-        description="透明内容结构组件：默认 single 且不可全部收起；支持 collapsible、multiple、item disabled，以及可替换的展开 / 收起图标。"
+        description="透明内容结构组件：single 默认可全部收起；支持显式 non-collapsible、multiple、item disabled，以及可替换的展开 / 收起图标。"
       >
         <AccordionPlayground />
       </PlaygroundSection>

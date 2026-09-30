@@ -89,7 +89,7 @@ function SingleAccordion({
   value,
   defaultValue,
   onValueChange,
-  collapsible = false,
+  collapsible = true,
   disabled = false,
   viewProps = {},
 }: AccordionSingleProps) {

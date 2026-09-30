@@ -4413,12 +4413,12 @@ AccordionPanel
 
 ```text
 multiple = false
-collapsible = false
+collapsible = true
 ```
 
 single 模式一次只能展开一个 item。非受控且没有显式 `defaultValue` 时，默认展开第一个未 disabled 的 item。
 
-当 `collapsible = false` 时，用户不能通过再次激活当前 trigger 把最后一个已展开项关闭；`collapsible = true` 时允许全部收起。
+single 模式默认允许通过再次激活当前 trigger 把全部 item 收起。只有显式 `collapsible = false` 时，当前已展开的最后一个 item 才不能被再次激活关闭。
 
 multiple 模式允许同时展开多个 item，并允许分别关闭所有 item；multiple 模式不使用 `collapsible`。
 
@@ -4492,9 +4492,9 @@ Trigger aria-controls -> 对应 Panel id
 Panel aria-labelledby -> 对应 Trigger id
 ```
 
-Panel 收起后不能继续参与 Tab 顺序。进入 closing 状态时立即设置 `inert` 并从可访问树隐藏，同时继续保留 DOM 完成 exit motion；展开 / 收起生命周期复用现有 `Presence` 与 View enter / exit motion，退出结束后内容卸载，不新建 Accordion 私有 presence 或 collapse 生命周期。
+Panel 收起后不能继续参与 Tab 顺序。进入 closing 状态时立即设置 `inert` 并从可访问树隐藏；Panel semantic host 保持挂载，以便 AccordionItem 的第二条 grid row 从 `1fr` 连续过渡到 `0fr`，内部内容则通过现有 `Presence` 完成 exit 后卸载。展开时该 row 从 `0fr` 连续过渡到 `1fr`。这只使用 ViewHost 已有 transition 通道、Theme motion token 与 Presence，不建立 Accordion 私有 JavaScript 高度测量或另一套 motion runtime。
 
-默认 Panel motion 使用现有 `fade` enter / exit。调用方可以通过 `AccordionPanel.viewProps.enter / exit` 使用已有 View motion API 覆盖。
+默认内容 motion 使用现有 `fade-down` enter 与 `fade-up` exit，并使用 Theme 的 `gentle` physical spring；AccordionItem 的 `grid-template-rows` 也直接通过现有 View `transition` + `gentle` spring 驱动，因此内容透明度 / 位移与真实布局高度连续变化，而不是在开关时瞬间跳变。调用方可以通过 `AccordionPanel.viewProps.enter / exit` 覆盖内容 motion，也可以通过 `AccordionItem.viewProps.transition` 覆盖布局 motion；reduced motion 继续由 View motion runtime 统一处理，默认 chevron 的 CSS transition 也必须关闭。
 
 ## 18.16.5 默认视觉
 
@@ -4512,7 +4512,7 @@ Trigger：
 
 Panel 只提供内容 padding，不额外套 Card。
 
-默认 chevron 位于 trigger 尾部。
+默认 chevron 位于 trigger 尾部。默认图标使用同一个向右 chevron，并在展开时平滑旋转 90° 成向下状态；当调用方提供 `expandIcon` / `collapseIcon` 时按状态替换自定义图标，不附加默认旋转。
 
 ## 18.16.6 Theme
 

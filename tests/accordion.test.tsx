@@ -49,8 +49,8 @@ describe('Accordion', () => {
     expect(queryByRole('region', { name: 'Security' })).toBeNull()
   })
 
-  it('keeps one item open by default when collapsible is false', async () => {
-    const { getByRole } = render(<BasicAccordion />)
+  it('keeps one item open when collapsible is explicitly false', async () => {
+    const { getByRole } = render(<BasicAccordion collapsible={false} />)
     const account = getByRole('button', { name: 'Account' })
 
     fireEvent.click(account)
@@ -66,8 +66,8 @@ describe('Accordion', () => {
     })
   })
 
-  it('allows the single item to close when collapsible is true', async () => {
-    const { getByRole, queryByRole } = render(<BasicAccordion collapsible />)
+  it('allows the single item to close by default', async () => {
+    const { getByRole, queryByRole } = render(<BasicAccordion />)
     const account = getByRole('button', { name: 'Account' })
 
     const panelId = account.getAttribute('aria-controls') ?? ''
@@ -79,6 +79,7 @@ describe('Accordion', () => {
     await waitFor(() => {
       expect(queryByRole('region', { name: 'Account' })).toBeNull()
     })
+    expect(document.getElementById(panelId)).not.toBeNull()
   })
 
   it('supports multiple independently open items', async () => {
@@ -189,9 +190,11 @@ describe('Accordion', () => {
 
     const defaultTrigger = getByRole('button', { name: 'Default' })
     expect(defaultTrigger.querySelector('path')?.getAttribute('d')).toBe('m9 18 6-6-6-6')
+    expect(defaultTrigger.getAttribute('data-weave-accordion-default-icons')).toBe('true')
 
     fireEvent.click(defaultTrigger)
-    expect(defaultTrigger.querySelector('path')?.getAttribute('d')).toBe('m6 9 6 6 6-6')
+    expect(defaultTrigger.querySelector('path')?.getAttribute('d')).toBe('m9 18 6-6-6-6')
+    expect(defaultTrigger.getAttribute('data-weave-accordion-open')).toBe('true')
 
     const expandIcon = (
       <svg data-testid="expand-icon" viewBox="0 0 24 24">

@@ -7,28 +7,33 @@ export function AccordionPanel({ children, viewProps = {} }: AccordionPanelProps
   const accordion = useAccordionContext('AccordionPanel')
   const item = useAccordionItemContext('AccordionPanel')
   const open = accordion.isOpen(item.value)
-  const { enter = 'fade', exit = 'fade', ...panelViewProps } = viewProps
+  const {
+    enter = { animation: 'fade-down', spring: 'gentle' },
+    exit = { animation: 'fade-up', spring: 'gentle' },
+    ...panelViewProps
+  } = viewProps
 
   return (
-    <Presence present={open}>
-      <View
-        {...panelViewProps}
-        id={accordion.panelId(item.value)}
-        role="region"
-        labelledBy={accordion.triggerId(item.value)}
-        inert={!open}
-        aria-hidden={open ? undefined : true}
-        enter={enter}
-        exit={exit}
-        className={['weave-accordion-panel', viewProps.className].filter(Boolean).join(' ')}
-        data={{
-          ...viewProps.data,
-          'weave-accordion-panel': '',
-          'weave-accordion-panel-value': item.value,
-        }}
-      >
-        {children}
-      </View>
-    </Presence>
+    <View
+      {...panelViewProps}
+      id={accordion.panelId(item.value)}
+      role="region"
+      labelledBy={accordion.triggerId(item.value)}
+      inert={!open}
+      aria-hidden={open ? undefined : true}
+      className={['weave-accordion-panel', viewProps.className].filter(Boolean).join(' ')}
+      data={{
+        ...viewProps.data,
+        'weave-accordion-panel': '',
+        'weave-accordion-panel-value': item.value,
+        'weave-accordion-panel-open': open ? 'true' : 'false',
+      }}
+    >
+      <Presence present={open}>
+        <View className="weave-accordion-panel__content" enter={enter} exit={exit}>
+          {children}
+        </View>
+      </Presence>
+    </View>
   )
 }

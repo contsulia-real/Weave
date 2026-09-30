@@ -11,11 +11,22 @@ export function AccordionItem({
   const accordion = useAccordionContext('AccordionItem')
   const resolvedDisabled = accordion.disabled || disabled
   const open = accordion.isOpen(value)
+  const transition =
+    viewProps.transition ??
+    ({
+      properties: ['gridTemplateRows'],
+      spring: 'gentle',
+    } as const)
 
   return (
     <AccordionItemContext.Provider value={{ value, disabled: resolvedDisabled }}>
       <View
         {...viewProps}
+        transition={transition}
+        style={{
+          gridTemplateRows: open ? 'auto minmax(0, 1fr)' : 'auto minmax(0, 0fr)',
+          ...viewProps.style,
+        }}
         className={['weave-accordion-item', viewProps.className].filter(Boolean).join(' ')}
         data={{
           ...viewProps.data,
