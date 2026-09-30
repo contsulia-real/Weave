@@ -17,7 +17,7 @@ const stylesheet = `
   --weave-slider-thumb-track-clearance:
     calc(var(--weave-slider-thumb-half-size) + var(--weave-slider-thumb-track-gap));
   --weave-slider-tick-size: calc(var(--weave-slider-track-height) / 4);
-  --weave-slider-tick-half-size: calc(var(--weave-slider-tick-size) / 2);
+  --weave-slider-track-half-height: calc(var(--weave-slider-track-height) / 2);
   --weave-slider-active-outer-extension: 0px;
   --weave-slider-inactive-outer-extension: 0px;
 
@@ -35,14 +35,14 @@ const stylesheet = `
 
 :where(.weave-slider-control[data-weave-slider-stepped="true"]) {
   --weave-slider-active-outer-extension: min(
-    var(--weave-slider-tick-half-size),
+    var(--weave-slider-track-half-height),
     max(
       0px,
       calc(var(--weave-slider-progress) - var(--weave-slider-thumb-track-clearance))
     )
   );
   --weave-slider-inactive-outer-extension: min(
-    var(--weave-slider-tick-half-size),
+    var(--weave-slider-track-half-height),
     max(
       0px,
       calc(

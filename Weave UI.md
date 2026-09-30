@@ -4293,7 +4293,7 @@ progress = (value - min) / (max - min)
 
 已选部分使用 `fillColor`；未选部分使用 `trackColor`。当 `max <= min` 时 progress 固定为 0。progress 表示 thumb 中心位置；active / inactive track 的内侧边界必须分别从该位置减去 / 加上 `thumbSize / 2 + thumbTrackGap`，保证视觉上始终存在真实断口。到达 max 时 inactive track 必须收敛为 0 宽，不得在 thumb 右侧残留凹槽。
 
-当调用方显式传入 `step > 0` 且范围有效时，Slider 进入离散视觉，每个从 `min` 到 `max` 的 step 都必须有明确 dot；未显式传 `step` 时完全不渲染 dot，包括 max 端。medium 的 dot 为 4px（track 高度的 1/4），small / large 按 track 比例缩放。dot 垂直严格居中；step dot 与 thumb 必须共享完全相同的 value axis，禁止再对 dot 容器做第二层左右内缩、clamp 或独立位置映射。同一个数值对应的 step dot 中心必须与该数值下的 thumb 中心完全重合，前后相邻 step 到 thumb 的中心距离必须相等。离散视觉下，两段轨道只允许在各自最外侧端点向外延伸最多半个 dot 尺寸，使 `min` / `max` 端点 dot 完整落在轨道 surface 上；该延伸不得改变 value axis、thumb gap 或内侧断口，并在对应轨道收敛为 0 时同步收敛为 0。active tick 使用 active surface 的对比色；inactive tick 使用 active color。
+当调用方显式传入 `step > 0` 且范围有效时，Slider 进入离散视觉，每个从 `min` 到 `max` 的 step 都必须有明确 dot；未显式传 `step` 时完全不渲染 dot，包括 max 端。medium 的 dot 为 4px（track 高度的 1/4），small / large 按 track 比例缩放。dot 垂直严格居中；step dot 与 thumb 必须共享完全相同的 value axis，禁止再对 dot 容器做第二层左右内缩、clamp 或独立位置映射。同一个数值对应的 step dot 中心必须与该数值下的 thumb 中心完全重合，前后相邻 step 到 thumb 的中心距离必须相等。离散视觉下，两段轨道的最外侧圆角端帽圆心必须分别与 `min` / `max` 端点 step dot 的中心重合，因此轨道在对应 value axis 之外最多延伸 `trackHeight / 2`。这样端点 dot 完整位于圆角端帽中央，而不是与端帽边缘相切；该延伸不得改变 value axis、thumb gap 或内侧断口，并在对应轨道收敛为 0 时同步收敛为 0。active tick 使用 active surface 的对比色；inactive tick 使用 active color。
 
 Slider 默认不复制一套独立的轨道视觉。未显式覆盖 Slider theme 时：
 

@@ -361,14 +361,10 @@ test('Playground Slider expresses recessed inactive track, raised active surface
   const centerX = (box: NonNullable<typeof firstStepBox>) => box.x + box.width / 2
   expect(centerX(firstStepBox!)).toBeCloseTo(customRangeBox!.x, 1)
   expect(centerX(lastStepBox!)).toBeCloseTo(customRangeBox!.x + customRangeBox!.width, 1)
-  expect(firstStepBox!.x).toBeGreaterThanOrEqual(customActiveTrackBox!.x - 0.5)
-  expect(firstStepBox!.x + firstStepBox!.width).toBeLessThanOrEqual(
-    customActiveTrackBox!.x + customActiveTrackBox!.width + 0.5,
-  )
-  expect(lastStepBox!.x).toBeGreaterThanOrEqual(customTrackBox!.x - 0.5)
-  expect(lastStepBox!.x + lastStepBox!.width).toBeLessThanOrEqual(
-    customTrackBox!.x + customTrackBox!.width + 0.5,
-  )
+  const firstCapCenter = customActiveTrackBox!.x + customActiveTrackBox!.height / 2
+  const lastCapCenter = customTrackBox!.x + customTrackBox!.width - customTrackBox!.height / 2
+  expect(centerX(firstStepBox!)).toBeCloseTo(firstCapCenter, 1)
+  expect(centerX(lastStepBox!)).toBeCloseTo(lastCapCenter, 1)
 
   const firstGap = centerX(secondStepBox!) - centerX(firstStepBox!)
   const middleGap = centerX(thirdStepBox!) - centerX(secondStepBox!)
