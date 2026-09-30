@@ -1,5 +1,15 @@
 import { IconBell, IconSearch, IconSearchFilled, IconSettings, IconUser } from '@tabler/icons-react'
-import { Column, createTheme, Icon, Image, Row, Text, ThemeProvider, View } from '../index'
+import {
+  Column,
+  createTheme,
+  Icon,
+  Image,
+  Row,
+  Skeleton,
+  Text,
+  ThemeProvider,
+  View,
+} from '../index'
 import { PlaygroundSection } from './PlaygroundSection'
 
 const diagnosticImage =
@@ -93,6 +103,54 @@ export function FoundationVisualPlayground() {
             Mono family token — 0123456789
           </Text>
         </Column>
+      </PlaygroundSection>
+
+      <PlaygroundSection
+        title="Skeleton"
+        description="rect / circle / text 三种占位形态共享同一套 shimmer；text 高度跟随当前 line-height，circle 保持 1:1，reduced-motion 下停止 shimmer。"
+      >
+        <Row gap={1.5} align="start" wrap>
+          <Skeleton
+            viewProps={{
+              width: 12,
+              height: 6,
+              data: { testid: 'skeleton-rect' },
+            }}
+          />
+
+          <Skeleton
+            shape="circle"
+            viewProps={{
+              width: 5,
+              data: { testid: 'skeleton-circle' },
+            }}
+          />
+
+          <Column gap={0.625} width={18}>
+            <Skeleton
+              shape="text"
+              viewProps={{
+                width: 18,
+                style: { fontSize: '16px', lineHeight: '24px' },
+                data: { testid: 'skeleton-text' },
+              }}
+            />
+            <Skeleton
+              shape="text"
+              viewProps={{
+                width: 14,
+                data: { testid: 'skeleton-text-medium' },
+              }}
+            />
+            <Skeleton
+              shape="text"
+              viewProps={{
+                width: 9,
+                data: { testid: 'skeleton-text-short' },
+              }}
+            />
+          </Column>
+        </Row>
       </PlaygroundSection>
 
       <PlaygroundSection

@@ -733,6 +733,15 @@ export const defaultTheme: ResolvedTheme = {
         },
       },
     },
+    Skeleton: {
+      base: {
+        background: 'surfaceHover',
+        highlight: 'surface',
+        radius: 'medium',
+        textRadius: 'full',
+        shimmerDuration: 1280,
+      },
+    },
     Progress: {
       base: {
         trackColor: 'color-mix(in srgb, currentColor 16%, transparent)',

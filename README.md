@@ -36,7 +36,7 @@ The main layers are:
 
 ### Forms and status
 
-`Input`, `Select`, `SelectOption`, `Combobox`, `ComboboxOption`, `Switch`, `Radio`, `Checkbox`, `Progress`.
+`Input`, `Select`, `SelectOption`, `Combobox`, `ComboboxOption`, `Switch`, `Radio`, `Checkbox`, `Progress`, `Skeleton`.
 
 ### Composite UI
 
@@ -46,7 +46,7 @@ The main layers are:
 
 `ThemeProvider`, `useTheme`, `createTheme`, `defaultTheme`, `createRoot`.
 
-The root package also exports the public prop, motion and theme customization types, including component-level theme interfaces such as `ButtonTheme`, `CardTheme`, `SelectTheme`, `ComboboxTheme`, `SwitchTheme`, `ToolTipTheme`, `PopoverTheme`, `MenuTheme`, `SnackTheme` and `ThemeComponents`.
+The root package also exports the public prop, motion and theme customization types, including component-level theme interfaces such as `ButtonTheme`, `CardTheme`, `SkeletonTheme`, `SelectTheme`, `ComboboxTheme`, `SwitchTheme`, `ToolTipTheme`, `PopoverTheme`, `MenuTheme`, `SnackTheme` and `ThemeComponents`.
 
 ## Basic usage
 

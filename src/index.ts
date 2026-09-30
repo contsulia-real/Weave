@@ -26,6 +26,7 @@ export { Radio } from './components/Radio'
 export { Row } from './components/Row'
 export { Select } from './components/Select'
 export { SelectOption } from './components/SelectOption'
+export { Skeleton } from './components/Skeleton'
 export { Snack } from './components/Snack'
 export type { SnackProviderProps } from './components/SnackProvider'
 export { SnackProvider } from './components/SnackProvider'
@@ -198,6 +199,11 @@ export type {
   SelectViewProps,
 } from './core/select-types'
 export type {
+  SkeletonProps,
+  SkeletonShape,
+  SkeletonViewProps,
+} from './core/skeleton-types'
+export type {
   SnackContainer,
   SnackController,
   SnackIcon,
@@ -331,6 +337,8 @@ export type {
   SelectThemeBase,
   SelectThemeListbox,
   SelectThemeOption,
+  SkeletonTheme,
+  SkeletonThemeBase,
   SnackTheme,
   SnackThemeBase,
   SnackThemeVariant,

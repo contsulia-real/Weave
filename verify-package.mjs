@@ -56,6 +56,7 @@ const expectedRuntimeExports = [
   'Row',
   'Select',
   'SelectOption',
+  'Skeleton',
   'Snack',
   'Stack',
   'SnackProvider',
@@ -144,6 +145,7 @@ assert(typeSource.includes('RowProps'), 'Built declarations are missing RowProps
 assert(typeSource.includes('StackProps'), 'Built declarations are missing StackProps')
 assert(typeSource.includes('BadgeProps'), 'Built declarations are missing BadgeProps')
 assert(typeSource.includes('CardProps'), 'Built declarations are missing CardProps')
+assert(typeSource.includes('SkeletonProps'), 'Built declarations are missing SkeletonProps')
 assert(typeSource.includes('ListProps'), 'Built declarations are missing ListProps')
 assert(typeSource.includes('LinkProps'), 'Built declarations are missing LinkProps')
 assert(typeSource.includes('TabsProps'), 'Built declarations are missing TabsProps')
@@ -168,6 +170,7 @@ const expectedThemeTypeExports = [
   'LinkTheme',
   'ButtonTheme',
   'CardTheme',
+  'SkeletonTheme',
   'DialogTheme',
   'TabsTheme',
   'TabsThemeBase',

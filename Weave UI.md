@@ -4002,6 +4002,87 @@ focusOutlineOffset
 Card 没有 `variant`、`size`、header/footer 等额外高层 API；内容结构继续由 children 与现有 Weave 组件组合。
 
 ---
+
+# 18.13 `Skeleton`
+
+`Skeleton` 是无内容的加载占位组件，只负责表达内容尚未就绪的视觉状态。它继续使用普通 ViewHost，不引入独立布局系统，也不承载 children。
+
+## 18.13.1 API
+
+```tsx
+<Skeleton viewProps={{ width: 12, height: 6 }} />
+<Skeleton shape="circle" viewProps={{ width: 4 }} />
+<Skeleton shape="text" viewProps={{ width: 16 }} />
+```
+
+当前高层属性只有：
+
+```text
+shape = "rect" | "circle" | "text"
+viewProps
+```
+
+默认 `shape="rect"`。尺寸继续使用 `viewProps`，不额外创建 `width / height / size` 高层属性。
+
+## 18.13.2 Shape
+
+`rect` 是普通块状占位。它使用 Skeleton 主题默认圆角，具体宽高由 `viewProps` 决定。
+
+`circle` 使用 `aspect-ratio: 1 / 1` 与 full radius；调用方提供单一主尺寸即可得到 1:1 圆形占位。
+
+`text` 用于模拟当前排版上下文中的一行文字：
+
+```text
+width  = 100%（可由 viewProps.width 覆盖）
+height = 1lh
+radius = theme.components.Skeleton.base.textRadius
+```
+
+因此 text Skeleton 的高度直接跟随当前元素实际 `line-height`，不维护另一套字号表。
+
+## 18.13.3 Shimmer 与 reduced motion
+
+Skeleton 默认持续运行单向 shimmer。底色与高光来自语义主题色：
+
+```text
+background = surfaceHover
+highlight  = surface
+```
+
+shimmer 只在 Skeleton 自身表面移动，不改变布局、尺寸、opacity 或 transform 状态。
+
+默认 `shimmerDuration = 1280ms`，相当于默认 theme `motion.duration.slow` 的四倍；该值属于 `SkeletonTheme`，不是组件级 prop。
+
+Skeleton 必须复用全局 reduced-motion 偏好。当 resolved reduced motion 为 `reduce` 时：
+
+```text
+animation = none
+shimmer highlight = hidden
+```
+
+不得继续播放 pulse、opacity 呼吸或替代运动。
+
+## 18.13.4 Theme
+
+默认视觉来自：
+
+```text
+theme.components.Skeleton.base
+```
+
+字段：
+
+```text
+background
+highlight
+radius
+textRadius
+shimmerDuration
+```
+
+Skeleton 不增加 variant、size、lines/count 或 children API。多行文字骨架由多个 `Skeleton shape="text"` 通过现有 Column / Row 组合。
+
+---
 # 19. `ToolTip`
 
 `ToolTip` 是目标附着的辅助说明组件。
@@ -5678,6 +5759,7 @@ const theme = {
     Select: { ... },
     Combobox: { ... },
     Switch: { ... },
+    Skeleton: { ... },
     Progress: { ... },
     Scrollbar: { ... },
     ToolTip: { ... },
@@ -6877,7 +6959,7 @@ Weave 公开 API
 │  ├─ Text / Image / Icon
 │  ├─ Input / Button / Link / Card
 │  ├─ Switch / Radio / Checkbox
-│  ├─ Progress / Divider
+│  ├─ Progress / Skeleton / Divider
 │  ├─ Badge / ToolTip / Popover
 │  ├─ Select / SelectOption
 │  ├─ Combobox / ComboboxOption

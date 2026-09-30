@@ -25,5 +25,6 @@ export {
 export {
   resolveProgressTheme,
   resolveScrollbarTheme,
+  resolveSkeletonTheme,
 } from './component-theme/progress'
 export { resolveTabsTheme } from './component-theme/tabs'

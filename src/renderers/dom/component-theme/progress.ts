@@ -4,6 +4,19 @@ import type { ScrollbarConfig, ScrollbarSize } from '../../../core/view-types'
 import type { ResolvedTheme, ScrollbarTheme } from '../../../theme/theme-types'
 import type { RuntimeStyleDeclarations } from '../runtime-class'
 
+export function resolveSkeletonTheme(theme: ResolvedTheme): RuntimeStyleDeclarations {
+  const base = theme.components.Skeleton?.base
+
+  return {
+    '--weave-skeleton-background': color(base?.background),
+    '--weave-skeleton-highlight': color(base?.highlight),
+    '--weave-skeleton-radius': radius(base?.radius),
+    '--weave-skeleton-text-radius': radius(base?.textRadius),
+    '--weave-skeleton-shimmer-duration':
+      base?.shimmerDuration === undefined ? undefined : `${base.shimmerDuration}ms`,
+  }
+}
+
 export function resolveProgressTheme(
   theme: ResolvedTheme,
   mode: ProgressMode,

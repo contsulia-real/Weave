@@ -328,6 +328,18 @@ export interface ButtonTheme {
   }
 }
 
+export interface SkeletonThemeBase {
+  background?: string
+  highlight?: string
+  radius?: ThemeScaleValue
+  textRadius?: ThemeScaleValue
+  shimmerDuration?: number
+}
+
+export interface SkeletonTheme {
+  base?: SkeletonThemeBase
+}
+
 export interface ProgressThemeBase {
   trackColor?: string
   trackShadow?: string
@@ -569,6 +581,7 @@ export interface ThemeComponents {
   Switch?: SwitchTheme
   Radio?: ChoiceControlTheme
   Checkbox?: ChoiceControlTheme
+  Skeleton?: SkeletonTheme
   Progress?: ProgressTheme
   Scrollbar?: ScrollbarTheme
   ToolTip?: ToolTipTheme
