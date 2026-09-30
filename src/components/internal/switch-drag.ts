@@ -35,11 +35,19 @@ export function switchDragGeometry(
   }
 }
 
-function dragProgress(offset: number, startOffset: number, maxOffset: number): number {
-  const thresholdDistance = maxOffset / 2
-  if (thresholdDistance <= 0) return 0
+export function switchDragShapeScales(
+  distance: number,
+  maxDistance: number,
+  shrink: number,
+  maxWidth: number,
+): { widthScale: number; heightScale: number } {
+  const thresholdDistance = maxDistance / 2
+  const progress = thresholdDistance <= 0 ? 0 : Math.min(1, Math.abs(distance) / thresholdDistance)
 
-  return Math.min(1, Math.abs(offset - startOffset) / thresholdDistance)
+  return {
+    widthScale: shrink + (maxWidth - shrink) * progress,
+    heightScale: shrink,
+  }
 }
 
 function applySwitchShape(
@@ -67,10 +75,14 @@ export function applySwitchDragShape(
   shrink: number,
   maxWidth: number,
 ): void {
-  const progress = dragProgress(offset, drag.startOffset, drag.maxOffset)
-  const widthScale = shrink + (maxWidth - shrink) * progress
+  const { widthScale, heightScale } = switchDragShapeScales(
+    offset - drag.startOffset,
+    drag.maxOffset,
+    shrink,
+    maxWidth,
+  )
 
-  applySwitchShape(thumb, drag, offset, widthScale, shrink)
+  applySwitchShape(thumb, drag, offset, widthScale, heightScale)
 }
 
 export function applySwitchAutoDragShape(

@@ -146,7 +146,7 @@ export function FoundationActionPlayground() {
               }}
             />
 
-            <Button text="Disabled" disabled />
+            <Button text="Disabled" disabled viewProps={{ data: { testid: 'button-disabled' } }} />
 
             <Button text="Pressed" variant="secondary" pressed />
 

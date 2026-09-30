@@ -130,7 +130,7 @@ const stylesheet = `
 }
 
 :where(.weave-tab:disabled) {
-  --weave-component-cursor: default;
+  --weave-component-cursor: not-allowed;
   opacity: var(--weave-tabs-disabled-opacity);
 }
 

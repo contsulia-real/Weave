@@ -101,7 +101,6 @@ export function resolveButtonTheme(theme: ResolvedTheme): RuntimeStyleDeclaratio
     '--weave-button-theme-focus-outline-style': base?.focusOutlineStyle,
     '--weave-button-theme-focus-outline-offset': length(base?.focusOutlineOffset),
     '--weave-button-theme-disabled-opacity': disabled?.opacity,
-    '--weave-button-theme-disabled-cursor': disabled?.cursor,
   }
 
   for (const size of ['small', 'medium', 'large'] as const) {

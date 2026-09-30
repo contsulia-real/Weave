@@ -135,7 +135,7 @@ const stylesheet = `
 :where(.weave-list-item[aria-disabled="true"]) {
   --weave-component-opacity:
     var(--weave-list-item-disabled-opacity);
-  --weave-component-cursor: default;
+  --weave-component-cursor: not-allowed;
 }
 
 :where(.weave-list-item__icon) {

@@ -77,7 +77,6 @@ export interface InputTheme {
   states?: {
     disabled?: {
       opacity?: number
-      cursor?: string
     }
   }
 }
@@ -162,7 +161,9 @@ export interface SliderThemeBase {
 
 export interface SliderThemeSize {
   trackHeight?: ThemeScaleValue
-  thumbSize?: ThemeScaleValue
+  thumbWidth?: ThemeScaleValue
+  thumbHeight?: ThemeScaleValue
+  thumbTrackGap?: ThemeScaleValue
 }
 
 export interface SliderTheme {
@@ -171,7 +172,6 @@ export interface SliderTheme {
   states?: {
     disabled?: {
       opacity?: number
-      cursor?: string
     }
   }
 }
@@ -210,7 +210,6 @@ export interface SwitchTheme {
     }
     disabled?: {
       opacity?: number
-      cursor?: string
     }
   }
 }
@@ -256,7 +255,6 @@ export interface ChoiceControlTheme {
     }
     disabled?: {
       opacity?: number
-      cursor?: string
     }
   }
 }
@@ -356,7 +354,6 @@ export interface ButtonTheme {
   states?: {
     disabled?: {
       opacity?: number
-      cursor?: string
     }
   }
 }

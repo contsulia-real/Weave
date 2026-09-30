@@ -87,7 +87,7 @@ const stylesheet = `
 }
 
 :where(.weave-card[data-weave-card-interactive="true"][aria-disabled="true"]) {
-  --weave-component-cursor: default;
+  --weave-component-cursor: not-allowed;
 }
 `
 

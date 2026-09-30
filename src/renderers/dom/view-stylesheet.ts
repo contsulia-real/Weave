@@ -201,8 +201,10 @@ ${motionPropertyRegistrationBlock()}
   ${declarationBlock('focus-visible')}
 }
 
-:where([data-weave-view][aria-disabled="true"]) {
+:where([data-weave-view][aria-disabled="true"]),
+:where([data-weave-view]:disabled) {
   ${declarationBlock('disabled')}
+  cursor: not-allowed;
 }
 
 :where([data-weave-view][data-weave-motion-state="enter-from"]) {

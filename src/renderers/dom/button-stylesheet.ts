@@ -180,7 +180,7 @@ const stylesheet = `
 
 :where(.weave-button[aria-disabled="true"]) {
   --weave-component-opacity: var(--weave-button-theme-disabled-opacity);
-  --weave-component-cursor: var(--weave-button-theme-disabled-cursor);
+  --weave-component-cursor: not-allowed;
 }
 
 :where(.weave-button--primary) {

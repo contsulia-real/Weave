@@ -36,6 +36,7 @@ export function FormPlayground() {
             defaultValue="Disabled input"
             viewProps={{
               width: 20,
+              data: { testid: 'input-disabled' },
             }}
           />
 
@@ -60,7 +61,7 @@ export function FormPlayground() {
 
       <PlaygroundSection
         title="Slider"
-        description="单值 horizontal Slider 直接使用原生 range：轨道点击、拖动与键盘交互由浏览器负责；三档尺寸只改变 track 与 thumb。"
+        description="M3 Slider 的厚胶囊双段轨道、竖向 handle、gap、tick / stop indicator，与 Weave 的凹陷 inactive surface、突起 active surface 和 Switch 同款抓取回弹融合；数值交互仍由原生 range 负责。"
       >
         <Column gap={1.25} align="start">
           <Row gap={1.5} align="center" wrap>
@@ -128,7 +129,7 @@ export function FormPlayground() {
 
           <Switch size="large" label="Large" />
 
-          <Switch disabled label="Disabled" />
+          <Switch disabled label="Disabled" viewProps={{ data: { testid: 'switch-disabled' } }} />
         </Row>
       </PlaygroundSection>
 
@@ -174,7 +175,13 @@ export function FormPlayground() {
               </Row>
 
               <Row gap={0.5} align="center">
-                <Radio group="theme-demo" value="system" disabled label="System · disabled" />
+                <Radio
+                  group="theme-demo"
+                  value="system"
+                  disabled
+                  label="System · disabled"
+                  viewProps={{ data: { testid: 'radio-disabled' } }}
+                />
               </Row>
             </Column>
 
@@ -195,6 +202,7 @@ export function FormPlayground() {
                   value="admin"
                   disabled
                   label="Admin · disabled"
+                  viewProps={{ data: { testid: 'checkbox-disabled' } }}
                 />
               </Row>
             </Column>

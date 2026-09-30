@@ -11,7 +11,7 @@ const stylesheet = `
 }
 
 :where(.weave-choice-field[data-weave-choice-disabled="true"]) {
-  cursor: default;
+  cursor: not-allowed;
 }
 
 :where(.weave-choice-label) {
@@ -115,7 +115,7 @@ const stylesheet = `
 
 :where(.weave-choice-control[aria-disabled="true"]) {
   --weave-component-opacity: var(--weave-choice-disabled-opacity);
-  --weave-component-cursor: var(--weave-choice-disabled-cursor);
+  --weave-component-cursor: not-allowed;
 }
 
 :where(.weave-choice-state-layer) {

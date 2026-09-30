@@ -10,7 +10,7 @@ const stylesheet = `
 }
 
 :where(.weave-switch-field[data-weave-switch-disabled="true"]) {
-  cursor: default;
+  cursor: not-allowed;
 }
 
 :where(.weave-switch__label) {
@@ -75,7 +75,7 @@ const stylesheet = `
 
 :where(.weave-switch[aria-disabled="true"]) {
   --weave-component-opacity: var(--weave-switch-disabled-opacity);
-  --weave-component-cursor: var(--weave-switch-disabled-cursor);
+  --weave-component-cursor: not-allowed;
 }
 
 :where(.weave-switch__thumb) {

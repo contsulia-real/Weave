@@ -155,8 +155,7 @@ const stylesheet = `
 ) {
   --weave-component-opacity:
     var(--weave-input-disabled-opacity);
-  --weave-component-cursor:
-    var(--weave-input-disabled-cursor);
+  --weave-component-cursor: not-allowed;
 }
 
 :where(.weave-input--multiline) {

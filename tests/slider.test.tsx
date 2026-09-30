@@ -38,7 +38,7 @@ describe('Slider', () => {
 
     expect(slider.value).toBe('75')
     expect(onChange).toHaveBeenLastCalledWith(75)
-    expect(slider.style.getPropertyValue('--weave-slider-progress')).toBe('75%')
+    expect(slider.parentElement?.style.getPropertyValue('--weave-slider-progress')).toBe('75%')
   })
 
   it('clamps controlled and default values to the configured range', () => {
@@ -78,7 +78,7 @@ describe('Slider', () => {
     expect(slider.disabled).toBe(true)
     expect(slider.value).toBe('5')
     expect(slider.getAttribute('data-weave-slider-size')).toBe('large')
-    expect(slider.style.getPropertyValue('--weave-slider-progress')).toBe('62.5%')
+    expect(slider.parentElement?.style.getPropertyValue('--weave-slider-progress')).toBe('62.5%')
   })
 
   it('inherits the tactile surface language from Switch by default', () => {
@@ -99,7 +99,6 @@ describe('Slider', () => {
             },
             disabled: {
               opacity: 0.35,
-              cursor: 'not-allowed',
             },
           },
         },
@@ -116,12 +115,34 @@ describe('Slider', () => {
     expect(rule).toContain('--weave-slider-track-color:var(--weave-color-warning,warning);')
     expect(rule).toContain('--weave-slider-track-shadow:inset02px3pxblack;')
     expect(rule).toContain('--weave-slider-fill-color:var(--weave-color-success,success);')
-    expect(rule).toContain('--weave-slider-thumb-background:var(--weave-color-tertiary,tertiary);')
+    expect(rule).toContain(
+      '--weave-slider-active-dot-color:var(--weave-color-onPrimary,onPrimary);',
+    )
+    expect(rule).toContain('--weave-slider-thumb-background:var(--weave-color-success,success);')
     expect(rule).toContain('--weave-slider-thumb-shadow:02px3pxblack;')
     expect(rule).toContain('--weave-slider-thumb-hover-shadow:03px5pxblack;')
     expect(rule).toContain('--weave-slider-cursor:grab;')
     expect(rule).toContain('--weave-slider-disabled-opacity:0.35;')
-    expect(rule).toContain('--weave-slider-disabled-cursor:not-allowed;')
+  })
+
+  it('renders an explicit dot for every valid step', () => {
+    const { getByTestId } = render(
+      <Slider
+        min={-20}
+        max={20}
+        step={5}
+        defaultValue={5}
+        viewProps={{ data: { testid: 'slider' } }}
+      />,
+    )
+
+    const control = getByTestId('slider').parentElement
+    const steps = control?.querySelectorAll('.weave-slider__step') ?? []
+    const activeSteps = control?.querySelectorAll('[data-weave-slider-step-active="true"]') ?? []
+
+    expect(steps).toHaveLength(8)
+    expect(activeSteps).toHaveLength(6)
+    expect(control?.querySelectorAll('.weave-slider__stop-indicator')).toHaveLength(1)
   })
 
   it('resolves Slider theme customization', () => {
@@ -143,13 +164,14 @@ describe('Slider', () => {
           sizes: {
             small: {
               trackHeight: 0.5,
-              thumbSize: 1.5,
+              thumbWidth: 0.125,
+              thumbHeight: 1.375,
+              thumbTrackGap: 0.1875,
             },
           },
           states: {
             disabled: {
               opacity: 0.25,
-              cursor: 'not-allowed',
             },
           },
         },
@@ -168,9 +190,10 @@ describe('Slider', () => {
     expect(rule).toContain('--weave-slider-fill-color:var(--weave-color-success,success);')
     expect(rule).toContain('--weave-slider-thumb-border-width:0.125rem;')
     expect(rule).toContain('--weave-slider-track-height:0.5rem;')
-    expect(rule).toContain('--weave-slider-thumb-size:1.5rem;')
+    expect(rule).toContain('--weave-slider-thumb-width:0.125rem;')
+    expect(rule).toContain('--weave-slider-thumb-height:1.375rem;')
+    expect(rule).toContain('--weave-slider-thumb-track-gap:0.1875rem;')
     expect(rule).toContain('--weave-slider-cursor:crosshair;')
     expect(rule).toContain('--weave-slider-disabled-opacity:0.25;')
-    expect(rule).toContain('--weave-slider-disabled-cursor:not-allowed;')
   })
 })

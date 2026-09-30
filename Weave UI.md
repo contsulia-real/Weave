@@ -4258,17 +4258,31 @@ Slider 默认宽度：
 
 `viewProps.width` 可覆盖。
 
-三档尺寸只改变 track 与 thumb：
+Slider 的基础几何采用 M3 Slider 的粗 track + 独立 thumb + thumb-track gap 结构，再叠加 Weave 自己的实体层级与触感。
+
+三档尺寸保持同一套 M3 几何比例；medium 直接采用 M3 的 16px track / 4×44px handle / 6px handle-track gap，small / large 按同一比例缩放：
 
 ```text
-small  = track 0.25rem / thumb 1rem
-medium = track 0.375rem / thumb 1.25rem
-large  = track 0.5rem / thumb 1.5rem
+small  = track 0.75rem / handle 0.1875rem × 2.0625rem / gap 0.28125rem
+medium = track 1rem    / handle 0.25rem   × 2.75rem   / gap 0.375rem
+large  = track 1.25rem / handle 0.3125rem × 3.4375rem / gap 0.46875rem
 ```
 
-track 与 thumb 均为 full / circle radius。
+active / inactive track 必须是两段真实分离的 surface，不能再用一条连续轨道加渐变或覆盖色模拟。handle 使用窄而高的 vertical pill，并位于轨道断口中央；面向 handle 的 track 内侧角按 track 高度的 1/8，外侧端点使用 full radius。
 
-## 18.15.5 Fill
+## 18.15.5 物理层级、Fill 与 Step
+
+Slider 的物理隐喻固定为：
+
+```text
+inactive track = 凹陷槽
+active fill    = 从槽中抬起的实体 surface
+handle         = 与 active track 同层级的竖向可抓取实体
+step dot       = 沿轨道明确标记每一个有效离散 step
+stop indicator = 固定在轨道末端的 M3 endpoint dot
+```
+
+inactive track 复用 Switch 的 inset track shadow；active track 不使用 inset shadow，而是直接复用 Switch thumb 的 raised shadow。handle 默认与 active track 使用同一 active color，并使用同一个 raised shadow。因此 active / inactive 不是一条轨道上的两种颜色，而是两个不同 Z 层级的表面。active / inactive 在 handle 两侧断开，中间 gap 由 handle 的实体占位与 M3 gap 共同形成。
 
 Slider 的已选轨道由当前值计算：
 
@@ -4276,7 +4290,9 @@ Slider 的已选轨道由当前值计算：
 progress = (value - min) / (max - min)
 ```
 
-已选部分使用 `fillColor`；未选部分使用 `trackColor`。当 `max <= min` 时 progress 固定为 0。
+已选部分使用 `fillColor`；未选部分使用 `trackColor`。当 `max <= min` 时 progress 固定为 0。progress 表示 handle 中心位置；active / inactive track 的内侧边界必须分别从该位置减去 / 加上 `thumbWidth / 2 + thumbTrackGap`，保证视觉上始终存在真实断口。
+
+当调用方显式传入 `step > 0` 且范围有效时，Slider 进入离散视觉，每个从 `min` 开始的合法 step 都必须有明确 dot。最后一个 max step 由 M3 stop indicator 表示，其余 step 使用 tick dot。未传 `step` 时仍沿用原生 range 的数值步进默认值，但视觉保持连续 Slider，只保留末端 stop indicator。active tick 使用 active surface 的对比色；inactive tick 与 stop indicator 使用 active color。不得只依赖 handle 位置暗示离散 step。
 
 Slider 默认不复制一套独立的轨道视觉。未显式覆盖 Slider theme 时：
 
@@ -4290,16 +4306,26 @@ fillColor   = theme.components.Switch.states.checked.background
 
 ## 18.15.6 Thumb 与状态
 
-默认 thumb 同样直接继承 Switch 的 resolved surface：
+默认 handle 将 M3 的 active-color handle 与 Weave 的实体 depth 合并：
 
 ```text
-background  = theme.components.Switch.base.thumbBackground
+background  = Slider.fillColor
 shadow      = theme.components.Switch.base.thumbShadow
 hoverShadow = theme.components.Switch.base.thumbHoverShadow
 borderWidth = 0
 ```
 
-Slider 仍允许通过自身 theme 覆盖这些值。active 默认继续使用 Switch 的 thumb shadow，并复用全局 feedback press scale 形成轻微压下反馈。
+Slider 仍允许通过自身 theme 覆盖这些值。
+
+Slider 的 thumb motion 必须与 Switch 使用同一触感模型，而不是简单 `scale()`：
+
+```text
+pointer grab → 立即按 Switch.thumbDragShrink 收缩
+drag         → 使用与 Switch 相同的 drag shape 比例随位移横向拉伸，并直接跟手
+release      → 使用 motion.spring.snappy 恢复到完整 vertical pill
+keyboard / track jump → 非 dragging 状态下用同一 snappy spring 移动 active fill 与 thumb
+reduced motion → 取消上述 transition
+```
 
 focus-visible 使用统一 `focus` outline。
 
@@ -4307,7 +4333,7 @@ disabled：
 
 ```text
 opacity = 0.5
-cursor  = default
+cursor  = not-allowed
 ```
 
 ## 18.15.7 Theme
@@ -4336,12 +4362,11 @@ base.focusOutlineColor
 base.focusOutlineStyle
 base.focusOutlineOffset
 
-sizes.small.trackHeight / thumbSize
-sizes.medium.trackHeight / thumbSize
-sizes.large.trackHeight / thumbSize
+sizes.small.trackHeight / thumbWidth / thumbHeight / thumbTrackGap
+sizes.medium.trackHeight / thumbWidth / thumbHeight / thumbTrackGap
+sizes.large.trackHeight / thumbWidth / thumbHeight / thumbTrackGap
 
 states.disabled.opacity
-states.disabled.cursor
 ```
 
 ---
@@ -6307,11 +6332,12 @@ Button: {
   states: {
     disabled: {
       opacity: 0.5,
-      cursor: "default",
     },
   },
 }
 ```
+
+所有 Weave 组件一旦进入 disabled 状态，最终计算 CSS cursor 必须为 `not-allowed`。这是 ViewHost 层的全局规则；组件主题可以继续定义 disabled opacity 等视觉属性，但不能把 disabled cursor 改回 `default`、`pointer` 或其他值。关联 label / field wrapper 也必须保持 `not-allowed`。
 
 若以后某组件确实需要“variant 专属状态覆盖”，必须在该组件自己的 Theme 类型与组件章节中显式增加，不能假定所有组件都存在一个隐藏的通用 variant-state 层。
 

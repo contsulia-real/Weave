@@ -174,7 +174,7 @@ const stylesheet = `
 :where(.weave-option[aria-disabled="true"]) {
   --weave-component-opacity:
     var(--weave-option-disabled-opacity);
-  --weave-component-cursor: default;
+  --weave-component-cursor: not-allowed;
 }
 
 :where(.weave-option__icon) {

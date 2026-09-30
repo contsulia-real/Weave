@@ -71,7 +71,6 @@ export function resolveInputTheme(theme: ResolvedTheme): RuntimeStyleDeclaration
     '--weave-input-focus-outline-style': base?.focusOutlineStyle,
     '--weave-input-focus-outline-offset': length(base?.focusOutlineOffset),
     '--weave-input-disabled-opacity': disabled?.opacity,
-    '--weave-input-disabled-cursor': disabled?.cursor,
   }
 }
 
@@ -121,9 +120,14 @@ export function resolveSliderTheme(
     '--weave-slider-track-color': color(base?.trackColor ?? switchBase?.background),
     '--weave-slider-track-shadow': base?.trackShadow ?? switchBase?.trackShadow,
     '--weave-slider-fill-color': color(base?.fillColor ?? switchChecked?.background),
+    '--weave-slider-active-dot-color': color('onPrimary'),
     '--weave-slider-track-height': length(sized?.trackHeight),
-    '--weave-slider-thumb-size': length(sized?.thumbSize),
-    '--weave-slider-thumb-background': color(base?.thumbBackground ?? switchBase?.thumbBackground),
+    '--weave-slider-thumb-width': length(sized?.thumbWidth),
+    '--weave-slider-thumb-height': length(sized?.thumbHeight),
+    '--weave-slider-thumb-track-gap': length(sized?.thumbTrackGap),
+    '--weave-slider-thumb-background': color(
+      base?.thumbBackground ?? base?.fillColor ?? switchChecked?.background,
+    ),
     '--weave-slider-thumb-border-color': color(base?.thumbBorderColor),
     '--weave-slider-thumb-border-width': length(base?.thumbBorderWidth),
     '--weave-slider-thumb-shadow': base?.thumbShadow ?? switchBase?.thumbShadow,
@@ -142,7 +146,6 @@ export function resolveSliderTheme(
       base?.focusOutlineOffset ?? switchBase?.focusOutlineOffset,
     ),
     '--weave-slider-disabled-opacity': disabled?.opacity ?? switchDisabled?.opacity,
-    '--weave-slider-disabled-cursor': disabled?.cursor ?? switchDisabled?.cursor,
   }
 }
 
@@ -181,7 +184,6 @@ export function resolveSwitchTheme(
     '--weave-switch-focus-outline-offset': length(base?.focusOutlineOffset),
     '--weave-switch-checked-background': color(checked?.background),
     '--weave-switch-disabled-opacity': disabled?.opacity,
-    '--weave-switch-disabled-cursor': disabled?.cursor,
   }
 }
 
@@ -227,6 +229,5 @@ export function resolveChoiceControlTheme(
       checked?.stateLayerColor ?? base?.stateLayerColor,
     ),
     '--weave-choice-disabled-opacity': disabled?.opacity,
-    '--weave-choice-disabled-cursor': disabled?.cursor,
   }
 }

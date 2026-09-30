@@ -506,7 +506,6 @@ export const defaultTheme: ResolvedTheme = {
       states: {
         disabled: {
           opacity: 0.5,
-          cursor: 'default',
         },
       },
     },
@@ -537,7 +536,6 @@ export const defaultTheme: ResolvedTheme = {
       states: {
         disabled: {
           opacity: 0.5,
-          cursor: 'default',
         },
       },
     },
@@ -574,16 +572,22 @@ export const defaultTheme: ResolvedTheme = {
       },
       sizes: {
         small: {
-          trackHeight: 0.25,
-          thumbSize: 1,
+          trackHeight: 0.75,
+          thumbWidth: 0.1875,
+          thumbHeight: 2.0625,
+          thumbTrackGap: 0.28125,
         },
         medium: {
-          trackHeight: 0.375,
-          thumbSize: 1.25,
+          trackHeight: 1,
+          thumbWidth: 0.25,
+          thumbHeight: 2.75,
+          thumbTrackGap: 0.375,
         },
         large: {
-          trackHeight: 0.5,
-          thumbSize: 1.5,
+          trackHeight: 1.25,
+          thumbWidth: 0.3125,
+          thumbHeight: 3.4375,
+          thumbTrackGap: 0.46875,
         },
       },
     },
@@ -635,7 +639,6 @@ export const defaultTheme: ResolvedTheme = {
         },
         disabled: {
           opacity: 0.5,
-          cursor: 'default',
         },
       },
     },
@@ -693,7 +696,6 @@ export const defaultTheme: ResolvedTheme = {
         },
         disabled: {
           opacity: 0.5,
-          cursor: 'default',
         },
       },
     },
@@ -749,7 +751,6 @@ export const defaultTheme: ResolvedTheme = {
         },
         disabled: {
           opacity: 0.5,
-          cursor: 'default',
         },
       },
     },

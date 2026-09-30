@@ -172,7 +172,7 @@ const stylesheet = `
 :where(.weave-menu-item[aria-disabled="true"]) {
   --weave-component-opacity:
     var(--weave-menu-item-disabled-opacity);
-  --weave-component-cursor: default;
+  --weave-component-cursor: not-allowed;
 }
 
 :where(.weave-menu-item[data-weave-menu-item-danger="true"]) {
