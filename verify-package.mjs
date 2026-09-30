@@ -30,6 +30,7 @@ const weave = await import(runtimeEntry.href)
 
 const expectedRuntimeExports = [
   'Absolute',
+  'Avatar',
   'Badge',
   'Button',
   'Card',
@@ -143,6 +144,7 @@ assert(typeSource.includes('FlexProps'), 'Built declarations are missing FlexPro
 assert(typeSource.includes('GridProps'), 'Built declarations are missing GridProps')
 assert(typeSource.includes('RowProps'), 'Built declarations are missing RowProps')
 assert(typeSource.includes('StackProps'), 'Built declarations are missing StackProps')
+assert(typeSource.includes('AvatarProps'), 'Built declarations are missing AvatarProps')
 assert(typeSource.includes('BadgeProps'), 'Built declarations are missing BadgeProps')
 assert(typeSource.includes('CardProps'), 'Built declarations are missing CardProps')
 assert(typeSource.includes('SkeletonProps'), 'Built declarations are missing SkeletonProps')
@@ -166,6 +168,7 @@ const expectedThemeTypeExports = [
   'ComboboxTheme',
   'SwitchTheme',
   'ChoiceControlTheme',
+  'AvatarTheme',
   'BadgeTheme',
   'LinkTheme',
   'ButtonTheme',

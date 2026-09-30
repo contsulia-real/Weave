@@ -733,6 +733,14 @@ export const defaultTheme: ResolvedTheme = {
         },
       },
     },
+    Avatar: {
+      base: {
+        background: 'surfaceHover',
+        color: 'tertiary',
+        borderColor: 'outline',
+        borderWidth: 0.0625,
+      },
+    },
     Skeleton: {
       base: {
         background: 'color-mix(in srgb, currentColor 20%, transparent)',

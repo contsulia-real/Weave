@@ -12,6 +12,17 @@ const BUTTON_VARIANTS: readonly ButtonVariant[] = [
   'danger',
 ]
 
+export function resolveAvatarTheme(theme: ResolvedTheme): RuntimeStyleDeclarations {
+  const base = theme.components.Avatar?.base
+
+  return {
+    '--weave-avatar-theme-background': color(base?.background),
+    '--weave-avatar-theme-color': color(base?.color),
+    '--weave-avatar-theme-border-color': color(base?.borderColor),
+    '--weave-avatar-theme-border-width': length(base?.borderWidth),
+  }
+}
+
 export function resolveBadgeTheme(theme: ResolvedTheme): RuntimeStyleDeclarations {
   const base = theme.components.Badge?.base
 

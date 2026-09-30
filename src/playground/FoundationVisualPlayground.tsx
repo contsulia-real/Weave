@@ -1,5 +1,6 @@
 import { IconBell, IconSearch, IconSearchFilled, IconSettings, IconUser } from '@tabler/icons-react'
 import {
+  Avatar,
   Column,
   createTheme,
   Icon,
@@ -149,6 +150,82 @@ export function FoundationVisualPlayground() {
                 data: { testid: 'skeleton-text-short' },
               }}
             />
+          </Column>
+        </Row>
+      </PlaygroundSection>
+
+      <PlaygroundSection
+        title="Avatar"
+        description="Avatar 固定为圆形；图片使用 cover + center。没有图片时显示 neutral surface，显式 fallback 优先于 name initials；图片加载失败自动进入 fallback。"
+      >
+        <Row gap={1.5} align="start" wrap>
+          <Column gap={0.5} align="center">
+            <Avatar
+              src={diagnosticImage}
+              name="Image Avatar"
+              viewProps={{
+                label: 'Image Avatar',
+                data: { testid: 'avatar-image' },
+              }}
+            />
+            <Text typo="body-small">Image</Text>
+          </Column>
+
+          <Column gap={0.5} align="center">
+            <Avatar
+              name="Ada Lovelace"
+              viewProps={{
+                label: 'Ada Lovelace',
+                data: { testid: 'avatar-initials' },
+              }}
+            />
+            <Text typo="body-small">Initials</Text>
+          </Column>
+
+          <Column gap={0.5} align="center">
+            <Avatar
+              name="Explicit Fallback"
+              fallback="FX"
+              viewProps={{
+                label: 'Explicit fallback',
+                data: { testid: 'avatar-explicit' },
+              }}
+            />
+            <Text typo="body-small">Fallback</Text>
+          </Column>
+
+          <Column gap={0.5} align="center">
+            <Avatar
+              src="/__weave-missing-avatar__.png"
+              name="Grace Hopper"
+              viewProps={{
+                label: 'Grace Hopper',
+                data: { testid: 'avatar-failed' },
+              }}
+            />
+            <Text typo="body-small">Failed image</Text>
+          </Column>
+
+          <Column gap={0.5} align="center">
+            <Avatar
+              viewProps={{
+                label: 'Empty Avatar',
+                data: { testid: 'avatar-empty' },
+              }}
+            />
+            <Text typo="body-small">Empty</Text>
+          </Column>
+
+          <Column gap={0.5} align="center">
+            <Avatar
+              name="Height Only"
+              viewProps={{
+                height: 4,
+                label: 'Height Only',
+                data: { testid: 'avatar-height-only' },
+              }}
+            />
+            <Text typo="body-small">4rem height</Text>
           </Column>
         </Row>
       </PlaygroundSection>

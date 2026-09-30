@@ -32,7 +32,7 @@ The main layers are:
 
 ### Content and actions
 
-`Text`, `Image`, `Icon`, `Divider`, `Link`, `Badge`, `Button`, `Card`.
+`Text`, `Image`, `Icon`, `Avatar`, `Divider`, `Link`, `Badge`, `Button`, `Card`.
 
 ### Forms and status
 
@@ -46,7 +46,7 @@ The main layers are:
 
 `ThemeProvider`, `useTheme`, `createTheme`, `defaultTheme`, `createRoot`.
 
-The root package also exports the public prop, motion and theme customization types, including component-level theme interfaces such as `ButtonTheme`, `CardTheme`, `SkeletonTheme`, `SelectTheme`, `ComboboxTheme`, `SwitchTheme`, `ToolTipTheme`, `PopoverTheme`, `MenuTheme`, `SnackTheme` and `ThemeComponents`.
+The root package also exports the public prop, motion and theme customization types, including component-level theme interfaces such as `ButtonTheme`, `CardTheme`, `AvatarTheme`, `SkeletonTheme`, `SelectTheme`, `ComboboxTheme`, `SwitchTheme`, `ToolTipTheme`, `PopoverTheme`, `MenuTheme`, `SnackTheme` and `ThemeComponents`.
 
 ## Basic usage
 

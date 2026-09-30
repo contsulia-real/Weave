@@ -4083,6 +4083,109 @@ shimmerDuration
 Skeleton 不增加 variant、size、lines/count 或 children API。多行文字骨架由多个 `Skeleton shape="text"` 通过现有 Column / Row 组合。
 
 ---
+
+# 18.14 `Avatar`
+
+`Avatar` 是固定圆形的人物 / 实体视觉标识。它复用现有 `Image` 处理图片内容，并使用普通 ViewHost 承载容器、主题和语义。
+
+## 18.14.1 API
+
+```tsx
+<Avatar src={url} name="Ada Lovelace" />
+<Avatar name="Ada Lovelace" />
+<Avatar name="Ada Lovelace" fallback="AL" />
+<Avatar />
+```
+
+公开高层属性只有：
+
+```text
+src?: ImageSource
+name?: string
+fallback?: ReactNode
+viewProps
+```
+
+Avatar 不提供 `size`、status、group、clickable 或独立 children API。尺寸继续由 `viewProps.width / height` 控制。
+
+## 18.14.2 圆形与尺寸
+
+Avatar 固定使用圆形裁切。
+
+默认尺寸：
+
+```text
+width  = 2.5rem
+height = 2.5rem
+aspect-ratio = 1 / 1
+```
+
+如果只提供 `viewProps.width` 或只提供 `viewProps.height`，另一边由 `aspect-ratio: 1 / 1` 补齐。
+
+## 18.14.3 图片
+
+存在可用 `src` 时，Avatar 内部复用 `Image`：
+
+```text
+fit      = cover
+position = center
+```
+
+内部图片是视觉内容，使用空 alt；Avatar 本身需要语义时由调用方继续通过 `viewProps.label / role / description` 等 View 语义属性提供。
+
+图片加载失败后，Avatar 自动进入 fallback 路径。
+
+## 18.14.4 Fallback
+
+fallback 优先级固定为：
+
+```text
+有效图片
+→ 显式 fallback
+→ name initials
+→ 空内容
+```
+
+`fallback` 类型为 `ReactNode`，因此可以传字符串、Icon 或其他现有 Weave 组合。
+
+没有 `src` 时，Avatar 自身必须仍然绘制 background-color；当图片失败进入 fallback 时同样显示该容器表面。
+
+如果 `fallback` 与 `name` 都没有，Avatar 保持空白，不自动插入 generic user icon。
+
+## 18.14.5 Initials
+
+`name` 自动 initials 规则：
+
+```text
+"Ada Lovelace" → "AL"
+"Ada Byron Lovelace" → "AL"
+"Cher" → "CH"
+```
+
+多词名称取首词与末词的第一个字符；单词名称取前两个字符；结果转为大写。
+
+initials / 文本 fallback 的字号按 Avatar 当前宽度同比例缩放。默认 2.5rem Avatar 对应 1rem fallback 字号。
+
+## 18.14.6 Theme
+
+默认主题来自：
+
+```text
+theme.components.Avatar.base
+```
+
+字段：
+
+```text
+background = surfaceHover
+color      = tertiary
+borderColor = outline
+borderWidth = 0.0625rem
+```
+
+这套 neutral fallback surface 同时用于 initials、显式 fallback、空白 Avatar 和图片失败状态。图片成功时仍保留相同容器边框，图片覆盖容器背景。
+
+---
 # 19. `ToolTip`
 
 `ToolTip` 是目标附着的辅助说明组件。
@@ -5759,6 +5862,7 @@ const theme = {
     Select: { ... },
     Combobox: { ... },
     Switch: { ... },
+    Avatar: { ... },
     Skeleton: { ... },
     Progress: { ... },
     Scrollbar: { ... },
@@ -6956,7 +7060,7 @@ Weave 公开 API
 │      └─ 对 View 布局能力的受约束封装，不增加额外 DOM
 │
 ├─ 公开组件
-│  ├─ Text / Image / Icon
+│  ├─ Text / Image / Icon / Avatar
 │  ├─ Input / Button / Link / Card
 │  ├─ Switch / Radio / Checkbox
 │  ├─ Progress / Skeleton / Divider

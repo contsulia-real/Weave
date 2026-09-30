@@ -1,4 +1,5 @@
 export { Absolute } from './components/Absolute'
+export { Avatar } from './components/Avatar'
 export { Badge } from './components/Badge'
 export { Button } from './components/Button'
 export { Card } from './components/Card'
@@ -40,6 +41,10 @@ export { Text } from './components/Text'
 export { ToolTip } from './components/ToolTip'
 export { useSnack } from './components/useSnack'
 export { View } from './components/View'
+export type {
+  AvatarProps,
+  AvatarViewProps,
+} from './core/avatar-types'
 export type {
   BadgePlacement,
   BadgeProps,
@@ -296,6 +301,8 @@ export { ThemeProvider } from './theme/ThemeProvider'
 export type { UseThemeResult } from './theme/theme-context'
 export { useTheme } from './theme/theme-context'
 export type {
+  AvatarTheme,
+  AvatarThemeBase,
   BadgeTheme,
   BadgeThemeBase,
   ButtonTheme,

@@ -328,6 +328,17 @@ export interface ButtonTheme {
   }
 }
 
+export interface AvatarThemeBase {
+  background?: string
+  color?: string
+  borderColor?: string
+  borderWidth?: ThemeScaleValue
+}
+
+export interface AvatarTheme {
+  base?: AvatarThemeBase
+}
+
 export interface SkeletonThemeBase {
   background?: string
   highlight?: string
@@ -581,6 +592,7 @@ export interface ThemeComponents {
   Switch?: SwitchTheme
   Radio?: ChoiceControlTheme
   Checkbox?: ChoiceControlTheme
+  Avatar?: AvatarTheme
   Skeleton?: SkeletonTheme
   Progress?: ProgressTheme
   Scrollbar?: ScrollbarTheme

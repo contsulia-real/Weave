@@ -1,4 +1,5 @@
 export {
+  resolveAvatarTheme,
   resolveBadgeTheme,
   resolveButtonTheme,
   resolveCardTheme,
