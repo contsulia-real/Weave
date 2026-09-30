@@ -1,4 +1,8 @@
 export { Absolute } from './components/Absolute'
+export { Accordion } from './components/Accordion'
+export { AccordionItem } from './components/AccordionItem'
+export { AccordionPanel } from './components/AccordionPanel'
+export { AccordionTrigger } from './components/AccordionTrigger'
 export { Avatar } from './components/Avatar'
 export { Badge } from './components/Badge'
 export { Button } from './components/Button'
@@ -42,6 +46,19 @@ export { Text } from './components/Text'
 export { ToolTip } from './components/ToolTip'
 export { useSnack } from './components/useSnack'
 export { View } from './components/View'
+export type {
+  AccordionIcon,
+  AccordionItemProps,
+  AccordionItemViewProps,
+  AccordionMultipleProps,
+  AccordionPanelProps,
+  AccordionPanelViewProps,
+  AccordionProps,
+  AccordionSingleProps,
+  AccordionTriggerProps,
+  AccordionTriggerViewProps,
+  AccordionViewProps,
+} from './core/accordion-types'
 export type {
   AvatarProps,
   AvatarViewProps,
@@ -307,6 +324,8 @@ export { ThemeProvider } from './theme/ThemeProvider'
 export type { UseThemeResult } from './theme/theme-context'
 export { useTheme } from './theme/theme-context'
 export type {
+  AccordionTheme,
+  AccordionThemeBase,
   AvatarTheme,
   AvatarThemeBase,
   BadgeTheme,

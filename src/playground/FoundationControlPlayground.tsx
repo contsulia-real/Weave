@@ -1,6 +1,10 @@
-import { IconSearch, IconSettings, IconUser } from '@tabler/icons-react'
+import { IconMinus, IconPlus, IconSearch, IconSettings, IconUser } from '@tabler/icons-react'
 import { useRef, useState } from 'react'
 import {
+  Accordion,
+  AccordionItem,
+  AccordionPanel,
+  AccordionTrigger,
   Button,
   Column,
   Combobox,
@@ -101,6 +105,97 @@ function PopoverPlayground() {
             state: {controlledOpen ? 'open' : 'closed'}
           </Text>
         </Row>
+      </Column>
+    </Column>
+  )
+}
+
+function AccordionPlayground() {
+  return (
+    <Column gap={1.5}>
+      <Column gap={0.5}>
+        <Text typo="label-medium" color="secondary">
+          Single · non-collapsible by default
+        </Text>
+        <Accordion
+          defaultValue="account"
+          viewProps={{ width: 30, data: { testid: 'accordion-default' } }}
+        >
+          <AccordionItem value="account">
+            <AccordionTrigger>Account</AccordionTrigger>
+            <AccordionPanel>
+              <Text typo="body-small" color="secondary">
+                Account details stay open until another item is selected.
+              </Text>
+            </AccordionPanel>
+          </AccordionItem>
+          <AccordionItem value="security">
+            <AccordionTrigger>Security</AccordionTrigger>
+            <AccordionPanel>
+              <Text typo="body-small" color="secondary">
+                Security settings panel.
+              </Text>
+            </AccordionPanel>
+          </AccordionItem>
+          <AccordionItem value="disabled" disabled>
+            <AccordionTrigger>Disabled item</AccordionTrigger>
+            <AccordionPanel>
+              <Text typo="body-small">Disabled panel.</Text>
+            </AccordionPanel>
+          </AccordionItem>
+        </Accordion>
+      </Column>
+
+      <Column gap={0.5}>
+        <Text typo="label-medium" color="secondary">
+          Multiple · custom expand / collapse icons
+        </Text>
+        <Accordion
+          multiple
+          defaultValue={['one']}
+          viewProps={{ width: 30, data: { testid: 'accordion-multiple' } }}
+        >
+          <AccordionItem value="one">
+            <AccordionTrigger expandIcon={IconPlus} collapseIcon={IconMinus}>
+              First section
+            </AccordionTrigger>
+            <AccordionPanel>
+              <Text typo="body-small" color="secondary">
+                Multiple mode allows independent open items.
+              </Text>
+            </AccordionPanel>
+          </AccordionItem>
+          <AccordionItem value="two">
+            <AccordionTrigger expandIcon={IconPlus} collapseIcon={IconMinus}>
+              Second section
+            </AccordionTrigger>
+            <AccordionPanel>
+              <Text typo="body-small" color="secondary">
+                Each section can be closed independently.
+              </Text>
+            </AccordionPanel>
+          </AccordionItem>
+        </Accordion>
+      </Column>
+
+      <Column gap={0.5}>
+        <Text typo="label-medium" color="secondary">
+          Single · collapsible
+        </Text>
+        <Accordion
+          collapsible
+          defaultValue={null}
+          viewProps={{ width: 30, data: { testid: 'accordion-collapsible' } }}
+        >
+          <AccordionItem value="optional">
+            <AccordionTrigger>Optional details</AccordionTrigger>
+            <AccordionPanel>
+              <Text typo="body-small" color="secondary">
+                This item can return to the fully collapsed state.
+              </Text>
+            </AccordionPanel>
+          </AccordionItem>
+        </Accordion>
       </Column>
     </Column>
   )
@@ -417,6 +512,13 @@ export function FoundationControlPlayground() {
         description="交互式锚定浮层：click toggle、outside / Escape dismiss、focus restore、8 向 placement，以及 viewport flip / shift collision。"
       >
         <PopoverPlayground />
+      </PlaygroundSection>
+
+      <PlaygroundSection
+        title="Accordion"
+        description="透明内容结构组件：默认 single 且不可全部收起；支持 collapsible、multiple、item disabled，以及可替换的展开 / 收起图标。"
+      >
+        <AccordionPlayground />
       </PlaygroundSection>
 
       <PlaygroundSection

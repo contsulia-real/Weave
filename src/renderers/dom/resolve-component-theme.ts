@@ -1,3 +1,4 @@
+export { resolveAccordionTheme } from './component-theme/accordion'
 export {
   resolveAvatarTheme,
   resolveBadgeTheme,

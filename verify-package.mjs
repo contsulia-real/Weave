@@ -30,6 +30,10 @@ const weave = await import(runtimeEntry.href)
 
 const expectedRuntimeExports = [
   'Absolute',
+  'Accordion',
+  'AccordionItem',
+  'AccordionPanel',
+  'AccordionTrigger',
   'Avatar',
   'Badge',
   'Button',
@@ -152,6 +156,19 @@ assert(typeSource.includes('SkeletonProps'), 'Built declarations are missing Ske
 assert(typeSource.includes('SliderProps'), 'Built declarations are missing SliderProps')
 assert(typeSource.includes('ListProps'), 'Built declarations are missing ListProps')
 assert(typeSource.includes('LinkProps'), 'Built declarations are missing LinkProps')
+assert(typeSource.includes('AccordionProps'), 'Built declarations are missing AccordionProps')
+assert(
+  typeSource.includes('AccordionItemProps'),
+  'Built declarations are missing AccordionItemProps',
+)
+assert(
+  typeSource.includes('AccordionTriggerProps'),
+  'Built declarations are missing AccordionTriggerProps',
+)
+assert(
+  typeSource.includes('AccordionPanelProps'),
+  'Built declarations are missing AccordionPanelProps',
+)
 assert(typeSource.includes('TabsProps'), 'Built declarations are missing TabsProps')
 assert(typeSource.includes('TabListProps'), 'Built declarations are missing TabListProps')
 assert(typeSource.includes('TabProps'), 'Built declarations are missing TabProps')
@@ -178,6 +195,8 @@ const expectedThemeTypeExports = [
   'CardTheme',
   'SkeletonTheme',
   'DialogTheme',
+  'AccordionTheme',
+  'AccordionThemeBase',
   'TabsTheme',
   'TabsThemeBase',
   'PopoverTheme',

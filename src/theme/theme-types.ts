@@ -546,6 +546,30 @@ export interface SnackTheme {
   >
 }
 
+export interface AccordionThemeBase {
+  dividerColor?: string
+  triggerBackground?: string
+  triggerHoverBackground?: string
+  triggerPressedBackground?: string
+  triggerColor?: string
+  triggerPaddingX?: ThemeScaleValue
+  triggerPaddingY?: ThemeScaleValue
+  panelPaddingX?: ThemeScaleValue
+  panelPaddingY?: ThemeScaleValue
+  radius?: ThemeScaleValue
+  typo?: TextTypo
+  disabledOpacity?: number
+  focusOutlineWidth?: ThemeScaleValue
+  focusOutlineColor?: string
+  focusOutlineStyle?: string
+  focusOutlineOffset?: ThemeScaleValue
+  indicatorSize?: ThemeScaleValue
+}
+
+export interface AccordionTheme {
+  base?: AccordionThemeBase
+}
+
 export interface TabsThemeBase {
   gap?: ThemeScaleValue
   listGap?: ThemeScaleValue
@@ -611,6 +635,7 @@ export interface ListItemTheme {
 }
 
 export interface ThemeComponents {
+  Accordion?: AccordionTheme
   Badge?: BadgeTheme
   Link?: LinkTheme
   Button?: ButtonTheme

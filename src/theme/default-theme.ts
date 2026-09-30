@@ -943,6 +943,28 @@ export const defaultTheme: ResolvedTheme = {
         },
       },
     },
+    Accordion: {
+      base: {
+        dividerColor: 'outline',
+        triggerBackground: 'transparent',
+        triggerHoverBackground: 'surfaceHover',
+        triggerPressedBackground:
+          'color-mix(in srgb, var(--weave-color-outline) 44%, var(--weave-color-surface))',
+        triggerColor: 'tertiary',
+        triggerPaddingX: 0.75,
+        triggerPaddingY: 0.75,
+        panelPaddingX: 0.75,
+        panelPaddingY: 0.75,
+        radius: 0,
+        typo: 'label-medium',
+        disabledOpacity: 0.5,
+        focusOutlineWidth: 0.125,
+        focusOutlineColor: 'focus',
+        focusOutlineStyle: 'solid',
+        focusOutlineOffset: 0.0625,
+        indicatorSize: 1.25,
+      },
+    },
     Tabs: {
       base: {
         gap: 1,

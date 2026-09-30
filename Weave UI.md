@@ -4377,6 +4377,173 @@ states.disabled.opacity
 ```
 
 ---
+
+# 18.16 `Accordion`
+
+`Accordion` 是用于组织可展开内容区块的组合组件。
+
+组合 API：
+
+```tsx
+<Accordion>
+  <AccordionItem value="account">
+    <AccordionTrigger>Account</AccordionTrigger>
+    <AccordionPanel>...</AccordionPanel>
+  </AccordionItem>
+
+  <AccordionItem value="security">
+    <AccordionTrigger>Security</AccordionTrigger>
+    <AccordionPanel>...</AccordionPanel>
+  </AccordionItem>
+</Accordion>
+```
+
+组件组成：
+
+```text
+Accordion
+AccordionItem
+AccordionTrigger
+AccordionPanel
+```
+
+## 18.16.1 状态模型
+
+默认：
+
+```text
+multiple = false
+collapsible = false
+```
+
+single 模式一次只能展开一个 item。非受控且没有显式 `defaultValue` 时，默认展开第一个未 disabled 的 item。
+
+当 `collapsible = false` 时，用户不能通过再次激活当前 trigger 把最后一个已展开项关闭；`collapsible = true` 时允许全部收起。
+
+multiple 模式允许同时展开多个 item，并允许分别关闭所有 item；multiple 模式不使用 `collapsible`。
+
+受控 / 非受控 API：
+
+```ts
+// single
+value?: string | null
+defaultValue?: string | null
+onValueChange?: (value: string | null) => void
+
+// multiple
+multiple: true
+value?: readonly string[]
+defaultValue?: readonly string[]
+onValueChange?: (value: string[]) => void
+```
+
+single 与 multiple 必须使用 discriminated union，不能把公开 value 简化成 `string | string[]`。
+
+`AccordionItem.value` 在同一个 Accordion 中必须唯一。
+
+## 18.16.2 disabled
+
+`Accordion.disabled` 禁用整个 Accordion 的 trigger 交互。
+
+`AccordionItem.disabled` 只禁用对应 item。
+
+disabled 不强制关闭已经展开的内容，只阻止用户改变该 item 的展开状态。
+
+## 18.16.3 Trigger、图标与键盘
+
+`AccordionTrigger` 使用真实 `<button type="button">`。
+
+公开属性：
+
+```ts
+children: ReactNode
+expandIcon?: IconComponent | IconSvg
+collapseIcon?: IconComponent | IconSvg
+viewProps?: AccordionTriggerViewProps
+```
+
+默认展开 / 收起指示图标使用 chevron：收起状态为向右 chevron（`›`），展开状态为向下 chevron（`⌄`）。调用方可以分别通过 `expandIcon` 与 `collapseIcon` 替换关闭状态与展开状态显示的图标。
+
+键盘保持原生 button 行为：
+
+```text
+Tab / Shift+Tab -> 浏览器原生焦点顺序
+Enter / Space   -> 展开 / 收起
+```
+
+第一版不增加 ArrowUp / ArrowDown / Home / End 的 roving focus。
+
+## 18.16.4 Panel、Presence 与 ARIA
+
+DOM 语义：
+
+```text
+Accordion       -> div
+AccordionItem   -> div
+AccordionTrigger -> button
+AccordionPanel  -> div role="region"
+```
+
+每个 item 使用稳定 id 建立：
+
+```text
+Trigger aria-expanded -> 当前展开状态
+Trigger aria-controls -> 对应 Panel id
+Panel aria-labelledby -> 对应 Trigger id
+```
+
+Panel 收起后不能继续参与 Tab 顺序。进入 closing 状态时立即设置 `inert` 并从可访问树隐藏，同时继续保留 DOM 完成 exit motion；展开 / 收起生命周期复用现有 `Presence` 与 View enter / exit motion，退出结束后内容卸载，不新建 Accordion 私有 presence 或 collapse 生命周期。
+
+默认 Panel motion 使用现有 `fade` enter / exit。调用方可以通过 `AccordionPanel.viewProps.enter / exit` 使用已有 View motion API 覆盖。
+
+## 18.16.5 默认视觉
+
+Accordion 默认背景透明，不提供默认 Card / raised surface / 外层边框。
+
+Item 之间只使用现有 Divider 视觉语言进行分隔。
+
+Trigger：
+- 整行都是点击区域；
+- 默认背景透明；
+- hover / press 只使用轻量 surface feedback；
+- 不使用 Button 的 raised physical surface；
+- 文本使用 Theme typography；
+- focus-visible 使用统一 focus outline。
+
+Panel 只提供内容 padding，不额外套 Card。
+
+默认 chevron 位于 trigger 尾部。
+
+## 18.16.6 Theme
+
+```ts
+components.Accordion.base
+```
+
+支持：
+
+```text
+dividerColor
+triggerBackground
+triggerHoverBackground
+triggerPressedBackground
+triggerColor
+triggerPaddingX
+triggerPaddingY
+panelPaddingX
+panelPaddingY
+radius
+typo
+disabledOpacity
+focusOutlineWidth
+focusOutlineColor
+focusOutlineStyle
+focusOutlineOffset
+indicatorSize
+```
+
+---
+
 # 19. `ToolTip`
 
 `ToolTip` 是目标附着的辅助说明组件。
@@ -7069,6 +7236,7 @@ Input   默认 focusable
 Select  默认 focusable（focus 保持在 combobox trigger）
 Combobox 默认 focusable（真实 input 保持 DOM focus）
 Switch  默认 focusable
+AccordionTrigger 默认 focusable（真实 button）
 
 Text    默认不 focusable
 Image   默认不 focusable
@@ -7097,6 +7265,8 @@ Space
 `Select` 自己保证 select-only combobox 键盘模型；DOM focus 保持在 trigger，候选浏览状态通过 `aria-activedescendant` 表达，只有提交 option 才改变 `value`。
 
 `Combobox` 保证 editable combobox 键盘模型；DOM focus 保持在真实 input，输入文本只影响 `inputValue` / filtering，提交 option 才改变 `value`。
+
+`AccordionTrigger` 使用原生 button 的 Tab / Shift+Tab / Enter / Space 行为，不增加 roving focus；展开状态通过 `aria-expanded` 与对应 Panel 关联。
 
 Button 的 `:active` 只表示瞬时按压；需要维持按下状态时使用 Button 自己的 `pressed`。Weave 不提供一个跨 Button / Switch / List 的通用 `active: boolean`，因为瞬时 press、持久 pressed、checked、selected、focus 是不同语义。
 
@@ -7261,6 +7431,7 @@ Weave 公开 API
 │  ├─ Select / SelectOption
 │  ├─ Combobox / ComboboxOption
 │  ├─ Menu / MenuItem
+│  ├─ Accordion / AccordionItem / AccordionTrigger / AccordionPanel
 │  ├─ Tabs / TabList / Tab / TabPanel
 │  ├─ Snack
 │  └─ List / ListItem
