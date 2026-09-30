@@ -129,6 +129,7 @@ export function Slider({
       className={['weave-slider-control', themeClassName].filter(Boolean).join(' ')}
       data-weave-slider-control=""
       data-weave-slider-disabled={disabled ? 'true' : 'false'}
+      data-weave-slider-stepped={stepProp === undefined ? 'false' : 'true'}
       data-weave-reduced-motion={reducedMotion ? 'reduce' : 'no-preference'}
       style={visualStyle}
     >

@@ -78,6 +78,21 @@ test('Playground Slider keeps native value interaction and reuses Switch drag mo
   })
 
   await expect(control).toHaveAttribute('data-weave-slider-dragging', 'true')
+  await expect(control).toHaveAttribute('data-weave-slider-stepped', 'true')
+
+  const steppedTransitions = await Promise.all([
+    thumb.evaluate((element) => getComputedStyle(element).transitionProperty),
+    control
+      .locator('.weave-slider__active-track')
+      .evaluate((element) => getComputedStyle(element).transitionProperty),
+    control
+      .locator('.weave-slider__inactive-track')
+      .evaluate((element) => getComputedStyle(element).transitionProperty),
+  ])
+  expect(steppedTransitions[0]).toContain('left')
+  expect(steppedTransitions[1]).toContain('width')
+  expect(steppedTransitions[2]).toContain('left')
+
   const stretchedThumb = await thumb.boundingBox()
   expect(stretchedThumb).not.toBeNull()
   expect(stretchedThumb!.width).toBeGreaterThan(grabbedThumb!.width)
@@ -93,6 +108,55 @@ test('Playground Slider keeps native value interaction and reuses Switch drag mo
     .toBeCloseTo(restingThumb!.width, 0)
 
   expect(Number(await slider.inputValue())).toBeGreaterThan(75)
+})
+
+test('continuous Slider stays direct while stepped Slider keeps spring transitions during drag', async ({
+  page,
+}) => {
+  await page.goto('/')
+
+  const steppedControl = page.locator('[data-testid="slider-controlled"]').locator('..')
+  const continuousControl = page.locator('[data-testid="slider-medium"]').locator('..')
+
+  await expect(steppedControl).toHaveAttribute('data-weave-slider-stepped', 'true')
+  await expect(continuousControl).toHaveAttribute('data-weave-slider-stepped', 'false')
+
+  await Promise.all([
+    steppedControl.evaluate((element) => {
+      element.dataset.weaveSliderDragging = 'true'
+    }),
+    continuousControl.evaluate((element) => {
+      element.dataset.weaveSliderDragging = 'true'
+    }),
+  ])
+
+  const steppedTransitions = await Promise.all([
+    steppedControl
+      .locator('.weave-slider__thumb')
+      .evaluate((element) => getComputedStyle(element).transitionProperty),
+    steppedControl
+      .locator('.weave-slider__active-track')
+      .evaluate((element) => getComputedStyle(element).transitionProperty),
+    steppedControl
+      .locator('.weave-slider__inactive-track')
+      .evaluate((element) => getComputedStyle(element).transitionProperty),
+  ])
+  expect(steppedTransitions[0]).toContain('left')
+  expect(steppedTransitions[1]).toContain('width')
+  expect(steppedTransitions[2]).toContain('left')
+
+  const continuousTransitions = await Promise.all([
+    continuousControl
+      .locator('.weave-slider__thumb')
+      .evaluate((element) => getComputedStyle(element).transitionProperty),
+    continuousControl
+      .locator('.weave-slider__active-track')
+      .evaluate((element) => getComputedStyle(element).transitionProperty),
+    continuousControl
+      .locator('.weave-slider__inactive-track')
+      .evaluate((element) => getComputedStyle(element).transitionProperty),
+  ])
+  expect(continuousTransitions).toEqual(['none', 'none', 'none'])
 })
 
 test('Playground Slider expresses recessed inactive track, raised active surface, and step dots', async ({

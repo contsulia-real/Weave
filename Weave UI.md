@@ -4326,6 +4326,8 @@ Slider 的 thumb motion 必须复用 Switch 的同一 shape 算法，而不是�
 rest         → 圆形
 pointer down → 无论命中 thumb 还是 track，都按 Switch.thumbDragShrink 同比收缩
 drag         → 高度保持收缩值，宽度按 Switch.thumbDragMaxWidth 有上限地横向拉长
+step drag    → 显式 step 时不关闭位置 transition；thumb 与两段 track 在跨 step 时继续使用 motion.spring.snappy，从当前 step 带阻尼地吸附到下一 step
+continuous drag → 未显式 step 时仍关闭位置 transition，保持直接跟手
 release      → 只有松手时才使用 motion.spring.snappy 恢复完整圆形
 keyboard / track jump → 非 pointer interaction 状态下用同一 snappy spring 移动 active fill 与 thumb
 reduced motion → 取消上述 transition

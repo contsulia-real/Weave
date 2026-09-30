@@ -179,15 +179,21 @@ const stylesheet = `
       var(--weave-motion-curve-standard);
 }
 
-:where(.weave-slider-control[data-weave-slider-dragging="true"])
+:where(
+    .weave-slider-control[data-weave-slider-dragging="true"][data-weave-slider-stepped="false"]
+  )
   > :where(.weave-slider__visual)
   > :where(.weave-slider__range)
   > :where(.weave-slider__thumb),
-:where(.weave-slider-control[data-weave-slider-dragging="true"])
+:where(
+    .weave-slider-control[data-weave-slider-dragging="true"][data-weave-slider-stepped="false"]
+  )
   > :where(.weave-slider__visual)
   > :where(.weave-slider__range)
   > :where(.weave-slider__active-track),
-:where(.weave-slider-control[data-weave-slider-dragging="true"])
+:where(
+    .weave-slider-control[data-weave-slider-dragging="true"][data-weave-slider-stepped="false"]
+  )
   > :where(.weave-slider__visual)
   > :where(.weave-slider__range)
   > :where(.weave-slider__inactive-track) {
