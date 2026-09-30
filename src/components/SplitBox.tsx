@@ -34,8 +34,7 @@ interface DragGeometry {
   upper: number
   collapseThreshold: number
   expandThreshold: number
-  originCollapsed: CollapsedPane
-  expandedFromCollapse: boolean
+  collapsed: CollapsedPane
   raw: number
 }
 
@@ -270,8 +269,7 @@ export function SplitBox(props: SplitBoxProps) {
       upper: geometry.upper,
       collapseThreshold: geometry.collapseThreshold,
       expandThreshold: geometry.expandThreshold,
-      originCollapsed: collapsed,
-      expandedFromCollapse: collapsed === null,
+      collapsed,
       raw: geometry.start,
     }
     setDragSize(geometry.start)
@@ -287,22 +285,30 @@ export function SplitBox(props: SplitBoxProps) {
 
     let visible = clamp(raw, drag.lower, drag.upper)
 
-    if (drag.originCollapsed === 'start' && !drag.expandedFromCollapse) {
+    if (drag.collapsed === 'start') {
       if (raw < drag.expandThreshold) {
         visible = 0
       } else {
-        drag.expandedFromCollapse = true
+        drag.collapsed = null
         setCollapsed(null)
         visible = clamp(raw, drag.lower, drag.upper)
       }
-    } else if (drag.originCollapsed === 'end' && !drag.expandedFromCollapse) {
+    } else if (drag.collapsed === 'end') {
       if (drag.available - raw < drag.expandThreshold) {
         visible = drag.available
       } else {
-        drag.expandedFromCollapse = true
+        drag.collapsed = null
         setCollapsed(null)
         visible = clamp(raw, drag.lower, drag.upper)
       }
+    } else if (allowsStartCollapse(collapsible) && raw <= drag.collapseThreshold) {
+      drag.collapsed = 'start'
+      setCollapsed('start')
+      visible = 0
+    } else if (allowsEndCollapse(collapsible) && drag.available - raw <= drag.collapseThreshold) {
+      drag.collapsed = 'end'
+      setCollapsed('end')
+      visible = drag.available
     } else if (raw < drag.lower && allowsStartCollapse(collapsible)) {
       visible = raw
     } else if (raw > drag.upper && allowsEndCollapse(collapsible)) {
@@ -318,22 +324,13 @@ export function SplitBox(props: SplitBoxProps) {
     const drag = dragRef.current
     if (drag === null || drag.pointerId !== event.pointerId) return
 
-    let next = clamp(drag.raw, drag.lower, drag.upper)
-    let nextCollapsed: CollapsedPane = null
-
-    if (drag.originCollapsed !== null && !drag.expandedFromCollapse) {
-      nextCollapsed = drag.originCollapsed
-      next = drag.originCollapsed === 'start' ? 0 : drag.available
-    } else if (allowsStartCollapse(collapsible) && drag.raw <= drag.collapseThreshold) {
-      next = 0
-      nextCollapsed = 'start'
-    } else if (
-      allowsEndCollapse(collapsible) &&
-      drag.available - drag.raw <= drag.collapseThreshold
-    ) {
-      next = drag.available
-      nextCollapsed = 'end'
-    }
+    const nextCollapsed = drag.collapsed
+    const next =
+      nextCollapsed === 'start'
+        ? 0
+        : nextCollapsed === 'end'
+          ? drag.available
+          : clamp(drag.raw, drag.lower, drag.upper)
 
     dragRef.current = null
     setDragSize(null)

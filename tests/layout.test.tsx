@@ -418,10 +418,14 @@ describe('SplitBox', () => {
 
     fireEvent.pointerDown(separator, { button: 0, pointerId: 1, clientX: 140 })
     fireEvent.pointerMove(separator, { pointerId: 1, clientX: 20 })
+
+    expect(root.getAttribute('data-weave-splitbox-collapsed')).toBe('start')
+    expect(root.style.getPropertyValue('--weave-splitbox-drag-size')).toBe('0px')
+    expect(start.hasAttribute('inert')).toBe(true)
+
     fireEvent.pointerUp(separator, { pointerId: 1, clientX: 20 })
 
     expect(root.getAttribute('data-weave-splitbox-collapsed')).toBe('start')
-    expect(start.hasAttribute('inert')).toBe(true)
 
     fireEvent.pointerDown(separator, { button: 0, pointerId: 2, clientX: 0 })
     fireEvent.pointerMove(separator, { pointerId: 2, clientX: 40 })
@@ -518,10 +522,14 @@ describe('SplitBox', () => {
 
     fireEvent.pointerDown(separator, { button: 0, pointerId: 1, clientX: 140 })
     fireEvent.pointerMove(separator, { pointerId: 1, clientX: 385 })
+
+    expect(root.getAttribute('data-weave-splitbox-collapsed')).toBe('end')
+    expect(root.style.getPropertyValue('--weave-splitbox-drag-size')).toBe('400px')
+    expect(end.hasAttribute('inert')).toBe(true)
+
     fireEvent.pointerUp(separator, { pointerId: 1, clientX: 385 })
 
     expect(root.getAttribute('data-weave-splitbox-collapsed')).toBe('end')
-    expect(end.hasAttribute('inert')).toBe(true)
 
     fireEvent.pointerDown(separator, { button: 0, pointerId: 2, clientX: 400 })
     fireEvent.pointerMove(separator, { pointerId: 2, clientX: 360 })

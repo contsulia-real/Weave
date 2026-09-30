@@ -4769,7 +4769,7 @@ vertical   -> 上下布局
 
 `size / defaultSize` 表示 start Pane 的尺寸，并使用现有 `Length` 语义。controlled 模式使用 `size`，uncontrolled 模式必须提供 `defaultSize`；不定义隐式 50/50 默认值。
 
-`onChange` 返回当前 start Pane 的 CSS px size string。pointer resize 过程中会持续通知，释放时再通知最终 clamp / collapse 后的值。
+`onChange` 返回当前 start Pane 的 CSS px size string。pointer resize 过程中会持续通知；跨过 collapse / expand 阈值时立即通知吸附后的值，pointer release 只提交当前最终值。
 
 约束：
 
@@ -4818,15 +4818,15 @@ expandThreshold?: Length
 
 默认 `collapsible = false`。`collapseThreshold` 默认 0；设置正值后，pointer 拖动可以越过正常 min 约束进入 collapse zone。`expandThreshold` 是折叠 Pane 重新展开的独立阈值；未显式提供时默认复用 `collapseThreshold`。
 
-collapse 只在 pointer release 时判定：
+collapse 在 pointer move 跨过阈值时立即判定：
 
-- start Pane 最终 raw size <= threshold 且 start 可折叠 -> start 吸附到 0；
-- end Pane 最终 raw size <= threshold 且 end 可折叠 -> end 吸附到 0；
-- 进入正常 min 之外但没有跨过 threshold -> release 时回到合法 min / max 范围。
+- start Pane raw size <= `collapseThreshold` 且 start 可折叠 -> start 立即吸附到 0；
+- end Pane raw size <= `collapseThreshold` 且 end 可折叠 -> end 立即吸附到 0；
+- 进入正常 min 之外但尚未跨过 threshold -> 允许继续跟随 pointer；若随后回到合法范围则继续正常 resize。
 
 折叠 Pane 不卸载。Pane DOM 保留，尺寸为 0，并设置 `inert`；splitter hit area 保留在边缘，因此可以直接拖回展开。
 
-从折叠状态往外拖时，在 `expandThreshold` 以内 Pane 保持 0，不提前展开；一旦跨过阈值，立即退出 collapsed 状态，并吸附到该侧当前合法的最小尺寸（start 使用当前 lower bound，end 使用当前 upper bound 对应的最小 end 尺寸）。跨过后继续拖动按正常 resize 规则处理。若未跨过 `expandThreshold` 就释放 pointer，则保持折叠。该展开阈值与 release 时的 `collapseThreshold` 形成独立的 hysteresis。
+从折叠状态往外拖时，在 `expandThreshold` 以内 Pane 保持 0，不提前展开；一旦跨过阈值，立即退出 collapsed 状态，并吸附到该侧当前合法的最小尺寸（start 使用当前 lower bound，end 使用当前 upper bound 对应的最小 end 尺寸）。跨过后继续拖动按正常 resize 规则处理。若未跨过 `expandThreshold` 就释放 pointer，则保持折叠。`collapseThreshold` 与 `expandThreshold` 都是 pointer move 上的实时吸附阈值，两者形成独立 hysteresis。
 
 不增加默认 expand button，也不定义双击折叠。
 

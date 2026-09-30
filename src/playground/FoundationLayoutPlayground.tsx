@@ -144,7 +144,7 @@ export function FoundationLayoutPlayground() {
 
       <PlaygroundSection
         title="SplitBox · collapse / expand thresholds"
-        description="专门演示自动吸附折叠与自动展开。把 splitter 拖到 start 或 end 距边缘 ≤ 2rem 后松手，会吸附折叠；折叠后向外拖出 ≥ 4rem，会立即吸附展开到该侧合法最小尺寸 6rem，然后继续正常 resize。"
+        description="专门演示自动吸附折叠与自动展开。把 splitter 拖到 start 或 end 距边缘 ≤ 2rem，会立即吸附折叠；折叠后向外拖出 ≥ 4rem，会立即吸附展开到该侧合法最小尺寸 6rem，然后继续正常 resize。"
       >
         <Column gap={0.75} align="start">
           <Text typo="body-small" color="secondary">
