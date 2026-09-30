@@ -27,15 +27,27 @@ test('Playground Slider keeps native value interaction and reuses Switch drag mo
   const bounds = await slider.boundingBox()
   expect(bounds).not.toBeNull()
 
-  await slider.click({
-    position: {
-      x: bounds!.width * 0.75,
-      y: bounds!.height / 2,
-    },
-  })
+  await page.waitForTimeout(350)
+  const beforeTrackPressThumb = await thumb.boundingBox()
+  expect(beforeTrackPressThumb).not.toBeNull()
+
+  await page.mouse.move(bounds!.x + bounds!.width * 0.75, bounds!.y + bounds!.height / 2)
+  await page.mouse.down()
+
+  await expect(control).toHaveAttribute('data-weave-slider-pointer-active', 'true')
+  const trackPressedThumb = await thumb.boundingBox()
+  expect(trackPressedThumb).not.toBeNull()
+  expect(trackPressedThumb!.width).toBeLessThan(beforeTrackPressThumb!.width * 0.8)
+  expect(trackPressedThumb!.height).toBeLessThan(beforeTrackPressThumb!.height * 0.8)
+
+  await page.mouse.up()
+  await expect(control).not.toHaveAttribute('data-weave-slider-pointer-active', 'true')
+  await expect
+    .poll(async () => (await thumb.boundingBox())?.width ?? 0)
+    .toBeCloseTo(beforeTrackPressThumb!.width, 0)
   expect(Number(await slider.inputValue())).toBeGreaterThan(60)
 
-  await page.waitForTimeout(500)
+  await page.waitForTimeout(350)
   const restingThumb = await thumb.boundingBox()
   expect(restingThumb).not.toBeNull()
 
@@ -145,7 +157,8 @@ test('Playground Slider expresses recessed inactive track, raised active surface
   expect(inactiveVisual.shadow).toContain('inset')
   expect(activeVisual.shadow).not.toBe('none')
   expect(activeVisual.shadow).not.toContain('inset')
-  expect(activeVisual.shadow).toContain('3px')
+  expect(activeVisual.shadow).toContain('2px')
+  expect(activeVisual.shadow).not.toContain('3px')
   expect(activeVisual.shadow).not.toBe(thumbVisual.shadow)
 
   const [activeBox, inactiveBox, thumbBox] = await Promise.all([
@@ -164,8 +177,8 @@ test('Playground Slider expresses recessed inactive track, raised active surface
   const inactiveGap = inactiveBox!.x - (thumbBox!.x + thumbBox!.width)
   expect(activeGap).toBeCloseTo(6, 0)
   expect(inactiveGap).toBeCloseTo(6, 0)
-  expect(activeVisual.insideRadius).toBe('2px')
-  expect(inactiveVisual.insideRadius).toBe('2px')
+  expect(activeVisual.insideRadius).toBe('8px')
+  expect(inactiveVisual.insideRadius).toBe('8px')
 
   const switchOff = page.locator('[data-testid="switch-small"]')
   const switchOn = page.locator('[data-testid="switch-medium"]')
@@ -203,17 +216,35 @@ test('Playground Slider expresses recessed inactive track, raised active surface
 
   const customTrack = customControl.locator('.weave-slider__inactive-track')
   const customRange = customControl.locator('.weave-slider__range')
-  const firstStep = customControl.locator('.weave-slider__step').first()
-  const lastStep = customControl.locator('.weave-slider__step').last()
-  const [customTrackBox, customRangeBox, firstStepBox, lastStepBox] = await Promise.all([
+  const steps = customControl.locator('.weave-slider__step')
+  const firstStep = steps.first()
+  const secondStep = steps.nth(1)
+  const thirdStep = steps.nth(2)
+  const penultimateStep = steps.nth(7)
+  const lastStep = steps.last()
+  const [
+    customTrackBox,
+    customRangeBox,
+    firstStepBox,
+    secondStepBox,
+    thirdStepBox,
+    penultimateStepBox,
+    lastStepBox,
+  ] = await Promise.all([
     customTrack.boundingBox(),
     customRange.boundingBox(),
     firstStep.boundingBox(),
+    secondStep.boundingBox(),
+    thirdStep.boundingBox(),
+    penultimateStep.boundingBox(),
     lastStep.boundingBox(),
   ])
   expect(customTrackBox).not.toBeNull()
   expect(customRangeBox).not.toBeNull()
   expect(firstStepBox).not.toBeNull()
+  expect(secondStepBox).not.toBeNull()
+  expect(thirdStepBox).not.toBeNull()
+  expect(penultimateStepBox).not.toBeNull()
   expect(lastStepBox).not.toBeNull()
   expect(firstStepBox!.width).toBeCloseTo(4, 0)
   expect(firstStepBox!.height).toBeCloseTo(4, 0)
@@ -225,6 +256,13 @@ test('Playground Slider expresses recessed inactive track, raised active surface
   expect(
     customRangeBox!.x + customRangeBox!.width - (lastStepBox!.x + lastStepBox!.width),
   ).toBeCloseTo(6, 0)
+
+  const centerX = (box: NonNullable<typeof firstStepBox>) => box.x + box.width / 2
+  const firstGap = centerX(secondStepBox!) - centerX(firstStepBox!)
+  const middleGap = centerX(thirdStepBox!) - centerX(secondStepBox!)
+  const lastGap = centerX(lastStepBox!) - centerX(penultimateStepBox!)
+  expect(firstGap).toBeCloseTo(middleGap, 0)
+  expect(lastGap).toBeCloseTo(middleGap, 0)
 
   const activeStep = customControl.locator('[data-weave-slider-step-active="true"]').first()
   const inactiveStep = customControl.locator('[data-weave-slider-step-active="false"]').first()

@@ -4268,7 +4268,7 @@ medium = track 1rem    / thumb 1.25rem / gap 0.375rem
 large  = track 1.25rem / thumb 1.5rem  / gap 0.46875rem
 ```
 
-active / inactive track 必须是两段真实分离的 surface，不能再用一条连续轨道加渐变或覆盖色模拟。静止 thumb 必须是圆形并位于轨道断口中央；面向 thumb 的 track 内侧角按 track 高度的 1/8，外侧端点使用 full radius。
+active / inactive track 必须是两段真实分离的 surface，不能再用一条连续轨道加渐变或覆盖色模拟。静止 thumb 必须是圆形并位于轨道断口中央；轨道断口两侧不能使用突兀切面，面向 thumb 的内侧端点使用 track 高度一半的圆角形成半圆收口，外侧端点同样保持 full radius。
 
 ## 18.15.5 物理层级、Fill 与 Step
 
@@ -4281,7 +4281,7 @@ thumb          = 与 active track 同层级的圆形可抓取实体
 step dot       = 沿轨道明确标记每一个有效离散 step
 ```
 
-inactive track 复用 Switch 的 inset track shadow；active track 不使用 inset shadow，并在 Switch thumb 的 raised shadow 基础上叠加 Weave 全局实体 depth，使 active surface 明显高于凹槽。thumb 默认与 active track 使用同一 active color，并使用 raised shadow。因此 active / inactive 不是一条轨道上的两种颜色，而是两个不同 Z 层级的表面。active / inactive 在 thumb 两侧断开，中间 gap 由 thumb 的实体占位与 M3 gap 共同形成。
+inactive track 复用 Switch 的 inset track shadow；active track 不使用 inset shadow，并在 Switch thumb 的 raised shadow 基础上叠加 0.125rem（2px）的实体 depth，使 active surface 高于凹槽但不达到 Button 的强突起。thumb 默认与 active track 使用同一 active color，并使用 raised shadow。因此 active / inactive 不是一条轨道上的两种颜色，而是两个不同 Z 层级的表面。active / inactive 在 thumb 两侧断开，中间 gap 由 thumb 的实体占位与 M3 gap 共同形成。
 
 Slider 的已选轨道由当前值计算：
 
@@ -4291,7 +4291,7 @@ progress = (value - min) / (max - min)
 
 已选部分使用 `fillColor`；未选部分使用 `trackColor`。当 `max <= min` 时 progress 固定为 0。progress 表示 thumb 中心位置；active / inactive track 的内侧边界必须分别从该位置减去 / 加上 `thumbSize / 2 + thumbTrackGap`，保证视觉上始终存在真实断口。到达 max 时 inactive track 必须收敛为 0 宽，不得在 thumb 右侧残留凹槽。
 
-当调用方显式传入 `step > 0` 且范围有效时，Slider 进入离散视觉，每个从 `min` 到 `max` 的 step 都必须有明确 dot；未显式传 `step` 时完全不渲染 dot，包括 max 端。medium 的 dot 为 4px（track 高度的 1/4），small / large 按 track 比例缩放。dot 垂直严格居中；首尾 dot 的圆心至少内缩半个 track 高度，保证左右与上下留白稳定。active tick 使用 active surface 的对比色；inactive tick 使用 active color。
+当调用方显式传入 `step > 0` 且范围有效时，Slider 进入离散视觉，每个从 `min` 到 `max` 的 step 都必须有明确 dot；未显式传 `step` 时完全不渲染 dot，包括 max 端。medium 的 dot 为 4px（track 高度的 1/4），small / large 按 track 比例缩放。dot 垂直严格居中；所有 dot 必须在左右各内缩半个 track 高度后的有效区间内重新等距分布，不能通过单点 clamp 把首尾相邻 step 挤在一起。active tick 使用 active surface 的对比色；inactive tick 使用 active color。
 
 Slider 默认不复制一套独立的轨道视觉。未显式覆盖 Slider theme 时：
 
@@ -4320,10 +4320,10 @@ Slider 的 thumb motion 必须复用 Switch 的同一 shape 算法，而不是�
 
 ```text
 rest         → 圆形
-pointer grab → 按 Switch.thumbDragShrink 同比收缩
+pointer down → 无论命中 thumb 还是 track，都按 Switch.thumbDragShrink 同比收缩
 drag         → 高度保持收缩值，宽度按 Switch.thumbDragMaxWidth 有上限地横向拉长
 release      → 只有松手时才使用 motion.spring.snappy 恢复完整圆形
-keyboard / track jump → 非 dragging 状态下用同一 snappy spring 移动 active fill 与 thumb
+keyboard / track jump → 非 pointer interaction 状态下用同一 snappy spring 移动 active fill 与 thumb
 reduced motion → 取消上述 transition
 ```
 

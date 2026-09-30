@@ -21,7 +21,7 @@ const stylesheet = `
   --weave-slider-thumb-half-size: calc(var(--weave-slider-thumb-size) / 2);
   --weave-slider-thumb-track-clearance:
     calc(var(--weave-slider-thumb-half-size) + var(--weave-slider-thumb-track-gap));
-  --weave-slider-track-inside-radius: calc(var(--weave-slider-track-height) / 8);
+  --weave-slider-track-inside-radius: calc(var(--weave-slider-track-height) / 2);
   --weave-slider-tick-size: calc(var(--weave-slider-track-height) / 4);
   --weave-slider-track-edge-inset: calc(var(--weave-slider-track-height) / 2);
 
@@ -80,8 +80,7 @@ const stylesheet = `
   background: var(--weave-slider-fill-color);
   box-shadow:
     var(--weave-slider-thumb-shadow),
-    0 var(--weave-feedback-rest-depth) 0
-      color-mix(in srgb, var(--weave-slider-fill-color) 72%, black);
+    0 0.125rem 0 color-mix(in srgb, var(--weave-slider-fill-color) 72%, black);
   transition:
     width var(--weave-motion-spring-snappy-duration)
       var(--weave-motion-spring-snappy-easing);
@@ -107,7 +106,10 @@ const stylesheet = `
 
 :where(.weave-slider__steps) {
   position: absolute;
-  inset: 0;
+  top: 0;
+  right: var(--weave-slider-track-edge-inset);
+  bottom: 0;
+  left: var(--weave-slider-track-edge-inset);
   z-index: 2;
   pointer-events: none;
 }
@@ -115,11 +117,7 @@ const stylesheet = `
 :where(.weave-slider__step) {
   position: absolute;
   top: 50%;
-  left: clamp(
-    var(--weave-slider-track-edge-inset),
-    var(--weave-slider-step-position),
-    calc(100% - var(--weave-slider-track-edge-inset))
-  );
+  left: var(--weave-slider-step-position);
   width: var(--weave-slider-tick-size);
   height: var(--weave-slider-tick-size);
   border-radius: var(--weave-radius-full);

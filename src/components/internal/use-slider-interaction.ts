@@ -95,14 +95,6 @@ export function useSliderInteraction({
     const inputRect = input.getBoundingClientRect()
     const thumbRect = thumb.getBoundingClientRect()
 
-    const hitsThumb =
-      event.clientX >= thumbRect.left &&
-      event.clientX <= thumbRect.right &&
-      event.clientY >= thumbRect.top &&
-      event.clientY <= thumbRect.bottom
-
-    if (!hitsThumb) return
-
     dragRef.current = {
       pointerId: event.pointerId,
       startX: event.clientX,
