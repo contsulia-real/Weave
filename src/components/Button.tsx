@@ -59,7 +59,7 @@ export function Button(props: ButtonProps) {
   useInsertionEffect(ensureButtonStylesheet, [])
 
   const responsiveAttributes: Record<string, string> = {}
-  const propsRecord = props as Record<string, unknown>
+  const propsRecord = props as unknown as Record<string, unknown>
 
   for (const breakpoint of breakpointEntries(theme.breakpoints)) {
     const value = propsRecord[breakpoint.name] as ButtonResponsiveProps | undefined

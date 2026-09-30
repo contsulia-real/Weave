@@ -1,9 +1,10 @@
-import type { CSSProperties, HTMLAttributes, ReactNode, Ref } from 'react'
+import type { CSSProperties, HTMLAttributes, ReactNode, Ref, RefObject } from 'react'
 import type { ViewMotionProps } from './motion-types'
+import type { RegisteredBreakpointName, RegisteredColorTokenName } from './registry-types'
 
 export type Length = number | string
 export type Dimension = Length | 'fill' | 'fit' | 'content'
-export type ColorValue = string
+export type ColorValue = RegisteredColorTokenName | (string & {})
 export type RadiusValue = Length | 'none' | 'small' | 'medium' | 'large' | 'full'
 
 export type ScrollbarSize = 'small' | 'medium' | 'large'
@@ -241,7 +242,15 @@ export type DefaultBreakpointName = 'sm' | 'md' | 'lg' | 'xl'
 export type ViewBreakpointProps = Partial<Record<DefaultBreakpointName, ViewResponsiveStyle>> &
   Partial<Record<`container${Capitalize<DefaultBreakpointName>}`, ViewResponsiveStyle>>
 
-export type ViewDynamicBreakpointProps = Readonly<Record<string, unknown>>
+export type DynamicViewportBreakpointProps<T> = Partial<Record<RegisteredBreakpointName, T>>
+export type DynamicContainerBreakpointProps<T> = Partial<
+  Record<`container${Capitalize<RegisteredBreakpointName>}`, T>
+>
+
+export type ViewDynamicBreakpointProps = DynamicViewportBreakpointProps<ViewResponsiveStyle> &
+  DynamicContainerBreakpointProps<ViewResponsiveStyle>
+
+export type SemanticReference = string | RefObject<HTMLElement | null>
 
 export interface ViewSemanticProps {
   role?: HTMLAttributes<HTMLDivElement>['role']
@@ -264,10 +273,10 @@ export interface ViewSemanticProps {
   valueNow?: number
   valueText?: string
 
-  labelledBy?: string
-  describedBy?: string
-  controls?: string
-  owns?: string
+  labelledBy?: SemanticReference
+  describedBy?: SemanticReference
+  controls?: SemanticReference
+  owns?: SemanticReference
 }
 
 export type ViewDataValue = string | number | boolean | null | undefined

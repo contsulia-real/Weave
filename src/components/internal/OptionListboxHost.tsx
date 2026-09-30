@@ -51,9 +51,9 @@ export function OptionListboxHost({
   const componentClassName = `weave-${component}-listbox`
   const componentDataName = `weave-${component}`
   const style: OptionListboxStyle = {
-    ...viewProps.style,
     ...placementStyle,
     visibility: positioned ? 'visible' : 'hidden',
+    ...viewProps.style,
   }
 
   if (anchorWidth !== undefined) {

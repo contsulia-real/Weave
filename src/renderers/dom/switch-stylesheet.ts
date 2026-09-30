@@ -6,7 +6,7 @@ const stylesheet = `
   align-items: center;
   gap: 0.5rem;
   cursor: pointer;
-  line-height: 1.35;
+  line-height: inherit;
 }
 
 :where(.weave-switch-field[data-weave-switch-disabled="true"]) {

@@ -4,7 +4,7 @@ const stylesheet = `
 :where(.weave-snack-region) {
   position: fixed;
   display: flex;
-  gap: 0.5rem;
+  gap: var(--weave-spacing-small);
   pointer-events: none;
   z-index: var(--weave-layer-snack);
 }
@@ -14,22 +14,22 @@ const stylesheet = `
 }
 
 :where(.weave-snack-region[data-weave-snack-region^="top-"]) {
-  top: 1rem;
+  top: var(--weave-spacing-medium);
   flex-direction: column;
 }
 
 :where(.weave-snack-region[data-weave-snack-region^="bottom-"]) {
-  bottom: 1rem;
+  bottom: var(--weave-spacing-medium);
   flex-direction: column-reverse;
 }
 
 :where(.weave-snack-region[data-weave-snack-region$="-left"]) {
-  left: 1rem;
+  left: var(--weave-spacing-medium);
   align-items: flex-start;
 }
 
 :where(.weave-snack-region[data-weave-snack-region$="-right"]) {
-  right: 1rem;
+  right: var(--weave-spacing-medium);
   align-items: flex-end;
 }
 

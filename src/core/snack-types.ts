@@ -20,7 +20,7 @@ export type SnackContainer =
   | (() => HTMLElement | null)
   | null
 
-export type SnackViewProps = Omit<ViewCoreProps<HTMLDivElement>, 'children' | 'role' | 'busy'> &
+export type SnackViewProps = Omit<ViewCoreProps<HTMLDivElement>, 'children' | 'role'> &
   ViewDynamicBreakpointProps
 
 interface SnackRequestBase {

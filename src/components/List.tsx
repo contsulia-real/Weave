@@ -76,6 +76,8 @@ export function List(props: ListProps) {
       : dataVirtualEntries(props.items, disabled, itemTheme?.primaryTypo, itemTheme?.secondaryTypo)
   const virtualEntries = dataEntries ?? compositeVirtualEntries(props.children)
 
+  const Root = virtualized ? View : Flex
+
   const content = virtualized ? (
     <VirtualListWindow
       entries={virtualEntries}
@@ -109,14 +111,13 @@ export function List(props: ListProps) {
 
   return (
     <ListContext.Provider value={contextValue}>
-      <View
+      <Root
         {...viewProps}
         ref={setRootRef}
         disabled={disabled ? true : undefined}
         role={selection === 'none' ? 'list' : 'listbox'}
         aria-multiselectable={selection === 'multiple' ? true : undefined}
         aria-orientation={selection === 'none' ? undefined : orientation}
-        layout={virtualized ? undefined : 'flex'}
         direction={virtualized ? undefined : orientation === 'vertical' ? 'column' : 'row'}
         gap={gap}
         position={virtualized ? 'relative' : viewProps.position}
@@ -131,7 +132,7 @@ export function List(props: ListProps) {
         }}
       >
         {content}
-      </View>
+      </Root>
     </ListContext.Provider>
   )
 }

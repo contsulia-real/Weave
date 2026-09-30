@@ -40,6 +40,22 @@ function optionByValue(value: string): HTMLElement {
 }
 
 describe('Combobox', () => {
+  it('keeps explicit listbox style above framework placement geometry', async () => {
+    const { getByRole } = render(
+      <Combobox
+        defaultOpen
+        listboxViewProps={{ style: { left: '7px', top: '9px', visibility: 'visible' } }}
+      >
+        <ComboboxOption value="alpha" text="Alpha" />
+      </Combobox>,
+    )
+
+    const listbox = getByRole('listbox')
+    await waitFor(() => expect(listbox.style.visibility).toBe('visible'))
+    expect(listbox.style.left).toBe('7px')
+    expect(listbox.style.top).toBe('9px')
+  })
+
   it('uses editable combobox semantics, filters as the input changes, and keeps focus on the input', async () => {
     const { getByRole, getAllByRole } = render(
       <Combobox placeholder="Search">

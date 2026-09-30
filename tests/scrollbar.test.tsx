@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render } from '@testing-library/react'
+import { act, cleanup, fireEvent, render } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
 import { createTheme, ThemeProvider, View } from '../src'
 
@@ -66,7 +66,7 @@ describe('automatic Scrollbar', () => {
     expect(document.body.querySelector('[data-weave-scrollbar]')).toBeNull()
   })
 
-  it('syncs vertical thumb geometry to native scroll state', () => {
+  it('syncs vertical thumb geometry to native scroll state', async () => {
     const { getByTestId } = render(
       <View
         style={{
@@ -131,6 +131,13 @@ describe('automatic Scrollbar', () => {
 
     host.scrollTop = 150
     fireEvent.scroll(host)
+
+    await act(
+      () =>
+        new Promise<void>((resolve) => {
+          requestAnimationFrame(() => resolve())
+        }),
+    )
 
     expect(thumb.style.transform).toBe('translateY(34px)')
   })

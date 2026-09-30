@@ -1,4 +1,3 @@
-import type { CSSProperties } from 'react'
 import {
   Children,
   isValidElement,
@@ -14,10 +13,10 @@ import { resolveTabsTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { ensureTabsStylesheet } from '../renderers/dom/tabs-stylesheet'
 import { useTheme } from '../theme/theme-context'
+import { Flex } from './Flex'
 import { TabsContext } from './internal/tabs-context'
 import { Tab } from './Tab'
 import { TabList } from './TabList'
-import { View } from './View'
 
 interface TabDescriptor {
   value: string
@@ -53,10 +52,6 @@ function collectTabDescriptors(children: ReactNode): TabDescriptor[] {
   })
 
   return output
-}
-
-type TabsStyle = CSSProperties & {
-  '--weave-tabs-indicator-thickness'?: string
 }
 
 function valueToken(value: string): string {
@@ -97,6 +92,12 @@ export function Tabs({
   const baseId = useId().replace(/:/g, '')
   const { theme, reducedMotion } = useTheme()
   const themeClassName = useRuntimeStyleClass('tabs-theme', resolveTabsTheme(theme))
+  const indicatorClassName = useRuntimeStyleClass(
+    'tabs-props',
+    indicatorThickness === undefined
+      ? undefined
+      : { '--weave-tabs-indicator-thickness': `${Math.max(0, indicatorThickness)}px` },
+  )
 
   const requestValue = useCallback(
     (nextValue: string) => {
@@ -153,23 +154,14 @@ export function Tabs({
     ],
   )
 
-  const rootStyle: TabsStyle = {
-    ...viewProps.style,
-    ...(indicatorThickness === undefined
-      ? {}
-      : {
-          '--weave-tabs-indicator-thickness': `${Math.max(0, indicatorThickness)}px`,
-        }),
-  }
-
   return (
     <TabsContext.Provider value={contextValue}>
-      <View
+      <Flex
         {...viewProps}
-        layout="flex"
         direction={orientation === 'vertical' ? 'row' : 'column'}
-        className={['weave-tabs', themeClassName, viewProps.className].filter(Boolean).join(' ')}
-        style={rootStyle}
+        className={['weave-tabs', themeClassName, indicatorClassName, viewProps.className]
+          .filter(Boolean)
+          .join(' ')}
         data={{
           ...viewProps.data,
           'weave-tabs': '',
@@ -180,7 +172,7 @@ export function Tabs({
         }}
       >
         {children}
-      </View>
+      </Flex>
     </TabsContext.Provider>
   )
 }

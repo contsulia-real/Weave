@@ -1,6 +1,6 @@
 import type { CSSProperties, RefObject } from 'react'
-import { useImperativeHandle, useInsertionEffect, useLayoutEffect, useRef } from 'react'
-import type { ViewProps } from '../../core/view-types'
+import { useId, useImperativeHandle, useInsertionEffect, useLayoutEffect, useRef } from 'react'
+import type { SemanticReference, ViewProps } from '../../core/view-types'
 import { useBreakpointStylesheet } from '../../renderers/dom/breakpoint-stylesheet'
 import { type ResolvedDOMView, resolveDOMView } from '../../renderers/dom/resolve-view'
 import { useRuntimeStyleClass } from '../../renderers/dom/runtime-class'
@@ -10,6 +10,29 @@ import { useViewAnimation } from './use-view-animation'
 import { useViewLayoutAnimation } from './use-view-layout-animation'
 import { useViewMotion } from './use-view-motion'
 import { useViewEnterStagger } from './use-view-stagger'
+
+const SEMANTIC_ASSOCIATIONS = [
+  ['labelledBy', 'aria-labelledby'],
+  ['describedBy', 'aria-describedby'],
+  ['controls', 'aria-controls'],
+  ['owns', 'aria-owns'],
+] as const
+
+function semanticReferenceId(
+  reference: SemanticReference,
+  generatedId: string,
+): string | undefined {
+  if (typeof reference === 'string') return reference
+
+  const target = reference.current
+  if (target === null) return undefined
+
+  if (target.id.length === 0) {
+    target.id = generatedId
+  }
+
+  return target.id
+}
 
 interface ViewHostResult<TElement extends HTMLElement> {
   elementRef: RefObject<TElement | null>
@@ -28,11 +51,29 @@ export function useViewHost<TElement extends HTMLElement>(
   const { autoFocus, ref, className, style } = props
 
   const elementRef = useRef<TElement>(null)
+  const semanticId = useId().replace(/:/g, '')
   useImperativeHandle(ref, () => elementRef.current as TElement)
 
   useLayoutEffect(() => {
     if (autoFocus) elementRef.current?.focus()
   }, [autoFocus])
+
+  useLayoutEffect(() => {
+    const host = elementRef.current
+    if (host === null) return
+
+    for (const [propName, attributeName] of SEMANTIC_ASSOCIATIONS) {
+      const reference = props[propName]
+      if (reference === undefined || typeof reference === 'string') continue
+
+      const id = semanticReferenceId(reference, `weave-semantic-${semanticId}-${propName}`)
+      if (id === undefined) {
+        host.removeAttribute(attributeName)
+      } else {
+        host.setAttribute(attributeName, id)
+      }
+    }
+  }, [props.labelledBy, props.describedBy, props.controls, props.owns, semanticId])
 
   const { theme, reducedMotion } = useTheme()
   const breakpointClassName = useBreakpointStylesheet(theme.breakpoints)

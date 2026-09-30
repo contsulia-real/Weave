@@ -77,9 +77,9 @@ export function MenuSurface({
           'weave-reduced-motion': reducedMotion ? 'reduce' : undefined,
         }}
         style={{
-          ...viewProps.style,
           ...placementStyle,
           visibility: positioned ? 'visible' : 'hidden',
+          ...viewProps.style,
         }}
       >
         {children}

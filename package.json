@@ -39,6 +39,7 @@
     "prepack": "pnpm build",
     "typecheck": "tsc -b",
     "test": "vitest run",
+    "test:browser": "playwright test",
     "test:watch": "vitest",
     "format": "biome check --write .",
     "format:check": "biome check .",
@@ -53,6 +54,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.14",
+    "@playwright/test": "^1.63.0",
     "@tabler/icons-react": "^3.48.0",
     "@testing-library/dom": "^10.4.2",
     "@testing-library/react": "^16.3.3",

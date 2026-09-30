@@ -5,12 +5,12 @@ export type TabsOrientation = 'horizontal' | 'vertical'
 export type TabsActivation = 'automatic' | 'manual'
 export type TabsVariant = 'underline' | 'pill'
 
-export type TabsViewProps = Omit<ViewCoreProps<HTMLDivElement>, 'children'> &
+export type TabsViewProps = Omit<ViewCoreProps<HTMLDivElement>, 'children' | 'layout'> &
   ViewDynamicBreakpointProps & {
     ref?: Ref<HTMLDivElement>
   }
 
-export type TabListViewProps = Omit<ViewCoreProps<HTMLDivElement>, 'children' | 'role'> &
+export type TabListViewProps = Omit<ViewCoreProps<HTMLDivElement>, 'children' | 'role' | 'layout'> &
   ViewDynamicBreakpointProps & {
     ref?: Ref<HTMLDivElement>
   }

@@ -303,9 +303,10 @@ describe('Tabs', () => {
       expect(document.querySelectorAll('[data-weave-tab-indicator]')).toHaveLength(1)
     })
 
-    expect(
-      getByTestId('tabs-root').style.getPropertyValue('--weave-tabs-indicator-thickness'),
-    ).toBe('5px')
+    const root = getByTestId('tabs-root')
+    const propsRule = runtimeRule(root, 'weave-tabs-props-')
+    expect(propsRule).toContain('--weave-tabs-indicator-thickness:5px;')
+    expect(root.style.getPropertyValue('--weave-tabs-indicator-thickness')).toBe('')
 
     fireEvent.click(getByRole('tab', { name: 'Appearance' }))
 

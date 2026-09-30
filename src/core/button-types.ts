@@ -1,6 +1,11 @@
 import type { ReactElement, ReactNode, Ref, SVGProps } from 'react'
 import type { IconComponent } from './icon-types'
-import type { DefaultBreakpointName, ViewCoreProps, ViewDynamicBreakpointProps } from './view-types'
+import type {
+  DefaultBreakpointName,
+  DynamicViewportBreakpointProps,
+  ViewCoreProps,
+  ViewDynamicBreakpointProps,
+} from './view-types'
 
 export type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'ghost' | 'danger'
 
@@ -18,7 +23,7 @@ export type ButtonBreakpointProps = Partial<Record<DefaultBreakpointName, Button
 
 export type ButtonViewProps = Omit<
   ViewCoreProps<HTMLButtonElement>,
-  'children' | 'busy' | 'disabled' | 'pressed'
+  'children' | 'disabled' | 'pressed'
 > &
   ViewDynamicBreakpointProps & {
     ref?: Ref<HTMLButtonElement>
@@ -55,5 +60,5 @@ type ButtonCustomContent = {
 
 export type ButtonProps = ButtonBaseProps &
   ButtonBreakpointProps &
-  ViewDynamicBreakpointProps &
+  DynamicViewportBreakpointProps<ButtonResponsiveProps> &
   (ButtonSemanticContent | ButtonCustomContent)

@@ -1,6 +1,7 @@
 import type { ReactNode, Ref } from 'react'
 import type {
   DefaultBreakpointName,
+  DynamicViewportBreakpointProps,
   Length,
   ViewCoreProps,
   ViewDynamicBreakpointProps,
@@ -69,7 +70,7 @@ export type TextBreakpointProps = Partial<Record<DefaultBreakpointName, TextResp
 
 export type TextProps = TextStyleProps &
   TextBreakpointProps &
-  ViewDynamicBreakpointProps & {
+  DynamicViewportBreakpointProps<TextResponsiveProps> & {
     children?: ReactNode
     viewProps?: TextViewProps
   }

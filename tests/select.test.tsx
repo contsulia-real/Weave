@@ -20,6 +20,22 @@ function optionByValue(value: string): HTMLElement {
 }
 
 describe('Select', () => {
+  it('keeps explicit listbox style above framework placement geometry', async () => {
+    const { getByRole } = render(
+      <Select
+        defaultOpen
+        listboxViewProps={{ style: { left: '7px', top: '9px', visibility: 'visible' } }}
+      >
+        <SelectOption value="alpha" text="Alpha" />
+      </Select>,
+    )
+
+    const listbox = getByRole('listbox')
+    await waitFor(() => expect(listbox.style.visibility).toBe('visible'))
+    expect(listbox.style.left).toBe('7px')
+    expect(listbox.style.top).toBe('9px')
+  })
+
   it('uses select-only combobox/listbox semantics and keeps DOM focus on the trigger', async () => {
     const { getByRole, getAllByRole } = render(
       <Select placeholder="Choose one">

@@ -19,7 +19,7 @@ export interface ListDataItem {
 
 export type ListViewProps = Omit<
   ViewCoreProps<HTMLDivElement>,
-  'children' | 'role' | 'selected' | 'disabled'
+  'children' | 'role' | 'selected' | 'disabled' | 'layout'
 > &
   ViewDynamicBreakpointProps
 

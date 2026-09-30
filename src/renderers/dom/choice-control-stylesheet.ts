@@ -7,7 +7,7 @@ const stylesheet = `
   gap: 0;
   position: relative;
   cursor: pointer;
-  line-height: 1.35;
+  line-height: inherit;
 }
 
 :where(.weave-choice-field[data-weave-choice-disabled="true"]) {

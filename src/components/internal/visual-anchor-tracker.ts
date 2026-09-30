@@ -58,6 +58,11 @@ export function trackVisualAnchor(
     queueFrame()
   }
 
+  const scheduleFromScroll = () => {
+    settleFrames = 2
+    queueFrame()
+  }
+
   const beginVisualEffect = () => {
     visualEffects += 1
     schedule()
@@ -102,7 +107,7 @@ export function trackVisualAnchor(
   view?.addEventListener('resize', schedule)
 
   if (options.trackScroll === true) {
-    view?.addEventListener('scroll', schedule, true)
+    view?.addEventListener('scroll', scheduleFromScroll, true)
   }
 
   schedule()
@@ -127,7 +132,7 @@ export function trackVisualAnchor(
     view?.removeEventListener('resize', schedule)
 
     if (options.trackScroll === true) {
-      view?.removeEventListener('scroll', schedule, true)
+      view?.removeEventListener('scroll', scheduleFromScroll, true)
     }
 
     if (frame !== undefined && view !== null && typeof view.cancelAnimationFrame === 'function') {

@@ -1,4 +1,5 @@
 import { type RefObject, useCallback, useLayoutEffect, useRef } from 'react'
+import { scheduleAnimationFrame } from './schedule-animation-frame'
 import { syncScrollbarThumbOffsets, updateScrollbarGeometry } from './scrollbar-geometry'
 import {
   EMPTY_SCROLL_METRICS,
@@ -102,13 +103,33 @@ export function useAutoScrollbarSync<TTarget extends HTMLElement>({
 
     updateGeometry()
 
-    // Native scroll state remains the source of truth. These listeners only
-    // project that state into the overlay scrollbar geometry.
-    const onScroll = () => syncThumbOffsets()
+    let cancelThumbFrame: (() => void) | undefined
+    let cancelGeometryFrame: (() => void) | undefined
+
+    const scheduleThumbSync = () => {
+      if (cancelThumbFrame !== undefined) return
+      cancelThumbFrame = scheduleAnimationFrame(() => {
+        cancelThumbFrame = undefined
+        syncThumbOffsets()
+      })
+    }
+
+    const scheduleGeometrySync = () => {
+      if (cancelGeometryFrame !== undefined) return
+      cancelGeometryFrame = scheduleAnimationFrame(() => {
+        cancelGeometryFrame = undefined
+        updateGeometry()
+      })
+    }
+
+    // Native scroll state remains the source of truth. Scroll listeners only
+    // schedule main-thread projection work for the next animation frame so
+    // Firefox APZ never observes positioning/style mutation inside the scroll callback.
+    const onScroll = () => scheduleThumbSync()
     const onWindowResize = () => updateGeometry()
     const onDocumentScroll = (event: Event) => {
       if (event.target === target) return
-      updateGeometry()
+      scheduleGeometrySync()
     }
 
     target.addEventListener('scroll', onScroll, { passive: true })
@@ -149,6 +170,8 @@ export function useAutoScrollbarSync<TTarget extends HTMLElement>({
       target.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', onWindowResize)
       document.removeEventListener('scroll', onDocumentScroll, true)
+      cancelThumbFrame?.()
+      cancelGeometryFrame?.()
       resizeObserver?.disconnect()
       mutationObserver?.disconnect()
     }

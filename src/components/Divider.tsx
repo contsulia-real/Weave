@@ -1,13 +1,9 @@
-import { type CSSProperties, useInsertionEffect } from 'react'
+import { useInsertionEffect, useMemo } from 'react'
 import type { DividerProps } from '../core/divider-types'
 import { length } from '../core/values'
 import { ensureDividerStylesheet } from '../renderers/dom/divider-stylesheet'
+import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { View } from './View'
-
-type DividerStyle = CSSProperties & {
-  '--weave-divider-gap'?: string
-  '--weave-divider-thickness'?: string
-}
 
 export function Divider({
   direction = 'horizontal',
@@ -17,24 +13,28 @@ export function Divider({
 }: DividerProps) {
   useInsertionEffect(ensureDividerStylesheet, [])
 
-  const dividerStyle: DividerStyle = {
-    ...viewProps.style,
-    '--weave-divider-gap': length(gap) ?? '0rem',
-    '--weave-divider-thickness': `${Math.max(0, size)}px`,
-  }
+  const semanticDeclarations = useMemo(
+    () => ({
+      '--weave-divider-gap': length(gap) ?? '0rem',
+      '--weave-divider-thickness': `${Math.max(0, size)}px`,
+    }),
+    [gap, size],
+  )
+  const semanticClassName = useRuntimeStyleClass('divider-props', semanticDeclarations)
 
   return (
     <View
       {...viewProps}
       role="separator"
       aria-orientation={direction}
-      className={['weave-divider', viewProps.className].filter(Boolean).join(' ')}
+      className={['weave-divider', semanticClassName, viewProps.className]
+        .filter(Boolean)
+        .join(' ')}
       data={{
         ...viewProps.data,
         'weave-divider': '',
         'weave-divider-direction': direction,
       }}
-      style={dividerStyle}
     />
   )
 }

@@ -22,6 +22,44 @@ import { variableName } from './view-stylesheet'
 type CSSVariableStyle = CSSProperties & Record<`--weave-${string}`, string | number | undefined>
 
 const NATIVE_OBJECT_PROP_KEYS = new Set<string>(['dangerouslySetInnerHTML'])
+const NATIVE_FORWARD_PROP_KEYS = new Set<string>([
+  'accessKey',
+  'autoCapitalize',
+  'autoCorrect',
+  'autoSave',
+  'contentEditable',
+  'dir',
+  'enterKeyHint',
+  'inert',
+  'id',
+  'inputMode',
+  'is',
+  'itemID',
+  'itemProp',
+  'itemRef',
+  'itemScope',
+  'itemType',
+  'lang',
+  'nonce',
+  'part',
+  'radioGroup',
+  'slot',
+  'spellCheck',
+  'suppressContentEditableWarning',
+  'suppressHydrationWarning',
+  'title',
+  'translate',
+])
+
+function isNativePassThroughProp(key: string): boolean {
+  return (
+    NATIVE_OBJECT_PROP_KEYS.has(key) ||
+    NATIVE_FORWARD_PROP_KEYS.has(key) ||
+    key.startsWith('aria-') ||
+    key.startsWith('data-') ||
+    /^on[A-Z]/.test(key)
+  )
+}
 
 function isBreakpointLikeValue(value: unknown): boolean {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
@@ -293,7 +331,8 @@ export function resolveDOMView<TElement extends HTMLElement>(
     if (
       !VIEW_INTERNAL_PROP_KEYS.has(key) &&
       !responsivePropKeys.has(key) &&
-      !inactiveBreakpointLikeProp
+      !inactiveBreakpointLikeProp &&
+      isNativePassThroughProp(key)
     ) {
       writableDOMProps[key] = value
     }
@@ -320,14 +359,14 @@ export function resolveDOMView<TElement extends HTMLElement>(
   if (props.valueMax !== undefined) domProps['aria-valuemax'] = props.valueMax
   if (props.valueNow !== undefined) domProps['aria-valuenow'] = props.valueNow
   if (props.valueText !== undefined) domProps['aria-valuetext'] = props.valueText
-  if (props.labelledBy !== undefined) {
+  if (typeof props.labelledBy === 'string') {
     domProps['aria-labelledby'] = props.labelledBy
   }
-  if (props.describedBy !== undefined) {
+  if (typeof props.describedBy === 'string') {
     domProps['aria-describedby'] = props.describedBy
   }
-  if (props.controls !== undefined) domProps['aria-controls'] = props.controls
-  if (props.owns !== undefined) domProps['aria-owns'] = props.owns
+  if (typeof props.controls === 'string') domProps['aria-controls'] = props.controls
+  if (typeof props.owns === 'string') domProps['aria-owns'] = props.owns
 
   if ((props.focusable || props.autoFocus) && props.tabIndex === undefined) {
     domProps.tabIndex = 0

@@ -55,8 +55,8 @@ export function Text(props: TextProps) {
 
   const { theme } = useTheme()
   const breakpoints = breakpointEntries(theme.breakpoints)
-  const propsRecord = props as Record<string, unknown>
-  const viewPropsRecord = viewProps as Record<string, unknown>
+  const propsRecord = props as unknown as Record<string, unknown>
+  const viewPropsRecord = viewProps as unknown as Record<string, unknown>
   const responsiveText: Record<string, TextResponsiveProps | undefined> = {}
   const responsiveAttributes: Record<string, string> = {}
 
@@ -64,7 +64,7 @@ export function Text(props: TextProps) {
     ...viewProps,
     color,
   }
-  const writableHostProps = hostProps as Record<string, unknown>
+  const writableHostProps = hostProps as unknown as Record<string, unknown>
 
   for (const breakpoint of breakpoints) {
     const textResponsive = propsRecord[breakpoint.name] as TextResponsiveProps | undefined

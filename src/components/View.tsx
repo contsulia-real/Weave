@@ -60,7 +60,7 @@ function viewMayScroll(
     return true
   }
 
-  const propsRecord = props as Record<string, unknown>
+  const propsRecord = props as unknown as Record<string, unknown>
 
   return breakpointEntries(breakpoints).some(
     ({ name }) =>

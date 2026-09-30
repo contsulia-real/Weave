@@ -12,6 +12,7 @@ import { ensureInputStylesheet } from '../renderers/dom/input-stylesheet'
 import { resolveButtonTheme, resolveInputTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { useTheme } from '../theme/theme-context'
+import { Flex } from './Flex'
 import { assignRef } from './internal/assign-ref'
 import { useTabsContext } from './internal/tabs-context'
 import { View } from './View'
@@ -122,12 +123,11 @@ export function TabList({ children, viewProps = {} }: TabListProps) {
             }
 
   return (
-    <View
+    <Flex
       {...viewProps}
       ref={setListRef}
       role="tablist"
       aria-orientation={context.orientation}
-      layout="flex"
       direction={context.orientation === 'vertical' ? 'column' : 'row'}
       wrap={false}
       align={
@@ -182,6 +182,6 @@ export function TabList({ children, viewProps = {} }: TabListProps) {
           }}
         />
       )}
-    </View>
+    </Flex>
   )
 }

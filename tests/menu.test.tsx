@@ -6,6 +6,23 @@ import { Button, createTheme, Divider, Menu, MenuItem, ThemeProvider } from '../
 afterEach(cleanup)
 
 describe('Menu', () => {
+  it('keeps explicit user style above framework placement geometry', async () => {
+    const { getByRole } = render(
+      <Menu
+        defaultOpen
+        trigger={<Button text="Styled menu" />}
+        viewProps={{ style: { left: '7px', top: '9px', visibility: 'visible' } }}
+      >
+        <MenuItem text="Action" />
+      </Menu>,
+    )
+
+    const menu = getByRole('menu')
+    await waitFor(() => expect(menu.style.visibility).toBe('visible'))
+    expect(menu.style.left).toBe('7px')
+    expect(menu.style.top).toBe('9px')
+  })
+
   it('opens from its trigger with menu semantics and focuses the first enabled item', async () => {
     const { getByRole, getAllByRole } = render(
       <Menu trigger={<Button text="Actions" />}>
@@ -712,7 +729,15 @@ describe('Menu', () => {
     const divider = getByRole('separator')
 
     expect(divider.getAttribute('data-weave-divider-direction')).toBe('horizontal')
-    expect(divider.style.getPropertyValue('--weave-divider-gap')).toBe('0.25rem')
+    const dividerPropsClass = [...divider.classList].find((name) =>
+      name.startsWith('weave-divider-props-'),
+    )
+    const dividerRule = (
+      document.querySelector<HTMLStyleElement>(
+        `style[data-weave-runtime-class="${dividerPropsClass}"]`,
+      )?.textContent ?? ''
+    ).replace(/\s+/g, '')
+    expect(dividerRule).toContain('--weave-divider-gap:0.25rem;')
     expect(stylesheet).toContain('@starting-style')
   })
 })

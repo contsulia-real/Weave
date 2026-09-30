@@ -1537,7 +1537,20 @@ wide
 
 响应式不是只能覆盖 CSS 属性。
 
-可以直接覆盖组件语义属性，并使用当前主题中的自定义 breakpoint 名称：
+可以直接覆盖组件语义属性。默认 breakpoint 名称直接可用；自定义 breakpoint 名称同时来自当前主题的运行时 `breakpoints` 与 Weave 的静态 breakpoint 注册表。两者名称必须一致：主题决定实际阈值，注册表只让 TypeScript 知道哪些自定义顶层属性是合法 breakpoint，避免开放任意字符串属性并泄漏到 DOM。
+
+```ts
+declare global {
+  namespace Weave {
+    interface BreakpointRegistry {
+      compact: true
+      wide: true
+    }
+  }
+}
+```
+
+随后可以使用：
 
 ```tsx
 <Text
@@ -1607,7 +1620,9 @@ style
 > defaultTheme 组件样式
 ```
 
-框架语义样式不通过 React 内联 `style` 注入。ThemeProvider 的主题变量、组件主题解析结果、`ViewProps`、Text / Image 等组件语义属性，以及 Progress 这类实例运行时值，都解析为框架生成的 class。
+框架中可稳定枚举 / 哈希的语义样式不通过 React 内联 `style` 注入。ThemeProvider 的主题变量、组件主题解析结果、`ViewProps`、Text / Image 等组件语义属性都解析为框架生成的 class。
+
+连续运行时通道属于例外：它们的值高频变化、由实时状态或浏览器测量产生，不能把每一帧 / 每一个数值都注册成新的 runtime class。例如 determined `Progress` 的当前百分比、Scrollbar thumb 位移、浮层实时定位几何。此类值可以通过内部元素上的最小化 inline CSS / CSS variable 同步，但只能承载连续运行时数据，不能承载默认视觉、主题或可稳定哈希的公开语义样式，也不能降低用户宿主 `style` 的最终覆盖优先级。
 
 但是用户显式传入的 `style` 不参与这套 class 生成流程，也不允许被哈希或转换为生成 class。它必须原样保留为宿主 DOM 元素的真实 `style=""`，作为最高优先级的原始 CSS 逃生口。
 
@@ -2192,10 +2207,10 @@ eager
 需要叠加其他内容时通过外层组件组合：
 
 ```tsx
-<View layout="stack">
+<Stack>
   <Image src="/cover.webp" fit="cover" />
   <Text>专辑名称</Text>
-</View>
+</Stack>
 ```
 
 ---
@@ -2501,7 +2516,7 @@ Select 不实现第二套 popup 系统。listbox 复用 anchored-overlay infrast
 - `overlapTrigger=false` 为默认；设为 `true` 时，popup 的主轴基准改为 trigger 自身，从而覆盖 trigger，而不是从 trigger 外侧再留出默认间距；未显式传 `offset` 时 overlap 模式使用 `0`；
 - 默认 `viewportPadding = 0.5rem`；
 - 使用实时 anchor rect + panel 尺寸执行 flip / shift；
-- scroll / resize / mutation 后重新定位；hover / press / transition / animation 产生的瞬时视觉 transform 不改变 overlay 锚点；
+- scroll / resize / mutation 后重新定位；scroll callback 只调度下一动画帧，不在同步滚动回调中直接修改定位 / style，避免与 Firefox APZ 的异步平移产生 scroll-linked positioning；hover / press / transition / animation 产生的瞬时视觉 transform 不改变 overlay 锚点；
 - trigger 只要仍与 viewport 相交就保持打开；完全离开 viewport 后自动 dismiss；
 - anchor-hidden dismiss 不额外把 focus 拉回已经离屏的 trigger；
 - outside pointer dismiss 关闭 listbox；
@@ -3195,7 +3210,7 @@ DOM 实现中：
 - track / thumb 的默认视觉遵循统一 class 优先级规则；几何位置、thumb 长度、滚动进度等连续运行时值允许通过最小化的 inline CSS / CSS 变量同步。
 - Scrollbar 必须把“视觉位置”和“交互命中区”分离：可见 rail/thumb 避开 target border 并保留内部 inset，但透明 hit target 必须延伸到 target 的真实外边缘，因此用户把指针贴在边缘时仍能抓住与拖动 thumb。
 - hover 必须提供明确的 thumb 颜色反馈；drag 状态可以进一步加深，但不得为了扩大视觉而牺牲边缘命中。
-- 高频 target `scroll` 路径只能读取 `scrollTop / scrollLeft` 并更新 thumb transform；不得在每个 scroll event 中重新执行 `getBoundingClientRect()` / `getComputedStyle()` 等布局测量。
+- 高频 target `scroll` 路径只能读取 `scrollTop / scrollLeft` 并更新 thumb transform；不得在每个 scroll event 中重新执行 `getBoundingClientRect()` / `getComputedStyle()` 等布局测量。scroll listener 本身只负责调度下一动画帧，不能在 Firefox APZ 的同步 scroll callback 内直接写 position / transform / style。
 - track/thumb 几何只在 resize、theme/layout 改变、DOM 尺寸变化或外层滚动导致 target viewport 位置变化时重新计算。
 - document-level scroll 监听必须排除 target 自己的 scroll，避免同一次滚动同时触发位置同步与完整几何重算。
 - 自动挂载不能改变用户拿到的 `View` / `Input` ref 所指向的真实滚动元素。
@@ -3469,7 +3484,7 @@ createTheme({
 />
 ```
 
-自定义 breakpoint 名称同样适用：
+自定义 breakpoint 名称同样适用；其名称需要同时注册到 `Weave.BreakpointRegistry`，阈值仍由当前 ThemeProvider 的 `breakpoints` 提供：
 
 ```tsx
 <Button
@@ -5639,12 +5654,20 @@ tokens: {
 </Text>
 ```
 
-类型系统应能从主题声明推导合法 token。
+运行时主题可以直接增加任意 token 名；组件的颜色类属性继续接受这些字符串值。TypeScript 不能从运行时 `ThemeProvider` 所引用的某个对象反向改变全局 JSX 组件类型，因此自定义 token 的静态自动补全通过 Weave 的类型注册表显式声明，而不是伪装成 `createTheme()` 的跨树类型推导。
 
 例如：
 
 ```ts
-createTheme({
+declare global {
+  namespace Weave {
+    interface ColorTokenRegistry {
+      brand: true
+    }
+  }
+}
+
+const theme = createTheme({
   tokens: {
     color: {
       brand: "#...",
@@ -5659,7 +5682,7 @@ createTheme({
 <Text color="brand" />
 ```
 
-应获得 TypeScript 与 IDE 自动补全。
+`brand` 会进入 Weave 的已注册颜色 token 类型与 IDE 补全；运行时仍由当前 ThemeProvider 提供实际 token 值。注册表只负责静态名称，不复制主题值，也不建立第二套主题来源。
 
 ---
 
@@ -5681,57 +5704,50 @@ ThemeProvider 用于覆盖和品牌化，不是框架运行的必填项。
 
 # 23. 组件主题模型
 
-统一组件主题层级：
+组件主题使用一组统一的概念词汇，但每个组件只暴露自己真正需要的子结构；不能为了形式统一而制造空层级。常见入口是：
 
 ```text
 ComponentTheme
-├─ base
-├─ sizes
-├─ variants
-└─ states
+├─ base       // 组件共有视觉
+├─ sizes?     // 有尺寸语义的组件
+├─ variants?  // 有视觉变体的组件
+├─ states?    // 多个尺寸 / variant 共用的持久或交互状态
+└─ 组件专属结构（例如 Select.listbox / option）
 ```
+
+具体字段由组件自己的公开 Theme 类型决定，组件章节中的 Theme API 与 TypeScript 类型是同一套结构，不再额外套通用 `viewProps` 包装层。
 
 ## 23.1 base
 
-所有实例共有的默认样式。
+所有实例共有的默认样式。例如 Button 的 `base.radius / borderWidth / focusOutline*`。
 
 ## 23.2 sizes
 
-尺寸不是单一高度，而是一整套协调设计。
-
-例如：
+尺寸不是单一高度，而是一整套协调设计。例如当前 Button：
 
 ```ts
 Button: {
   sizes: {
     small: {
-      viewProps: {
-        height: 2,
-        paddingX: 0.75,
-        gap: 0.375,
-      },
+      minHeight: 2,
+      paddingX: 0.75,
+      paddingY: 0.5,
+      gap: 0.375,
       typo: "label-small",
-      iconSize: "small",
     },
-
     medium: {
-      viewProps: {
-        height: 2.5,
-        paddingX: 1,
-        gap: 0.5,
-      },
+      minHeight: 2.5,
+      paddingX: 1,
+      paddingY: 0.625,
+      gap: 0.5,
       typo: "label-medium",
-      iconSize: "medium",
     },
-
     large: {
-      viewProps: {
-        height: 3,
-        paddingX: 1.25,
-        gap: 0.625,
-      },
+      minHeight: 3,
+      paddingX: 1.25,
+      paddingY: 0.75,
+      gap: 0.625,
       typo: "label-large",
-      iconSize: "large",
     },
   },
 }
@@ -5739,46 +5755,18 @@ Button: {
 
 ## 23.3 variants
 
-`variant` 不是单纯颜色别名。
-
-它代表完整组件视觉语义。
-
-例如：
+`variant` 不是单纯颜色别名，而是该组件的一组完整变体语义。状态相关值可以直接属于 variant，例如 Button 当前使用 `hoverBackground` / `activeBackground`；不再声明一套不存在的通用 `variant.base.viewProps / variant.hover.viewProps` 嵌套协议。
 
 ```ts
 Button: {
   variants: {
     primary: {
-      base: {
-        viewProps: {
-          background: "primary",
-          color: "onPrimary",
-        },
-      },
-
-      hover: {
-        viewProps: {
-          background: "primaryHover",
-        },
-      },
-
-      active: {
-        viewProps: {
-          background: "primaryActive",
-        },
-      },
-
-      focus: {
-        viewProps: {
-          outlineColor: "focus",
-        },
-      },
-
-      disabled: {
-        viewProps: {
-          opacity: 0.5,
-        },
-      },
+      background: "primary",
+      color: "onPrimary",
+      borderColor: "primary",
+      depthColor: "primaryActive",
+      hoverBackground: "primaryHover",
+      activeBackground: "primaryActive",
     },
   },
 }
@@ -5786,28 +5774,20 @@ Button: {
 
 ## 23.4 states
 
-用于多个 variant 共用的状态行为：
+`states` 用于不依赖具体 variant 的共享状态；各组件只声明自己实际支持的状态。例如 Button 当前的 disabled：
 
 ```ts
 Button: {
   states: {
     disabled: {
-      viewProps: {
-        opacity: 0.5,
-      },
-    },
-
-    focusVisible: {
-      viewProps: {
-        outlineWidth: 0.125,
-        outlineColor: "focus",
-      },
+      opacity: 0.5,
+      cursor: "default",
     },
   },
 }
 ```
 
-variant 可以覆盖公共状态。
+若以后某组件确实需要“variant 专属状态覆盖”，必须在该组件自己的 Theme 类型与组件章节中显式增加，不能假定所有组件都存在一个隐藏的通用 variant-state 层。
 
 ---
 
@@ -5818,18 +5798,17 @@ variant 可以覆盖公共状态。
 ```text
 defaultTheme
 → 当前 ThemeProvider 的组件主题
-→ theme base
-→ size
-→ variant
-→ shared state
-→ variant state
+→ component base
+→ size（若存在）
+→ variant（若存在，包含该 variant 自己声明的交互字段）
+→ shared state（若存在）
 → instance props
 → responsive overrides
 → className
 → style
 ```
 
-其中 defaultTheme 与应用 / 局部 ThemeProvider 先经过主题继承与深合并，再由组件解析当前有效的 `base / sizes / variants / states`。
+其中 defaultTheme 与应用 / 局部 ThemeProvider 先经过主题继承与深合并，再由组件按照自己公开的 Theme 类型解析有效结构。
 
 最终总原则：
 

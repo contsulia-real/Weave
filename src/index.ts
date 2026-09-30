@@ -179,6 +179,10 @@ export type {
   ProgressViewProps,
 } from './core/progress-types'
 export type {
+  RegisteredBreakpointName,
+  RegisteredColorTokenName,
+} from './core/registry-types'
+export type {
   SelectIcon,
   SelectListboxViewProps,
   SelectOptionProps,
@@ -242,6 +246,8 @@ export type {
   ColorValue,
   DefaultBreakpointName,
   Dimension,
+  DynamicContainerBreakpointProps,
+  DynamicViewportBreakpointProps,
   Gradient,
   Length,
   LinearGradient,

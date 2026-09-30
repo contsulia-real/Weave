@@ -40,7 +40,7 @@ The main layers are:
 
 ### Composite UI
 
-`ToolTip`, `Popover`, `Menu`, `MenuItem`, `Snack`, `SnackProvider`, `useSnack`, `List`, `ListItem`.
+`ToolTip`, `Popover`, `Dialog`, `Menu`, `MenuItem`, `Tabs`, `TabList`, `Tab`, `TabPanel`, `Snack`, `SnackProvider`, `useSnack`, `List`, `ListItem`.
 
 ### Theme and application
 
@@ -115,7 +115,7 @@ export function App() {
 }
 ```
 
-Theme definitions support tokens, component themes, dynamic breakpoints, light/dark mode overrides and motion configuration. See the specification for the complete contract.
+Theme definitions support tokens, component themes, dynamic breakpoints, light/dark mode overrides and motion configuration. Runtime custom breakpoint thresholds come from `theme.breakpoints`; projects that want typed custom breakpoint prop names register those names through `Weave.BreakpointRegistry`. Custom color-token names can likewise be registered through `Weave.ColorTokenRegistry` for editor completion while their values remain owned by the active theme. See the specification for the complete contract.
 
 ## Playground
 
@@ -137,10 +137,11 @@ pnpm format:check
 pnpm typecheck
 pnpm lint
 pnpm test
+pnpm test:browser --project=firefox
 pnpm build
 ```
 
-`pnpm test` is self-contained and does not require a prior build. `pnpm build` emits only declarations reachable from the public entry and verifies the built runtime, public types, packed npm file set and ReactDOM externalization. `npm pack` runs the build automatically through `prepack`.
+`pnpm test` is self-contained and does not require a prior build. The Firefox browser regression suite exercises real scrolling, anchored overlay repositioning and the framework Scrollbar, including protection against Firefox scroll-linked positioning warnings. `pnpm build` emits only declarations reachable from the public entry and verifies the built runtime, public types, packed npm file set and ReactDOM externalization. `npm pack` runs the build automatically through `prepack`.
 
 ## Repository
 

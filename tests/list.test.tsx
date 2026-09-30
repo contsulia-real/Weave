@@ -70,7 +70,15 @@ describe('List', () => {
 
     expect(dividers).toHaveLength(1)
     expect(dividers[0]?.getAttribute('data-weave-divider-direction')).toBe('horizontal')
-    expect(dividers[0]?.style.getPropertyValue('--weave-divider-gap')).toBe('0rem')
+    const dividerPropsClass = [...(dividers[0]?.classList ?? [])].find((name) =>
+      name.startsWith('weave-divider-props-'),
+    )
+    const dividerRule = (
+      document.querySelector<HTMLStyleElement>(
+        `style[data-weave-runtime-class="${dividerPropsClass}"]`,
+      )?.textContent ?? ''
+    ).replace(/\s+/g, '')
+    expect(dividerRule).toContain('--weave-divider-gap:0rem;')
 
     const listStyles =
       document.querySelector<HTMLStyleElement>('style[data-weave-list-styles]')?.textContent ?? ''

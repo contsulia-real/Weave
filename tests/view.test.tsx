@@ -1,6 +1,7 @@
 import { cleanup, fireEvent, render } from '@testing-library/react'
+import { createRef } from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { createTheme, ThemeProvider, View } from '../src'
+import { createTheme, Input, Text, ThemeProvider, View } from '../src'
 
 afterEach(cleanup)
 
@@ -27,6 +28,24 @@ function breakpointStyles(element: Element): string {
 }
 
 describe('View DOM backend', () => {
+  it('resolves semantic association refs to stable ARIA id references', () => {
+    const titleRef = createRef<HTMLSpanElement>()
+
+    const { getByRole } = render(
+      <>
+        <Text viewProps={{ ref: titleRef }}>Account name</Text>
+        <Input value="Weave" viewProps={{ labelledBy: titleRef }} />
+      </>,
+    )
+
+    const title = titleRef.current
+    const input = getByRole('textbox')
+
+    expect(title).not.toBeNull()
+    expect(title?.id).toMatch(/^weave-semantic-/)
+    expect(input.getAttribute('aria-labelledby')).toBe(title?.id)
+  })
+
   it('maps Weave props without leaking custom props to the DOM', () => {
     const { getByTestId } = render(
       <View
@@ -309,6 +328,17 @@ describe('View DOM backend', () => {
 
     expect(element.getAttribute('compact')).toBeNull()
     expect([...element.classList].some((name) => name.startsWith('weave-props-'))).toBe(false)
+  })
+
+  it('does not leak arbitrary primitive props to the DOM', () => {
+    const unsafeProps = { mystery: 'leak' } as never
+    const { getByTestId } = render(
+      <View {...unsafeProps} title="native title" data={{ testid: 'unknown-primitive' }} />,
+    )
+
+    const element = getByTestId('unknown-primitive')
+    expect(element.getAttribute('mystery')).toBeNull()
+    expect(element.getAttribute('title')).toBe('native title')
   })
 
   it('still forwards native object-valued DOM props', () => {
