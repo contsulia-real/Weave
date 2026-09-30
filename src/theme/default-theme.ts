@@ -117,6 +117,11 @@ export const defaultDarkTheme: ThemeOverride = {
           'inset 0 0.125rem 0.1875rem rgb(0 0 0 / 0.58), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.045)',
       },
     },
+    Tabs: {
+      base: {
+        tabHoverBackground: 'surfaceHover',
+      },
+    },
     Switch: {
       base: {
         trackShadow:
@@ -885,7 +890,7 @@ export const defaultTheme: ResolvedTheme = {
         gap: 1,
         listGap: 0.25,
         tabBackground: 'transparent',
-        tabHoverBackground: 'surfaceHover',
+        tabHoverBackground: 'surface',
         tabColor: 'secondary',
         tabSelectedColor: 'primary',
         tabRadius: 'medium',

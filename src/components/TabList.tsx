@@ -130,6 +130,10 @@ export function TabList({ children, viewProps = {} }: TabListProps) {
       layout="flex"
       direction={context.orientation === 'vertical' ? 'column' : 'row'}
       wrap={false}
+      align={
+        viewProps.align ?? (pill && context.orientation === 'horizontal' ? 'start' : undefined)
+      }
+      gap={viewProps.gap ?? (pill ? 'var(--weave-tabs-list-gap)' : undefined)}
       width={viewProps.width ?? (pill ? 'fit' : undefined)}
       minWidth={viewProps.minWidth ?? (pill ? 0 : undefined)}
       padding={viewProps.padding ?? (pill ? 0.25 : undefined)}

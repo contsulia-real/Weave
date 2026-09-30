@@ -495,6 +495,8 @@ describe('Tabs', () => {
     expect(list.classList).toContain('weave-select')
     const listProps = runtimeRule(list, 'weave-props-')
     expect(listProps).toContain('--weave-width:fit-content;')
+    expect(listProps).toContain('--weave-align-items:start;')
+    expect(listProps).toContain('--weave-gap:var(--weave-tabs-list-gap);')
     expect(listProps).toContain('--weave-padding-top:0.25rem;')
     expect(listProps).toContain('--weave-padding-bottom:0.25rem;')
     expect(runtimeRule(list, 'weave-input-theme-')).toContain(
@@ -515,6 +517,29 @@ describe('Tabs', () => {
 
     expect(document.querySelector('style[data-weave-input-styles]')).not.toBeNull()
     expect(document.querySelector('style[data-weave-button-styles]')).not.toBeNull()
+  })
+
+  it('keeps light pill hover visible while preserving the dark hover token', () => {
+    const { getByRole, rerender } = render(<BasicTabs variant="pill" />)
+    const lightRoot = getByRole('tablist').closest('[data-weave-tabs]')
+    const lightRule = runtimeRule(lightRoot!, 'weave-tabs-theme-')
+
+    expect(lightRule).toContain(
+      '--weave-tabs-tab-hover-background:var(--weave-color-surface,surface);',
+    )
+
+    rerender(
+      <ThemeProvider mode="dark">
+        <BasicTabs variant="pill" />
+      </ThemeProvider>,
+    )
+
+    const darkRoot = getByRole('tablist').closest('[data-weave-tabs]')
+    const darkRule = runtimeRule(darkRoot!, 'weave-tabs-theme-')
+
+    expect(darkRule).toContain(
+      '--weave-tabs-tab-hover-background:var(--weave-color-surfaceHover,surfaceHover);',
+    )
   })
 
   it('compensates pill depth by reducing only the active tab bottom padding', async () => {
