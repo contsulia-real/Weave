@@ -61,7 +61,7 @@ export function FormPlayground() {
 
       <PlaygroundSection
         title="Slider"
-        description="M3 Slider 的厚胶囊双段轨道、竖向 handle、gap、tick / stop indicator，与 Weave 的凹陷 inactive surface、突起 active surface 和 Switch 同款抓取回弹融合；数值交互仍由原生 range 负责。"
+        description="M3 的粗双段轨道与 gap，融合 Weave 的圆形 thumb、突起 active surface 和 Switch 同款抓取形变；显式 step 才渲染更清晰的 dot，数值交互仍由原生 range 负责。"
       >
         <Column gap={1.25} align="start">
           <Row gap={1.5} align="center" wrap>

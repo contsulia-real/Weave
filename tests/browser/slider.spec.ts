@@ -45,10 +45,15 @@ test('Playground Slider keeps native value interaction and reuses Switch drag mo
   )
   await page.mouse.down()
 
+  expect(restingThumb!.width).toBeCloseTo(restingThumb!.height, 0)
+  expect(restingThumb!.width).toBeCloseTo(20, 0)
+
   await expect(control).toHaveAttribute('data-weave-slider-pointer-active', 'true')
   const grabbedThumb = await thumb.boundingBox()
   expect(grabbedThumb).not.toBeNull()
+  expect(grabbedThumb!.width).toBeLessThan(restingThumb!.width * 0.8)
   expect(grabbedThumb!.height).toBeLessThan(restingThumb!.height * 0.8)
+  expect(grabbedThumb!.width).toBeCloseTo(grabbedThumb!.height, 0)
 
   await page.mouse.move(bounds!.x + bounds!.width * 0.9, bounds!.y + bounds!.height / 2, {
     steps: 8,
@@ -58,6 +63,8 @@ test('Playground Slider keeps native value interaction and reuses Switch drag mo
   const stretchedThumb = await thumb.boundingBox()
   expect(stretchedThumb).not.toBeNull()
   expect(stretchedThumb!.width).toBeGreaterThan(grabbedThumb!.width)
+  expect(stretchedThumb!.width).toBeLessThanOrEqual(restingThumb!.width * 1.35 + 0.5)
+  expect(stretchedThumb!.height).toBeCloseTo(grabbedThumb!.height, 0)
 
   await page.mouse.up()
 
@@ -94,9 +101,9 @@ test('Playground Slider expresses recessed inactive track, raised active surface
   expect(mediumBox).not.toBeNull()
   expect(largeBox).not.toBeNull()
   expect(smallBox!.width).toBeCloseTo(256, 0)
-  expect(smallBox!.height).toBeCloseTo(33, 0)
-  expect(mediumBox!.height).toBeCloseTo(44, 0)
-  expect(largeBox!.height).toBeCloseTo(55, 0)
+  expect(smallBox!.height).toBeCloseTo(16, 0)
+  expect(mediumBox!.height).toBeCloseTo(20, 0)
+  expect(largeBox!.height).toBeCloseTo(24, 0)
 
   const mediumControl = medium.locator('..')
   const activeTrack = mediumControl.locator('.weave-slider__active-track')
@@ -138,7 +145,8 @@ test('Playground Slider expresses recessed inactive track, raised active surface
   expect(inactiveVisual.shadow).toContain('inset')
   expect(activeVisual.shadow).not.toBe('none')
   expect(activeVisual.shadow).not.toContain('inset')
-  expect(activeVisual.shadow).toBe(thumbVisual.shadow)
+  expect(activeVisual.shadow).toContain('3px')
+  expect(activeVisual.shadow).not.toBe(thumbVisual.shadow)
 
   const [activeBox, inactiveBox, thumbBox] = await Promise.all([
     activeTrack.boundingBox(),
@@ -150,8 +158,8 @@ test('Playground Slider expresses recessed inactive track, raised active surface
   expect(thumbBox).not.toBeNull()
   expect(activeBox!.height).toBeCloseTo(16, 0)
   expect(inactiveBox!.height).toBeCloseTo(16, 0)
-  expect(thumbBox!.width).toBeCloseTo(4, 0)
-  expect(thumbBox!.height).toBeCloseTo(44, 0)
+  expect(thumbBox!.width).toBeCloseTo(20, 0)
+  expect(thumbBox!.height).toBeCloseTo(20, 0)
   const activeGap = thumbBox!.x - (activeBox!.x + activeBox!.width)
   const inactiveGap = inactiveBox!.x - (thumbBox!.x + thumbBox!.width)
   expect(activeGap).toBeCloseTo(6, 0)
@@ -183,30 +191,60 @@ test('Playground Slider expresses recessed inactive track, raised active surface
   expect(thumbVisual.shadow).toBe(switchVisual[2].shadow)
 
   await expect(mediumControl.locator('.weave-slider__step')).toHaveCount(0)
+  await expect(mediumControl.locator('.weave-slider__stop-indicator')).toHaveCount(0)
 
   await expect(custom).toHaveAttribute('min', '-20')
   await expect(custom).toHaveAttribute('max', '20')
   await expect(custom).toHaveAttribute('step', '5')
   await expect(custom).toHaveValue('5')
   const customControl = custom.locator('..')
-  await expect(customControl.locator('.weave-slider__step')).toHaveCount(8)
-  await expect(customControl.locator('.weave-slider__stop-indicator')).toHaveCount(1)
+  await expect(customControl.locator('.weave-slider__step')).toHaveCount(9)
+  await expect(customControl.locator('.weave-slider__stop-indicator')).toHaveCount(0)
+
+  const customTrack = customControl.locator('.weave-slider__inactive-track')
+  const customRange = customControl.locator('.weave-slider__range')
+  const firstStep = customControl.locator('.weave-slider__step').first()
+  const lastStep = customControl.locator('.weave-slider__step').last()
+  const [customTrackBox, customRangeBox, firstStepBox, lastStepBox] = await Promise.all([
+    customTrack.boundingBox(),
+    customRange.boundingBox(),
+    firstStep.boundingBox(),
+    lastStep.boundingBox(),
+  ])
+  expect(customTrackBox).not.toBeNull()
+  expect(customRangeBox).not.toBeNull()
+  expect(firstStepBox).not.toBeNull()
+  expect(lastStepBox).not.toBeNull()
+  expect(firstStepBox!.width).toBeCloseTo(4, 0)
+  expect(firstStepBox!.height).toBeCloseTo(4, 0)
+  expect(firstStepBox!.y - customTrackBox!.y).toBeCloseTo(6, 0)
+  expect(
+    customTrackBox!.y + customTrackBox!.height - (firstStepBox!.y + firstStepBox!.height),
+  ).toBeCloseTo(6, 0)
+  expect(firstStepBox!.x - customRangeBox!.x).toBeCloseTo(6, 0)
+  expect(
+    customRangeBox!.x + customRangeBox!.width - (lastStepBox!.x + lastStepBox!.width),
+  ).toBeCloseTo(6, 0)
 
   const activeStep = customControl.locator('[data-weave-slider-step-active="true"]').first()
   const inactiveStep = customControl.locator('[data-weave-slider-step-active="false"]').first()
-  const [activeStepColor, inactiveStepColor, activeTrackColor, stopColor] = await Promise.all([
+  const [activeStepColor, inactiveStepColor, activeTrackColor] = await Promise.all([
     activeStep.evaluate((element) => getComputedStyle(element).backgroundColor),
     inactiveStep.evaluate((element) => getComputedStyle(element).backgroundColor),
     customControl
       .locator('.weave-slider__active-track')
       .evaluate((element) => getComputedStyle(element).backgroundColor),
-    customControl
-      .locator('.weave-slider__stop-indicator')
-      .evaluate((element) => getComputedStyle(element).backgroundColor),
   ])
   expect(activeStepColor).not.toBe(activeTrackColor)
   expect(inactiveStepColor).toBe(activeTrackColor)
-  expect(stopColor).toBe(activeTrackColor)
+
+  await medium.focus()
+  await page.keyboard.press('End')
+  await expect(medium).toHaveValue('100')
+  await page.waitForTimeout(350)
+  const maxInactiveBox = await mediumControl.locator('.weave-slider__inactive-track').boundingBox()
+  expect(maxInactiveBox).not.toBeNull()
+  expect(maxInactiveBox!.width).toBeLessThanOrEqual(0.5)
 
   await expect(disabled).toBeDisabled()
   expect(await disabled.evaluate((element) => getComputedStyle(element).cursor)).toBe('not-allowed')

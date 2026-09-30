@@ -30,11 +30,16 @@ function sliderStepPoints(min: number, max: number, step: number): number[] {
   }
 
   const intervals = Math.floor((max - min) / step + 1e-9)
-
-  return Array.from({ length: intervals + 1 }, (_, index) => {
+  const points = Array.from({ length: intervals + 1 }, (_, index) => {
     const value = min + index * step
     return Math.min(max, value)
   })
+
+  if (points[points.length - 1] !== max) {
+    points.push(max)
+  }
+
+  return points
 }
 
 export function Slider({
@@ -114,7 +119,6 @@ export function Slider({
     () => (stepProp === undefined ? [] : sliderStepPoints(min, max, step)),
     [max, min, step, stepProp],
   )
-  const tickPoints = stepPoints.slice(0, -1)
   const visualStyle = {
     '--weave-slider-progress': `${progress}%`,
   } as CSSProperties
@@ -133,7 +137,7 @@ export function Slider({
           <span className="weave-slider__active-track" />
           <span className="weave-slider__inactive-track" />
           <span className="weave-slider__steps">
-            {tickPoints.map((point, index) => {
+            {stepPoints.map((point, index) => {
               const pointProgress = sliderProgress(point, min, max)
               const active = point <= currentValue + Number.EPSILON
 
@@ -142,12 +146,15 @@ export function Slider({
                   key={index}
                   className="weave-slider__step"
                   data-weave-slider-step-active={active ? 'true' : 'false'}
-                  style={{ left: `${pointProgress}%` }}
+                  style={
+                    {
+                      '--weave-slider-step-position': `${pointProgress}%`,
+                    } as CSSProperties
+                  }
                 />
               )
             })}
           </span>
-          <span className="weave-slider__stop-indicator" />
           <span ref={thumbRef} className="weave-slider__thumb" />
         </span>
       </span>

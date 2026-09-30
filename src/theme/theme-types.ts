@@ -161,8 +161,7 @@ export interface SliderThemeBase {
 
 export interface SliderThemeSize {
   trackHeight?: ThemeScaleValue
-  thumbWidth?: ThemeScaleValue
-  thumbHeight?: ThemeScaleValue
+  thumbSize?: ThemeScaleValue
   thumbTrackGap?: ThemeScaleValue
 }
 

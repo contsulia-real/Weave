@@ -122,8 +122,7 @@ export function resolveSliderTheme(
     '--weave-slider-fill-color': color(base?.fillColor ?? switchChecked?.background),
     '--weave-slider-active-dot-color': color('onPrimary'),
     '--weave-slider-track-height': length(sized?.trackHeight),
-    '--weave-slider-thumb-width': length(sized?.thumbWidth),
-    '--weave-slider-thumb-height': length(sized?.thumbHeight),
+    '--weave-slider-thumb-size': length(sized?.thumbSize),
     '--weave-slider-thumb-track-gap': length(sized?.thumbTrackGap),
     '--weave-slider-thumb-background': color(
       base?.thumbBackground ?? base?.fillColor ?? switchChecked?.background,

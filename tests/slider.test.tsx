@@ -140,9 +140,9 @@ describe('Slider', () => {
     const steps = control?.querySelectorAll('.weave-slider__step') ?? []
     const activeSteps = control?.querySelectorAll('[data-weave-slider-step-active="true"]') ?? []
 
-    expect(steps).toHaveLength(8)
+    expect(steps).toHaveLength(9)
     expect(activeSteps).toHaveLength(6)
-    expect(control?.querySelectorAll('.weave-slider__stop-indicator')).toHaveLength(1)
+    expect(control?.querySelectorAll('.weave-slider__stop-indicator')).toHaveLength(0)
   })
 
   it('resolves Slider theme customization', () => {
@@ -164,8 +164,7 @@ describe('Slider', () => {
           sizes: {
             small: {
               trackHeight: 0.5,
-              thumbWidth: 0.125,
-              thumbHeight: 1.375,
+              thumbSize: 1.5,
               thumbTrackGap: 0.1875,
             },
           },
@@ -190,8 +189,7 @@ describe('Slider', () => {
     expect(rule).toContain('--weave-slider-fill-color:var(--weave-color-success,success);')
     expect(rule).toContain('--weave-slider-thumb-border-width:0.125rem;')
     expect(rule).toContain('--weave-slider-track-height:0.5rem;')
-    expect(rule).toContain('--weave-slider-thumb-width:0.125rem;')
-    expect(rule).toContain('--weave-slider-thumb-height:1.375rem;')
+    expect(rule).toContain('--weave-slider-thumb-size:1.5rem;')
     expect(rule).toContain('--weave-slider-thumb-track-gap:0.1875rem;')
     expect(rule).toContain('--weave-slider-cursor:crosshair;')
     expect(rule).toContain('--weave-slider-disabled-opacity:0.25;')
