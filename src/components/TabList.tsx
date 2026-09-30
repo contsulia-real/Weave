@@ -7,6 +7,7 @@ import {
   useState,
 } from 'react'
 import type { TabListProps } from '../core/tabs-types'
+import { length } from '../core/values'
 import { ensureButtonStylesheet } from '../renderers/dom/button-stylesheet'
 import { ensureInputStylesheet } from '../renderers/dom/input-stylesheet'
 import { resolveButtonTheme, resolveInputTheme } from '../renderers/dom/resolve-component-theme'
@@ -42,6 +43,11 @@ export function TabList({ children, viewProps = {} }: TabListProps) {
   const listRef = useRef<HTMLDivElement | null>(null)
   const [indicatorRect, setIndicatorRect] = useState<IndicatorRect | null>(null)
   const pill = context.variant === 'pill'
+  const pillPadding = viewProps.padding ?? 0.25
+  const pillBottomPadding =
+    pill && viewProps.paddingBottom === undefined
+      ? `calc(${length(pillPadding)} + var(--weave-feedback-rest-depth))`
+      : viewProps.paddingBottom
 
   useInsertionEffect(() => {
     if (!pill) return
@@ -132,7 +138,11 @@ export function TabList({ children, viewProps = {} }: TabListProps) {
       wrap={false}
       width={viewProps.width ?? (pill ? 'fit' : undefined)}
       minWidth={viewProps.minWidth ?? (pill ? 0 : undefined)}
-      padding={viewProps.padding ?? (pill ? 0.25 : undefined)}
+      padding={pill ? undefined : viewProps.padding}
+      paddingTop={viewProps.paddingTop ?? (pill ? pillPadding : undefined)}
+      paddingRight={viewProps.paddingRight ?? (pill ? pillPadding : undefined)}
+      paddingBottom={pillBottomPadding}
+      paddingLeft={viewProps.paddingLeft ?? (pill ? pillPadding : undefined)}
       className={[
         'weave-tab-list',
         pill ? 'weave-select' : undefined,

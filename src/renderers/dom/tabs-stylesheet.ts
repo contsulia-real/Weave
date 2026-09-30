@@ -12,6 +12,22 @@ const stylesheet = `
   min-width: 0;
 }
 
+:where(
+  .weave-tabs[data-weave-tabs-variant="underline"][data-weave-tabs-orientation="horizontal"]
+    .weave-tab-list
+) {
+  --weave-component-padding-bottom:
+    calc(var(--weave-tabs-list-gap) + var(--weave-tabs-indicator-thickness));
+}
+
+:where(
+  .weave-tabs[data-weave-tabs-variant="underline"][data-weave-tabs-orientation="vertical"]
+    .weave-tab-list
+) {
+  --weave-component-padding-left:
+    calc(var(--weave-tabs-list-gap) + var(--weave-tabs-indicator-thickness));
+}
+
 :where(.weave-tab) {
   appearance: none;
   font: inherit;

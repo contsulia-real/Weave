@@ -2,6 +2,30 @@
 
 These rules are mandatory for every change in the Weave repository.
 
+## 0. Literal Execution Protocol — highest priority
+
+For every user-requested implementation task:
+
+1. Treat the user's literal wording as the complete design authority for the task.
+2. Implement every explicitly stated requirement exactly as written.
+3. Do not add, remove, reinterpret, simplify, generalize, "improve", normalize, or complete the design beyond what the user explicitly requested.
+4. Do not infer missing visual, behavioral, API, architectural, spacing, sizing, motion, state, theme, or interaction decisions.
+5. When any implementation choice is not explicitly determined by:
+   - the user's current wording,
+   - an already frozen project decision,
+   - or an existing component that the user explicitly requires to reuse,
+   stop and ask the user before choosing.
+6. "Reuse X" means reuse X's actual existing implementation/theme/stylesheet/behavior where technically possible. It does not mean recreate something visually similar to X.
+7. Never create a parallel implementation when an existing project implementation already covers the requested concept.
+8. Never substitute a different component, visual source, interaction model, motion model, spacing rule, or theme source because it seems cleaner or more appropriate.
+9. Never make an unrequested design decision in order to make the result "look better", "feel balanced", "be more conventional", or "be more complete".
+10. Before editing, derive a literal requirement checklist from the user's message internally. Every code change must map to one of those requirements or be strictly necessary to make them function.
+11. If a necessary change would exceed those requirements, ask first.
+12. Validation must test the user's literal requirements, not merely implementation details.
+13. Screenshots and observed UI defects are requirements evidence. If the screenshot contradicts the implementation, investigate the actual rendered result instead of assuming the code is correct.
+14. Do not mark the task complete until every literal requirement has a corresponding implementation and validation result.
+15. When uncertain: do not guess. Ask.
+
 ## 1. Reuse before implementation
 
 Before creating or substantially changing a component, hook, renderer, stylesheet, theme resolver, interaction helper, positioning helper, selection model, motion helper, or other infrastructure:

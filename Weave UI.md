@@ -3681,6 +3681,8 @@ indicatorThickness = theme.components.Tabs.base.indicatorThickness (默认 2px)
 
 选中 Tab 使用 primary 文字与一个共享 indicator。整个 TabList 只渲染一个 indicator 元素；选中值变化时根据目标 Tab 的真实几何更新该元素的位置与长度，并直接复用 View 的 `layoutAnimation`（spring snappy + interruption=continue）完成连续 FLIP 位移，因此 indicator 不是旧 indicator 淡出、新 indicator 淡入。horizontal 时 indicator 位于底部并沿 X 轴移动，vertical 时位于左侧并沿 Y 轴移动。
 
+Underline 的 indicator **不得贴住 Tab item**。安全间距直接复用 Tabs 已有的 `listGap`，不新增另一套 gap：horizontal TabList 在底部预留 `listGap + indicatorThickness`；vertical TabList 在左侧预留 `listGap + indicatorThickness`。因此 item 边缘到 indicator 边缘的实际安全 gap 恒等于 `listGap`。
+
 需要 pill 时显式：
 
 ```tsx
@@ -3690,6 +3692,8 @@ indicatorThickness = theme.components.Tabs.base.indicatorThickness (默认 2px)
 ```
 
 pill 只改变视觉，不改变选择、focus、ARIA 或键盘语义。整个 TabList **直接复用 Select/Input 的 field surface**：加载同一份 Input stylesheet，并使用同一个 `resolveInputTheme(theme)` runtime class；不得在 Tabs theme 内复制 background / border / shadow / radius。pill TabList 默认 `width="fit"`、`minWidth=0`，只包住自身 Tab，不允许因为 Tabs root 的 column stretch 而横向拉满。
+
+Pill 槽内默认基础 padding 为 0.25rem。因为 active moving surface 直接复用 Button rest surface，而 Button 的实体 depth 只向下延伸 `feedback.restDepth`，TabList 的默认 bottom padding 必须使用 `基础 padding + feedback.restDepth`；top/left/right 仍使用基础 padding。这样计算的是 active surface **包含实体 depth 后的可见外轮廓**，不是只按 CSS box 对称，保证上下视觉留白一致。显式 `viewProps.paddingBottom` 仍作为调用方最终覆盖。
 
 active / selected pill 不是给当前 Tab 自己加一套 shadow，而是与 underline 相同地只保留**一个共享 moving surface**。这个 surface 直接挂 Button 的真实 `weave-button + weave-button--primary + weave-button--medium + resolveButtonTheme(theme)` 配方，并关闭 pointer interaction；选择变化时仍使用同一套 `View.layoutAnimation` FLIP，从一个 Tab 连续位移/缩放到另一个 Tab。Tab 文本本身位于 moving Button surface 上方。不得在 Tabs 内复制 Button 的 background / border / depthColor / rest-depth 配方。
 

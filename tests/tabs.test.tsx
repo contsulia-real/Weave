@@ -268,6 +268,21 @@ describe('Tabs', () => {
     expect(runtimeStyle).not.toContain('--weave-tabs-pill-')
   })
 
+  it('keeps a safety gap between underline items and the indicator', () => {
+    render(<BasicTabs />)
+
+    const stylesheet =
+      document.querySelector<HTMLStyleElement>('style[data-weave-tabs-styles]')?.textContent ?? ''
+    const normalized = stylesheet.replace(/\s+/g, '')
+
+    expect(normalized).toContain(
+      '--weave-component-padding-bottom:calc(var(--weave-tabs-list-gap)+var(--weave-tabs-indicator-thickness));',
+    )
+    expect(normalized).toContain(
+      '--weave-component-padding-left:calc(var(--weave-tabs-list-gap)+var(--weave-tabs-indicator-thickness));',
+    )
+  })
+
   it('accepts indicatorThickness in pixels and renders one shared moving indicator', async () => {
     const { getByRole, getByTestId } = render(
       <Tabs
@@ -478,7 +493,12 @@ describe('Tabs', () => {
     const indicator = document.querySelector<HTMLElement>('[data-weave-tab-indicator]')
 
     expect(list.classList).toContain('weave-select')
-    expect(runtimeRule(list, 'weave-props-')).toContain('--weave-width:fit-content;')
+    const listProps = runtimeRule(list, 'weave-props-')
+    expect(listProps).toContain('--weave-width:fit-content;')
+    expect(listProps).toContain('--weave-padding-top:0.25rem;')
+    expect(listProps).toContain(
+      '--weave-padding-bottom:calc(0.25rem+var(--weave-feedback-rest-depth));',
+    )
     expect(runtimeRule(list, 'weave-input-theme-')).toContain(
       '--weave-input-background:var(--weave-color-warning',
     )
