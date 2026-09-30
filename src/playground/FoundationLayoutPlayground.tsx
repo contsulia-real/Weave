@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import {
   Absolute,
   Column,
@@ -13,6 +14,8 @@ import {
 import { DemoBox, PlaygroundSection } from './PlaygroundSection'
 
 export function FoundationLayoutPlayground() {
+  const [thresholdDemoSize, setThresholdDemoSize] = useState('35%')
+
   return (
     <>
       <PlaygroundSection
@@ -140,10 +143,17 @@ export function FoundationLayoutPlayground() {
       </PlaygroundSection>
 
       <PlaygroundSection
-        title="SplitBox"
-        description="双 Pane 可调整布局；N Pane 通过嵌套实现。Pane 本身没有 surface / padding / border 等默认视觉，示例中的视觉完全来自 Pane 内部的 View。"
+        title="SplitBox · collapse / expand thresholds"
+        description="专门演示自动吸附折叠与自动展开。把 splitter 拖到 start 或 end 距边缘 ≤ 2rem 后松手，会吸附折叠；折叠后向外拖出 ≥ 4rem，会立即吸附展开到该侧合法最小尺寸 6rem，然后继续正常 resize。"
       >
-        <Column gap={1.5}>
+        <Column gap={0.75} align="start">
+          <Text typo="body-small" color="secondary">
+            collapseThreshold = 2rem · expandThreshold = 4rem · minStart / minEnd = 6rem
+          </Text>
+          <Text typo="body-small" color="secondary">
+            Current start size: {thresholdDemoSize}
+          </Text>
+
           <SplitBox
             defaultSize="35%"
             minStart={6}
@@ -151,27 +161,35 @@ export function FoundationLayoutPlayground() {
             collapsible="both"
             collapseThreshold={2}
             expandThreshold={4}
+            onChange={setThresholdDemoSize}
             viewProps={{
               width: 30,
               height: 12,
               outlineWidth: 0.0625,
               outlineColor: 'outline',
               outlineStyle: 'dashed',
-              data: { testid: 'splitbox-horizontal' },
+              data: { testid: 'splitbox-thresholds' },
             }}
           >
-            <SplitBoxPane viewProps={{ data: { testid: 'splitbox-start' } }}>
+            <SplitBoxPane>
               <View width="fill" height="fill" padding={1} background="surfaceHover">
                 <Text typo="label-medium">Start pane</Text>
               </View>
             </SplitBoxPane>
-            <SplitBoxPane viewProps={{ data: { testid: 'splitbox-end' } }}>
+            <SplitBoxPane>
               <View width="fill" height="fill" padding={1}>
                 <Text typo="label-medium">End pane</Text>
               </View>
             </SplitBoxPane>
           </SplitBox>
+        </Column>
+      </PlaygroundSection>
 
+      <PlaygroundSection
+        title="SplitBox"
+        description="双 Pane 可调整布局；N Pane 通过嵌套实现。Pane 本身没有 surface / padding / border 等默认视觉，示例中的视觉完全来自 Pane 内部的 View。"
+      >
+        <Column gap={1.5}>
           <SplitBox
             defaultSize="40%"
             thickness={0}
