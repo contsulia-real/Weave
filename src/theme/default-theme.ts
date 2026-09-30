@@ -421,6 +421,19 @@ export const defaultTheme: ResolvedTheme = {
     },
   },
   components: {
+    SplitBox: {
+      base: {
+        thickness: '1px',
+        hitSize: 1,
+        color: 'outline',
+        hoverColor: 'primary',
+        activeColor: 'primaryActive',
+        focusOutlineWidth: 0.125,
+        focusOutlineColor: 'focus',
+        focusOutlineStyle: 'solid',
+        focusOutlineOffset: 0,
+      },
+    },
     Badge: {
       base: {
         background: 'primary',

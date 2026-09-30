@@ -70,6 +70,8 @@ const expectedRuntimeExports = [
   'SelectOption',
   'Skeleton',
   'Slider',
+  'SplitBox',
+  'SplitBoxPane',
   'Snack',
   'Stack',
   'SnackProvider',
@@ -172,6 +174,12 @@ assert(typeSource.includes('FormLegendProps'), 'Built declarations are missing F
 assert(typeSource.includes('ButtonType'), 'Built declarations are missing ButtonType')
 assert(typeSource.includes('SkeletonProps'), 'Built declarations are missing SkeletonProps')
 assert(typeSource.includes('SliderProps'), 'Built declarations are missing SliderProps')
+assert(typeSource.includes('SplitBoxProps'), 'Built declarations are missing SplitBoxProps')
+assert(typeSource.includes('SplitBoxPaneProps'), 'Built declarations are missing SplitBoxPaneProps')
+assert(
+  typeSource.includes('SplitBoxCollapsible'),
+  'Built declarations are missing SplitBoxCollapsible',
+)
 assert(typeSource.includes('ListProps'), 'Built declarations are missing ListProps')
 assert(typeSource.includes('LinkProps'), 'Built declarations are missing LinkProps')
 assert(typeSource.includes('AccordionProps'), 'Built declarations are missing AccordionProps')
@@ -205,6 +213,8 @@ const expectedThemeTypeExports = [
   'ComboboxTheme',
   'SliderTheme',
   'SwitchTheme',
+  'SplitBoxTheme',
+  'SplitBoxThemeBase',
   'ChoiceControlTheme',
   'AvatarTheme',
   'BadgeTheme',

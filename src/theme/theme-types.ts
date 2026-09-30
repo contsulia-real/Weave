@@ -592,6 +592,22 @@ export interface SnackTheme {
   >
 }
 
+export interface SplitBoxThemeBase {
+  thickness?: ThemeScaleValue
+  hitSize?: ThemeScaleValue
+  color?: string
+  hoverColor?: string
+  activeColor?: string
+  focusOutlineWidth?: ThemeScaleValue
+  focusOutlineColor?: string
+  focusOutlineStyle?: string
+  focusOutlineOffset?: ThemeScaleValue
+}
+
+export interface SplitBoxTheme {
+  base?: SplitBoxThemeBase
+}
+
 export interface FormThemeBase {
   formGap?: ThemeScaleValue
   fieldGap?: ThemeScaleValue
@@ -701,6 +717,7 @@ export interface ListItemTheme {
 }
 
 export interface ThemeComponents {
+  SplitBox?: SplitBoxTheme
   Form?: FormTheme
   Accordion?: AccordionTheme
   Badge?: BadgeTheme

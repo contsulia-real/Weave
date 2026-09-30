@@ -33,4 +33,5 @@ export {
   resolveScrollbarTheme,
   resolveSkeletonTheme,
 } from './component-theme/progress'
+export { resolveSplitBoxTheme } from './component-theme/splitbox'
 export { resolveTabsTheme } from './component-theme/tabs'

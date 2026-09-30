@@ -43,6 +43,8 @@ export { Slider } from './components/Slider'
 export { Snack } from './components/Snack'
 export type { SnackProviderProps } from './components/SnackProvider'
 export { SnackProvider } from './components/SnackProvider'
+export { SplitBox } from './components/SplitBox'
+export { SplitBoxPane } from './components/SplitBoxPane'
 export { Stack } from './components/Stack'
 export { Switch } from './components/Switch'
 export { Tab } from './components/Tab'
@@ -264,6 +266,16 @@ export type {
   SnackViewProps,
 } from './core/snack-types'
 export type {
+  SplitBoxCollapsible,
+  SplitBoxControlledProps,
+  SplitBoxDirection,
+  SplitBoxPaneProps,
+  SplitBoxPaneViewProps,
+  SplitBoxProps,
+  SplitBoxUncontrolledProps,
+  SplitBoxViewProps,
+} from './core/splitbox-types'
+export type {
   SwitchProps,
   SwitchSize,
   SwitchViewProps,
@@ -405,6 +417,8 @@ export type {
   SnackTheme,
   SnackThemeBase,
   SnackThemeVariant,
+  SplitBoxTheme,
+  SplitBoxThemeBase,
   SwitchTheme,
   SwitchThemeBase,
   SwitchThemeSize,

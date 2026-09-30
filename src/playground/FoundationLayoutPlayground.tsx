@@ -1,4 +1,15 @@
-import { Absolute, Column, Flex, Grid, Row, Stack, Text, View } from '../index'
+import {
+  Absolute,
+  Column,
+  Flex,
+  Grid,
+  Row,
+  SplitBox,
+  SplitBoxPane,
+  Stack,
+  Text,
+  View,
+} from '../index'
 import { DemoBox, PlaygroundSection } from './PlaygroundSection'
 
 export function FoundationLayoutPlayground() {
@@ -125,6 +136,99 @@ export function FoundationLayoutPlayground() {
           <Absolute width={8} height={4} radius="medium" background="surfaceHover">
             <View top={0.5} right={0.5} width={2} height={2} radius="full" background="primary" />
           </Absolute>
+        </Column>
+      </PlaygroundSection>
+
+      <PlaygroundSection
+        title="SplitBox"
+        description="双 Pane 可调整布局；N Pane 通过嵌套实现。Pane 本身没有 surface / padding / border 等默认视觉，示例中的视觉完全来自 Pane 内部的 View。"
+      >
+        <Column gap={1.5}>
+          <SplitBox
+            defaultSize="35%"
+            minStart={6}
+            minEnd={6}
+            collapsible="both"
+            collapseThreshold={2}
+            expandThreshold={4}
+            viewProps={{
+              width: 30,
+              height: 12,
+              outlineWidth: 0.0625,
+              outlineColor: 'outline',
+              outlineStyle: 'dashed',
+              data: { testid: 'splitbox-horizontal' },
+            }}
+          >
+            <SplitBoxPane viewProps={{ data: { testid: 'splitbox-start' } }}>
+              <View width="fill" height="fill" padding={1} background="surfaceHover">
+                <Text typo="label-medium">Start pane</Text>
+              </View>
+            </SplitBoxPane>
+            <SplitBoxPane viewProps={{ data: { testid: 'splitbox-end' } }}>
+              <View width="fill" height="fill" padding={1}>
+                <Text typo="label-medium">End pane</Text>
+              </View>
+            </SplitBoxPane>
+          </SplitBox>
+
+          <SplitBox
+            defaultSize="40%"
+            thickness={0}
+            minStart={5}
+            minEnd={5}
+            viewProps={{
+              width: 30,
+              height: 6,
+              outlineWidth: 0.0625,
+              outlineColor: 'outline',
+              outlineStyle: 'dashed',
+              data: { testid: 'splitbox-zero-thickness' },
+            }}
+          >
+            <SplitBoxPane>
+              <View width="fill" height="fill" padding={1} background="surfaceHover">
+                <Text typo="label-medium">Invisible splitter line</Text>
+              </View>
+            </SplitBoxPane>
+            <SplitBoxPane>
+              <View width="fill" height="fill" padding={1}>
+                <Text typo="label-medium">Hit area remains draggable</Text>
+              </View>
+            </SplitBoxPane>
+          </SplitBox>
+
+          <SplitBox
+            defaultSize="30%"
+            viewProps={{
+              width: 30,
+              height: 12,
+              outlineWidth: 0.0625,
+              outlineColor: 'outline',
+              outlineStyle: 'dashed',
+              data: { testid: 'splitbox-nested' },
+            }}
+          >
+            <SplitBoxPane>
+              <View width="fill" height="fill" padding={1} background="surfaceHover">
+                <Text typo="label-medium">Pane 1</Text>
+              </View>
+            </SplitBoxPane>
+            <SplitBoxPane>
+              <SplitBox direction="vertical" defaultSize="50%">
+                <SplitBoxPane>
+                  <View width="fill" height="fill" padding={1}>
+                    <Text typo="label-medium">Pane 2</Text>
+                  </View>
+                </SplitBoxPane>
+                <SplitBoxPane>
+                  <View width="fill" height="fill" padding={1} background="surfaceHover">
+                    <Text typo="label-medium">Pane 3</Text>
+                  </View>
+                </SplitBoxPane>
+              </SplitBox>
+            </SplitBoxPane>
+          </SplitBox>
         </Column>
       </PlaygroundSection>
 

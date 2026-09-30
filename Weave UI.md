@@ -4736,6 +4736,136 @@ legendTypo
 
 ---
 
+# 18.18 `SplitBox`
+
+`SplitBox` 是双 Pane 可调整布局组件。它只负责布局、separator 交互、尺寸约束与折叠，不给 Pane 提供任何默认 surface 视觉。
+
+基本用法：
+
+```tsx
+<SplitBox
+  defaultSize="35%"
+  minStart={12}
+  minEnd={16}
+  collapsible="both"
+  collapseThreshold={2}
+  expandThreshold={4}
+>
+  <SplitBoxPane>...</SplitBoxPane>
+  <SplitBoxPane>...</SplitBoxPane>
+</SplitBox>
+```
+
+只支持两个直接 `SplitBoxPane`。需要 N Pane 时通过嵌套多个 SplitBox 实现，不增加 N-pane value model。
+
+## 18.18.1 Direction 与 size
+
+```text
+horizontal -> 左右布局
+vertical   -> 上下布局
+```
+
+默认 `direction="horizontal"`。
+
+`size / defaultSize` 表示 start Pane 的尺寸，并使用现有 `Length` 语义。controlled 模式使用 `size`，uncontrolled 模式必须提供 `defaultSize`；不定义隐式 50/50 默认值。
+
+`onChange` 返回当前 start Pane 的 CSS px size string。pointer resize 过程中会持续通知，释放时再通知最终 clamp / collapse 后的值。
+
+约束：
+
+```text
+minStart
+maxStart
+minEnd
+maxEnd
+```
+
+全部使用现有 `Length`。正常布局与容器尺寸变化必须持续遵守这些约束。
+
+## 18.18.2 Splitter
+
+Splitter 使用真实 focusable separator 语义：
+
+```text
+role="separator"
+horizontal pane layout -> aria-orientation="vertical"
+vertical pane layout   -> aria-orientation="horizontal"
+aria-valuemin=0
+aria-valuemax=100
+aria-valuenow=当前 start Pane 百分比
+```
+
+键盘：
+
+```text
+horizontal -> ArrowLeft / ArrowRight
+vertical   -> ArrowUp / ArrowDown
+```
+
+默认 `step = 0.5rem`，并允许通过 `step?: Length` 覆盖。
+
+Splitter 的视觉 thickness 与 pointer hit area 必须分离。`thickness?: Length` 控制 rest 状态的可见分隔线，并允许显式设为 `0`；thickness 为 0 时透明 hit area 仍存在且仍可拖动。`thickness = 0` 只表示 rest 状态不可见；hover / active / drag 时仍必须显示 Splitter Theme 的交互反馈线与对应 pointer 状态颜色，而且反馈线不得改变 Pane 的布局尺寸。
+
+默认视觉 thickness 为 1px。默认 hit area 复用现有 Scrollbar hit-size 量级，为 1rem。
+
+## 18.18.3 Collapse
+
+```ts
+collapsible?: false | 'start' | 'end' | 'both'
+collapseThreshold?: Length
+expandThreshold?: Length
+```
+
+默认 `collapsible = false`。`collapseThreshold` 默认 0；设置正值后，pointer 拖动可以越过正常 min 约束进入 collapse zone。`expandThreshold` 是折叠 Pane 重新展开的独立阈值；未显式提供时默认复用 `collapseThreshold`。
+
+collapse 只在 pointer release 时判定：
+
+- start Pane 最终 raw size <= threshold 且 start 可折叠 -> start 吸附到 0；
+- end Pane 最终 raw size <= threshold 且 end 可折叠 -> end 吸附到 0；
+- 进入正常 min 之外但没有跨过 threshold -> release 时回到合法 min / max 范围。
+
+折叠 Pane 不卸载。Pane DOM 保留，尺寸为 0，并设置 `inert`；splitter hit area 保留在边缘，因此可以直接拖回展开。
+
+从折叠状态往外拖时，在 `expandThreshold` 以内 Pane 保持 0，不提前展开；一旦跨过阈值，立即退出 collapsed 状态，并吸附到该侧当前合法的最小尺寸（start 使用当前 lower bound，end 使用当前 upper bound 对应的最小 end 尺寸）。跨过后继续拖动按正常 resize 规则处理。若未跨过 `expandThreshold` 就释放 pointer，则保持折叠。该展开阈值与 release 时的 `collapseThreshold` 形成独立的 hysteresis。
+
+不增加默认 expand button，也不定义双击折叠。
+
+键盘方向键只执行正常 resize clamp；collapse threshold 属于 pointer release 行为。已经折叠时，朝展开方向的键盘 resize 会恢复到合法范围。
+
+## 18.18.4 SplitBoxPane
+
+`SplitBoxPane` 只是布局槽位。框架只允许以下为 SplitBox 正常布局所必需的样式：
+
+```text
+min-width: 0
+min-height: 0
+collapsed -> overflow: hidden
+```
+
+SplitBoxPane **不得**提供默认 background、border、padding、radius、shadow、typography 或任何 Card / panel surface。需要这些视觉时必须由调用方通过 Pane `viewProps` 或 Pane 内部自己的 View / Card 明确提供。
+
+## 18.18.5 Theme
+
+```ts
+components.SplitBox.base
+```
+
+只控制 splitter，不控制 Pane：
+
+```text
+thickness
+hitSize
+color
+hoverColor
+activeColor
+focusOutlineWidth
+focusOutlineColor
+focusOutlineStyle
+focusOutlineOffset
+```
+
+---
+
 # 19. `ToolTip`
 
 `ToolTip` 是目标附着的辅助说明组件。
@@ -7631,6 +7761,8 @@ Weave 公开 API
 │  ├─ Combobox / ComboboxOption
 │  ├─ Menu / MenuItem
 │  ├─ Form / FormField / FormLabel / FormDescription / FormError / FormFieldset / FormLegend
+│  ├─ SplitBox / SplitBoxPane
+│  │   └─ 双 Pane 可调整布局；N Pane 通过嵌套 SplitBox
 │  ├─ Accordion / AccordionItem / AccordionTrigger / AccordionPanel
 │  ├─ Tabs / TabList / Tab / TabPanel
 │  ├─ Snack
