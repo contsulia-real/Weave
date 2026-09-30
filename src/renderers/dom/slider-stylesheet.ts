@@ -5,16 +5,11 @@ const stylesheet = `
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  cursor: pointer;
   line-height: inherit;
 }
 
-:where(.weave-slider-field[data-weave-slider-disabled="true"]) {
-  cursor: not-allowed;
-}
-
 :where(.weave-slider__label) {
-  user-select: none;
+  cursor: text;
 }
 
 :where(.weave-slider-control) {
@@ -113,18 +108,22 @@ const stylesheet = `
   pointer-events: none;
 }
 
+:where(.weave-slider__dot) {
+  width: var(--weave-slider-tick-size);
+  height: var(--weave-slider-tick-size);
+  border-radius: var(--weave-radius-full);
+}
+
 :where(.weave-slider__step) {
   position: absolute;
   top: 50%;
   left: var(--weave-slider-step-position);
-  width: var(--weave-slider-tick-size);
-  height: var(--weave-slider-tick-size);
-  border-radius: var(--weave-radius-full);
   background: var(--weave-slider-fill-color);
   transform: translate(-50%, -50%);
 }
 
-:where(.weave-slider__step[data-weave-slider-step-active="true"]) {
+:where(.weave-slider__step[data-weave-slider-step-active="true"]),
+:where(.weave-slider__thumb-dot) {
   background: var(--weave-slider-active-dot-color);
 }
 
@@ -154,12 +153,9 @@ const stylesheet = `
 
 :where(.weave-slider__thumb-dot) {
   position: absolute;
+  z-index: 1;
   top: 50%;
   left: 50%;
-  width: var(--weave-slider-tick-size);
-  height: var(--weave-slider-tick-size);
-  border-radius: var(--weave-radius-full);
-  background: var(--weave-slider-active-dot-color);
   transform: translate(-50%, -50%);
   pointer-events: none;
 }

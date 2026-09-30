@@ -14,6 +14,12 @@ test('Playground Slider keeps native value interaction and reuses Switch drag mo
   await expect(slider).toHaveAttribute('type', 'range')
   await expect(slider).toHaveValue('40')
 
+  const field = slider.locator('xpath=ancestor::*[@data-weave-slider-field][1]')
+  const label = field.locator('[data-weave-slider-label]')
+  await label.click()
+  await expect(slider).not.toBeFocused()
+  await expect(slider).toHaveValue('40')
+
   await slider.focus()
   await page.keyboard.press('End')
   await expect(slider).toHaveValue('100')
@@ -184,6 +190,22 @@ test('Playground Slider expresses recessed inactive track, raised active surface
   await expect(continuousHandleDot).toHaveCount(1)
   const continuousHandleDotBox = await continuousHandleDot.boundingBox()
   expect(continuousHandleDotBox).not.toBeNull()
+  const [handleDotVisual, handleVisual] = await Promise.all([
+    continuousHandleDot.evaluate((element) => {
+      const computed = getComputedStyle(element)
+      return {
+        background: computed.backgroundColor,
+        zIndex: computed.zIndex,
+        visibility: computed.visibility,
+        opacity: computed.opacity,
+      }
+    }),
+    thumb.evaluate((element) => getComputedStyle(element).backgroundColor),
+  ])
+  expect(handleDotVisual.background).not.toBe(handleVisual)
+  expect(handleDotVisual.zIndex).toBe('1')
+  expect(handleDotVisual.visibility).toBe('visible')
+  expect(handleDotVisual.opacity).toBe('1')
   expect(continuousHandleDotBox!.width).toBeCloseTo(4, 0)
   expect(continuousHandleDotBox!.height).toBeCloseTo(4, 0)
   expect(continuousHandleDotBox!.x + continuousHandleDotBox!.width / 2).toBeCloseTo(

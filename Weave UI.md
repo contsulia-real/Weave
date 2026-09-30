@@ -4244,9 +4244,9 @@ PageUp / PageDown
 
 ## 18.15.3 Label
 
-`label` 存在时，Slider 使用与 Switch 相同的 field + label 组合，并建立原生 label 关联。
+`label` 存在时，它只作为 Slider 旁边的普通可见文本，不使用原生 `<label>`、不建立 `htmlFor` 激活关系；点击这段文字不能聚焦、跳值或触发 Slider。组件仍通过 `aria-labelledby` 引用该文本，使它可以作为 range 的 accessible name。
 
-未提供高层 `label` 时，语义继续通过 `viewProps.label / labelledBy / description` 等 View 语义字段提供。
+因此 Slider 的 `label` 语义与 Switch / Radio / Checkbox 不同：后者的可见 label 本身就是交互命中区域，而 Slider 的可见 label 不是交互控件的一部分。未提供高层 `label` 时，语义继续通过 `viewProps.label / labelledBy / description` 等 View 语义字段提供。
 
 ## 18.15.4 Geometry
 
@@ -4316,7 +4316,7 @@ borderWidth = 0
 centerDot   = activeDotColor / 与 step dot 同尺寸
 ```
 
-thumb 中心 dot 必须始终显示，无论调用方是否显式传入 `step`；它属于 thumb 本身，不计入 step dot 数量。
+thumb 中心 dot 必须始终显示，无论调用方是否显式传入 `step`；它属于 thumb 本身，不计入 step dot 数量。它直接复用 active step dot 的同一基础 dot 样式与 active 对比色，不维护第二套尺寸、圆角或颜色定义。
 
 Slider 仍允许通过自身 theme 覆盖这些值。
 

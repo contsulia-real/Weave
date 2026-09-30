@@ -144,7 +144,7 @@ export function Slider({
               return (
                 <span
                   key={index}
-                  className="weave-slider__step"
+                  className="weave-slider__dot weave-slider__step"
                   data-weave-slider-step-active={active ? 'true' : 'false'}
                   style={
                     {
@@ -156,7 +156,7 @@ export function Slider({
             })}
           </span>
           <span ref={thumbRef} className="weave-slider__thumb">
-            <span className="weave-slider__thumb-dot" />
+            <span className="weave-slider__dot weave-slider__thumb-dot" />
           </span>
         </span>
       </span>
@@ -193,16 +193,15 @@ export function Slider({
   }
 
   return (
-    <label
+    <span
       className="weave-slider-field"
       data-weave-slider-field=""
       data-weave-slider-disabled={disabled ? 'true' : 'false'}
-      htmlFor={sliderId}
     >
       {control}
       <span id={labelId} className="weave-slider__label" data-weave-slider-label="">
         {label}
       </span>
-    </label>
+    </span>
   )
 }

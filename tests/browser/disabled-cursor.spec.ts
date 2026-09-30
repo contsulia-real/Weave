@@ -14,9 +14,6 @@ test('every rendered disabled Weave component uses not-allowed cursor', async ({
       .toBe('not-allowed')
   }
 
-  const sliderField = page
-    .locator('[data-testid="slider-disabled"]')
-    .locator('xpath=ancestor::*[@data-weave-slider-field][1]')
   const switchField = page
     .locator('[data-testid="switch-disabled"]')
     .locator('xpath=ancestor::*[@data-weave-switch-field][1]')
@@ -27,7 +24,7 @@ test('every rendered disabled Weave component uses not-allowed cursor', async ({
     .locator('[data-testid="checkbox-disabled"]')
     .locator('xpath=ancestor::*[@data-weave-choice-field][1]')
 
-  for (const field of [sliderField, switchField, radioField, checkboxField]) {
+  for (const field of [switchField, radioField, checkboxField]) {
     await expect(field).toHaveCSS('cursor', 'not-allowed')
   }
 })

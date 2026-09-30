@@ -15,16 +15,23 @@ function runtimeRule(element: Element, prefix: string): string {
 }
 
 describe('Slider', () => {
-  it('uses native range defaults and exposes its label', () => {
-    const { getByLabelText } = render(<Slider label="Volume" />)
+  it('uses native range defaults and exposes non-activating label text', () => {
+    const { getByLabelText, getByText } = render(<Slider label="Volume" />)
 
     const slider = getByLabelText('Volume') as HTMLInputElement
+    const label = getByText('Volume')
     expect(slider.type).toBe('range')
     expect(slider.min).toBe('0')
     expect(slider.max).toBe('100')
     expect(slider.step).toBe('1')
     expect(slider.value).toBe('0')
     expect(slider.getAttribute('data-weave-slider-size')).toBe('medium')
+    expect(label.tagName).toBe('SPAN')
+    expect(label.closest('label')).toBeNull()
+
+    fireEvent.click(label)
+    expect(document.activeElement).not.toBe(slider)
+    expect(slider.value).toBe('0')
   })
 
   it('updates uncontrolled value and emits numeric changes', () => {
