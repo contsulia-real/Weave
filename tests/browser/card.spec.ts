@@ -21,7 +21,21 @@ test('Card renders its entity surface and keeps nested controls independent', as
   expect(style.backgroundColor).not.toBe('rgba(0, 0, 0, 0)')
   expect(style.borderRadius).not.toBe('0px')
   expect(style.paddingTop).toBe('16px')
-  expect(style.boxShadow).not.toBe('none')
+  expect(style.boxShadow).toMatch(/0px 3px 0px/)
+
+  await card.hover()
+  await expect
+    .poll(async () => await card.evaluate((element) => getComputedStyle(element).boxShadow))
+    .toMatch(/0px 4px 0px/)
+
+  const bounds = await card.boundingBox()
+  expect(bounds).not.toBeNull()
+  await page.mouse.move(bounds!.x + 8, bounds!.y + 8)
+  await page.mouse.down()
+  await expect
+    .poll(async () => await card.evaluate((element) => getComputedStyle(element).boxShadow))
+    .toMatch(/0px 1px 0px/)
+  await page.mouse.up()
 
   await page.getByRole('button', { name: 'Inner action' }).click()
   await expect(card).toHaveAttribute('aria-pressed', 'true')

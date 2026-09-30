@@ -270,6 +270,9 @@ export interface CardThemeBase {
   radius?: ThemeScaleValue
   padding?: ThemeScaleValue
   shadow?: ShadowValue
+  depthColor?: string
+  hoverBackground?: string
+  activeBackground?: string
   selectedBackground?: string
   selectedBorderColor?: string
   cursor?: string

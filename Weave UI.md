@@ -3925,7 +3925,7 @@ Card 不伪造 listbox / option 关系；独立 Card 的选择状态使用 butto
 
 ## 18.12.4 默认视觉
 
-默认 Card 是标准实体表面：
+Passive Card 是标准容器表面：
 
 ```text
 background  = surface
@@ -3935,14 +3935,25 @@ shadow      = small
 padding     = 1rem
 ```
 
-交互 Card 直接复用 Weave 全局 feedback token 的 hover / press 位移与缩放：
+当 `clickable || selectable` 时，Card 必须进入 Weave 已有的 raised / tactile surface 视觉语言，而不是继续使用普通 blur shadow。默认 raised surface 与 Button secondary 共用同一套默认主题源：
 
 ```text
-hover → feedback.hoverLift + feedback.hoverScale
-press → feedback.pressOffset + feedback.pressScale
+background       = surface
+borderColor      = outline
+depthColor       = raisedSurfaceDepthColor
+hoverBackground  = surfaceHover
+activeBackground = Button secondary active surface
 ```
 
-不创建 Card 私有的另一套 hover / press motion token。
+实体深度直接复用全局 feedback token：
+
+```text
+rest  → feedback.restDepth
+hover → feedback.hoverDepth + feedback.hoverLift + feedback.hoverScale
+press → feedback.pressDepth + feedback.pressOffset + feedback.pressScale
+```
+
+也就是说，交互 Card 的 box-shadow 是无 blur 的实体 depth；Card 不创建私有 rest / hover / press depth 或 motion token。
 
 `selectable=true && selected=true` 时：
 
@@ -3970,6 +3981,9 @@ borderWidth
 radius
 padding
 shadow
+depthColor
+hoverBackground
+activeBackground
 selectedBackground
 selectedBorderColor
 cursor

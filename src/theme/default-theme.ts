@@ -16,6 +16,15 @@ const controlMedium = {
 const raisedSurfaceDepthColor =
   'color-mix(in srgb, var(--weave-color-outline) 76%, #8f8377)' as const
 
+const secondaryRaisedSurface = {
+  background: 'surface',
+  borderColor: 'outline',
+  depthColor: raisedSurfaceDepthColor,
+  hoverBackground: 'surfaceHover',
+  activeBackground:
+    'color-mix(in srgb, var(--weave-color-outline) 65%, var(--weave-color-surface))',
+} as const
+
 const optionListboxBase = {
   background: 'surface',
   color: 'tertiary',
@@ -460,13 +469,8 @@ export const defaultTheme: ResolvedTheme = {
           activeBackground: 'primaryActive',
         },
         secondary: {
-          background: 'surface',
+          ...secondaryRaisedSurface,
           color: 'inherit',
-          borderColor: 'outline',
-          depthColor: raisedSurfaceDepthColor,
-          hoverBackground: 'surfaceHover',
-          activeBackground:
-            'color-mix(in srgb, var(--weave-color-outline) 65%, var(--weave-color-surface))',
         },
         tertiary: {
           background: 'surfaceHover',
@@ -508,8 +512,7 @@ export const defaultTheme: ResolvedTheme = {
     },
     Card: {
       base: {
-        background: 'surface',
-        borderColor: 'outline',
+        ...secondaryRaisedSurface,
         borderWidth: 0.0625,
         radius: 'large',
         padding: 1,

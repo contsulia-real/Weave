@@ -40,6 +40,8 @@ const stylesheet = `
 
 :where(.weave-card[data-weave-card-interactive="true"]) {
   --weave-component-cursor: var(--weave-card-theme-cursor);
+  --weave-component-box-shadow:
+    0 var(--weave-feedback-rest-depth) 0 var(--weave-card-theme-depth-color);
 }
 
 :where(.weave-card[aria-pressed="true"]) {
@@ -54,12 +56,28 @@ const stylesheet = `
   --weave-component-transform:
     translateY(calc(-1 * var(--weave-feedback-hover-lift)))
     scale(var(--weave-feedback-hover-scale));
+  --weave-component-box-shadow:
+    0 var(--weave-feedback-hover-depth) 0 var(--weave-card-theme-depth-color);
+}
+
+:where(
+  .weave-card[data-weave-card-interactive="true"]:not([aria-pressed="true"]):hover:not([aria-disabled="true"])
+) {
+  --weave-component-background: var(--weave-card-theme-hover-background);
 }
 
 :where(.weave-card[data-weave-card-interactive="true"]:active:not([aria-disabled="true"])) {
   --weave-component-transform:
     translateY(var(--weave-feedback-press-offset))
     scale(var(--weave-feedback-press-scale));
+  --weave-component-box-shadow:
+    0 var(--weave-feedback-press-depth) 0 var(--weave-card-theme-depth-color);
+}
+
+:where(
+  .weave-card[data-weave-card-interactive="true"]:not([aria-pressed="true"]):active:not([aria-disabled="true"])
+) {
+  --weave-component-background: var(--weave-card-theme-active-background);
 }
 
 :where(.weave-card[data-weave-card-interactive="true"]:focus-visible) {

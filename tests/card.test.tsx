@@ -37,6 +37,10 @@ describe('Card', () => {
     expect(themeRule).toContain('--weave-card-theme-radius:var(--weave-radius-large);')
     expect(themeRule).toContain('--weave-card-theme-padding:1rem;')
     expect(themeRule).toContain('--weave-card-theme-shadow:var(--weave-shadow-small);')
+    expect(themeRule).toContain('--weave-card-theme-depth-color:color-mix(')
+    expect(themeRule).toContain(
+      '--weave-card-theme-hover-background:var(--weave-color-surfaceHover,surfaceHover);',
+    )
   })
 
   it('supports clickable activation with pointer, Enter and Space', () => {
@@ -186,6 +190,9 @@ describe('Card', () => {
             radius: 'medium',
             padding: 1.5,
             shadow: 'medium',
+            depthColor: 'danger',
+            hoverBackground: 'secondary',
+            activeBackground: 'warning',
             selectedBackground: 'surfaceHover',
             selectedBorderColor: 'success',
           },
@@ -210,6 +217,13 @@ describe('Card', () => {
     expect(themeRule).toContain('--weave-card-theme-radius:var(--weave-radius-medium);')
     expect(themeRule).toContain('--weave-card-theme-padding:1.5rem;')
     expect(themeRule).toContain('--weave-card-theme-shadow:var(--weave-shadow-medium);')
+    expect(themeRule).toContain('--weave-card-theme-depth-color:var(--weave-color-danger,danger);')
+    expect(themeRule).toContain(
+      '--weave-card-theme-hover-background:var(--weave-color-secondary,secondary);',
+    )
+    expect(themeRule).toContain(
+      '--weave-card-theme-active-background:var(--weave-color-warning,warning);',
+    )
     expect(themeRule).toContain(
       '--weave-card-theme-selected-border-color:var(--weave-color-success,success);',
     )
