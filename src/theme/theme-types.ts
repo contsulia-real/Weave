@@ -476,11 +476,6 @@ export interface TabsThemeBase {
   tabHoverBackground?: string
   tabColor?: string
   tabSelectedColor?: string
-  pillListBackground?: string
-  pillListShadow?: string
-  pillListPadding?: ThemeScaleValue
-  pillSelectedBackground?: string
-  pillSelectedShadow?: string
   tabRadius?: ThemeScaleValue
   tabPaddingX?: ThemeScaleValue
   tabPaddingY?: ThemeScaleValue

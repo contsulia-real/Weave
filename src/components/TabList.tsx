@@ -1,5 +1,17 @@
-import { type CSSProperties, useCallback, useLayoutEffect, useRef, useState } from 'react'
+import {
+  type CSSProperties,
+  useCallback,
+  useInsertionEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react'
 import type { TabListProps } from '../core/tabs-types'
+import { ensureButtonStylesheet } from '../renderers/dom/button-stylesheet'
+import { ensureInputStylesheet } from '../renderers/dom/input-stylesheet'
+import { resolveButtonTheme, resolveInputTheme } from '../renderers/dom/resolve-component-theme'
+import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
+import { useTheme } from '../theme/theme-context'
 import { assignRef } from './internal/assign-ref'
 import { useTabsContext } from './internal/tabs-context'
 import { View } from './View'
@@ -24,8 +36,18 @@ function sameRect(previous: IndicatorRect | null, next: IndicatorRect): boolean 
 
 export function TabList({ children, viewProps = {} }: TabListProps) {
   const context = useTabsContext('TabList')
+  const { theme } = useTheme()
+  const inputThemeClassName = useRuntimeStyleClass('input-theme', resolveInputTheme(theme))
+  const buttonThemeClassName = useRuntimeStyleClass('button-theme', resolveButtonTheme(theme))
   const listRef = useRef<HTMLDivElement | null>(null)
   const [indicatorRect, setIndicatorRect] = useState<IndicatorRect | null>(null)
+  const pill = context.variant === 'pill'
+
+  useInsertionEffect(() => {
+    if (!pill) return
+    ensureInputStylesheet()
+    ensureButtonStylesheet()
+  }, [pill])
 
   const setListRef = useCallback(
     (element: HTMLDivElement | null) => {
@@ -37,7 +59,7 @@ export function TabList({ children, viewProps = {} }: TabListProps) {
 
   useLayoutEffect(() => {
     const list = listRef.current
-    if (list === null || context.variant !== 'underline' || context.value === null) {
+    if (list === null || context.value === null) {
       setIndicatorRect(null)
       return
     }
@@ -79,17 +101,25 @@ export function TabList({ children, viewProps = {} }: TabListProps) {
   const indicatorStyle: CSSProperties | undefined =
     indicatorRect === null
       ? undefined
-      : context.orientation === 'horizontal'
+      : pill
         ? {
             left: `${indicatorRect.left}px`,
-            width: `${indicatorRect.width}px`,
-            bottom: 0,
-          }
-        : {
             top: `${indicatorRect.top}px`,
+            width: `${indicatorRect.width}px`,
             height: `${indicatorRect.height}px`,
-            left: 0,
+            opacity: 1,
           }
+        : context.orientation === 'horizontal'
+          ? {
+              left: `${indicatorRect.left}px`,
+              width: `${indicatorRect.width}px`,
+              bottom: 0,
+            }
+          : {
+              top: `${indicatorRect.top}px`,
+              height: `${indicatorRect.height}px`,
+              left: 0,
+            }
 
   return (
     <View
@@ -100,7 +130,18 @@ export function TabList({ children, viewProps = {} }: TabListProps) {
       layout="flex"
       direction={context.orientation === 'vertical' ? 'column' : 'row'}
       wrap={false}
-      className={['weave-tab-list', viewProps.className].filter(Boolean).join(' ')}
+      width={viewProps.width ?? (pill ? 'fit' : undefined)}
+      minWidth={viewProps.minWidth ?? (pill ? 0 : undefined)}
+      padding={viewProps.padding ?? (pill ? 0.25 : undefined)}
+      className={[
+        'weave-tab-list',
+        pill ? 'weave-select' : undefined,
+        pill ? inputThemeClassName : undefined,
+        pill ? buttonThemeClassName : undefined,
+        viewProps.className,
+      ]
+        .filter(Boolean)
+        .join(' ')}
       data={{
         ...viewProps.data,
         'weave-tab-list': '',
@@ -111,14 +152,29 @@ export function TabList({ children, viewProps = {} }: TabListProps) {
       {indicatorStyle === undefined ? null : (
         <View
           aria-hidden="true"
-          className="weave-tab-indicator"
+          aria-disabled={pill ? 'true' : undefined}
+          className={[
+            'weave-tab-indicator',
+            pill ? 'weave-tab-indicator--pill' : 'weave-tab-indicator--underline',
+            pill ? 'weave-button' : undefined,
+            pill ? 'weave-button--primary' : undefined,
+            pill ? 'weave-button--medium' : undefined,
+            pill ? buttonThemeClassName : undefined,
+          ]
+            .filter(Boolean)
+            .join(' ')}
           layoutAnimation={{
             spring: 'snappy',
             interruption: 'continue',
           }}
+          minWidth={pill ? 0 : undefined}
+          minHeight={pill ? 0 : undefined}
+          padding={pill ? 0 : undefined}
+          pointerEvents="none"
           style={indicatorStyle}
           data={{
             'weave-tab-indicator': '',
+            'weave-tab-indicator-variant': context.variant,
           }}
         />
       )}

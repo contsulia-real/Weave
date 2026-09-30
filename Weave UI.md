@@ -3689,7 +3689,9 @@ indicatorThickness = theme.components.Tabs.base.indicatorThickness (默认 2px)
 </Tabs>
 ```
 
-pill 只改变视觉，不改变选择、focus、ARIA 或键盘语义。整个 TabList 使用方向性 inset shadow 形成凹槽；active / selected Tab 使用 surface + raised shadow 从凹槽中突起。未选中的 Tab 保持槽内平面状态。
+pill 只改变视觉，不改变选择、focus、ARIA 或键盘语义。整个 TabList **直接复用 Select/Input 的 field surface**：加载同一份 Input stylesheet，并使用同一个 `resolveInputTheme(theme)` runtime class；不得在 Tabs theme 内复制 background / border / shadow / radius。pill TabList 默认 `width="fit"`、`minWidth=0`，只包住自身 Tab，不允许因为 Tabs root 的 column stretch 而横向拉满。
+
+active / selected pill 不是给当前 Tab 自己加一套 shadow，而是与 underline 相同地只保留**一个共享 moving surface**。这个 surface 直接挂 Button 的真实 `weave-button + weave-button--primary + weave-button--medium + resolveButtonTheme(theme)` 配方，并关闭 pointer interaction；选择变化时仍使用同一套 `View.layoutAnimation` FLIP，从一个 Tab 连续位移/缩放到另一个 Tab。Tab 文本本身位于 moving Button surface 上方。不得在 Tabs 内复制 Button 的 background / border / depthColor / rest-depth 配方。
 
 `variant`：
 
@@ -3707,7 +3709,7 @@ pill
 - 父级拒绝一次请求后，再次请求同一个 next value 仍必须再次触发 callback；
 - uncontrolled 时点击或激活 Tab 直接更新内部值。
 
-所有 TabPanel 保持挂载；未选中 Panel 使用原生 `hidden`，避免切换时无意义销毁内部状态。
+所有 TabPanel 保持挂载；未选中 Panel 保留原生 `hidden`，同时 Tabs 必须显式保证其真实 display 为 `none`，因为通用 View stylesheet 会定义 display，不能依赖浏览器 UA 的 `[hidden] { display: none }` 在 cascade 中碰巧获胜。
 
 ## 18.11.4 Focus 与键盘
 
@@ -3779,11 +3781,6 @@ tabBackground
 tabHoverBackground
 tabColor
 tabSelectedColor
-pillListBackground
-pillListShadow
-pillListPadding
-pillSelectedBackground
-pillSelectedShadow
 tabRadius
 tabPaddingX
 tabPaddingY
@@ -3799,7 +3796,7 @@ disabledOpacity
 
 `indicatorThickness` 与 Divider 的 `size` 一样以 px 为唯一数字单位：`indicatorThickness={3}` 就是 3px；theme 中的数字同样直接输出 px，不经过 rem scale。
 
-Underline Tab 不复用 Button 的 press / depth 反馈；hover 只使用轻量 state background。Pill variant 例外地使用“凹槽 + 突起 active item”的静态材质层级，但不会复制 Button 的 hover-lift / press-depth 交互模型。
+Underline Tab 不复用 Button 的 press / depth 反馈；hover 只使用轻量 state background。Pill variant 的凹槽**必须来自 Input/Select field surface**，active moving surface **必须来自 Button primary / medium 的 rest surface**。Tabs 只负责组合这两个既有视觉源与 shared-indicator 位移，不得拥有 `pillListShadow / pillSelectedShadow / pillSelectedBackground` 等平行视觉实现。moving surface 不是可交互 Button，因此不响应 Button hover-lift / press-depth。
 
 ---
 # 19. `ToolTip`

@@ -8,6 +8,16 @@ afterEach(() => {
   delete (HTMLElement.prototype as Partial<HTMLElement>).animate
 })
 
+function runtimeRule(element: Element, prefix: string): string {
+  const className = [...element.classList].find((name) => name.startsWith(prefix))
+  expect(className).toBeDefined()
+
+  return (
+    document.querySelector<HTMLStyleElement>('style[data-weave-runtime-class="' + className + '"]')
+      ?.textContent ?? ''
+  ).replace(/\s+/g, '')
+}
+
 function BasicTabs({
   activation,
   orientation,
@@ -60,7 +70,9 @@ describe('Tabs', () => {
     expect(general.getAttribute('aria-controls')).toBe(generalPanel.id)
     expect(generalPanel.getAttribute('aria-labelledby')).toBe(general.id)
     expect(generalPanel.hidden).toBe(false)
+    expect(generalPanel.style.display).toBe('')
     expect(appearancePanel?.hidden).toBe(true)
+    expect(appearancePanel?.style.display).toBe('none')
   })
 
   it('honors defaultValue', () => {
@@ -106,8 +118,11 @@ describe('Tabs', () => {
 
     expect(getByRole('tab', { name: 'Appearance' }).getAttribute('aria-selected')).toBe('true')
     expect(getByRole('tabpanel', { name: 'Appearance' }).hidden).toBe(false)
+    expect(getByRole('tabpanel', { name: 'Appearance' }).style.display).toBe('')
     const general = getByRole('tab', { name: 'General' })
-    expect(document.getElementById(general.getAttribute('aria-controls') ?? '')?.hidden).toBe(true)
+    const generalPanel = document.getElementById(general.getAttribute('aria-controls') ?? '')
+    expect(generalPanel?.hidden).toBe(true)
+    expect(generalPanel?.style.display).toBe('none')
   })
 
   it('supports controlled value requests without mutating rejected state', () => {
@@ -215,7 +230,6 @@ describe('Tabs', () => {
         Tabs: {
           base: {
             indicatorThickness: 4,
-            pillSelectedBackground: 'danger',
           },
         },
       },
@@ -251,8 +265,7 @@ describe('Tabs', () => {
     expect(themeClass).toBeDefined()
     expect(tab.classList.contains('custom-tab')).toBe(true)
     expect(runtimeStyle).toContain('--weave-tabs-indicator-thickness:4px')
-    expect(runtimeStyle).toContain('--weave-tabs-pill-selected-background:')
-    expect(runtimeStyle).toContain('--weave-color-danger')
+    expect(runtimeStyle).not.toContain('--weave-tabs-pill-')
   })
 
   it('accepts indicatorThickness in pixels and renders one shared moving indicator', async () => {
@@ -286,149 +299,204 @@ describe('Tabs', () => {
     })
   })
 
-  it('moves the single shared indicator through View layoutAnimation', async () => {
-    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function () {
-      const element = this as HTMLElement
+  it.each(['underline', 'pill'] as const)(
+    'moves the single shared %s indicator through View layoutAnimation',
+    async (variant) => {
+      vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function () {
+        const element = this as HTMLElement
 
-      if (element.dataset.weaveTabList !== undefined) {
+        if (element.dataset.weaveTabList !== undefined) {
+          return {
+            x: 0,
+            y: 0,
+            left: 0,
+            top: 0,
+            width: 240,
+            height: 40,
+            right: 240,
+            bottom: 40,
+            toJSON: () => ({}),
+          } as DOMRect
+        }
+
+        if (element.dataset.weaveTabValue === 'general') {
+          return {
+            x: 0,
+            y: 0,
+            left: 0,
+            top: 0,
+            width: 100,
+            height: 40,
+            right: 100,
+            bottom: 40,
+            toJSON: () => ({}),
+          } as DOMRect
+        }
+
+        if (element.dataset.weaveTabValue === 'appearance') {
+          return {
+            x: 100,
+            y: 0,
+            left: 100,
+            top: 0,
+            width: 120,
+            height: 40,
+            right: 220,
+            bottom: 40,
+            toJSON: () => ({}),
+          } as DOMRect
+        }
+
+        if (element.dataset.weaveTabIndicator !== undefined) {
+          const left = Number.parseFloat(element.style.left || '0')
+          const top =
+            element.dataset.weaveTabIndicatorVariant === 'pill'
+              ? Number.parseFloat(element.style.top || '0')
+              : 38
+          const width = Number.parseFloat(element.style.width || '0')
+          const height =
+            element.dataset.weaveTabIndicatorVariant === 'pill'
+              ? Number.parseFloat(element.style.height || '0')
+              : 2
+
+          return {
+            x: left,
+            y: top,
+            left,
+            top,
+            width,
+            height,
+            right: left + width,
+            bottom: top + height,
+            toJSON: () => ({}),
+          } as DOMRect
+        }
+
         return {
           x: 0,
           y: 0,
           left: 0,
           top: 0,
-          width: 240,
-          height: 40,
-          right: 240,
-          bottom: 40,
+          width: 0,
+          height: 0,
+          right: 0,
+          bottom: 0,
           toJSON: () => ({}),
         } as DOMRect
-      }
+      })
 
-      if (element.dataset.weaveTabValue === 'general') {
+      const animationTargets: HTMLElement[] = []
+      const animate = vi.fn(function (
+        this: HTMLElement,
+        _keyframes: Keyframe[] | PropertyIndexedKeyframes | null,
+        _options?: number | KeyframeAnimationOptions,
+      ) {
+        animationTargets.push(this)
         return {
-          x: 0,
-          y: 0,
-          left: 0,
-          top: 0,
-          width: 100,
-          height: 40,
-          right: 100,
-          bottom: 40,
-          toJSON: () => ({}),
-        } as DOMRect
-      }
+          cancel: vi.fn(),
+          finish: vi.fn(),
+          onfinish: null,
+        } as unknown as Animation
+      })
 
-      if (element.dataset.weaveTabValue === 'appearance') {
-        return {
-          x: 100,
-          y: 0,
-          left: 100,
-          top: 0,
-          width: 120,
-          height: 40,
-          right: 220,
-          bottom: 40,
-          toJSON: () => ({}),
-        } as DOMRect
-      }
+      Object.defineProperty(HTMLElement.prototype, 'animate', {
+        configurable: true,
+        writable: true,
+        value: animate,
+      })
 
-      if (element.dataset.weaveTabIndicator !== undefined) {
-        const left = Number.parseFloat(element.style.left || '0')
-        const width = Number.parseFloat(element.style.width || '0')
-        return {
-          x: left,
-          y: 38,
-          left,
-          top: 38,
-          width,
-          height: 2,
-          right: left + width,
-          bottom: 40,
-          toJSON: () => ({}),
-        } as DOMRect
-      }
+      const { getByRole } = render(
+        <Tabs defaultValue="general" variant={variant}>
+          <TabList>
+            <Tab value="general">General</Tab>
+            <Tab value="appearance">Appearance</Tab>
+          </TabList>
+          <TabPanel value="general">General panel</TabPanel>
+          <TabPanel value="appearance">Appearance panel</TabPanel>
+        </Tabs>,
+      )
 
-      return {
-        x: 0,
-        y: 0,
-        left: 0,
-        top: 0,
-        width: 0,
-        height: 0,
-        right: 0,
-        bottom: 0,
-        toJSON: () => ({}),
-      } as DOMRect
-    })
+      await waitFor(() => {
+        const indicator = document.querySelector<HTMLElement>('[data-weave-tab-indicator]')
+        expect(indicator?.style.left).toBe('0px')
+        expect(indicator?.style.width).toBe('100px')
+        if (variant === 'pill') {
+          expect(indicator?.style.top).toBe('0px')
+          expect(indicator?.style.height).toBe('40px')
+        }
+      })
 
-    const animationTargets: HTMLElement[] = []
-    const animate = vi.fn(function (
-      this: HTMLElement,
-      _keyframes: Keyframe[] | PropertyIndexedKeyframes | null,
-      _options?: number | KeyframeAnimationOptions,
-    ) {
-      animationTargets.push(this)
-      return {
-        cancel: vi.fn(),
-        finish: vi.fn(),
-        onfinish: null,
-      } as unknown as Animation
-    })
+      fireEvent.click(getByRole('tab', { name: 'Appearance' }))
 
-    Object.defineProperty(HTMLElement.prototype, 'animate', {
-      configurable: true,
-      writable: true,
-      value: animate,
+      await waitFor(() => {
+        expect(animate).toHaveBeenCalledTimes(1)
+      })
+
+      expect(document.querySelectorAll('[data-weave-tab-indicator]')).toHaveLength(1)
+      expect(animationTargets[0]?.dataset.weaveTabIndicator).toBe('')
+      expect(animate.mock.calls[0]?.[0]).toEqual([
+        expect.objectContaining({
+          translate: '-100px 0px',
+        }),
+        expect.objectContaining({
+          translate: '0px 0px',
+        }),
+      ])
+    },
+  )
+
+  it('reuses Select/Input for the pill groove and Button for the moving active surface', async () => {
+    const theme = createTheme({
+      components: {
+        Input: {
+          base: {
+            background: 'warning',
+          },
+        },
+        Button: {
+          variants: {
+            primary: {
+              background: 'danger',
+              depthColor: 'warning',
+            },
+          },
+        },
+      },
     })
 
     const { getByRole } = render(
-      <Tabs defaultValue="general">
-        <TabList>
-          <Tab value="general">General</Tab>
-          <Tab value="appearance">Appearance</Tab>
-        </TabList>
-        <TabPanel value="general">General panel</TabPanel>
-        <TabPanel value="appearance">Appearance panel</TabPanel>
-      </Tabs>,
+      <ThemeProvider theme={theme}>
+        <BasicTabs variant="pill" />
+      </ThemeProvider>,
     )
 
     await waitFor(() => {
-      const indicator = document.querySelector<HTMLElement>('[data-weave-tab-indicator]')
-      expect(indicator?.style.left).toBe('0px')
-      expect(indicator?.style.width).toBe('100px')
+      expect(document.querySelector('[data-weave-tab-indicator]')).not.toBeNull()
     })
 
-    fireEvent.click(getByRole('tab', { name: 'Appearance' }))
+    const list = getByRole('tablist')
+    const indicator = document.querySelector<HTMLElement>('[data-weave-tab-indicator]')
 
-    await waitFor(() => {
-      expect(animate).toHaveBeenCalledTimes(1)
-    })
+    expect(list.classList).toContain('weave-select')
+    expect(runtimeRule(list, 'weave-props-')).toContain('--weave-width:fit-content;')
+    expect(runtimeRule(list, 'weave-input-theme-')).toContain(
+      '--weave-input-background:var(--weave-color-warning',
+    )
 
-    expect(document.querySelectorAll('[data-weave-tab-indicator]')).toHaveLength(1)
-    expect(animationTargets[0]?.dataset.weaveTabIndicator).toBe('')
-    expect(animate.mock.calls[0]?.[0]).toEqual([
-      expect.objectContaining({
-        translate: '-100px 0px',
-      }),
-      expect.objectContaining({
-        translate: '0px 0px',
-      }),
-    ])
-  })
+    expect(indicator?.classList).toContain('weave-button')
+    expect(indicator?.getAttribute('aria-disabled')).toBe('true')
+    expect(indicator?.style.opacity).toBe('1')
+    expect(indicator?.classList).toContain('weave-button--primary')
+    expect(indicator?.classList).toContain('weave-button--medium')
+    expect(runtimeRule(indicator!, 'weave-button-theme-')).toContain(
+      '--weave-button-theme-primary-background:var(--weave-color-danger',
+    )
+    expect(runtimeRule(indicator!, 'weave-button-theme-')).toContain(
+      '--weave-button-theme-primary-depth-color:var(--weave-color-warning',
+    )
 
-  it('gives pill tabs a recessed list and raised selected item', async () => {
-    const { getByRole } = render(<BasicTabs variant="pill" />)
-
-    await waitFor(() => {
-      expect(getByRole('tab', { name: 'General' }).getAttribute('aria-selected')).toBe('true')
-    })
-
-    const stylesheet =
-      document.querySelector<HTMLStyleElement>('style[data-weave-tabs-styles]')?.textContent ?? ''
-
-    expect(stylesheet).toContain('--weave-tabs-pill-list-shadow')
-    expect(stylesheet).toContain('--weave-tabs-pill-selected-shadow')
-    expect(document.querySelector('[data-weave-tab-indicator]')).toBeNull()
+    expect(document.querySelector('style[data-weave-input-styles]')).not.toBeNull()
+    expect(document.querySelector('style[data-weave-button-styles]')).not.toBeNull()
   })
 
   it('renders underline by default and pill when requested', async () => {

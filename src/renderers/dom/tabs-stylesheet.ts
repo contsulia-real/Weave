@@ -12,19 +12,6 @@ const stylesheet = `
   min-width: 0;
 }
 
-:where(.weave-tabs[data-weave-tabs-variant="pill"] .weave-tab-list) {
-  --weave-component-background: var(--weave-tabs-pill-list-background);
-  --weave-component-box-shadow: var(--weave-tabs-pill-list-shadow);
-  --weave-component-padding-top: var(--weave-tabs-pill-list-padding);
-  --weave-component-padding-right: var(--weave-tabs-pill-list-padding);
-  --weave-component-padding-bottom: var(--weave-tabs-pill-list-padding);
-  --weave-component-padding-left: var(--weave-tabs-pill-list-padding);
-  --weave-component-border-top-left-radius: var(--weave-tabs-tab-radius);
-  --weave-component-border-top-right-radius: var(--weave-tabs-tab-radius);
-  --weave-component-border-bottom-right-radius: var(--weave-tabs-tab-radius);
-  --weave-component-border-bottom-left-radius: var(--weave-tabs-tab-radius);
-}
-
 :where(.weave-tab) {
   appearance: none;
   font: inherit;
@@ -50,10 +37,11 @@ const stylesheet = `
   --weave-component-font-weight: var(--weave-tabs-tab-font-weight);
   --weave-component-line-height: var(--weave-tabs-tab-line-height);
   --weave-component-letter-spacing: var(--weave-tabs-tab-letter-spacing);
-  --weave-component-transition-property: background-color, color, box-shadow;
+  --weave-component-transition-property: background-color, color;
   --weave-component-transition-duration: var(--weave-motion-duration-fast);
   --weave-component-transition-timing-function: var(--weave-motion-curve-standard);
   --weave-component-transition-delay: 0ms;
+  z-index: 2;
 }
 
 :where(.weave-tab:hover:not(:disabled)) {
@@ -64,39 +52,56 @@ const stylesheet = `
   --weave-component-color: var(--weave-tabs-tab-selected-color);
 }
 
-:where(.weave-tabs[data-weave-tabs-variant="pill"] .weave-tab[data-weave-tab-selected="true"]) {
-  --weave-component-background: var(--weave-tabs-pill-selected-background);
-  --weave-component-box-shadow: var(--weave-tabs-pill-selected-shadow);
+:where(
+  .weave-tabs[data-weave-tabs-variant="pill"]
+    .weave-tab[data-weave-tab-selected="true"]
+) {
+  --weave-component-background: transparent;
+  --weave-component-color: var(--weave-button-theme-primary-color);
 }
 
 :where(
   .weave-tabs[data-weave-tabs-variant="pill"]
     .weave-tab[data-weave-tab-selected="true"]:hover
 ) {
-  --weave-component-background: var(--weave-tabs-pill-selected-background);
+  --weave-component-background: transparent;
 }
 
 :where(.weave-tab-indicator) {
   --weave-component-position: absolute;
-  --weave-component-background: var(--weave-tabs-indicator-color);
   --weave-component-pointer-events: none;
+  z-index: 1;
+}
+
+:where(.weave-tab-indicator--underline) {
+  --weave-component-background: var(--weave-tabs-indicator-color);
   --weave-component-border-top-left-radius: 999px;
   --weave-component-border-top-right-radius: 999px;
   --weave-component-border-bottom-right-radius: 999px;
   --weave-component-border-bottom-left-radius: 999px;
-  z-index: 1;
 }
 
 :where(
-  .weave-tabs[data-weave-tabs-orientation="horizontal"] .weave-tab-indicator
+  .weave-tabs[data-weave-tabs-orientation="horizontal"]
+    .weave-tab-indicator--underline
 ) {
   height: var(--weave-tabs-indicator-thickness);
 }
 
 :where(
-  .weave-tabs[data-weave-tabs-orientation="vertical"] .weave-tab-indicator
+  .weave-tabs[data-weave-tabs-orientation="vertical"]
+    .weave-tab-indicator--underline
 ) {
   width: var(--weave-tabs-indicator-thickness);
+}
+
+:where(.weave-tab-indicator--pill.weave-button) {
+  --weave-component-min-width: 0;
+  --weave-component-min-height: 0;
+  --weave-component-padding-top: 0;
+  --weave-component-padding-right: 0;
+  --weave-component-padding-bottom: 0;
+  --weave-component-padding-left: 0;
 }
 
 :where(.weave-tab:focus-visible) {
@@ -113,6 +118,10 @@ const stylesheet = `
 
 :where(.weave-tab-panel) {
   min-width: 0;
+}
+
+:where(.weave-tab-panel[hidden]) {
+  display: none !important;
 }
 
 :where(.weave-tabs[data-weave-reduced-motion="reduce"] .weave-tab) {

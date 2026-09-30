@@ -117,14 +117,6 @@ export const defaultDarkTheme: ThemeOverride = {
           'inset 0 0.125rem 0.1875rem rgb(0 0 0 / 0.58), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.045)',
       },
     },
-    Tabs: {
-      base: {
-        pillListShadow:
-          'inset 0 0.125rem 0.1875rem rgb(0 0 0 / 0.58), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.045)',
-        pillSelectedShadow:
-          '0 0.0625rem 0.125rem rgb(0 0 0 / 0.52), 0 0.1875rem 0.375rem rgb(0 0 0 / 0.34), inset 0 0.0625rem 0 rgb(255 255 255 / 0.18)',
-      },
-    },
     Switch: {
       base: {
         trackShadow:
@@ -896,14 +888,6 @@ export const defaultTheme: ResolvedTheme = {
         tabHoverBackground: 'surfaceHover',
         tabColor: 'secondary',
         tabSelectedColor: 'primary',
-        pillListBackground:
-          'color-mix(in srgb, var(--weave-color-outline) 34%, var(--weave-color-surface))',
-        pillListShadow:
-          'inset 0 0.125rem 0.1875rem rgb(58 48 40 / 0.24), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.42)',
-        pillListPadding: 0.25,
-        pillSelectedBackground: 'surface',
-        pillSelectedShadow:
-          '0 0.0625rem 0.125rem rgb(58 48 40 / 0.24), 0 0.125rem 0.25rem rgb(58 48 40 / 0.12), inset 0 0.0625rem 0 rgb(255 255 255 / 0.48)',
         tabRadius: 'medium',
         tabPaddingX: 0.75,
         tabPaddingY: 0.5,
