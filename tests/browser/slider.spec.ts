@@ -316,6 +316,7 @@ test('Playground Slider expresses recessed inactive track, raised active surface
   await expect(customControl.locator('.weave-slider__stop-indicator')).toHaveCount(0)
   await expect(customControl.locator('.weave-slider__thumb-dot')).toHaveCount(1)
 
+  const customActiveTrack = customControl.locator('.weave-slider__active-track')
   const customTrack = customControl.locator('.weave-slider__inactive-track')
   const customRange = customControl.locator('.weave-slider__range')
   const steps = customControl.locator('.weave-slider__step')
@@ -325,6 +326,7 @@ test('Playground Slider expresses recessed inactive track, raised active surface
   const penultimateStep = steps.nth(7)
   const lastStep = steps.last()
   const [
+    customActiveTrackBox,
     customTrackBox,
     customRangeBox,
     firstStepBox,
@@ -333,6 +335,7 @@ test('Playground Slider expresses recessed inactive track, raised active surface
     penultimateStepBox,
     lastStepBox,
   ] = await Promise.all([
+    customActiveTrack.boundingBox(),
     customTrack.boundingBox(),
     customRange.boundingBox(),
     firstStep.boundingBox(),
@@ -341,6 +344,7 @@ test('Playground Slider expresses recessed inactive track, raised active surface
     penultimateStep.boundingBox(),
     lastStep.boundingBox(),
   ])
+  expect(customActiveTrackBox).not.toBeNull()
   expect(customTrackBox).not.toBeNull()
   expect(customRangeBox).not.toBeNull()
   expect(firstStepBox).not.toBeNull()
@@ -357,6 +361,14 @@ test('Playground Slider expresses recessed inactive track, raised active surface
   const centerX = (box: NonNullable<typeof firstStepBox>) => box.x + box.width / 2
   expect(centerX(firstStepBox!)).toBeCloseTo(customRangeBox!.x, 1)
   expect(centerX(lastStepBox!)).toBeCloseTo(customRangeBox!.x + customRangeBox!.width, 1)
+  expect(firstStepBox!.x).toBeGreaterThanOrEqual(customActiveTrackBox!.x - 0.5)
+  expect(firstStepBox!.x + firstStepBox!.width).toBeLessThanOrEqual(
+    customActiveTrackBox!.x + customActiveTrackBox!.width + 0.5,
+  )
+  expect(lastStepBox!.x).toBeGreaterThanOrEqual(customTrackBox!.x - 0.5)
+  expect(lastStepBox!.x + lastStepBox!.width).toBeLessThanOrEqual(
+    customTrackBox!.x + customTrackBox!.width + 0.5,
+  )
 
   const firstGap = centerX(secondStepBox!) - centerX(firstStepBox!)
   const middleGap = centerX(thirdStepBox!) - centerX(secondStepBox!)
@@ -406,6 +418,14 @@ test('Playground Slider expresses recessed inactive track, raised active surface
   const maxInactiveBox = await mediumControl.locator('.weave-slider__inactive-track').boundingBox()
   expect(maxInactiveBox).not.toBeNull()
   expect(maxInactiveBox!.width).toBeLessThanOrEqual(0.5)
+
+  await custom.focus()
+  await page.keyboard.press('End')
+  await expect(custom).toHaveValue('20')
+  await page.waitForTimeout(350)
+  const steppedMaxInactiveBox = await customTrack.boundingBox()
+  expect(steppedMaxInactiveBox).not.toBeNull()
+  expect(steppedMaxInactiveBox!.width).toBeLessThanOrEqual(0.5)
 
   await expect(disabled).toBeDisabled()
   expect(await disabled.evaluate((element) => getComputedStyle(element).cursor)).toBe('not-allowed')
