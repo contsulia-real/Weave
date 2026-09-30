@@ -17,7 +17,6 @@ const stylesheet = `
   --weave-slider-thumb-track-clearance:
     calc(var(--weave-slider-thumb-half-size) + var(--weave-slider-thumb-track-gap));
   --weave-slider-tick-size: calc(var(--weave-slider-track-height) / 4);
-  --weave-slider-track-edge-inset: calc(var(--weave-slider-track-height) / 2);
 
   display: inline-grid;
   position: relative;
@@ -100,10 +99,7 @@ const stylesheet = `
 
 :where(.weave-slider__steps) {
   position: absolute;
-  top: 0;
-  right: var(--weave-slider-track-edge-inset);
-  bottom: 0;
-  left: var(--weave-slider-track-edge-inset);
+  inset: 0;
   z-index: 2;
   pointer-events: none;
 }

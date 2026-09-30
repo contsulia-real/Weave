@@ -4292,7 +4292,7 @@ progress = (value - min) / (max - min)
 
 已选部分使用 `fillColor`；未选部分使用 `trackColor`。当 `max <= min` 时 progress 固定为 0。progress 表示 thumb 中心位置；active / inactive track 的内侧边界必须分别从该位置减去 / 加上 `thumbSize / 2 + thumbTrackGap`，保证视觉上始终存在真实断口。到达 max 时 inactive track 必须收敛为 0 宽，不得在 thumb 右侧残留凹槽。
 
-当调用方显式传入 `step > 0` 且范围有效时，Slider 进入离散视觉，每个从 `min` 到 `max` 的 step 都必须有明确 dot；未显式传 `step` 时完全不渲染 dot，包括 max 端。medium 的 dot 为 4px（track 高度的 1/4），small / large 按 track 比例缩放。dot 垂直严格居中；所有 dot 必须在左右各内缩半个 track 高度后的有效区间内重新等距分布，不能通过单点 clamp 把首尾相邻 step 挤在一起。active tick 使用 active surface 的对比色；inactive tick 使用 active color。
+当调用方显式传入 `step > 0` 且范围有效时，Slider 进入离散视觉，每个从 `min` 到 `max` 的 step 都必须有明确 dot；未显式传 `step` 时完全不渲染 dot，包括 max 端。medium 的 dot 为 4px（track 高度的 1/4），small / large 按 track 比例缩放。dot 垂直严格居中；step dot 与 thumb 必须共享完全相同的 value axis，禁止再对 dot 容器做第二层左右内缩、clamp 或独立位置映射。同一个数值对应的 step dot 中心必须与该数值下的 thumb 中心完全重合，前后相邻 step 到 thumb 的中心距离必须相等。active tick 使用 active surface 的对比色；inactive tick 使用 active color。
 
 Slider 默认不复制一套独立的轨道视觉。未显式覆盖 Slider theme 时：
 

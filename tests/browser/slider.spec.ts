@@ -354,17 +354,38 @@ test('Playground Slider expresses recessed inactive track, raised active surface
   expect(
     customTrackBox!.y + customTrackBox!.height - (firstStepBox!.y + firstStepBox!.height),
   ).toBeCloseTo(6, 0)
-  expect(firstStepBox!.x - customRangeBox!.x).toBeCloseTo(6, 0)
-  expect(
-    customRangeBox!.x + customRangeBox!.width - (lastStepBox!.x + lastStepBox!.width),
-  ).toBeCloseTo(6, 0)
-
   const centerX = (box: NonNullable<typeof firstStepBox>) => box.x + box.width / 2
+  expect(centerX(firstStepBox!)).toBeCloseTo(customRangeBox!.x, 1)
+  expect(centerX(lastStepBox!)).toBeCloseTo(customRangeBox!.x + customRangeBox!.width, 1)
+
   const firstGap = centerX(secondStepBox!) - centerX(firstStepBox!)
   const middleGap = centerX(thirdStepBox!) - centerX(secondStepBox!)
   const lastGap = centerX(lastStepBox!) - centerX(penultimateStepBox!)
   expect(firstGap).toBeCloseTo(middleGap, 0)
   expect(lastGap).toBeCloseTo(middleGap, 0)
+
+  const currentStep = steps.nth(5)
+  const previousStep = steps.nth(4)
+  const nextStep = steps.nth(6)
+  const customThumb = customControl.locator('.weave-slider__thumb')
+  const [currentStepBox, previousStepBox, nextStepBox, customThumbBox] = await Promise.all([
+    currentStep.boundingBox(),
+    previousStep.boundingBox(),
+    nextStep.boundingBox(),
+    customThumb.boundingBox(),
+  ])
+  expect(currentStepBox).not.toBeNull()
+  expect(previousStepBox).not.toBeNull()
+  expect(nextStepBox).not.toBeNull()
+  expect(customThumbBox).not.toBeNull()
+
+  const currentStepCenter = centerX(currentStepBox!)
+  const customThumbCenter = centerX(customThumbBox!)
+  expect(currentStepCenter).toBeCloseTo(customThumbCenter, 1)
+
+  const previousDistance = customThumbCenter - centerX(previousStepBox!)
+  const nextDistance = centerX(nextStepBox!) - customThumbCenter
+  expect(previousDistance).toBeCloseTo(nextDistance, 1)
 
   const activeStep = customControl.locator('[data-weave-slider-step-active="true"]').first()
   const inactiveStep = customControl.locator('[data-weave-slider-step-active="false"]').first()
