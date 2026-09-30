@@ -58,6 +58,7 @@ const expectedRuntimeExports = [
   'Select',
   'SelectOption',
   'Skeleton',
+  'Slider',
   'Snack',
   'Stack',
   'SnackProvider',
@@ -148,6 +149,7 @@ assert(typeSource.includes('AvatarProps'), 'Built declarations are missing Avata
 assert(typeSource.includes('BadgeProps'), 'Built declarations are missing BadgeProps')
 assert(typeSource.includes('CardProps'), 'Built declarations are missing CardProps')
 assert(typeSource.includes('SkeletonProps'), 'Built declarations are missing SkeletonProps')
+assert(typeSource.includes('SliderProps'), 'Built declarations are missing SliderProps')
 assert(typeSource.includes('ListProps'), 'Built declarations are missing ListProps')
 assert(typeSource.includes('LinkProps'), 'Built declarations are missing LinkProps')
 assert(typeSource.includes('TabsProps'), 'Built declarations are missing TabsProps')
@@ -166,6 +168,7 @@ const expectedThemeTypeExports = [
   'InputTheme',
   'SelectTheme',
   'ComboboxTheme',
+  'SliderTheme',
   'SwitchTheme',
   'ChoiceControlTheme',
   'AvatarTheme',

@@ -143,6 +143,38 @@ export interface ComboboxTheme {
   option?: ComboboxThemeOption
 }
 
+export interface SliderThemeBase {
+  trackColor?: string
+  fillColor?: string
+  thumbBackground?: string
+  thumbBorderColor?: string
+  thumbBorderWidth?: ThemeScaleValue
+  thumbShadow?: string
+  thumbHoverShadow?: string
+  thumbPressShadow?: string
+  cursor?: string
+  focusOutlineWidth?: ThemeScaleValue
+  focusOutlineColor?: string
+  focusOutlineStyle?: string
+  focusOutlineOffset?: ThemeScaleValue
+}
+
+export interface SliderThemeSize {
+  trackHeight?: ThemeScaleValue
+  thumbSize?: ThemeScaleValue
+}
+
+export interface SliderTheme {
+  base?: SliderThemeBase
+  sizes?: Partial<Record<'small' | 'medium' | 'large', SliderThemeSize>>
+  states?: {
+    disabled?: {
+      opacity?: number
+      cursor?: string
+    }
+  }
+}
+
 export interface SwitchThemeBase {
   background?: string
   radius?: ThemeScaleValue
@@ -589,6 +621,7 @@ export interface ThemeComponents {
   Input?: InputTheme
   Select?: SelectTheme
   Combobox?: ComboboxTheme
+  Slider?: SliderTheme
   Switch?: SwitchTheme
   Radio?: ChoiceControlTheme
   Checkbox?: ChoiceControlTheme

@@ -4186,6 +4186,161 @@ borderWidth = 0.0625rem
 这套 neutral fallback surface 同时用于 initials、显式 fallback、空白 Avatar 和图片失败状态。图片成功时仍保留相同容器边框，图片覆盖容器背景。
 
 ---
+
+# 18.15 `Slider`
+
+`Slider` 是单值、水平数值滑块。它直接使用原生 `<input type="range">` 作为交互与可访问性基础，不实现自定义 ARIA slider 状态机。
+
+## 18.15.1 API
+
+```tsx
+<Slider />
+<Slider value={volume} onChange={setVolume} />
+<Slider min={-20} max={20} step={5} defaultValue={5} />
+```
+
+公开高层属性：
+
+```text
+value?: number
+defaultValue?: number
+onChange?: (value: number) => void
+min?: number
+max?: number
+step?: number
+disabled?: boolean
+label?: ReactNode
+size?: "small" | "medium" | "large"
+viewProps
+```
+
+默认值：
+
+```text
+min = 0
+max = 100
+step = 1
+defaultValue = min
+size = "medium"
+```
+
+Slider 支持 controlled / uncontrolled 两种状态。传入 value 或 defaultValue 超出 `min..max` 时，渲染值 clamp 到当前范围。
+
+Slider 第一版只支持单值 horizontal 模式；不提供双 thumb range、vertical / orientation、marks / ticks、tooltip、value bubble、formatter 或 `onChangeEnd`。
+
+## 18.15.2 Native interaction
+
+Slider 直接保留原生 range 的行为：
+
+```text
+track click
+thumb drag
+Arrow keys
+Home / End
+PageUp / PageDown
+```
+
+拖动过程中原生 range 的连续数值更新进入 `onChange`。组件不创建第二套 pointer drag 或 keyboard state machine。
+
+## 18.15.3 Label
+
+`label` 存在时，Slider 使用与 Switch 相同的 field + label 组合，并建立原生 label 关联。
+
+未提供高层 `label` 时，语义继续通过 `viewProps.label / labelledBy / description` 等 View 语义字段提供。
+
+## 18.15.4 Geometry
+
+Slider 默认宽度：
+
+```text
+16rem
+```
+
+`viewProps.width` 可覆盖。
+
+三档尺寸只改变 track 与 thumb：
+
+```text
+small  = track 0.25rem / thumb 1rem
+medium = track 0.375rem / thumb 1.25rem
+large  = track 0.5rem / thumb 1.5rem
+```
+
+track 与 thumb 均为 full / circle radius。
+
+## 18.15.5 Fill
+
+Slider 的已选轨道由当前值计算：
+
+```text
+progress = (value - min) / (max - min)
+```
+
+已选部分使用 `fillColor`；未选部分使用 `trackColor`。当 `max <= min` 时 progress 固定为 0。
+
+默认：
+
+```text
+trackColor =
+  color-mix(in srgb, var(--weave-color-outline) 34%, var(--weave-color-surface))
+fillColor = primary
+```
+
+## 18.15.6 Thumb 与状态
+
+默认 thumb：
+
+```text
+background  = surface
+borderColor = outline
+borderWidth = 0.0625rem
+```
+
+thumb 使用轻量实体 shadow；hover 增强 shadow；active 使用 press shadow，并复用全局 feedback press scale 形成轻微压下反馈。
+
+focus-visible 使用统一 `focus` outline。
+
+disabled：
+
+```text
+opacity = 0.5
+cursor  = default
+```
+
+## 18.15.7 Theme
+
+默认主题来自：
+
+```text
+theme.components.Slider
+```
+
+字段：
+
+```text
+base.trackColor
+base.fillColor
+base.thumbBackground
+base.thumbBorderColor
+base.thumbBorderWidth
+base.thumbShadow
+base.thumbHoverShadow
+base.thumbPressShadow
+base.cursor
+base.focusOutlineWidth
+base.focusOutlineColor
+base.focusOutlineStyle
+base.focusOutlineOffset
+
+sizes.small.trackHeight / thumbSize
+sizes.medium.trackHeight / thumbSize
+sizes.large.trackHeight / thumbSize
+
+states.disabled.opacity
+states.disabled.cursor
+```
+
+---
 # 19. `ToolTip`
 
 `ToolTip` 是目标附着的辅助说明组件。
@@ -5861,6 +6016,7 @@ const theme = {
     Input: { ... },
     Select: { ... },
     Combobox: { ... },
+    Slider: { ... },
     Switch: { ... },
     Avatar: { ... },
     Skeleton: { ... },
@@ -7062,7 +7218,7 @@ Weave 公开 API
 ├─ 公开组件
 │  ├─ Text / Image / Icon / Avatar
 │  ├─ Input / Button / Link / Card
-│  ├─ Switch / Radio / Checkbox
+│  ├─ Slider / Switch / Radio / Checkbox
 │  ├─ Progress / Skeleton / Divider
 │  ├─ Badge / ToolTip / Popover
 │  ├─ Select / SelectOption

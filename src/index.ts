@@ -28,6 +28,7 @@ export { Row } from './components/Row'
 export { Select } from './components/Select'
 export { SelectOption } from './components/SelectOption'
 export { Skeleton } from './components/Skeleton'
+export { Slider } from './components/Slider'
 export { Snack } from './components/Snack'
 export type { SnackProviderProps } from './components/SnackProvider'
 export { SnackProvider } from './components/SnackProvider'
@@ -209,6 +210,11 @@ export type {
   SkeletonViewProps,
 } from './core/skeleton-types'
 export type {
+  SliderProps,
+  SliderSize,
+  SliderViewProps,
+} from './core/slider-types'
+export type {
   SnackContainer,
   SnackController,
   SnackIcon,
@@ -346,6 +352,9 @@ export type {
   SelectThemeOption,
   SkeletonTheme,
   SkeletonThemeBase,
+  SliderTheme,
+  SliderThemeBase,
+  SliderThemeSize,
   SnackTheme,
   SnackThemeBase,
   SnackThemeVariant,

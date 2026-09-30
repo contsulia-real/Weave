@@ -1,9 +1,10 @@
 import { useState } from 'react'
-import { Checkbox, Column, Input, Progress, Radio, Row, Switch, Text } from '../index'
+import { Checkbox, Column, Input, Progress, Radio, Row, Slider, Switch, Text } from '../index'
 import { PlaygroundSection } from './PlaygroundSection'
 
 export function FormPlayground() {
   const [progressHigh, setProgressHigh] = useState(false)
+  const [sliderValue, setSliderValue] = useState(40)
   const progress = progressHigh ? 0.82 : 0.28
 
   return (
@@ -54,6 +55,60 @@ export function FormPlayground() {
               width: 32,
             }}
           />
+        </Column>
+      </PlaygroundSection>
+
+      <PlaygroundSection
+        title="Slider"
+        description="单值 horizontal Slider 直接使用原生 range：轨道点击、拖动与键盘交互由浏览器负责；三档尺寸只改变 track 与 thumb。"
+      >
+        <Column gap={1.25} align="start">
+          <Row gap={1.5} align="center" wrap>
+            <Slider
+              size="small"
+              defaultValue={25}
+              label="Small"
+              viewProps={{ data: { testid: 'slider-small' } }}
+            />
+            <Slider
+              size="medium"
+              defaultValue={50}
+              label="Medium"
+              viewProps={{ data: { testid: 'slider-medium' } }}
+            />
+            <Slider
+              size="large"
+              defaultValue={75}
+              label="Large"
+              viewProps={{ data: { testid: 'slider-large' } }}
+            />
+          </Row>
+
+          <Row gap={1.5} align="center" wrap>
+            <Slider
+              value={sliderValue}
+              onChange={setSliderValue}
+              step={5}
+              label={`Controlled · ${sliderValue}`}
+              viewProps={{ data: { testid: 'slider-controlled' } }}
+            />
+
+            <Slider
+              min={-20}
+              max={20}
+              step={5}
+              defaultValue={5}
+              label="Range -20…20 · step 5"
+              viewProps={{ data: { testid: 'slider-custom-range' } }}
+            />
+
+            <Slider
+              disabled
+              defaultValue={65}
+              label="Disabled"
+              viewProps={{ data: { testid: 'slider-disabled' } }}
+            />
+          </Row>
         </Column>
       </PlaygroundSection>
 

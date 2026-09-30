@@ -10,6 +10,7 @@ export {
   resolveComboboxTheme,
   resolveInputTheme,
   resolveSelectTheme,
+  resolveSliderTheme,
   resolveSwitchTheme,
 } from './component-theme/controls'
 export {

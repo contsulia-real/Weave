@@ -1,4 +1,5 @@
 import type { ChoiceControlKind, ChoiceControlSize } from '../../../core/choice-types'
+import type { SliderSize } from '../../../core/slider-types'
 import type { SwitchSize } from '../../../core/switch-types'
 import { color, length, radius } from '../../../core/values'
 import { typographyStyleVariableReference } from '../../../theme/theme-css'
@@ -101,6 +102,36 @@ export function resolveComboboxTheme(theme: ResolvedTheme): RuntimeStyleDeclarat
     '--weave-combobox-action-inset': length(base?.actionInset),
 
     ...resolveOptionCollectionTheme(listbox, option),
+  }
+}
+
+export function resolveSliderTheme(
+  theme: ResolvedTheme,
+  size: SliderSize,
+): RuntimeStyleDeclarations {
+  const component = theme.components.Slider
+  const base = component?.base
+  const sized = component?.sizes?.[size]
+  const disabled = component?.states?.disabled
+
+  return {
+    '--weave-slider-track-color': color(base?.trackColor),
+    '--weave-slider-fill-color': color(base?.fillColor),
+    '--weave-slider-track-height': length(sized?.trackHeight),
+    '--weave-slider-thumb-size': length(sized?.thumbSize),
+    '--weave-slider-thumb-background': color(base?.thumbBackground),
+    '--weave-slider-thumb-border-color': color(base?.thumbBorderColor),
+    '--weave-slider-thumb-border-width': length(base?.thumbBorderWidth),
+    '--weave-slider-thumb-shadow': base?.thumbShadow,
+    '--weave-slider-thumb-hover-shadow': base?.thumbHoverShadow,
+    '--weave-slider-thumb-press-shadow': base?.thumbPressShadow,
+    '--weave-slider-cursor': base?.cursor,
+    '--weave-slider-focus-outline-width': length(base?.focusOutlineWidth),
+    '--weave-slider-focus-outline-color': color(base?.focusOutlineColor),
+    '--weave-slider-focus-outline-style': base?.focusOutlineStyle,
+    '--weave-slider-focus-outline-offset': length(base?.focusOutlineOffset),
+    '--weave-slider-disabled-opacity': disabled?.opacity,
+    '--weave-slider-disabled-cursor': disabled?.cursor,
   }
 }
 
