@@ -29,6 +29,7 @@ test('Playground renders Skeleton shapes and shimmer', async ({ page }) => {
   })
 
   expect(rectVisual.background).not.toBe('rgba(0, 0, 0, 0)')
+  expect(rectVisual.background).not.toBe('rgb(247, 242, 236)')
   expect(rectVisual.radius).not.toBe('0px')
   expect(rectVisual.animationName).toBe('weave-skeleton-shimmer')
   expect(rectVisual.animationDuration).toBe('1.28s')

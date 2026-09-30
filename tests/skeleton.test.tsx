@@ -26,9 +26,11 @@ describe('Skeleton', () => {
 
     const themeRule = runtimeRule(skeleton, 'weave-skeleton-theme-')
     expect(themeRule).toContain(
-      '--weave-skeleton-background:var(--weave-color-surfaceHover,surfaceHover);',
+      '--weave-skeleton-background:color-mix(insrgb,currentColor20%,transparent);',
     )
-    expect(themeRule).toContain('--weave-skeleton-highlight:var(--weave-color-surface,surface);')
+    expect(themeRule).toContain(
+      '--weave-skeleton-highlight:color-mix(insrgb,currentColor32%,transparent);',
+    )
     expect(themeRule).toContain('--weave-skeleton-radius:var(--weave-radius-medium);')
     expect(themeRule).toContain('--weave-skeleton-text-radius:var(--weave-radius-full);')
     expect(themeRule).toContain('--weave-skeleton-shimmer-duration:1280ms;')

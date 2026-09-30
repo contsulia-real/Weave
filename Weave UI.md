@@ -4042,11 +4042,11 @@ radius = theme.components.Skeleton.base.textRadius
 
 ## 18.13.3 Shimmer 与 reduced motion
 
-Skeleton 默认持续运行单向 shimmer。底色与高光来自语义主题色：
+Skeleton 默认持续运行单向 shimmer。底色与高光从当前文字色派生，以便在 light / dark mode 下都与 surface 保持清晰分层：
 
 ```text
-background = surfaceHover
-highlight  = surface
+background = color-mix(in srgb, currentColor 20%, transparent)
+highlight  = color-mix(in srgb, currentColor 32%, transparent)
 ```
 
 shimmer 只在 Skeleton 自身表面移动，不改变布局、尺寸、opacity 或 transform 状态。

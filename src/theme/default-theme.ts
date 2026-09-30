@@ -735,8 +735,8 @@ export const defaultTheme: ResolvedTheme = {
     },
     Skeleton: {
       base: {
-        background: 'surfaceHover',
-        highlight: 'surface',
+        background: 'color-mix(in srgb, currentColor 20%, transparent)',
+        highlight: 'color-mix(in srgb, currentColor 32%, transparent)',
         radius: 'medium',
         textRadius: 'full',
         shimmerDuration: 1280,
