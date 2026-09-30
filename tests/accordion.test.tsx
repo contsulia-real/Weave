@@ -248,6 +248,7 @@ describe('Accordion', () => {
           base: {
             dividerColor: 'danger',
             triggerHoverBackground: 'primary',
+            triggerOpenBackground: 'warning',
             indicatorSize: 2,
           },
         },
@@ -277,6 +278,9 @@ describe('Accordion', () => {
     expect(rule).toContain('--weave-accordion-divider-color:var(--weave-color-danger,danger);')
     expect(rule).toContain(
       '--weave-accordion-trigger-hover-background:var(--weave-color-primary,primary);',
+    )
+    expect(rule).toContain(
+      '--weave-accordion-trigger-open-background:var(--weave-color-warning,warning);',
     )
     expect(rule).toContain('--weave-accordion-indicator-size:2rem;')
   })

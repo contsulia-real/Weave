@@ -55,7 +55,7 @@ const stylesheet = `
     translate:
       var(--weave-tooltip-motion-x)
       var(--weave-tooltip-motion-y);
-    scale: 0.985;
+    scale: var(--weave-tooltip-enter-scale);
   }
 }
 
@@ -64,7 +64,7 @@ const stylesheet = `
   translate:
     var(--weave-tooltip-motion-x)
     var(--weave-tooltip-motion-y);
-  scale: 0.99;
+  scale: var(--weave-tooltip-exit-scale);
   --weave-component-transition-property: opacity, translate, scale;
   --weave-component-transition-duration:
     var(--weave-motion-duration-fast),

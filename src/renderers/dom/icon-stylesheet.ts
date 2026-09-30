@@ -11,23 +11,23 @@ const stylesheet = `
 }
 
 :where(.weave-icon--small) {
-  --weave-component-width: 0.875rem;
-  --weave-component-height: 0.875rem;
+  --weave-component-width: var(--weave-icon-theme-size);
+  --weave-component-height: var(--weave-icon-theme-size);
 }
 
 :where(.weave-icon--medium) {
-  --weave-component-width: 1rem;
-  --weave-component-height: 1rem;
+  --weave-component-width: var(--weave-icon-theme-size);
+  --weave-component-height: var(--weave-icon-theme-size);
 }
 
 :where(.weave-icon--large) {
-  --weave-component-width: 1.25rem;
-  --weave-component-height: 1.25rem;
+  --weave-component-width: var(--weave-icon-theme-size);
+  --weave-component-height: var(--weave-icon-theme-size);
 }
 
 :where(.weave-icon--xlarge) {
-  --weave-component-width: 1.5rem;
-  --weave-component-height: 1.5rem;
+  --weave-component-width: var(--weave-icon-theme-size);
+  --weave-component-height: var(--weave-icon-theme-size);
 }
 
 :where(.weave-icon) > :where(svg) {

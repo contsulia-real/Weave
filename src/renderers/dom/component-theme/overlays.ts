@@ -21,6 +21,8 @@ export function resolveToolTipTheme(theme: ResolvedTheme): RuntimeStyleDeclarati
     '--weave-tooltip-shadow': shadowToken(base?.shadow),
     '--weave-tooltip-arrow-size': length(base?.arrowSize),
     '--weave-tooltip-motion-offset': length(base?.motionOffset),
+    '--weave-tooltip-enter-scale': base?.enterScale,
+    '--weave-tooltip-exit-scale': base?.exitScale,
   }
 }
 
@@ -42,6 +44,8 @@ export function resolveDialogTheme(theme: ResolvedTheme): RuntimeStyleDeclaratio
     '--weave-dialog-depth-color': color(base?.depthColor),
     '--weave-dialog-backdrop-color': color(base?.backdropColor),
     '--weave-dialog-motion-offset': length(base?.motionOffset),
+    '--weave-dialog-enter-scale': base?.enterScale,
+    '--weave-dialog-exit-scale': base?.exitScale,
   }
 }
 
@@ -60,6 +64,8 @@ export function resolvePopoverTheme(theme: ResolvedTheme): RuntimeStyleDeclarati
     '--weave-popover-max-width': length(base?.maxWidth),
     '--weave-popover-shadow': shadowToken(base?.shadow),
     '--weave-popover-motion-offset': length(base?.motionOffset),
+    '--weave-popover-enter-scale': base?.enterScale,
+    '--weave-popover-exit-scale': base?.exitScale,
   }
 }
 
@@ -80,6 +86,8 @@ export function resolveMenuTheme(theme: ResolvedTheme): RuntimeStyleDeclarations
     '--weave-menu-max-width': length(base?.maxWidth),
     '--weave-menu-shadow': shadowToken(base?.shadow),
     '--weave-menu-motion-offset': length(base?.motionOffset),
+    '--weave-menu-enter-scale': base?.enterScale,
+    '--weave-menu-exit-scale': base?.exitScale,
     '--weave-menu-item-background': color(item?.background),
     '--weave-menu-item-hover-background': color(item?.hoverBackground),
     '--weave-menu-item-active-background': color(item?.activeBackground),
@@ -93,6 +101,7 @@ export function resolveMenuTheme(theme: ResolvedTheme): RuntimeStyleDeclarations
     '--weave-menu-item-gap': length(item?.gap),
     '--weave-menu-item-icon-size': length(item?.iconSize),
     '--weave-menu-item-submenu-icon-size': length(item?.submenuIconSize),
+    '--weave-menu-item-text-gap': length(item?.textGap),
     '--weave-menu-item-focus-outline-width': length(item?.focusOutlineWidth),
     '--weave-menu-item-focus-outline-color': color(item?.focusOutlineColor),
     '--weave-menu-item-focus-outline-style': item?.focusOutlineStyle,

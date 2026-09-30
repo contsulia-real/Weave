@@ -149,7 +149,7 @@ const stylesheet = `
 :where(.weave-list-item__text) {
   --weave-component-display: flex;
   --weave-component-flex-direction: column;
-  --weave-component-gap: 0.125rem;
+  --weave-component-gap: var(--weave-list-item-text-gap);
   --weave-component-flex-grow: 1;
   --weave-component-min-width: 0rem;
 }

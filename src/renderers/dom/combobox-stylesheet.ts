@@ -67,10 +67,10 @@ const stylesheet = `
 }
 
 :where(.weave-combobox-empty) {
-  --weave-component-padding-top: 0.625rem;
-  --weave-component-padding-right: 0.75rem;
-  --weave-component-padding-bottom: 0.625rem;
-  --weave-component-padding-left: 0.75rem;
+  --weave-component-padding-top: var(--weave-combobox-empty-padding-y);
+  --weave-component-padding-right: var(--weave-combobox-empty-padding-x);
+  --weave-component-padding-bottom: var(--weave-combobox-empty-padding-y);
+  --weave-component-padding-left: var(--weave-combobox-empty-padding-x);
   --weave-component-color: var(--weave-option-secondary-color);
 }
 `

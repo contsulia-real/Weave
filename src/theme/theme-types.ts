@@ -99,6 +99,8 @@ export interface SelectThemeListbox {
   maxHeight?: ThemeScaleValue
   shadow?: string
   motionOffset?: ThemeScaleValue
+  enterScale?: number
+  exitScale?: number
 }
 
 export interface SelectThemeOption {
@@ -114,6 +116,7 @@ export interface SelectThemeOption {
   gap?: ThemeScaleValue
   iconSize?: ThemeScaleValue
   checkSize?: ThemeScaleValue
+  textGap?: ThemeScaleValue
   primaryTypo?: TextTypo
   secondaryTypo?: TextTypo
   disabledOpacity?: number
@@ -130,6 +133,8 @@ export interface ComboboxThemeBase {
   actionSize?: ThemeScaleValue
   actionGap?: ThemeScaleValue
   actionInset?: ThemeScaleValue
+  emptyPaddingX?: ThemeScaleValue
+  emptyPaddingY?: ThemeScaleValue
 }
 
 export interface ComboboxThemeListbox extends SelectThemeListbox {}
@@ -143,6 +148,8 @@ export interface ComboboxTheme {
 }
 
 export interface SliderThemeBase {
+  fieldGap?: ThemeScaleValue
+  width?: ThemeScaleValue
   trackColor?: string
   trackShadow?: string
   fillColor?: string
@@ -152,6 +159,7 @@ export interface SliderThemeBase {
   thumbShadow?: string
   thumbHoverShadow?: string
   thumbPressShadow?: string
+  activeTrackShadow?: string
   cursor?: string
   focusOutlineWidth?: ThemeScaleValue
   focusOutlineColor?: string
@@ -176,6 +184,7 @@ export interface SliderTheme {
 }
 
 export interface SwitchThemeBase {
+  fieldGap?: ThemeScaleValue
   background?: string
   radius?: ThemeScaleValue
   cursor?: string
@@ -227,6 +236,9 @@ export interface ChoiceControlThemeBase {
   stateLayerHoverOpacity?: number
   stateLayerFocusOpacity?: number
   stateLayerPressOpacity?: number
+  pressOffset?: ThemeScaleValue
+  pressScale?: number
+  stateLayerRestScale?: number
   focusOutlineWidth?: ThemeScaleValue
   focusOutlineColor?: string
   focusOutlineStyle?: string
@@ -268,6 +280,11 @@ export interface BadgeThemeBase {
   paddingX?: ThemeScaleValue
   dotSize?: ThemeScaleValue
   shadow?: string
+  motionDistance?: ThemeScaleValue
+  motionDiagonal?: ThemeScaleValue
+  enterScale?: number
+  overshootScale?: number
+  exitScale?: number
   typo?: TextTypo
 }
 
@@ -282,6 +299,9 @@ export interface LinkThemeBase {
   underlineColor?: string
   underlineThickness?: ThemeScaleValue
   underlineOffset?: ThemeScaleValue
+  underlineWidth?: string
+  underlineHoverWidth?: string
+  underlineActiveWidth?: string
   focusOutlineWidth?: ThemeScaleValue
   focusOutlineColor?: string
   focusOutlineStyle?: string
@@ -358,6 +378,7 @@ export interface ButtonTheme {
 }
 
 export interface AvatarThemeBase {
+  defaultSize?: ThemeScaleValue
   background?: string
   color?: string
   borderColor?: string
@@ -366,6 +387,22 @@ export interface AvatarThemeBase {
 
 export interface AvatarTheme {
   base?: AvatarThemeBase
+}
+
+export interface DividerThemeBase {
+  thickness?: number
+}
+
+export interface DividerTheme {
+  base?: DividerThemeBase
+}
+
+export interface IconThemeSize {
+  size?: ThemeScaleValue
+}
+
+export interface IconTheme {
+  sizes?: Partial<Record<'small' | 'medium' | 'large' | 'xlarge', IconThemeSize>>
 }
 
 export interface SkeletonThemeBase {
@@ -431,6 +468,8 @@ export interface ToolTipThemeBase {
   shadow?: string
   arrowSize?: ThemeScaleValue
   motionOffset?: ThemeScaleValue
+  enterScale?: number
+  exitScale?: number
   typo?: TextTypo
 }
 
@@ -453,6 +492,8 @@ export interface DialogThemeBase {
   depthColor?: string
   backdropColor?: string
   motionOffset?: ThemeScaleValue
+  enterScale?: number
+  exitScale?: number
 }
 
 export interface DialogTheme {
@@ -471,6 +512,8 @@ export interface PopoverThemeBase {
   maxWidth?: ThemeScaleValue
   shadow?: string
   motionOffset?: ThemeScaleValue
+  enterScale?: number
+  exitScale?: number
 }
 
 export interface PopoverTheme {
@@ -489,6 +532,8 @@ export interface MenuThemeBase {
   maxWidth?: ThemeScaleValue
   shadow?: string
   motionOffset?: ThemeScaleValue
+  enterScale?: number
+  exitScale?: number
 }
 
 export interface MenuThemeItem {
@@ -505,6 +550,7 @@ export interface MenuThemeItem {
   gap?: ThemeScaleValue
   iconSize?: ThemeScaleValue
   submenuIconSize?: ThemeScaleValue
+  textGap?: ThemeScaleValue
   primaryTypo?: TextTypo
   secondaryTypo?: TextTypo
   focusOutlineWidth?: ThemeScaleValue
@@ -550,6 +596,7 @@ export interface AccordionThemeBase {
   dividerColor?: string
   triggerBackground?: string
   triggerHoverBackground?: string
+  triggerOpenBackground?: string
   triggerPressedBackground?: string
   triggerColor?: string
   triggerPaddingX?: ThemeScaleValue
@@ -621,6 +668,7 @@ export interface ListItemThemeBase {
   paddingY?: ThemeScaleValue
   gap?: ThemeScaleValue
   iconSize?: ThemeScaleValue
+  textGap?: ThemeScaleValue
   primaryTypo?: TextTypo
   secondaryTypo?: TextTypo
   focusOutlineWidth?: ThemeScaleValue
@@ -648,6 +696,8 @@ export interface ThemeComponents {
   Radio?: ChoiceControlTheme
   Checkbox?: ChoiceControlTheme
   Avatar?: AvatarTheme
+  Divider?: DividerTheme
+  Icon?: IconTheme
   Skeleton?: SkeletonTheme
   Progress?: ProgressTheme
   Scrollbar?: ScrollbarTheme

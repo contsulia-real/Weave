@@ -75,7 +75,7 @@ const stylesheet = `
   :where(.weave-dialog[data-weave-dialog-state="open"]) {
     opacity: 0;
     translate: 0 var(--weave-dialog-motion-offset);
-    scale: 0.97;
+    scale: var(--weave-dialog-enter-scale);
   }
 
   :where(.weave-dialog[data-weave-dialog-modal="true"][open])::backdrop {
@@ -86,7 +86,7 @@ const stylesheet = `
 :where(.weave-dialog[data-weave-dialog-state="closing"]) {
   opacity: 0;
   translate: 0 var(--weave-dialog-motion-offset);
-  scale: 0.98;
+  scale: var(--weave-dialog-exit-scale);
   --weave-component-transition-duration:
     var(--weave-motion-duration-fast),
     var(--weave-motion-duration-fast),

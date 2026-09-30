@@ -47,6 +47,10 @@ const stylesheet = `
   --weave-component-transition-delay: 0ms;
 }
 
+:where(.weave-accordion-trigger[data-weave-accordion-open="true"]) {
+  --weave-component-background: var(--weave-accordion-trigger-open-background);
+}
+
 :where(.weave-accordion-trigger:hover:not(:disabled)) {
   --weave-component-background: var(--weave-accordion-trigger-hover-background);
 }

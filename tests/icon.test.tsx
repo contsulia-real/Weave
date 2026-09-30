@@ -157,7 +157,17 @@ describe('Icon', () => {
 
     const stylesheet = document.querySelector('style[data-weave-icon-styles]')
 
-    expect(stylesheet?.textContent).toContain('--weave-component-width: 1.5rem')
+    expect(stylesheet?.textContent).toContain(
+      '--weave-component-width: var(--weave-icon-theme-size)',
+    )
+    const themeClassName = [...element.classList].find((name) =>
+      name.startsWith('weave-icon-theme-'),
+    )
+    expect(themeClassName).toBeDefined()
+    const themeRule = document.querySelector<HTMLStyleElement>(
+      `style[data-weave-runtime-class="${themeClassName ?? ''}"]`,
+    )?.textContent
+    expect(themeRule?.replace(/\s+/g, '')).toContain('--weave-icon-theme-size:1.5rem')
   })
 
   it('stays valid when nested inside Text', () => {

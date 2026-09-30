@@ -56,7 +56,7 @@ const stylesheet = `
     translate:
       var(--weave-popover-motion-x)
       var(--weave-popover-motion-y);
-    scale: 0.97;
+    scale: var(--weave-popover-enter-scale);
   }
 }
 
@@ -65,7 +65,7 @@ const stylesheet = `
   translate:
     var(--weave-popover-motion-x)
     var(--weave-popover-motion-y);
-  scale: 0.98;
+  scale: var(--weave-popover-exit-scale);
   --weave-component-transition-duration:
     var(--weave-motion-duration-fast),
     var(--weave-motion-duration-fast),

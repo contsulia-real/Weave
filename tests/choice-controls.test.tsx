@@ -237,7 +237,10 @@ describe('Radio and Checkbox', () => {
     expect(stylesheet).toContain('transform: scale(1);')
     expect(stylesheet).toContain('var(--weave-motion-duration-normal)')
     expect(stylesheet).toContain(':active:not([aria-disabled="true"])')
-    expect(stylesheet).toContain('transform: translateY(0.03125rem) scale(0.94);')
+    expect(stylesheet).toContain(
+      'transform: translateY(var(--weave-choice-press-offset)) scale(var(--weave-choice-press-scale));',
+    )
+    expect(stylesheet).toContain('scale(var(--weave-choice-state-layer-rest-scale))')
     expect(stylesheet).toContain('var(--weave-motion-duration-slow)')
     expect(stylesheet).toContain('.weave-choice-state-layer')
     expect(stylesheet).toContain('--weave-choice-state-layer-hover-opacity')

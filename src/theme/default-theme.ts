@@ -38,6 +38,8 @@ const optionListboxBase = {
   maxHeight: 20,
   shadow: 'medium',
   motionOffset: 0.25,
+  enterScale: 0.98,
+  exitScale: 0.985,
 } as const
 
 const optionItemBase = {
@@ -54,6 +56,7 @@ const optionItemBase = {
   gap: 0.625,
   iconSize: 1.125,
   checkSize: 1,
+  textGap: 0.125,
   primaryTypo: 'body-medium',
   secondaryTypo: 'body-small',
   disabledOpacity: 0.5,
@@ -414,6 +417,11 @@ export const defaultTheme: ResolvedTheme = {
         paddingX: 0.375,
         dotSize: 0.625,
         shadow: '0 0.0625rem 0.1875rem rgb(0 0 0 / 0.24)',
+        motionDistance: 0.5,
+        motionDiagonal: 0.35,
+        enterScale: 0.65,
+        overshootScale: 1.08,
+        exitScale: 0.72,
         typo: 'label-small',
       },
     },
@@ -425,6 +433,9 @@ export const defaultTheme: ResolvedTheme = {
         underlineColor: 'primary',
         underlineThickness: 0.125,
         underlineOffset: 0.125,
+        underlineWidth: '45%',
+        underlineHoverWidth: '60%',
+        underlineActiveWidth: '80%',
         focusOutlineWidth: 0.125,
         focusOutlineColor: 'focus',
         focusOutlineStyle: 'solid',
@@ -557,6 +568,8 @@ export const defaultTheme: ResolvedTheme = {
         actionSize: 1.75,
         actionGap: 0.5,
         actionInset: inputBase.paddingX,
+        emptyPaddingX: 0.75,
+        emptyPaddingY: 0.625,
       },
       listbox: {
         ...optionListboxBase,
@@ -567,8 +580,12 @@ export const defaultTheme: ResolvedTheme = {
     },
     Slider: {
       base: {
+        fieldGap: 0.5,
+        width: 16,
         thumbBorderColor: 'outline',
         thumbBorderWidth: 0,
+        activeTrackShadow:
+          '0 0.125rem 0 color-mix(in srgb, var(--weave-slider-fill-color) 72%, black)',
       },
       sizes: {
         small: {
@@ -590,6 +607,7 @@ export const defaultTheme: ResolvedTheme = {
     },
     Switch: {
       base: {
+        fieldGap: 0.5,
         background:
           'color-mix(in srgb, var(--weave-color-outline) 34%, var(--weave-color-surface))',
         radius: 'full',
@@ -646,6 +664,9 @@ export const defaultTheme: ResolvedTheme = {
         borderWidth: 0.125,
         radius: 'full',
         cursor: 'pointer',
+        pressOffset: 0.03125,
+        pressScale: 0.94,
+        stateLayerRestScale: 0.72,
         shadow:
           '0 0.0625rem 0 color-mix(in srgb, var(--weave-color-outline) 48%, transparent), inset 0 0.125rem 0.1875rem rgb(58 48 40 / 0.18), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.48)',
         hoverShadow:
@@ -703,6 +724,9 @@ export const defaultTheme: ResolvedTheme = {
         borderWidth: 0.125,
         radius: 'small',
         cursor: 'pointer',
+        pressOffset: 0.03125,
+        pressScale: 0.94,
+        stateLayerRestScale: 0.72,
         shadow:
           '0 0.0625rem 0 color-mix(in srgb, var(--weave-color-outline) 48%, transparent), inset 0 0.125rem 0.1875rem rgb(58 48 40 / 0.18), inset 0 -0.0625rem 0 rgb(255 255 255 / 0.48)',
         hoverShadow:
@@ -753,10 +777,24 @@ export const defaultTheme: ResolvedTheme = {
     },
     Avatar: {
       base: {
+        defaultSize: 2.5,
         background: 'surfaceHover',
         color: 'tertiary',
         borderColor: 'outline',
         borderWidth: 0.0625,
+      },
+    },
+    Divider: {
+      base: {
+        thickness: 1,
+      },
+    },
+    Icon: {
+      sizes: {
+        small: { size: 0.875 },
+        medium: { size: 1 },
+        large: { size: 1.25 },
+        xlarge: { size: 1.5 },
       },
     },
     Skeleton: {
@@ -834,6 +872,8 @@ export const defaultTheme: ResolvedTheme = {
         shadow: 'small',
         arrowSize: 0.5,
         motionOffset: 0.1875,
+        enterScale: 0.985,
+        exitScale: 0.99,
         typo: 'body-xsmall',
       },
     },
@@ -853,6 +893,8 @@ export const defaultTheme: ResolvedTheme = {
         depthColor: raisedSurfaceDepthColor,
         backdropColor: 'rgb(0 0 0 / 0.48)',
         motionOffset: 0.5,
+        enterScale: 0.97,
+        exitScale: 0.98,
       },
     },
     Popover: {
@@ -868,6 +910,8 @@ export const defaultTheme: ResolvedTheme = {
         maxWidth: 24,
         shadow: 'medium',
         motionOffset: 0.25,
+        enterScale: 0.97,
+        exitScale: 0.98,
       },
     },
     Menu: {
@@ -883,6 +927,8 @@ export const defaultTheme: ResolvedTheme = {
         maxWidth: 22,
         shadow: 'medium',
         motionOffset: 0.25,
+        enterScale: 0.98,
+        exitScale: 0.985,
       },
       item: {
         background: 'transparent',
@@ -900,6 +946,7 @@ export const defaultTheme: ResolvedTheme = {
         gap: 0.625,
         iconSize: 1.125,
         submenuIconSize: 1,
+        textGap: 0.125,
         primaryTypo: 'body-medium',
         secondaryTypo: 'body-small',
         focusOutlineWidth: 0.125,
@@ -948,6 +995,7 @@ export const defaultTheme: ResolvedTheme = {
         dividerColor: 'outline',
         triggerBackground: 'transparent',
         triggerHoverBackground: 'surfaceHover',
+        triggerOpenBackground: 'surfaceHover',
         triggerPressedBackground:
           'color-mix(in srgb, var(--weave-color-outline) 44%, var(--weave-color-surface))',
         triggerColor: 'tertiary',
@@ -1013,6 +1061,7 @@ export const defaultTheme: ResolvedTheme = {
         paddingY: 0.5625,
         gap: 0.625,
         iconSize: 1.125,
+        textGap: 0.125,
         primaryTypo: 'body-medium',
         secondaryTypo: 'body-small',
         focusOutlineWidth: 0.125,

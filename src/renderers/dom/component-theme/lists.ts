@@ -32,6 +32,7 @@ export function resolveListItemTheme(theme: ResolvedTheme): RuntimeStyleDeclarat
     '--weave-list-item-padding-y': length(base?.paddingY),
     '--weave-list-item-gap': length(base?.gap),
     '--weave-list-item-icon-size': length(base?.iconSize),
+    '--weave-list-item-text-gap': length(base?.textGap),
     '--weave-list-item-focus-outline-width': length(base?.focusOutlineWidth),
     '--weave-list-item-focus-outline-color': color(base?.focusOutlineColor),
     '--weave-list-item-focus-outline-style': base?.focusOutlineStyle,

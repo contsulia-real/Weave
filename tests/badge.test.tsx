@@ -62,8 +62,15 @@ describe('Badge', () => {
     expect(stylesheet).toContain('@keyframes weave-badge-dismiss')
     expect(stylesheet).toContain('var(--weave-badge-motion-x)')
     expect(stylesheet).toContain('var(--weave-badge-motion-y)')
-    expect(stylesheet).toContain('--weave-badge-motion-distance: 0.5rem')
-    expect(stylesheet).toContain('--weave-badge-motion-diagonal: 0.35rem')
+    expect(stylesheet).toContain(
+      '--weave-badge-motion-distance: var(--weave-badge-theme-motion-distance)',
+    )
+    expect(stylesheet).toContain(
+      '--weave-badge-motion-diagonal: var(--weave-badge-theme-motion-diagonal)',
+    )
+    expect(stylesheet).toContain('scale: var(--weave-badge-theme-enter-scale)')
+    expect(stylesheet).toContain('scale: var(--weave-badge-theme-overshoot-scale)')
+    expect(stylesheet).toContain('scale: var(--weave-badge-theme-exit-scale)')
     expect(stylesheet).toContain('calc(-1 * var(--weave-badge-motion-distance))')
     expect(stylesheet).toContain('--weave-badge-motion-y: var(--weave-badge-motion-distance)')
 

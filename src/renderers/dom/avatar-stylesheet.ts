@@ -3,7 +3,7 @@ import { ensureStaticStylesheet } from './static-stylesheet'
 const stylesheet = `
 :where(.weave-avatar) {
   --weave-component-display: inline-flex;
-  --weave-component-width: 2.5rem;
+  --weave-component-width: var(--weave-avatar-theme-default-size);
   --weave-component-aspect-ratio: 1 / 1;
   --weave-component-align-items: center;
   --weave-component-justify-content: center;

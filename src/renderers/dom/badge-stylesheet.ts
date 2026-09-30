@@ -30,8 +30,8 @@ const stylesheet = `
   letter-spacing: var(--weave-badge-theme-letter-spacing);
   white-space: nowrap;
   pointer-events: none;
-  --weave-badge-motion-distance: 0.5rem;
-  --weave-badge-motion-diagonal: 0.35rem;
+  --weave-badge-motion-distance: var(--weave-badge-theme-motion-distance);
+  --weave-badge-motion-diagonal: var(--weave-badge-theme-motion-diagonal);
   --weave-badge-motion-x: 0px;
   --weave-badge-motion-y: 0px;
   opacity: 1;
@@ -64,7 +64,7 @@ const stylesheet = `
 @keyframes weave-badge-pop {
   0% {
     opacity: 0;
-    scale: 0.65;
+    scale: var(--weave-badge-theme-enter-scale);
     translate:
       var(--weave-badge-motion-x)
       var(--weave-badge-motion-y);
@@ -72,7 +72,7 @@ const stylesheet = `
 
   72% {
     opacity: 1;
-    scale: 1.08;
+    scale: var(--weave-badge-theme-overshoot-scale);
   }
 
   100% {
@@ -91,7 +91,7 @@ const stylesheet = `
 
   to {
     opacity: 0;
-    scale: 0.72;
+    scale: var(--weave-badge-theme-exit-scale);
     translate:
       var(--weave-badge-motion-x)
       var(--weave-badge-motion-y);

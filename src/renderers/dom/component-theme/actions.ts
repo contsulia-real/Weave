@@ -1,4 +1,5 @@
 import type { ButtonVariant } from '../../../core/button-types'
+import type { IconSize } from '../../../core/icon-types'
 import { color, length, radius } from '../../../core/values'
 import { typographyStyleVariableReference } from '../../../theme/theme-css'
 import type { ResolvedTheme } from '../../../theme/theme-types'
@@ -16,6 +17,7 @@ export function resolveAvatarTheme(theme: ResolvedTheme): RuntimeStyleDeclaratio
   const base = theme.components.Avatar?.base
 
   return {
+    '--weave-avatar-theme-default-size': length(base?.defaultSize),
     '--weave-avatar-theme-background': color(base?.background),
     '--weave-avatar-theme-color': color(base?.color),
     '--weave-avatar-theme-border-color': color(base?.borderColor),
@@ -36,6 +38,11 @@ export function resolveBadgeTheme(theme: ResolvedTheme): RuntimeStyleDeclaration
     '--weave-badge-theme-padding-x': length(base?.paddingX),
     '--weave-badge-theme-dot-size': length(base?.dotSize),
     '--weave-badge-theme-shadow': base?.shadow,
+    '--weave-badge-theme-motion-distance': length(base?.motionDistance),
+    '--weave-badge-theme-motion-diagonal': length(base?.motionDiagonal),
+    '--weave-badge-theme-enter-scale': base?.enterScale,
+    '--weave-badge-theme-overshoot-scale': base?.overshootScale,
+    '--weave-badge-theme-exit-scale': base?.exitScale,
     '--weave-badge-theme-font-size': typographyStyleVariableReference(base?.typo, 'fontSize'),
     '--weave-badge-theme-font-weight': typographyStyleVariableReference(base?.typo, 'fontWeight'),
     '--weave-badge-theme-line-height': typographyStyleVariableReference(base?.typo, 'lineHeight'),
@@ -56,10 +63,28 @@ export function resolveLinkTheme(theme: ResolvedTheme): RuntimeStyleDeclarations
     '--weave-link-theme-underline-color': color(base?.underlineColor),
     '--weave-link-theme-underline-thickness': length(base?.underlineThickness),
     '--weave-link-theme-underline-offset': length(base?.underlineOffset),
+    '--weave-link-theme-underline-width': base?.underlineWidth,
+    '--weave-link-theme-underline-hover-width': base?.underlineHoverWidth,
+    '--weave-link-theme-underline-active-width': base?.underlineActiveWidth,
     '--weave-link-theme-focus-outline-width': length(base?.focusOutlineWidth),
     '--weave-link-theme-focus-outline-color': color(base?.focusOutlineColor),
     '--weave-link-theme-focus-outline-style': base?.focusOutlineStyle,
     '--weave-link-theme-focus-outline-offset': length(base?.focusOutlineOffset),
+  }
+}
+
+export function resolveDividerTheme(theme: ResolvedTheme): RuntimeStyleDeclarations {
+  const base = theme.components.Divider?.base
+
+  return {
+    '--weave-divider-theme-thickness':
+      base?.thickness === undefined ? undefined : `${Math.max(0, base.thickness)}px`,
+  }
+}
+
+export function resolveIconTheme(theme: ResolvedTheme, size: IconSize): RuntimeStyleDeclarations {
+  return {
+    '--weave-icon-theme-size': length(theme.components.Icon?.sizes?.[size]?.size),
   }
 }
 

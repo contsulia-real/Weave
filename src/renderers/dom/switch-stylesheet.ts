@@ -4,7 +4,7 @@ const stylesheet = `
 :where(.weave-switch-field) {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--weave-switch-field-gap);
   cursor: pointer;
   line-height: inherit;
 }

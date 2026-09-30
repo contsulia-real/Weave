@@ -4,7 +4,7 @@ const stylesheet = `
 :where(.weave-slider-field) {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--weave-slider-field-gap);
   line-height: inherit;
 }
 
@@ -98,7 +98,7 @@ const stylesheet = `
   background: var(--weave-slider-fill-color);
   box-shadow:
     var(--weave-slider-thumb-shadow),
-    0 0.125rem 0 color-mix(in srgb, var(--weave-slider-fill-color) 72%, black);
+    var(--weave-slider-active-track-shadow);
   transition:
     width var(--weave-motion-spring-snappy-duration)
       var(--weave-motion-spring-snappy-easing);
@@ -227,7 +227,7 @@ const stylesheet = `
 }
 
 :where(.weave-slider) {
-  --weave-component-width: 16rem;
+  --weave-component-width: var(--weave-slider-width);
   --weave-component-height: var(--weave-slider-thumb-size);
   --weave-component-background: transparent;
   --weave-component-cursor: var(--weave-slider-cursor);

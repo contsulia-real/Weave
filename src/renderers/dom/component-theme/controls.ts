@@ -28,6 +28,8 @@ function resolveOptionCollectionTheme(
     '--weave-option-listbox-max-height': length(listbox?.maxHeight),
     '--weave-option-listbox-shadow': shadowToken(listbox?.shadow),
     '--weave-option-listbox-motion-offset': length(listbox?.motionOffset),
+    '--weave-option-listbox-enter-scale': listbox?.enterScale,
+    '--weave-option-listbox-exit-scale': listbox?.exitScale,
 
     '--weave-option-background': color(option?.background),
     '--weave-option-active-background': color(option?.activeBackground),
@@ -41,6 +43,7 @@ function resolveOptionCollectionTheme(
     '--weave-option-gap': length(option?.gap),
     '--weave-option-icon-size': length(option?.iconSize),
     '--weave-option-check-size': length(option?.checkSize),
+    '--weave-option-text-gap': length(option?.textGap),
     '--weave-option-disabled-opacity': option?.disabledOpacity,
   }
 }
@@ -99,6 +102,8 @@ export function resolveComboboxTheme(theme: ResolvedTheme): RuntimeStyleDeclarat
     '--weave-combobox-action-size': length(base?.actionSize),
     '--weave-combobox-action-gap': length(base?.actionGap),
     '--weave-combobox-action-inset': length(base?.actionInset),
+    '--weave-combobox-empty-padding-x': length(base?.emptyPaddingX),
+    '--weave-combobox-empty-padding-y': length(base?.emptyPaddingY),
 
     ...resolveOptionCollectionTheme(listbox, option),
   }
@@ -117,6 +122,8 @@ export function resolveSliderTheme(
   const switchDisabled = theme.components.Switch?.states?.disabled
 
   return {
+    '--weave-slider-field-gap': length(base?.fieldGap),
+    '--weave-slider-width': length(base?.width),
     '--weave-slider-track-color': color(base?.trackColor ?? switchBase?.background),
     '--weave-slider-track-shadow': base?.trackShadow ?? switchBase?.trackShadow,
     '--weave-slider-fill-color': color(base?.fillColor ?? switchChecked?.background),
@@ -133,6 +140,7 @@ export function resolveSliderTheme(
     '--weave-slider-thumb-hover-shadow': base?.thumbHoverShadow ?? switchBase?.thumbHoverShadow,
     '--weave-slider-thumb-press-shadow':
       base?.thumbPressShadow ?? base?.thumbShadow ?? switchBase?.thumbShadow,
+    '--weave-slider-active-track-shadow': base?.activeTrackShadow,
     '--weave-slider-cursor': base?.cursor ?? switchBase?.cursor,
     '--weave-slider-focus-outline-width': length(
       base?.focusOutlineWidth ?? switchBase?.focusOutlineWidth,
@@ -160,6 +168,7 @@ export function resolveSwitchTheme(
   const disabled = component?.states?.disabled
 
   return {
+    '--weave-switch-field-gap': length(base?.fieldGap),
     '--weave-switch-width': length(sized?.width),
     '--weave-switch-height': length(sized?.height),
     '--weave-switch-thumb-size': length(sized?.thumbSize),
@@ -215,6 +224,9 @@ export function resolveChoiceControlTheme(
     '--weave-choice-state-layer-hover-opacity': base?.stateLayerHoverOpacity,
     '--weave-choice-state-layer-focus-opacity': base?.stateLayerFocusOpacity,
     '--weave-choice-state-layer-press-opacity': base?.stateLayerPressOpacity,
+    '--weave-choice-press-offset': length(base?.pressOffset),
+    '--weave-choice-press-scale': base?.pressScale,
+    '--weave-choice-state-layer-rest-scale': base?.stateLayerRestScale,
     '--weave-choice-focus-outline-width': length(base?.focusOutlineWidth),
     '--weave-choice-focus-outline-color': color(base?.focusOutlineColor),
     '--weave-choice-focus-outline-style': base?.focusOutlineStyle,

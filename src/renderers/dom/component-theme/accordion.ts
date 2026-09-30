@@ -10,6 +10,7 @@ export function resolveAccordionTheme(theme: ResolvedTheme): RuntimeStyleDeclara
     '--weave-accordion-divider-color': color(base?.dividerColor),
     '--weave-accordion-trigger-background': color(base?.triggerBackground),
     '--weave-accordion-trigger-hover-background': color(base?.triggerHoverBackground),
+    '--weave-accordion-trigger-open-background': color(base?.triggerOpenBackground),
     '--weave-accordion-trigger-pressed-background': color(base?.triggerPressedBackground),
     '--weave-accordion-trigger-color': color(base?.triggerColor),
     '--weave-accordion-trigger-padding-x': length(base?.triggerPaddingX),

@@ -86,7 +86,7 @@ const stylesheet = `
 
 :where(.weave-choice-control:active:not([aria-disabled="true"])) {
   --weave-component-box-shadow: var(--weave-choice-press-shadow);
-  transform: translateY(0.03125rem) scale(0.94);
+  transform: translateY(var(--weave-choice-press-offset)) scale(var(--weave-choice-press-scale));
 }
 
 :where(.weave-choice-control:checked) {
@@ -129,7 +129,7 @@ const stylesheet = `
   background: var(--weave-choice-state-layer-color);
   opacity: 0;
   pointer-events: none;
-  transform: translate(-50%, -50%) scale(0.72);
+  transform: translate(-50%, -50%) scale(var(--weave-choice-state-layer-rest-scale));
   transition:
     opacity var(--weave-motion-duration-fast)
       var(--weave-motion-curve-standard),
@@ -185,7 +185,7 @@ const stylesheet = `
 
 :where(.weave-choice-control:active:not([aria-disabled="true"]))
   ~ :where(.weave-choice-visual) {
-  transform: translateY(0.03125rem) scale(0.94);
+  transform: translateY(var(--weave-choice-press-offset)) scale(var(--weave-choice-press-scale));
 }
 
 :where(.weave-radio__dot) {

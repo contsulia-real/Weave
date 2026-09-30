@@ -82,11 +82,11 @@ describe('Link', () => {
     const stylesheet =
       document.querySelector<HTMLStyleElement>('style[data-weave-link-styles]')?.textContent ?? ''
 
-    expect(stylesheet).toContain('width: 45%;')
+    expect(stylesheet).toContain('width: var(--weave-link-theme-underline-width);')
     expect(stylesheet).toContain('.weave-link:hover)::after')
-    expect(stylesheet).toContain('width: 60%;')
+    expect(stylesheet).toContain('width: var(--weave-link-theme-underline-hover-width);')
     expect(stylesheet).toContain('.weave-link:active)::after')
-    expect(stylesheet).toContain('width: 80%;')
+    expect(stylesheet).toContain('width: var(--weave-link-theme-underline-active-width);')
     expect(stylesheet).toContain('width var(--weave-motion-duration-normal)')
   })
 })

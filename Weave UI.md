@@ -2061,7 +2061,7 @@ regular
 bold
 ```
 
-当前默认映射：
+当前默认映射由 `theme.components.Icon.sizes` 提供：
 
 ```text
 size
@@ -2552,7 +2552,7 @@ theme.components.Select.listbox
 theme.components.Select.option
 ```
 
-Select trigger 的 field surface 直接来自 `theme.components.Input` 与 Input stylesheet；`Select.base` 只控制 Select 自己新增的 trigger 内容结构，例如 gap / chevron icon size。`listbox` 控制 popup surface / 尺寸 / shadow / motion；`option` 控制 active / selected / disabled、icon、check 与 typography。
+Select trigger 的 field surface 直接来自 `theme.components.Input` 与 Input stylesheet；`Select.base` 只控制 Select 自己新增的 trigger 内容结构，例如 gap / chevron icon size。`listbox` 控制 popup surface / 尺寸 / shadow / motion，包括 `enterScale / exitScale`；`option` 控制 active / selected / disabled、icon、check、`textGap` 与 typography。
 
 `viewProps` 作用于 trigger；`listboxViewProps` 作用于 popup listbox。Select 自己拥有 combobox role、listbox role、fixed positioning、collision 坐标和 selection 语义，调用方不能通过这些 escape hatch 把它改成另一种控件。
 
@@ -2605,7 +2605,7 @@ gap = 0
 size = 1
 ```
 
-`size` 设置分割线厚度，类型为 number，**固定以 px 为单位**。例如 `size={1}` 表示 1px，`size={2}` 表示 2px。它不使用 Weave 常规数字 Length 的 rem 规则。
+`size` 设置分割线厚度，类型为 number，**固定以 px 为单位**。例如 `size={1}` 表示 1px，`size={2}` 表示 2px。它不使用 Weave 常规数字 Length 的 rem 规则。未显式传 `size` 时，默认厚度来自 `theme.components.Divider.base.thickness`，默认主题为 1px；显式 `size` 始终覆盖 Theme 默认值。
 
 `gap` 始终表示**分割线两侧的留白**：
 
@@ -2730,7 +2730,7 @@ theme.components.Combobox.listbox
 theme.components.Combobox.option
 ```
 
-Combobox 的真实输入直接是公开 `Input`，所以 field surface 与 typography 只由 `theme.components.Input` 控制。Combobox 关闭 Input 自身的 clear action，因为 Combobox clear 还必须同步清理 committed value；`Combobox.base` 只控制 Combobox 自己新增的 chevron / action 尺寸，以及 `actionGap / actionInset`。clear 与 chevron 之间必须有显式 gap，chevron 到 field 右边缘必须有显式 inset，不能依赖 SVG 自身空白或偶然 padding。`listbox` 控制 popup surface / gap / size / shadow / motion；`option` 控制 active / selected / disabled、icon、check 和 typography。
+Combobox 的真实输入直接是公开 `Input`，所以 field surface 与 typography 只由 `theme.components.Input` 控制。Combobox 关闭 Input 自身的 clear action，因为 Combobox clear 还必须同步清理 committed value；`Combobox.base` 控制 Combobox 自己新增的 chevron / action 尺寸、`actionGap / actionInset` 与空状态 `emptyPaddingX / emptyPaddingY`。clear 与 chevron 之间必须有显式 gap，chevron 到 field 右边缘必须有显式 inset，不能依赖 SVG 自身空白或偶然 padding。`listbox` 控制 popup surface / gap / size / shadow / motion，包括 `enterScale / exitScale`；`option` 控制 active / selected / disabled、icon、check、`textGap` 和 typography。
 
 `viewProps` 作用于真实 input；`listboxViewProps` 作用于 popup listbox。
 
@@ -2796,7 +2796,7 @@ size
 - Switch 的 thumb drag feedback 是所有切换路径共享的视觉语言：thumb 的纵向基准始终使用 `top: 50% + translateY(-50%)`，静止、checked、自动 drag、手动 drag 都只能改变水平位移和宽高，不能各自计算不同的纵向位置；pointer down 在 thumb 或 track 任意位置都立即进入 `thumbDragShrink` 形变；实际拖动时继续按距离实时拉长并跟手，释放时以轨道中点决定最终状态；普通点击、点击 label、Space / Enter 等没有手动拖动距离的切换，也必须自动播放同一套 shrink → stretch → 后半程连续收窄并恢复高度 → 以正常圆形到达另一端的完整轨迹。自动轨迹在终点前必须已经回到静止几何，不能在最后一帧靠清除 inline width / height / transform 产生可见跳变，也不能退化成普通圆点平移
 - 拖动完成后产生的兼容 click 不得再次反向切换
 - disabled 状态下点击、键盘与拖动都不能改变状态
-- `label` 是可见且可点击的真实绑定标签；Switch 宿主使用可 label 的原生 `<button type="button" role="switch">`，点击 label 与点击控件本体等价，同时 label 参与 accessible name；Switch 控件与可见 label 默认保留 `0.5rem`（8px）间距
+- `label` 是可见且可点击的真实绑定标签；Switch 宿主使用可 label 的原生 `<button type="button" role="switch">`，点击 label 与点击控件本体等价，同时 label 参与 accessible name；Switch 控件与可见 label 的间距来自 `theme.components.Switch.base.fieldGap`，默认 `0.5rem`（8px）
 
 拖动中的 thumb 位置属于组件内部交互几何，可由渲染后端直接同步；它不是用户显式 `style`，也不改变公开样式优先级。拖动期间不对 pointer movement 做缓动，保证直接跟手；松手后的归位才允许使用主题 motion curve。
 
@@ -2850,7 +2850,7 @@ viewProps
 - `checked / defaultChecked / onChange` 延续 Switch 的受控 / 非受控布尔状态模型；
 - `disabled` 是组件自己的高层属性，并落到真实原生 input；
 - `label` 是可见的原生 `<label>` 绑定内容；点击 label 文本必须直接触发对应 Radio / Checkbox 状态变化，不能依赖调用方自己补 `onClick`；
-- `small / medium / large` 三档默认尺寸分别为 `1.125rem / 1.375rem / 1.625rem`（18 / 22 / 26px），由 `theme.components.Radio / Checkbox.sizes` 提供；Playground 必须同时展示三档，不能只展示默认 medium。
+- `small / medium / large` 三档默认尺寸分别为 `1.125rem / 1.375rem / 1.625rem`（18 / 22 / 26px），由 `theme.components.Radio / Checkbox.sizes` 提供；press 位移 / 缩放与 state-layer 初始 scale 分别由各自 `base.pressOffset / pressScale / stateLayerRestScale` 提供，不得在 stylesheet 中写死；Playground 必须同时展示三档，不能只展示默认 medium。
 
 默认视觉继续使用 Weave 的物理层级语言，但 Radio 与 Checkbox 的 checked 形态不同：
 
@@ -3579,7 +3579,7 @@ active  80%
 
 底边线从左侧起始，并使用 `theme.tokens.motion.duration.normal / curve.standard` 平滑改变宽度。`prefers-reduced-motion: reduce` 下取消宽度 transition，但仍直接切换到对应 45 / 60 / 80% 状态。
 
-默认颜色、icon 尺寸、内容间距、底线颜色 / 厚度 / offset 与 focus outline 来自 `theme.components.Link.base`。默认颜色和底线都使用 `primary` token，因此 Light / Dark 自动沿主题变化。
+默认颜色、icon 尺寸、内容间距、底线颜色 / 厚度 / offset、rest / hover / active 的 marker 宽度与 focus outline 来自 `theme.components.Link.base`。默认 `underlineWidth / underlineHoverWidth / underlineActiveWidth` 分别为 `45% / 60% / 80%`；默认颜色和底线都使用 `primary` token，因此 Light / Dark 自动沿主题变化。
 
 ---
 
@@ -3634,7 +3634,7 @@ bottom-left  bottom  bottom-right
 - Badge 的动画**方向**由 `placement` 决定，而不是使用目标中心到 placement 的真实距离：popup 以“组件中心 → placement”为朝向，从最终位置内侧的一小段固定距离滑入并完成 opacity + scale；dismiss 沿相反方向退回同样的短距离后 fade + shrink。八个 placement 只决定方向，实际 motion 距离保持短且稳定，不随目标尺寸变化。`reducedMotion=reduce` 时跳过这两段动画。
 - Badge 不使用 ToolTip / Snack 的 portal 或 layer region；它仍在本地包装容器内做定位，但锚点坐标来自被包裹目标的实时视觉边界。
 
-默认主题来自 `theme.components.Badge.base`：正常 Badge 使用 `primary / onPrimary`，并用 `surface` 边界把角标与复杂背景分离；默认高度 `1.25rem`，dot 直径 `0.625rem`。背景、文字、边界、圆角、padding、dot 尺寸、shadow 与 typography 均可由主题覆盖。
+默认主题来自 `theme.components.Badge.base`：正常 Badge 使用 `primary / onPrimary`，并用 `surface` 边界把角标与复杂背景分离；默认高度 `1.25rem`，dot 直径 `0.625rem`。背景、文字、边界、圆角、padding、dot 尺寸、shadow、typography，以及 `motionDistance / motionDiagonal / enterScale / overshootScale / exitScale` 均由主题提供。
 
 ---
 
@@ -4178,6 +4178,7 @@ theme.components.Avatar.base
 字段：
 
 ```text
+defaultSize = 2.5rem
 background = surfaceHover
 color      = tertiary
 borderColor = outline
@@ -4354,6 +4355,8 @@ theme.components.Slider
 字段：
 
 ```text
+base.fieldGap
+base.width
 base.trackColor
 base.trackShadow
 base.fillColor
@@ -4363,6 +4366,7 @@ base.thumbBorderWidth
 base.thumbShadow
 base.thumbHoverShadow
 base.thumbPressShadow
+base.activeTrackShadow
 base.cursor
 base.focusOutlineWidth
 base.focusOutlineColor
@@ -4505,6 +4509,7 @@ Item 之间只使用现有 Divider 视觉语言进行分隔。
 Trigger：
 - 整行都是点击区域；
 - 默认背景透明；
+- 展开状态使用 `triggerOpenBackground`，默认映射现有 `surfaceHover` color token；
 - hover / press 只使用轻量 surface feedback；
 - 不使用 Button 的 raised physical surface；
 - 文本使用 Theme typography；
@@ -4526,6 +4531,7 @@ components.Accordion.base
 dividerColor
 triggerBackground
 triggerHoverBackground
+triggerOpenBackground
 triggerPressedBackground
 triggerColor
 triggerPaddingX
@@ -4731,6 +4737,8 @@ maxWidth
 shadow
 arrowSize
 motionOffset
+enterScale
+exitScale
 typo
 ```
 
@@ -4849,6 +4857,8 @@ minWidth
 maxWidth
 shadow
 motionOffset
+enterScale
+exitScale
 ```
 
 Popover 使用 surface / outline / ambient shadow 表达可交互浮层材质；不复用 ToolTip 的 primary 气泡造型，也不使用 Button 的实体按压深度。通用视觉覆盖继续通过 `viewProps` 使用，但 fixed positioning、dialog role 与 collision 坐标由 Popover 自己拥有。
@@ -4997,7 +5007,7 @@ theme.components.Menu.base
 theme.components.Menu.item
 ```
 
-`base` 控制 surface / border / radius / padding / minWidth / maxWidth / shadow / motionOffset；`item` 控制普通、hover、active、danger、disabled、icon、typography 与 focus ring。分割线不属于 MenuTheme，由通用 `Divider` 自己负责。
+`base` 控制 surface / border / radius / padding / minWidth / maxWidth / shadow / motionOffset / enterScale / exitScale；`item` 控制普通、hover、active、danger、disabled、icon、`textGap`、typography 与 focus ring。分割线不属于 MenuTheme，由通用 `Divider` 自己负责。
 
 `viewProps` 仍是通用 escape hatch，但 `role`、fixed positioning、collision 坐标和菜单键盘语义由 Menu 自己拥有。
 
@@ -5202,6 +5212,8 @@ shadow
 depthColor
 backdropColor
 motionOffset
+enterScale
+exitScale
 ```
 
 这些 Dialog theme 字段只作用于 modal 原生 Dialog；non-modal 直接继承 Popover 的 theme 与 stylesheet。
@@ -5977,6 +5989,7 @@ paddingX
 paddingY
 gap
 iconSize
+textGap
 primaryTypo
 secondaryTypo
 focusOutlineWidth

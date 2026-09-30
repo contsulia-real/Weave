@@ -62,7 +62,7 @@ const stylesheet = `
     translate:
       var(--weave-option-listbox-motion-x)
       var(--weave-option-listbox-motion-y);
-    scale: 0.98;
+    scale: var(--weave-option-listbox-enter-scale);
   }
 }
 
@@ -71,7 +71,7 @@ const stylesheet = `
   translate:
     var(--weave-option-listbox-motion-x)
     var(--weave-option-listbox-motion-y);
-  scale: 0.985;
+  scale: var(--weave-option-listbox-exit-scale);
   --weave-component-transition-duration:
     var(--weave-motion-duration-fast),
     var(--weave-motion-duration-fast),
@@ -186,7 +186,7 @@ const stylesheet = `
 :where(.weave-option__text) {
   --weave-component-display: flex;
   --weave-component-flex-direction: column;
-  --weave-component-gap: 0.125rem;
+  --weave-component-gap: var(--weave-option-text-gap);
   --weave-component-flex-grow: 1;
   --weave-component-min-width: 0rem;
 }

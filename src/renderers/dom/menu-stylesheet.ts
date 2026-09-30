@@ -61,7 +61,7 @@ const stylesheet = `
     translate:
       var(--weave-menu-motion-x)
       var(--weave-menu-motion-y);
-    scale: 0.98;
+    scale: var(--weave-menu-enter-scale);
   }
 }
 
@@ -70,7 +70,7 @@ const stylesheet = `
   translate:
     var(--weave-menu-motion-x)
     var(--weave-menu-motion-y);
-  scale: 0.985;
+  scale: var(--weave-menu-exit-scale);
   --weave-component-transition-duration:
     var(--weave-motion-duration-fast),
     var(--weave-motion-duration-fast),
@@ -201,7 +201,7 @@ const stylesheet = `
 :where(.weave-menu-item__text) {
   --weave-component-display: flex;
   --weave-component-flex-direction: column;
-  --weave-component-gap: 0.125rem;
+  --weave-component-gap: var(--weave-menu-item-text-gap);
   --weave-component-flex-grow: 1;
   --weave-component-min-width: 0rem;
 }

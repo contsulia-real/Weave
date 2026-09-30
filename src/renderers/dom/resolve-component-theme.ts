@@ -4,6 +4,8 @@ export {
   resolveBadgeTheme,
   resolveButtonTheme,
   resolveCardTheme,
+  resolveDividerTheme,
+  resolveIconTheme,
   resolveLinkTheme,
 } from './component-theme/actions'
 export {

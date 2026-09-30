@@ -2,6 +2,9 @@ import { cloneElement, useInsertionEffect } from 'react'
 import type { IconProps, IconStroke } from '../core/icon-types'
 import type { ViewProps } from '../core/view-types'
 import { ensureIconStylesheet } from '../renderers/dom/icon-stylesheet'
+import { resolveIconTheme } from '../renderers/dom/resolve-component-theme'
+import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
+import { useTheme } from '../theme/theme-context'
 import { useViewHost } from './internal/use-view-host'
 
 const STROKE_WIDTH: Readonly<Record<IconStroke, number>> = {
@@ -12,6 +15,8 @@ const STROKE_WIDTH: Readonly<Record<IconStroke, number>> = {
 
 export function Icon(props: IconProps) {
   const { size = 'medium', stroke = 'regular', viewProps = {} } = props
+  const { theme } = useTheme()
+  const themeClassName = useRuntimeStyleClass('icon-theme', resolveIconTheme(theme, size))
 
   const hostProps: ViewProps<HTMLSpanElement> = {
     ...viewProps,
@@ -45,7 +50,13 @@ export function Icon(props: IconProps) {
       data-weave-icon-size={size}
       data-weave-icon-stroke={stroke}
       data-weave-layout={resolved.layout}
-      className={['weave-icon', `weave-icon--${size}`, `weave-icon--stroke-${stroke}`, className]
+      className={[
+        'weave-icon',
+        `weave-icon--${size}`,
+        `weave-icon--stroke-${stroke}`,
+        themeClassName,
+        className,
+      ]
         .filter(Boolean)
         .join(' ')}
       style={inlineStyle}

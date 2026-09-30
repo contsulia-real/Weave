@@ -20,7 +20,7 @@ const stylesheet = `
   position: absolute;
   left: 0;
   bottom: calc(-1 * var(--weave-link-theme-underline-offset));
-  width: 45%;
+  width: var(--weave-link-theme-underline-width);
   height: var(--weave-link-theme-underline-thickness);
   border-radius: 9999px;
   background: var(--weave-link-theme-underline-color);
@@ -37,11 +37,11 @@ const stylesheet = `
 }
 
 :where(.weave-link:hover)::after {
-  width: 60%;
+  width: var(--weave-link-theme-underline-hover-width);
 }
 
 :where(.weave-link:active)::after {
-  width: 80%;
+  width: var(--weave-link-theme-underline-active-width);
 }
 
 :where(.weave-link:focus-visible) {
