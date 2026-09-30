@@ -177,8 +177,23 @@ test('Playground Slider expresses recessed inactive track, raised active surface
   const inactiveGap = inactiveBox!.x - (thumbBox!.x + thumbBox!.width)
   expect(activeGap).toBeCloseTo(6, 0)
   expect(inactiveGap).toBeCloseTo(6, 0)
-  expect(activeVisual.insideRadius).toBe('8px')
-  expect(inactiveVisual.insideRadius).toBe('8px')
+  expect(activeVisual.insideRadius).toBe('0px')
+  expect(inactiveVisual.insideRadius).toBe('0px')
+
+  const continuousHandleDot = mediumControl.locator('.weave-slider__thumb-dot')
+  await expect(continuousHandleDot).toHaveCount(1)
+  const continuousHandleDotBox = await continuousHandleDot.boundingBox()
+  expect(continuousHandleDotBox).not.toBeNull()
+  expect(continuousHandleDotBox!.width).toBeCloseTo(4, 0)
+  expect(continuousHandleDotBox!.height).toBeCloseTo(4, 0)
+  expect(continuousHandleDotBox!.x + continuousHandleDotBox!.width / 2).toBeCloseTo(
+    thumbBox!.x + thumbBox!.width / 2,
+    0,
+  )
+  expect(continuousHandleDotBox!.y + continuousHandleDotBox!.height / 2).toBeCloseTo(
+    thumbBox!.y + thumbBox!.height / 2,
+    0,
+  )
 
   const switchOff = page.locator('[data-testid="switch-small"]')
   const switchOn = page.locator('[data-testid="switch-medium"]')
@@ -213,6 +228,7 @@ test('Playground Slider expresses recessed inactive track, raised active surface
   const customControl = custom.locator('..')
   await expect(customControl.locator('.weave-slider__step')).toHaveCount(9)
   await expect(customControl.locator('.weave-slider__stop-indicator')).toHaveCount(0)
+  await expect(customControl.locator('.weave-slider__thumb-dot')).toHaveCount(1)
 
   const customTrack = customControl.locator('.weave-slider__inactive-track')
   const customRange = customControl.locator('.weave-slider__range')

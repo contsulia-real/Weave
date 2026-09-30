@@ -4268,7 +4268,7 @@ medium = track 1rem    / thumb 1.25rem / gap 0.375rem
 large  = track 1.25rem / thumb 1.5rem  / gap 0.46875rem
 ```
 
-active / inactive track 必须是两段真实分离的 surface，不能再用一条连续轨道加渐变或覆盖色模拟。静止 thumb 必须是圆形并位于轨道断口中央；轨道断口两侧不能使用突兀切面，面向 thumb 的内侧端点使用 track 高度一半的圆角形成半圆收口，外侧端点同样保持 full radius。
+active / inactive track 必须是两段真实分离的 surface，不能再用一条连续轨道加渐变或覆盖色模拟。静止 thumb 必须是圆形并位于轨道断口中央；面向 thumb 的中断面保留方切，不使用 radius，只有轨道最外侧端点保持 full radius。
 
 ## 18.15.5 物理层级、Fill 与 Step
 
@@ -4278,6 +4278,7 @@ Slider 的物理隐喻固定为：
 inactive track = 凹陷槽
 active fill    = 从槽中抬起的实体 surface
 thumb          = 与 active track 同层级的圆形可抓取实体
+thumb dot      = thumb 中心常驻对比 dot，与 step 是否开启无关
 step dot       = 沿轨道明确标记每一个有效离散 step
 ```
 
@@ -4312,7 +4313,10 @@ background  = Slider.fillColor
 shadow      = theme.components.Switch.base.thumbShadow
 hoverShadow = theme.components.Switch.base.thumbHoverShadow
 borderWidth = 0
+centerDot   = activeDotColor / 与 step dot 同尺寸
 ```
+
+thumb 中心 dot 必须始终显示，无论调用方是否显式传入 `step`；它属于 thumb 本身，不计入 step dot 数量。
 
 Slider 仍允许通过自身 theme 覆盖这些值。
 

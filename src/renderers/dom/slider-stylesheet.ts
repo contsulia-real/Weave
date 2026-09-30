@@ -21,7 +21,6 @@ const stylesheet = `
   --weave-slider-thumb-half-size: calc(var(--weave-slider-thumb-size) / 2);
   --weave-slider-thumb-track-clearance:
     calc(var(--weave-slider-thumb-half-size) + var(--weave-slider-thumb-track-gap));
-  --weave-slider-track-inside-radius: calc(var(--weave-slider-track-height) / 2);
   --weave-slider-tick-size: calc(var(--weave-slider-track-height) / 4);
   --weave-slider-track-edge-inset: calc(var(--weave-slider-track-height) / 2);
 
@@ -74,8 +73,8 @@ const stylesheet = `
   );
   border-radius:
     var(--weave-radius-full)
-    var(--weave-slider-track-inside-radius)
-    var(--weave-slider-track-inside-radius)
+    0
+    0
     var(--weave-radius-full);
   background: var(--weave-slider-fill-color);
   box-shadow:
@@ -93,10 +92,10 @@ const stylesheet = `
   );
   right: 0;
   border-radius:
-    var(--weave-slider-track-inside-radius)
+    0
     var(--weave-radius-full)
     var(--weave-radius-full)
-    var(--weave-slider-track-inside-radius);
+    0;
   background: var(--weave-slider-track-color);
   box-shadow: var(--weave-slider-track-shadow);
   transition:
@@ -151,6 +150,18 @@ const stylesheet = `
       var(--weave-motion-spring-snappy-easing),
     box-shadow var(--weave-motion-duration-fast)
       var(--weave-motion-curve-standard);
+}
+
+:where(.weave-slider__thumb-dot) {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--weave-slider-tick-size);
+  height: var(--weave-slider-tick-size);
+  border-radius: var(--weave-radius-full);
+  background: var(--weave-slider-active-dot-color);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
 }
 
 :where(.weave-slider-control:hover:not([data-weave-slider-disabled="true"]))

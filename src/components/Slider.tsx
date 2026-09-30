@@ -155,7 +155,9 @@ export function Slider({
               )
             })}
           </span>
-          <span ref={thumbRef} className="weave-slider__thumb" />
+          <span ref={thumbRef} className="weave-slider__thumb">
+            <span className="weave-slider__thumb-dot" />
+          </span>
         </span>
       </span>
 
