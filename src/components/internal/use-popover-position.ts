@@ -31,6 +31,7 @@ export function usePopoverPosition(
   viewportPadding: Length,
   crossAlignment: PopoverCrossAlignment = 'center',
   overlapTarget = false,
+  targetIdentity?: unknown,
 ) {
   const [state, setState] = useState<PopoverPositionState>({
     left: 0,
@@ -102,6 +103,7 @@ export function usePopoverPosition(
     panelRef,
     placement,
     present,
+    targetIdentity,
     targetRef,
     viewportPadding,
   ])

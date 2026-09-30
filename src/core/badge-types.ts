@@ -11,9 +11,9 @@ export type BadgePlacement =
   | 'bottom-left'
   | 'left'
 
-export type BadgeViewProps = Omit<ViewCoreProps<HTMLSpanElement>, 'children'> &
+export type BadgeViewProps = Omit<ViewCoreProps<HTMLDivElement>, 'children'> &
   ViewDynamicBreakpointProps & {
-    ref?: Ref<HTMLSpanElement>
+    ref?: Ref<HTMLDivElement>
   }
 
 interface BadgeBaseProps {

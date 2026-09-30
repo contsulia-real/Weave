@@ -20,6 +20,7 @@ describe('ToolTip', () => {
     const tooltip = getByRole('tooltip')
 
     expect(getByText('Save changes')).toBeDefined()
+    expect(target.parentElement?.tagName).toBe('DIV')
     expect(document.body.contains(tooltip)).toBe(true)
     expect(target.getAttribute('aria-describedby')).toContain(tooltip.id)
     expect(tooltip.getAttribute('data-placement')).toBe('top')
@@ -252,6 +253,49 @@ describe('ToolTip', () => {
     expect(stylesheet).toContain('--weave-tooltip-motion-offset')
     expect(stylesheet).toContain('data-weave-tooltip-state="closing"')
     expect(stylesheet).toContain('translate')
+  })
+
+  it('rebinds description and positioning when an open target is replaced', async () => {
+    const { getByRole, rerender } = render(
+      <ToolTip content="Dynamic" open placement="bottom">
+        <Button key="first" text="First target" />
+      </ToolTip>,
+    )
+
+    const first = getByRole('button', { name: 'First target' })
+    const tooltip = getByRole('tooltip')
+    const tooltipId = tooltip.id
+
+    expect(first.getAttribute('aria-describedby')).toContain(tooltipId)
+
+    rerender(
+      <ToolTip content="Dynamic" open placement="bottom">
+        <Button key="second" text="Second target" />
+      </ToolTip>,
+    )
+
+    const second = getByRole('button', { name: 'Second target' })
+    second.getBoundingClientRect = () =>
+      ({
+        x: 200,
+        y: 100,
+        left: 200,
+        top: 100,
+        right: 260,
+        bottom: 130,
+        width: 60,
+        height: 30,
+        toJSON: () => ({}),
+      }) as DOMRect
+
+    fireEvent.scroll(window)
+
+    await waitFor(() => {
+      expect(second.getAttribute('aria-describedby')).toContain(tooltipId)
+      expect(first.getAttribute('aria-describedby')).toBeNull()
+      expect(tooltip.style.left).toBe('230px')
+      expect(tooltip.style.top).toBe('130px')
+    })
   })
 
   it('accepts composed content', () => {

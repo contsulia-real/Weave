@@ -10,7 +10,7 @@ function restoreAttribute(target: HTMLElement, name: string, value: string | nul
 }
 
 interface AnchoredTriggerOptions {
-  wrapperRef: RefObject<HTMLSpanElement | null>
+  wrapperRef: RefObject<HTMLElement | null>
   targetRef: RefObject<HTMLElement | null>
   popupId: string
   hasPopup: string

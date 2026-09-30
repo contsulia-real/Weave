@@ -1,6 +1,7 @@
 import { cleanup, fireEvent, render } from '@testing-library/react'
+import { createRef } from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { createTheme, Slider, ThemeProvider } from '../src'
+import { createTheme, Slider, Text, ThemeProvider } from '../src'
 
 afterEach(cleanup)
 
@@ -32,6 +33,26 @@ describe('Slider', () => {
     fireEvent.click(label)
     expect(document.activeElement).not.toBe(slider)
     expect(slider.value).toBe('0')
+  })
+
+  it('combines its visible label with a ref-based labelledBy association', () => {
+    const externalLabelRef = createRef<HTMLSpanElement>()
+    const { getByRole } = render(
+      <>
+        <Text viewProps={{ ref: externalLabelRef }}>External context</Text>
+        <Slider label="Volume" viewProps={{ labelledBy: externalLabelRef }} />
+      </>,
+    )
+
+    const slider = getByRole('slider')
+    const ids = slider.getAttribute('aria-labelledby')?.split(/\s+/) ?? []
+    const visibleLabel = document.querySelector<HTMLElement>('[data-weave-slider-label]')
+
+    expect(externalLabelRef.current?.id).toBeTruthy()
+    expect(visibleLabel?.id).toBeTruthy()
+    expect(ids).toContain(externalLabelRef.current?.id)
+    expect(ids).toContain(visibleLabel?.id)
+    expect(slider.getAttribute('aria-labelledby')).not.toContain('[object Object]')
   })
 
   it('updates uncontrolled value and emits numeric changes', () => {

@@ -31,7 +31,7 @@ export function Popover({
     defaultOpen,
     onOpenChange,
   )
-  const wrapperRef = useRef<HTMLSpanElement>(null)
+  const wrapperRef = useRef<HTMLDivElement>(null)
   const targetRef = useRef<HTMLElement | null>(null)
   const panelRef = useRef<HTMLDivElement>(null)
   const reactId = useId()
@@ -73,7 +73,17 @@ export function Popover({
     positioned,
     placement: resolvedPlacement,
     placementStyle,
-  } = usePopoverPosition(targetRef, panelRef, present, placement, offset, viewportPadding)
+  } = usePopoverPosition(
+    targetRef,
+    panelRef,
+    present,
+    placement,
+    offset,
+    viewportPadding,
+    'center',
+    false,
+    children,
+  )
 
   const handleTransitionEnd = useExitTransitionEnd(
     resolvedOpen,
@@ -119,7 +129,7 @@ export function Popover({
 
   return (
     <>
-      <span
+      <div
         ref={wrapperRef}
         data-weave-popover-anchor=""
         style={{
@@ -127,7 +137,7 @@ export function Popover({
         }}
       >
         {children}
-      </span>
+      </div>
       {portal}
     </>
   )

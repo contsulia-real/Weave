@@ -32,20 +32,22 @@ export function Switch({
   const generatedId = useId()
   const switchId = viewProps.id ?? `weave-switch-${generatedId}`
   const labelId = `${switchId}-label`
-  const labelledBy =
-    label === undefined
-      ? viewProps.labelledBy
-      : [viewProps.labelledBy, labelId].filter(Boolean).join(' ')
+  const { labelledBy, ...remainingViewProps } = viewProps
 
   const hostProps: ViewProps<HTMLButtonElement> = {
-    ...viewProps,
+    ...remainingViewProps,
     id: switchId,
     checked: currentChecked,
     disabled,
     focusable: disabled ? false : (viewProps.focusable ?? true),
-    labelledBy,
+    labelledBy: label === undefined ? labelledBy : undefined,
   }
-  const { elementRef, className, inlineStyle, resolved } = useViewHost(hostProps)
+  const { elementRef, className, inlineStyle, resolved } = useViewHost(
+    hostProps,
+    undefined,
+    undefined,
+    label === undefined ? undefined : { labelledBy: [labelledBy, labelId] },
+  )
 
   const switchBase = theme.components.Switch?.base
   const dragShrink = switchBase?.thumbDragShrink ?? 0.68

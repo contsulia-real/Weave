@@ -15,7 +15,7 @@ export type MenuViewProps = Omit<
 
 export type MenuItemViewProps = Omit<
   ViewCoreProps<HTMLDivElement>,
-  'children' | 'role' | 'selected'
+  'children' | 'role' | 'selected' | 'disabled' | 'controls' | 'expanded'
 > &
   ViewDynamicBreakpointProps
 

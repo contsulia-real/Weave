@@ -563,6 +563,41 @@ describe('Tabs', () => {
     )
   })
 
+  it('keeps distinct DOM ids for values whose encoded forms previously collided', async () => {
+    const { getAllByRole } = render(
+      <Tabs defaultValue="a/b">
+        <TabList>
+          <Tab value="a/b">Slash</Tab>
+          <Tab value="a_2Fb">Literal token</Tab>
+        </TabList>
+        <TabPanel value="a/b">Slash panel</TabPanel>
+        <TabPanel value="a_2Fb">Literal panel</TabPanel>
+      </Tabs>,
+    )
+
+    const tabs = getAllByRole('tab')
+    const panels = getAllByRole('tabpanel', { hidden: true })
+
+    expect(tabs[0]?.id).not.toBe(tabs[1]?.id)
+    expect(panels[0]?.id).not.toBe(panels[1]?.id)
+    expect(tabs[0]?.getAttribute('aria-controls')).toBe(panels[0]?.id)
+    expect(tabs[1]?.getAttribute('aria-controls')).toBe(panels[1]?.id)
+  })
+
+  it('rejects duplicate Tab values before creating ambiguous ARIA ids', () => {
+    expect(() =>
+      render(
+        <Tabs>
+          <TabList>
+            <Tab value="duplicate">One</Tab>
+            <Tab value="duplicate">Two</Tab>
+          </TabList>
+          <TabPanel value="duplicate">Panel</TabPanel>
+        </Tabs>,
+      ),
+    ).toThrow('Tab value "duplicate" must be unique within Tabs')
+  })
+
   it('renders underline by default and pill when requested', async () => {
     const { getByRole, rerender } = render(<BasicTabs />)
 

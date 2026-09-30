@@ -1,7 +1,7 @@
 import { cleanup, fireEvent, render } from '@testing-library/react'
-import type { MouseEvent } from 'react'
+import { createRef, type MouseEvent } from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { createTheme, Switch, ThemeProvider } from '../src'
+import { createTheme, Switch, Text, ThemeProvider } from '../src'
 
 afterEach(cleanup)
 
@@ -69,6 +69,26 @@ describe('Switch', () => {
 
     expect(onChange).toHaveBeenCalledWith(true)
     expect(element.getAttribute('aria-checked')).toBe('true')
+  })
+
+  it('combines a visible label with a ref-based labelledBy association', () => {
+    const externalLabelRef = createRef<HTMLSpanElement>()
+    const { getByRole } = render(
+      <>
+        <Text viewProps={{ ref: externalLabelRef }}>External context</Text>
+        <Switch label="Wi-Fi" viewProps={{ labelledBy: externalLabelRef }} />
+      </>,
+    )
+
+    const element = getByRole('switch')
+    const ids = element.getAttribute('aria-labelledby')?.split(/\s+/) ?? []
+    const visibleLabel = document.querySelector<HTMLElement>('[data-weave-switch-label]')
+
+    expect(externalLabelRef.current?.id).toBeTruthy()
+    expect(visibleLabel?.id).toBeTruthy()
+    expect(ids).toContain(externalLabelRef.current?.id)
+    expect(ids).toContain(visibleLabel?.id)
+    expect(element.getAttribute('aria-labelledby')).not.toContain('[object Object]')
   })
 
   it('supports controlled state without mutating its own value', () => {

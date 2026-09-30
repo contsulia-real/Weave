@@ -168,6 +168,8 @@ describe('Theme', () => {
     const scope = getByTestId('typography-child').parentElement as HTMLElement
     const rule = runtimeRule(scope, 'weave-theme-')
 
+    expect(scope.tagName).toBe('DIV')
+
     expect(rule).toContain('font-family:var(--weave-typography-family-body);')
     expect(rule).toContain('font-size:var(--weave-typography-style-body-large-font-size);')
     expect(rule).toContain('font-weight:var(--weave-typography-style-body-large-font-weight);')

@@ -16,7 +16,7 @@ const FOCUSABLE_SELECTOR = [
 ].join(',')
 
 export function usePopoverInteraction(
-  wrapperRef: RefObject<HTMLSpanElement | null>,
+  wrapperRef: RefObject<HTMLElement | null>,
   targetRef: RefObject<HTMLElement | null>,
   panelRef: RefObject<HTMLDivElement | null>,
   popoverId: string,
@@ -62,9 +62,17 @@ export function usePopoverInteraction(
     onClick: handleTriggerClick,
   })
 
-  useAnchorViewportDismiss(targetRef, open, dismissForAnchorExit)
+  useAnchorViewportDismiss(targetRef, open, dismissForAnchorExit, children)
 
-  useOutsideInteractionDismiss(targetRef, panelRef, open, dismissForOutside)
+  useOutsideInteractionDismiss(
+    targetRef,
+    panelRef,
+    open,
+    dismissForOutside,
+    false,
+    undefined,
+    children,
+  )
 
   useEffect(() => {
     if (!open) return

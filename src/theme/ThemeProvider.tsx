@@ -88,14 +88,14 @@ export function ThemeProvider({ theme = {}, mode, reducedMotion, children }: The
 
   return (
     <ThemeContext.Provider value={contextValue}>
-      <span
+      <div
         data-weave-theme=""
         data-weave-theme-mode={activeMode}
         data-weave-reduced-motion={activeReducedMotion ? 'reduce' : 'no-preference'}
         className={['weave-theme', className].filter(Boolean).join(' ')}
       >
         {children}
-      </span>
+      </div>
     </ThemeContext.Provider>
   )
 }

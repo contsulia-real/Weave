@@ -34,6 +34,12 @@ function semanticReferenceId(
   return target.id
 }
 
+type SemanticAssociationName = (typeof SEMANTIC_ASSOCIATIONS)[number][0]
+
+type SemanticAssociationOverrides = Partial<
+  Record<SemanticAssociationName, readonly (SemanticReference | undefined)[]>
+>
+
 interface ViewHostResult<TElement extends HTMLElement> {
   elementRef: RefObject<TElement | null>
   className: string | undefined
@@ -45,6 +51,7 @@ export function useViewHost<TElement extends HTMLElement>(
   props: ViewProps<TElement>,
   componentStyle?: CSSProperties,
   componentName?: string,
+  semanticOverrides?: SemanticAssociationOverrides,
 ): ViewHostResult<TElement> {
   useInsertionEffect(ensureViewStylesheet, [])
 
@@ -53,6 +60,10 @@ export function useViewHost<TElement extends HTMLElement>(
   const elementRef = useRef<TElement>(null)
   const semanticId = useId().replace(/:/g, '')
   useImperativeHandle(ref, () => elementRef.current as TElement)
+  const labelledBy = props.labelledBy
+  const describedBy = props.describedBy
+  const controls = props.controls
+  const owns = props.owns
 
   useLayoutEffect(() => {
     if (autoFocus) elementRef.current?.focus()
@@ -62,18 +73,68 @@ export function useViewHost<TElement extends HTMLElement>(
     const host = elementRef.current
     if (host === null) return
 
-    for (const [propName, attributeName] of SEMANTIC_ASSOCIATIONS) {
-      const reference = props[propName]
-      if (reference === undefined || typeof reference === 'string') continue
+    const baseReferences = {
+      labelledBy,
+      describedBy,
+      controls,
+      owns,
+    }
+    const references = Object.fromEntries(
+      SEMANTIC_ASSOCIATIONS.map(([propName]) => [
+        propName,
+        semanticOverrides?.[propName] ??
+          (baseReferences[propName] === undefined ? undefined : [baseReferences[propName]]),
+      ]),
+    ) as Record<SemanticAssociationName, readonly (SemanticReference | undefined)[] | undefined>
 
-      const id = semanticReferenceId(reference, `weave-semantic-${semanticId}-${propName}`)
-      if (id === undefined) {
-        host.removeAttribute(attributeName)
-      } else {
-        host.setAttribute(attributeName, id)
+    const sync = () => {
+      for (const [propName, attributeName] of SEMANTIC_ASSOCIATIONS) {
+        const associationReferences = references[propName]
+        if (associationReferences === undefined) continue
+
+        const ids = associationReferences.flatMap((reference, index) => {
+          if (reference === undefined) return []
+          if (typeof reference === 'string') return reference.split(/\s+/).filter(Boolean)
+
+          const id = semanticReferenceId(
+            reference,
+            `weave-semantic-${semanticId}-${propName}-${index}`,
+          )
+          return id === undefined ? [] : [id]
+        })
+        const value = [...new Set(ids)].join(' ')
+
+        if (value.length === 0) {
+          host.removeAttribute(attributeName)
+        } else {
+          host.setAttribute(attributeName, value)
+        }
       }
     }
-  }, [props.labelledBy, props.describedBy, props.controls, props.owns, semanticId])
+
+    sync()
+
+    const hasRefAssociation = Object.values(references).some((associationReferences) =>
+      associationReferences?.some(
+        (reference) => reference !== undefined && typeof reference !== 'string',
+      ),
+    )
+
+    if (!hasRefAssociation || typeof MutationObserver === 'undefined') return
+
+    const root = host.ownerDocument.documentElement
+    if (root === null) return
+
+    const observer = new MutationObserver(sync)
+    observer.observe(root, {
+      subtree: true,
+      childList: true,
+      attributes: true,
+      attributeFilter: ['id'],
+    })
+
+    return () => observer.disconnect()
+  }, [controls, describedBy, labelledBy, owns, semanticId, semanticOverrides])
 
   const { theme, reducedMotion } = useTheme()
   const breakpointClassName = useBreakpointStylesheet(theme.breakpoints)

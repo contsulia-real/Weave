@@ -29,6 +29,7 @@ export function useOutsideInteractionDismiss(
   onDismiss: () => void,
   dismissOnFocusOutside = false,
   isInsideExtra?: (target: Node) => boolean,
+  anchorIdentity?: unknown,
 ): void {
   useEffect(() => {
     if (!active) return
@@ -78,13 +79,22 @@ export function useOutsideInteractionDismiss(
         document.removeEventListener('focusin', focusIn, true)
       }
     }
-  }, [active, anchorRef, dismissOnFocusOutside, isInsideExtra, onDismiss, surfaceRef])
+  }, [
+    active,
+    anchorIdentity,
+    anchorRef,
+    dismissOnFocusOutside,
+    isInsideExtra,
+    onDismiss,
+    surfaceRef,
+  ])
 }
 
 export function useAnchorViewportDismiss(
   targetRef: RefObject<HTMLElement | null>,
   active: boolean,
   onDismiss: () => void,
+  targetIdentity?: unknown,
 ): void {
   useEffect(() => {
     if (!active) return
@@ -112,5 +122,5 @@ export function useAnchorViewportDismiss(
       interactionEvents: visualAnchorInteractionEvents,
       continuousAnimations: true,
     })
-  }, [active, onDismiss, targetRef])
+  }, [active, onDismiss, targetIdentity, targetRef])
 }

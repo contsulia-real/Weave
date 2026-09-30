@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render } from '@testing-library/react'
+import { cleanup, fireEvent, render, waitFor } from '@testing-library/react'
 import { createRef } from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { createTheme, Input, Text, ThemeProvider, View } from '../src'
@@ -44,6 +44,40 @@ describe('View DOM backend', () => {
     expect(title).not.toBeNull()
     expect(title?.id).toMatch(/^weave-semantic-/)
     expect(input.getAttribute('aria-labelledby')).toBe(title?.id)
+  })
+
+  it('tracks ref association target and id changes after mount', async () => {
+    const titleRef = createRef<HTMLSpanElement>()
+    const { getByRole, rerender } = render(
+      <>
+        <Text key="first" viewProps={{ ref: titleRef, id: 'first-title' }}>
+          First title
+        </Text>
+        <Input value="Weave" viewProps={{ labelledBy: titleRef }} />
+      </>,
+    )
+
+    const input = getByRole('textbox')
+    expect(input.getAttribute('aria-labelledby')).toBe('first-title')
+
+    rerender(
+      <>
+        <Text key="second" viewProps={{ ref: titleRef, id: 'second-title' }}>
+          Second title
+        </Text>
+        <Input value="Weave" viewProps={{ labelledBy: titleRef }} />
+      </>,
+    )
+
+    await waitFor(() => {
+      expect(input.getAttribute('aria-labelledby')).toBe('second-title')
+    })
+
+    titleRef.current?.setAttribute('id', 'renamed-title')
+
+    await waitFor(() => {
+      expect(input.getAttribute('aria-labelledby')).toBe('renamed-title')
+    })
   })
 
   it('maps Weave props without leaking custom props to the DOM', () => {
@@ -339,6 +373,24 @@ describe('View DOM backend', () => {
     const element = getByTestId('unknown-primitive')
     expect(element.getAttribute('mystery')).toBeNull()
     expect(element.getAttribute('title')).toBe('native title')
+  })
+
+  it('forwards the native HTML attributes exposed by ViewCoreProps', () => {
+    const { getByTestId } = render(
+      <View
+        about="https://example.com/resource"
+        contextMenu="actions"
+        exportparts="surface:card"
+        popover="manual"
+        data={{ testid: 'native-attributes' }}
+      />,
+    )
+
+    const element = getByTestId('native-attributes')
+    expect(element.getAttribute('about')).toBe('https://example.com/resource')
+    expect(element.getAttribute('contextmenu')).toBe('actions')
+    expect(element.getAttribute('exportparts')).toBe('surface:card')
+    expect(element.getAttribute('popover')).toBe('manual')
   })
 
   it('still forwards native object-valued DOM props', () => {

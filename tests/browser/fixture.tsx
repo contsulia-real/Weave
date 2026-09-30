@@ -1,6 +1,6 @@
 import { Button, Card, Column, createRoot, Popover, Text, ThemeProvider, View } from '../../src'
 
-function BrowserFixture() {
+export function BrowserFixture() {
   return (
     <ThemeProvider mode="light">
       <Column gap={2}>

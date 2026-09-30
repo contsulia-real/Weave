@@ -29,6 +29,7 @@ describe('Popover', () => {
 
     const trigger = getByRole('button')
 
+    expect(trigger.parentElement?.tagName).toBe('DIV')
     expect(trigger.getAttribute('aria-haspopup')).toBe('dialog')
     expect(trigger.getAttribute('aria-expanded')).toBe('false')
 
@@ -537,6 +538,80 @@ describe('Popover', () => {
 
     await waitFor(() => {
       expect(document.querySelector('[data-weave-popover]')).toBeNull()
+    })
+  })
+
+  it('rebinds positioning and viewport dismissal when an open trigger is replaced', async () => {
+    const onOpenChange = vi.fn()
+    const { getByRole, rerender } = render(
+      <Popover open onOpenChange={onOpenChange} placement="bottom-left" content="Dynamic panel">
+        <Button key="first" text="First trigger" />
+      </Popover>,
+    )
+
+    const first = getByRole('button', { name: 'First trigger' })
+    const dialog = getByRole('dialog')
+
+    rerender(
+      <Popover open onOpenChange={onOpenChange} placement="bottom-left" content="Dynamic panel">
+        <Button key="second" text="Second trigger" />
+      </Popover>,
+    )
+
+    const second = getByRole('button', { name: 'Second trigger' })
+    second.getBoundingClientRect = () =>
+      ({
+        x: 200,
+        y: 120,
+        left: 200,
+        top: 120,
+        right: 260,
+        bottom: 150,
+        width: 60,
+        height: 30,
+        toJSON: () => ({}),
+      }) as DOMRect
+    dialog.getBoundingClientRect = () =>
+      ({
+        x: 0,
+        y: 0,
+        left: 0,
+        top: 0,
+        right: 100,
+        bottom: 80,
+        width: 100,
+        height: 80,
+        toJSON: () => ({}),
+      }) as DOMRect
+
+    fireEvent.scroll(window)
+
+    await waitFor(() => {
+      expect(dialog.style.left).toBe('200px')
+      expect(dialog.style.top).toBe('158px')
+    })
+
+    first.getBoundingClientRect = () =>
+      ({
+        x: 0,
+        y: -40,
+        left: 0,
+        top: -40,
+        right: 40,
+        bottom: 0,
+        width: 40,
+        height: 40,
+        toJSON: () => ({}),
+      }) as DOMRect
+    fireEvent.scroll(window)
+    await new Promise((resolve) => setTimeout(resolve, 20))
+    expect(onOpenChange).not.toHaveBeenCalledWith(false)
+
+    second.getBoundingClientRect = first.getBoundingClientRect
+    fireEvent.scroll(window)
+
+    await waitFor(() => {
+      expect(onOpenChange).toHaveBeenCalledWith(false)
     })
   })
 

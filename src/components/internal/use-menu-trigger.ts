@@ -8,7 +8,7 @@ import { useAnchoredTrigger } from './use-anchored-trigger'
 export type MenuInitialFocus = 'first' | 'last'
 
 export function useMenuTrigger(
-  wrapperRef: RefObject<HTMLSpanElement | null>,
+  wrapperRef: RefObject<HTMLElement | null>,
   targetRef: RefObject<HTMLElement | null>,
   rootId: string,
   menuId: string,
@@ -96,9 +96,17 @@ export function useMenuTrigger(
     onKeyDown: handleKeyDown,
   })
 
-  useAnchorViewportDismiss(targetRef, open, dismissForAnchorExit)
+  useAnchorViewportDismiss(targetRef, open, dismissForAnchorExit, children)
 
-  useOutsideInteractionDismiss(targetRef, undefined, open, dismissForOutside, false, insideMenuTree)
+  useOutsideInteractionDismiss(
+    targetRef,
+    undefined,
+    open,
+    dismissForOutside,
+    false,
+    insideMenuTree,
+    children,
+  )
 
   useLayoutEffect(() => {
     const wasOpen = previousOpenRef.current

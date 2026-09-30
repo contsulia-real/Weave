@@ -30,7 +30,7 @@ export function ToolTip({
     onOpenChange,
   )
 
-  const wrapperRef = useRef<HTMLSpanElement>(null)
+  const wrapperRef = useRef<HTMLDivElement>(null)
   const targetRef = useRef<HTMLElement | null>(null)
   const openTimerRef = useRef<number | undefined>(undefined)
   const pointerInsideRef = useRef(false)
@@ -206,7 +206,7 @@ export function ToolTip({
         target.setAttribute('aria-describedby', remainingIds.join(' '))
       }
     }
-  }, [resolvedOpen, tooltipId])
+  }, [children, resolvedOpen, tooltipId])
 
   const handleTransitionEnd = useExitTransitionEnd(
     resolvedOpen,
@@ -221,6 +221,7 @@ export function ToolTip({
     present,
     placement,
     offsetValue,
+    children,
   )
 
   const tooltip = present ? (
@@ -258,7 +259,7 @@ export function ToolTip({
 
   return (
     <>
-      <span
+      <div
         ref={wrapperRef}
         data-weave-tooltip-anchor=""
         style={{
@@ -266,7 +267,7 @@ export function ToolTip({
         }}
       >
         {children}
-      </span>
+      </div>
       {tooltip}
     </>
   )

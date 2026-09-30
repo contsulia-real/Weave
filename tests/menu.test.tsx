@@ -36,6 +36,7 @@ describe('Menu', () => {
       name: 'Actions',
     })
 
+    expect(trigger.parentElement?.tagName).toBe('DIV')
     expect(trigger.getAttribute('aria-haspopup')).toBe('menu')
     expect(trigger.getAttribute('aria-expanded')).toBe('false')
 
@@ -676,6 +677,85 @@ describe('Menu', () => {
 
     await waitFor(() => {
       expect(submenu.style.left).toBe('156px')
+    })
+  })
+
+  it('rebinds viewport dismissal when an open trigger is replaced', async () => {
+    const onOpenChange = vi.fn()
+    const { getByRole, rerender } = render(
+      <Menu open onOpenChange={onOpenChange} trigger={<Button key="first" text="First trigger" />}>
+        <MenuItem text="Action" />
+      </Menu>,
+    )
+
+    const first = getByRole('button', { name: 'First trigger' })
+
+    rerender(
+      <Menu
+        open
+        onOpenChange={onOpenChange}
+        trigger={<Button key="second" text="Second trigger" />}
+      >
+        <MenuItem text="Action" />
+      </Menu>,
+    )
+
+    const second = getByRole('button', { name: 'Second trigger' })
+    const menu = getByRole('menu')
+    second.getBoundingClientRect = () =>
+      ({
+        x: 200,
+        y: 120,
+        left: 200,
+        top: 120,
+        right: 260,
+        bottom: 150,
+        width: 60,
+        height: 30,
+        toJSON: () => ({}),
+      }) as DOMRect
+    menu.getBoundingClientRect = () =>
+      ({
+        x: 0,
+        y: 0,
+        left: 0,
+        top: 0,
+        right: 100,
+        bottom: 80,
+        width: 100,
+        height: 80,
+        toJSON: () => ({}),
+      }) as DOMRect
+
+    fireEvent.scroll(window)
+
+    await waitFor(() => {
+      expect(menu.style.left).toBe('200px')
+      expect(menu.style.top).toBe('156px')
+    })
+
+    first.getBoundingClientRect = () =>
+      ({
+        x: 0,
+        y: -40,
+        left: 0,
+        top: -40,
+        right: 40,
+        bottom: 0,
+        width: 40,
+        height: 40,
+        toJSON: () => ({}),
+      }) as DOMRect
+
+    fireEvent.scroll(window)
+    await new Promise((resolve) => setTimeout(resolve, 20))
+    expect(onOpenChange).not.toHaveBeenCalledWith(false)
+
+    second.getBoundingClientRect = first.getBoundingClientRect
+    fireEvent.scroll(window)
+
+    await waitFor(() => {
+      expect(onOpenChange).toHaveBeenCalledWith(false)
     })
   })
 

@@ -350,9 +350,9 @@ root.render(<App />)
 
 这是全框架统一规则。
 
-### 4.1 所有公开 API 中，不带单位的尺度数字统一按 `rem`
+### 4.1 所有公开 API 中，不带单位的尺度数字默认统一按 `rem`
 
-`style` 除外。
+`style` 除外。只有组件规范明确声明的像素单位例外不走这条规则；当前例外只有 `Divider.size` 与 `Tabs.indicatorThickness`，两者的裸数字固定按 `px`。
 
 例如：
 
@@ -1473,7 +1473,7 @@ createTheme({
 />
 ```
 
-`View`、所有组件的 `viewProps`、以及支持高层响应式语义的组件（当前包括 `Text`）都读取当前 ThemeProvider 的有效 breakpoint 集合。DOM 实现不把 `sm / md / lg / xl` 的媒体查询写死在静态 stylesheet 中，而是根据当前主题生成对应的低 specificity breakpoint class。
+`View`、所有组件的 `viewProps`、以及支持高层响应式语义的组件（当前包括 `Text` 与 `Button`）都读取当前 ThemeProvider 的有效 breakpoint 集合。DOM 实现不把 `sm / md / lg / xl` 的媒体查询写死在静态 stylesheet 中，而是根据当前主题生成对应的低 specificity breakpoint class。
 
 嵌套 ThemeProvider 可以具有不同 breakpoint 配置；生成的响应式规则只作用于带有对应 breakpoint class 的组件实例，不污染外层或相邻主题作用域。
 
@@ -2425,6 +2425,7 @@ placeholder
 disabled
 placement
 offset
+overlapTrigger
 viewportPadding
 open
 defaultOpen
@@ -7256,10 +7257,11 @@ Weave 公开 API
 │  ├─ Input / Button / Link / Card
 │  ├─ Slider / Switch / Radio / Checkbox
 │  ├─ Progress / Skeleton / Divider
-│  ├─ Badge / ToolTip / Popover
+│  ├─ Badge / ToolTip / Popover / Dialog
 │  ├─ Select / SelectOption
 │  ├─ Combobox / ComboboxOption
 │  ├─ Menu / MenuItem
+│  ├─ Tabs / TabList / Tab / TabPanel
 │  ├─ Snack
 │  └─ List / ListItem
 │
@@ -7330,7 +7332,7 @@ CSS variables + runtime classes + framework stylesheet
 11. 不暴露 `as`、`asChild` 或底层 HTML 标签选择权。
 12. CSS 是内部实现与语义基础，但公开 API 应提供高层、语义化属性。
 13. `style` 保留为原始 CSS 逃生口。
-14. 除 `style` 外，所有表示尺度的无单位数字统一按 `rem`。
+14. 除 `style` 与组件规范明确声明的像素单位例外外，所有表示尺度的无单位数字统一按 `rem`；当前像素例外只有 `Divider.size` 与 `Tabs.indicatorThickness`。
 15. 所有表示时间的裸数字统一按毫秒（`ms`）。
 16. 组件公开 `size` 只接受该组件定义的语义尺寸值，不接受数字。
 17. 样式最终优先级为 `style > className > 属性体系`。

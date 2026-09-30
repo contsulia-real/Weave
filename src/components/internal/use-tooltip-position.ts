@@ -64,6 +64,7 @@ export function useToolTipPosition(
   present: boolean,
   placement: ToolTipPlacement,
   offset: string,
+  targetIdentity?: unknown,
 ) {
   const [position, setPosition] = useState<AnchorPosition>({
     left: 0,
@@ -87,7 +88,7 @@ export function useToolTipPosition(
     return trackVisualAnchor(target, applyPosition, {
       trackScroll: true,
     })
-  }, [placement, present, targetRef])
+  }, [placement, present, targetIdentity, targetRef])
 
   return {
     positioned,

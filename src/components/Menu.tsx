@@ -42,7 +42,7 @@ export function Menu({
     onOpenChange,
   )
   const pendingFocusRef = useRef<MenuInitialFocus>('first')
-  const wrapperRef = useRef<HTMLSpanElement>(null)
+  const wrapperRef = useRef<HTMLDivElement>(null)
   const targetRef = useRef<HTMLElement | null>(null)
   const panelRef = useRef<HTMLDivElement>(null)
   const reactId = useId()
@@ -113,6 +113,7 @@ export function Menu({
     viewportPadding,
     'center',
     overlapTrigger,
+    trigger,
   )
 
   const rootContext = useMemo(
@@ -175,7 +176,7 @@ export function Menu({
 
   return (
     <>
-      <span
+      <div
         ref={wrapperRef}
         data-weave-menu-anchor=""
         style={{
@@ -183,7 +184,7 @@ export function Menu({
         }}
       >
         {trigger}
-      </span>
+      </div>
       {portal}
     </>
   )

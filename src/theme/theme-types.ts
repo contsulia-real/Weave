@@ -332,7 +332,7 @@ export interface ButtonThemeSize {
   paddingX?: ThemeScaleValue
   paddingY?: ThemeScaleValue
   gap?: ThemeScaleValue
-  typo?: string
+  typo?: TextTypo
 }
 
 export interface ButtonThemeVariant {

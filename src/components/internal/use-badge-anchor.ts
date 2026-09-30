@@ -29,7 +29,7 @@ function setAnchorVariables(wrapper: HTMLElement, target: HTMLElement): VisualRe
 }
 
 export function useBadgeAnchor(
-  wrapperRef: RefObject<HTMLSpanElement | null>,
+  wrapperRef: RefObject<HTMLDivElement | null>,
   children: ReactNode,
 ): void {
   useLayoutEffect(() => {

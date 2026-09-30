@@ -25,7 +25,7 @@ export type TabViewProps = Omit<
 
 export type TabPanelViewProps = Omit<
   ViewCoreProps<HTMLDivElement>,
-  'children' | 'role' | 'hidden'
+  'children' | 'role' | 'hidden' | 'labelledBy'
 > &
   ViewDynamicBreakpointProps & {
     ref?: Ref<HTMLDivElement>

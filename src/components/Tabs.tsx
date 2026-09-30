@@ -55,7 +55,19 @@ function collectTabDescriptors(children: ReactNode): TabDescriptor[] {
 }
 
 function valueToken(value: string): string {
-  return encodeURIComponent(value).replace(/%/g, '_')
+  return encodeURIComponent(value)
+}
+
+function assertUniqueTabValues(descriptors: readonly TabDescriptor[]): void {
+  const values = new Set<string>()
+
+  for (const descriptor of descriptors) {
+    if (values.has(descriptor.value)) {
+      throw new Error(`Tab value "${descriptor.value}" must be unique within Tabs`)
+    }
+
+    values.add(descriptor.value)
+  }
 }
 
 export function Tabs({
@@ -71,7 +83,11 @@ export function Tabs({
 }: TabsProps) {
   useInsertionEffect(ensureTabsStylesheet, [])
 
-  const descriptors = useMemo(() => collectTabDescriptors(children), [children])
+  const descriptors = useMemo(() => {
+    const collected = collectTabDescriptors(children)
+    assertUniqueTabValues(collected)
+    return collected
+  }, [children])
   const enabledValues = useMemo(
     () => descriptors.filter((tab) => !tab.disabled).map((tab) => tab.value),
     [descriptors],

@@ -20,7 +20,7 @@ export function Badge({
 }: BadgeProps) {
   const { theme, reducedMotion } = useTheme()
   const themeClassName = useRuntimeStyleClass('badge-theme', resolveBadgeTheme(theme))
-  const hostProps: ViewProps<HTMLSpanElement> = viewProps
+  const hostProps: ViewProps<HTMLDivElement> = viewProps
   const { elementRef, className, inlineStyle, resolved } = useViewHost(hostProps)
   const dot = content.dot === true
   const exitDuration = durationMilliseconds(theme.tokens.motion?.duration?.fast, 120)
@@ -30,7 +30,7 @@ export function Badge({
   useInsertionEffect(ensureBadgeStylesheet, [])
 
   return (
-    <span
+    <div
       {...resolved.domProps}
       ref={elementRef}
       data-weave-view=""
@@ -65,6 +65,6 @@ export function Badge({
           {dot ? null : <Text typo={theme.components.Badge?.base?.typo}>{content.text}</Text>}
         </span>
       ) : null}
-    </span>
+    </div>
   )
 }

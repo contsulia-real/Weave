@@ -21,6 +21,7 @@ describe('Badge', () => {
     const anchor = badge.closest('[data-weave-badge-anchor]') as HTMLElement
 
     expect(anchor).not.toBeNull()
+    expect(anchor.tagName).toBe('DIV')
     expect(anchor.dataset.weaveBadgePlacement).toBe('top-right')
     expect(badge.getAttribute('data-weave-badge-dot')).toBe('false')
     expect(text.dataset.weaveText).toBe('')

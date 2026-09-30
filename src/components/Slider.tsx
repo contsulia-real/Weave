@@ -70,18 +70,20 @@ export function Slider({
   const generatedId = useId()
   const sliderId = viewProps.id ?? `weave-slider-${generatedId}`
   const labelId = `${sliderId}-label`
-  const labelledBy =
-    label === undefined
-      ? viewProps.labelledBy
-      : [viewProps.labelledBy, labelId].filter(Boolean).join(' ')
+  const { labelledBy, ...remainingViewProps } = viewProps
 
   const hostProps: ViewProps<HTMLInputElement> = {
-    ...viewProps,
+    ...remainingViewProps,
     id: sliderId,
     disabled,
-    labelledBy,
+    labelledBy: label === undefined ? labelledBy : undefined,
   }
-  const { elementRef, className, inlineStyle, resolved } = useViewHost(hostProps)
+  const { elementRef, className, inlineStyle, resolved } = useViewHost(
+    hostProps,
+    undefined,
+    undefined,
+    label === undefined ? undefined : { labelledBy: [labelledBy, labelId] },
+  )
 
   const controlRef = useRef<HTMLSpanElement>(null)
   const thumbRef = useRef<HTMLSpanElement>(null)
