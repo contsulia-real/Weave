@@ -117,9 +117,14 @@ export function FormPlayground() {
         description="三档语义尺寸；hover 时 thumb 轻微增强，拖动时产生抓取反馈并直接跟手，释放后 spring 归位。"
       >
         <Row gap={1.5} align="center" wrap>
-          <Switch size="small" label="Small" />
+          <Switch size="small" label="Small" viewProps={{ data: { testid: 'switch-small' } }} />
 
-          <Switch size="medium" defaultChecked label="Medium" />
+          <Switch
+            size="medium"
+            defaultChecked
+            label="Medium"
+            viewProps={{ data: { testid: 'switch-medium' } }}
+          />
 
           <Switch size="large" label="Large" />
 

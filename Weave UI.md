@@ -4278,25 +4278,28 @@ progress = (value - min) / (max - min)
 
 已选部分使用 `fillColor`；未选部分使用 `trackColor`。当 `max <= min` 时 progress 固定为 0。
 
-默认：
+Slider 默认不复制一套独立的轨道视觉。未显式覆盖 Slider theme 时：
 
 ```text
-trackColor =
-  color-mix(in srgb, var(--weave-color-outline) 34%, var(--weave-color-surface))
-fillColor = primary
+trackColor  = theme.components.Switch.base.background
+trackShadow = theme.components.Switch.base.trackShadow
+fillColor   = theme.components.Switch.states.checked.background
 ```
+
+因此 light / dark mode 与后续 Switch 视觉调整会直接传递到 Slider，避免两个基础输入控件逐渐形成平行设计语言。
 
 ## 18.15.6 Thumb 与状态
 
-默认 thumb：
+默认 thumb 同样直接继承 Switch 的 resolved surface：
 
 ```text
-background  = surface
-borderColor = outline
-borderWidth = 0.0625rem
+background  = theme.components.Switch.base.thumbBackground
+shadow      = theme.components.Switch.base.thumbShadow
+hoverShadow = theme.components.Switch.base.thumbHoverShadow
+borderWidth = 0
 ```
 
-thumb 使用轻量实体 shadow；hover 增强 shadow；active 使用 press shadow，并复用全局 feedback press scale 形成轻微压下反馈。
+Slider 仍允许通过自身 theme 覆盖这些值。active 默认继续使用 Switch 的 thumb shadow，并复用全局 feedback press scale 形成轻微压下反馈。
 
 focus-visible 使用统一 `focus` outline。
 
@@ -4319,6 +4322,7 @@ theme.components.Slider
 
 ```text
 base.trackColor
+base.trackShadow
 base.fillColor
 base.thumbBackground
 base.thumbBorderColor

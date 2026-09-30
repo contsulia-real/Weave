@@ -569,23 +569,8 @@ export const defaultTheme: ResolvedTheme = {
     },
     Slider: {
       base: {
-        trackColor:
-          'color-mix(in srgb, var(--weave-color-outline) 34%, var(--weave-color-surface))',
-        fillColor: 'primary',
-        thumbBackground: 'surface',
         thumbBorderColor: 'outline',
-        thumbBorderWidth: 0.0625,
-        thumbShadow:
-          '0 0.0625rem 0.125rem rgb(58 48 40 / 0.18), 0 0.125rem 0.25rem rgb(58 48 40 / 0.08)',
-        thumbHoverShadow:
-          '0 0.0625rem 0.125rem rgb(58 48 40 / 0.22), 0 0.1875rem 0.375rem rgb(58 48 40 / 0.12)',
-        thumbPressShadow:
-          '0 0.03125rem 0.0625rem rgb(58 48 40 / 0.18), 0 0.0625rem 0.125rem rgb(58 48 40 / 0.08)',
-        cursor: 'pointer',
-        focusOutlineWidth: 0.125,
-        focusOutlineColor: 'focus',
-        focusOutlineStyle: 'solid',
-        focusOutlineOffset: controlBaseline.focusOutlineOffset,
+        thumbBorderWidth: 0,
       },
       sizes: {
         small: {
@@ -599,12 +584,6 @@ export const defaultTheme: ResolvedTheme = {
         large: {
           trackHeight: 0.5,
           thumbSize: 1.5,
-        },
-      },
-      states: {
-        disabled: {
-          opacity: 0.5,
-          cursor: 'default',
         },
       },
     },

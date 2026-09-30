@@ -69,15 +69,47 @@ test('Playground Slider exposes the frozen size and visual defaults', async ({ p
 
   const mediumVisual = await medium.evaluate((element) => {
     const computed = getComputedStyle(element)
+    const thumb = getComputedStyle(element, '::-moz-range-thumb')
+    const track = getComputedStyle(element, '::-moz-range-track')
+    const progress = getComputedStyle(element, '::-moz-range-progress')
+
     return {
       backgroundImage: computed.backgroundImage,
       cursor: computed.cursor,
       outlineWidth: computed.outlineWidth,
+      thumbBackground: thumb.backgroundColor,
+      thumbShadow: thumb.boxShadow,
+      trackBackground: track.backgroundColor,
+      trackShadow: track.boxShadow,
+      progressBackground: progress.backgroundColor,
     }
   })
   expect(mediumVisual.backgroundImage).toContain('linear-gradient')
   expect(mediumVisual.cursor).toBe('pointer')
   expect(mediumVisual.outlineWidth).toBe('0px')
+
+  const switchOff = page.locator('[data-testid="switch-small"]')
+  const switchOn = page.locator('[data-testid="switch-medium"]')
+  const switchVisual = await Promise.all([
+    switchOff.evaluate((element) => {
+      const computed = getComputedStyle(element)
+      return {
+        background: computed.backgroundColor,
+        shadow: computed.boxShadow,
+      }
+    }),
+    switchOn.evaluate((element) => getComputedStyle(element).backgroundColor),
+    switchOn.locator('.weave-switch__thumb').evaluate((element) => ({
+      background: getComputedStyle(element).backgroundColor,
+      shadow: getComputedStyle(element).boxShadow,
+    })),
+  ])
+
+  expect(mediumVisual.trackBackground).toBe(switchVisual[0].background)
+  expect(mediumVisual.trackShadow).toBe(switchVisual[0].shadow)
+  expect(mediumVisual.progressBackground).toBe(switchVisual[1])
+  expect(mediumVisual.thumbBackground).toBe(switchVisual[2].background)
+  expect(mediumVisual.thumbShadow).toBe(switchVisual[2].shadow)
 
   await expect(custom).toHaveAttribute('min', '-20')
   await expect(custom).toHaveAttribute('max', '20')

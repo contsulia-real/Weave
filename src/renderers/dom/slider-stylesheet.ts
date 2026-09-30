@@ -54,30 +54,33 @@ const stylesheet = `
   --weave-component-cursor: var(--weave-slider-disabled-cursor);
 }
 
-:where(.weave-slider::-webkit-slider-runnable-track) {
+.weave-slider::-webkit-slider-runnable-track {
   width: 100%;
   height: var(--weave-slider-track-height);
   border: 0;
   border-radius: var(--weave-radius-full);
   background: transparent;
+  box-shadow: var(--weave-slider-track-shadow);
 }
 
-:where(.weave-slider::-moz-range-track) {
+.weave-slider::-moz-range-track {
   width: 100%;
   height: var(--weave-slider-track-height);
   border: 0;
   border-radius: var(--weave-radius-full);
-  background: transparent;
+  background: var(--weave-slider-track-color);
+  box-shadow: var(--weave-slider-track-shadow);
 }
 
-:where(.weave-slider::-moz-range-progress) {
+.weave-slider::-moz-range-progress {
   height: var(--weave-slider-track-height);
   border: 0;
   border-radius: var(--weave-radius-full);
-  background: transparent;
+  background: var(--weave-slider-fill-color);
+  box-shadow: var(--weave-slider-track-shadow);
 }
 
-:where(.weave-slider::-webkit-slider-thumb) {
+.weave-slider::-webkit-slider-thumb {
   width: var(--weave-slider-thumb-size);
   height: var(--weave-slider-thumb-size);
   margin-top: calc((var(--weave-slider-track-height) - var(--weave-slider-thumb-size)) / 2);
@@ -93,7 +96,7 @@ const stylesheet = `
     transform var(--weave-motion-duration-fast) var(--weave-motion-curve-standard);
 }
 
-:where(.weave-slider::-moz-range-thumb) {
+.weave-slider::-moz-range-thumb {
   width: var(--weave-slider-thumb-size);
   height: var(--weave-slider-thumb-size);
   box-sizing: border-box;
@@ -107,20 +110,20 @@ const stylesheet = `
     transform var(--weave-motion-duration-fast) var(--weave-motion-curve-standard);
 }
 
-:where(.weave-slider:hover:not(:disabled)::-webkit-slider-thumb) {
+.weave-slider:hover:not(:disabled)::-webkit-slider-thumb {
   box-shadow: var(--weave-slider-thumb-hover-shadow);
 }
 
-:where(.weave-slider:hover:not(:disabled)::-moz-range-thumb) {
+.weave-slider:hover:not(:disabled)::-moz-range-thumb {
   box-shadow: var(--weave-slider-thumb-hover-shadow);
 }
 
-:where(.weave-slider:active:not(:disabled)::-webkit-slider-thumb) {
+.weave-slider:active:not(:disabled)::-webkit-slider-thumb {
   box-shadow: var(--weave-slider-thumb-press-shadow);
   transform: scale(var(--weave-feedback-press-scale));
 }
 
-:where(.weave-slider:active:not(:disabled)::-moz-range-thumb) {
+.weave-slider:active:not(:disabled)::-moz-range-thumb {
   box-shadow: var(--weave-slider-thumb-press-shadow);
   transform: scale(var(--weave-feedback-press-scale));
 }

@@ -81,12 +81,56 @@ describe('Slider', () => {
     expect(slider.style.getPropertyValue('--weave-slider-progress')).toBe('62.5%')
   })
 
+  it('inherits the tactile surface language from Switch by default', () => {
+    const theme = createTheme({
+      components: {
+        Switch: {
+          base: {
+            background: 'warning',
+            trackShadow: 'inset 0 2px 3px black',
+            thumbBackground: 'tertiary',
+            thumbShadow: '0 2px 3px black',
+            thumbHoverShadow: '0 3px 5px black',
+            cursor: 'grab',
+          },
+          states: {
+            checked: {
+              background: 'success',
+            },
+            disabled: {
+              opacity: 0.35,
+              cursor: 'not-allowed',
+            },
+          },
+        },
+      },
+    })
+
+    const { getByTestId } = render(
+      <ThemeProvider theme={theme}>
+        <Slider viewProps={{ data: { testid: 'slider' } }} />
+      </ThemeProvider>,
+    )
+
+    const rule = runtimeRule(getByTestId('slider'), 'weave-slider-theme-')
+    expect(rule).toContain('--weave-slider-track-color:var(--weave-color-warning,warning);')
+    expect(rule).toContain('--weave-slider-track-shadow:inset02px3pxblack;')
+    expect(rule).toContain('--weave-slider-fill-color:var(--weave-color-success,success);')
+    expect(rule).toContain('--weave-slider-thumb-background:var(--weave-color-tertiary,tertiary);')
+    expect(rule).toContain('--weave-slider-thumb-shadow:02px3pxblack;')
+    expect(rule).toContain('--weave-slider-thumb-hover-shadow:03px5pxblack;')
+    expect(rule).toContain('--weave-slider-cursor:grab;')
+    expect(rule).toContain('--weave-slider-disabled-opacity:0.35;')
+    expect(rule).toContain('--weave-slider-disabled-cursor:not-allowed;')
+  })
+
   it('resolves Slider theme customization', () => {
     const theme = createTheme({
       components: {
         Slider: {
           base: {
             trackColor: 'secondary',
+            trackShadow: 'inset 0 1px 2px black',
             fillColor: 'success',
             thumbBackground: 'surface',
             thumbBorderColor: 'primary',
@@ -120,6 +164,7 @@ describe('Slider', () => {
 
     const rule = runtimeRule(getByTestId('slider'), 'weave-slider-theme-')
     expect(rule).toContain('--weave-slider-track-color:var(--weave-color-secondary,secondary);')
+    expect(rule).toContain('--weave-slider-track-shadow:inset01px2pxblack;')
     expect(rule).toContain('--weave-slider-fill-color:var(--weave-color-success,success);')
     expect(rule).toContain('--weave-slider-thumb-border-width:0.125rem;')
     expect(rule).toContain('--weave-slider-track-height:0.5rem;')

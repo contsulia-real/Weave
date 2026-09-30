@@ -145,6 +145,7 @@ export interface ComboboxTheme {
 
 export interface SliderThemeBase {
   trackColor?: string
+  trackShadow?: string
   fillColor?: string
   thumbBackground?: string
   thumbBorderColor?: string

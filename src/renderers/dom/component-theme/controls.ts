@@ -113,25 +113,36 @@ export function resolveSliderTheme(
   const base = component?.base
   const sized = component?.sizes?.[size]
   const disabled = component?.states?.disabled
+  const switchBase = theme.components.Switch?.base
+  const switchChecked = theme.components.Switch?.states?.checked
+  const switchDisabled = theme.components.Switch?.states?.disabled
 
   return {
-    '--weave-slider-track-color': color(base?.trackColor),
-    '--weave-slider-fill-color': color(base?.fillColor),
+    '--weave-slider-track-color': color(base?.trackColor ?? switchBase?.background),
+    '--weave-slider-track-shadow': base?.trackShadow ?? switchBase?.trackShadow,
+    '--weave-slider-fill-color': color(base?.fillColor ?? switchChecked?.background),
     '--weave-slider-track-height': length(sized?.trackHeight),
     '--weave-slider-thumb-size': length(sized?.thumbSize),
-    '--weave-slider-thumb-background': color(base?.thumbBackground),
+    '--weave-slider-thumb-background': color(base?.thumbBackground ?? switchBase?.thumbBackground),
     '--weave-slider-thumb-border-color': color(base?.thumbBorderColor),
     '--weave-slider-thumb-border-width': length(base?.thumbBorderWidth),
-    '--weave-slider-thumb-shadow': base?.thumbShadow,
-    '--weave-slider-thumb-hover-shadow': base?.thumbHoverShadow,
-    '--weave-slider-thumb-press-shadow': base?.thumbPressShadow,
-    '--weave-slider-cursor': base?.cursor,
-    '--weave-slider-focus-outline-width': length(base?.focusOutlineWidth),
-    '--weave-slider-focus-outline-color': color(base?.focusOutlineColor),
-    '--weave-slider-focus-outline-style': base?.focusOutlineStyle,
-    '--weave-slider-focus-outline-offset': length(base?.focusOutlineOffset),
-    '--weave-slider-disabled-opacity': disabled?.opacity,
-    '--weave-slider-disabled-cursor': disabled?.cursor,
+    '--weave-slider-thumb-shadow': base?.thumbShadow ?? switchBase?.thumbShadow,
+    '--weave-slider-thumb-hover-shadow': base?.thumbHoverShadow ?? switchBase?.thumbHoverShadow,
+    '--weave-slider-thumb-press-shadow':
+      base?.thumbPressShadow ?? base?.thumbShadow ?? switchBase?.thumbShadow,
+    '--weave-slider-cursor': base?.cursor ?? switchBase?.cursor,
+    '--weave-slider-focus-outline-width': length(
+      base?.focusOutlineWidth ?? switchBase?.focusOutlineWidth,
+    ),
+    '--weave-slider-focus-outline-color': color(
+      base?.focusOutlineColor ?? switchBase?.focusOutlineColor,
+    ),
+    '--weave-slider-focus-outline-style': base?.focusOutlineStyle ?? switchBase?.focusOutlineStyle,
+    '--weave-slider-focus-outline-offset': length(
+      base?.focusOutlineOffset ?? switchBase?.focusOutlineOffset,
+    ),
+    '--weave-slider-disabled-opacity': disabled?.opacity ?? switchDisabled?.opacity,
+    '--weave-slider-disabled-cursor': disabled?.cursor ?? switchDisabled?.cursor,
   }
 }
 
