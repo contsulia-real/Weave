@@ -156,7 +156,7 @@ export function Switch({
     <>
       {formValue}
       <label
-        className="weave-switch-field"
+        className={['weave-switch-field', themeClassName].filter(Boolean).join(' ')}
         data-weave-switch-field=""
         data-weave-switch-disabled={disabled ? 'true' : 'false'}
         htmlFor={switchId}

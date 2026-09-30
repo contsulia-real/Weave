@@ -54,16 +54,19 @@ describe('Switch', () => {
     expect(element.getAttribute('aria-checked')).toBe('false')
   })
 
-  it('binds a visible label that toggles and names the native button host', () => {
+  it('binds a visible label that toggles, names the native button host, and receives theme spacing', () => {
     const onChange = vi.fn()
     const { getByRole, getByText } = render(<Switch label="Wi-Fi" onChange={onChange} />)
 
     const element = getByRole('switch', {
       name: 'Wi-Fi',
     }) as HTMLButtonElement
+    const field = element.closest<HTMLElement>('[data-weave-switch-field]')
 
     expect(element.tagName).toBe('BUTTON')
     expect(element.type).toBe('button')
+    expect(field).not.toBeNull()
+    expect(runtimeRule(field!, 'weave-switch-theme-')).toContain('--weave-switch-field-gap:0.5rem;')
 
     fireEvent.click(getByText('Wi-Fi'))
 

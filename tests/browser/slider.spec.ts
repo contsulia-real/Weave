@@ -283,6 +283,9 @@ test('Playground Slider expresses recessed inactive track, raised active surface
 
   const switchOff = page.locator('[data-testid="switch-small"]')
   const switchOn = page.locator('[data-testid="switch-medium"]')
+  const switchField = switchOn.locator('xpath=ancestor::*[@data-weave-switch-field][1]')
+  await expect(switchField).toHaveCSS('column-gap', '8px')
+
   const switchVisual = await Promise.all([
     switchOff.evaluate((element) => {
       const computed = getComputedStyle(element)
