@@ -1,6 +1,5 @@
 import type { MotionSpring, ViewAnimationConfig } from '../core/motion-types'
 import type { TextTypo } from '../core/text-types'
-import type { ShadowValue } from '../core/view-types'
 
 export type ThemeMode = 'light' | 'dark' | 'system'
 
@@ -269,7 +268,9 @@ export interface CardThemeBase {
   borderWidth?: ThemeScaleValue
   radius?: ThemeScaleValue
   padding?: ThemeScaleValue
-  shadow?: ShadowValue
+  restDepth?: ThemeScaleValue
+  hoverDepth?: ThemeScaleValue
+  pressDepth?: ThemeScaleValue
   depthColor?: string
   hoverBackground?: string
   activeBackground?: string

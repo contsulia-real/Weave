@@ -175,7 +175,7 @@ export function FoundationActionPlayground() {
 
       <PlaygroundSection
         title="Card"
-        description="Card 默认是实体表面；clickable 与 selectable 可独立开启，同时开启时一次 Card activation 同时执行 click 与 selection toggle。内部交互控件仍拥有自己的事件。"
+        description="Card 始终具有弱于 Button 的轻量实体 depth；clickable 与 selectable 可独立开启，同时开启时一次 Card activation 同时执行 click 与 selection toggle。内部交互控件仍拥有自己的事件。"
       >
         <CardPlayground />
       </PlaygroundSection>

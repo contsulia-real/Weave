@@ -1,5 +1,5 @@
 import type { ButtonVariant } from '../../../core/button-types'
-import { color, length, radius, shadow } from '../../../core/values'
+import { color, length, radius } from '../../../core/values'
 import { typographyStyleVariableReference } from '../../../theme/theme-css'
 import type { ResolvedTheme } from '../../../theme/theme-types'
 import type { RuntimeStyleDeclarations, RuntimeStyleValue } from '../runtime-class'
@@ -61,7 +61,9 @@ export function resolveCardTheme(theme: ResolvedTheme): RuntimeStyleDeclarations
     '--weave-card-theme-border-width': length(base?.borderWidth),
     '--weave-card-theme-radius': radius(base?.radius),
     '--weave-card-theme-padding': length(base?.padding),
-    '--weave-card-theme-shadow': shadow(base?.shadow),
+    '--weave-card-theme-rest-depth': length(base?.restDepth),
+    '--weave-card-theme-hover-depth': length(base?.hoverDepth),
+    '--weave-card-theme-press-depth': length(base?.pressDepth),
     '--weave-card-theme-depth-color': color(base?.depthColor),
     '--weave-card-theme-hover-background': color(base?.hoverBackground),
     '--weave-card-theme-active-background': color(base?.activeBackground),

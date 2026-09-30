@@ -6,6 +6,10 @@ function BrowserFixture() {
       <Column gap={2}>
         <Text typo="title-large">Firefox scroll regression fixture</Text>
 
+        <Card viewProps={{ width: 20, data: { testid: 'passive-card' } }}>
+          <Text typo="title-small">Passive Card</Text>
+        </Card>
+
         <Card
           clickable
           selectable

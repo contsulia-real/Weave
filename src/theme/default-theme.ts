@@ -516,7 +516,9 @@ export const defaultTheme: ResolvedTheme = {
         borderWidth: 0.0625,
         radius: 'large',
         padding: 1,
-        shadow: 'small',
+        restDepth: 0.125,
+        hoverDepth: 0.1875,
+        pressDepth: 0.03125,
         selectedBackground:
           'color-mix(in srgb, var(--weave-color-primary) 10%, var(--weave-color-surface))',
         selectedBorderColor: 'primary',

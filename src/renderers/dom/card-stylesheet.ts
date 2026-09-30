@@ -20,7 +20,8 @@ const stylesheet = `
   --weave-component-padding-right: var(--weave-card-theme-padding);
   --weave-component-padding-bottom: var(--weave-card-theme-padding);
   --weave-component-padding-left: var(--weave-card-theme-padding);
-  --weave-component-box-shadow: var(--weave-card-theme-shadow);
+  --weave-component-box-shadow:
+    0 var(--weave-card-theme-rest-depth) 0 var(--weave-card-theme-depth-color);
   --weave-component-outline-width: 0;
   --weave-component-transform: translateY(0) scale(1);
   --weave-component-transition-property:
@@ -40,8 +41,6 @@ const stylesheet = `
 
 :where(.weave-card[data-weave-card-interactive="true"]) {
   --weave-component-cursor: var(--weave-card-theme-cursor);
-  --weave-component-box-shadow:
-    0 var(--weave-feedback-rest-depth) 0 var(--weave-card-theme-depth-color);
 }
 
 :where(.weave-card[aria-pressed="true"]) {
@@ -57,7 +56,7 @@ const stylesheet = `
     translateY(calc(-1 * var(--weave-feedback-hover-lift)))
     scale(var(--weave-feedback-hover-scale));
   --weave-component-box-shadow:
-    0 var(--weave-feedback-hover-depth) 0 var(--weave-card-theme-depth-color);
+    0 var(--weave-card-theme-hover-depth) 0 var(--weave-card-theme-depth-color);
 }
 
 :where(
@@ -71,7 +70,7 @@ const stylesheet = `
     translateY(var(--weave-feedback-press-offset))
     scale(var(--weave-feedback-press-scale));
   --weave-component-box-shadow:
-    0 var(--weave-feedback-press-depth) 0 var(--weave-card-theme-depth-color);
+    0 var(--weave-card-theme-press-depth) 0 var(--weave-card-theme-depth-color);
 }
 
 :where(

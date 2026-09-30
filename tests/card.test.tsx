@@ -36,7 +36,9 @@ describe('Card', () => {
     expect(themeRule).toContain('--weave-card-theme-border-width:0.0625rem;')
     expect(themeRule).toContain('--weave-card-theme-radius:var(--weave-radius-large);')
     expect(themeRule).toContain('--weave-card-theme-padding:1rem;')
-    expect(themeRule).toContain('--weave-card-theme-shadow:var(--weave-shadow-small);')
+    expect(themeRule).toContain('--weave-card-theme-rest-depth:0.125rem;')
+    expect(themeRule).toContain('--weave-card-theme-hover-depth:0.1875rem;')
+    expect(themeRule).toContain('--weave-card-theme-press-depth:0.03125rem;')
     expect(themeRule).toContain('--weave-card-theme-depth-color:color-mix(')
     expect(themeRule).toContain(
       '--weave-card-theme-hover-background:var(--weave-color-surfaceHover,surfaceHover);',
@@ -189,7 +191,9 @@ describe('Card', () => {
             borderWidth: 0.125,
             radius: 'medium',
             padding: 1.5,
-            shadow: 'medium',
+            restDepth: 0.1,
+            hoverDepth: 0.15,
+            pressDepth: 0.025,
             depthColor: 'danger',
             hoverBackground: 'secondary',
             activeBackground: 'warning',
@@ -216,7 +220,9 @@ describe('Card', () => {
     expect(themeRule).toContain('--weave-card-theme-border-width:0.125rem;')
     expect(themeRule).toContain('--weave-card-theme-radius:var(--weave-radius-medium);')
     expect(themeRule).toContain('--weave-card-theme-padding:1.5rem;')
-    expect(themeRule).toContain('--weave-card-theme-shadow:var(--weave-shadow-medium);')
+    expect(themeRule).toContain('--weave-card-theme-rest-depth:0.1rem;')
+    expect(themeRule).toContain('--weave-card-theme-hover-depth:0.15rem;')
+    expect(themeRule).toContain('--weave-card-theme-press-depth:0.025rem;')
     expect(themeRule).toContain('--weave-card-theme-depth-color:var(--weave-color-danger,danger);')
     expect(themeRule).toContain(
       '--weave-card-theme-hover-background:var(--weave-color-secondary,secondary);',
