@@ -1,7 +1,89 @@
 import { IconArrowRight, IconPlus, IconSearchFilled, IconSettings } from '@tabler/icons-react'
 import { useState } from 'react'
-import { Badge, Button, Column, Icon, Link, Row, Text, ToolTip } from '../index'
+import { Badge, Button, Card, Column, Icon, Link, Row, Text, ToolTip } from '../index'
 import { PlaygroundSection } from './PlaygroundSection'
+
+function CardPlayground() {
+  const [selectableSelected, setSelectableSelected] = useState(false)
+  const [combinedSelected, setCombinedSelected] = useState(false)
+  const [clickCount, setClickCount] = useState(0)
+  const [combinedClickCount, setCombinedClickCount] = useState(0)
+  const [innerClickCount, setInnerClickCount] = useState(0)
+
+  return (
+    <Column gap={1}>
+      <Row gap={1} align="stretch" wrap>
+        <Card>
+          <Column gap={0.375}>
+            <Text typo="label-large">Passive</Text>
+            <Text typo="body-small" color="secondary">
+              Default entity surface only.
+            </Text>
+          </Column>
+        </Card>
+
+        <Card
+          clickable
+          viewProps={{
+            label: 'Clickable Card',
+            onClick: () => setClickCount((current) => current + 1),
+          }}
+        >
+          <Column gap={0.375}>
+            <Text typo="label-large">Clickable</Text>
+            <Text typo="body-small" color="secondary">
+              activations: {clickCount}
+            </Text>
+          </Column>
+        </Card>
+
+        <Card
+          selectable
+          selected={selectableSelected}
+          onSelectedChange={setSelectableSelected}
+          viewProps={{ label: 'Selectable Card' }}
+        >
+          <Column gap={0.375}>
+            <Text typo="label-large">Selectable</Text>
+            <Text typo="body-small" color="secondary">
+              selected: {selectableSelected ? 'true' : 'false'}
+            </Text>
+          </Column>
+        </Card>
+
+        <Card
+          clickable
+          selectable
+          selected={combinedSelected}
+          onSelectedChange={setCombinedSelected}
+          viewProps={{
+            label: 'Clickable and selectable Card',
+            onClick: () => setCombinedClickCount((current) => current + 1),
+          }}
+        >
+          <Column gap={0.5}>
+            <Text typo="label-large">Clickable + selectable</Text>
+            <Text typo="body-small" color="secondary">
+              activations: {combinedClickCount} · selected: {combinedSelected ? 'true' : 'false'}
+            </Text>
+            <Button
+              text={`Inner action · ${innerClickCount}`}
+              size="small"
+              variant="secondary"
+              viewProps={{
+                onClick: () => setInnerClickCount((current) => current + 1),
+              }}
+            />
+          </Column>
+        </Card>
+      </Row>
+
+      <Text typo="body-small" color="secondary">
+        The inner Button owns its interaction; clicking it does not activate or select the Card.
+      </Text>
+    </Column>
+  )
+}
 
 function BadgeMotionPlayground() {
   const [visible, setVisible] = useState(true)
@@ -89,6 +171,13 @@ export function FoundationActionPlayground() {
             }}
           />
         </Column>
+      </PlaygroundSection>
+
+      <PlaygroundSection
+        title="Card"
+        description="Card 默认是实体表面；clickable 与 selectable 可独立开启，同时开启时一次 Card activation 同时执行 click 与 selection toggle。内部交互控件仍拥有自己的事件。"
+      >
+        <CardPlayground />
       </PlaygroundSection>
 
       <PlaygroundSection
