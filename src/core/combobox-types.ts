@@ -49,6 +49,7 @@ export interface ComboboxProps {
   filter?: ComboboxFilter
   emptyContent?: ReactNode
   placeholder?: string
+  name?: string
   disabled?: boolean
   clearable?: boolean
   clearLabel?: string

@@ -110,6 +110,21 @@ export const defaultDarkTheme: ThemeOverride = {
     },
   },
   components: {
+    Form: {
+      base: {
+        formGap: 'var(--weave-spacing-medium)',
+        fieldGap: 'var(--weave-spacing-small)',
+        fieldsetGap: 'var(--weave-spacing-medium)',
+        labelColor: 'tertiary',
+        labelTypo: 'label-medium',
+        descriptionColor: 'secondary',
+        descriptionTypo: 'body-small',
+        errorColor: 'danger',
+        errorTypo: 'body-small',
+        legendColor: 'tertiary',
+        legendTypo: 'label-large',
+      },
+    },
     Button: {
       variants: {
         secondary: {

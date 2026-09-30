@@ -43,7 +43,14 @@ function semanticContent(props: ButtonProps) {
 }
 
 export function Button(props: ButtonProps) {
-  const { variant = 'primary', size = 'medium', disabled = false, pressed, viewProps = {} } = props
+  const {
+    type = 'button',
+    variant = 'primary',
+    size = 'medium',
+    disabled = false,
+    pressed,
+    viewProps = {},
+  } = props
 
   const { theme } = useTheme()
   const themeClassName = useRuntimeStyleClass('button-theme', resolveButtonTheme(theme))
@@ -80,7 +87,7 @@ export function Button(props: ButtonProps) {
       {...resolved.domProps}
       {...responsiveAttributes}
       ref={elementRef}
-      type="button"
+      type={type}
       disabled={disabled}
       data-weave-view=""
       data-weave-button=""

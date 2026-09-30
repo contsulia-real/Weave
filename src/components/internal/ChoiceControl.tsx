@@ -1,11 +1,13 @@
 import type { ChangeEvent } from 'react'
-import { useInsertionEffect } from 'react'
+import { useCallback, useId, useInsertionEffect } from 'react'
 import type { CheckboxProps, ChoiceControlKind, RadioProps } from '../../core/choice-types'
 import type { ViewProps } from '../../core/view-types'
 import { ensureChoiceControlStylesheet } from '../../renderers/dom/choice-control-stylesheet'
 import { resolveChoiceControlTheme } from '../../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../../renderers/dom/runtime-class'
 import { useTheme } from '../../theme/theme-context'
+import { formFieldAssociationOverrides, useFormFieldContext } from './form-field-context'
+import { useFormReset } from './use-form-reset'
 import { useViewHost } from './use-view-host'
 
 type ChoiceControlProps = ({ kind: 'radio' } & RadioProps) | ({ kind: 'checkbox' } & CheckboxProps)
@@ -23,6 +25,9 @@ export function ChoiceControl({
   viewProps = {},
 }: ChoiceControlProps) {
   const { theme, reducedMotion } = useTheme()
+  const field = useFormFieldContext()
+  const generatedLabelId = useId().replace(/:/g, '')
+  const labelId = label === undefined ? undefined : `weave-choice-${generatedLabelId}-label`
   const themeClassName = useRuntimeStyleClass(
     `${kind}-theme`,
     resolveChoiceControlTheme(theme, kind as ChoiceControlKind, size),
@@ -30,9 +35,27 @@ export function ChoiceControl({
   const hostProps: ViewProps<HTMLInputElement> = {
     ...viewProps,
     disabled,
+    required: field?.required === true ? true : viewProps.required,
+    invalid: field?.invalid === true ? true : viewProps.invalid,
   }
-  const { elementRef, className, inlineStyle, resolved } = useViewHost(hostProps)
+  const { elementRef, className, inlineStyle, resolved } = useViewHost(
+    hostProps,
+    undefined,
+    undefined,
+    field === null
+      ? undefined
+      : {
+          ...formFieldAssociationOverrides(field, viewProps.labelledBy, viewProps.describedBy),
+          labelledBy: [viewProps.labelledBy, field.labelId, labelId],
+        },
+  )
+  const reset = useCallback(() => {
+    if (checked !== undefined && elementRef.current !== null) {
+      elementRef.current.checked = checked
+    }
+  }, [checked, elementRef])
 
+  useFormReset(elementRef, reset)
   useInsertionEffect(ensureChoiceControlStylesheet, [])
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -68,6 +91,7 @@ export function ChoiceControl({
           checked={checked}
           defaultChecked={defaultChecked}
           onChange={handleChange}
+          required={field?.required === true}
           disabled={disabled}
           data-weave-view=""
           data-weave-choice-control=""
@@ -104,7 +128,7 @@ export function ChoiceControl({
       </span>
 
       {label !== undefined ? (
-        <span className="weave-choice-label" data-weave-choice-label="">
+        <span id={labelId} className="weave-choice-label" data-weave-choice-label="">
           {label}
         </span>
       ) : null}

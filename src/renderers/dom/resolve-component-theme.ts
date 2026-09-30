@@ -16,6 +16,7 @@ export {
   resolveSliderTheme,
   resolveSwitchTheme,
 } from './component-theme/controls'
+export { resolveFormTheme } from './component-theme/form'
 export {
   resolveListItemTheme,
   resolveListTheme,

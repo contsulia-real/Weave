@@ -40,13 +40,13 @@ The main layers are:
 
 ### Composite UI
 
-`Accordion`, `AccordionItem`, `AccordionTrigger`, `AccordionPanel`, `ToolTip`, `Popover`, `Dialog`, `Menu`, `MenuItem`, `Tabs`, `TabList`, `Tab`, `TabPanel`, `Snack`, `SnackProvider`, `useSnack`, `List`, `ListItem`.
+`Form`, `FormField`, `FormLabel`, `FormDescription`, `FormError`, `FormFieldset`, `FormLegend`, `Accordion`, `AccordionItem`, `AccordionTrigger`, `AccordionPanel`, `ToolTip`, `Popover`, `Dialog`, `Menu`, `MenuItem`, `Tabs`, `TabList`, `Tab`, `TabPanel`, `Snack`, `SnackProvider`, `useSnack`, `List`, `ListItem`.
 
 ### Theme and application
 
 `ThemeProvider`, `useTheme`, `createTheme`, `defaultTheme`, `createRoot`.
 
-The root package also exports the public prop, motion and theme customization types, including component-level theme interfaces such as `ButtonTheme`, `CardTheme`, `AvatarTheme`, `DividerTheme`, `IconTheme`, `SkeletonTheme`, `SelectTheme`, `ComboboxTheme`, `SliderTheme`, `SwitchTheme`, `AccordionTheme`, `ToolTipTheme`, `PopoverTheme`, `MenuTheme`, `SnackTheme` and `ThemeComponents`.
+The root package also exports the public prop, motion and theme customization types, including component-level theme interfaces such as `ButtonTheme`, `CardTheme`, `AvatarTheme`, `DividerTheme`, `IconTheme`, `SkeletonTheme`, `SelectTheme`, `ComboboxTheme`, `SliderTheme`, `SwitchTheme`, `FormTheme`, `AccordionTheme`, `ToolTipTheme`, `PopoverTheme`, `MenuTheme`, `SnackTheme` and `ThemeComponents`.
 
 ## Basic usage
 
@@ -119,7 +119,7 @@ Theme definitions support tokens, component themes, dynamic breakpoints, light/d
 
 ## Playground
 
-The Vite application is the development playground for the framework. It dogfoods the public Weave API and contains interactive examples for layout, responsive behavior, motion, masks, form controls, Select, Badge, ToolTip, Popover, Menu with nested submenus, Snack, List, Scrollbar and other implemented capabilities.
+The Vite application is the development playground for the framework. It dogfoods the public Weave API and contains interactive examples for layout, responsive behavior, motion, masks, native Form / FormData behavior, form controls, Select, Badge, ToolTip, Popover, Menu with nested submenus, Snack, List, Scrollbar and other implemented capabilities.
 
 ```bash
 pnpm install

@@ -13,6 +13,8 @@ export interface SwitchProps {
   checked?: boolean
   defaultChecked?: boolean
   onChange?: (checked: boolean) => void
+  name?: string
+  value?: string
   disabled?: boolean
   label?: ReactNode
   size?: SwitchSize

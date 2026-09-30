@@ -44,6 +44,13 @@ const expectedRuntimeExports = [
   'ComboboxOption',
   'Dialog',
   'Flex',
+  'Form',
+  'FormDescription',
+  'FormError',
+  'FormField',
+  'FormFieldset',
+  'FormLabel',
+  'FormLegend',
   'Grid',
   'Icon',
   'Image',
@@ -152,6 +159,17 @@ assert(typeSource.includes('StackProps'), 'Built declarations are missing StackP
 assert(typeSource.includes('AvatarProps'), 'Built declarations are missing AvatarProps')
 assert(typeSource.includes('BadgeProps'), 'Built declarations are missing BadgeProps')
 assert(typeSource.includes('CardProps'), 'Built declarations are missing CardProps')
+assert(typeSource.includes('FormProps'), 'Built declarations are missing FormProps')
+assert(typeSource.includes('FormFieldProps'), 'Built declarations are missing FormFieldProps')
+assert(typeSource.includes('FormLabelProps'), 'Built declarations are missing FormLabelProps')
+assert(
+  typeSource.includes('FormDescriptionProps'),
+  'Built declarations are missing FormDescriptionProps',
+)
+assert(typeSource.includes('FormErrorProps'), 'Built declarations are missing FormErrorProps')
+assert(typeSource.includes('FormFieldsetProps'), 'Built declarations are missing FormFieldsetProps')
+assert(typeSource.includes('FormLegendProps'), 'Built declarations are missing FormLegendProps')
+assert(typeSource.includes('ButtonType'), 'Built declarations are missing ButtonType')
 assert(typeSource.includes('SkeletonProps'), 'Built declarations are missing SkeletonProps')
 assert(typeSource.includes('SliderProps'), 'Built declarations are missing SliderProps')
 assert(typeSource.includes('ListProps'), 'Built declarations are missing ListProps')
@@ -195,6 +213,8 @@ const expectedThemeTypeExports = [
   'CardTheme',
   'SkeletonTheme',
   'DialogTheme',
+  'FormTheme',
+  'FormThemeBase',
   'AccordionTheme',
   'AccordionThemeBase',
   'TabsTheme',

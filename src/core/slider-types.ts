@@ -13,6 +13,7 @@ export interface SliderProps {
   value?: number
   defaultValue?: number
   onChange?: (value: number) => void
+  name?: string
   min?: number
   max?: number
   step?: number

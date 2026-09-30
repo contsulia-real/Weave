@@ -1,5 +1,5 @@
 import type { ChangeEvent, CSSProperties } from 'react'
-import { useInsertionEffect, useState } from 'react'
+import { useCallback, useInsertionEffect, useState } from 'react'
 import type {
   InputProps,
   InputType,
@@ -14,6 +14,8 @@ import { useTheme } from '../theme/theme-context'
 import { Button } from './Button'
 import { AutoScrollbar } from './internal/AutoScrollbar'
 import { closeIcon } from './internal/control-icons'
+import { formFieldAssociationOverrides, useFormFieldContext } from './internal/form-field-context'
+import { useFormReset } from './internal/use-form-reset'
 import { useViewHost } from './internal/use-view-host'
 
 function cssString(value: CSSProperties['overflow'] | undefined): string | undefined {
@@ -71,16 +73,39 @@ function SingleLineInput({
   clearLabel = 'Clear input',
   viewProps = {},
 }: SingleLineInputHostProps) {
+  const field = useFormFieldContext()
+  const fieldRequired = field?.required === true
+  const nativeRequired = required === true || (fieldRequired && viewProps.role !== 'combobox')
   const hostProps: ViewProps<HTMLInputElement> = {
     ...viewProps,
     disabled,
+    required: fieldRequired ? true : undefined,
+    invalid: field?.invalid === true ? true : viewProps.invalid,
   }
   const themeClassName = useInputThemeClassName()
-  const { elementRef, className, inlineStyle, resolved } = useViewHost(hostProps)
+  const { elementRef, className, inlineStyle, resolved } = useViewHost(
+    hostProps,
+    undefined,
+    undefined,
+    formFieldAssociationOverrides(field, viewProps.labelledBy, viewProps.describedBy),
+  )
   const controlled = value !== undefined
   const [uncontrolledText, setUncontrolledText] = useState(String(defaultValue ?? ''))
   const currentText = controlled ? String(value ?? '') : uncontrolledText
   const hasClear = clearable && !disabled && !readOnly && currentText.length > 0
+  const reset = useCallback(() => {
+    const next = String(controlled ? (value ?? '') : (defaultValue ?? ''))
+
+    if (!controlled) {
+      setUncontrolledText(next)
+    }
+
+    if (elementRef.current !== null) {
+      elementRef.current.value = next
+    }
+  }, [controlled, defaultValue, elementRef, value])
+
+  useFormReset(elementRef, reset)
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const next = event.currentTarget.value
@@ -116,7 +141,7 @@ function SingleLineInput({
       disabled={disabled}
       type={type}
       readOnly={readOnly}
-      required={required}
+      required={nativeRequired}
       name={name}
       autoComplete={autoComplete}
       minLength={minLength}
@@ -194,12 +219,28 @@ function MultilineInput({
   maxLength,
   viewProps = {},
 }: MultilineInputHostProps) {
+  const field = useFormFieldContext()
+  const fieldRequired = field?.required === true
   const hostProps: ViewProps<HTMLTextAreaElement> = {
     ...viewProps,
     disabled,
+    required: fieldRequired ? true : undefined,
+    invalid: field?.invalid === true ? true : viewProps.invalid,
   }
   const themeClassName = useInputThemeClassName()
-  const { elementRef, className, inlineStyle, resolved } = useViewHost(hostProps)
+  const { elementRef, className, inlineStyle, resolved } = useViewHost(
+    hostProps,
+    undefined,
+    undefined,
+    formFieldAssociationOverrides(field, viewProps.labelledBy, viewProps.describedBy),
+  )
+  const reset = useCallback(() => {
+    if (value !== undefined && elementRef.current !== null) {
+      elementRef.current.value = String(value ?? '')
+    }
+  }, [elementRef, value])
+
+  useFormReset(elementRef, reset)
 
   const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     onChange?.(event.currentTarget.value)
@@ -217,7 +258,7 @@ function MultilineInput({
         disabled={disabled}
         rows={rows}
         readOnly={readOnly}
-        required={required}
+        required={required === true || fieldRequired}
         name={name}
         autoComplete={autoComplete}
         minLength={minLength}

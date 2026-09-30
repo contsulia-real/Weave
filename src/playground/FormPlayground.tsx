@@ -1,14 +1,112 @@
 import { useState } from 'react'
-import { Checkbox, Column, Input, Progress, Radio, Row, Slider, Switch, Text } from '../index'
+import {
+  Button,
+  Checkbox,
+  Column,
+  Combobox,
+  ComboboxOption,
+  Form,
+  FormField,
+  FormFieldset,
+  FormLegend,
+  Input,
+  Progress,
+  Radio,
+  Row,
+  Select,
+  SelectOption,
+  Slider,
+  Switch,
+  Text,
+} from '../index'
 import { PlaygroundSection } from './PlaygroundSection'
 
 export function FormPlayground() {
   const [progressHigh, setProgressHigh] = useState(false)
   const [sliderValue, setSliderValue] = useState(40)
+  const [formResult, setFormResult] = useState('Not submitted')
   const progress = progressHigh ? 0.82 : 0.28
 
   return (
     <>
+      <PlaygroundSection
+        title="Form"
+        description="真实 form + FormField 语义关联；浏览器负责原生 constraint validation，Select / Combobox / Switch 通过原生 form proxy 进入 FormData，reset 恢复 uncontrolled 默认值。"
+      >
+        <Form
+          onSubmit={(event) => {
+            event.preventDefault()
+            setFormResult(JSON.stringify(Object.fromEntries(new FormData(event.currentTarget))))
+          }}
+          onReset={() => setFormResult('Reset')}
+          viewProps={{ width: 30, data: { testid: 'form-demo' } }}
+        >
+          <FormField label="Email" description="Used for account notifications." required>
+            <Input
+              name="email"
+              type="email"
+              placeholder="you@example.com"
+              viewProps={{ width: 'fill', data: { testid: 'form-email' } }}
+            />
+          </FormField>
+
+          <FormField
+            label="Display name"
+            error="This example shows an application error immediately."
+          >
+            <Input
+              name="displayName"
+              defaultValue="Weave user"
+              viewProps={{ width: 'fill', data: { testid: 'form-display-name' } }}
+            />
+          </FormField>
+
+          <FormFieldset>
+            <FormLegend>Preferences</FormLegend>
+
+            <FormField label="Country">
+              <Select
+                name="country"
+                defaultValue="us"
+                viewProps={{ width: 'fill', data: { testid: 'form-country' } }}
+              >
+                <SelectOption value="us" text="United States" />
+                <SelectOption value="ca" text="Canada" />
+              </Select>
+            </FormField>
+
+            <FormField label="Framework">
+              <Combobox
+                name="framework"
+                defaultValue="react"
+                viewProps={{ width: 'fill', data: { testid: 'form-framework' } }}
+              >
+                <ComboboxOption value="react" text="React" />
+                <ComboboxOption value="vue" text="Vue" />
+              </Combobox>
+            </FormField>
+
+            <FormField label="Notifications">
+              <Switch
+                name="notifications"
+                defaultChecked
+                label="Enabled"
+                viewProps={{ data: { testid: 'form-notifications' } }}
+              />
+            </FormField>
+          </FormFieldset>
+
+          <Row gap={0.75} align="center">
+            <Button type="submit" text="Submit" />
+            <Button type="reset" variant="ghost" text="Reset" />
+          </Row>
+
+          <Text typo="body-small" color="secondary" viewProps={{ data: { testid: 'form-result' } }}>
+            {formResult}
+          </Text>
+        </Form>
+      </PlaygroundSection>
+
       <PlaygroundSection
         title="Input"
         description="单行 Input 是 field surface 的视觉来源；默认非空时显示可隐藏 clear action；Select 复用 Input stylesheet/theme，Combobox 直接组合 Input；multiline 仍使用 Input theme 与 Weave Scrollbar。"

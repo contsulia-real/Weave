@@ -10,6 +10,7 @@ import type {
 export type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'ghost' | 'danger'
 
 export type ButtonSize = 'small' | 'medium' | 'large'
+export type ButtonType = 'button' | 'submit' | 'reset'
 export type ButtonIconPosition = 'start' | 'end'
 
 export type ButtonIcon = IconComponent | ReactElement<SVGProps<SVGSVGElement>>
@@ -30,6 +31,7 @@ export type ButtonViewProps = Omit<
   }
 
 interface ButtonBaseProps {
+  type?: ButtonType
   variant?: ButtonVariant
   size?: ButtonSize
   disabled?: boolean

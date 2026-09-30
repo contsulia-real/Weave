@@ -44,6 +44,7 @@ import {
 import { useAnchorWidth } from './internal/use-anchor-width'
 import { useControllableBoolean } from './internal/use-controllable-boolean'
 import { useExitPresence, useExitTransitionEnd } from './internal/use-exit-presence'
+import { useFormReset } from './internal/use-form-reset'
 import { usePopoverPosition } from './internal/use-popover-position'
 import { Text } from './Text'
 import { View } from './View'
@@ -59,6 +60,7 @@ export function Combobox({
   filter,
   emptyContent = 'No options',
   placeholder,
+  name,
   disabled = false,
   clearable = true,
   clearLabel = 'Clear selection',
@@ -225,6 +227,21 @@ export function Combobox({
   }, [controlledInput, selected?.textValue, selectedValue])
   /* oxlint-enable react/set-state-in-effect */
 
+  const resetCombobox = useCallback(() => {
+    const resetValue = controlledValue ? selectedValue : defaultValue
+
+    if (!controlledValue) {
+      setUncontrolledValue(defaultValue)
+    }
+
+    if (!controlledInput) {
+      setUncontrolledInput(
+        defaultInputValue ?? selectedComboboxDescriptor(options, resetValue)?.textValue ?? '',
+      )
+    }
+  }, [controlledInput, controlledValue, defaultInputValue, defaultValue, options, selectedValue])
+
+  useFormReset(inputRef, resetCombobox)
   useAnchorViewportDismiss(inputRef, resolvedOpen, close)
   useOutsideInteractionDismiss(rootRef, listboxRef, resolvedOpen, close, true)
 
@@ -391,6 +408,10 @@ export function Combobox({
 
   return (
     <>
+      {name !== undefined && selectedValue !== null ? (
+        <input type="hidden" name={name} value={selectedValue} disabled={disabled} />
+      ) : null}
+
       <span
         ref={rootRef}
         className={['weave-combobox-root', themeClassName].filter(Boolean).join(' ')}

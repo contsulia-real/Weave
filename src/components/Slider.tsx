@@ -1,11 +1,13 @@
 import type { ChangeEvent, CSSProperties } from 'react'
-import { useId, useInsertionEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useId, useInsertionEffect, useMemo, useRef, useState } from 'react'
 import type { SliderProps } from '../core/slider-types'
 import type { ViewProps } from '../core/view-types'
 import { resolveSliderTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { ensureSliderStylesheet } from '../renderers/dom/slider-stylesheet'
 import { useTheme } from '../theme/theme-context'
+import { formFieldAssociationOverrides, useFormFieldContext } from './internal/form-field-context'
+import { useFormReset } from './internal/use-form-reset'
 import { useSliderInteraction } from './internal/use-slider-interaction'
 import { useViewHost } from './internal/use-view-host'
 
@@ -46,6 +48,7 @@ export function Slider({
   value,
   defaultValue,
   onChange,
+  name,
   min = 0,
   max = 100,
   step: stepProp,
@@ -70,20 +73,42 @@ export function Slider({
   const generatedId = useId()
   const sliderId = viewProps.id ?? `weave-slider-${generatedId}`
   const labelId = `${sliderId}-label`
+  const field = useFormFieldContext()
   const { labelledBy, ...remainingViewProps } = viewProps
 
   const hostProps: ViewProps<HTMLInputElement> = {
     ...remainingViewProps,
     id: sliderId,
     disabled,
-    labelledBy: label === undefined ? labelledBy : undefined,
+    required: field?.required === true ? true : viewProps.required,
+    invalid: field?.invalid === true ? true : viewProps.invalid,
+    labelledBy: label === undefined && field === null ? labelledBy : undefined,
   }
   const { elementRef, className, inlineStyle, resolved } = useViewHost(
     hostProps,
     undefined,
     undefined,
-    label === undefined ? undefined : { labelledBy: [labelledBy, labelId] },
+    field === null && label === undefined
+      ? undefined
+      : {
+          ...formFieldAssociationOverrides(field, labelledBy, viewProps.describedBy),
+          labelledBy: [labelledBy, field?.labelId, label === undefined ? undefined : labelId],
+        },
   )
+
+  const reset = useCallback(() => {
+    const next = clampSliderValue(controlled ? (value ?? min) : (defaultValue ?? min), min, max)
+
+    if (!controlled) {
+      setUncontrolledValue(next)
+    }
+
+    if (elementRef.current !== null) {
+      elementRef.current.value = String(next)
+    }
+  }, [controlled, defaultValue, elementRef, max, min, value])
+
+  useFormReset(elementRef, reset)
 
   const controlRef = useRef<HTMLSpanElement>(null)
   const thumbRef = useRef<HTMLSpanElement>(null)
@@ -173,6 +198,8 @@ export function Slider({
         max={max}
         step={step}
         value={currentValue}
+        name={name}
+        required={field?.required === true}
         disabled={disabled}
         onChange={handleChange}
         onPointerDown={interaction.handlePointerDown}

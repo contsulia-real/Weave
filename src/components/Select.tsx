@@ -18,6 +18,7 @@ import { useTheme } from '../theme/theme-context'
 import { Icon } from './Icon'
 import { assignRef } from './internal/assign-ref'
 import { chevronDownIcon } from './internal/control-icons'
+import { formFieldAssociationOverrides, useFormFieldContext } from './internal/form-field-context'
 import { durationMilliseconds } from './internal/motion-duration'
 import { OptionListboxHost } from './internal/OptionListboxHost'
 import {
@@ -36,6 +37,7 @@ import {
 } from './internal/use-anchor-viewport-dismiss'
 import { useControllableBoolean } from './internal/use-controllable-boolean'
 import { useExitPresence, useExitTransitionEnd } from './internal/use-exit-presence'
+import { useFormReset } from './internal/use-form-reset'
 import { usePopoverPosition } from './internal/use-popover-position'
 import { useSelectTypeahead } from './internal/use-select-typeahead'
 import { useViewHost } from './internal/use-view-host'
@@ -54,6 +56,7 @@ export function Select({
   defaultValue = null,
   onValueChange,
   placeholder = 'Select…',
+  name,
   disabled = false,
   placement = 'bottom-left',
   offset,
@@ -162,9 +165,12 @@ export function Select({
     },
   )
 
+  const field = useFormFieldContext()
   const hostProps: ViewProps<HTMLButtonElement> = {
     ...viewProps,
     disabled,
+    required: field?.required === true ? true : viewProps.required,
+    invalid: field?.invalid === true ? true : viewProps.invalid,
     expanded: resolvedOpen,
     controls: listboxId,
   }
@@ -173,8 +179,20 @@ export function Select({
     className: triggerClassName,
     inlineStyle: triggerInlineStyle,
     resolved: triggerResolved,
-  } = useViewHost(hostProps)
+  } = useViewHost(
+    hostProps,
+    undefined,
+    undefined,
+    formFieldAssociationOverrides(field, viewProps.labelledBy, viewProps.describedBy),
+  )
 
+  const resetValue = useCallback(() => {
+    if (!controlledValue) {
+      setUncontrolledValue(defaultValue)
+    }
+  }, [controlledValue, defaultValue])
+
+  useFormReset(triggerRef, resetValue)
   useAnchorViewportDismiss(triggerRef, resolvedOpen, close)
   useOutsideInteractionDismiss(triggerRef, listboxRef, resolvedOpen, close)
 
@@ -329,6 +347,10 @@ export function Select({
 
   return (
     <>
+      {name !== undefined && selectedValue !== null ? (
+        <input type="hidden" name={name} value={selectedValue} disabled={disabled} />
+      ) : null}
+
       <button
         {...triggerResolved.domProps}
         ref={triggerRef}

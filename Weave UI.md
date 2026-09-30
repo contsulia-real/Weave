@@ -4550,6 +4550,192 @@ indicatorSize
 
 ---
 
+# 18.17 `Form`
+
+`Form` 是 Weave 的原生表单结构层。它不实现 form store，不维护 touched / dirty / submitted 状态，也不替代浏览器 constraint validation。
+
+组件组成：
+
+```text
+Form
+FormField
+FormLabel
+FormDescription
+FormError
+FormFieldset
+FormLegend
+```
+
+基本用法：
+
+```tsx
+<Form onSubmit={handleSubmit}>
+  <FormField
+    label="Email"
+    description="Used for account notifications."
+    error={emailError}
+    required
+  >
+    <Input name="email" type="email" />
+  </FormField>
+
+  <FormField label="Country">
+    <Select name="country">...</Select>
+  </FormField>
+
+  <FormField label="Notifications">
+    <Switch name="notifications" value="enabled" />
+  </FormField>
+
+  <Button type="submit" text="Save" />
+  <Button type="reset" variant="ghost" text="Reset" />
+</Form>
+```
+
+## 18.17.1 原生表单边界
+
+`Form` 必须渲染真实 `<form>`。
+
+```text
+Form -> form
+FormField -> div
+FormFieldset -> fieldset
+FormLegend -> legend
+```
+
+`Form.onSubmit` 与 `Form.onReset` 直接接收 React 对真实 form event 的封装。默认不设置 `noValidate`，因此浏览器原生 constraint validation 保持开启。
+
+Weave 不生成浏览器验证错误文案，也不根据 `ValidityState` 自动生成 `FormError`。原生 required / type / pattern / minLength / maxLength 等仍由对应真实原生控件负责。
+
+`Button.type` 支持 `button / submit / reset`，默认仍为 `button`。
+
+## 18.17.2 FormField
+
+`FormField` 负责字段的结构与无障碍关联，而不是数据状态。
+
+公开属性：
+
+```ts
+children: ReactNode
+label?: ReactNode
+description?: ReactNode
+error?: ReactNode
+required?: boolean
+viewProps?: FormFieldViewProps
+```
+
+`error` 只要存在就立即显示；Form 不维护 touched / submitted 状态，也不延迟错误显示。
+
+当 error 存在时，该字段内接入 FormField context 的 Weave control 必须得到 `aria-invalid="true"`。
+
+当 description / error 存在时，control 的现有 `aria-describedby` 必须与 FormField 生成的 description / error id 合并，不能覆盖调用方已有关系。
+
+当 label 存在时，control 的现有 `aria-labelledby` 必须与 FormField label id 合并。
+
+`required` 必须传递到 control 的 required 语义；对于真实 constraint-validation candidate（Input / textarea / range / radio / checkbox）同时使用真实 native `required`。
+
+FormField 的 convenience 属性与显式 part 可以二选一：
+
+```tsx
+<FormField label="Email" description="..." error="...">
+  <Input />
+</FormField>
+```
+
+或：
+
+```tsx
+<FormField>
+  <FormLabel>Email</FormLabel>
+  <Input />
+  <FormDescription>...</FormDescription>
+  <FormError>...</FormError>
+</FormField>
+```
+
+同一个 part 不能同时通过 convenience prop 与显式子组件重复提供。
+
+## 18.17.3 FormLabel / Description / Error
+
+`FormLabel`、`FormDescription`、`FormError` 必须在 `FormField` 内使用，并使用 FormField 生成的稳定 id。
+
+默认视觉：
+
+```text
+FormLabel       -> label-medium / tertiary
+required marker -> danger
+FormDescription -> body-small / secondary
+FormError       -> body-small / danger
+```
+
+它们只提供文本语义与 Theme 样式，不增加 field surface。
+
+## 18.17.4 Fieldset / Legend
+
+`FormFieldset` 使用真实 `<fieldset>`，默认透明、无额外 border / Card surface。
+
+`FormLegend` 使用真实 `<legend>`，默认 `label-large / tertiary`。
+
+## 18.17.5 FormData participation
+
+原生 Input / textarea / range / radio / checkbox 继续直接依赖浏览器原生 form participation。
+
+新增：
+
+```text
+Slider.name
+Select.name
+Combobox.name
+Switch.name
+Switch.value
+```
+
+`Slider.name` 直接设置真实 range input 的 name。
+
+`Select` 有已选择 value 且设置了 `name` 时，通过原生 hidden input 向 FormData 提交 selected value；未选择时不提交该 name；disabled 时不提交。
+
+`Combobox` 有 committed value 且设置了 `name` 时，通过原生 hidden input 向 FormData 提交 committed value。用户当前输入文本不作为 form value；只有提交 option 后改变 committed value。没有 committed value 时不提交该 name；disabled 时不提交。
+
+`Switch` 与原生 checkbox 的 form value 语义一致：checked 时提交 `name=value`，unchecked 时不提交，默认 `value="on"`。
+
+Select / Combobox / Switch 的 hidden form proxy 只承担 FormData participation；`type="hidden"` 本身不是浏览器 constraint-validation candidate。因此 `FormField.required` 对这类非原生交互 host 保留 required ARIA 语义，但不由 hidden proxy 伪造浏览器 required 校验。
+
+## 18.17.6 Reset
+
+真实 `<button type="reset">` / `form.reset()` 必须恢复 uncontrolled Weave form controls 的默认值。
+
+当前覆盖 Input、Slider、Select、Combobox、Switch；Radio / Checkbox 直接依赖浏览器原生 reset。
+
+controlled control 继续由调用方拥有状态；native reset 不得擅自改变 controlled value，也不得触发其 value-change callback。
+
+Combobox reset 必须同时恢复 committed value 与 uncontrolled input text。
+
+## 18.17.7 Theme
+
+```ts
+components.Form.base
+```
+
+支持：
+
+```text
+formGap
+fieldGap
+fieldsetGap
+labelColor
+labelTypo
+descriptionColor
+descriptionTypo
+errorColor
+errorTypo
+legendColor
+legendTypo
+```
+
+默认 Form / FormField / FormFieldset 全部透明，不拥有 Card / raised surface。默认 gap 复用现有全局 spacing token；颜色与 typography 通过 Form Theme 映射现有 color / type scale。
+
+---
+
 # 19. `ToolTip`
 
 `ToolTip` 是目标附着的辅助说明组件。
@@ -7444,6 +7630,7 @@ Weave 公开 API
 │  ├─ Select / SelectOption
 │  ├─ Combobox / ComboboxOption
 │  ├─ Menu / MenuItem
+│  ├─ Form / FormField / FormLabel / FormDescription / FormError / FormFieldset / FormLegend
 │  ├─ Accordion / AccordionItem / AccordionTrigger / AccordionPanel
 │  ├─ Tabs / TabList / Tab / TabPanel
 │  ├─ Snack

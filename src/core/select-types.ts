@@ -33,6 +33,7 @@ export interface SelectProps {
   defaultValue?: SelectValue | null
   onValueChange?: (value: SelectValue) => void
   placeholder?: ReactNode
+  name?: string
   disabled?: boolean
   placement?: SelectPlacement
   offset?: Length

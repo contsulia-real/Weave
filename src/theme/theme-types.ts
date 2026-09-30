@@ -592,6 +592,24 @@ export interface SnackTheme {
   >
 }
 
+export interface FormThemeBase {
+  formGap?: ThemeScaleValue
+  fieldGap?: ThemeScaleValue
+  fieldsetGap?: ThemeScaleValue
+  labelColor?: string
+  labelTypo?: TextTypo
+  descriptionColor?: string
+  descriptionTypo?: TextTypo
+  errorColor?: string
+  errorTypo?: TextTypo
+  legendColor?: string
+  legendTypo?: TextTypo
+}
+
+export interface FormTheme {
+  base?: FormThemeBase
+}
+
 export interface AccordionThemeBase {
   dividerColor?: string
   triggerBackground?: string
@@ -683,6 +701,7 @@ export interface ListItemTheme {
 }
 
 export interface ThemeComponents {
+  Form?: FormTheme
   Accordion?: AccordionTheme
   Badge?: BadgeTheme
   Link?: LinkTheme
