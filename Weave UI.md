@@ -3693,7 +3693,7 @@ Underline 的 indicator **不得贴住 Tab item**。安全间距直接复用 Tab
 
 pill 只改变视觉，不改变选择、focus、ARIA 或键盘语义。整个 TabList **直接复用 Select/Input 的 field surface**：加载同一份 Input stylesheet，并使用同一个 `resolveInputTheme(theme)` runtime class；不得在 Tabs theme 内复制 background / border / shadow / radius。pill TabList 默认 `width="fit"`、`minWidth=0`，只包住自身 Tab，不允许因为 Tabs root 的 column stretch 而横向拉满。
 
-Pill 槽内默认基础 padding 为 0.25rem。因为 active moving surface 直接复用 Button rest surface，而 Button 的实体 depth 只向下延伸 `feedback.restDepth`，TabList 的默认 bottom padding 必须使用 `基础 padding + feedback.restDepth`；top/left/right 仍使用基础 padding。这样计算的是 active surface **包含实体 depth 后的可见外轮廓**，不是只按 CSS box 对称，保证上下视觉留白一致。显式 `viewProps.paddingBottom` 仍作为调用方最终覆盖。
+Pill 槽内默认四边 padding 保持完全一致（默认 0.25rem），不得为了 active item 的突起效果改变整个 TabList 的 bottom padding，否则会把所有 non-active Tab 一起推偏。Button rest surface 的实体 depth 只向下延伸，因此只对 **selected pill Tab 自己**压缩 bottom padding：`tabPaddingY - feedback.restDepth`；non-active Tab 继续保持完整的 `tabPaddingY`。active Tab box 少掉的这部分下 padding由 Button rest depth 补回，使 active 可见外轮廓与 non-active item 的上下视觉位置一致。
 
 active / selected pill 不是给当前 Tab 自己加一套 shadow，而是与 underline 相同地只保留**一个共享 moving surface**。这个 surface 直接挂 Button 的真实 `weave-button + weave-button--primary + weave-button--medium + resolveButtonTheme(theme)` 配方，并关闭 pointer interaction；选择变化时仍使用同一套 `View.layoutAnimation` FLIP，从一个 Tab 连续位移/缩放到另一个 Tab。Tab 文本本身位于 moving Button surface 上方。不得在 Tabs 内复制 Button 的 background / border / depthColor / rest-depth 配方。
 

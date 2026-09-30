@@ -74,6 +74,8 @@ const stylesheet = `
 ) {
   --weave-component-background: transparent;
   --weave-component-color: var(--weave-button-theme-primary-color);
+  --weave-component-padding-bottom:
+    calc(var(--weave-tabs-tab-padding-y) - var(--weave-feedback-rest-depth));
 }
 
 :where(

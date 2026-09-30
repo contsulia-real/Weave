@@ -496,9 +496,7 @@ describe('Tabs', () => {
     const listProps = runtimeRule(list, 'weave-props-')
     expect(listProps).toContain('--weave-width:fit-content;')
     expect(listProps).toContain('--weave-padding-top:0.25rem;')
-    expect(listProps).toContain(
-      '--weave-padding-bottom:calc(0.25rem+var(--weave-feedback-rest-depth));',
-    )
+    expect(listProps).toContain('--weave-padding-bottom:0.25rem;')
     expect(runtimeRule(list, 'weave-input-theme-')).toContain(
       '--weave-input-background:var(--weave-color-warning',
     )
@@ -517,6 +515,26 @@ describe('Tabs', () => {
 
     expect(document.querySelector('style[data-weave-input-styles]')).not.toBeNull()
     expect(document.querySelector('style[data-weave-button-styles]')).not.toBeNull()
+  })
+
+  it('compensates pill depth by reducing only the active tab bottom padding', async () => {
+    const { getByRole } = render(<BasicTabs variant="pill" />)
+
+    await waitFor(() => {
+      expect(getByRole('tab', { name: 'General' }).getAttribute('aria-selected')).toBe('true')
+    })
+
+    const stylesheet =
+      document.querySelector<HTMLStyleElement>('style[data-weave-tabs-styles]')?.textContent ?? ''
+    const normalized = stylesheet.replace(/\s+/g, '')
+
+    expect(normalized).toContain(
+      '--weave-component-padding-bottom:calc(var(--weave-tabs-tab-padding-y)-var(--weave-feedback-rest-depth));',
+    )
+    expect(normalized).toContain(':where(.weave-tab){appearance:none;')
+    expect(normalized).toContain(
+      '--weave-component-padding-bottom:var(--weave-tabs-tab-padding-y);',
+    )
   })
 
   it('renders underline by default and pill when requested', async () => {
