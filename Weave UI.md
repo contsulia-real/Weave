@@ -4843,7 +4843,7 @@ overflow: auto
 collapsed -> overflow: hidden
 ```
 
-SplitBoxPane 默认使用 `overflow: auto` 约束内容绘制范围；当内容超过 Pane 实际尺寸时由 Pane 自己形成滚动容器，不能把内容绘制到相邻 Pane 或 SplitBox 外部。折叠状态覆盖为 `overflow: hidden`。
+SplitBoxPane 默认使用 `overflow: auto` 约束内容绘制范围；当内容超过 Pane 实际尺寸时由 Pane 自己形成滚动容器，不能把内容绘制到相邻 Pane 或 SplitBox 外部。和普通 `View overflow="auto"` 一样，原生 scrollbar 视觉必须隐藏，并自动挂载现有 Weave `Scrollbar`；`viewProps.scrollbar` 继续配置该自动 Scrollbar。折叠状态覆盖为 `overflow: hidden`，并不挂载 Scrollbar。
 
 SplitBoxPane **不得**提供默认 background、border、padding、radius、shadow、typography 或任何 Card / panel surface。需要这些视觉时必须由调用方通过 Pane `viewProps` 或 Pane 内部自己的 View / Card 明确提供。
 

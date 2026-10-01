@@ -295,6 +295,10 @@ describe('SplitBox', () => {
       ''
 
     expect(pane.className).toContain('weave-splitbox-pane')
+    expect(pane.className).toContain('weave-scroll-host')
+    expect(pane.getAttribute('data-weave-scroll-host')).toBe('')
+    expect(document.body.querySelectorAll('[data-weave-scrollbar]')).toHaveLength(4)
+    expect(document.querySelector('style[data-weave-scrollbar-styles]')).not.toBeNull()
     expect(stylesheet).toContain('min-width: 0')
     expect(stylesheet).toContain('min-height: 0')
     expect(stylesheet).toMatch(/\.weave-splitbox-pane\)[^{]*\{[^}]*overflow: auto/s)
