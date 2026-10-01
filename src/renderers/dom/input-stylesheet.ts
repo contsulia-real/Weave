@@ -87,6 +87,7 @@ const stylesheet = `
 .weave-input[type="search"]::-webkit-search-cancel-button {
   -webkit-appearance: none;
   appearance: none;
+  display: none;
   width: 0;
   height: 0;
   margin: 0;
