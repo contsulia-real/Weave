@@ -4,8 +4,9 @@ const stylesheet = `
 :where(.weave-appbar) {
   --weave-component-display: grid;
   --weave-component-grid-template-columns: max-content minmax(0, 1fr) max-content;
-  --weave-component-align-items: center;
+  --weave-component-align-items: stretch;
   --weave-component-align-self: center;
+  align-content: stretch;
   --weave-component-width: 100%;
   --weave-component-min-height: var(--weave-appbar-theme-medium-height);
   --weave-component-background: var(--weave-appbar-theme-background);
@@ -65,7 +66,9 @@ const stylesheet = `
 :where(.weave-appbar__title),
 :where(.weave-appbar__trailing) {
   min-width: 0;
-  align-self: center;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
 }
 
 :where(.weave-appbar__leading) {
@@ -83,8 +86,6 @@ const stylesheet = `
 
 :where(.weave-appbar__leading),
 :where(.weave-appbar__trailing) {
-  display: flex;
-  align-items: center;
   gap: var(--weave-appbar-theme-medium-gap);
 }
 
@@ -133,8 +134,6 @@ const stylesheet = `
 }
 
 :where(.weave-appbar__title) {
-  display: flex;
-  align-items: center;
   justify-self: start;
 }
 

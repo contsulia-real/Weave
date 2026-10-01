@@ -4134,7 +4134,7 @@ large:
   titleTypo = title-large
 ```
 
-这些值来自 `theme.components.AppBar.sizes`，不是 renderer 常量。`marginX` 不作用于 AppBar 宿主：`leading` 只使用左 margin，`title` 使用左右 margin，`trailing` 只使用右 margin。相邻 slot 之间不会把两份 margin 叠加；`leading / trailing` 内多个 action 的间距仍由 `gap` 控制。 AppBar 宿主本身除了对内部 grid items 使用 `align-items: center`，还必须使用 `align-self: center` 在父布局中纵向居中；`leading / title / trailing` 三个 slot 也必须各自 `align-self: center`，其中 title slot 使用 flex vertical centering，不能只依赖文字自身 line-height。
+这些值来自 `theme.components.AppBar.sizes`，不是 renderer 常量。`marginX` 不作用于 AppBar 宿主：`leading` 只使用左 margin，`title` 使用左右 margin，`trailing` 只使用右 margin。相邻 slot 之间不会把两份 margin 叠加；`leading / trailing` 内多个 action 的间距仍由 `gap` 控制。 AppBar 宿主本身在父布局中保持 `align-self: center`。AppBar 内部 grid item 必须纵向 stretch 到完整 grid row；`leading / title / trailing` 三个 slot 都使用 `align-self: stretch` + `display: flex` + `align-items: center`，因此所有 slot 内容都以 AppBar 自身的纵向中心线为基准，而不是以各自内容盒高度为基准。
 
 ## 18.12A.3 三区域与 titleAlign
 
