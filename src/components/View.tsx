@@ -72,7 +72,11 @@ function viewMayScroll(
 export function View(props: ViewProps<HTMLDivElement>) {
   const { children } = props
   const { theme } = useTheme()
-  const { elementRef, className, inlineStyle, resolved } = useViewHost(props)
+  const { elementRef, className, inlineStyle, resolved } = useViewHost(
+    props,
+    { '--weave-component-display': 'block' } as CSSProperties,
+    'view',
+  )
 
   const mountsScrollbar = viewMayScroll(props, theme.breakpoints)
   const resolvedClassName =

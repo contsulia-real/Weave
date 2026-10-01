@@ -28,6 +28,15 @@ function breakpointStyles(element: Element): string {
 }
 
 describe('View DOM backend', () => {
+  it('preserves the native div block display when no layout is selected', () => {
+    const { getByTestId } = render(<View data={{ testid: 'plain-view' }} />)
+
+    const element = getByTestId('plain-view')
+    const rule = runtimeRule(element, 'weave-view-props-')
+
+    expect(rule).toContain('--weave-component-display:block;')
+  })
+
   it('resolves semantic association refs to stable ARIA id references', () => {
     const titleRef = createRef<HTMLSpanElement>()
 

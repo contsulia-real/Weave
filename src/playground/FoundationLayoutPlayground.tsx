@@ -165,9 +165,9 @@ export function FoundationLayoutPlayground() {
             viewProps={{
               width: 30,
               height: 12,
-              outlineWidth: 0.0625,
-              outlineColor: 'outline',
-              outlineStyle: 'dashed',
+              border: 0.0625,
+              borderColor: 'outline',
+              borderStyle: 'dashed',
               data: { testid: 'splitbox-thresholds' },
             }}
           >
@@ -198,9 +198,9 @@ export function FoundationLayoutPlayground() {
             viewProps={{
               width: 30,
               height: 6,
-              outlineWidth: 0.0625,
-              outlineColor: 'outline',
-              outlineStyle: 'dashed',
+              border: 0.0625,
+              borderColor: 'outline',
+              borderStyle: 'dashed',
               data: { testid: 'splitbox-zero-thickness' },
             }}
           >
@@ -221,9 +221,9 @@ export function FoundationLayoutPlayground() {
             viewProps={{
               width: 30,
               height: 12,
-              outlineWidth: 0.0625,
-              outlineColor: 'outline',
-              outlineStyle: 'dashed',
+              border: 0.0625,
+              borderColor: 'outline',
+              borderStyle: 'dashed',
               data: { testid: 'splitbox-nested' },
             }}
           >
