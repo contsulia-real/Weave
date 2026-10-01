@@ -36,4 +36,5 @@ export {
   resolveSkeletonTheme,
 } from './component-theme/progress'
 export { resolveSplitBoxTheme } from './component-theme/splitbox'
+export { resolveTableTheme } from './component-theme/table'
 export { resolveTabsTheme } from './component-theme/tabs'

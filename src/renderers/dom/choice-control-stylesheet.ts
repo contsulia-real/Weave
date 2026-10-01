@@ -89,7 +89,8 @@ const stylesheet = `
   transform: translateY(var(--weave-choice-press-offset)) scale(var(--weave-choice-press-scale));
 }
 
-:where(.weave-choice-control:checked) {
+:where(.weave-choice-control:checked),
+:where(.weave-checkbox:indeterminate) {
   --weave-component-background: var(--weave-choice-checked-background);
   --weave-component-border-top-color: var(--weave-choice-checked-border-color);
   --weave-component-border-right-color: var(--weave-choice-checked-border-color);
@@ -98,11 +99,13 @@ const stylesheet = `
   --weave-component-box-shadow: var(--weave-choice-checked-shadow);
 }
 
-:where(.weave-choice-control:checked:hover:not([aria-disabled="true"])) {
+:where(.weave-choice-control:checked:hover:not([aria-disabled="true"])),
+:where(.weave-checkbox:indeterminate:hover:not([aria-disabled="true"])) {
   --weave-component-box-shadow: var(--weave-choice-checked-shadow);
 }
 
-:where(.weave-choice-control:checked:active:not([aria-disabled="true"])) {
+:where(.weave-choice-control:checked:active:not([aria-disabled="true"])),
+:where(.weave-checkbox:indeterminate:active:not([aria-disabled="true"])) {
   --weave-component-box-shadow: var(--weave-choice-press-shadow);
 }
 
@@ -140,6 +143,8 @@ const stylesheet = `
 }
 
 :where(.weave-choice-control:checked)
+  ~ :where(.weave-choice-state-layer),
+:where(.weave-checkbox:indeterminate)
   ~ :where(.weave-choice-state-layer) {
   background: var(--weave-choice-checked-state-layer-color);
 }
@@ -229,12 +234,16 @@ const stylesheet = `
       var(--weave-motion-curve-standard);
 }
 
-:where(.weave-checkbox:checked)
+:where(.weave-checkbox:checked:not(:indeterminate))
   ~ :where(.weave-choice-visual)
-  :where(.weave-checkbox__mark-path) {
+  :where(.weave-checkbox__check-path),
+:where(.weave-checkbox:indeterminate)
+  ~ :where(.weave-choice-visual)
+  :where(.weave-checkbox__indeterminate-path) {
   stroke-dashoffset: 0;
   transition-delay: calc(var(--weave-motion-duration-fast) * 0.18);
 }
+
 
 :where(.weave-choice-field[data-weave-reduced-motion="reduce"])
   :where(.weave-choice-state-layer),

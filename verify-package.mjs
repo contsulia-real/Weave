@@ -84,6 +84,12 @@ const expectedRuntimeExports = [
   'TabList',
   'TabPanel',
   'Tabs',
+  'Table',
+  'TableBody',
+  'TableCell',
+  'TableHead',
+  'TableHeader',
+  'TableRow',
   'Text',
   'ThemeProvider',
   'ToolTip',
@@ -223,6 +229,13 @@ assert(typeSource.includes('TabProps'), 'Built declarations are missing TabProps
 assert(typeSource.includes('TabPanelProps'), 'Built declarations are missing TabPanelProps')
 assert(typeSource.includes('TabsVariant'), 'Built declarations are missing TabsVariant')
 assert(typeSource.includes('TabsActivation'), 'Built declarations are missing TabsActivation')
+assert(typeSource.includes('TableProps'), 'Built declarations are missing TableProps')
+assert(typeSource.includes('TableHeaderProps'), 'Built declarations are missing TableHeaderProps')
+assert(typeSource.includes('TableBodyProps'), 'Built declarations are missing TableBodyProps')
+assert(typeSource.includes('TableRowProps'), 'Built declarations are missing TableRowProps')
+assert(typeSource.includes('TableHeadProps'), 'Built declarations are missing TableHeadProps')
+assert(typeSource.includes('TableCellProps'), 'Built declarations are missing TableCellProps')
+assert(typeSource.includes('TableSelectedCell'), 'Built declarations are missing TableSelectedCell')
 assert(typeSource.includes('RadioProps'), 'Built declarations are missing RadioProps')
 assert(typeSource.includes('CheckboxProps'), 'Built declarations are missing CheckboxProps')
 
@@ -256,6 +269,9 @@ const expectedThemeTypeExports = [
   'AccordionThemeBase',
   'TabsTheme',
   'TabsThemeBase',
+  'TableTheme',
+  'TableThemeBase',
+  'TableThemeDensity',
   'PopoverTheme',
   'MenuTheme',
   'ProgressTheme',

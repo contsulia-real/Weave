@@ -31,17 +31,17 @@ const stylesheet = `
   --weave-progress-duration: var(--weave-motion-duration-fast);
 }
 
-:where(.weave-progress--undetermined.weave-progress--speed-slow) {
+:where(.weave-progress--indeterminate.weave-progress--speed-slow) {
   --weave-progress-duration:
     calc(var(--weave-motion-duration-slow) * 6);
 }
 
-:where(.weave-progress--undetermined.weave-progress--speed-normal) {
+:where(.weave-progress--indeterminate.weave-progress--speed-normal) {
   --weave-progress-duration:
     calc(var(--weave-motion-duration-normal) * 8);
 }
 
-:where(.weave-progress--undetermined.weave-progress--speed-fast) {
+:where(.weave-progress--indeterminate.weave-progress--speed-fast) {
   --weave-progress-duration:
     calc(var(--weave-motion-duration-fast) * 9);
 }
@@ -101,7 +101,7 @@ const stylesheet = `
     var(--weave-motion-curve-standard);
 }
 
-:where(.weave-progress--spin.weave-progress--undetermined)
+:where(.weave-progress--spin.weave-progress--indeterminate)
   > :where(.weave-progress__value) {
   --weave-background:
     conic-gradient(
@@ -150,7 +150,7 @@ const stylesheet = `
     var(--weave-motion-curve-standard);
 }
 
-:where(.weave-progress--linear.weave-progress--undetermined)
+:where(.weave-progress--linear.weave-progress--indeterminate)
   > :where(.weave-progress__value) {
   --weave-background: transparent;
   --weave-overflow: hidden;
@@ -158,9 +158,9 @@ const stylesheet = `
   --weave-overflow-y: hidden;
 }
 
-:where(.weave-progress--linear.weave-progress--undetermined)
+:where(.weave-progress--linear.weave-progress--indeterminate)
   > :where(.weave-progress__value)::before,
-:where(.weave-progress--linear.weave-progress--undetermined)
+:where(.weave-progress--linear.weave-progress--indeterminate)
   > :where(.weave-progress__value)::after {
   content: "";
   position: absolute;
@@ -172,7 +172,7 @@ const stylesheet = `
   background: currentColor;
 }
 
-:where(.weave-progress--linear.weave-progress--undetermined)
+:where(.weave-progress--linear.weave-progress--indeterminate)
   > :where(.weave-progress__value)::before {
   animation:
     weave-progress-linear-leading
@@ -181,7 +181,7 @@ const stylesheet = `
     infinite;
 }
 
-:where(.weave-progress--linear.weave-progress--undetermined)
+:where(.weave-progress--linear.weave-progress--indeterminate)
   > :where(.weave-progress__value)::after {
   animation:
     weave-progress-linear-trailing
@@ -234,29 +234,29 @@ const stylesheet = `
 }
 
 :where(
-  .weave-progress[data-weave-reduced-motion="reduce"].weave-progress--spin.weave-progress--undetermined
+  .weave-progress[data-weave-reduced-motion="reduce"].weave-progress--spin.weave-progress--indeterminate
 ) > :where(.weave-progress__value) {
   animation: none;
   transform: rotate(0deg);
 }
 
 :where(
-  .weave-progress[data-weave-reduced-motion="reduce"].weave-progress--linear.weave-progress--undetermined
+  .weave-progress[data-weave-reduced-motion="reduce"].weave-progress--linear.weave-progress--indeterminate
 ) > :where(.weave-progress__value)::before,
 :where(
-  .weave-progress[data-weave-reduced-motion="reduce"].weave-progress--linear.weave-progress--undetermined
+  .weave-progress[data-weave-reduced-motion="reduce"].weave-progress--linear.weave-progress--indeterminate
 ) > :where(.weave-progress__value)::after {
   animation: none;
 }
 
 :where(
-  .weave-progress[data-weave-reduced-motion="reduce"].weave-progress--linear.weave-progress--undetermined
+  .weave-progress[data-weave-reduced-motion="reduce"].weave-progress--linear.weave-progress--indeterminate
 ) > :where(.weave-progress__value)::before {
   transform: translateX(70%);
 }
 
 :where(
-  .weave-progress[data-weave-reduced-motion="reduce"].weave-progress--linear.weave-progress--undetermined
+  .weave-progress[data-weave-reduced-motion="reduce"].weave-progress--linear.weave-progress--indeterminate
 ) > :where(.weave-progress__value)::after {
   display: none;
 }

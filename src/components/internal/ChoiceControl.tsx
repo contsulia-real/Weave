@@ -1,5 +1,5 @@
 import type { ChangeEvent } from 'react'
-import { useCallback, useId, useInsertionEffect } from 'react'
+import { useCallback, useId, useInsertionEffect, useLayoutEffect } from 'react'
 import type { CheckboxProps, ChoiceControlKind, RadioProps } from '../../core/choice-types'
 import type { ViewProps } from '../../core/view-types'
 import { ensureChoiceControlStylesheet } from '../../renderers/dom/choice-control-stylesheet'
@@ -12,18 +12,20 @@ import { useViewHost } from './use-view-host'
 
 type ChoiceControlProps = ({ kind: 'radio' } & RadioProps) | ({ kind: 'checkbox' } & CheckboxProps)
 
-export function ChoiceControl({
-  kind,
-  checked,
-  defaultChecked,
-  onChange,
-  disabled = false,
-  label,
-  group,
-  value,
-  size = 'medium',
-  viewProps = {},
-}: ChoiceControlProps) {
+export function ChoiceControl(props: ChoiceControlProps) {
+  const {
+    kind,
+    checked,
+    defaultChecked,
+    onChange,
+    disabled = false,
+    label,
+    group,
+    value,
+    size = 'medium',
+    viewProps = {},
+  } = props
+  const indeterminate = kind === 'checkbox' && props.indeterminate === true
   const { theme, reducedMotion } = useTheme()
   const field = useFormFieldContext()
   const generatedLabelId = useId().replace(/:/g, '')
@@ -50,15 +52,29 @@ export function ChoiceControl({
         },
   )
   const reset = useCallback(() => {
-    if (checked !== undefined && elementRef.current !== null) {
-      elementRef.current.checked = checked
+    const element = elementRef.current
+    if (element === null) return
+
+    if (checked !== undefined) {
+      element.checked = checked
     }
-  }, [checked, elementRef])
+    if (kind === 'checkbox') {
+      element.indeterminate = indeterminate
+    }
+  }, [checked, elementRef, indeterminate, kind])
 
   useFormReset(elementRef, reset)
+  useLayoutEffect(() => {
+    if (kind === 'checkbox' && elementRef.current !== null) {
+      elementRef.current.indeterminate = indeterminate
+    }
+  }, [elementRef, indeterminate, kind])
   useInsertionEffect(ensureChoiceControlStylesheet, [])
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (kind === 'checkbox') {
+      event.currentTarget.indeterminate = indeterminate
+    }
     onChange?.(event.currentTarget.checked)
   }
 
@@ -90,6 +106,8 @@ export function ChoiceControl({
           value={value}
           checked={checked}
           defaultChecked={defaultChecked}
+          aria-checked={indeterminate ? 'mixed' : undefined}
+          data-weave-checkbox-indeterminate={indeterminate ? 'true' : undefined}
           onChange={handleChange}
           required={field?.required === true}
           disabled={disabled}
@@ -117,10 +135,16 @@ export function ChoiceControl({
           ) : (
             <svg className="weave-checkbox__mark" viewBox="0 0 24 24" aria-hidden="true">
               <path
-                className="weave-checkbox__mark-path"
+                className="weave-checkbox__mark-path weave-checkbox__check-path"
                 data-weave-checkbox-check=""
                 pathLength="1"
                 d="M4.5 12.5 9.5 17.5 19.5 6.5"
+              />
+              <path
+                className="weave-checkbox__mark-path weave-checkbox__indeterminate-path"
+                data-weave-checkbox-indeterminate-mark=""
+                pathLength="1"
+                d="M6 12 H18"
               />
             </svg>
           )}

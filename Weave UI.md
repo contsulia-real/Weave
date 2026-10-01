@@ -2835,6 +2835,7 @@ Switch
 checked
 defaultChecked
 onChange
+indeterminate (Checkbox only)
 disabled
 label
 size
@@ -2899,6 +2900,7 @@ viewProps
 - 相同 `group` 的 Checkbox 属于同一个 checkbox group，原生 `name` 相同，但每一项的 checked 状态仍然独立；
 - `group` 不创建额外包装 DOM，也不引入单独的 `RadioGroup` / `CheckboxGroup` 组件；
 - `checked / defaultChecked / onChange` 延续 Switch 的受控 / 非受控布尔状态模型；
+- Checkbox 额外支持 `indeterminate?: boolean`。开启时同步原生 `input.indeterminate = true` 并暴露 `aria-checked="mixed"`；视觉使用水平短线而不是 checkmark。它不创建第四种 value，点击仍由原生 checkbox change 产生布尔 checked，调用方决定何时清除 indeterminate；
 - `disabled` 是组件自己的高层属性，并落到真实原生 input；
 - `label` 是可见的原生 `<label>` 绑定内容；点击 label 文本必须直接触发对应 Radio / Checkbox 状态变化，不能依赖调用方自己补 `onClick`；
 - `small / medium / large` 三档默认尺寸分别为 `1.125rem / 1.375rem / 1.625rem`（18 / 22 / 26px），由 `theme.components.Radio / Checkbox.sizes` 提供；press 位移 / 缩放与 state-layer 初始 scale 分别由各自 `base.pressOffset / pressScale / stateLayerRestScale` 提供，不得在 stylesheet 中写死；Playground 必须同时展示三档，不能只展示默认 medium。
@@ -2928,7 +2930,7 @@ viewProps
 
 ```text
 状态
-├─ undetermined
+├─ indeterminate
 └─ progress
 
 mode
@@ -2945,7 +2947,7 @@ tracked
 不确定进度：
 
 ```tsx
-<Progress undetermined />
+<Progress indeterminate />
 ```
 
 `mode="spin"` 的不确定动画使用固定弧段并仅通过线性 transform 旋转。运行中的弧段渐变本身保持静态，避免逐帧重绘渐变角度以及周期端点反向造成的卡顿。
@@ -2962,7 +2964,7 @@ tracked
 0 ~ 1
 ```
 
-`undetermined` 与 `progress` 互斥。
+`indeterminate` 与 `progress` 互斥。
 
 确定进度在 `progress` 数值发生变化时自动进行一次过渡；值稳定后不持续运动。
 
@@ -2992,7 +2994,7 @@ linear
 
 ```tsx
 <Progress
-  undetermined
+  indeterminate
   mode="spin"
 />
 ```
@@ -3025,7 +3027,7 @@ linear
 
 ```tsx
 <Progress
-  undetermined
+  indeterminate
   mode="linear"
 />
 ```
@@ -3078,7 +3080,7 @@ number
 语义：
 
 ```text
-undetermined
+indeterminate
 → 控制持续运动速度
 
 progress
@@ -3088,7 +3090,7 @@ progress
 ## 16.5 当前公开能力
 
 ```text
-undetermined
+indeterminate
 progress
 mode
 tracked
@@ -3112,11 +3114,11 @@ type ProgressProps =
   } &
   (
     | {
-        undetermined: true
+        indeterminate: true
         progress?: never
       }
     | {
-        undetermined?: false
+        indeterminate?: false
         progress: number
       }
   )
@@ -4212,6 +4214,145 @@ theme.components.AppBar.sizes.small / medium / large:
   gap
   titleTypo
 ```
+
+# 18.12B `Table`
+
+`Table` 是静态数据展示组件，不是 DataGrid。它使用原生 table 语义，不提供排序、编辑、列拖拽或 grid 键盘导航。
+
+组合式结构固定为：
+
+```tsx
+<Table>
+  <TableHeader>
+    <TableRow>
+      <TableHead>Name</TableHead>
+      <TableHead>Status</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    <TableRow id="alice">
+      <TableCell id="name">Alice</TableCell>
+      <TableCell id="status">Active</TableCell>
+    </TableRow>
+  </TableBody>
+</Table>
+```
+
+公开组件：
+
+```text
+Table
+TableHeader
+TableBody
+TableRow
+TableHead
+TableCell
+```
+
+`Table` 高层属性：
+
+```text
+dense?: boolean
+selectable?: boolean
+verticalBorders?: boolean
+stickyHeader?: boolean
+selected?
+defaultSelected?
+onSelect?
+viewProps
+```
+
+默认宽度为 `fill`。Table 自己提供横向滚动，并继续复用 Weave 的 View / Scrollbar 基础设施；内容宽度超过容器时不要求调用方额外包 scroll View。
+
+## 18.12B.1 Density
+
+只有普通与 Dense 两种密度。Dense 不改变 typography、checkbox 尺寸或语义，只缩小 cell 的 padding：
+
+```text
+normal -> theme.components.Table.densities.normal
+dense  -> theme.components.Table.densities.dense
+```
+
+## 18.12B.2 Surface 与分割线
+
+Table 外壳使用静态 Card surface：surface background、outline border、large radius 与静态 rest depth，不继承 Card 的 clickable / press / selectable 行为。
+
+header row 使用独立 `headerBackground`；body row hover 使用轻微 `rowHoverBackground`。相邻 row 之间始终有 horizontal Divider 视觉。
+
+`verticalBorders` 为可选属性。开启时相邻 cell 之间增加纵向分割线；关闭时没有纵向 cell border。
+
+## 18.12B.3 Cell layout
+
+`TableHead / TableCell` 都支持：
+
+```text
+align = "start" | "center" | "end"
+width
+minWidth
+maxWidth
+```
+
+尺寸值继续使用 Weave `Dimension` / Length 语义。
+
+## 18.12B.4 selectable
+
+`selectable` 开启后，Table 在 start 位置自动增加一整列 Checkbox：
+
+- body row 的 checkbox 选择 / 取消整行；
+- head row 的 checkbox 选择 / 取消整张 table；
+- 普通 body cell 点击时只选择 / 取消该 cell，不会顺带选择整行；
+- 一行只选中部分 cell 时，该行 checkbox 为 `indeterminate`；
+- 整张表只选中部分 cell / row 时，head checkbox 为 `indeterminate`；
+- 全选 row / table 后再取消单个 cell，会自动回到对应的 partial / indeterminate 状态。
+
+selectable body row 必须提供 `TableRow.id`，body cell 必须提供 `TableCell.id`。公开受控 / 非受控 selection 使用原子 cell 集合：
+
+```ts
+type TableSelectedCell = {
+  rowId: string
+  cellId: string
+}
+```
+
+```text
+selected?: readonly TableSelectedCell[]
+defaultSelected?: readonly TableSelectedCell[]
+onSelect?: (selected: readonly TableSelectedCell[]) => void
+```
+
+选择整行或整张 table 时，对外状态就是对应范围内全部 cell；因此 row / table 的 checked 与 indeterminate 始终可以由一个 selection source 推导，不维护第二套重叠状态。
+
+## 18.12B.5 stickyHeader
+
+`stickyHeader` 让 header cell 使用原生 `position: sticky; top: 0`。当 Table 通过 `viewProps` 形成纵向 scroll container 时，header 固定在该 scroll container 顶部；没有纵向滚动时不会创建额外 observer 或滚动状态。
+
+## 18.12B.6 Theme
+
+```text
+theme.components.Table.base:
+  background
+  borderColor
+  borderWidth
+  radius
+  restDepth
+  depthColor
+  headerBackground
+  rowHoverBackground
+  rowSelectedBackground
+  cellSelectedBackground
+  dividerColor
+  dividerWidth
+  color
+  headerColor
+  headerTypo
+  cellTypo
+
+theme.components.Table.densities.normal / dense:
+  paddingX
+  paddingY
+```
+
+---
 
 # 18.13 `Skeleton`
 
@@ -8121,7 +8262,7 @@ Button 的 `:active` 只表示瞬时按压；需要维持按下状态时使用 B
 ## 25.6 Progress 的语义
 
 ```tsx
-<Progress undetermined />
+<Progress indeterminate />
 ```
 
 自动表达：
@@ -8280,6 +8421,7 @@ Weave 公开 API
 │  │   └─ 双 Pane 可调整布局；N Pane 通过嵌套 SplitBox
 │  ├─ Accordion / AccordionItem / AccordionTrigger / AccordionPanel
 │  ├─ Tabs / TabList / Tab / TabPanel
+│  ├─ Table / TableHeader / TableBody / TableRow / TableHead / TableCell
 │  ├─ Snack
 │  └─ List / ListItem
 │
@@ -8363,7 +8505,7 @@ CSS variables + runtime classes + framework stylesheet
 24. Scrollbar 由框架自动插入，不要求开发者显式使用。
 25. `selectable` 是 `ViewProps` 通用能力，不是 Text 专属。
 26. `Image` 不提供 `decorative`，且遵循对应 DOM 内容模型，不接受 `children`。
-27. `Progress` 用 `undetermined` 明确表示未知进度，用 `progress` 表示确定进度。
+27. `Progress` 用 `indeterminate` 明确表示未知进度，用 `progress` 表示确定进度。
 28. 主题语义值、组件变体、状态样式、响应式覆盖、`className` 和 `style` 有明确优先级。
 29. 组件默认承担正确可访问性和键盘语义，不把标准行为推给业务开发者。
 30. 浮层使用语义 layer，普通用户不需要手工管理 portal 或全局 z-index。

@@ -15,7 +15,7 @@ type ChoiceControlViewProps = Omit<
     ref?: Ref<HTMLInputElement>
   }
 
-interface ChoiceControlProps {
+interface ChoiceControlBaseProps {
   checked?: boolean
   defaultChecked?: boolean
   onChange?: (checked: boolean) => void
@@ -27,7 +27,9 @@ interface ChoiceControlProps {
   viewProps?: ChoiceControlViewProps
 }
 
-export type RadioProps = ChoiceControlProps
-export type CheckboxProps = ChoiceControlProps
+export type RadioProps = ChoiceControlBaseProps
+export type CheckboxProps = ChoiceControlBaseProps & {
+  indeterminate?: boolean
+}
 export type RadioViewProps = ChoiceControlViewProps
 export type CheckboxViewProps = ChoiceControlViewProps

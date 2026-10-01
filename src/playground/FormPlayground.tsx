@@ -324,6 +324,7 @@ export function FormPlayground() {
               <Row gap={0.5} align="center">
                 <Radio size="large" defaultChecked label="Radio" />
                 <Checkbox size="large" defaultChecked label="Checkbox" />
+                <Checkbox size="large" indeterminate label="Indeterminate" />
                 <Text typo="body-medium">Large · 26px</Text>
               </Row>
             </Row>
@@ -384,22 +385,22 @@ export function FormPlayground() {
         <Column gap={1}>
           <Row gap={1.5} align="center" wrap>
             <Row gap={0.5} align="center">
-              <Progress undetermined mode="spin" size="medium" color="primary" />
+              <Progress indeterminate mode="spin" size="medium" color="primary" />
               <Text typo="body-medium">Spin</Text>
             </Row>
 
             <Row gap={0.5} align="center">
-              <Progress undetermined mode="spin" tracked size="medium" color="primary" />
+              <Progress indeterminate mode="spin" tracked size="medium" color="primary" />
               <Text typo="body-medium">Spin tracked</Text>
             </Row>
 
             <Row gap={0.5} align="center">
-              <Progress undetermined mode="linear" size="medium" color="primary" />
+              <Progress indeterminate mode="linear" size="medium" color="primary" />
               <Text typo="body-medium">Linear</Text>
             </Row>
 
             <Row gap={0.5} align="center">
-              <Progress undetermined mode="linear" tracked size="medium" color="primary" />
+              <Progress indeterminate mode="linear" tracked size="medium" color="primary" />
               <Text typo="body-medium">Linear tracked</Text>
             </Row>
           </Row>

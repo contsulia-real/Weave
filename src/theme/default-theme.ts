@@ -1107,6 +1107,38 @@ export const defaultTheme: ResolvedTheme = {
         disabledOpacity: 0.5,
       },
     },
+    Table: {
+      base: {
+        background: 'surface',
+        borderColor: 'outline',
+        borderWidth: 0.0625,
+        radius: 'large',
+        restDepth: 0.125,
+        depthColor: raisedSurfaceDepthColor,
+        headerBackground: 'surfaceHover',
+        rowHoverBackground: 'surfaceHover',
+        rowSelectedBackground:
+          'color-mix(in srgb, var(--weave-color-primary) 10%, var(--weave-color-surface))',
+        cellSelectedBackground:
+          'color-mix(in srgb, var(--weave-color-primary) 16%, var(--weave-color-surface))',
+        dividerColor: 'outline',
+        dividerWidth: 0.0625,
+        color: 'tertiary',
+        headerColor: 'tertiary',
+        headerTypo: 'label-medium',
+        cellTypo: 'body-medium',
+      },
+      densities: {
+        normal: {
+          paddingX: 'var(--weave-spacing-medium)',
+          paddingY: 'var(--weave-spacing-small)',
+        },
+        dense: {
+          paddingX: 'var(--weave-spacing-small)',
+          paddingY: 'calc(var(--weave-spacing-small) / 2)',
+        },
+      },
+    },
     List: {
       base: {
         background: 'surface',

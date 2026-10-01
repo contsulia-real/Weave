@@ -23,11 +23,11 @@ interface ProgressBaseProps {
 export type ProgressProps = ProgressBaseProps &
   (
     | {
-        undetermined: true
+        indeterminate: true
         progress?: never
       }
     | {
-        undetermined?: false
+        indeterminate?: false
         progress: number
       }
   )

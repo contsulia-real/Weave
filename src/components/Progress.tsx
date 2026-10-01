@@ -14,7 +14,7 @@ import { useTheme } from '../theme/theme-context'
 import { useViewHost } from './internal/use-view-host'
 
 interface ProgressVisualProps {
-  undetermined: boolean
+  indeterminate: boolean
   progress?: number
   mode?: ProgressMode
   tracked?: boolean
@@ -25,7 +25,7 @@ interface ProgressVisualProps {
 }
 
 function ProgressVisual({
-  undetermined,
+  indeterminate,
   progress,
   mode = 'spin',
   tracked = false,
@@ -36,7 +36,7 @@ function ProgressVisual({
 }: ProgressVisualProps) {
   useInsertionEffect(ensureProgressStylesheet, [])
 
-  const normalizedProgress = undetermined ? undefined : Math.min(1, Math.max(0, progress ?? 0))
+  const normalizedProgress = indeterminate ? undefined : Math.min(1, Math.max(0, progress ?? 0))
 
   const { theme } = useTheme()
   const themeClassName = useRuntimeStyleClass(
@@ -68,7 +68,7 @@ function ProgressVisual({
         `weave-progress--${mode}`,
         `weave-progress--${size}`,
         tracked ? 'weave-progress--tracked' : undefined,
-        undetermined ? 'weave-progress--undetermined' : 'weave-progress--determined',
+        indeterminate ? 'weave-progress--indeterminate' : 'weave-progress--determined',
         typeof speed === 'string' ? `weave-progress--speed-${speed}` : undefined,
         themeClassName,
         speedClassName,
@@ -97,21 +97,21 @@ function ProgressVisual({
 }
 
 export function Progress(props: ProgressProps) {
-  const undetermined = props.undetermined === true
-  const progress = undetermined ? undefined : Math.min(1, Math.max(0, props.progress))
+  const indeterminate = props.indeterminate === true
+  const progress = indeterminate ? undefined : Math.min(1, Math.max(0, props.progress))
 
   const semanticViewProps: ViewProps<HTMLSpanElement> = {
     ...props.viewProps,
     role: 'progressbar',
-    busy: undetermined || undefined,
-    valueMin: undetermined ? undefined : 0,
-    valueMax: undetermined ? undefined : 1,
+    busy: indeterminate || undefined,
+    valueMin: indeterminate ? undefined : 0,
+    valueMax: indeterminate ? undefined : 1,
     valueNow: progress,
   }
 
   return (
     <ProgressVisual
-      undetermined={undetermined}
+      indeterminate={indeterminate}
       progress={progress}
       mode={props.mode}
       tracked={props.tracked}

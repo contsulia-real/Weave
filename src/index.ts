@@ -53,6 +53,12 @@ export { Stack } from './components/Stack'
 export { Switch } from './components/Switch'
 export { Tab } from './components/Tab'
 export { TabList } from './components/TabList'
+export { Table } from './components/Table'
+export { TableBody } from './components/TableBody'
+export { TableCell } from './components/TableCell'
+export { TableHead } from './components/TableHead'
+export { TableHeader } from './components/TableHeader'
+export { TableRow } from './components/TableRow'
 export { TabPanel } from './components/TabPanel'
 export { Tabs } from './components/Tabs'
 export { Text } from './components/Text'
@@ -309,6 +315,21 @@ export type {
   SwitchViewProps,
 } from './core/switch-types'
 export type {
+  TableBodyProps,
+  TableCellAlign,
+  TableCellProps,
+  TableCellViewProps,
+  TableHeaderProps,
+  TableHeadProps,
+  TableHeadViewProps,
+  TableProps,
+  TableRowProps,
+  TableRowViewProps,
+  TableSectionViewProps,
+  TableSelectedCell,
+  TableViewProps,
+} from './core/table-types'
+export type {
   TabListProps,
   TabListViewProps,
   TabPanelProps,
@@ -456,6 +477,9 @@ export type {
   SwitchTheme,
   SwitchThemeBase,
   SwitchThemeSize,
+  TableTheme,
+  TableThemeBase,
+  TableThemeDensity,
   TabsTheme,
   TabsThemeBase,
   ThemeComponents,

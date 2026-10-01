@@ -10,6 +10,12 @@ import {
   SplitBox,
   SplitBoxPane,
   Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
   Text,
   View,
 } from '../index'
@@ -53,6 +59,50 @@ export function FoundationLayoutPlayground() {
               </>
             }
           />
+        </Column>
+      </PlaygroundSection>
+
+      <PlaygroundSection
+        title="Table"
+        description="Static semantic table · Card surface · dense · selectable hierarchy · optional vertical borders · sticky header · horizontal scroll."
+      >
+        <Column gap={1}>
+          <Table
+            selectable
+            dense
+            verticalBorders
+            stickyHeader
+            viewProps={{ maxHeight: 12, overflowY: 'auto' }}
+          >
+            <TableHeader>
+              <TableRow>
+                <TableHead width={12}>Name</TableHead>
+                <TableHead width={14}>Status</TableHead>
+                <TableHead width={12} align="end">
+                  Score
+                </TableHead>
+                <TableHead width={16}>Notes</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {[
+                ['alice', 'Alice', 'Active', '92', 'Primary workspace'],
+                ['bruno', 'Bruno', 'Review', '84', 'Pending approval'],
+                ['cora', 'Cora', 'Active', '97', 'Owns reporting'],
+                ['dina', 'Dina', 'Paused', '76', 'Back next week'],
+                ['eli', 'Eli', 'Active', '89', 'Remote'],
+              ].map(([id, name, status, score, notes]) => (
+                <TableRow key={id} id={id}>
+                  <TableCell id="name">{name}</TableCell>
+                  <TableCell id="status">{status}</TableCell>
+                  <TableCell id="score" align="end">
+                    {score}
+                  </TableCell>
+                  <TableCell id="notes">{notes}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </Column>
       </PlaygroundSection>
 

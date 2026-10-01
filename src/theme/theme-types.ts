@@ -714,6 +714,35 @@ export interface TabsTheme {
   base?: TabsThemeBase
 }
 
+export interface TableThemeBase {
+  background?: string
+  borderColor?: string
+  borderWidth?: ThemeScaleValue
+  radius?: ThemeScaleValue
+  restDepth?: ThemeScaleValue
+  depthColor?: string
+  headerBackground?: string
+  rowHoverBackground?: string
+  rowSelectedBackground?: string
+  cellSelectedBackground?: string
+  dividerColor?: string
+  dividerWidth?: ThemeScaleValue
+  color?: string
+  headerColor?: string
+  headerTypo?: TextTypo
+  cellTypo?: TextTypo
+}
+
+export interface TableThemeDensity {
+  paddingX?: ThemeScaleValue
+  paddingY?: ThemeScaleValue
+}
+
+export interface TableTheme {
+  base?: TableThemeBase
+  densities?: Partial<Record<'normal' | 'dense', TableThemeDensity>>
+}
+
 export interface ListThemeBase {
   background?: string
   borderColor?: string
@@ -784,6 +813,7 @@ export interface ThemeComponents {
   Menu?: MenuTheme
   Snack?: SnackTheme
   Tabs?: TabsTheme
+  Table?: TableTheme
   List?: ListTheme
   ListItem?: ListItemTheme
   readonly [name: string]: unknown
