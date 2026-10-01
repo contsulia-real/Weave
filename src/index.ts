@@ -402,6 +402,7 @@ export type {
 export type { Root } from './root'
 export { createRoot } from './root'
 export { createTheme } from './theme/create-theme'
+export { createThemeFromColorSeed } from './theme/create-theme-from-color-seed'
 export { defaultTheme } from './theme/default-theme'
 export type { ThemeProviderProps } from './theme/ThemeProvider'
 export { ThemeProvider } from './theme/ThemeProvider'

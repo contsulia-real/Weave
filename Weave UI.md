@@ -7346,6 +7346,49 @@ system
 
 ---
 
+## 22.5A `createThemeFromColorSeed(seed)`
+
+Weave 提供非视觉主题生成 API：
+
+```ts
+const theme = createThemeFromColorSeed('#6d5dfc')
+```
+
+输入是一个非空 CSS color seed 字符串，返回标准 `ThemeDefinition`。生成结果不建立第二套主题系统；它仍然通过现有 `ThemeProvider / createTheme / resolveTheme` 路径工作。
+
+生成器负责提供一整套 light / dark semantic color tokens。brand / neutral / focus 相关 token 从 seed 派生；`success / warning / danger` 保留稳定的状态色语义：
+
+```text
+primary
+onPrimary
+primaryHover
+primaryActive
+secondary
+tertiary
+disabled
+surface
+surfaceHover
+success
+warning
+danger
+outline
+focus
+```
+
+非颜色 token、组件 Theme、breakpoints、layers、motion、typography 等继续继承 Weave 默认主题，因此生成结果经过 ThemeProvider 解析后是一整套完整 Theme。
+
+派生色使用 CSS `color-mix(in srgb, ...)` 表达式，保留 seed 的 CSS color 语义，不要求另一个 palette runtime 或第三方调色依赖。空字符串 seed 必须抛出 `TypeError`。
+
+```tsx
+const theme = createThemeFromColorSeed('oklch(62% 0.2 275)')
+
+<ThemeProvider theme={theme} mode="system">
+  <App />
+</ThemeProvider>
+```
+
+---
+
 ## 22.6 自定义设计令牌
 
 允许扩展：
@@ -8434,7 +8477,7 @@ Weave 公开 API
 │
 └─ Context / 配置 / 命令式支撑 API
    ├─ ThemeProvider / useTheme
-   ├─ createTheme / defaultTheme
+   ├─ createTheme / createThemeFromColorSeed / defaultTheme
    └─ SnackProvider / useSnack
 
 真实 DOM 宿主组件

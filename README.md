@@ -44,7 +44,7 @@ The main layers are:
 
 ### Theme and application
 
-`ThemeProvider`, `useTheme`, `createTheme`, `defaultTheme`, `createRoot`.
+`ThemeProvider`, `useTheme`, `createTheme`, `createThemeFromColorSeed`, `defaultTheme`, `createRoot`.
 
 The root package also exports the public prop, motion and theme customization types, including component-level theme interfaces such as `ButtonTheme`, `CardTheme`, `AppBarTheme`, `TableTheme`, `AvatarTheme`, `DividerTheme`, `IconTheme`, `SkeletonTheme`, `SelectTheme`, `ComboboxTheme`, `SliderTheme`, `SwitchTheme`, `SplitBoxTheme`, `DrawerTheme`, `FormTheme`, `AccordionTheme`, `ToolTipTheme`, `PopoverTheme`, `MenuTheme`, `SnackTheme` and `ThemeComponents`.
 
@@ -119,7 +119,7 @@ Theme definitions support tokens, component themes, dynamic breakpoints, light/d
 
 ## Documentation
 
-The Vite application now hosts the in-repository Weave documentation surface. The previous interactive development surface has been removed. Documentation examples dogfood the public Weave API and are the place for interactive component examples as the documentation site is built out.
+The Vite application hosts the in-repository Weave documentation surface under `/docs/*` as a single-page route. The shell uses Weave itself: an elevated floating sticky AppBar, a left Drawer navigation, search/theme controls, and browser History routing. Documentation i18n uses `i18next` + `react-i18next` as development-only dependencies; they are not Weave runtime dependencies.
 
 ```bash
 pnpm install

@@ -1,74 +1,139 @@
-import { Code, Column, Divider, Text } from '../index'
+import { IconDeviceDesktop, IconMenu2, IconMoon, IconSearch, IconSun } from '@tabler/icons-react'
+import type { TFunction } from 'i18next'
+import type { MouseEvent } from 'react'
+import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import type { ThemeMode } from '../index'
+import { AppBar, Button, Column, Drawer, Link, Popover, Row, Text, View } from '../index'
+import { useDocsRoute } from './router'
 
-const basicUsage = `import {
-  Button,
-  Column,
-  Text,
-  ThemeProvider,
-  createRoot,
-} from 'weave'
+export interface DocumentationPageProps {
+  themeMode: ThemeMode
+  onThemeModeChange: (mode: ThemeMode) => void
+}
 
-const root = createRoot(
-  document.getElementById('app')!,
-)
+function routeTitle(section: string, t: TFunction): string {
+  if (section === 'components') return t('docs.route.components')
+  return t('docs.route.overview')
+}
 
-root.render(
-  <ThemeProvider mode="system">
-    <Column gap={1} padding={2}>
-      <Text typo="title-large">
-        Hello from Weave
-      </Text>
+export function DocumentationPage({ themeMode, onThemeModeChange }: DocumentationPageProps) {
+  const { t } = useTranslation()
+  const route = useDocsRoute()
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [themePopoverOpen, setThemePopoverOpen] = useState(false)
 
-      <Button
-        text="Continue"
-        variant="primary"
+  const themeIcon =
+    themeMode === 'light' ? IconSun : themeMode === 'dark' ? IconMoon : IconDeviceDesktop
+
+  const navigate = (path: string) => (event: MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault()
+    route.navigate(path)
+  }
+
+  const selectThemeMode = (mode: ThemeMode) => {
+    onThemeModeChange(mode)
+    setThemePopoverOpen(false)
+  }
+
+  const navigation = (
+    <Column gap={0.5} padding={1} label={t('docs.navigation')}>
+      <Text typo="title-medium">{t('docs.title')}</Text>
+      <Link
+        href="/docs"
+        text={t('docs.nav.overview')}
+        hideIcon
+        hideUnderline
+        viewProps={{ onClick: navigate('/docs') }}
+      />
+      <Link
+        href="/docs/components"
+        text={t('docs.nav.components')}
+        hideIcon
+        hideUnderline
+        viewProps={{ onClick: navigate('/docs/components') }}
       />
     </Column>
-  </ThemeProvider>,
-)`
+  )
 
-export function DocumentationPage() {
+  const themeSelector = (
+    <Popover
+      placement="bottom-right"
+      open={themePopoverOpen}
+      onOpenChange={setThemePopoverOpen}
+      content={
+        <Column gap={0.5} padding={0.5}>
+          <Button
+            text={t('docs.theme.system')}
+            pressed={themeMode === 'system'}
+            viewProps={{ onClick: () => selectThemeMode('system') }}
+          />
+          <Button
+            text={t('docs.theme.light')}
+            pressed={themeMode === 'light'}
+            viewProps={{ onClick: () => selectThemeMode('light') }}
+          />
+          <Button
+            text={t('docs.theme.dark')}
+            pressed={themeMode === 'dark'}
+            viewProps={{ onClick: () => selectThemeMode('dark') }}
+          />
+        </Column>
+      }
+    >
+      <Button
+        icon={themeIcon}
+        viewProps={{
+          label: t('docs.theme'),
+        }}
+      />
+    </Popover>
+  )
+
   return (
-    <Column width="fill" height="100vh" overflow="auto" background="surface" color="tertiary">
-      <Column width="fill" maxWidth={64} padding={2} gap={2} alignSelf="center">
-        <Column gap={0.75}>
-          <Text typo="display-large">Weave Documentation</Text>
-          <Text typo="body-large" color="secondary">
-            Weave is a browser-native React UI framework for the Web. It provides semantic React
-            components, theme tokens, responsive props and motion orchestration while keeping DOM
-            and CSS as the single rendering path.
-          </Text>
-        </Column>
+    <Drawer side="left" open={drawerOpen} onOpenChange={setDrawerOpen} drawer={navigation}>
+      <Column width="fill" height="100vh" overflow="auto" background="surface" color="tertiary">
+        <AppBar
+          elevated
+          mode="floating"
+          sticky
+          leading={
+            <Button
+              icon={IconMenu2}
+              variant="primary"
+              pressed={drawerOpen}
+              viewProps={{
+                label: t('docs.menu'),
+                onClick: () => setDrawerOpen((current) => !current),
+              }}
+            />
+          }
+          title={<Text>{t('docs.title')}</Text>}
+          trailing={
+            <Row gap={0.5} align="center">
+              <Button
+                icon={IconSearch}
+                viewProps={{
+                  label: t('docs.search'),
+                }}
+              />
+              {themeSelector}
+            </Row>
+          }
+        />
 
-        <Divider />
-
-        <Column gap={0.75}>
-          <Text typo="headline-medium">Status</Text>
-          <Text typo="body-medium">
-            Weave is currently an alpha, private development package. The current development
-            version is 0.1.0-alpha.0.
-          </Text>
-        </Column>
-
-        <Column gap={0.75}>
-          <Text typo="headline-medium">Architecture</Text>
-          <Text typo="body-medium">
-            Weave does not implement a custom React renderer. Components ultimately render ordinary
-            semantic DOM and CSS, so browser layout, text rendering, forms, focus, scrolling,
-            accessibility and compositing remain browser-native.
-          </Text>
-          <Text typo="body-medium">
-            View is the public general-purpose primitive. Framework components reuse the same host,
-            responsive, motion and theme infrastructure without introducing an alternate rendering
-            path.
-          </Text>
-        </Column>
-
-        <Column gap={0.75}>
-          <Text typo="headline-medium">Basic usage</Text>
-          <Code language="tsx">{basicUsage}</Code>
-        </Column>
+        <View grow={1} width="fill">
+          <Column width="fill" padding={2} gap={0.75}>
+            <Text typo="headline-large">{routeTitle(route.section, t)}</Text>
+            <Text typo="body-medium" color="secondary">
+              {t('docs.route.placeholder')}
+            </Text>
+            <Text typo="body-small" color="secondary">
+              {route.pathname}
+            </Text>
+          </Column>
+        </View>
       </Column>
-    </Column>
+    </Drawer>
   )
 }

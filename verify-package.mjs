@@ -14,6 +14,17 @@ const packageJson = JSON.parse(await readFile(new URL('./package.json', import.m
 const packageEntry = packageJson.exports?.['.']
 
 assert(
+  packageJson.devDependencies?.i18next !== undefined &&
+    packageJson.devDependencies?.['react-i18next'] !== undefined,
+  'Documentation i18n packages must remain devDependencies',
+)
+assert(
+  packageJson.dependencies?.i18next === undefined &&
+    packageJson.dependencies?.['react-i18next'] === undefined,
+  'Documentation i18n packages must not become Weave runtime dependencies',
+)
+
+assert(
   packageEntry?.import === './dist/weave.js',
   'Package import entry must point to ./dist/weave.js',
 )
@@ -25,6 +36,10 @@ assert(
 const runtimeEntry = new URL(packageEntry.import, import.meta.url)
 const typeEntry = new URL(packageEntry.types, import.meta.url)
 const runtimeSource = await readFile(runtimeEntry, 'utf8')
+assert(
+  !runtimeSource.includes('i18next'),
+  'Built Weave runtime must not include documentation i18n',
+)
 const typeSource = await readFile(typeEntry, 'utf8')
 const weave = await import(runtimeEntry.href)
 
@@ -96,6 +111,7 @@ const expectedRuntimeExports = [
   'View',
   'createRoot',
   'createTheme',
+  'createThemeFromColorSeed',
   'defaultTheme',
   'useSnack',
   'useTheme',
