@@ -1,7 +1,36 @@
-import type { ThemeDefinition } from './theme-types'
+import { defaultDarkTheme, defaultTheme } from './default-theme'
+import type { ThemeDefinition, ThemeTokens } from './theme-types'
+
+type ColorTokens = NonNullable<ThemeTokens['color']>
+
+function defaultLightColors(): ColorTokens {
+  const colors = defaultTheme.tokens.color
+
+  if (colors === undefined) {
+    throw new Error('Weave default theme is missing color tokens')
+  }
+
+  return colors
+}
+
+const DEFAULT_SEED = defaultLightColors().primary
 
 function mix(seed: string, seedPercent: number, other: string): string {
   return `color-mix(in srgb, ${seed} ${seedPercent}%, ${other})`
+}
+
+function defaultDarkColors(): ColorTokens {
+  const colors = defaultDarkTheme.tokens?.color
+
+  if (colors === undefined) {
+    throw new Error('Weave default dark theme is missing color tokens')
+  }
+
+  return colors
+}
+
+function matchesDefaultSeed(seed: string): boolean {
+  return seed.toLowerCase() === DEFAULT_SEED.toLowerCase()
 }
 
 export function createThemeFromColorSeed(seed: string): ThemeDefinition {
@@ -11,22 +40,32 @@ export function createThemeFromColorSeed(seed: string): ThemeDefinition {
     throw new TypeError('createThemeFromColorSeed(seed) requires a non-empty CSS color')
   }
 
+  const lightBase = defaultLightColors()
+  const darkBase = defaultDarkColors()
+
+  if (matchesDefaultSeed(colorSeed)) {
+    return {
+      tokens: {
+        color: { ...lightBase },
+      },
+      modes: {
+        dark: {
+          tokens: {
+            color: { ...darkBase },
+          },
+        },
+      },
+    }
+  }
+
   return {
     tokens: {
       color: {
+        ...lightBase,
         primary: colorSeed,
-        onPrimary: '#ffffff',
+        onPrimary: lightBase.onPrimary,
         primaryHover: mix(colorSeed, 88, 'black'),
-        primaryActive: mix(colorSeed, 78, 'black'),
-        secondary: mix(colorSeed, 24, '#756f69'),
-        tertiary: mix(colorSeed, 18, '#3f3a36'),
-        disabled: mix(colorSeed, 8, '#aaa39d'),
-        surface: mix(colorSeed, 3, 'white'),
-        surfaceHover: mix(colorSeed, 8, 'white'),
-        success: '#20a464',
-        warning: '#d78b00',
-        danger: '#d94040',
-        outline: mix(colorSeed, 12, '#d8cec4'),
+        primaryActive: mix(colorSeed, 76, 'black'),
         focus: colorSeed,
       },
     },
@@ -34,20 +73,12 @@ export function createThemeFromColorSeed(seed: string): ThemeDefinition {
       dark: {
         tokens: {
           color: {
-            primary: mix(colorSeed, 72, 'white'),
-            onPrimary: mix(colorSeed, 12, '#121016'),
-            primaryHover: mix(colorSeed, 80, 'white'),
-            primaryActive: mix(colorSeed, 62, 'white'),
-            secondary: mix(colorSeed, 18, '#aaa3b5'),
-            tertiary: mix(colorSeed, 10, '#e9e5ef'),
-            disabled: mix(colorSeed, 8, '#716b78'),
-            surface: mix(colorSeed, 6, '#18161b'),
-            surfaceHover: mix(colorSeed, 12, '#242129'),
-            success: '#55d792',
-            warning: '#f4b44c',
-            danger: '#ff7272',
-            outline: mix(colorSeed, 16, '#5b5262'),
-            focus: mix(colorSeed, 80, 'white'),
+            ...darkBase,
+            primary: mix(colorSeed, 64, 'white'),
+            onPrimary: mix(colorSeed, 14, '#121016'),
+            primaryHover: mix(colorSeed, 72, 'white'),
+            primaryActive: mix(colorSeed, 56, 'white'),
+            focus: mix(colorSeed, 72, 'white'),
           },
         },
       },

@@ -121,6 +121,33 @@ for (const name of expectedRuntimeExports) {
   assert(name in weave, `Built package is missing runtime export: ${name}`)
 }
 
+const defaultSeedTheme = weave.createThemeFromColorSeed(weave.defaultTheme.tokens.color.primary)
+assert(
+  JSON.stringify(defaultSeedTheme.tokens?.color) ===
+    JSON.stringify(weave.defaultTheme.tokens.color),
+  'Default color seed must reproduce the default light color tokens exactly',
+)
+assert(
+  JSON.stringify(defaultSeedTheme.modes?.dark?.tokens?.color) ===
+    JSON.stringify({
+      primary: '#a99cff',
+      onPrimary: '#1b1633',
+      primaryHover: '#b8adff',
+      primaryActive: '#9283f0',
+      secondary: '#aaa3b5',
+      tertiary: '#e9e5ef',
+      disabled: '#716b78',
+      surface: '#18161b',
+      surfaceHover: '#242129',
+      success: '#55d792',
+      warning: '#f4b44c',
+      danger: '#ff7272',
+      outline: '#5b5262',
+      focus: '#b8adff',
+    }),
+  'Default color seed must reproduce the default dark color tokens exactly',
+)
+
 const actualRuntimeExports = Object.keys(weave).sort()
 const sortedExpectedRuntimeExports = [...expectedRuntimeExports].sort()
 

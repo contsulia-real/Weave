@@ -7356,7 +7356,7 @@ const theme = createThemeFromColorSeed('#6d5dfc')
 
 输入是一个非空 CSS color seed 字符串，返回标准 `ThemeDefinition`。生成结果不建立第二套主题系统；它仍然通过现有 `ThemeProvider / createTheme / resolveTheme` 路径工作。
 
-生成器负责提供一整套 light / dark semantic color tokens。brand / neutral / focus 相关 token 从 seed 派生；`success / warning / danger` 保留稳定的状态色语义：
+生成器负责提供一整套 light / dark semantic color tokens。`primary / primaryHover / primaryActive / focus` 等品牌相关 token 从 seed 派生；neutral / surface / status token 继续复用现有默认主题语义，不随 seed 染色。默认 seed `#6d5dfc` 必须精确复现现有默认 light / dark color token：
 
 ```text
 primary
@@ -7377,7 +7377,7 @@ focus
 
 非颜色 token、组件 Theme、breakpoints、layers、motion、typography 等继续继承 Weave 默认主题，因此生成结果经过 ThemeProvider 解析后是一整套完整 Theme。
 
-派生色使用 CSS `color-mix(in srgb, ...)` 表达式，保留 seed 的 CSS color 语义，不要求另一个 palette runtime 或第三方调色依赖。空字符串 seed 必须抛出 `TypeError`。
+非默认 seed 的品牌派生色使用 CSS `color-mix(in srgb, ...)` 表达式，保留 seed 的 CSS color 语义，不要求另一个 palette runtime 或第三方调色依赖。neutral / surface / status 直接复用默认 light / dark token。空字符串 seed 必须抛出 `TypeError`。
 
 ```tsx
 const theme = createThemeFromColorSeed('oklch(62% 0.2 275)')
