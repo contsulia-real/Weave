@@ -215,14 +215,17 @@ export function Drawer(props: DrawerProps) {
 
   const { theme } = useTheme()
   const breakpointWidth = mode === 'auto' ? theme.breakpoints[breakpoint] : undefined
+  const mdWidth = theme.breakpoints.md
 
   if (mode === 'auto' && !Number.isFinite(breakpointWidth)) {
     throw new Error(`Drawer breakpoint "${breakpoint}" does not exist in the current theme`)
   }
 
   const wide = useWideBreakpoint(breakpointWidth)
+  const mdWide = useWideBreakpoint(mdWidth)
   const effectiveMode: Exclude<DrawerMode, 'auto'> =
     mode === 'auto' ? (wide ? 'non-modal' : 'modal') : mode
+  const modalSwipeEnabled = effectiveMode === 'modal' && !mdWide
 
   const { value: resolvedOpen, request: requestOpen } = useControllableBoolean(
     open,
@@ -333,11 +336,12 @@ export function Drawer(props: DrawerProps) {
 
   /* oxlint-disable react/set-state-in-effect */
   useEffect(() => {
-    if (effectiveMode === 'modal') return
+    if (modalSwipeEnabled) return
 
     dragRef.current = null
+    modalDialogRef.current?.style.removeProperty('--weave-drawer-drag-offset')
     setDragging(false)
-  }, [effectiveMode])
+  }, [modalSwipeEnabled])
   /* oxlint-enable react/set-state-in-effect */
 
   const handleSplitSizeChange = useCallback(
@@ -381,7 +385,7 @@ export function Drawer(props: DrawerProps) {
 
   const beginDrawerDrag = useCallback(
     (event: PointerEvent<HTMLDialogElement>) => {
-      if (effectiveMode !== 'modal' || !resolvedOpen || event.button !== 0) return
+      if (!modalSwipeEnabled || !resolvedOpen || event.button !== 0) return
 
       const dialog = modalDialogRef.current
       if (dialog === null) return
@@ -403,7 +407,7 @@ export function Drawer(props: DrawerProps) {
       }
       dialog.style.setProperty('--weave-drawer-drag-offset', '0px')
     },
-    [effectiveMode, resolvedOpen, side],
+    [modalSwipeEnabled, resolvedOpen, side],
   )
 
   const moveDrawerDrag = useCallback(
@@ -514,6 +518,7 @@ export function Drawer(props: DrawerProps) {
       ...surfaceData,
       'weave-drawer-mode': 'modal',
       'weave-drawer-dragging': dragging ? 'true' : 'false',
+      'weave-drawer-swipe-enabled': modalSwipeEnabled ? 'true' : 'false',
       'weave-scroll-host': '',
     },
   } as unknown as ModalDialogViewProps

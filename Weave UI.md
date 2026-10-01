@@ -5619,7 +5619,7 @@ Drawer 位于 left/top 时复用 start Pane，位于 right/bottom 时复用 end 
 
 `resizable=false` 映射到 SplitBox `disabled`：splitter 元素仍保留，但 non-modal Drawer 固定 `thickness=0`，且不能 pointer / keyboard resize，也不进入 Tab 顺序。
 
-non-modal 不产生 backdrop、不让主内容 inert、不做 focus containment。surface 不使用 ambient shadow；Drawer 与主视图的可拖边界由 SplitBox splitter 表达。non-modal Drawer 的 splitter `thickness` 固定为 0，只保留 hit area 与 hover / active feedback。
+non-modal 不产生 backdrop、不让主内容 inert、不做 focus containment。surface 不使用 ambient shadow；Drawer 与主视图的可拖边界由 SplitBox splitter 表达。non-modal Drawer 的 splitter `thickness` 固定为 0，只保留 hit area 与 hover / active feedback。Drawer surface 在与主视图相接的那一侧必须取消自身 border，避免 surface border 伪装成一个可见 splitter；left 取消 right border，right 取消 left border，top 取消 bottom border，bottom 取消 top border。
 
 non-modal 的 `SplitBoxPane` 必须继续保持纯布局槽位，Drawer surface 必须作为 Pane 内部的独立元素存在，不能把 surface 的 padding / border / background 直接施加到 Pane 本身。这样 Pane 折叠到 0 时由 Pane 的 `overflow: hidden` 完整裁掉 surface，关闭状态不得残留任何 Drawer padding、border 或内容绘制。
 
@@ -5637,11 +5637,11 @@ restoreFocus = true
 
 支持 `initialFocus`。Drawer content 在 modal / non-modal 切换时不会重新创建 React subtree；同一 content host 在两个宿主之间移动，因此内部 React state 必须保持。模式切换本身不执行 restoreFocus。
 
-modal surface 贴对应 viewport edge；只有朝内容侧的两个角使用 Drawer radius，贴 viewport 的两个角为 0。
+modal surface 贴对应 viewport edge；只有朝内容侧的两个角使用 Drawer radius，贴 viewport 的两个角为 0。modal Drawer 必须复用 modal Dialog 的 depth 强度与 `depthColor`，但 depth 方向跟随打开方向：left 向右、right 向左、top 向下、bottom 向上。
 
 ## 19.8.5 Modal surface drag / swipe close
 
-modal Drawer 不提供独立 handle。用户直接在 Drawer surface 上起手拖动 / swipe；点击 backdrop 空白区域则按 `closeOnBackdrop` 关闭。
+modal Drawer 不提供独立 handle。用户直接在 Drawer surface 上起手拖动 / swipe；点击 backdrop 空白区域则按 `closeOnBackdrop` 关闭。surface drag / swipe-to-close 只在 viewport 小于 Theme `md` breakpoint 时生效；达到或超过 `md` 后即使显式 `mode="modal"`，也不得通过滑动关闭。
 
 ```ts
 closeThreshold?: Length
@@ -5683,6 +5683,18 @@ backdropColor
 默认视觉与 modal Dialog 的 surface 色系一致：`surface / tertiary / outline / 1px / 1rem padding / large shadow / 0.48 backdrop`。large shadow 只作用于 modal；non-modal 不使用 backdrop 与 ambient shadow。
 
 `viewProps` 配置 Drawer 的整体布局 root；`drawerViewProps` 配置 Drawer surface。
+
+## 19.8.7 Implementation correction record — 2026-10-01
+
+以下错误曾经进入实现，后续不得再次引入：
+
+- 把 `SplitBox thickness=0` 当成“视觉上一定没有分界线”，却遗漏 non-modal Drawer surface 自己的共享边 border，导致实际界面仍显示一条竖线；这是错误的视觉验证。
+- 曾让 SplitBox 在合法最小尺寸与 collapse threshold 之间继续改变 Pane 的视觉尺寸。正确行为是 pointer 可以继续移动，但 Pane 视觉尺寸锁在合法最小尺寸，直到跨阈值才瞬间吸附；展开方向同理。
+- 曾让 modal Drawer 的 content host 在打开时没有及时挂入 dialog，造成打开期间内容缺失、退出阶段才出现。
+- 曾擅自增加 `DrawerHandle` 作为 modal swipe-to-close 起手区。该组件和相关公开 API 已删除；正确交互是直接滑动 Drawer surface，或点击 backdrop 空白区域关闭。
+- 曾让 modal Drawer 的 surface drag / swipe-to-close 在所有 viewport 生效。正确范围仅为 Theme `md` 以下；`md` 及以上即使显式 modal 也禁用滑动关闭。
+- 曾遗漏 modal Drawer 按打开方向呈现 modal Dialog 同款 depth。Drawer depth 必须朝内容侧投射。
+- 旧自动化测试曾在上述交互明显错误时仍全部通过，形成假阳性验证。按项目决定，仓库自动化测试套件于 2026-10-01 删除；此类交互不得再以 synthetic test 通过作为正确性的替代证据。
 
 ---
 # 20. `Snack`

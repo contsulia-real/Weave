@@ -402,7 +402,8 @@ function DrawerPlayground() {
             <Column gap={0.75} height="fill">
               <Text typo="title-medium">Forced modal Drawer</Text>
               <Text typo="body-small" color="secondary">
-                Swipe the Drawer surface toward the right edge, or click the backdrop to close.
+                Below md, swipe the Drawer surface toward the right edge to close. At any size,
+                click the backdrop to close.
               </Text>
             </Column>
           }
@@ -650,7 +651,7 @@ export function FoundationControlPlayground() {
 
       <PlaygroundSection
         title="Drawer"
-        description="响应式 Drawer：默认 auto 在 md 以下使用原生 modal Dialog、md 以上进入 SplitBox non-modal；同时展示显式 mode=modal / mode=non-modal 覆盖。modal 可直接滑动 Drawer surface 或点击 backdrop 关闭；non-modal splitter thickness=0。"
+        description="响应式 Drawer：默认 auto 在 md 以下使用原生 modal Dialog、md 以上进入 SplitBox non-modal；同时展示显式 mode=modal / mode=non-modal 覆盖。modal 仅在 md 以下允许滑动 Drawer surface 关闭，backdrop 点击仍可关闭；non-modal splitter thickness=0。"
       >
         <DrawerPlayground />
       </PlaygroundSection>

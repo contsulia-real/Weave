@@ -38,6 +38,22 @@ const stylesheet = `
   --weave-component-box-shadow: none;
 }
 
+.weave-drawer-surface--non-modal[data-weave-drawer-side="left"] {
+  --weave-component-border-right-width: 0;
+}
+
+.weave-drawer-surface--non-modal[data-weave-drawer-side="right"] {
+  --weave-component-border-left-width: 0;
+}
+
+.weave-drawer-surface--non-modal[data-weave-drawer-side="top"] {
+  --weave-component-border-bottom-width: 0;
+}
+
+.weave-drawer-surface--non-modal[data-weave-drawer-side="bottom"] {
+  --weave-component-border-top-width: 0;
+}
+
 .weave-drawer-surface--modal {
   --weave-component-box-shadow: var(--weave-drawer-shadow);
 }
@@ -47,6 +63,9 @@ const stylesheet = `
   --weave-component-border-bottom-left-radius: 0;
   --weave-component-border-top-right-radius: var(--weave-drawer-radius);
   --weave-component-border-bottom-right-radius: var(--weave-drawer-radius);
+  --weave-component-box-shadow:
+    var(--weave-drawer-shadow),
+    var(--weave-feedback-rest-depth) 0 0 var(--weave-dialog-depth-color);
 }
 
 .weave-drawer-surface--modal[data-weave-drawer-side="right"] {
@@ -54,6 +73,9 @@ const stylesheet = `
   --weave-component-border-bottom-right-radius: 0;
   --weave-component-border-top-left-radius: var(--weave-drawer-radius);
   --weave-component-border-bottom-left-radius: var(--weave-drawer-radius);
+  --weave-component-box-shadow:
+    var(--weave-drawer-shadow),
+    calc(0rem - var(--weave-feedback-rest-depth)) 0 0 var(--weave-dialog-depth-color);
 }
 
 .weave-drawer-surface--modal[data-weave-drawer-side="top"] {
@@ -61,6 +83,9 @@ const stylesheet = `
   --weave-component-border-top-right-radius: 0;
   --weave-component-border-bottom-left-radius: var(--weave-drawer-radius);
   --weave-component-border-bottom-right-radius: var(--weave-drawer-radius);
+  --weave-component-box-shadow:
+    var(--weave-drawer-shadow),
+    0 var(--weave-feedback-rest-depth) 0 var(--weave-dialog-depth-color);
 }
 
 .weave-drawer-surface--modal[data-weave-drawer-side="bottom"] {
@@ -68,6 +93,9 @@ const stylesheet = `
   --weave-component-border-bottom-right-radius: 0;
   --weave-component-border-top-left-radius: var(--weave-drawer-radius);
   --weave-component-border-top-right-radius: var(--weave-drawer-radius);
+  --weave-component-box-shadow:
+    var(--weave-drawer-shadow),
+    0 calc(0rem - var(--weave-feedback-rest-depth)) 0 var(--weave-dialog-depth-color);
 }
 
 .weave-dialog.weave-drawer-surface--modal {
@@ -92,21 +120,27 @@ const stylesheet = `
 
 .weave-dialog.weave-drawer-surface--modal[data-weave-drawer-side="left"] {
   translate: calc(-1 * var(--weave-drawer-drag-offset, 0px)) 0;
-  touch-action: pan-y;
 }
 
 .weave-dialog.weave-drawer-surface--modal[data-weave-drawer-side="right"] {
   translate: var(--weave-drawer-drag-offset, 0px) 0;
-  touch-action: pan-y;
 }
 
 .weave-dialog.weave-drawer-surface--modal[data-weave-drawer-side="top"] {
   translate: 0 calc(-1 * var(--weave-drawer-drag-offset, 0px));
-  touch-action: pan-x;
 }
 
 .weave-dialog.weave-drawer-surface--modal[data-weave-drawer-side="bottom"] {
   translate: 0 var(--weave-drawer-drag-offset, 0px);
+}
+
+.weave-dialog.weave-drawer-surface--modal[data-weave-drawer-swipe-enabled="true"][data-weave-drawer-side="left"],
+.weave-dialog.weave-drawer-surface--modal[data-weave-drawer-swipe-enabled="true"][data-weave-drawer-side="right"] {
+  touch-action: pan-y;
+}
+
+.weave-dialog.weave-drawer-surface--modal[data-weave-drawer-swipe-enabled="true"][data-weave-drawer-side="top"],
+.weave-dialog.weave-drawer-surface--modal[data-weave-drawer-swipe-enabled="true"][data-weave-drawer-side="bottom"] {
   touch-action: pan-x;
 }
 

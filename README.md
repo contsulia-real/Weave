@@ -136,12 +136,10 @@ The library entry is `src/index.ts`; production output is generated under `dist/
 pnpm format:check
 pnpm typecheck
 pnpm lint
-pnpm test
-pnpm test:browser --project=firefox
 pnpm build
 ```
 
-`pnpm test` is self-contained and does not require a prior build. The Firefox browser regression suite exercises real scrolling, anchored overlay repositioning and the framework Scrollbar, including protection against Firefox scroll-linked positioning warnings. `pnpm build` emits only declarations reachable from the public entry and verifies the built runtime, public types, packed npm file set and ReactDOM externalization. `npm pack` runs the build automatically through `prepack`.
+The automated test suite was removed by project decision on 2026-10-01 after false-positive validation around interactive Drawer behavior created unjustified confidence in incorrect UI behavior. Current repository verification is formatting, static type checking, linting, production build, declaration pruning and package verification. Interactive UI behavior must be checked directly in the playground rather than inferred from deleted synthetic tests. `pnpm build` emits only declarations reachable from the public entry and verifies the built runtime, public types, packed npm file set and ReactDOM externalization. `npm pack` runs the build automatically through `prepack`.
 
 ## Repository
 

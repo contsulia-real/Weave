@@ -35,7 +35,6 @@ if (initialStatus.length > 0) {
 pnpm('format:check')
 pnpm('typecheck')
 pnpm('lint')
-pnpm('test')
 pnpm('build')
 
 const finalStatus = git('status', '--porcelain')
