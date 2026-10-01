@@ -4248,7 +4248,7 @@ PageUp / PageDown
 
 `label` 存在时，它只作为 Slider 旁边的普通可见文本，不使用原生 `<label>`、不建立 `htmlFor` 激活关系；点击这段文字不能聚焦、跳值或触发 Slider。组件仍通过 `aria-labelledby` 引用该文本，使它可以作为 range 的 accessible name。
 
-因此 Slider 的 `label` 语义与 Switch / Radio / Checkbox 不同：后者的可见 label 本身就是交互命中区域，而 Slider 的可见 label 不是交互控件的一部分。未提供高层 `label` 时，语义继续通过 `viewProps.label / labelledBy / description` 等 View 语义字段提供。
+因此 Slider 的 `label` 语义与 Switch / Radio / Checkbox 不同：后者的可见 label 本身就是交互命中区域，而 Slider 的可见 label 不是交互控件的一部分。未提供高层 `label` 时，语义继续通过 `viewProps.label / labelledBy / description` 等 View 语义字段提供。Slider 本体与可见 label 之间必须保留安全 gap，直接使用现有 `theme.components.Slider.base.fieldGap`；默认值为 `0.5rem`（8px）。
 
 ## 18.15.4 Geometry
 
@@ -4828,7 +4828,7 @@ collapse 在 pointer move 跨过阈值时立即判定：
 - end Pane raw size <= `collapseThreshold` 且 end 可折叠 -> end 立即吸附到 0；
 - pointer 可以继续越过正常 min 向 collapse threshold 移动，但 Pane 的视觉尺寸必须锁在当前合法最小尺寸，不得继续缩小；只有 raw pointer 跨过 collapse threshold 时才瞬间吸附到 0。反向展开同理：折叠态在 expand threshold 以内视觉保持 0，跨过 threshold 才瞬间吸附到当前合法最小尺寸。
 
-折叠 Pane 不卸载。Pane DOM 保留，尺寸为 0，并设置 `inert`；splitter hit area 保留在边缘，因此可以直接拖回展开。
+折叠 Pane 不卸载。Pane DOM 与 React subtree 保留，grid track 尺寸为 0，Pane 本身设置 `display: none` 与 `inert`；折叠 Pane 及其后代不得继续在 SplitBox 外绘制，splitter hit area 保留在边缘，因此可以直接拖回展开。
 
 从折叠状态往外拖时，在 `expandThreshold` 以内 Pane 保持 0，不提前展开；一旦跨过阈值，立即退出 collapsed 状态，并吸附到该侧当前合法的最小尺寸（start 使用当前 lower bound，end 使用当前 upper bound 对应的最小 end 尺寸）。跨过后继续拖动按正常 resize 规则处理。若未跨过 `expandThreshold` 就释放 pointer，则保持折叠。`collapseThreshold` 与 `expandThreshold` 都是 pointer move 上的实时吸附阈值，两者形成独立 hysteresis。
 
@@ -4846,10 +4846,10 @@ collapse 在 pointer move 跨过阈值时立即判定：
 min-width: 0
 min-height: 0
 overflow: auto
-collapsed -> overflow: hidden
+collapsed -> display: none; overflow: hidden
 ```
 
-SplitBoxPane 默认使用 `overflow: auto` 约束内容绘制范围；当内容超过 Pane 实际尺寸时由 Pane 自己形成滚动容器，不能把内容绘制到相邻 Pane 或 SplitBox 外部。和普通 `View overflow="auto"` 一样，原生 scrollbar 视觉必须隐藏，并自动挂载现有 Weave `Scrollbar`；`viewProps.scrollbar` 继续配置该自动 Scrollbar。折叠状态覆盖为 `overflow: hidden`，并不挂载 Scrollbar。
+SplitBoxPane 默认使用 `overflow: auto` 约束内容绘制范围；当内容超过 Pane 实际尺寸时由 Pane 自己形成滚动容器，不能把内容绘制到相邻 Pane 或 SplitBox 外部。和普通 `View overflow="auto"` 一样，原生 scrollbar 视觉必须隐藏，并自动挂载现有 Weave `Scrollbar`；`viewProps.scrollbar` 继续配置该自动 Scrollbar。折叠状态覆盖为 `display: none; overflow: hidden`，并不挂载 Pane 自身的 Scrollbar；Pane DOM 与 React subtree 仍然保留。
 
 SplitBoxPane **不得**提供默认 background、border、padding、radius、shadow、typography 或任何 Card / panel surface。需要这些视觉时必须由调用方通过 Pane `viewProps` 或 Pane 内部自己的 View / Card 明确提供。
 
@@ -5619,9 +5619,9 @@ Drawer 位于 left/top 时复用 start Pane，位于 right/bottom 时复用 end 
 
 `resizable=false` 映射到 SplitBox `disabled`：splitter 元素仍保留，但 non-modal Drawer 固定 `thickness=0`，且不能 pointer / keyboard resize，也不进入 Tab 顺序。
 
-non-modal 不产生 backdrop、不让主内容 inert、不做 focus containment。surface 不使用 ambient shadow；Drawer 与主视图的可拖边界由 SplitBox splitter 表达。non-modal Drawer 的 splitter `thickness` 固定为 0，只保留 hit area 与 hover / active feedback。Drawer surface 在与主视图相接的那一侧必须取消自身 border，避免 surface border 伪装成一个可见 splitter；left 取消 right border，right 取消 left border，top 取消 bottom border，bottom 取消 top border。
+non-modal 不产生 backdrop、不让主内容 inert、不做 focus containment。surface 默认不使用 ambient shadow，也不由 Drawer 自己添加任何 border；只有调用方通过 `drawerViewProps` 显式配置时才可以出现 border。Drawer 与主视图的可拖边界只由 SplitBox splitter 表达。non-modal Drawer 的 splitter `thickness` 固定为 0，只保留 hit area 与 hover / active feedback。
 
-non-modal 的 `SplitBoxPane` 必须继续保持纯布局槽位，Drawer surface 必须作为 Pane 内部的独立元素存在，不能把 surface 的 padding / border / background 直接施加到 Pane 本身。这样 Pane 折叠到 0 时由 Pane 的 `overflow: hidden` 完整裁掉 surface，关闭状态不得残留任何 Drawer padding、border 或内容绘制。
+non-modal 的 `SplitBoxPane` 必须继续保持纯布局槽位，Drawer surface 必须作为 Pane 内部的独立元素存在，不能把 surface 的 padding / border / background 直接施加到 Pane 本身。Pane 折叠时由 SplitBoxPane 的 collapsed `display: none` 完整移出布局与绘制，关闭状态不得残留任何 Drawer padding、border、内容或 Scrollbar 绘制。
 
 ## 19.8.4 Modal = native Dialog
 
@@ -5688,8 +5688,9 @@ backdropColor
 
 以下错误曾经进入实现，后续不得再次引入：
 
-- 把 `SplitBox thickness=0` 当成“视觉上一定没有分界线”，却遗漏 non-modal Drawer surface 自己的共享边 border，导致实际界面仍显示一条竖线；这是错误的视觉验证。
+- 曾擅自让 non-modal Drawer surface 继承 Drawer 默认 border，并只取消与主视图相接的一侧。正确行为是 Drawer 自己不给 non-modal surface 添加 border；只有调用方通过 `drawerViewProps` 显式配置时才允许出现 border，可拖边界只由 `SplitBox` splitter 表达。
 - 曾让 SplitBox 在合法最小尺寸与 collapse threshold 之间继续改变 Pane 的视觉尺寸。正确行为是 pointer 可以继续移动，但 Pane 视觉尺寸锁在合法最小尺寸，直到跨阈值才瞬间吸附；展开方向同理。
+- 曾让折叠 Pane 只缩到 0 并使用 `overflow: hidden`，但 Pane 后代的 portal 型 Scrollbar 仍可能按折叠前几何绘制到 Pane 外。折叠 Pane 必须保留 DOM / React subtree，同时自身 `display: none`，并且不挂载 Pane 自身 Scrollbar。
 - 曾让 modal Drawer 的 content host 在打开时没有及时挂入 dialog，造成打开期间内容缺失、退出阶段才出现。
 - 曾擅自增加 `DrawerHandle` 作为 modal swipe-to-close 起手区。该组件和相关公开 API 已删除；正确交互是直接滑动 Drawer surface，或点击 backdrop 空白区域关闭。
 - 曾让 modal Drawer 的 surface drag / swipe-to-close 在所有 viewport 生效。正确范围仅为 Theme `md` 以下；`md` 及以上即使显式 modal 也禁用滑动关闭。

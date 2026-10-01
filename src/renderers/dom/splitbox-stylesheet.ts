@@ -124,6 +124,7 @@ const stylesheet = `
 }
 
 :where(.weave-splitbox-pane[data-weave-splitbox-pane-collapsed="true"]) {
+  display: none;
   overflow: hidden;
 }
 

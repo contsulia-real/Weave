@@ -3,7 +3,6 @@ import {
   useCallback,
   useEffect,
   useInsertionEffect,
-  useLayoutEffect,
   useRef,
   useState,
   useSyncExternalStore,
@@ -328,12 +327,6 @@ export function Drawer(props: DrawerProps) {
     [contentHost, effectiveMode],
   )
 
-  useLayoutEffect(() => {
-    if (effectiveMode === 'modal' && resolvedOpen) {
-      initialFocus?.current?.focus()
-    }
-  }, [effectiveMode, initialFocus, resolvedOpen])
-
   /* oxlint-disable react/set-state-in-effect */
   useEffect(() => {
     if (modalSwipeEnabled) return
@@ -564,6 +557,7 @@ export function Drawer(props: DrawerProps) {
             onOpenChange={requestOpen}
             closeOnEscape={closeOnEscape}
             closeOnBackdrop={closeOnBackdrop}
+            initialFocus={initialFocus}
             restoreFocus={restoreFocus}
             viewProps={modalViewProps}
           >

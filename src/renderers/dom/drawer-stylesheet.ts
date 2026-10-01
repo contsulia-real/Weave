@@ -31,27 +31,15 @@ const stylesheet = `
 }
 
 .weave-drawer-surface--non-modal {
+  --weave-component-border-top-width: 0;
+  --weave-component-border-right-width: 0;
+  --weave-component-border-bottom-width: 0;
+  --weave-component-border-left-width: 0;
   --weave-component-border-top-left-radius: 0;
   --weave-component-border-top-right-radius: 0;
   --weave-component-border-bottom-right-radius: 0;
   --weave-component-border-bottom-left-radius: 0;
   --weave-component-box-shadow: none;
-}
-
-.weave-drawer-surface--non-modal[data-weave-drawer-side="left"] {
-  --weave-component-border-right-width: 0;
-}
-
-.weave-drawer-surface--non-modal[data-weave-drawer-side="right"] {
-  --weave-component-border-left-width: 0;
-}
-
-.weave-drawer-surface--non-modal[data-weave-drawer-side="top"] {
-  --weave-component-border-bottom-width: 0;
-}
-
-.weave-drawer-surface--non-modal[data-weave-drawer-side="bottom"] {
-  --weave-component-border-top-width: 0;
 }
 
 .weave-drawer-surface--modal {

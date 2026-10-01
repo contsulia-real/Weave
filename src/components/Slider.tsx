@@ -224,7 +224,7 @@ export function Slider({
 
   return (
     <span
-      className="weave-slider-field"
+      className={['weave-slider-field', themeClassName].filter(Boolean).join(' ')}
       data-weave-slider-field=""
       data-weave-slider-disabled={disabled ? 'true' : 'false'}
     >
