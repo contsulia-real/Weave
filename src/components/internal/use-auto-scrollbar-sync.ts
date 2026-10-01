@@ -139,12 +139,15 @@ export function useAutoScrollbarSync<TTarget extends HTMLElement>({
     const resizeObserver =
       typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(updateGeometry)
 
+    const isIgnoredPortalMutation = (node: Node) =>
+      node instanceof Element && node.closest('[data-weave-modal-portal-host]') !== null
+
     const observeTargetAndChildren = () => {
       resizeObserver?.disconnect()
       resizeObserver?.observe(target)
 
       for (const child of target.children) {
-        if (child instanceof HTMLElement) {
+        if (child instanceof HTMLElement && child.dataset.weaveModalPortalHost === undefined) {
           resizeObserver?.observe(child)
         }
       }
@@ -155,7 +158,11 @@ export function useAutoScrollbarSync<TTarget extends HTMLElement>({
     const mutationObserver =
       typeof MutationObserver === 'undefined'
         ? null
-        : new MutationObserver(() => {
+        : new MutationObserver((records) => {
+            if (records.every((record) => isIgnoredPortalMutation(record.target))) {
+              return
+            }
+
             observeTargetAndChildren()
             updateGeometry()
           })
