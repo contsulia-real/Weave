@@ -424,6 +424,11 @@ describe('SplitBox', () => {
     const separator = getByRole('separator')
 
     fireEvent.pointerDown(separator, { button: 0, pointerId: 1, clientX: 140 })
+    fireEvent.pointerMove(separator, { pointerId: 1, clientX: 70 })
+
+    expect(root.getAttribute('data-weave-splitbox-collapsed')).toBe('false')
+    expect(root.style.getPropertyValue('--weave-splitbox-drag-size')).toBe('96px')
+
     fireEvent.pointerMove(separator, { pointerId: 1, clientX: 20 })
 
     expect(root.getAttribute('data-weave-splitbox-collapsed')).toBe('start')
@@ -528,6 +533,11 @@ describe('SplitBox', () => {
     const separator = getByRole('separator')
 
     fireEvent.pointerDown(separator, { button: 0, pointerId: 1, clientX: 140 })
+    fireEvent.pointerMove(separator, { pointerId: 1, clientX: 330 })
+
+    expect(root.getAttribute('data-weave-splitbox-collapsed')).toBe('false')
+    expect(root.style.getPropertyValue('--weave-splitbox-drag-size')).toBe('304px')
+
     fireEvent.pointerMove(separator, { pointerId: 1, clientX: 385 })
 
     expect(root.getAttribute('data-weave-splitbox-collapsed')).toBe('end')

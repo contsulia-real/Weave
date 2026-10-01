@@ -4,7 +4,6 @@ import {
   useEffect,
   useInsertionEffect,
   useLayoutEffect,
-  useMemo,
   useRef,
   useState,
   useSyncExternalStore,
@@ -22,7 +21,6 @@ import { useTheme } from '../theme/theme-context'
 import { Dialog } from './Dialog'
 import { AutoScrollbar } from './internal/AutoScrollbar'
 import { assignRef } from './internal/assign-ref'
-import { DrawerHandleContext } from './internal/drawer-context'
 import { useControllableBoolean } from './internal/use-controllable-boolean'
 import { SplitBox } from './SplitBox'
 import { SplitBoxPane } from './SplitBoxPane'
@@ -48,7 +46,7 @@ function drawerDirection(side: DrawerSide): SplitBoxDirection {
   return side === 'left' || side === 'right' ? 'horizontal' : 'vertical'
 }
 
-function pointerAxis(side: DrawerSide, event: PointerEvent<HTMLDivElement>): number {
+function pointerAxis(side: DrawerSide, event: PointerEvent<HTMLElement>): number {
   return side === 'left' || side === 'right' ? event.clientX : event.clientY
 }
 
@@ -286,6 +284,10 @@ export function Drawer(props: DrawerProps) {
     className: drawerClassName,
     data: drawerData,
     style: drawerStyle,
+    onPointerDown: drawerOnPointerDown,
+    onPointerMove: drawerOnPointerMove,
+    onPointerUp: drawerOnPointerUp,
+    onPointerCancel: drawerOnPointerCancel,
     ...restDrawerViewProps
   } = drawerViewProps
 
@@ -293,18 +295,41 @@ export function Drawer(props: DrawerProps) {
     modalDialogRef.current = node
   }, [])
 
+  const setNonModalMountRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      nonModalMountRef.current = node
+      if (
+        node !== null &&
+        effectiveMode === 'non-modal' &&
+        contentHost !== null &&
+        contentHost.parentElement !== node
+      ) {
+        node.appendChild(contentHost)
+      }
+    },
+    [contentHost, effectiveMode],
+  )
+
+  const setModalMountRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      modalMountRef.current = node
+      if (
+        node !== null &&
+        effectiveMode === 'modal' &&
+        contentHost !== null &&
+        contentHost.parentElement !== node
+      ) {
+        node.appendChild(contentHost)
+      }
+    },
+    [contentHost, effectiveMode],
+  )
+
   useLayoutEffect(() => {
-    if (contentHost === null) return
-
-    const target = effectiveMode === 'modal' ? modalMountRef.current : nonModalMountRef.current
-    if (target !== null && contentHost.parentElement !== target) {
-      target.appendChild(contentHost)
-    }
-
     if (effectiveMode === 'modal' && resolvedOpen) {
       initialFocus?.current?.focus()
     }
-  }, [contentHost, effectiveMode, initialFocus, resolvedOpen])
+  }, [effectiveMode, initialFocus, resolvedOpen])
 
   /* oxlint-disable react/set-state-in-effect */
   useEffect(() => {
@@ -355,37 +380,54 @@ export function Drawer(props: DrawerProps) {
   )
 
   const beginDrawerDrag = useCallback(
-    (event: PointerEvent<HTMLDivElement>) => {
+    (event: PointerEvent<HTMLDialogElement>) => {
       if (effectiveMode !== 'modal' || !resolvedOpen || event.button !== 0) return
 
-      event.preventDefault()
-      event.currentTarget.setPointerCapture?.(event.pointerId)
+      const dialog = modalDialogRef.current
+      if (dialog === null) return
+
+      const rect = dialog.getBoundingClientRect()
+      if (
+        event.clientX < rect.left ||
+        event.clientX > rect.right ||
+        event.clientY < rect.top ||
+        event.clientY > rect.bottom
+      ) {
+        return
+      }
+
       dragRef.current = {
         pointerId: event.pointerId,
         start: pointerAxis(side, event),
         offset: 0,
       }
-      modalDialogRef.current?.style.setProperty('--weave-drawer-drag-offset', '0px')
-      setDragging(true)
+      dialog.style.setProperty('--weave-drawer-drag-offset', '0px')
     },
     [effectiveMode, resolvedOpen, side],
   )
 
   const moveDrawerDrag = useCallback(
-    (event: PointerEvent<HTMLDivElement>) => {
+    (event: PointerEvent<HTMLDialogElement>) => {
       const drag = dragRef.current
       if (drag === null || drag.pointerId !== event.pointerId) return
 
-      event.preventDefault()
       const offset = closeDistance(side, drag.start, pointerAxis(side, event))
       drag.offset = offset
+
+      if (offset <= 0) return
+
+      if (!event.currentTarget.hasPointerCapture?.(event.pointerId)) {
+        event.currentTarget.setPointerCapture?.(event.pointerId)
+      }
+      event.preventDefault()
+      setDragging(true)
       modalDialogRef.current?.style.setProperty('--weave-drawer-drag-offset', `${offset}px`)
     },
     [side],
   )
 
   const finishDrawerDrag = useCallback(
-    (event: PointerEvent<HTMLDivElement>, cancelled: boolean) => {
+    (event: PointerEvent<HTMLDialogElement>, cancelled: boolean) => {
       const drag = dragRef.current
       if (drag === null || drag.pointerId !== event.pointerId) return
 
@@ -396,7 +438,9 @@ export function Drawer(props: DrawerProps) {
           : measureLength(dialog, closeThreshold, direction)
 
       dragRef.current = null
-      event.currentTarget.releasePointerCapture?.(event.pointerId)
+      if (event.currentTarget.hasPointerCapture?.(event.pointerId)) {
+        event.currentTarget.releasePointerCapture?.(event.pointerId)
+      }
       setDragging(false)
 
       if (!cancelled && drag.offset >= threshold) {
@@ -406,27 +450,6 @@ export function Drawer(props: DrawerProps) {
       dialog?.style.removeProperty('--weave-drawer-drag-offset')
     },
     [closeThreshold, direction, requestOpen],
-  )
-
-  const handleContext = useMemo(
-    () => ({
-      active: effectiveMode === 'modal' && resolvedOpen,
-      dragging,
-      side,
-      onPointerDown: beginDrawerDrag,
-      onPointerMove: moveDrawerDrag,
-      onPointerUp: (event: PointerEvent<HTMLDivElement>) => finishDrawerDrag(event, false),
-      onPointerCancel: (event: PointerEvent<HTMLDivElement>) => finishDrawerDrag(event, true),
-    }),
-    [
-      beginDrawerDrag,
-      dragging,
-      effectiveMode,
-      finishDrawerDrag,
-      moveDrawerDrag,
-      resolvedOpen,
-      side,
-    ],
   )
 
   const rootViewProps: ViewProps<HTMLDivElement> = {
@@ -451,6 +474,10 @@ export function Drawer(props: DrawerProps) {
     height: 'fill',
     overflow: 'auto',
     ...restDrawerViewProps,
+    onPointerDown: drawerOnPointerDown,
+    onPointerMove: drawerOnPointerMove,
+    onPointerUp: drawerOnPointerUp,
+    onPointerCancel: drawerOnPointerCancel,
     className: [surfaceClassName, 'weave-drawer-surface--non-modal'].filter(Boolean).join(' '),
     style: drawerStyle,
     data: {
@@ -462,6 +489,22 @@ export function Drawer(props: DrawerProps) {
   const modalViewProps = {
     ...restDrawerViewProps,
     ...modalGeometry(side, resolvedSize),
+    onPointerDown: (event: PointerEvent<HTMLDialogElement>) => {
+      drawerOnPointerDown?.(event as unknown as PointerEvent<HTMLDivElement>)
+      if (!event.defaultPrevented) beginDrawerDrag(event)
+    },
+    onPointerMove: (event: PointerEvent<HTMLDialogElement>) => {
+      drawerOnPointerMove?.(event as unknown as PointerEvent<HTMLDivElement>)
+      if (!event.defaultPrevented) moveDrawerDrag(event)
+    },
+    onPointerUp: (event: PointerEvent<HTMLDialogElement>) => {
+      drawerOnPointerUp?.(event as unknown as PointerEvent<HTMLDivElement>)
+      finishDrawerDrag(event, false)
+    },
+    onPointerCancel: (event: PointerEvent<HTMLDialogElement>) => {
+      drawerOnPointerCancel?.(event as unknown as PointerEvent<HTMLDivElement>)
+      finishDrawerDrag(event, true)
+    },
     ref: modalRef,
     className: [surfaceClassName, 'weave-drawer-surface--modal', 'weave-scroll-host']
       .filter(Boolean)
@@ -480,7 +523,7 @@ export function Drawer(props: DrawerProps) {
   const drawerPane = (
     <SplitBoxPane viewProps={{ className: 'weave-drawer-pane' }}>
       <View {...nonModalSurfaceViewProps}>
-        <div ref={nonModalMountRef} className="weave-drawer-content-mount" />
+        <div ref={setNonModalMountRef} className="weave-drawer-content-mount" />
       </View>
     </SplitBoxPane>
   )
@@ -500,7 +543,7 @@ export function Drawer(props: DrawerProps) {
         collapseThreshold={collapseThreshold}
         expandThreshold={expandThreshold}
         disabled={effectiveMode === 'modal' || !resizable}
-        thickness={effectiveMode === 'modal' ? 0 : undefined}
+        thickness={0}
         onChange={handleSplitSizeChange}
         viewProps={rootViewProps}
       >
@@ -519,7 +562,7 @@ export function Drawer(props: DrawerProps) {
             restoreFocus={restoreFocus}
             viewProps={modalViewProps}
           >
-            <div ref={modalMountRef} className="weave-drawer-content-mount" />
+            <div ref={setModalMountRef} className="weave-drawer-content-mount" />
           </Dialog>
           <AutoScrollbar
             targetRef={modalDialogRef}
@@ -529,14 +572,7 @@ export function Drawer(props: DrawerProps) {
         </>
       ) : null}
 
-      {contentHost === null
-        ? null
-        : createPortal(
-            <DrawerHandleContext.Provider value={handleContext}>
-              {drawer}
-            </DrawerHandleContext.Provider>,
-            contentHost,
-          )}
+      {contentHost === null ? null : createPortal(drawer, contentHost)}
     </>
   )
 }

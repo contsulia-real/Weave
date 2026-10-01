@@ -936,10 +936,6 @@ export const defaultTheme: ResolvedTheme = {
         paddingY: 1,
         shadow: 'large',
         backdropColor: 'rgb(0 0 0 / 0.48)',
-        handleColor: 'secondary',
-        handleLength: 2,
-        handleThickness: 0.25,
-        handleRadius: 'full',
       },
     },
     Popover: {

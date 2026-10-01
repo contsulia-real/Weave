@@ -353,9 +353,9 @@ export function SplitBox(props: SplitBoxProps) {
       setDragCollapsed('end')
       visible = drag.available
     } else if (raw < drag.lower && allowsStartCollapse(collapsible)) {
-      visible = raw
+      visible = drag.lower
     } else if (raw > drag.upper && allowsEndCollapse(collapsible)) {
-      visible = raw
+      visible = drag.upper
     }
 
     setDragSize(visible)

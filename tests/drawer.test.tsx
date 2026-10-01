@@ -1,7 +1,7 @@
 import { act, cleanup, fireEvent, render, waitFor } from '@testing-library/react'
 import { createRef, useState } from 'react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { Drawer, DrawerHandle, Text } from '../src'
+import { Drawer, Text } from '../src'
 
 const dialogPrototype = HTMLDialogElement.prototype
 const originalShowModal = Object.getOwnPropertyDescriptor(dialogPrototype, 'showModal')
@@ -53,12 +53,9 @@ function DrawerContent() {
   const [count, setCount] = useState(0)
 
   return (
-    <>
-      <DrawerHandle viewProps={{ data: { testid: 'drawer-handle' } }} />
-      <button type="button" onClick={() => setCount((value) => value + 1)}>
-        drawer count {count}
-      </button>
-    </>
+    <button type="button" onClick={() => setCount((value) => value + 1)}>
+      drawer count {count}
+    </button>
   )
 }
 
@@ -84,6 +81,7 @@ describe('Drawer', () => {
 
     expect(root.getAttribute('data-weave-splitbox-direction')).toBe('horizontal')
     expect(root.getAttribute('data-weave-splitbox-collapsed')).toBe('false')
+    expect(root.style.getPropertyValue('--weave-splitbox-thickness')).toBe('0rem')
     expect(surface).not.toBeNull()
     const pane = surface?.closest<HTMLElement>('[data-weave-splitbox-pane]') ?? null
     expect(pane).not.toBeNull()
@@ -92,9 +90,6 @@ describe('Drawer', () => {
     expect(pane?.className).toContain('weave-drawer-pane')
     expect(surface?.className).toContain('weave-scroll-host')
     expect(separator.getAttribute('aria-disabled')).toBeNull()
-    expect(getByTestId('drawer-handle').getAttribute('data-weave-drawer-handle-active')).toBe(
-      'false',
-    )
 
     rerender(
       <Drawer
@@ -133,6 +128,26 @@ describe('Drawer', () => {
     expect(separator.tabIndex).toBe(-1)
   })
 
+  it('shows Drawer content immediately when a closed modal Drawer opens', async () => {
+    const { getByRole, getByText, rerender } = render(
+      <Drawer mode="modal" open={false} drawer={<Text>Modal drawer content</Text>}>
+        <Text>Main</Text>
+      </Drawer>,
+    )
+
+    expect(document.querySelector('dialog')).toBeNull()
+
+    rerender(
+      <Drawer mode="modal" open drawer={<Text>Modal drawer content</Text>}>
+        <Text>Main</Text>
+      </Drawer>,
+    )
+
+    const dialog = await waitFor(() => getByRole('dialog'))
+    expect(dialog.getAttribute('data-weave-dialog-state')).toBe('open')
+    expect(getByText('Modal drawer content').closest('dialog')).toBe(dialog)
+  })
+
   it('moves preserved content into modal before applying Drawer initialFocus', () => {
     const focusRef = createRef<HTMLButtonElement>()
 
@@ -142,12 +157,9 @@ describe('Drawer', () => {
         defaultOpen
         initialFocus={focusRef}
         drawer={
-          <>
-            <DrawerHandle />
-            <button ref={focusRef} type="button">
-              Focus target
-            </button>
-          </>
+          <button ref={focusRef} type="button">
+            Focus target
+          </button>
         }
       >
         <Text>Main</Text>
@@ -158,7 +170,7 @@ describe('Drawer', () => {
     expect(focusRef.current?.closest('dialog')).not.toBeNull()
   })
 
-  it('uses native modal Dialog semantics, Weave Scrollbar and DrawerHandle drag-to-close', async () => {
+  it('uses native modal Dialog semantics, Weave Scrollbar and surface drag-to-close', async () => {
     vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function () {
       const element = this as HTMLElement
 
@@ -172,7 +184,7 @@ describe('Drawer', () => {
     })
 
     const onOpenChange = vi.fn()
-    const { getByRole, getByTestId } = render(
+    const { getByRole } = render(
       <Drawer
         mode="modal"
         defaultOpen
@@ -186,27 +198,42 @@ describe('Drawer', () => {
     )
 
     const dialog = getByRole('dialog') as HTMLDialogElement
-    const handle = getByTestId('drawer-handle')
 
     expect(showModalSpy).toHaveBeenCalledTimes(1)
     expect(dialog.className).toContain('weave-drawer-surface--modal')
     expect(dialog.className).toContain('weave-scroll-host')
     expect(dialog.getAttribute('data-weave-drawer-side')).toBe('right')
-    expect(handle.getAttribute('data-weave-drawer-handle-active')).toBe('true')
+    expect(getByRole('button', { name: 'drawer count 0' }).closest('dialog')).toBe(dialog)
     expect(document.querySelector('style[data-weave-scrollbar-styles]')).not.toBeNull()
 
-    fireEvent.pointerDown(handle, { button: 0, pointerId: 3, clientX: 100, clientY: 20 })
-    fireEvent.pointerMove(handle, { pointerId: 3, clientX: 180, clientY: 20 })
+    fireEvent.pointerDown(dialog, { button: 0, pointerId: 3, clientX: 100, clientY: 20 })
+    fireEvent.pointerMove(dialog, { pointerId: 3, clientX: 180, clientY: 20 })
 
     expect(dialog.style.getPropertyValue('--weave-drawer-drag-offset')).toBe('80px')
 
-    fireEvent.pointerUp(handle, { pointerId: 3, clientX: 180, clientY: 20 })
+    fireEvent.pointerUp(dialog, { pointerId: 3, clientX: 180, clientY: 20 })
 
     expect(onOpenChange).toHaveBeenCalledWith(false)
 
     await waitFor(() => {
       expect(dialog.getAttribute('data-weave-dialog-state')).toBe('closing')
     })
+  })
+
+  it('closes a modal Drawer when the native backdrop blank area is clicked', () => {
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockReturnValue(
+      DOMRect.fromRect({ x: 100, y: 0, width: 320, height: 480 }),
+    )
+
+    const onOpenChange = vi.fn()
+    const { getByRole } = render(
+      <Drawer mode="modal" open onOpenChange={onOpenChange} drawer={<Text>Drawer</Text>}>
+        <Text>Main</Text>
+      </Drawer>,
+    )
+
+    fireEvent.click(getByRole('dialog'), { clientX: 50, clientY: 40 })
+    expect(onOpenChange).toHaveBeenCalledWith(false)
   })
 
   it('keeps drawer content state while auto mode switches between modal and non-modal', async () => {

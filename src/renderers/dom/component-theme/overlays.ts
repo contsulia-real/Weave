@@ -62,10 +62,6 @@ export function resolveDrawerTheme(theme: ResolvedTheme): RuntimeStyleDeclaratio
     '--weave-drawer-padding-y': length(base?.paddingY),
     '--weave-drawer-shadow': shadowToken(base?.shadow),
     '--weave-drawer-backdrop-color': color(base?.backdropColor),
-    '--weave-drawer-handle-color': color(base?.handleColor),
-    '--weave-drawer-handle-length': length(base?.handleLength),
-    '--weave-drawer-handle-thickness': length(base?.handleThickness),
-    '--weave-drawer-handle-radius': radius(base?.handleRadius),
   }
 }
 

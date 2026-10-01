@@ -40,7 +40,7 @@ The main layers are:
 
 ### Composite UI
 
-`Form`, `FormField`, `FormLabel`, `FormDescription`, `FormError`, `FormFieldset`, `FormLegend`, `Accordion`, `AccordionItem`, `AccordionTrigger`, `AccordionPanel`, `ToolTip`, `Popover`, `Dialog`, `Drawer`, `DrawerHandle`, `Menu`, `MenuItem`, `Tabs`, `TabList`, `Tab`, `TabPanel`, `Snack`, `SnackProvider`, `useSnack`, `List`, `ListItem`.
+`Form`, `FormField`, `FormLabel`, `FormDescription`, `FormError`, `FormFieldset`, `FormLegend`, `Accordion`, `AccordionItem`, `AccordionTrigger`, `AccordionPanel`, `ToolTip`, `Popover`, `Dialog`, `Drawer`, `Menu`, `MenuItem`, `Tabs`, `TabList`, `Tab`, `TabPanel`, `Snack`, `SnackProvider`, `useSnack`, `List`, `ListItem`.
 
 ### Theme and application
 

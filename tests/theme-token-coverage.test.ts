@@ -128,15 +128,13 @@ describe('component visual theme coverage', () => {
     })
   })
 
-  it('routes Drawer surface and handle visuals through Drawer theme', () => {
+  it('routes Drawer surface visuals through Drawer theme', () => {
     expect(resolveDrawerTheme(defaultTheme)).toMatchObject({
       '--weave-drawer-background': 'var(--weave-color-surface, surface)',
       '--weave-drawer-border-width': '0.0625rem',
       '--weave-drawer-padding-x': '1rem',
       '--weave-drawer-padding-y': '1rem',
       '--weave-drawer-shadow': 'var(--weave-shadow-large)',
-      '--weave-drawer-handle-length': '2rem',
-      '--weave-drawer-handle-thickness': '0.25rem',
     })
   })
 

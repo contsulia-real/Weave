@@ -92,18 +92,22 @@ const stylesheet = `
 
 .weave-dialog.weave-drawer-surface--modal[data-weave-drawer-side="left"] {
   translate: calc(-1 * var(--weave-drawer-drag-offset, 0px)) 0;
+  touch-action: pan-y;
 }
 
 .weave-dialog.weave-drawer-surface--modal[data-weave-drawer-side="right"] {
   translate: var(--weave-drawer-drag-offset, 0px) 0;
+  touch-action: pan-y;
 }
 
 .weave-dialog.weave-drawer-surface--modal[data-weave-drawer-side="top"] {
   translate: 0 calc(-1 * var(--weave-drawer-drag-offset, 0px));
+  touch-action: pan-x;
 }
 
 .weave-dialog.weave-drawer-surface--modal[data-weave-drawer-side="bottom"] {
   translate: 0 var(--weave-drawer-drag-offset, 0px);
+  touch-action: pan-x;
 }
 
 .weave-dialog.weave-drawer-surface--modal[data-weave-dialog-state="closing"][data-weave-drawer-side="left"] {
@@ -149,37 +153,6 @@ const stylesheet = `
   transition: none;
 }
 
-:where(.weave-drawer-handle) {
-  --weave-component-display: block;
-  --weave-component-background: var(--weave-drawer-handle-color);
-  --weave-component-border-top-left-radius: var(--weave-drawer-handle-radius);
-  --weave-component-border-top-right-radius: var(--weave-drawer-handle-radius);
-  --weave-component-border-bottom-right-radius: var(--weave-drawer-handle-radius);
-  --weave-component-border-bottom-left-radius: var(--weave-drawer-handle-radius);
-  --weave-component-cursor: grab;
-  --weave-component-user-select: none;
-  touch-action: none;
-}
-
-:where(.weave-drawer-handle[data-weave-drawer-side="left"]),
-:where(.weave-drawer-handle[data-weave-drawer-side="right"]) {
-  --weave-component-width: var(--weave-drawer-handle-thickness);
-  --weave-component-height: var(--weave-drawer-handle-length);
-}
-
-:where(.weave-drawer-handle[data-weave-drawer-side="top"]),
-:where(.weave-drawer-handle[data-weave-drawer-side="bottom"]) {
-  --weave-component-width: var(--weave-drawer-handle-length);
-  --weave-component-height: var(--weave-drawer-handle-thickness);
-}
-
-:where(.weave-drawer-handle[data-weave-drawer-handle-active="false"]) {
-  --weave-component-display: none;
-}
-
-:where(.weave-drawer-handle[data-weave-drawer-handle-dragging="true"]) {
-  --weave-component-cursor: grabbing;
-}
 `
 
 export function ensureDrawerStylesheet(): void {

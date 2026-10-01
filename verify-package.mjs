@@ -44,7 +44,6 @@ const expectedRuntimeExports = [
   'ComboboxOption',
   'Dialog',
   'Drawer',
-  'DrawerHandle',
   'Flex',
   'Form',
   'FormDescription',
@@ -145,7 +144,6 @@ assert(
 )
 assert(typeSource.includes('DividerProps'), 'Built declarations are missing DividerProps')
 assert(typeSource.includes('DrawerProps'), 'Built declarations are missing DrawerProps')
-assert(typeSource.includes('DrawerHandleProps'), 'Built declarations are missing DrawerHandleProps')
 assert(typeSource.includes('DrawerMode'), 'Built declarations are missing DrawerMode')
 assert(typeSource.includes('DrawerSide'), 'Built declarations are missing DrawerSide')
 assert(typeSource.includes('SelectProps'), 'Built declarations are missing SelectProps')

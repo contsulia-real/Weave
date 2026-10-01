@@ -510,10 +510,6 @@ export interface DrawerThemeBase {
   paddingY?: ThemeScaleValue
   shadow?: string
   backdropColor?: string
-  handleColor?: string
-  handleLength?: ThemeScaleValue
-  handleThickness?: ThemeScaleValue
-  handleRadius?: ThemeScaleValue
 }
 
 export interface DrawerTheme {

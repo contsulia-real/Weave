@@ -12,7 +12,6 @@ import {
   Dialog,
   Divider,
   Drawer,
-  DrawerHandle,
   Menu,
   MenuItem,
   Popover,
@@ -344,57 +343,114 @@ function DialogPlayground() {
 }
 
 function DrawerPlayground() {
-  const [open, setOpen] = useState(false)
+  const [autoOpen, setAutoOpen] = useState(false)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [nonModalOpen, setNonModalOpen] = useState(true)
+
+  const preview = {
+    width: 'fill' as const,
+    maxWidth: 34,
+    height: 12,
+    border: 0.0625,
+    borderColor: 'outline' as const,
+    borderStyle: 'dashed' as const,
+  }
 
   return (
-    <Column gap={0.75} align="start" width="fill">
-      <Text typo="body-small" color="secondary">
-        auto · md breakpoint · wide viewport = non-modal SplitBox · narrow viewport = modal
-      </Text>
-
-      <Drawer
-        open={open}
-        onOpenChange={setOpen}
-        minSize={10}
-        collapseThreshold={2}
-        expandThreshold={4}
-        drawer={
-          <Column gap={0.75} height="fill">
-            <DrawerHandle />
-            <Text typo="title-medium">Responsive Drawer</Text>
-            <Text typo="body-small" color="secondary">
-              Wide: drag the SplitBox splitter into the collapse / expand thresholds. Narrow: drag
-              this handle toward the right edge to close.
-            </Text>
+    <Column gap={1.5} align="start" width="fill">
+      <Column gap={0.5} width="fill">
+        <Text typo="label-medium">mode="auto"</Text>
+        <Text typo="body-small" color="secondary">
+          md 以下 modal，md 以上 non-modal。non-modal splitter 视觉 thickness=0，但 hit area 与
+          hover / active feedback 仍保留。
+        </Text>
+        <Drawer
+          open={autoOpen}
+          onOpenChange={setAutoOpen}
+          minSize={10}
+          collapseThreshold={2}
+          expandThreshold={4}
+          drawer={
+            <Column gap={0.75} height="fill">
+              <Text typo="title-medium">Auto Drawer</Text>
+              <Text typo="body-small" color="secondary">
+                Modal 时直接滑动整个 Drawer 向右关闭，或点击 backdrop 空白区域。Non-modal 时拖
+                splitter。
+              </Text>
+            </Column>
+          }
+          viewProps={preview}
+        >
+          <Column gap={0.75} padding={1} align="start">
+            <Text typo="title-medium">Main view</Text>
             <Button
-              text="Close Drawer"
+              text={autoOpen ? 'Drawer is open' : 'Open auto Drawer'}
               size="small"
-              variant="secondary"
-              viewProps={{ onClick: () => setOpen(false) }}
+              viewProps={{ onClick: () => setAutoOpen(true) }}
             />
           </Column>
-        }
-        viewProps={{
-          width: 'fill',
-          maxWidth: 34,
-          height: 14,
-          border: 0.0625,
-          borderColor: 'outline',
-          borderStyle: 'dashed',
-        }}
-      >
-        <Column gap={0.75} padding={1} align="start">
-          <Text typo="title-medium">Main view</Text>
-          <Text typo="body-small" color="secondary">
-            Drawer content keeps the same React state when auto mode crosses the md breakpoint.
-          </Text>
-          <Button
-            text={open ? 'Drawer is open' : 'Open Drawer'}
-            size="small"
-            viewProps={{ onClick: () => setOpen(true) }}
-          />
-        </Column>
-      </Drawer>
+        </Drawer>
+      </Column>
+
+      <Column gap={0.5} width="fill">
+        <Text typo="label-medium">mode="modal" · explicit override</Text>
+        <Drawer
+          mode="modal"
+          open={modalOpen}
+          onOpenChange={setModalOpen}
+          drawer={
+            <Column gap={0.75} height="fill">
+              <Text typo="title-medium">Forced modal Drawer</Text>
+              <Text typo="body-small" color="secondary">
+                Swipe the Drawer surface toward the right edge, or click the backdrop to close.
+              </Text>
+            </Column>
+          }
+          viewProps={preview}
+        >
+          <Column gap={0.75} padding={1} align="start">
+            <Text typo="body-small">This stays modal even above md.</Text>
+            <Button
+              text="Open forced modal"
+              size="small"
+              viewProps={{ onClick: () => setModalOpen(true) }}
+            />
+          </Column>
+        </Drawer>
+      </Column>
+
+      <Column gap={0.5} width="fill">
+        <Text typo="label-medium">mode="non-modal" · explicit override</Text>
+        <Drawer
+          mode="non-modal"
+          open={nonModalOpen}
+          onOpenChange={setNonModalOpen}
+          minSize={10}
+          collapseThreshold={2}
+          expandThreshold={4}
+          drawer={
+            <Column gap={0.75} height="fill">
+              <Text typo="title-medium">Forced non-modal Drawer</Text>
+              <Text typo="body-small" color="secondary">
+                This stays in SplitBox layout even below md. Drag through the invisible splitter hit
+                area.
+              </Text>
+            </Column>
+          }
+          viewProps={preview}
+        >
+          <Column gap={0.75} padding={1} align="start">
+            <Text typo="body-small">
+              Splitter thickness is 0; interaction area remains draggable.
+            </Text>
+            <Button
+              text={nonModalOpen ? 'Drawer is open' : 'Open forced non-modal'}
+              size="small"
+              viewProps={{ onClick: () => setNonModalOpen(true) }}
+            />
+          </Column>
+        </Drawer>
+      </Column>
     </Column>
   )
 }
@@ -594,7 +650,7 @@ export function FoundationControlPlayground() {
 
       <PlaygroundSection
         title="Drawer"
-        description="响应式 Drawer：默认 auto 在 md 以下使用原生 modal Dialog，在 md 以上进入 SplitBox non-modal 布局；支持 splitter 自动吸附、显式 resizable=false，以及 modal DrawerHandle drag / swipe-to-close。"
+        description="响应式 Drawer：默认 auto 在 md 以下使用原生 modal Dialog、md 以上进入 SplitBox non-modal；同时展示显式 mode=modal / mode=non-modal 覆盖。modal 可直接滑动 Drawer surface 或点击 backdrop 关闭；non-modal splitter thickness=0。"
       >
         <DrawerPlayground />
       </PlaygroundSection>

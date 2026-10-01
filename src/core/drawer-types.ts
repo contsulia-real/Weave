@@ -29,9 +29,6 @@ export type DrawerSurfaceViewProps = Omit<
 > &
   ViewDynamicBreakpointProps
 
-export type DrawerHandleViewProps = Omit<ViewCoreProps<HTMLDivElement>, 'children' | 'role'> &
-  ViewDynamicBreakpointProps
-
 interface DrawerBaseProps {
   children: ReactNode
   drawer: ReactNode
@@ -67,7 +64,3 @@ interface DrawerUncontrolledSizeProps {
 
 export type DrawerProps = DrawerBaseProps &
   (DrawerControlledSizeProps | DrawerUncontrolledSizeProps)
-
-export interface DrawerHandleProps {
-  viewProps?: DrawerHandleViewProps
-}

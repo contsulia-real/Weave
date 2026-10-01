@@ -4826,7 +4826,7 @@ collapse 在 pointer move 跨过阈值时立即判定：
 
 - start Pane raw size <= `collapseThreshold` 且 start 可折叠 -> start 立即吸附到 0；
 - end Pane raw size <= `collapseThreshold` 且 end 可折叠 -> end 立即吸附到 0；
-- 进入正常 min 之外但尚未跨过 threshold -> 允许继续跟随 pointer；若随后回到合法范围则继续正常 resize。
+- pointer 可以继续越过正常 min 向 collapse threshold 移动，但 Pane 的视觉尺寸必须锁在当前合法最小尺寸，不得继续缩小；只有 raw pointer 跨过 collapse threshold 时才瞬间吸附到 0。反向展开同理：折叠态在 expand threshold 以内视觉保持 0，跨过 threshold 才瞬间吸附到当前合法最小尺寸。
 
 折叠 Pane 不卸载。Pane DOM 保留，尺寸为 0，并设置 `inert`；splitter hit area 保留在边缘，因此可以直接拖回展开。
 
@@ -5617,9 +5617,9 @@ expandThreshold = 4rem
 
 Drawer 位于 left/top 时复用 start Pane，位于 right/bottom 时复用 end Pane。拖动进入 `collapseThreshold` 时立即吸附关闭并请求 `onOpenChange(false)`；从折叠状态向外拖过 `expandThreshold` 时立即吸附到 `minSize` 并请求 `onOpenChange(true)`，之后继续按正常 SplitBox resize。
 
-`resizable=false` 映射到 SplitBox `disabled`：splitter 视觉仍存在，但不能 pointer / keyboard resize，也不进入 Tab 顺序。
+`resizable=false` 映射到 SplitBox `disabled`：splitter 元素仍保留，但 non-modal Drawer 固定 `thickness=0`，且不能 pointer / keyboard resize，也不进入 Tab 顺序。
 
-non-modal 不产生 backdrop、不让主内容 inert、不做 focus containment，也不显示 DrawerHandle。surface 不使用 ambient shadow；Drawer 与主视图的可拖边界由 SplitBox splitter 表达。
+non-modal 不产生 backdrop、不让主内容 inert、不做 focus containment。surface 不使用 ambient shadow；Drawer 与主视图的可拖边界由 SplitBox splitter 表达。non-modal Drawer 的 splitter `thickness` 固定为 0，只保留 hit area 与 hover / active feedback。
 
 non-modal 的 `SplitBoxPane` 必须继续保持纯布局槽位，Drawer surface 必须作为 Pane 内部的独立元素存在，不能把 surface 的 padding / border / background 直接施加到 Pane 本身。这样 Pane 折叠到 0 时由 Pane 的 `overflow: hidden` 完整裁掉 surface，关闭状态不得残留任何 Drawer padding、border 或内容绘制。
 
@@ -5639,13 +5639,9 @@ restoreFocus = true
 
 modal surface 贴对应 viewport edge；只有朝内容侧的两个角使用 Drawer radius，贴 viewport 的两个角为 0。
 
-## 19.8.5 DrawerHandle 与 drag / swipe close
+## 19.8.5 Modal surface drag / swipe close
 
-```tsx
-<DrawerHandle />
-```
-
-`DrawerHandle` 只能用于 Drawer 的 `drawer` 内容内。它在 modal 模式是 drag / swipe-to-close 的唯一起手区；在 non-modal 模式自动隐藏，因为 resize affordance 已经由 SplitBox splitter 提供。Handle 不是按钮，不承担 click-to-close。
+modal Drawer 不提供独立 handle。用户直接在 Drawer surface 上起手拖动 / swipe；点击 backdrop 空白区域则按 `closeOnBackdrop` 关闭。
 
 ```ts
 closeThreshold?: Length
@@ -5658,7 +5654,7 @@ closeThreshold?: Length
 - top 向上拖关闭；
 - bottom 向下拖关闭。
 
-surface 跟随 pointer 移动；release 时距离达到 threshold 就请求关闭，否则吸附回完全打开位置。pointer cancel 也回到打开位置。不增加 velocity / fling 判定。
+Drawer surface 跟随 pointer 移动；release 时距离达到 threshold 就请求关闭，否则吸附回完全打开位置。pointer cancel 也回到打开位置。不增加 velocity / fling 判定。left/right Drawer 保留纵向滚动手势，top/bottom Drawer 保留横向滚动手势。
 
 ## 19.8.6 Overflow 与 Theme
 
@@ -5682,10 +5678,6 @@ paddingX
 paddingY
 shadow
 backdropColor
-handleColor
-handleLength
-handleThickness
-handleRadius
 ```
 
 默认视觉与 modal Dialog 的 surface 色系一致：`surface / tertiary / outline / 1px / 1rem padding / large shadow / 0.48 backdrop`。large shadow 只作用于 modal；non-modal 不使用 backdrop 与 ambient shadow。
