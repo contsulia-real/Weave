@@ -1924,7 +1924,7 @@ strikethrough
 overline
 ```
 
-`bold` 是粗体快捷入口：`true` 使用 typography 的 `bold` weight，`false` 使用 `regular`；如果同时显式传入 `weight`，精确的 `weight` 优先。`italic` 在 `italic / normal` 之间切换。`underline / strikethrough / overline` 统一映射到 `text-decoration-line`，三者可以任意组合。所有这些属性都支持响应式覆盖。
+`bold` 是粗体快捷入口：`true` 使用 typography 的 `bold` weight，`false` 使用 `regular`；如果同时显式传入 `weight`，精确的 `weight` 优先。`italic` 在 `italic / normal` 之间切换。Text 层允许浏览器进行 style synthesis，因此即使当前字体没有独立 italic face，`italic` 仍必须产生斜体视觉；weight synthesis 仍不因此开启。`underline / strikethrough / overline` 统一映射到 `text-decoration-line`，三者可以任意组合。所有这些属性都支持响应式覆盖。
 
 ## 11.2 Text 的子内容
 

@@ -67,6 +67,7 @@ ${propertyRegistrationBlock()}
 
 :where([data-weave-text]) {
   margin: 0;
+  font-synthesis: style;
   ${declarationBlock()}
 }
 
