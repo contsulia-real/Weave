@@ -4121,7 +4121,7 @@ large:
   titleTypo = title-large
 ```
 
-这些值来自 `theme.components.AppBar.sizes`，不是 renderer 常量。`marginX` 不作用于 AppBar 宿主；它分别作用于 `leading / title / trailing` 三个区域。
+这些值来自 `theme.components.AppBar.sizes`，不是 renderer 常量。`marginX` 不作用于 AppBar 宿主：`leading` 只使用左 margin，`title` 使用左右 margin，`trailing` 只使用右 margin。相邻 slot 之间不会把两份 margin 叠加；`leading / trailing` 内多个 action 的间距仍由 `gap` 控制。
 
 ## 18.12A.3 三区域与 titleAlign
 
