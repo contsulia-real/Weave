@@ -19,5 +19,6 @@ export interface AppBarProps {
   mode?: AppBarMode
   titleAlign?: AppBarTitleAlign
   sticky?: boolean
+  elevated?: boolean
   viewProps?: AppBarViewProps
 }

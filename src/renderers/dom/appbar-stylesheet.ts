@@ -7,13 +7,11 @@ const stylesheet = `
   --weave-component-align-items: center;
   --weave-component-width: 100%;
   --weave-component-min-height: var(--weave-appbar-theme-medium-height);
-  --weave-component-padding-left: var(--weave-appbar-theme-medium-padding-x);
-  --weave-component-padding-right: var(--weave-appbar-theme-medium-padding-x);
   --weave-component-background: var(--weave-appbar-theme-background);
-  --weave-component-border-top-width: var(--weave-appbar-theme-border-width);
-  --weave-component-border-right-width: var(--weave-appbar-theme-border-width);
-  --weave-component-border-bottom-width: var(--weave-appbar-theme-border-width);
-  --weave-component-border-left-width: var(--weave-appbar-theme-border-width);
+  --weave-component-border-top-width: 0;
+  --weave-component-border-right-width: 0;
+  --weave-component-border-bottom-width: 0;
+  --weave-component-border-left-width: 0;
   --weave-component-border-style: solid;
   --weave-component-border-top-color: var(--weave-appbar-theme-border-color);
   --weave-component-border-right-color: var(--weave-appbar-theme-border-color);
@@ -23,20 +21,25 @@ const stylesheet = `
   --weave-component-border-top-right-radius: 0;
   --weave-component-border-bottom-right-radius: 0;
   --weave-component-border-bottom-left-radius: 0;
-  --weave-component-box-shadow:
-    0 var(--weave-appbar-theme-rest-depth) 0 var(--weave-appbar-theme-depth-color);
+  --weave-component-box-shadow: none;
 }
 
 :where(.weave-appbar[data-weave-appbar-size="small"]) {
   --weave-component-min-height: var(--weave-appbar-theme-small-height);
-  --weave-component-padding-left: var(--weave-appbar-theme-small-padding-x);
-  --weave-component-padding-right: var(--weave-appbar-theme-small-padding-x);
 }
 
 :where(.weave-appbar[data-weave-appbar-size="large"]) {
   --weave-component-min-height: var(--weave-appbar-theme-large-height);
-  --weave-component-padding-left: var(--weave-appbar-theme-large-padding-x);
-  --weave-component-padding-right: var(--weave-appbar-theme-large-padding-x);
+}
+
+:where(.weave-appbar[data-weave-appbar-elevated="true"]) {
+  --weave-component-background: var(--weave-appbar-theme-elevated-background);
+  --weave-component-border-top-width: var(--weave-appbar-theme-border-width);
+  --weave-component-border-right-width: var(--weave-appbar-theme-border-width);
+  --weave-component-border-bottom-width: var(--weave-appbar-theme-border-width);
+  --weave-component-border-left-width: var(--weave-appbar-theme-border-width);
+  --weave-component-box-shadow:
+    0 var(--weave-appbar-theme-rest-depth) 0 var(--weave-appbar-theme-depth-color);
 }
 
 :where(.weave-appbar[data-weave-appbar-mode="floating"]) {
@@ -58,16 +61,37 @@ const stylesheet = `
 }
 
 :where(.weave-appbar__leading),
+:where(.weave-appbar__title),
+:where(.weave-appbar__trailing) {
+  min-width: 0;
+  margin-left: var(--weave-appbar-theme-medium-margin-x);
+  margin-right: var(--weave-appbar-theme-medium-margin-x);
+}
+
+:where(.weave-appbar__leading),
 :where(.weave-appbar__trailing) {
   display: flex;
   align-items: center;
-  min-width: 0;
   gap: var(--weave-appbar-theme-medium-gap);
+}
+
+:where(.weave-appbar[data-weave-appbar-size="small"]) :where(.weave-appbar__leading),
+:where(.weave-appbar[data-weave-appbar-size="small"]) :where(.weave-appbar__title),
+:where(.weave-appbar[data-weave-appbar-size="small"]) :where(.weave-appbar__trailing) {
+  margin-left: var(--weave-appbar-theme-small-margin-x);
+  margin-right: var(--weave-appbar-theme-small-margin-x);
 }
 
 :where(.weave-appbar[data-weave-appbar-size="small"]) :where(.weave-appbar__leading),
 :where(.weave-appbar[data-weave-appbar-size="small"]) :where(.weave-appbar__trailing) {
   gap: var(--weave-appbar-theme-small-gap);
+}
+
+:where(.weave-appbar[data-weave-appbar-size="large"]) :where(.weave-appbar__leading),
+:where(.weave-appbar[data-weave-appbar-size="large"]) :where(.weave-appbar__title),
+:where(.weave-appbar[data-weave-appbar-size="large"]) :where(.weave-appbar__trailing) {
+  margin-left: var(--weave-appbar-theme-large-margin-x);
+  margin-right: var(--weave-appbar-theme-large-margin-x);
 }
 
 :where(.weave-appbar[data-weave-appbar-size="large"]) :where(.weave-appbar__leading),
@@ -84,7 +108,6 @@ const stylesheet = `
 }
 
 :where(.weave-appbar__title) {
-  min-width: 0;
   justify-self: start;
 }
 

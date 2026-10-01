@@ -7,6 +7,7 @@ export function resolveAppBarTheme(theme: ResolvedTheme): RuntimeStyleDeclaratio
   const base = component?.base
   const output: Record<string, RuntimeStyleValue> = {
     '--weave-appbar-theme-background': color(base?.background),
+    '--weave-appbar-theme-elevated-background': color(base?.elevatedBackground),
     '--weave-appbar-theme-border-color': color(base?.borderColor),
     '--weave-appbar-theme-border-width': length(base?.borderWidth),
     '--weave-appbar-theme-radius': radius(base?.radius),
@@ -18,7 +19,7 @@ export function resolveAppBarTheme(theme: ResolvedTheme): RuntimeStyleDeclaratio
   for (const size of ['small', 'medium', 'large'] as const) {
     const sized = component?.sizes?.[size]
     output[`--weave-appbar-theme-${size}-height`] = length(sized?.height)
-    output[`--weave-appbar-theme-${size}-padding-x`] = length(sized?.paddingX)
+    output[`--weave-appbar-theme-${size}-margin-x`] = length(sized?.marginX)
     output[`--weave-appbar-theme-${size}-gap`] = length(sized?.gap)
   }
 

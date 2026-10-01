@@ -4079,6 +4079,7 @@ size?: "small" | "medium" | "large"
 mode?: "full" | "floating"
 titleAlign?: "start" | "center" | "end"
 sticky?: boolean
+elevated?: boolean
 viewProps
 ```
 
@@ -4089,6 +4090,7 @@ size = "medium"
 mode = "full"
 titleAlign = "start"
 sticky = false
+elevated = false
 ```
 
 `leading` 与 `trailing` 接受任意 ReactNode。两侧区域按水平 flex 排列并垂直居中。
@@ -4102,24 +4104,24 @@ sticky = false
 ```text
 small:
   height = 3rem
-  paddingX = 0.75rem
+  marginX = 0.75rem
   gap = 0.5rem
   titleTypo = title-small
 
 medium:
   height = 3.5rem
-  paddingX = 1rem
+  marginX = 1rem
   gap = 0.75rem
   titleTypo = title-medium
 
 large:
   height = 4rem
-  paddingX = 1.25rem
+  marginX = 1.25rem
   gap = 1rem
   titleTypo = title-large
 ```
 
-这些值来自 `theme.components.AppBar.sizes`，不是 renderer 常量。
+这些值来自 `theme.components.AppBar.sizes`，不是 renderer 常量。`marginX` 不作用于 AppBar 宿主；它分别作用于 `leading / title / trailing` 三个区域。
 
 ## 18.12A.3 三区域与 titleAlign
 
@@ -4162,11 +4164,13 @@ borderRadius = theme.components.AppBar.base.radius
 
 ## 18.12A.5 Surface / depth
 
-AppBar 的默认视觉与 default Card 相同：使用同一默认 surface、outline border、large radius、rest depth 与 depth color。AppBar 不继承 Card 的 clickable / selectable / hover / press 行为。
+AppBar 默认是 flat surface：使用 `background`，没有 border，也没有 depth。
 
-`full` 只覆盖 radius 为 0；`floating` 保留 AppBar theme radius。
+只有显式传 `elevated` 时才进入 raised surface：背景切换为 `elevatedBackground`，并启用 AppBar theme 的 border、rest depth 与 depth color。默认 `elevatedBackground = surfaceHover`。AppBar 不继承 Card 的 clickable / selectable / hover / press 行为。
 
-AppBar 始终使用固定 rest depth。滚动、sticky 状态不会改变 elevation。
+`full` 始终覆盖 radius 为 0；`floating` 保留 AppBar theme radius。
+
+`elevated` 的 depth 是固定 rest depth；滚动、sticky 状态不会改变 elevation。
 
 ## 18.12A.6 sticky
 
@@ -4194,6 +4198,7 @@ Theme：
 ```text
 theme.components.AppBar.base:
   background
+  elevatedBackground
   borderColor
   borderWidth
   radius
@@ -4203,7 +4208,7 @@ theme.components.AppBar.base:
 
 theme.components.AppBar.sizes.small / medium / large:
   height
-  paddingX
+  marginX
   gap
   titleTypo
 ```

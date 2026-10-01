@@ -15,6 +15,7 @@ export function AppBar({
   mode = 'full',
   titleAlign = 'start',
   sticky = false,
+  elevated = false,
   viewProps = {},
 }: AppBarProps) {
   const { theme } = useTheme()
@@ -43,6 +44,7 @@ export function AppBar({
       data-weave-appbar-mode={mode}
       data-weave-appbar-title-align={titleAlign}
       data-weave-appbar-sticky={sticky ? 'true' : 'false'}
+      data-weave-appbar-elevated={elevated ? 'true' : 'false'}
       data-weave-layout={resolved.layout}
       className={['weave-appbar', themeClassName, className].filter(Boolean).join(' ')}
       style={inlineStyle}

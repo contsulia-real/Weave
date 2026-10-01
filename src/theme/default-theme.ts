@@ -551,6 +551,7 @@ export const defaultTheme: ResolvedTheme = {
     AppBar: {
       base: {
         background: 'surface',
+        elevatedBackground: 'surfaceHover',
         borderColor: 'outline',
         borderWidth: 0.0625,
         radius: 'large',
@@ -561,19 +562,19 @@ export const defaultTheme: ResolvedTheme = {
       sizes: {
         small: {
           height: 3,
-          paddingX: 0.75,
+          marginX: 0.75,
           gap: 0.5,
           titleTypo: 'title-small',
         },
         medium: {
           height: 3.5,
-          paddingX: 1,
+          marginX: 1,
           gap: 0.75,
           titleTypo: 'title-medium',
         },
         large: {
           height: 4,
-          paddingX: 1.25,
+          marginX: 1.25,
           gap: 1,
           titleTypo: 'title-large',
         },

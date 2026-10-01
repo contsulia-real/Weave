@@ -22,7 +22,7 @@ export function FoundationLayoutPlayground() {
     <>
       <PlaygroundSection
         title="AppBar"
-        description="leading / title / trailing · full / floating · small / medium / large · start / center / end title alignment."
+        description="leading / title / trailing use slot margins · elevated controls raised surface · full / floating · small / medium / large."
       >
         <Column gap={1.25}>
           <AppBar
@@ -34,6 +34,7 @@ export function FoundationLayoutPlayground() {
           <AppBar
             size="medium"
             mode="floating"
+            elevated
             titleAlign="center"
             leading={<Button text="Menu" size="small" variant="ghost" />}
             title={<Text>Medium · floating · center</Text>}
@@ -41,6 +42,7 @@ export function FoundationLayoutPlayground() {
           />
           <AppBar
             size="large"
+            elevated
             titleAlign="end"
             leading={<Button text="Back" size="medium" variant="ghost" />}
             title={<Text>Large · end</Text>}

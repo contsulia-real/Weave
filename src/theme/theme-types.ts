@@ -314,6 +314,7 @@ export interface LinkTheme {
 
 export interface AppBarThemeBase {
   background?: string
+  elevatedBackground?: string
   borderColor?: string
   borderWidth?: ThemeScaleValue
   radius?: ThemeScaleValue
@@ -324,7 +325,7 @@ export interface AppBarThemeBase {
 
 export interface AppBarThemeSize {
   height?: ThemeScaleValue
-  paddingX?: ThemeScaleValue
+  marginX?: ThemeScaleValue
   gap?: ThemeScaleValue
   titleTypo?: TextTypo
 }
