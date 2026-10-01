@@ -11,7 +11,7 @@ import type { MouseEvent } from 'react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { ThemeMode } from '../index'
-import { AppBar, Button, Column, Drawer, Input, Link, Popover, Row, Text, View } from '../index'
+import { AppBar, Button, Column, Drawer, Input, Link, Popover, Text, View } from '../index'
 import documentationI18n, {
   type DocumentationLanguagePreference,
   detectDocumentationLanguage,
@@ -163,7 +163,7 @@ export function DocumentationPage({ themeMode, onThemeModeChange }: Documentatio
         }
         title={<Text>{t('docs.title')}</Text>}
         trailing={
-          <Row gap={0.5} align="center">
+          <>
             <Input
               type="search"
               clearable
@@ -173,7 +173,7 @@ export function DocumentationPage({ themeMode, onThemeModeChange }: Documentatio
             />
             {themeSelector}
             {languageSelector}
-          </Row>
+          </>
         }
       />
 
