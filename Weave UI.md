@@ -1730,6 +1730,8 @@ Text
 typo
 size
 weight
+bold
+italic
 color
 align
 lineHeight
@@ -1912,15 +1914,17 @@ capitalize
 
 ### decoration
 
-Text 直接提供三个可组合的布尔属性：
+Text 直接提供五个可选布尔属性：
 
 ```text
+bold
+italic
 underline
 strikethrough
 overline
 ```
 
-它们统一映射到 `text-decoration-line`。可以单独使用，也可以组合；显式传 `false` 可在响应式层级关闭对应 decoration。
+`bold` 是粗体快捷入口：`true` 使用 typography 的 `bold` weight，`false` 使用 `regular`；如果同时显式传入 `weight`，精确的 `weight` 优先。`italic` 在 `italic / normal` 之间切换。`underline / strikethrough / overline` 统一映射到 `text-decoration-line`，三者可以任意组合。所有这些属性都支持响应式覆盖。
 
 ## 11.2 Text 的子内容
 

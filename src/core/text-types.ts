@@ -49,6 +49,8 @@ export interface TextStyleProps {
   typo?: TextTypo
   size?: TextSize
   weight?: TextWeight
+  bold?: boolean
+  italic?: boolean
   color?: TextColor
   align?: TextAlign
   lineHeight?: Length

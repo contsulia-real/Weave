@@ -94,6 +94,12 @@ export function FoundationVisualPlayground() {
           <Text typo="label-large">Label large</Text>
           <Text typo="label-medium">Label medium</Text>
           <Text typo="label-small">Label small</Text>
+          <Text typo="body-medium" bold>
+            Bold
+          </Text>
+          <Text typo="body-medium" italic>
+            Italic
+          </Text>
           <Text typo="body-medium" underline>
             Underline
           </Text>

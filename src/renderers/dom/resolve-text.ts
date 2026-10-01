@@ -77,8 +77,17 @@ function resolveTextStyle(
     output[variable('font-size', breakpoint)] = `var(--weave-typography-size-${props.size})`
   }
 
+  if (props.bold !== undefined) {
+    output[variable('font-weight', breakpoint)] =
+      `var(--weave-typography-weight-${props.bold ? 'bold' : 'regular'})`
+  }
+
   if (props.weight !== undefined) {
     output[variable('font-weight', breakpoint)] = `var(--weave-typography-weight-${props.weight})`
+  }
+
+  if (props.italic !== undefined) {
+    output[variable('font-style', breakpoint)] = props.italic ? 'italic' : 'normal'
   }
 
   if (props.align !== undefined) {

@@ -1,6 +1,7 @@
 const TEXT_STYLE_PROPERTIES = [
   'font-size',
   'font-weight',
+  'font-style',
   'text-align',
   'line-height',
   'letter-spacing',
@@ -32,6 +33,7 @@ const fallbackFor = (property: TextStyleProperty) => {
   switch (property) {
     case 'font-size':
     case 'font-weight':
+    case 'font-style':
     case 'text-align':
     case 'line-height':
     case 'letter-spacing':
