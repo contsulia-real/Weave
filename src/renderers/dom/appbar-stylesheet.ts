@@ -4,9 +4,8 @@ const stylesheet = `
 :where(.weave-appbar) {
   --weave-component-display: grid;
   --weave-component-grid-template-columns: max-content minmax(0, 1fr) max-content;
-  --weave-component-align-items: stretch;
+  --weave-component-align-items: center;
   --weave-component-align-self: center;
-  align-content: stretch;
   --weave-component-width: 100%;
   --weave-component-min-height: var(--weave-appbar-theme-medium-height);
   --weave-component-background: var(--weave-appbar-theme-background);
@@ -66,7 +65,7 @@ const stylesheet = `
 :where(.weave-appbar__title),
 :where(.weave-appbar__trailing) {
   min-width: 0;
-  align-self: stretch;
+  align-self: center;
   display: flex;
   align-items: center;
 }
