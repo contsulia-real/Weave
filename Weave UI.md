@@ -8569,7 +8569,7 @@ CSS variables + runtime classes + framework stylesheet
 29. 组件默认承担正确可访问性和键盘语义，不把标准行为推给业务开发者。
 30. 浮层使用语义 layer，普通用户不需要手工管理 portal 或全局 z-index。
 31. 具体组件已经提供同义语义状态属性时，该状态不在其 `viewProps` 中重复暴露，组件属性作为唯一真值。
-32. Documentation 页面本身的全部可见 UI 必须 **100% dogfood Weave 公共组件与 Theme**：页面 shell、导航、搜索、主题切换、内容布局和后续示例都不得使用裸 DOM 元素、Documentation 私有视觉 CSS 或第三方 UI 组件来替代已有 Weave 能力。React state、History router、i18n、数据处理等非视觉基础设施可以直接使用。框架组件自身仍按其实现边界复用 Weave 语义组件与内部基础设施，不再平行维护裸 DOM / 私有 CSS 的同义视觉实现。 Documentation AppBar 的 leading / trailing action Button 使用 `size="large"`，因为当前 `Button.large.minHeight` 与 Input 的 `controlMedium.minHeight` 同为 `2.5rem`；不得把默认 `Button.medium`（`2.125rem`）与 Input 混放后只依赖 flex centering。Documentation AppBar 的 trailing 使用 Weave search Input、Theme Popover 与 Language Popover；语言选择必须包含 `Auto detect` 和当前实际注册的语言资源。`Auto detect` 按 `navigator.languages` 顺序匹配已注册语言，无法匹配时回退到 i18n fallback language，不得展示尚未存在的翻译语言。
+32. Documentation 页面本身的全部可见 UI 必须 **100% dogfood Weave 公共组件与 Theme**：页面 shell、导航、搜索、主题切换、内容布局和后续示例都不得使用裸 DOM 元素、Documentation 私有视觉 CSS 或第三方 UI 组件来替代已有 Weave 能力。React state、History router、i18n、数据处理等非视觉基础设施可以直接使用。框架组件自身仍按其实现边界复用 Weave 语义组件与内部基础设施，不再平行维护裸 DOM / 私有 CSS 的同义视觉实现。 Documentation AppBar 的 trailing 使用 Weave search Input、Theme Popover 与 Language Popover；语言选择必须包含 `Auto detect` 和当前实际注册的语言资源。`Auto detect` 按 `navigator.languages` 顺序匹配已注册语言，无法匹配时回退到 i18n fallback language，不得展示尚未存在的翻译语言。
 33. 组件复用其他组件的视觉或交互能力时，外层组件仍承担自己的高层语义；不得因此重复暴露冲突的 ARIA 角色。
 34. `Text.typo` 必须来自主题中的完整 type scale；不能退回 renderer 内部的少量硬编码 preset。
 35. Scrollbar 只绘制 thumb，不提供 tracked / trackColor；带圆角宿主必须把圆角曲线区域排除出 thumb 的运动区。
