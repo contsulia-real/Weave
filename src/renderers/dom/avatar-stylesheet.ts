@@ -33,14 +33,14 @@ const stylesheet = `
   display: flex;
   align-items: center;
   justify-content: center;
-  container-type: inline-size;
   user-select: none;
 }
 
 :where(.weave-avatar-fallback-content) {
-  font-size: 40cqi;
-  line-height: 1;
+  display: inline-block;
   text-align: center;
+  transform: scale(var(--weave-avatar-fallback-scale, 1));
+  transform-origin: center;
 }
 
 :where(.weave-avatar [data-weave-avatar-content-image]) {

@@ -8,7 +8,16 @@ const stylesheet = `
 
 :where(.weave-accordion-item) {
   --weave-component-display: grid;
+  grid-template-rows: auto minmax(0, 0fr);
   min-width: 0;
+}
+
+:where(.weave-accordion-item[data-weave-accordion-item-open="true"]) {
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+:where(.weave-divider).weave-accordion__divider {
+  --weave-divider-color: var(--weave-accordion-divider-color);
 }
 
 
@@ -82,7 +91,9 @@ const stylesheet = `
   flex: 0 0 auto;
   align-items: center;
   justify-content: center;
-  transition: transform var(--weave-motion-duration-normal) var(--weave-motion-curve-spring);
+  transition:
+    transform var(--weave-motion-spring-gentle-duration)
+      var(--weave-motion-spring-gentle-easing);
 }
 
 :where(

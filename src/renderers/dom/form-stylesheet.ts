@@ -16,10 +16,6 @@ const stylesheet = `
 
 :where(.weave-form-label) {
   color: var(--weave-form-label-color);
-  font-size: var(--weave-form-label-font-size);
-  font-weight: var(--weave-form-label-font-weight);
-  line-height: var(--weave-form-label-line-height);
-  letter-spacing: var(--weave-form-label-letter-spacing);
 }
 
 :where(.weave-form-required) {
@@ -28,18 +24,10 @@ const stylesheet = `
 
 :where(.weave-form-description) {
   color: var(--weave-form-description-color);
-  font-size: var(--weave-form-description-font-size);
-  font-weight: var(--weave-form-description-font-weight);
-  line-height: var(--weave-form-description-line-height);
-  letter-spacing: var(--weave-form-description-letter-spacing);
 }
 
 :where(.weave-form-error) {
   color: var(--weave-form-error-color);
-  font-size: var(--weave-form-error-font-size);
-  font-weight: var(--weave-form-error-font-weight);
-  line-height: var(--weave-form-error-line-height);
-  letter-spacing: var(--weave-form-error-letter-spacing);
 }
 
 :where(.weave-form-fieldset) {

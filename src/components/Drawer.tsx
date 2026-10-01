@@ -20,6 +20,7 @@ import { useTheme } from '../theme/theme-context'
 import { Dialog } from './Dialog'
 import { AutoScrollbar } from './internal/AutoScrollbar'
 import { assignRef } from './internal/assign-ref'
+import { cssLengthPixels } from './internal/css-length-pixels'
 import { useControllableBoolean } from './internal/use-controllable-boolean'
 import { SplitBox } from './SplitBox'
 import { SplitBoxPane } from './SplitBoxPane'
@@ -68,27 +69,12 @@ function measureLength(root: HTMLElement, value: Length, direction: SplitBoxDire
   const resolved = length(value)
   if (resolved === undefined) return 0
 
-  const probe = document.createElement('div')
-  probe.style.position = 'absolute'
-  probe.style.visibility = 'hidden'
-  probe.style.pointerEvents = 'none'
-  probe.style.boxSizing = 'border-box'
-  probe.style.margin = '0'
-  probe.style.padding = '0'
-  probe.style.border = '0'
-
-  if (direction === 'horizontal') {
-    probe.style.width = resolved
-    probe.style.height = '0'
-  } else {
-    probe.style.width = '0'
-    probe.style.height = resolved
-  }
-
-  root.appendChild(probe)
-  const measured = axisSize(direction, probe.getBoundingClientRect())
-  probe.remove()
-
+  const measured = cssLengthPixels(
+    root,
+    resolved,
+    direction === 'horizontal' ? 'width' : 'height',
+    axisSize(direction, root.getBoundingClientRect()),
+  )
   return Number.isFinite(measured) ? measured : 0
 }
 

@@ -1,7 +1,8 @@
-import { useLayoutEffect, useState } from 'react'
+import { useLayoutEffect, useState, useSyncExternalStore } from 'react'
 import type { SnackContainer, SnackPlacement } from '../../core/snack-types'
 import { resolveSnackHost } from './snack-host-context'
 import { retainSnackRegion, syncSnackRegion } from './snack-region'
+import { subscribeTopLayerHost, topLayerHostRevision } from './top-layer-host'
 import type { ExitPresenceState } from './use-exit-presence'
 
 export function useSnackRegion(
@@ -12,6 +13,11 @@ export function useSnackRegion(
   visualState: ExitPresenceState,
 ) {
   const [region, setRegion] = useState<HTMLDivElement | null>(null)
+  const topLayerRevision = useSyncExternalStore(
+    subscribeTopLayerHost,
+    topLayerHostRevision,
+    () => 0,
+  )
 
   // The shared portal region is external DOM state. React
   // needs one synchronization render after retaining it.
@@ -36,7 +42,7 @@ export function useSnackRegion(
     return () => {
       handle.release()
     }
-  }, [placement, present, scopeId, target])
+  }, [placement, present, scopeId, target, topLayerRevision])
   /* oxlint-enable react/set-state-in-effect */
 
   useLayoutEffect(() => {

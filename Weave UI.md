@@ -5014,7 +5014,7 @@ ToolTip 不增加会改变目标布局的可见包裹层。内部 anchor 只使�
 
 ## 19.4 浮层、主题与可访问性
 
-ToolTip 由框架内部 portal 到 document body，普通用户不创建 portal root。React context 仍按原组件树继承；portal 内重新建立当前 ThemeProvider 的 CSS 变量作用域，因此主题 token 与局部主题不会丢失。
+ToolTip 由框架内部管理 portal，普通用户不创建 portal root。页面没有打开的 modal Dialog 时默认 portal 到 `document.body`；由 modal Dialog 子树触发时，ToolTip 必须 portal 到与该 modal 关联的非模态 top-layer portal host。该 host 在 DOM / flat tree 中属于对应 `<dialog>` 的子树，从而不会被 modal inert；同时 host 自己通过原生 Popover top layer 呈现，因此不受 Dialog surface 的 overflow / motion 坐标系裁切。React context 仍按原组件树继承；portal 内重新建立当前 ThemeProvider 的 CSS 变量作用域，因此主题 token 与局部主题不会丢失。
 
 默认语义：
 
@@ -5158,7 +5158,7 @@ Popover 不实现 modal 语义。非模态 `Dialog` 直接封装 Popover，继�
 
 ## 19.5.3 Portal、collision 与视觉
 
-Popover portal 到 `document.body`，并在 portal 内重新建立当前 ThemeProvider，因此局部主题不会丢失。默认 semantic layer 为 `overlay`，不是 `tooltip` 或 `modal`。
+Popover 由框架内部管理 portal：普通上下文默认挂到 `document.body`；由 modal Dialog 子树触发时挂到与该 modal 关联的非模态 top-layer portal host。host 在 DOM / flat tree 中仍是 `<dialog>` 子节点，因此保持可交互；其自身进入原生 Popover top layer，所以 anchored overlay 不受 Dialog surface 的 overflow / motion 坐标系影响。portal 内重新建立当前 ThemeProvider，因此局部主题不会丢失。默认 semantic layer 为 `overlay`，不是 `tooltip` 或 `modal`。
 
 Popover enter / exit motion 按**最终 resolved placement** 决定方向：从靠近 trigger 的方向轻微展开，关闭时沿相反过程收回。collision 导致 flip 后，motion 方向也跟随实际 placement。
 
@@ -5302,7 +5302,7 @@ Escape                → 优先关闭当前 submenu level；root level 再关�
 
 - pointer 进入 submenu parent 时打开对应 submenu；
 - pointer/focus 移到同 level 的普通项或其他 submenu parent 时，之前的 sibling submenu 关闭；
-- submenu 自己 portal 到 `document.body`，但 root Menu 使用同一个 root id 把所有 submenu portal 视为同一棵菜单树；因此在 submenu 内点击不会被 root outside-dismiss 误判成外部点击；
+- submenu 使用同一套框架 portal host：普通上下文默认挂到 `document.body`，modal Dialog 子树内则挂到该 modal 对应的非模态 top-layer portal host；root Menu 使用同一个 root id 把所有 submenu portal 视为同一棵菜单树，因此在 submenu 内点击不会被 root outside-dismiss 误判成外部点击；
 - 普通 item 激活后默认关闭整棵菜单树；`Menu.closeOnSelect=false` 或单个 `MenuItem.closeOnSelect=false` 可以保留菜单。
 
 ## 19.6.5 定位与 collision
@@ -5732,7 +5732,7 @@ Progress
 </ThemeProvider>
 ```
 
-不传 `container` 时，Snack region 挂到 `document.body`，placement 相对 viewport。
+不传 `container` 时，Snack region 在没有 modal Dialog 时挂到 `document.body`；存在 modal Dialog 时挂到当前最上层 modal 对应的非模态 top-layer portal host，仍按 viewport placement 语义定位，从而按 `snack` layer 保持在 modal 之上。
 
 需要把 Snack 限定在某个组件内部时，在 `SnackProvider` 指定容器：
 
@@ -5772,7 +5772,7 @@ null
 
 语义：
 
-- 未传 `container`：挂到 `document.body`，region 使用 viewport 定位；
+- 未传 `container`：没有 modal 时挂到 `document.body`；存在 modal 时挂到当前最上层 modal 对应的非模态 top-layer portal host，region 继续使用 viewport 定位；
 - 指定容器：region 作为该容器子节点挂载，placement 相对该容器；
 - 指定容器 region 使用 `position: absolute`；
 - 如果容器当前是 `position: static`，框架在 region 存活期间自动建立 `position: relative` 定位上下文，并在最后一个 region 移除后恢复原 inline position；
@@ -5965,7 +5965,7 @@ bottom-* → 从底部边缘进入 / 向底部边缘退出
 
 ```text
 SnackProvider
-→ container / document.body
+→ 显式 container / 默认 portal host（document.body 或当前最上层 modal 的 top-layer portal host）
   → top-left region
   → top-center region
   → top-right region
@@ -5974,7 +5974,7 @@ SnackProvider
   → bottom-right region
 ```
 
-不传 `container` 时 mount scope 是 `document.body`；指定 `container` 时 mount scope 是该 HTMLElement。
+不传 `container` 时 mount scope 是框架默认 portal host：通常为 `document.body`，modal 打开期间为当前最上层 modal 对应的非模态 top-layer portal host；指定 `container` 时 mount scope 是该 HTMLElement。
 
 业务不创建 portal host、不计算坐标、不维护队列 index。
 
@@ -7855,7 +7855,7 @@ Snack
 
 开发者不需要显式创建 portal 根节点。
 
-React 结构归属仍在原组件树中，但视觉上由框架进入对应浮层层级。
+React 结构归属仍在原组件树中，但视觉上由框架进入对应浮层层级。原生 modal `<dialog>.showModal()` 进入浏览器 top layer 后，普通 `document.body` portal 的 `z-index` 无法越过该 top layer；同时 modal 打开时，除该 `<dialog>` flat-tree 子树外的文档节点会被浏览器设为 inert。因此每个打开的 Weave modal 必须拥有一个 DOM 上属于该 `<dialog>` 子树、但自身通过 `popover="manual"` 在该 modal 之后进入 top layer 的非模态 portal host。modal 子树里的 `overlay / tooltip` 等框架浮层进入对应 modal 的 portal host；全局 Snack 在 modal 打开期间进入当前最上层 modal 的 portal host；modal 自身仍 portal 到 `document.body` 并由浏览器决定 modal 之间的 top-layer 堆叠顺序。由于 portal host 自己处于 Popover top layer，它不受 Dialog surface 的 overflow、translate 或 scale 绘制约束。AutoScrollbar 同样按目标元素所在 modal 选择对应 portal host，不能固定 portal 到 body。
 
 概念：
 

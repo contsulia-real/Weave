@@ -14,48 +14,6 @@ export function resolveFormTheme(theme: ResolvedTheme): RuntimeStyleDeclarations
     '--weave-form-description-color': color(base?.descriptionColor),
     '--weave-form-error-color': color(base?.errorColor),
     '--weave-form-legend-color': color(base?.legendColor),
-    '--weave-form-label-font-size': typographyStyleVariableReference(base?.labelTypo, 'fontSize'),
-    '--weave-form-label-font-weight': typographyStyleVariableReference(
-      base?.labelTypo,
-      'fontWeight',
-    ),
-    '--weave-form-label-line-height': typographyStyleVariableReference(
-      base?.labelTypo,
-      'lineHeight',
-    ),
-    '--weave-form-label-letter-spacing': typographyStyleVariableReference(
-      base?.labelTypo,
-      'letterSpacing',
-    ),
-    '--weave-form-description-font-size': typographyStyleVariableReference(
-      base?.descriptionTypo,
-      'fontSize',
-    ),
-    '--weave-form-description-font-weight': typographyStyleVariableReference(
-      base?.descriptionTypo,
-      'fontWeight',
-    ),
-    '--weave-form-description-line-height': typographyStyleVariableReference(
-      base?.descriptionTypo,
-      'lineHeight',
-    ),
-    '--weave-form-description-letter-spacing': typographyStyleVariableReference(
-      base?.descriptionTypo,
-      'letterSpacing',
-    ),
-    '--weave-form-error-font-size': typographyStyleVariableReference(base?.errorTypo, 'fontSize'),
-    '--weave-form-error-font-weight': typographyStyleVariableReference(
-      base?.errorTypo,
-      'fontWeight',
-    ),
-    '--weave-form-error-line-height': typographyStyleVariableReference(
-      base?.errorTypo,
-      'lineHeight',
-    ),
-    '--weave-form-error-letter-spacing': typographyStyleVariableReference(
-      base?.errorTypo,
-      'letterSpacing',
-    ),
     '--weave-form-legend-font-size': typographyStyleVariableReference(base?.legendTypo, 'fontSize'),
     '--weave-form-legend-font-weight': typographyStyleVariableReference(
       base?.legendTypo,

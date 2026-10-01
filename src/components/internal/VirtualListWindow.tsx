@@ -88,32 +88,19 @@ function VirtualItem({
     }
   }, [entry.id, onMeasure, orientation])
 
-  const style: CSSProperties =
-    orientation === 'vertical'
-      ? {
-          position: 'absolute',
-          top: offset,
-          left: 0,
-          right: 0,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'stretch',
-        }
-      : {
-          position: 'absolute',
-          left: offset,
-          top: 0,
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'stretch',
-        }
+  const style: CSSProperties = orientation === 'vertical' ? { top: offset } : { left: offset }
 
   return (
     <Flex
       ref={ref}
       role="presentation"
+      position="absolute"
+      top={orientation === 'horizontal' ? 0 : undefined}
+      left={orientation === 'vertical' ? 0 : undefined}
+      right={orientation === 'vertical' ? 0 : undefined}
       direction={orientation === 'vertical' ? 'column' : 'row'}
       align="stretch"
+      className="weave-list-virtual-item"
       data={{
         'weave-list-virtual-item': '',
         'weave-list-virtual-id': entry.id,
@@ -228,19 +215,18 @@ export function VirtualListWindow({
     orientation === 'vertical'
       ? {
           height: layout.total,
-          width: '100%',
-          pointerEvents: 'none',
         }
       : {
           width: layout.total,
           height: Math.max(1, layout.maxCross),
-          pointerEvents: 'none',
         }
 
   return (
     <>
       <View
         aria-hidden="true"
+        width={orientation === 'vertical' ? 'fill' : undefined}
+        pointerEvents="none"
         data={{
           'weave-list-virtual-spacer': '',
         }}

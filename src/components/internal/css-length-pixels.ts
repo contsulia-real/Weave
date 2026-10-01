@@ -1,4 +1,9 @@
-export function cssLengthPixels(element: HTMLElement, value: string): number {
+export function cssLengthPixels(
+  element: HTMLElement,
+  value: string,
+  axis: 'width' | 'height' = 'width',
+  referencePixels?: number,
+): number {
   const normalized = value.trim()
 
   if (normalized.length === 0 || normalized === '0') {
@@ -23,19 +28,43 @@ export function cssLengthPixels(element: HTMLElement, value: string): number {
     return amount * rootSize
   }
 
-  const probe = element.ownerDocument.createElement('div')
+  const document = element.ownerDocument
+  const probe = document.createElement('div')
+  const computed = document.defaultView?.getComputedStyle(element)
 
-  probe.style.position = 'fixed'
+  probe.style.position = 'absolute'
   probe.style.visibility = 'hidden'
   probe.style.pointerEvents = 'none'
-  probe.style.width = normalized
-  probe.style.height = '0'
-  probe.style.fontSize = element.ownerDocument.defaultView?.getComputedStyle(element).fontSize ?? ''
+  probe.style.width = axis === 'width' ? normalized : '0'
+  probe.style.height = axis === 'height' ? normalized : '0'
+  probe.style.fontSize = computed?.fontSize ?? ''
 
-  element.ownerDocument.body.append(probe)
+  let measurementHost: HTMLElement = document.body
+  let reference: HTMLDivElement | null = null
 
-  const pixels = probe.getBoundingClientRect().width
+  if (referencePixels !== undefined && Number.isFinite(referencePixels)) {
+    reference = document.createElement('div')
+    reference.style.position = 'fixed'
+    reference.style.visibility = 'hidden'
+    reference.style.pointerEvents = 'none'
+    reference.style.top = '0'
+    reference.style.left = '0'
+    reference.style.width = axis === 'width' ? `${Math.max(0, referencePixels)}px` : '0'
+    reference.style.height = axis === 'height' ? `${Math.max(0, referencePixels)}px` : '0'
+    reference.style.fontSize = computed?.fontSize ?? ''
+    element.append(reference)
+    measurementHost = reference
+  }
 
-  probe.remove()
+  measurementHost.append(probe)
+
+  const rect = probe.getBoundingClientRect()
+  const pixels = axis === 'width' ? rect.width : rect.height
+
+  reference?.remove()
+  if (reference === null) {
+    probe.remove()
+  }
+
   return pixels
 }

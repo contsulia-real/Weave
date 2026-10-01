@@ -1,7 +1,12 @@
 import { ensureStaticStylesheet } from './static-stylesheet'
 
 const stylesheet = `
+:where([data-weave-menu-anchor]) {
+  display: contents;
+}
+
 :where(.weave-menu) {
+  --weave-component-pointer-events: auto;
   --weave-component-display: flex;
   --weave-component-flex-direction: column;
   --weave-component-align-items: stretch;

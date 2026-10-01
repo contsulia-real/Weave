@@ -15,6 +15,11 @@ import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { useTheme } from '../theme/theme-context'
 import { durationMilliseconds } from './internal/motion-duration'
 import { ThemedPortal } from './internal/ThemedPortal'
+import {
+  activateModalHost,
+  deactivateModalHost,
+  ModalPortalHostContext,
+} from './internal/top-layer-host'
 import { useControllableBoolean } from './internal/use-controllable-boolean'
 import { useExitPresence, useExitTransitionEnd } from './internal/use-exit-presence'
 import { useViewHost } from './internal/use-view-host'
@@ -83,6 +88,7 @@ function ModalDialog({
   const previousFocusRef = useRef<HTMLElement | null>(null)
   const openedRef = useRef(false)
   const [nativeRevision, setNativeRevision] = useState(0)
+  const [modalPortalHost, setModalPortalHost] = useState<HTMLDivElement | null>(null)
 
   useInsertionEffect(ensureDialogStylesheet, [])
 
@@ -91,6 +97,8 @@ function ModalDialog({
 
     if (dialog?.open) {
       dialog.close()
+      deactivateModalHost(dialog)
+      setModalPortalHost(null)
     }
 
     openedRef.current = false
@@ -128,6 +136,7 @@ function ModalDialog({
 
     if (!dialog.open) {
       dialog.showModal()
+      setModalPortalHost(activateModalHost(dialog))
     }
 
     initialFocus?.current?.focus()
@@ -145,6 +154,8 @@ function ModalDialog({
   }
 
   const handleClose = (event: SyntheticEvent<HTMLDialogElement>) => {
+    deactivateModalHost(event.currentTarget)
+    setModalPortalHost(null)
     viewOnClose?.(event)
 
     if (resolvedOpen) {
@@ -175,7 +186,7 @@ function ModalDialog({
   }
 
   return (
-    <ThemedPortal>
+    <ThemedPortal preferTopLayerHost={false}>
       <dialog
         {...resolved.domProps}
         ref={elementRef}
@@ -191,7 +202,9 @@ function ModalDialog({
         className={['weave-dialog', themeClassName, className].filter(Boolean).join(' ')}
         style={inlineStyle}
       >
-        {children}
+        <ModalPortalHostContext.Provider value={modalPortalHost}>
+          {children}
+        </ModalPortalHostContext.Provider>
       </dialog>
     </ThemedPortal>
   )

@@ -6,6 +6,7 @@ const stylesheet = `
 }
 
 :where(.weave-scrollbar) {
+  --weave-component-pointer-events: auto;
   --weave-component-display: none;
   --weave-component-position: fixed;
   --weave-component-z-index: 0;

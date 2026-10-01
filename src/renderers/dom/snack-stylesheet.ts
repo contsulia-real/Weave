@@ -175,10 +175,10 @@ const stylesheet = `
     color-mix(in srgb, var(--weave-snack-accent) 30%, var(--weave-color-outline));
   --weave-component-border-left-color:
     color-mix(in srgb, var(--weave-snack-accent) 30%, var(--weave-color-outline));
-  --weave-component-border-top-left-radius: 9999px;
-  --weave-component-border-top-right-radius: 9999px;
-  --weave-component-border-bottom-right-radius: 9999px;
-  --weave-component-border-bottom-left-radius: 9999px;
+  --weave-component-border-top-left-radius: var(--weave-radius-full);
+  --weave-component-border-top-right-radius: var(--weave-radius-full);
+  --weave-component-border-bottom-right-radius: var(--weave-radius-full);
+  --weave-component-border-bottom-left-radius: var(--weave-radius-full);
   color: var(--weave-snack-accent);
 }
 

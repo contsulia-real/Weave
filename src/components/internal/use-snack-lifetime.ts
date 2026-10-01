@@ -12,6 +12,7 @@ export function useSnackLifetime(
   const [paused, setPaused] = useState(false)
   const [remainingMs, setRemainingMs] = useState(durationMs)
   const previousOpenRef = useRef(open)
+  const previousDurationRef = useRef(durationMs)
   const remainingMsRef = useRef(durationMs)
   const activeStartedAtRef = useRef<number | null>(null)
   const onExpireRef = useRef(onExpire)
@@ -22,12 +23,26 @@ export function useSnackLifetime(
 
   useEffect(() => {
     const wasOpen = previousOpenRef.current
+    const previousDuration = previousDurationRef.current
     previousOpenRef.current = open
+    previousDurationRef.current = durationMs
 
     if (open && !wasOpen) {
       remainingMsRef.current = durationMs
       activeStartedAtRef.current = null
       setRemainingMs(durationMs)
+      return
+    }
+
+    if (open && previousDuration !== durationMs) {
+      const activeStartedAt = activeStartedAtRef.current
+      const elapsed = activeStartedAt === null ? 0 : Math.max(0, Date.now() - activeStartedAt)
+      const currentRemaining = Math.max(0, remainingMsRef.current - elapsed)
+      const nextRemaining = Math.max(0, currentRemaining + durationMs - previousDuration)
+
+      remainingMsRef.current = nextRemaining
+      activeStartedAtRef.current = null
+      setRemainingMs(nextRemaining)
     }
   }, [durationMs, open])
 
@@ -85,7 +100,7 @@ export function useSnackLifetime(
       activeStartedAtRef.current = null
       setRemainingMs(nextRemaining)
     }
-  }, [open, paused, persistent, progress])
+  }, [durationMs, open, paused, persistent, progress])
 
   const lifetimeProgress = durationMs <= 0 ? 0 : Math.min(1, Math.max(0, remainingMs / durationMs))
 

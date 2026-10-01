@@ -129,13 +129,7 @@ export function Popover({
 
   return (
     <>
-      <div
-        ref={wrapperRef}
-        data-weave-popover-anchor=""
-        style={{
-          display: 'contents',
-        }}
-      >
+      <div ref={wrapperRef} data-weave-popover-anchor="">
         {children}
       </div>
       {portal}

@@ -1,6 +1,28 @@
 import { ensureStaticStylesheet } from './static-stylesheet'
 
 const stylesheet = `
+:where(.weave-modal-portal-host) {
+  position: fixed;
+  top: 0;
+  right: auto;
+  bottom: auto;
+  left: 0;
+  width: 0;
+  height: 0;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: visible;
+  background: transparent;
+  pointer-events: none;
+}
+
+:where(.weave-modal-portal-host)::backdrop {
+  display: none;
+}
+
 :where(.weave-dialog) {
   --weave-component-display: block;
   --weave-component-position: fixed;

@@ -2,6 +2,7 @@ import { ensureStaticStylesheet } from './static-stylesheet'
 
 const stylesheet = `
 :where(.weave-option-listbox) {
+  --weave-component-pointer-events: auto;
   --weave-component-display: flex;
   --weave-component-flex-direction: column;
   --weave-component-align-items: stretch;

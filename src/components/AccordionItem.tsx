@@ -23,10 +23,6 @@ export function AccordionItem({
       <View
         {...viewProps}
         transition={transition}
-        style={{
-          gridTemplateRows: open ? 'auto minmax(0, 1fr)' : 'auto minmax(0, 0fr)',
-          ...viewProps.style,
-        }}
         className={['weave-accordion-item', viewProps.className].filter(Boolean).join(' ')}
         data={{
           ...viewProps.data,

@@ -1,33 +1,37 @@
 import type { FormLabelProps } from '../core/form-types'
-import type { ViewProps } from '../core/view-types'
+import { useTheme } from '../theme/theme-context'
 import { useRequiredFormFieldContext } from './internal/form-field-context'
-import { useViewHost } from './internal/use-view-host'
+import { Text } from './Text'
 
 export function FormLabel({ children, viewProps = {} }: FormLabelProps) {
   const field = useRequiredFormFieldContext('FormLabel')
-  const hostProps: ViewProps<HTMLSpanElement> = {
-    ...viewProps,
-    id: field.labelId,
-  }
-  const { elementRef, className, inlineStyle, resolved } = useViewHost(hostProps)
+  const { theme } = useTheme()
+  const typo = theme.components.Form?.base?.labelTypo
 
   return (
-    <span
-      {...resolved.domProps}
-      ref={elementRef}
-      id={field.labelId}
-      data-weave-view=""
-      data-weave-form-label=""
-      data-weave-layout={resolved.layout}
-      className={['weave-form-label', className].filter(Boolean).join(' ')}
-      style={inlineStyle}
+    <Text
+      typo={typo}
+      viewProps={{
+        ...viewProps,
+        id: field.labelId,
+        className: ['weave-form-label', viewProps.className].filter(Boolean).join(' '),
+        data: {
+          ...viewProps.data,
+          'weave-form-label': '',
+        },
+      }}
     >
       {children}
       {field.required ? (
-        <span className="weave-form-required" aria-hidden="true">
+        <Text
+          viewProps={{
+            className: 'weave-form-required',
+            'aria-hidden': true,
+          }}
+        >
           {' *'}
-        </span>
+        </Text>
       ) : null}
-    </span>
+    </Text>
   )
 }

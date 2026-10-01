@@ -1,28 +1,27 @@
 import type { FormErrorProps } from '../core/form-types'
-import type { ViewProps } from '../core/view-types'
+import { useTheme } from '../theme/theme-context'
 import { useRequiredFormFieldContext } from './internal/form-field-context'
-import { useViewHost } from './internal/use-view-host'
+import { Text } from './Text'
 
 export function FormError({ children, viewProps = {} }: FormErrorProps) {
   const field = useRequiredFormFieldContext('FormError')
-  const hostProps: ViewProps<HTMLSpanElement> = {
-    ...viewProps,
-    id: field.errorId,
-  }
-  const { elementRef, className, inlineStyle, resolved } = useViewHost(hostProps)
+  const { theme } = useTheme()
+  const typo = theme.components.Form?.base?.errorTypo
 
   return (
-    <span
-      {...resolved.domProps}
-      ref={elementRef}
-      id={field.errorId}
-      data-weave-view=""
-      data-weave-form-error=""
-      data-weave-layout={resolved.layout}
-      className={['weave-form-error', className].filter(Boolean).join(' ')}
-      style={inlineStyle}
+    <Text
+      typo={typo}
+      viewProps={{
+        ...viewProps,
+        id: field.errorId,
+        className: ['weave-form-error', viewProps.className].filter(Boolean).join(' '),
+        data: {
+          ...viewProps.data,
+          'weave-form-error': '',
+        },
+      }}
     >
       {children}
-    </span>
+    </Text>
   )
 }

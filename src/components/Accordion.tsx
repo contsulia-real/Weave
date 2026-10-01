@@ -1,6 +1,5 @@
 import {
   Children,
-  type CSSProperties,
   isValidElement,
   type ReactElement,
   type ReactNode,
@@ -74,9 +73,6 @@ function accordionChildren(children: ReactNode): ReactNode {
         key={`accordion-divider-${index}`}
         viewProps={{
           className: 'weave-accordion__divider',
-          style: {
-            '--weave-divider-color': 'var(--weave-accordion-divider-color)',
-          } as CSSProperties,
           data: { 'weave-accordion-divider': '' },
         }}
       />,

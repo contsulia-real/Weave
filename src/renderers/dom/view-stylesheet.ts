@@ -1,6 +1,7 @@
 import { toKebabCase } from '../../core/css-name'
 import { defaultTheme } from '../../theme/default-theme'
 import { themeVariableDeclarations } from '../../theme/theme-css'
+import { resolveTheme } from '../../theme/theme-merge'
 
 const VIEW_STYLE_PROPERTIES = [
   'display',
@@ -152,11 +153,19 @@ ${motionPropertyRegistrationBlock()}
 
 :root {
   ${themeVariableDeclarations(defaultTheme)}
+  color-scheme: light;
   font-family: var(--weave-typography-family-body);
   font-size: var(--weave-typography-style-body-large-font-size);
   font-weight: var(--weave-typography-style-body-large-font-weight);
   line-height: var(--weave-typography-style-body-large-line-height);
   letter-spacing: var(--weave-typography-style-body-large-letter-spacing);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    ${themeVariableDeclarations(resolveTheme({}, 'dark'))}
+    color-scheme: dark;
+  }
 }
 
 :where([data-weave-view]) {

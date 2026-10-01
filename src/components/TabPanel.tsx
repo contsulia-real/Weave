@@ -14,7 +14,6 @@ export function TabPanel({ value, children, viewProps = {} }: TabPanelProps) {
       aria-labelledby={context.tabId(value)}
       hidden={!selected}
       tabIndex={viewProps.tabIndex ?? 0}
-      style={selected ? viewProps.style : { ...viewProps.style, display: 'none' }}
       className={['weave-tab-panel', viewProps.className].filter(Boolean).join(' ')}
       data={{
         ...viewProps.data,

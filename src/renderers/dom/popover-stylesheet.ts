@@ -1,7 +1,12 @@
 import { ensureStaticStylesheet } from './static-stylesheet'
 
 const stylesheet = `
+:where([data-weave-popover-anchor]) {
+  display: contents;
+}
+
 :where(.weave-popover) {
+  --weave-component-pointer-events: auto;
   --weave-component-width: max-content;
   --weave-component-min-width: var(--weave-popover-min-width);
   --weave-component-max-width: var(--weave-popover-max-width);

@@ -24,6 +24,7 @@ import { resolveSplitBoxTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { ensureSplitBoxStylesheet } from '../renderers/dom/splitbox-stylesheet'
 import { useTheme } from '../theme/theme-context'
+import { cssLengthPixels } from './internal/css-length-pixels'
 import { SplitBoxPaneContext } from './internal/splitbox-context'
 import { useViewHost } from './internal/use-view-host'
 import { SplitBoxPane } from './SplitBoxPane'
@@ -90,33 +91,19 @@ function measureLength(
   value: Length | undefined,
   direction: SplitBoxDirection,
   fallback: number,
+  referencePixels?: number,
 ): number {
   if (value === undefined) return fallback
 
   const resolved = length(value)
   if (resolved === undefined) return fallback
 
-  const probe = document.createElement('div')
-  probe.style.position = 'absolute'
-  probe.style.visibility = 'hidden'
-  probe.style.pointerEvents = 'none'
-  probe.style.boxSizing = 'border-box'
-  probe.style.margin = '0'
-  probe.style.padding = '0'
-  probe.style.border = '0'
-
-  if (direction === 'horizontal') {
-    probe.style.width = resolved
-    probe.style.height = '0'
-  } else {
-    probe.style.width = '0'
-    probe.style.height = resolved
-  }
-
-  root.appendChild(probe)
-  const measured = axisSize(direction, probe.getBoundingClientRect())
-  probe.remove()
-
+  const measured = cssLengthPixels(
+    root,
+    resolved,
+    direction === 'horizontal' ? 'width' : 'height',
+    referencePixels,
+  )
   return Number.isFinite(measured) ? measured : fallback
 }
 
@@ -199,17 +186,17 @@ export function SplitBox(props: SplitBoxProps) {
     const end = axisSize(direction, endPane.getBoundingClientRect())
     const available = Math.max(0, start + end)
 
-    const minStartPx = measureLength(root, minStart, direction, 0)
-    const maxStartPx = measureLength(root, maxStart, direction, available)
-    const minEndPx = measureLength(root, minEnd, direction, 0)
-    const maxEndPx = measureLength(root, maxEnd, direction, available)
+    const minStartPx = measureLength(root, minStart, direction, 0, available)
+    const maxStartPx = measureLength(root, maxStart, direction, available, available)
+    const minEndPx = measureLength(root, minEnd, direction, 0, available)
+    const maxEndPx = measureLength(root, maxEnd, direction, available, available)
     const collapseThresholdPx = clamp(
-      measureLength(root, collapseThreshold, direction, 0),
+      measureLength(root, collapseThreshold, direction, 0, available),
       0,
       available,
     )
     const expandThresholdPx = clamp(
-      measureLength(root, expandThreshold, direction, collapseThresholdPx),
+      measureLength(root, expandThreshold, direction, collapseThresholdPx, available),
       0,
       available,
     )
@@ -405,7 +392,7 @@ export function SplitBox(props: SplitBoxProps) {
 
     event.preventDefault()
 
-    const stepPx = Math.max(0, measureLength(root, step, direction, 0))
+    const stepPx = Math.max(0, measureLength(root, step, direction, 0, geometry.available))
     const next = clamp(geometry.start + stepPx * sign, geometry.lower, geometry.upper)
 
     requestCollapsed(null)
@@ -413,7 +400,7 @@ export function SplitBox(props: SplitBoxProps) {
     commitSize(next)
   }
 
-  const semanticStyle = useMemo(
+  const semanticDeclarations = useMemo(
     () =>
       ({
         '--weave-splitbox-size': length(resolvedSize),
@@ -423,9 +410,16 @@ export function SplitBox(props: SplitBoxProps) {
         '--weave-splitbox-max-end': length(maxEnd),
         '--weave-splitbox-thickness':
           thickness === undefined ? 'var(--weave-splitbox-theme-thickness)' : length(thickness),
+      }) as CSSProperties,
+    [maxEnd, maxStart, minEnd, minStart, resolvedSize, thickness],
+  )
+  const semanticClassName = useRuntimeStyleClass('splitbox-props', semanticDeclarations)
+  const dragStyle = useMemo(
+    () =>
+      ({
         '--weave-splitbox-drag-size': dragSize === null ? undefined : pixelValue(dragSize),
       }) as CSSProperties,
-    [dragSize, maxEnd, maxStart, minEnd, minStart, resolvedSize, thickness],
+    [dragSize],
   )
 
   const startPaneContext = useMemo(
@@ -454,8 +448,10 @@ export function SplitBox(props: SplitBoxProps) {
       data-weave-splitbox-collapsed={effectiveCollapsed ?? 'false'}
       data-weave-splitbox-disabled={disabled ? 'true' : 'false'}
       data-weave-layout={resolved.layout}
-      className={['weave-splitbox', themeClassName, className].filter(Boolean).join(' ')}
-      style={{ ...semanticStyle, ...inlineStyle }}
+      className={['weave-splitbox', themeClassName, semanticClassName, className]
+        .filter(Boolean)
+        .join(' ')}
+      style={{ ...dragStyle, ...inlineStyle }}
     >
       <SplitBoxPaneContext.Provider value={startPaneContext}>
         {panes[0]}

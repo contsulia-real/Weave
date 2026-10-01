@@ -1,5 +1,6 @@
 import { createContext } from 'react'
 import type { SnackContainer } from '../../core/snack-types'
+import { topmostModalPortalHost } from './top-layer-host'
 
 interface SnackHostContextValue {
   target: SnackContainer | undefined
@@ -13,7 +14,7 @@ export function resolveSnackHost(
   document: Document,
 ): HTMLElement | null {
   if (target === undefined) {
-    return document.body
+    return topmostModalPortalHost(document) ?? document.body
   }
 
   if (target === null) {

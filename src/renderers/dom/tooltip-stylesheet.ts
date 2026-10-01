@@ -1,6 +1,10 @@
 import { ensureStaticStylesheet } from './static-stylesheet'
 
 const stylesheet = `
+:where([data-weave-tooltip-anchor]) {
+  display: contents;
+}
+
 :where(.weave-tooltip) {
   --weave-component-width: max-content;
   --weave-component-max-width: var(--weave-tooltip-max-width);

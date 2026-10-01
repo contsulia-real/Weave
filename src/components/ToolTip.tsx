@@ -259,13 +259,7 @@ export function ToolTip({
 
   return (
     <>
-      <div
-        ref={wrapperRef}
-        data-weave-tooltip-anchor=""
-        style={{
-          display: 'contents',
-        }}
-      >
+      <div ref={wrapperRef} data-weave-tooltip-anchor="">
         {children}
       </div>
       {tooltip}

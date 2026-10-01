@@ -1,38 +1,11 @@
-import { type ReactNode, useContext, useEffect, useMemo, useState } from 'react'
+import { type ReactNode, useContext, useMemo } from 'react'
 import type { ReducedMotionPreference } from '../core/motion-types'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { useResolvedReducedMotion } from './reduced-motion'
-import { ThemeContext } from './theme-context'
+import { ThemeContext, useResolvedThemeMode } from './theme-context'
 import { themeVariables } from './theme-css'
 import { mergeThemeDefinitions, resolveTheme } from './theme-merge'
 import type { ThemeDefinition, ThemeMode } from './theme-types'
-
-function getSystemMode(): 'light' | 'dark' {
-  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
-    return 'light'
-  }
-
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-}
-
-function useResolvedMode(mode: ThemeMode): 'light' | 'dark' {
-  const [systemMode, setSystemMode] = useState(getSystemMode)
-
-  useEffect(() => {
-    if (mode !== 'system' || typeof window.matchMedia !== 'function') {
-      return
-    }
-
-    const media = window.matchMedia('(prefers-color-scheme: dark)')
-    const update = () => setSystemMode(media.matches ? 'dark' : 'light')
-
-    update()
-    media.addEventListener('change', update)
-    return () => media.removeEventListener('change', update)
-  }, [mode])
-
-  return mode === 'system' ? systemMode : mode
-}
 
 export interface ThemeProviderProps {
   theme?: ThemeDefinition
@@ -44,7 +17,7 @@ export interface ThemeProviderProps {
 export function ThemeProvider({ theme = {}, mode, reducedMotion, children }: ThemeProviderProps) {
   const parent = useContext(ThemeContext)
   const requestedMode = mode ?? parent.requestedMode
-  const activeMode = useResolvedMode(requestedMode)
+  const activeMode = useResolvedThemeMode(requestedMode)
   const requestedReducedMotion = reducedMotion ?? parent.requestedReducedMotion
   const activeReducedMotion = useResolvedReducedMotion(requestedReducedMotion)
 
@@ -60,6 +33,7 @@ export function ThemeProvider({ theme = {}, mode, reducedMotion, children }: The
 
   const contextValue = useMemo(
     () => ({
+      provided: true,
       definition,
       theme: resolvedTheme,
       mode: activeMode,

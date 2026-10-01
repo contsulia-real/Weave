@@ -47,9 +47,9 @@ export function useListFocus(
       } else if (move === 'last') {
         nextIndex = enabledIds.length - 1
       } else if (move === 'previous') {
-        nextIndex = Math.max(0, currentIndex - 1)
+        nextIndex = (currentIndex - 1 + enabledIds.length) % enabledIds.length
       } else {
-        nextIndex = Math.min(enabledIds.length - 1, currentIndex + 1)
+        nextIndex = (currentIndex + 1) % enabledIds.length
       }
 
       const nextId = enabledIds[nextIndex]

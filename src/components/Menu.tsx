@@ -176,13 +176,7 @@ export function Menu({
 
   return (
     <>
-      <div
-        ref={wrapperRef}
-        data-weave-menu-anchor=""
-        style={{
-          display: 'contents',
-        }}
-      >
+      <div ref={wrapperRef} data-weave-menu-anchor="">
         {trigger}
       </div>
       {portal}
