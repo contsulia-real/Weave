@@ -4106,7 +4106,7 @@ sticky = false
 elevated = false
 ```
 
-`leading` 与 `trailing` 接受任意 ReactNode。两侧区域按水平 flex 排列并垂直居中。
+`leading` 与 `trailing` 接受任意 ReactNode。两侧区域按水平 flex 排列并垂直居中。直接放置的 Button，以及通过 Popover / Menu / ToolTip 的透明 anchor 放置的 Button，必须以包含向下 rest depth 的可见轮廓居中：使用 `feedback.restDepth` 作为静态 bottom margin 参与 flex 布局，与 Button 已有的 bottom padding 补偿配合，使按钮轮廓和内容与 Input 等控件共用垂直中心。该占位不随 hover / press 改变，也不作用于 Input 内部的 clear Button。
 
 `title` 只允许直接传入 Weave `<Text>` 元素；其他元素无效。AppBar 会按当前 size 提供默认 typo，但调用方显式传给 Text 的 `typo` 优先。
 
