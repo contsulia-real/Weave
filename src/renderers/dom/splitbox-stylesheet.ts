@@ -88,6 +88,7 @@ const stylesheet = `
 :where(.weave-splitbox-pane) {
   min-width: 0;
   min-height: 0;
+  overflow: auto;
 }
 
 :where(

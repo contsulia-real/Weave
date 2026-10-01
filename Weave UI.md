@@ -4839,8 +4839,11 @@ collapse 在 pointer move 跨过阈值时立即判定：
 ```text
 min-width: 0
 min-height: 0
+overflow: auto
 collapsed -> overflow: hidden
 ```
+
+SplitBoxPane 默认使用 `overflow: auto` 约束内容绘制范围；当内容超过 Pane 实际尺寸时由 Pane 自己形成滚动容器，不能把内容绘制到相邻 Pane 或 SplitBox 外部。折叠状态覆盖为 `overflow: hidden`。
 
 SplitBoxPane **不得**提供默认 background、border、padding、radius、shadow、typography 或任何 Card / panel surface。需要这些视觉时必须由调用方通过 Pane `viewProps` 或 Pane 内部自己的 View / Card 明确提供。
 

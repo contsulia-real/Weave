@@ -277,7 +277,7 @@ describe('SplitBox', () => {
     expect(getAllByRole('separator')).toHaveLength(2)
   })
 
-  it('keeps pane styling layout-only and only adds overflow when collapsed', () => {
+  it('keeps pane styling layout-only while containing overflow in the pane', () => {
     const { getByTestId } = render(
       <SplitBox defaultSize="50%">
         <SplitBoxPane viewProps={{ data: { testid: 'pane' } }}>
@@ -297,7 +297,10 @@ describe('SplitBox', () => {
     expect(pane.className).toContain('weave-splitbox-pane')
     expect(stylesheet).toContain('min-width: 0')
     expect(stylesheet).toContain('min-height: 0')
-    expect(stylesheet).toContain('overflow: hidden')
+    expect(stylesheet).toMatch(/\.weave-splitbox-pane\)[^{]*\{[^}]*overflow: auto/s)
+    expect(stylesheet).toMatch(
+      /data-weave-splitbox-pane-collapsed[^}]*\)[^{]*\{[^}]*overflow: hidden/s,
+    )
     expect(stylesheet).not.toMatch(/\.weave-splitbox-pane[^}]*background:/s)
     expect(stylesheet).not.toMatch(/\.weave-splitbox-pane[^}]*padding:/s)
     expect(stylesheet).not.toMatch(/\.weave-splitbox-pane[^}]*border(?:-|:)/s)
