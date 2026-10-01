@@ -104,6 +104,7 @@ export function DocumentationPage({ themeMode, onThemeModeChange }: Documentatio
       }
     >
       <Button
+        size="large"
         icon={themeIcon}
         viewProps={{
           label: t('docs.theme'),
@@ -136,6 +137,7 @@ export function DocumentationPage({ themeMode, onThemeModeChange }: Documentatio
       }
     >
       <Button
+        size="large"
         icon={IconLanguage}
         viewProps={{
           label: t('docs.language'),
@@ -152,6 +154,7 @@ export function DocumentationPage({ themeMode, onThemeModeChange }: Documentatio
         sticky
         leading={
           <Button
+            size="large"
             icon={IconMenu2}
             variant="primary"
             pressed={drawerOpen}
