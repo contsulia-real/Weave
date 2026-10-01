@@ -29,7 +29,16 @@ const stylesheet = `
 }
 
 :where(.weave-table__head) {
+  --weave-component-display: table-header-group;
   background: var(--weave-table-header-background);
+}
+
+:where(.weave-table__body) {
+  --weave-component-display: table-row-group;
+}
+
+:where(.weave-table__row) {
+  --weave-component-display: table-row;
 }
 
 :where(.weave-table__head) :where(.weave-table__head-cell) {
@@ -50,6 +59,7 @@ const stylesheet = `
 
 :where(.weave-table__head-cell),
 :where(.weave-table__cell) {
+  --weave-component-display: table-cell;
   padding:
     var(--weave-table-normal-padding-y)
     var(--weave-table-normal-padding-x);
