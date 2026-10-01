@@ -1,10 +1,10 @@
-import { IconDeviceDesktop, IconMenu2, IconMoon, IconSearch, IconSun } from '@tabler/icons-react'
+import { IconDeviceDesktop, IconMenu2, IconMoon, IconSun } from '@tabler/icons-react'
 import type { TFunction } from 'i18next'
 import type { MouseEvent } from 'react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { ThemeMode } from '../index'
-import { AppBar, Button, Column, Drawer, Link, Popover, Row, Text, View } from '../index'
+import { AppBar, Button, Column, Drawer, Input, Link, Popover, Row, Text, View } from '../index'
 import { useDocsRoute } from './router'
 
 export interface DocumentationPageProps {
@@ -110,11 +110,11 @@ export function DocumentationPage({ themeMode, onThemeModeChange }: Documentatio
         title={<Text>{t('docs.title')}</Text>}
         trailing={
           <Row gap={0.5} align="center">
-            <Button
-              icon={IconSearch}
-              viewProps={{
-                label: t('docs.search'),
-              }}
+            <Input
+              type="search"
+              clearable
+              placeholder={t('docs.search')}
+              viewProps={{ label: t('docs.search') }}
             />
             {themeSelector}
           </Row>

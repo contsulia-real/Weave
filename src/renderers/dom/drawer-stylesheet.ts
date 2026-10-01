@@ -40,6 +40,24 @@ const stylesheet = `
   --weave-component-border-bottom-right-radius: 0;
   --weave-component-border-bottom-left-radius: 0;
   --weave-component-box-shadow: none;
+  opacity: 1;
+  transition: opacity var(--weave-motion-duration-fast) var(--weave-motion-curve-enter);
+}
+
+.weave-drawer-surface--non-modal[data-weave-drawer-side="left"],
+.weave-drawer-surface--non-modal[data-weave-drawer-side="right"],
+.weave-drawer-surface--modal[data-weave-drawer-side="left"],
+.weave-drawer-surface--modal[data-weave-drawer-side="right"] {
+  --weave-component-max-width: var(--weave-drawer-max-width);
+}
+
+.weave-drawer-surface--non-modal[data-weave-drawer-visibility="opening"],
+.weave-drawer-surface--non-modal[data-weave-drawer-visibility="closing"] {
+  opacity: 0;
+}
+
+.weave-drawer-surface--non-modal[data-weave-drawer-visibility="closing"] {
+  transition-timing-function: var(--weave-motion-curve-exit);
 }
 
 .weave-drawer-surface--modal {
@@ -106,6 +124,13 @@ const stylesheet = `
   transition: none;
 }
 
+.weave-dialog.weave-drawer-surface--modal[data-weave-dialog-state="closing"] {
+  opacity: 0;
+  transition:
+    translate var(--weave-motion-duration-normal) var(--weave-motion-curve-emphasized),
+    opacity var(--weave-motion-duration-fast) var(--weave-motion-curve-exit);
+}
+
 .weave-dialog.weave-drawer-surface--modal[data-weave-drawer-side="left"] {
   translate: calc(-1 * var(--weave-drawer-drag-offset, 0px)) 0;
 }
@@ -153,6 +178,10 @@ const stylesheet = `
 }
 
 @starting-style {
+  .weave-dialog.weave-drawer-surface--modal[data-weave-dialog-state="open"] {
+    opacity: 0;
+  }
+
   .weave-dialog.weave-drawer-surface--modal[data-weave-dialog-state="open"][data-weave-drawer-side="left"] {
     translate: -100% 0;
   }
@@ -170,6 +199,7 @@ const stylesheet = `
   }
 }
 
+.weave-drawer-surface--non-modal[data-weave-reduced-motion="reduce"],
 .weave-dialog.weave-drawer-surface--modal[data-weave-reduced-motion="reduce"],
 .weave-dialog.weave-drawer-surface--modal[data-weave-reduced-motion="reduce"][data-weave-dialog-state="closing"] {
   transition: none;

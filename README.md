@@ -119,7 +119,7 @@ Theme definitions support tokens, component themes, dynamic breakpoints, light/d
 
 ## Documentation
 
-The Vite application hosts the in-repository Weave documentation surface under `/docs/*` as a single-page route. The shell uses Weave itself: an elevated floating sticky AppBar, a left Drawer navigation, search/theme controls, and browser History routing. Documentation i18n uses `i18next` + `react-i18next` as development-only dependencies; they are not Weave runtime dependencies.
+The Vite application hosts the in-repository Weave documentation surface under `/docs/*` as a single-page route. Every visible part of the Documentation UI is 100% dogfooded through public Weave components and Theme: shell, navigation, search input, theme chooser, content layout and future examples. Documentation must not introduce raw DOM visual replacements, documentation-only visual CSS, or third-party UI components where Weave already provides the capability. React state, browser History routing, i18n and data helpers remain non-visual infrastructure. Documentation i18n uses `i18next` + `react-i18next` as development-only dependencies; they are not Weave runtime dependencies.
 
 ```bash
 pnpm install

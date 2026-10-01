@@ -6172,11 +6172,14 @@ borderWidth
 radius
 paddingX
 paddingY
+maxWidth
 shadow
 backdropColor
 ```
 
-默认视觉与 modal Dialog 的 surface 色系一致：`surface / tertiary / outline / 1px / 1rem padding / large shadow / 0.48 backdrop`。large shadow 只作用于 modal；non-modal 不使用 backdrop 与 ambient shadow。
+默认视觉与 modal Dialog 的 surface 色系一致：`surface / tertiary / outline / 1px / 1rem padding / large shadow / 0.48 backdrop`。`maxWidth` 默认 `360px`；left/right Drawer 在 modal 与 non-modal 两种模式下都不得超过该宽度，SplitBox 的真实 Pane 尺寸也必须受同一上限约束，不能只裁切 surface 后留下空白。large shadow 只作用于 modal；non-modal 不使用 backdrop 与 ambient shadow。
+
+Drawer 显示与隐藏必须有 opacity 淡入淡出。modal Drawer 在既有方向 translate enter/exit 上叠加 opacity `0 ↔ 1`；non-modal Drawer 关闭时必须先让 surface `opacity: 1 → 0`，fade 完成后才把 SplitBox Pane 进入最终 collapsed / `display:none` 状态，打开时则先恢复 Pane 再 `opacity: 0 → 1`。该过渡复用 Theme `motion.duration.fast` 与 enter/exit curve；reduced motion 时立即切换，不等待动画。
 
 `viewProps` 配置 Drawer 的整体布局 root；`drawerViewProps` 配置 Drawer surface。
 
@@ -7354,9 +7357,11 @@ Weave 提供非视觉主题生成 API：
 const theme = createThemeFromColorSeed('#6d5dfc')
 ```
 
-输入是一个非空 CSS color seed 字符串，返回标准 `ThemeDefinition`。生成结果不建立第二套主题系统；它仍然通过现有 `ThemeProvider / createTheme / resolveTheme` 路径工作。
+输入是一个非空 CSS color seed 字符串，返回标准且完整的 `ThemeDefinition`。生成结果不建立第二套主题系统；它仍然通过现有 `ThemeProvider / createTheme / resolveTheme` 路径工作。
 
-生成器负责提供一整套 light / dark semantic color tokens。`primary / primaryHover / primaryActive / focus` 等品牌相关 token 从 seed 派生；neutral / surface / status token 继续复用现有默认主题语义，不随 seed 染色。默认 seed `#6d5dfc` 必须精确复现现有默认 light / dark color token：
+依赖方向固定为单向：**默认 Theme 模板 + color seed → `createThemeFromColorSeed` → 导出的 `defaultTheme / defaultDarkTheme`**。`createThemeFromColorSeed` 不允许反向读取已经导出的 `defaultTheme` 再生成主题。当前 Weave 默认 Theme 本身就是 `createThemeFromColorSeed('#6d5dfc')` 的生成结果；因此默认 seed 必须精确复现当前默认 Theme 的全部非 mode 结构、组件 Theme、breakpoints、layers、motion、typography 与 light / dark color token。
+
+生成器负责提供一整套 light / dark semantic color tokens。`primary / primaryHover / primaryActive / focus` 等品牌相关 token 从 seed 派生；neutral / surface / status token 继续沿用默认 Theme 模板的既定语义。默认 seed `#6d5dfc` 必须精确复现现有默认 light / dark color token：
 
 ```text
 primary
@@ -7375,7 +7380,7 @@ outline
 focus
 ```
 
-非颜色 token、组件 Theme、breakpoints、layers、motion、typography 等继续继承 Weave 默认主题，因此生成结果经过 ThemeProvider 解析后是一整套完整 Theme。
+非颜色 token、组件 Theme、breakpoints、layers、motion、typography 等直接包含在生成的完整 ThemeDefinition 中，并来自同一个默认 Theme 模板；不是在 generator 返回一个局部 color override 后再反向依赖 defaultTheme 补齐。
 
 非默认 seed 的品牌派生色使用 CSS `color-mix(in srgb, ...)` 表达式，保留 seed 的 CSS color 语义，不要求另一个 palette runtime 或第三方调色依赖。neutral / surface / status 直接复用默认 light / dark token。空字符串 seed 必须抛出 `TypeError`。
 
@@ -8556,7 +8561,7 @@ CSS variables + runtime classes + framework stylesheet
 29. 组件默认承担正确可访问性和键盘语义，不把标准行为推给业务开发者。
 30. 浮层使用语义 layer，普通用户不需要手工管理 portal 或全局 z-index。
 31. 具体组件已经提供同义语义状态属性时，该状态不在其 `viewProps` 中重复暴露，组件属性作为唯一真值。
-32. 框架自身的 Documentation、示例与组件实现必须优先 dogfood 已有 Weave 语义组件；已有 `Text`、`Progress` 等能力时，不再平行维护裸 DOM / 私有 CSS 的同义实现。
+32. Documentation 页面本身的全部可见 UI 必须 **100% dogfood Weave 公共组件与 Theme**：页面 shell、导航、搜索、主题切换、内容布局和后续示例都不得使用裸 DOM 元素、Documentation 私有视觉 CSS 或第三方 UI 组件来替代已有 Weave 能力。React state、History router、i18n、数据处理等非视觉基础设施可以直接使用。框架组件自身仍按其实现边界复用 Weave 语义组件与内部基础设施，不再平行维护裸 DOM / 私有 CSS 的同义视觉实现。
 33. 组件复用其他组件的视觉或交互能力时，外层组件仍承担自己的高层语义；不得因此重复暴露冲突的 ARIA 角色。
 34. `Text.typo` 必须来自主题中的完整 type scale；不能退回 renderer 内部的少量硬编码 preset。
 35. Scrollbar 只绘制 thumb，不提供 tracked / trackColor；带圆角宿主必须把圆角曲线区域排除出 thumb 的运动区。

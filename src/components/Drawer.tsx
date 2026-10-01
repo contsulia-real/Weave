@@ -38,6 +38,18 @@ interface DrawerDragState {
   offset: number
 }
 
+function motionDurationMilliseconds(value: string | number | undefined): number {
+  if (typeof value === 'number') return Math.max(0, value)
+  if (typeof value !== 'string') return 0
+
+  const trimmed = value.trim()
+  const parsed = Number.parseFloat(trimmed)
+  if (!Number.isFinite(parsed)) return 0
+  if (trimmed.endsWith('ms')) return Math.max(0, parsed)
+  if (trimmed.endsWith('s')) return Math.max(0, parsed * 1000)
+  return Math.max(0, parsed)
+}
+
 function drawerPosition(side: DrawerSide): Exclude<SplitBoxCollapsed, false> {
   return side === 'left' || side === 'top' ? 'start' : 'end'
 }
@@ -109,11 +121,14 @@ function useWideBreakpoint(minWidth: number | undefined): boolean {
   )
 }
 
-function modalGeometry(side: DrawerSide, size: Length): Partial<ModalDialogViewProps> {
+function modalGeometry(
+  side: DrawerSide,
+  size: Length,
+  maxWidth: Length | undefined,
+): Partial<ModalDialogViewProps> {
   const common = {
     position: 'fixed' as const,
     margin: 0,
-    maxWidth: '100vw',
     maxHeight: '100vh',
   }
 
@@ -126,6 +141,7 @@ function modalGeometry(side: DrawerSide, size: Length): Partial<ModalDialogViewP
         left: 0,
         right: 'auto',
         width: size,
+        maxWidth: maxWidth ?? '100vw',
         height: 'fill',
       }
     case 'right':
@@ -136,6 +152,7 @@ function modalGeometry(side: DrawerSide, size: Length): Partial<ModalDialogViewP
         right: 0,
         left: 'auto',
         width: size,
+        maxWidth: maxWidth ?? '100vw',
         height: 'fill',
       }
     case 'top':
@@ -146,6 +163,7 @@ function modalGeometry(side: DrawerSide, size: Length): Partial<ModalDialogViewP
         right: 0,
         bottom: 'auto',
         width: 'fill',
+        maxWidth: '100vw',
         height: size,
       }
     case 'bottom':
@@ -156,6 +174,7 @@ function modalGeometry(side: DrawerSide, size: Length): Partial<ModalDialogViewP
         right: 0,
         top: 'auto',
         width: 'fill',
+        maxWidth: '100vw',
         height: size,
       }
   }
@@ -198,9 +217,10 @@ export function Drawer(props: DrawerProps) {
     drawerViewProps = {},
   } = props
 
-  const { theme } = useTheme()
+  const { theme, reducedMotion } = useTheme()
   const breakpointWidth = mode === 'auto' ? theme.breakpoints[breakpoint] : undefined
   const mdWidth = theme.breakpoints.md
+  const fadeDurationMs = motionDurationMilliseconds(theme.tokens.motion?.duration?.fast)
 
   if (mode === 'auto' && !Number.isFinite(breakpointWidth)) {
     throw new Error(`Drawer breakpoint "${breakpoint}" does not exist in the current theme`)
@@ -217,6 +237,69 @@ export function Drawer(props: DrawerProps) {
     defaultOpen,
     onOpenChange,
   )
+
+  const [previousEffectiveMode, setPreviousEffectiveMode] = useState(effectiveMode)
+  const enteringClosedNonModal =
+    previousEffectiveMode !== effectiveMode && effectiveMode === 'non-modal' && !resolvedOpen
+
+  const [nonModalPresent, setNonModalPresent] = useState(resolvedOpen)
+  const [nonModalVisibility, setNonModalVisibility] = useState<
+    'closed' | 'opening' | 'open' | 'closing'
+  >(resolvedOpen ? 'open' : 'closed')
+
+  /* oxlint-disable react/set-state-in-effect */
+  useEffect(() => {
+    const modeChanged = previousEffectiveMode !== effectiveMode
+    if (modeChanged) {
+      setPreviousEffectiveMode(effectiveMode)
+    }
+
+    if (effectiveMode !== 'non-modal') return
+
+    if (modeChanged && !resolvedOpen) {
+      setNonModalVisibility('closed')
+      setNonModalPresent(false)
+      return
+    }
+
+    if (resolvedOpen) {
+      setNonModalPresent(true)
+      if (reducedMotion) {
+        setNonModalVisibility('open')
+        return
+      }
+
+      setNonModalVisibility('opening')
+      const frame = requestAnimationFrame(() => setNonModalVisibility('open'))
+      return () => cancelAnimationFrame(frame)
+    }
+
+    if (!nonModalPresent) {
+      setNonModalVisibility('closed')
+      return
+    }
+
+    if (reducedMotion) {
+      setNonModalVisibility('closed')
+      setNonModalPresent(false)
+      return
+    }
+
+    setNonModalVisibility('closing')
+    const timeout = window.setTimeout(() => {
+      setNonModalVisibility('closed')
+      setNonModalPresent(false)
+    }, fadeDurationMs)
+    return () => window.clearTimeout(timeout)
+  }, [
+    effectiveMode,
+    fadeDurationMs,
+    nonModalPresent,
+    previousEffectiveMode,
+    reducedMotion,
+    resolvedOpen,
+  ])
+  /* oxlint-enable react/set-state-in-effect */
 
   const sizeControlled = props.size !== undefined
   const [uncontrolledSize, setUncontrolledSize] = useState<Length>(
@@ -236,6 +319,7 @@ export function Drawer(props: DrawerProps) {
 
   const direction = drawerDirection(side)
   const position = drawerPosition(side)
+  const drawerMaxWidth = theme.components.Drawer?.base?.maxWidth ?? '360px'
   const drawerStarts = position === 'start'
   const drawerSizeCSS = length(resolvedSize) ?? length(DEFAULT_SIZE) ?? '20rem'
   const splitSize = drawerStarts
@@ -461,17 +545,19 @@ export function Drawer(props: DrawerProps) {
     onPointerMove: drawerOnPointerMove,
     onPointerUp: drawerOnPointerUp,
     onPointerCancel: drawerOnPointerCancel,
+    pointerEvents: resolvedOpen ? undefined : 'none',
     className: [surfaceClassName, 'weave-drawer-surface--non-modal'].filter(Boolean).join(' '),
     style: drawerStyle,
     data: {
       ...surfaceData,
       'weave-drawer-mode': 'non-modal',
+      'weave-drawer-visibility': nonModalVisibility,
     },
   }
 
   const modalViewProps = {
     ...restDrawerViewProps,
-    ...modalGeometry(side, resolvedSize),
+    ...modalGeometry(side, resolvedSize, drawerMaxWidth),
     onPointerDown: (event: PointerEvent<HTMLDialogElement>) => {
       drawerOnPointerDown?.(event as unknown as PointerEvent<HTMLDivElement>)
       if (!event.defaultPrevented) beginDrawerDrag(event)
@@ -502,7 +588,8 @@ export function Drawer(props: DrawerProps) {
     },
   } as unknown as ModalDialogViewProps
 
-  const collapsed: SplitBoxCollapsed = effectiveMode === 'modal' || !resolvedOpen ? position : false
+  const collapsed: SplitBoxCollapsed =
+    effectiveMode === 'modal' || enteringClosedNonModal || !nonModalPresent ? position : false
 
   const drawerPane = (
     <SplitBoxPane viewProps={{ className: 'weave-drawer-pane' }}>
@@ -521,6 +608,8 @@ export function Drawer(props: DrawerProps) {
         size={splitSize}
         minStart={drawerStarts ? minSize : 0}
         minEnd={drawerStarts ? 0 : minSize}
+        maxStart={direction === 'horizontal' && drawerStarts ? drawerMaxWidth : undefined}
+        maxEnd={direction === 'horizontal' && !drawerStarts ? drawerMaxWidth : undefined}
         collapsible={effectiveMode === 'non-modal' ? position : false}
         collapsed={collapsed}
         onCollapsedChange={handleCollapsedChange}

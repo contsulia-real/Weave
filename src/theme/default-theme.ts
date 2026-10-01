@@ -1,4 +1,4 @@
-import type { ResolvedTheme, ThemeOverride } from './theme-types'
+import type { ResolvedTheme, ThemeDefinition, ThemeOverride, ThemeTokens } from './theme-types'
 
 const controlBaseline = {
   radius: 0.75,
@@ -85,7 +85,7 @@ export const defaultBreakpoints = {
 
 export type DefaultBreakpointName = keyof typeof defaultBreakpoints
 
-export const defaultDarkTheme: ThemeOverride = {
+const defaultDarkThemeTemplate: ThemeOverride = {
   tokens: {
     color: {
       primary: '#a99cff',
@@ -200,7 +200,7 @@ export const defaultDarkTheme: ThemeOverride = {
   },
 }
 
-export const defaultTheme: ResolvedTheme = {
+const defaultThemeTemplate: ResolvedTheme = {
   tokens: {
     color: {
       primary: '#6d5dfc',
@@ -966,6 +966,7 @@ export const defaultTheme: ResolvedTheme = {
         radius: 'large',
         paddingX: 1,
         paddingY: 1,
+        maxWidth: '360px',
         shadow: 'large',
         backdropColor: 'rgb(0 0 0 / 0.48)',
       },
@@ -1187,3 +1188,84 @@ export const defaultTheme: ResolvedTheme = {
     tooltip: 400,
   },
 }
+
+type ColorTokens = NonNullable<ThemeTokens['color']>
+
+export const DEFAULT_THEME_COLOR_SEED = '#6d5dfc' as const
+
+function seedMix(seed: string, seedPercent: number, other: string): string {
+  return `color-mix(in srgb, ${seed} ${seedPercent}%, ${other})`
+}
+
+function lightColorsFromSeed(seed: string): ColorTokens {
+  const base = defaultThemeTemplate.tokens.color
+
+  if (base === undefined) {
+    throw new Error('Weave default theme template is missing color tokens')
+  }
+
+  if (seed.toLowerCase() === DEFAULT_THEME_COLOR_SEED.toLowerCase()) {
+    return { ...base }
+  }
+
+  return {
+    ...base,
+    primary: seed,
+    onPrimary: base.onPrimary,
+    primaryHover: seedMix(seed, 88, 'black'),
+    primaryActive: seedMix(seed, 76, 'black'),
+    focus: seed,
+  }
+}
+
+function darkColorsFromSeed(seed: string): ColorTokens {
+  const base = defaultDarkThemeTemplate.tokens?.color
+
+  if (base === undefined) {
+    throw new Error('Weave default dark theme template is missing color tokens')
+  }
+
+  if (seed.toLowerCase() === DEFAULT_THEME_COLOR_SEED.toLowerCase()) {
+    return { ...base }
+  }
+
+  return {
+    ...base,
+    primary: seedMix(seed, 64, 'white'),
+    onPrimary: seedMix(seed, 14, '#121016'),
+    primaryHover: seedMix(seed, 72, 'white'),
+    primaryActive: seedMix(seed, 56, 'white'),
+    focus: seedMix(seed, 72, 'white'),
+  }
+}
+
+export function createThemeFromColorSeed(seed: string): ThemeDefinition {
+  const colorSeed = seed.trim()
+
+  if (colorSeed.length === 0) {
+    throw new TypeError('createThemeFromColorSeed(seed) requires a non-empty CSS color')
+  }
+
+  return {
+    ...defaultThemeTemplate,
+    tokens: {
+      ...defaultThemeTemplate.tokens,
+      color: lightColorsFromSeed(colorSeed),
+    },
+    modes: {
+      dark: {
+        ...defaultDarkThemeTemplate,
+        tokens: {
+          ...(defaultDarkThemeTemplate.tokens ?? {}),
+          color: darkColorsFromSeed(colorSeed),
+        },
+      },
+    },
+  }
+}
+
+const defaultThemeDefinition = createThemeFromColorSeed(DEFAULT_THEME_COLOR_SEED)
+const { modes: generatedDefaultModes, ...generatedDefaultLightTheme } = defaultThemeDefinition
+
+export const defaultTheme = generatedDefaultLightTheme as ResolvedTheme
+export const defaultDarkTheme: ThemeOverride = generatedDefaultModes?.dark ?? {}

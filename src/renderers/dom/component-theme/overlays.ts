@@ -60,6 +60,7 @@ export function resolveDrawerTheme(theme: ResolvedTheme): RuntimeStyleDeclaratio
     '--weave-drawer-radius': radius(base?.radius),
     '--weave-drawer-padding-x': length(base?.paddingX),
     '--weave-drawer-padding-y': length(base?.paddingY),
+    '--weave-drawer-max-width': length(base?.maxWidth),
     '--weave-drawer-shadow': shadowToken(base?.shadow),
     '--weave-drawer-backdrop-color': color(base?.backdropColor),
   }

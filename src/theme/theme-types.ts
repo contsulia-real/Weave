@@ -531,6 +531,7 @@ export interface DrawerThemeBase {
   radius?: ThemeScaleValue
   paddingX?: ThemeScaleValue
   paddingY?: ThemeScaleValue
+  maxWidth?: ThemeScaleValue
   shadow?: string
   backdropColor?: string
 }
