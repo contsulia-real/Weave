@@ -91,49 +91,53 @@ export function DocumentationPage({ themeMode, onThemeModeChange }: Documentatio
   )
 
   return (
-    <Drawer side="left" open={drawerOpen} onOpenChange={setDrawerOpen} drawer={navigation}>
-      <Column width="fill" height="100vh" overflow="auto" background="surface" color="tertiary">
-        <AppBar
-          elevated
-          mode="floating"
-          sticky
-          leading={
+    <Column width="fill" height="100vh" background="surface" color="tertiary">
+      <AppBar
+        elevated
+        mode="floating"
+        sticky
+        leading={
+          <Button
+            icon={IconMenu2}
+            variant="primary"
+            pressed={drawerOpen}
+            viewProps={{
+              label: t('docs.menu'),
+              onClick: () => setDrawerOpen((current) => !current),
+            }}
+          />
+        }
+        title={<Text>{t('docs.title')}</Text>}
+        trailing={
+          <Row gap={0.5} align="center">
             <Button
-              icon={IconMenu2}
-              variant="primary"
-              pressed={drawerOpen}
+              icon={IconSearch}
               viewProps={{
-                label: t('docs.menu'),
-                onClick: () => setDrawerOpen((current) => !current),
+                label: t('docs.search'),
               }}
             />
-          }
-          title={<Text>{t('docs.title')}</Text>}
-          trailing={
-            <Row gap={0.5} align="center">
-              <Button
-                icon={IconSearch}
-                viewProps={{
-                  label: t('docs.search'),
-                }}
-              />
-              {themeSelector}
-            </Row>
-          }
-        />
+            {themeSelector}
+          </Row>
+        }
+      />
 
-        <View grow={1} width="fill">
-          <Column width="fill" padding={2} gap={0.75}>
-            <Text typo="headline-large">{routeTitle(route.section, t)}</Text>
-            <Text typo="body-medium" color="secondary">
-              {t('docs.route.placeholder')}
-            </Text>
-            <Text typo="body-small" color="secondary">
-              {route.pathname}
-            </Text>
+      <View grow={1} minHeight={0} width="fill" overflow="hidden">
+        <Drawer side="left" open={drawerOpen} onOpenChange={setDrawerOpen} drawer={navigation}>
+          <Column width="fill" height="fill" overflow="auto">
+            <View grow={1} width="fill">
+              <Column width="fill" padding={2} gap={0.75}>
+                <Text typo="headline-large">{routeTitle(route.section, t)}</Text>
+                <Text typo="body-medium" color="secondary">
+                  {t('docs.route.placeholder')}
+                </Text>
+                <Text typo="body-small" color="secondary">
+                  {route.pathname}
+                </Text>
+              </Column>
+            </View>
           </Column>
-        </View>
-      </Column>
-    </Drawer>
+        </Drawer>
+      </View>
+    </Column>
   )
 }
