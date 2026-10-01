@@ -1,9 +1,11 @@
 import type { Ref } from 'react'
+import type { IconComponent, IconSvg } from './icon-types'
 import type { ViewCoreProps, ViewDynamicBreakpointProps } from './view-types'
 
 export type InputType = 'text' | 'password' | 'email' | 'number' | 'search' | 'tel' | 'url'
 
 export type InputValue = string | number
+export type InputIcon = IconComponent | IconSvg
 
 type InputViewProps<TElement extends HTMLElement> = Omit<
   ViewCoreProps<TElement>,
@@ -35,6 +37,8 @@ export type InputProps =
       type?: InputType
       clearable?: boolean
       clearLabel?: string
+      leadingIcon?: InputIcon
+      trailingIcon?: InputIcon
       viewProps?: InputViewProps<HTMLInputElement>
     })
   | (InputCommonProps & {
@@ -43,6 +47,8 @@ export type InputProps =
       type?: never
       clearable?: never
       clearLabel?: never
+      leadingIcon?: never
+      trailingIcon?: never
       viewProps?: InputViewProps<HTMLTextAreaElement>
     })
 

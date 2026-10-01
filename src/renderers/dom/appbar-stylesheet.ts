@@ -64,6 +64,7 @@ const stylesheet = `
 :where(.weave-appbar__title),
 :where(.weave-appbar__trailing) {
   min-width: 0;
+  align-self: center;
 }
 
 :where(.weave-appbar__leading) {
@@ -131,6 +132,8 @@ const stylesheet = `
 }
 
 :where(.weave-appbar__title) {
+  display: flex;
+  align-items: center;
   justify-self: start;
 }
 

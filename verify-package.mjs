@@ -221,6 +221,7 @@ assert(typeSource.includes('AppBarProps'), 'Built declarations are missing AppBa
 assert(typeSource.includes('AppBarMode'), 'Built declarations are missing AppBarMode')
 assert(typeSource.includes('AppBarSize'), 'Built declarations are missing AppBarSize')
 assert(typeSource.includes('AppBarTitleAlign'), 'Built declarations are missing AppBarTitleAlign')
+assert(typeSource.includes('InputIcon'), 'Built declarations are missing InputIcon')
 assert(typeSource.includes('CodeProps'), 'Built declarations are missing CodeProps')
 assert(typeSource.includes('CodeLanguage'), 'Built declarations are missing CodeLanguage')
 assert(typeSource.includes('CodeViewProps'), 'Built declarations are missing CodeViewProps')

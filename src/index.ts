@@ -186,6 +186,7 @@ export type {
   ImageViewProps,
 } from './core/image-types'
 export type {
+  InputIcon,
   InputProps,
   InputType,
   InputValue,

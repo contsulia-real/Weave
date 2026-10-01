@@ -2308,6 +2308,8 @@ maxLength
 pattern
 clearable
 clearLabel
+leadingIcon
+trailingIcon
 ```
 
 ### type
@@ -2329,6 +2331,10 @@ url
 单行 Input 默认 `clearable=true`。当前实际输入文字非空，且 Input 不是 disabled / readOnly 时显示 clear action；`clearable={false}` 可完全隐藏该 action，`clearLabel` 控制 accessible name，默认 `Clear input`。clear 会把非受控 input 直接清空、调用 `onChange("")` 并把 focus 保持 / 恢复到真实 input；受控 Input 只发出 `onChange("")`，最终 value 仍由调用方决定。multiline Input 不提供 clear action。
 
 Input 的 clear action 直接复用公开 `Button`，不维护私有 button DOM / hover / focus / pressed 视觉；clear button 在 Input 高度内使用上下左右一致的 inset，文本右侧也保留同等间距；`viewProps.ref` 仍然指向真实 `<input>`，不会改指 clear wrapper。
+
+单行 Input 支持 `leadingIcon / trailingIcon`，类型与公开 Icon source 一致，直接复用 Weave `Icon` 渲染。图标是非交互 adornment，不创建第二套 button 语义。布局顺序固定为 `leadingIcon → 输入文字 → clear → trailingIcon`；当 `trailingIcon` 与 clear 同时存在时，**trailingIcon 始终保持最右，clear 位于它左侧**。multiline Input 不提供 leading/trailing icon。
+
+`type="search"` 时必须屏蔽浏览器原生 search cancel affordance（例如 Chromium/WebKit 的 `::-webkit-search-cancel-button`）；是否显示 clear 只由 Weave `clearable` 决定，禁止同时出现浏览器 clear 与 Weave clear。
 
 ## 14.2 多行输入仍然使用 Input
 
@@ -4126,7 +4132,7 @@ large:
   titleTypo = title-large
 ```
 
-这些值来自 `theme.components.AppBar.sizes`，不是 renderer 常量。`marginX` 不作用于 AppBar 宿主：`leading` 只使用左 margin，`title` 使用左右 margin，`trailing` 只使用右 margin。相邻 slot 之间不会把两份 margin 叠加；`leading / trailing` 内多个 action 的间距仍由 `gap` 控制。
+这些值来自 `theme.components.AppBar.sizes`，不是 renderer 常量。`marginX` 不作用于 AppBar 宿主：`leading` 只使用左 margin，`title` 使用左右 margin，`trailing` 只使用右 margin。相邻 slot 之间不会把两份 margin 叠加；`leading / trailing` 内多个 action 的间距仍由 `gap` 控制。 AppBar 宿主本身使用纵向居中对齐；`leading / title / trailing` 三个 slot 也必须各自纵向居中，其中 title slot 使用 flex vertical centering，不能只依赖文字自身 line-height。
 
 ## 18.12A.3 三区域与 titleAlign
 
@@ -8561,7 +8567,7 @@ CSS variables + runtime classes + framework stylesheet
 29. 组件默认承担正确可访问性和键盘语义，不把标准行为推给业务开发者。
 30. 浮层使用语义 layer，普通用户不需要手工管理 portal 或全局 z-index。
 31. 具体组件已经提供同义语义状态属性时，该状态不在其 `viewProps` 中重复暴露，组件属性作为唯一真值。
-32. Documentation 页面本身的全部可见 UI 必须 **100% dogfood Weave 公共组件与 Theme**：页面 shell、导航、搜索、主题切换、内容布局和后续示例都不得使用裸 DOM 元素、Documentation 私有视觉 CSS 或第三方 UI 组件来替代已有 Weave 能力。React state、History router、i18n、数据处理等非视觉基础设施可以直接使用。框架组件自身仍按其实现边界复用 Weave 语义组件与内部基础设施，不再平行维护裸 DOM / 私有 CSS 的同义视觉实现。
+32. Documentation 页面本身的全部可见 UI 必须 **100% dogfood Weave 公共组件与 Theme**：页面 shell、导航、搜索、主题切换、内容布局和后续示例都不得使用裸 DOM 元素、Documentation 私有视觉 CSS 或第三方 UI 组件来替代已有 Weave 能力。React state、History router、i18n、数据处理等非视觉基础设施可以直接使用。框架组件自身仍按其实现边界复用 Weave 语义组件与内部基础设施，不再平行维护裸 DOM / 私有 CSS 的同义视觉实现。 Documentation AppBar 的 trailing 使用 Weave search Input、Theme Popover 与 Language Popover；语言选择必须包含 `Auto detect` 和当前实际注册的语言资源。`Auto detect` 按 `navigator.languages` 顺序匹配已注册语言，无法匹配时回退到 i18n fallback language，不得展示尚未存在的翻译语言。
 33. 组件复用其他组件的视觉或交互能力时，外层组件仍承担自己的高层语义；不得因此重复暴露冲突的 ARIA 角色。
 34. `Text.typo` 必须来自主题中的完整 type scale；不能退回 renderer 内部的少量硬编码 preset。
 35. Scrollbar 只绘制 thumb，不提供 tracked / trackColor；带圆角宿主必须把圆角曲线区域排除出 thumb 的运动区。

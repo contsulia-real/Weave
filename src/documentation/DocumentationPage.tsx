@@ -1,10 +1,22 @@
-import { IconDeviceDesktop, IconMenu2, IconMoon, IconSun } from '@tabler/icons-react'
+import {
+  IconDeviceDesktop,
+  IconLanguage,
+  IconMenu2,
+  IconMoon,
+  IconSearch,
+  IconSun,
+} from '@tabler/icons-react'
 import type { TFunction } from 'i18next'
 import type { MouseEvent } from 'react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { ThemeMode } from '../index'
 import { AppBar, Button, Column, Drawer, Input, Link, Popover, Row, Text, View } from '../index'
+import documentationI18n, {
+  type DocumentationLanguagePreference,
+  detectDocumentationLanguage,
+  documentationLanguages,
+} from './i18n'
 import { useDocsRoute } from './router'
 
 export interface DocumentationPageProps {
@@ -22,6 +34,9 @@ export function DocumentationPage({ themeMode, onThemeModeChange }: Documentatio
   const route = useDocsRoute()
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [themePopoverOpen, setThemePopoverOpen] = useState(false)
+  const [languagePopoverOpen, setLanguagePopoverOpen] = useState(false)
+  const [languagePreference, setLanguagePreference] =
+    useState<DocumentationLanguagePreference>('auto')
 
   const themeIcon =
     themeMode === 'light' ? IconSun : themeMode === 'dark' ? IconMoon : IconDeviceDesktop
@@ -34,6 +49,13 @@ export function DocumentationPage({ themeMode, onThemeModeChange }: Documentatio
   const selectThemeMode = (mode: ThemeMode) => {
     onThemeModeChange(mode)
     setThemePopoverOpen(false)
+  }
+
+  const selectLanguage = (preference: DocumentationLanguagePreference) => {
+    setLanguagePreference(preference)
+    const language = preference === 'auto' ? detectDocumentationLanguage() : preference
+    void documentationI18n.changeLanguage(language)
+    setLanguagePopoverOpen(false)
   }
 
   const navigation = (
@@ -90,6 +112,38 @@ export function DocumentationPage({ themeMode, onThemeModeChange }: Documentatio
     </Popover>
   )
 
+  const languageSelector = (
+    <Popover
+      placement="bottom-right"
+      open={languagePopoverOpen}
+      onOpenChange={setLanguagePopoverOpen}
+      content={
+        <Column gap={0.5} padding={0.5}>
+          <Button
+            text={t('docs.language.auto')}
+            pressed={languagePreference === 'auto'}
+            viewProps={{ onClick: () => selectLanguage('auto') }}
+          />
+          {documentationLanguages.map(({ code, labelKey }) => (
+            <Button
+              key={code}
+              text={t(labelKey)}
+              pressed={languagePreference === code}
+              viewProps={{ onClick: () => selectLanguage(code) }}
+            />
+          ))}
+        </Column>
+      }
+    >
+      <Button
+        icon={IconLanguage}
+        viewProps={{
+          label: t('docs.language'),
+        }}
+      />
+    </Popover>
+  )
+
   return (
     <Column width="fill" height="100vh" background="surface" color="tertiary">
       <AppBar
@@ -113,10 +167,12 @@ export function DocumentationPage({ themeMode, onThemeModeChange }: Documentatio
             <Input
               type="search"
               clearable
+              leadingIcon={IconSearch}
               placeholder={t('docs.search')}
               viewProps={{ label: t('docs.search') }}
             />
             {themeSelector}
+            {languageSelector}
           </Row>
         }
       />

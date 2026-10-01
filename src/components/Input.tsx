@@ -1,6 +1,7 @@
 import type { ChangeEvent, CSSProperties } from 'react'
 import { useCallback, useInsertionEffect, useState } from 'react'
 import type {
+  InputIcon,
   InputProps,
   InputType,
   MultilineInputViewProps,
@@ -15,6 +16,7 @@ import { Button } from './Button'
 import { AutoScrollbar } from './internal/AutoScrollbar'
 import { closeIcon } from './internal/control-icons'
 import { formFieldAssociationOverrides, useFormFieldContext } from './internal/form-field-context'
+import { renderIconSource } from './internal/render-icon-source'
 import { useFormReset } from './internal/use-form-reset'
 import { useViewHost } from './internal/use-view-host'
 
@@ -52,6 +54,8 @@ interface SingleLineInputHostProps {
   pattern?: string
   clearable?: boolean
   clearLabel?: string
+  leadingIcon?: InputIcon
+  trailingIcon?: InputIcon
   viewProps?: SingleLineInputViewProps
 }
 
@@ -71,6 +75,8 @@ function SingleLineInput({
   pattern,
   clearable = true,
   clearLabel = 'Clear input',
+  leadingIcon,
+  trailingIcon,
   viewProps = {},
 }: SingleLineInputHostProps) {
   const field = useFormFieldContext()
@@ -93,6 +99,9 @@ function SingleLineInput({
   const [uncontrolledText, setUncontrolledText] = useState(String(defaultValue ?? ''))
   const currentText = controlled ? String(value ?? '') : uncontrolledText
   const hasClear = clearable && !disabled && !readOnly && currentText.length > 0
+  const hasLeadingIcon = leadingIcon !== undefined
+  const hasTrailingIcon = trailingIcon !== undefined
+  const usesAdornmentRoot = clearable || hasLeadingIcon || hasTrailingIcon
   const reset = useCallback(() => {
     const next = String(controlled ? (value ?? '') : (defaultValue ?? ''))
 
@@ -150,13 +159,15 @@ function SingleLineInput({
       data-weave-view=""
       data-weave-input=""
       data-weave-input-has-clear={hasClear ? 'true' : undefined}
+      data-weave-input-has-leading-icon={hasLeadingIcon ? 'true' : undefined}
+      data-weave-input-has-trailing-icon={hasTrailingIcon ? 'true' : undefined}
       data-weave-layout={resolved.layout}
       className={['weave-input', themeClassName, className].filter(Boolean).join(' ')}
       style={inlineStyle}
     />
   )
 
-  if (!clearable) {
+  if (!usesAdornmentRoot) {
     return input
   }
 
@@ -166,7 +177,16 @@ function SingleLineInput({
       data-weave-input-root=""
       data-weave-input-root-fill={viewProps.width === 'fill' ? 'true' : undefined}
       data-weave-input-has-clear={hasClear ? 'true' : 'false'}
+      data-weave-input-has-leading-icon={hasLeadingIcon ? 'true' : 'false'}
+      data-weave-input-has-trailing-icon={hasTrailingIcon ? 'true' : 'false'}
     >
+      {leadingIcon === undefined
+        ? null
+        : renderIconSource(leadingIcon, {
+            size: 'small',
+            viewProps: { className: 'weave-input__leading-icon' },
+          })}
+
       {input}
 
       {hasClear ? (
@@ -184,6 +204,13 @@ function SingleLineInput({
           }}
         />
       ) : null}
+
+      {trailingIcon === undefined
+        ? null
+        : renderIconSource(trailingIcon, {
+            size: 'small',
+            viewProps: { className: 'weave-input__trailing-icon' },
+          })}
     </span>
   )
 }
@@ -329,6 +356,8 @@ export function Input(props: InputProps) {
       pattern={props.pattern}
       clearable={props.clearable}
       clearLabel={props.clearLabel}
+      leadingIcon={props.leadingIcon}
+      trailingIcon={props.trailingIcon}
       viewProps={props.viewProps}
     />
   )
