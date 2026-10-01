@@ -34,6 +34,7 @@ const expectedRuntimeExports = [
   'AccordionItem',
   'AccordionPanel',
   'AccordionTrigger',
+  'AppBar',
   'Avatar',
   'Badge',
   'Button',
@@ -167,6 +168,10 @@ assert(typeSource.includes('StackProps'), 'Built declarations are missing StackP
 assert(typeSource.includes('AvatarProps'), 'Built declarations are missing AvatarProps')
 assert(typeSource.includes('BadgeProps'), 'Built declarations are missing BadgeProps')
 assert(typeSource.includes('CardProps'), 'Built declarations are missing CardProps')
+assert(typeSource.includes('AppBarProps'), 'Built declarations are missing AppBarProps')
+assert(typeSource.includes('AppBarMode'), 'Built declarations are missing AppBarMode')
+assert(typeSource.includes('AppBarSize'), 'Built declarations are missing AppBarSize')
+assert(typeSource.includes('AppBarTitleAlign'), 'Built declarations are missing AppBarTitleAlign')
 assert(typeSource.includes('CodeProps'), 'Built declarations are missing CodeProps')
 assert(typeSource.includes('CodeLanguage'), 'Built declarations are missing CodeLanguage')
 assert(typeSource.includes('CodeViewProps'), 'Built declarations are missing CodeViewProps')
@@ -237,6 +242,9 @@ const expectedThemeTypeExports = [
   'BadgeTheme',
   'LinkTheme',
   'ButtonTheme',
+  'AppBarTheme',
+  'AppBarThemeBase',
+  'AppBarThemeSize',
   'CardTheme',
   'SkeletonTheme',
   'DialogTheme',

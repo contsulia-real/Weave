@@ -3,6 +3,7 @@ export { Accordion } from './components/Accordion'
 export { AccordionItem } from './components/AccordionItem'
 export { AccordionPanel } from './components/AccordionPanel'
 export { AccordionTrigger } from './components/AccordionTrigger'
+export { AppBar } from './components/AppBar'
 export { Avatar } from './components/Avatar'
 export { Badge } from './components/Badge'
 export { Button } from './components/Button'
@@ -71,6 +72,14 @@ export type {
   AccordionTriggerViewProps,
   AccordionViewProps,
 } from './core/accordion-types'
+export type {
+  AppBarMode,
+  AppBarProps,
+  AppBarSize,
+  AppBarTitle,
+  AppBarTitleAlign,
+  AppBarViewProps,
+} from './core/appbar-types'
 export type {
   AvatarProps,
   AvatarViewProps,
@@ -380,6 +389,9 @@ export { useTheme } from './theme/theme-context'
 export type {
   AccordionTheme,
   AccordionThemeBase,
+  AppBarTheme,
+  AppBarThemeBase,
+  AppBarThemeSize,
   AvatarTheme,
   AvatarThemeBase,
   BadgeTheme,

@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import {
   Absolute,
+  AppBar,
+  Button,
   Column,
   Flex,
   Grid,
@@ -18,6 +20,40 @@ export function FoundationLayoutPlayground() {
 
   return (
     <>
+      <PlaygroundSection
+        title="AppBar"
+        description="leading / title / trailing · full / floating · small / medium / large · start / center / end title alignment."
+      >
+        <Column gap={1.25}>
+          <AppBar
+            size="small"
+            leading={<Button text="Back" size="small" variant="ghost" />}
+            title={<Text>Small · start</Text>}
+            trailing={<Button text="More" size="small" variant="ghost" />}
+          />
+          <AppBar
+            size="medium"
+            mode="floating"
+            titleAlign="center"
+            leading={<Button text="Menu" size="small" variant="ghost" />}
+            title={<Text>Medium · floating · center</Text>}
+            trailing={<Button text="Profile" size="small" variant="ghost" />}
+          />
+          <AppBar
+            size="large"
+            titleAlign="end"
+            leading={<Button text="Back" size="medium" variant="ghost" />}
+            title={<Text>Large · end</Text>}
+            trailing={
+              <>
+                <Button text="Share" size="medium" variant="ghost" />
+                <Button text="Save" size="medium" variant="secondary" />
+              </>
+            }
+          />
+        </Column>
+      </PlaygroundSection>
+
       <PlaygroundSection
         title="Layout components"
         description="正式布局入口仍复用 View 底层：Flex / Row / Column / Grid / Stack / Absolute，不增加额外 DOM。"

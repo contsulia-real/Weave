@@ -4055,6 +4055,159 @@ Card 没有 `variant`、`size`、header/footer 等额外高层 API；内容结�
 
 ---
 
+# 18.12A `AppBar`
+
+`AppBar` 是应用顶部栏容器，固定由 `leading / title / trailing` 三个区域组成。它不提供 collapse / large-title scroll transition，也不会根据滚动状态改变 elevation。
+
+## 18.12A.1 API
+
+```tsx
+<AppBar
+  leading={<Button text="Back" />}
+  title={<Text>Settings</Text>}
+  trailing={<Button text="Save" />}
+/>
+```
+
+公开高层属性：
+
+```text
+leading?: ReactNode
+title: Text element
+trailing?: ReactNode
+size?: "small" | "medium" | "large"
+mode?: "full" | "floating"
+titleAlign?: "start" | "center" | "end"
+sticky?: boolean
+viewProps
+```
+
+默认值：
+
+```text
+size = "medium"
+mode = "full"
+titleAlign = "start"
+sticky = false
+```
+
+`leading` 与 `trailing` 接受任意 ReactNode。两侧区域按水平 flex 排列并垂直居中。
+
+`title` 只允许直接传入 Weave `<Text>` 元素；其他元素无效。AppBar 会按当前 size 提供默认 typo，但调用方显式传给 Text 的 `typo` 优先。
+
+## 18.12A.2 Size
+
+默认三档：
+
+```text
+small:
+  height = 3rem
+  paddingX = 0.75rem
+  gap = 0.5rem
+  titleTypo = title-small
+
+medium:
+  height = 3.5rem
+  paddingX = 1rem
+  gap = 0.75rem
+  titleTypo = title-medium
+
+large:
+  height = 4rem
+  paddingX = 1.25rem
+  gap = 1rem
+  titleTypo = title-large
+```
+
+这些值来自 `theme.components.AppBar.sizes`，不是 renderer 常量。
+
+## 18.12A.3 三区域与 titleAlign
+
+内部固定为三列：
+
+```text
+leading | title | trailing
+auto      1fr     auto
+```
+
+`titleAlign` 控制 title 在中间 title 区域内的对齐：
+
+```text
+start
+center
+end
+```
+
+它不通过复制左右区域宽度来强制标题相对整个 viewport 绝对居中，因此 leading / trailing 宽度不同时，中间区域本身仍由真实剩余空间决定。
+
+## 18.12A.4 mode
+
+`full`：
+
+```text
+width = fill
+margin = 0
+borderRadius = 0
+```
+
+`floating`：
+
+```text
+width = available width minus both margins
+margin = 1rem
+borderRadius = theme.components.AppBar.base.radius
+```
+
+默认 floating margin 为 1rem，并由 `theme.components.AppBar.base.floatingMargin` 控制。
+
+## 18.12A.5 Surface / depth
+
+AppBar 的默认视觉与 default Card 相同：使用同一默认 surface、outline border、large radius、rest depth 与 depth color。AppBar 不继承 Card 的 clickable / selectable / hover / press 行为。
+
+`full` 只覆盖 radius 为 0；`floating` 保留 AppBar theme radius。
+
+AppBar 始终使用固定 rest depth。滚动、sticky 状态不会改变 elevation。
+
+## 18.12A.6 sticky
+
+AppBar 默认参与普通文档流。
+
+```tsx
+<AppBar sticky ... />
+```
+
+启用后使用原生：
+
+```css
+position: sticky;
+top: 0;
+```
+
+不创建第二套 scroll observer，不根据 scroll position 改变视觉状态。
+
+## 18.12A.7 DOM 与 Theme
+
+AppBar 宿主使用原生 `<header>`。辅助语义仍可通过 `viewProps` 补充。
+
+Theme：
+
+```text
+theme.components.AppBar.base:
+  background
+  borderColor
+  borderWidth
+  radius
+  restDepth
+  depthColor
+  floatingMargin
+
+theme.components.AppBar.sizes.small / medium / large:
+  height
+  paddingX
+  gap
+  titleTypo
+```
+
 # 18.13 `Skeleton`
 
 `Skeleton` 是无内容的加载占位组件，只负责表达内容尚未就绪的视觉状态。它继续使用普通 ViewHost，不引入独立布局系统，也不承载 children。
@@ -8110,7 +8263,7 @@ Weave 公开 API
 │
 ├─ 公开组件
 │  ├─ Text / Code / Image / Icon / Avatar
-│  ├─ Input / Button / Link / Card
+│  ├─ Input / Button / Link / Card / AppBar
 │  ├─ Slider / RangeSlider / Switch / Radio / Checkbox
 │  ├─ Progress / Skeleton / Divider
 │  ├─ Badge / ToolTip / Popover / Dialog

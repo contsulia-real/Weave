@@ -8,6 +8,7 @@ export {
   resolveIconTheme,
   resolveLinkTheme,
 } from './component-theme/actions'
+export { resolveAppBarTheme } from './component-theme/appbar'
 export {
   resolveChoiceControlTheme,
   resolveComboboxTheme,

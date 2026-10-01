@@ -312,6 +312,28 @@ export interface LinkTheme {
   base?: LinkThemeBase
 }
 
+export interface AppBarThemeBase {
+  background?: string
+  borderColor?: string
+  borderWidth?: ThemeScaleValue
+  radius?: ThemeScaleValue
+  restDepth?: ThemeScaleValue
+  depthColor?: string
+  floatingMargin?: ThemeScaleValue
+}
+
+export interface AppBarThemeSize {
+  height?: ThemeScaleValue
+  paddingX?: ThemeScaleValue
+  gap?: ThemeScaleValue
+  titleTypo?: TextTypo
+}
+
+export interface AppBarTheme {
+  base?: AppBarThemeBase
+  sizes?: Partial<Record<'small' | 'medium' | 'large', AppBarThemeSize>>
+}
+
 export interface CardThemeBase {
   background?: string
   borderColor?: string
@@ -736,6 +758,7 @@ export interface ThemeComponents {
   SplitBox?: SplitBoxTheme
   Form?: FormTheme
   Accordion?: AccordionTheme
+  AppBar?: AppBarTheme
   Badge?: BadgeTheme
   Link?: LinkTheme
   Button?: ButtonTheme

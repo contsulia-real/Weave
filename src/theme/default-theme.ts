@@ -548,6 +548,37 @@ export const defaultTheme: ResolvedTheme = {
         },
       },
     },
+    AppBar: {
+      base: {
+        background: 'surface',
+        borderColor: 'outline',
+        borderWidth: 0.0625,
+        radius: 'large',
+        restDepth: 0.125,
+        depthColor: raisedSurfaceDepthColor,
+        floatingMargin: 1,
+      },
+      sizes: {
+        small: {
+          height: 3,
+          paddingX: 0.75,
+          gap: 0.5,
+          titleTypo: 'title-small',
+        },
+        medium: {
+          height: 3.5,
+          paddingX: 1,
+          gap: 0.75,
+          titleTypo: 'title-medium',
+        },
+        large: {
+          height: 4,
+          paddingX: 1.25,
+          gap: 1,
+          titleTypo: 'title-large',
+        },
+      },
+    },
     Card: {
       base: {
         ...secondaryRaisedSurface,
