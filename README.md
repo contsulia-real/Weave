@@ -117,9 +117,9 @@ export function App() {
 
 Theme definitions support tokens, component themes, dynamic breakpoints, light/dark mode overrides and motion configuration. Runtime custom breakpoint thresholds come from `theme.breakpoints`; projects that want typed custom breakpoint prop names register those names through `Weave.BreakpointRegistry`. Custom color-token names can likewise be registered through `Weave.ColorTokenRegistry` for editor completion while their values remain owned by the active theme. See the specification for the complete contract.
 
-## Playground
+## Documentation
 
-The Vite application is the development playground for the framework. It dogfoods the public Weave API and contains interactive examples for layout, responsive behavior, motion, masks, native Form / FormData behavior, form controls, Select, Badge, ToolTip, Popover, Menu with nested submenus, Snack, List, Scrollbar and other implemented capabilities.
+The Vite application now hosts the in-repository Weave documentation surface. The previous interactive development surface has been removed. Documentation examples dogfood the public Weave API and are the place for interactive component examples as the documentation site is built out.
 
 ```bash
 pnpm install
@@ -139,7 +139,7 @@ pnpm lint
 pnpm build
 ```
 
-The automated test suite was removed by project decision on 2026-10-01 after false-positive validation around interactive Drawer behavior created unjustified confidence in incorrect UI behavior. Current repository verification is formatting, static type checking, linting, production build, declaration pruning and package verification. Interactive UI behavior must be checked directly in the playground rather than inferred from deleted synthetic tests. `pnpm build` emits only declarations reachable from the public entry and verifies the built runtime, public types, packed npm file set and ReactDOM externalization. `npm pack` runs the build automatically through `prepack`.
+The automated test suite was removed by project decision on 2026-10-01 after false-positive validation around interactive Drawer behavior created unjustified confidence in incorrect UI behavior. Current repository verification is formatting, static type checking, linting, production build, declaration pruning and package verification. Interactive UI behavior must be checked directly in documentation examples rather than inferred from deleted synthetic tests. `pnpm build` emits only declarations reachable from the public entry and verifies the built runtime, public types, packed npm file set and ReactDOM externalization. `npm pack` runs the build automatically through `prepack`.
 
 ## Repository
 

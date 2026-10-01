@@ -570,7 +570,7 @@ Absolute  → View layout="absolute"
 
 `View layout="..."` 仍然可用，但不再是一般业务布局的首选写法。未设置 `layout` 的公开 `View` 仍保持其真实 `<div>` 的默认 block display；通用 View stylesheet 不得把它降级为 CSS 初始值 `inline`。
 
-Weave 自身必须 dogfood 正式布局组件：Playground、示例页以及组件内部的一般布局应使用 `Flex / Row / Column / Grid / Stack / Absolute`。裸 `View layout="flex|grid|stack|absolute"` 只允许保留在这六个布局组件自己的实现边界，或确有底层实现理由且无法用正式布局组件表达的内部基础设施中；不能为了省事在业务/示例代码里继续回退到裸布局 View。
+Weave 自身必须 dogfood 正式布局组件：Documentation 页面、示例页以及组件内部的一般布局应使用 `Flex / Row / Column / Grid / Stack / Absolute`。裸 `View layout="flex|grid|stack|absolute"` 只允许保留在这六个布局组件自己的实现边界，或确有底层实现理由且无法用正式布局组件表达的内部基础设施中；不能为了省事在业务/示例代码里继续回退到裸布局 View。
 
 组件是否能够实际承载子项布局，遵循其对应 DOM 元素的内容模型。
 
@@ -603,7 +603,7 @@ layout
 <Column gap={1} />
 ```
 
-Playground 对 `Flex` 的验证必须体现它作为通用 flex 容器的可配置性：使用固定宽度、多个固定宽度子项与 `wrap`，让换行行为肉眼可见；不能只做一个与 Row 看起来完全一样的横排示例。
+Documentation 中对 `Flex` 的示例验证必须体现它作为通用 flex 容器的可配置性：使用固定宽度、多个固定宽度子项与 `wrap`，让换行行为肉眼可见；不能只做一个与 Row 看起来完全一样的横排示例。
 
 `Column` 则必须明确验证纵向主轴：示例使用足够高的固定容器、`align="end"` 和 `justify="space-between"`，让三个子项从上到下拉开明显距离并沿交叉轴靠右。容器高度必须留下真实剩余空间，不能让三个子项几乎塞满后导致 `space-between` 肉眼不可辨。这样可以直接区分 `Column` 与普通 Row/Flex。
 
@@ -684,7 +684,7 @@ space-evenly
 </Stack>
 ```
 
-`Stack` 必须建立一个覆盖自身完整尺寸的单一 stacking plane：DOM/CSS 后端固定使用 `grid-template-columns: minmax(0, 1fr)` 与 `grid-template-rows: minmax(0, 1fr)`，所有直接子项进入 `grid-area: 1 / 1`。因此显式 `width / height` 不得被内容尺寸压缩。Playground 的 Stack 示例必须使用至少三层可辨识内容：第一层 `width="fill" height="fill"` 明确铺满整个 stacking plane，第二层使用较小尺寸独立居中，第三层文字叠在最上层；禁止再用“背景 + 单行文字”这种无法验证 fill 是否真实生效的示例。
+`Stack` 必须建立一个覆盖自身完整尺寸的单一 stacking plane：DOM/CSS 后端固定使用 `grid-template-columns: minmax(0, 1fr)` 与 `grid-template-rows: minmax(0, 1fr)`，所有直接子项进入 `grid-area: 1 / 1`。因此显式 `width / height` 不得被内容尺寸压缩。Documentation 的 Stack 示例必须使用至少三层可辨识内容：第一层 `width="fill" height="fill"` 明确铺满整个 stacking plane，第二层使用较小尺寸独立居中，第三层文字叠在最上层；禁止再用“背景 + 单行文字”这种无法验证 fill 是否真实生效的示例。
 
 在 `Stack` 中，`align` 控制子项在 stacking plane 内的纵向 `align-items`，`justify` 控制子项的横向 `justify-items`；它不能复用普通 Grid 的 `justify-content` 语义去移动或压缩整个 grid track。响应式和交互状态下的 `justify` 也遵循同一 item-alignment 语义。
 
@@ -1782,7 +1782,7 @@ label-medium = 0.8125rem // 13px
 label-large  = 0.875rem  // 14px
 ```
 
-Playground 的普通说明文字使用 `body-medium`；`body-small` 保留给 caption / meta 信息；`body-xsmall` 用于 ToolTip 这类需要明显低于控件标签的紧凑辅助信息。
+Documentation 的普通说明文字使用 `body-medium`；`body-small` 保留给 caption / meta 信息；`body-xsmall` 用于 ToolTip 这类需要明显低于控件标签的紧凑辅助信息。
 
 显式传入的文本属性优先于 `typo`，因此可以只覆盖需要调整的一项：
 
@@ -2375,7 +2375,7 @@ Input / Select / Combobox 默认使用完全相同的 Input field surface。默�
 
 单行 Input 不再用 `paddingY` 把自身撑高；垂直尺寸由共享 `minHeight + typography` 基线统一。`Input.base.paddingY` 只用于 multiline textarea 的内容内边距。
 
-精确 field 宽度属于布局，继续通过 `viewProps.width / minWidth / maxWidth` 控制。Input field surface 规定相同的默认 `minWidth`；**浏览器原生 `<input>` intrinsic width 不能作为 Weave 的设计尺寸来源**。Playground 在并列验证 Input / Select / Combobox 时应给三者相同的显式 width。
+精确 field 宽度属于布局，继续通过 `viewProps.width / minWidth / maxWidth` 控制。Input field surface 规定相同的默认 `minWidth`；**浏览器原生 `<input>` intrinsic width 不能作为 Weave 的设计尺寸来源**。Documentation 在并列展示 Input / Select / Combobox 时应给三者相同的显式 width。
 
 input value、textarea value 与 placeholder 共享该 typo 的 `fontSize / fontWeight / lineHeight / letterSpacing`。
 
@@ -2903,7 +2903,7 @@ viewProps
 - Checkbox 额外支持 `indeterminate?: boolean`。开启时同步原生 `input.indeterminate = true` 并暴露 `aria-checked="mixed"`；视觉使用水平短线而不是 checkmark。它不创建第四种 value，点击仍由原生 checkbox change 产生布尔 checked，调用方决定何时清除 indeterminate；
 - `disabled` 是组件自己的高层属性，并落到真实原生 input；
 - `label` 是可见的原生 `<label>` 绑定内容；点击 label 文本必须直接触发对应 Radio / Checkbox 状态变化，不能依赖调用方自己补 `onClick`；
-- `small / medium / large` 三档默认尺寸分别为 `1.125rem / 1.375rem / 1.625rem`（18 / 22 / 26px），由 `theme.components.Radio / Checkbox.sizes` 提供；press 位移 / 缩放与 state-layer 初始 scale 分别由各自 `base.pressOffset / pressScale / stateLayerRestScale` 提供，不得在 stylesheet 中写死；Playground 必须同时展示三档，不能只展示默认 medium。
+- `small / medium / large` 三档默认尺寸分别为 `1.125rem / 1.375rem / 1.625rem`（18 / 22 / 26px），由 `theme.components.Radio / Checkbox.sizes` 提供；press 位移 / 缩放与 state-layer 初始 scale 分别由各自 `base.pressOffset / pressScale / stateLayerRestScale` 提供，不得在 stylesheet 中写死；Documentation 必须同时展示三档，不能只展示默认 medium。
 
 默认视觉继续使用 Weave 的物理层级语言，但 Radio 与 Checkbox 的 checked 形态不同：
 
@@ -8513,7 +8513,7 @@ CSS variables + runtime classes + framework stylesheet
 29. 组件默认承担正确可访问性和键盘语义，不把标准行为推给业务开发者。
 30. 浮层使用语义 layer，普通用户不需要手工管理 portal 或全局 z-index。
 31. 具体组件已经提供同义语义状态属性时，该状态不在其 `viewProps` 中重复暴露，组件属性作为唯一真值。
-32. 框架自身的 playground、示例与组件实现必须优先 dogfood 已有 Weave 语义组件；已有 `Text`、`Progress` 等能力时，不再平行维护裸 DOM / 私有 CSS 的同义实现。
+32. 框架自身的 Documentation、示例与组件实现必须优先 dogfood 已有 Weave 语义组件；已有 `Text`、`Progress` 等能力时，不再平行维护裸 DOM / 私有 CSS 的同义实现。
 33. 组件复用其他组件的视觉或交互能力时，外层组件仍承担自己的高层语义；不得因此重复暴露冲突的 ARIA 角色。
 34. `Text.typo` 必须来自主题中的完整 type scale；不能退回 renderer 内部的少量硬编码 preset。
 35. Scrollbar 只绘制 thumb，不提供 tracked / trackColor；带圆角宿主必须把圆角曲线区域排除出 thumb 的运动区。

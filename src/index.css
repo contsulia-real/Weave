@@ -31,11 +31,3 @@ body {
 body {
   min-width: 320px;
 }
-
-.container-demo {
-  width: 32rem;
-  min-width: 20rem;
-  max-width: 100%;
-  resize: horizontal;
-  overflow: auto;
-}
