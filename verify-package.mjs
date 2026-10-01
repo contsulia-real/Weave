@@ -66,6 +66,7 @@ const expectedRuntimeExports = [
   'Popover',
   'Progress',
   'Radio',
+  'RangeSlider',
   'Row',
   'Select',
   'SelectOption',
@@ -178,6 +179,12 @@ assert(typeSource.includes('FormLegendProps'), 'Built declarations are missing F
 assert(typeSource.includes('ButtonType'), 'Built declarations are missing ButtonType')
 assert(typeSource.includes('SkeletonProps'), 'Built declarations are missing SkeletonProps')
 assert(typeSource.includes('SliderProps'), 'Built declarations are missing SliderProps')
+assert(typeSource.includes('RangeSliderProps'), 'Built declarations are missing RangeSliderProps')
+assert(typeSource.includes('RangeSliderValue'), 'Built declarations are missing RangeSliderValue')
+assert(
+  typeSource.includes('RangeSliderViewProps'),
+  'Built declarations are missing RangeSliderViewProps',
+)
 assert(typeSource.includes('SplitBoxProps'), 'Built declarations are missing SplitBoxProps')
 assert(typeSource.includes('SplitBoxPaneProps'), 'Built declarations are missing SplitBoxPaneProps')
 assert(

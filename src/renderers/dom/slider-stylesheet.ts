@@ -72,12 +72,23 @@ const stylesheet = `
   left: var(--weave-slider-thumb-half-size);
 }
 
-:where(.weave-slider__active-track),
-:where(.weave-slider__inactive-track) {
+:where(.weave-slider__track) {
   position: absolute;
   top: 50%;
   height: var(--weave-slider-track-height);
   transform: translateY(-50%);
+}
+
+:where(.weave-slider__track--active) {
+  background: var(--weave-slider-fill-color);
+  box-shadow:
+    var(--weave-slider-thumb-shadow),
+    var(--weave-slider-active-track-shadow);
+}
+
+:where(.weave-slider__track--inactive) {
+  background: var(--weave-slider-track-color);
+  box-shadow: var(--weave-slider-track-shadow);
 }
 
 :where(.weave-slider__active-track) {
@@ -95,10 +106,6 @@ const stylesheet = `
     0
     0
     var(--weave-radius-full);
-  background: var(--weave-slider-fill-color);
-  box-shadow:
-    var(--weave-slider-thumb-shadow),
-    var(--weave-slider-active-track-shadow);
   transition:
     width var(--weave-motion-spring-snappy-duration)
       var(--weave-motion-spring-snappy-easing);
@@ -115,8 +122,6 @@ const stylesheet = `
     var(--weave-radius-full)
     var(--weave-radius-full)
     0;
-  background: var(--weave-slider-track-color);
-  box-shadow: var(--weave-slider-track-shadow);
   transition:
     left var(--weave-motion-spring-snappy-duration)
       var(--weave-motion-spring-snappy-easing);
@@ -260,6 +265,226 @@ const stylesheet = `
   --weave-component-cursor: not-allowed;
 }
 
+:where(.weave-range-slider-control) {
+  --weave-range-slider-start-outer-extension: 0px;
+  --weave-range-slider-end-outer-extension: 0px;
+}
+
+:where(.weave-range-slider-control[data-weave-slider-stepped="true"]) {
+  --weave-range-slider-start-outer-extension: min(
+    var(--weave-slider-track-half-height),
+    max(
+      0px,
+      calc(
+        var(--weave-range-slider-start-progress) -
+          var(--weave-slider-thumb-track-clearance)
+      )
+    )
+  );
+  --weave-range-slider-end-outer-extension: min(
+    var(--weave-slider-track-half-height),
+    max(
+      0px,
+      calc(
+        100% - var(--weave-range-slider-end-progress) -
+          var(--weave-slider-thumb-track-clearance)
+      )
+    )
+  );
+}
+
+:where(.weave-range-slider__inactive-track--start) {
+  z-index: 1;
+  left: calc(-1 * var(--weave-range-slider-start-outer-extension));
+  width: max(
+    0px,
+    calc(
+      var(--weave-range-slider-start-progress) -
+        var(--weave-slider-thumb-track-clearance) +
+        var(--weave-range-slider-start-outer-extension)
+    )
+  );
+  border-radius:
+    var(--weave-radius-full)
+    0
+    0
+    var(--weave-radius-full);
+  transition:
+    width var(--weave-motion-spring-snappy-duration)
+      var(--weave-motion-spring-snappy-easing);
+}
+
+:where(.weave-range-slider__active-track) {
+  z-index: 1;
+  left: min(
+    100%,
+    calc(
+      var(--weave-range-slider-start-progress) +
+        var(--weave-slider-thumb-track-clearance)
+    )
+  );
+  width: max(
+    0px,
+    calc(
+      var(--weave-range-slider-end-progress) -
+        var(--weave-range-slider-start-progress) -
+        var(--weave-slider-thumb-track-clearance) -
+        var(--weave-slider-thumb-track-clearance)
+    )
+  );
+  border-radius: 0;
+  transition:
+    left var(--weave-motion-spring-snappy-duration)
+      var(--weave-motion-spring-snappy-easing),
+    width var(--weave-motion-spring-snappy-duration)
+      var(--weave-motion-spring-snappy-easing);
+}
+
+:where(.weave-range-slider__inactive-track--end) {
+  z-index: 1;
+  left: min(
+    100%,
+    calc(
+      var(--weave-range-slider-end-progress) +
+        var(--weave-slider-thumb-track-clearance)
+    )
+  );
+  right: calc(-1 * var(--weave-range-slider-end-outer-extension));
+  border-radius:
+    0
+    var(--weave-radius-full)
+    var(--weave-radius-full)
+    0;
+  transition:
+    left var(--weave-motion-spring-snappy-duration)
+      var(--weave-motion-spring-snappy-easing);
+}
+
+:where(.weave-range-slider__thumb--start) {
+  left: var(--weave-range-slider-start-progress);
+  z-index: 4;
+}
+
+:where(.weave-range-slider__thumb--end) {
+  left: var(--weave-range-slider-end-progress);
+  z-index: 3;
+}
+
+:where(.weave-range-slider__input--start) {
+  z-index: 5;
+  clip-path: inset(0 calc(100% - var(--weave-range-slider-hit-split)) 0 0);
+}
+
+:where(.weave-range-slider__input--end) {
+  z-index: 4;
+  clip-path: inset(0 0 0 var(--weave-range-slider-hit-split));
+}
+
+:where(.weave-range-slider-control:hover:not([data-weave-slider-disabled="true"]))
+  > :where(.weave-slider__visual)
+  > :where(.weave-slider__range)
+  > :where(.weave-range-slider__thumb) {
+  box-shadow: var(--weave-slider-thumb-shadow);
+}
+
+:where(
+    .weave-range-slider-control:has(.weave-range-slider__input--start:hover):not(
+        [data-weave-slider-disabled="true"]
+      )
+  )
+  > :where(.weave-slider__visual)
+  > :where(.weave-slider__range)
+  > :where(.weave-range-slider__thumb--start),
+:where(
+    .weave-range-slider-control:has(.weave-range-slider__input--end:hover):not(
+        [data-weave-slider-disabled="true"]
+      )
+  )
+  > :where(.weave-slider__visual)
+  > :where(.weave-slider__range)
+  > :where(.weave-range-slider__thumb--end) {
+  box-shadow: var(--weave-slider-thumb-hover-shadow);
+}
+
+:where(.weave-range-slider-control[data-weave-slider-pointer-active="start"])
+  > :where(.weave-slider__visual)
+  > :where(.weave-slider__range)
+  > :where(.weave-range-slider__thumb--start),
+:where(.weave-range-slider-control[data-weave-slider-pointer-active="end"])
+  > :where(.weave-slider__visual)
+  > :where(.weave-slider__range)
+  > :where(.weave-range-slider__thumb--end) {
+  box-shadow: var(--weave-slider-thumb-press-shadow);
+  transition:
+    left var(--weave-motion-spring-snappy-duration)
+      var(--weave-motion-spring-snappy-easing),
+    box-shadow var(--weave-motion-duration-fast)
+      var(--weave-motion-curve-standard);
+}
+
+:where(
+    .weave-range-slider-control[data-weave-slider-stepped="false"][data-weave-slider-dragging="start"]
+  )
+  > :where(.weave-slider__visual)
+  > :where(.weave-slider__range)
+  > :where(.weave-range-slider__thumb--start),
+:where(
+    .weave-range-slider-control[data-weave-slider-stepped="false"][data-weave-slider-dragging="end"]
+  )
+  > :where(.weave-slider__visual)
+  > :where(.weave-slider__range)
+  > :where(.weave-range-slider__thumb--end),
+:where(
+    .weave-range-slider-control[data-weave-slider-stepped="false"][data-weave-slider-dragging]
+  )
+  > :where(.weave-slider__visual)
+  > :where(.weave-slider__range)
+  > :where(.weave-range-slider__inactive-track),
+:where(
+    .weave-range-slider-control[data-weave-slider-stepped="false"][data-weave-slider-dragging]
+  )
+  > :where(.weave-slider__visual)
+  > :where(.weave-slider__range)
+  > :where(.weave-range-slider__active-track) {
+  transition: none;
+}
+
+:where(.weave-range-slider-control[data-weave-slider-dragging]),
+:where(.weave-range-slider-control[data-weave-slider-dragging]) > :where(.weave-slider) {
+  cursor: grabbing;
+}
+
+:where(.weave-range-slider__input:focus-visible) {
+  --weave-component-outline-width: 0;
+}
+
+:where(.weave-range-slider-control:has(.weave-range-slider__input--start:focus-visible))
+  > :where(.weave-slider__visual)
+  > :where(.weave-slider__range)
+  > :where(.weave-range-slider__thumb--start),
+:where(.weave-range-slider-control:has(.weave-range-slider__input--end:focus-visible))
+  > :where(.weave-slider__visual)
+  > :where(.weave-slider__range)
+  > :where(.weave-range-slider__thumb--end) {
+  outline: var(--weave-slider-focus-outline-width)
+    var(--weave-slider-focus-outline-style)
+    var(--weave-slider-focus-outline-color);
+  outline-offset: var(--weave-slider-focus-outline-offset);
+}
+
+:where(.weave-range-slider__a11y-label) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
 .weave-slider::-webkit-slider-runnable-track {
   width: 100%;
   height: var(--weave-slider-thumb-size);
@@ -312,7 +537,15 @@ const stylesheet = `
 :where(.weave-slider-control[data-weave-reduced-motion="reduce"])
   > :where(.weave-slider__visual)
   > :where(.weave-slider__range)
-  > :where(.weave-slider__inactive-track) {
+  > :where(.weave-slider__inactive-track),
+:where(.weave-slider-control[data-weave-reduced-motion="reduce"])
+  > :where(.weave-slider__visual)
+  > :where(.weave-slider__range)
+  > :where(.weave-range-slider__active-track),
+:where(.weave-slider-control[data-weave-reduced-motion="reduce"])
+  > :where(.weave-slider__visual)
+  > :where(.weave-slider__range)
+  > :where(.weave-range-slider__inactive-track) {
   transition: none;
 }
 `

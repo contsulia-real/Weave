@@ -19,6 +19,7 @@ interface UseSliderInteractionProps {
   dragShrink: number
   dragMaxWidth: number
   callbacks: SliderInteractionCallbacks
+  interactionId?: string
 }
 
 interface SliderDragState {
@@ -38,6 +39,7 @@ export function useSliderInteraction({
   dragShrink,
   dragMaxWidth,
   callbacks,
+  interactionId,
 }: UseSliderInteractionProps) {
   const dragRef = useRef<SliderDragState | null>(null)
 
@@ -71,8 +73,14 @@ export function useSliderInteraction({
     }
 
     if (control !== null) {
-      delete control.dataset.weaveSliderPointerActive
-      delete control.dataset.weaveSliderDragging
+      const interactionValue = interactionId ?? 'true'
+
+      if (control.dataset.weaveSliderPointerActive === interactionValue) {
+        delete control.dataset.weaveSliderPointerActive
+      }
+      if (control.dataset.weaveSliderDragging === interactionValue) {
+        delete control.dataset.weaveSliderDragging
+      }
     }
 
     if (input?.hasPointerCapture?.(pointerId)) {
@@ -104,7 +112,7 @@ export function useSliderInteraction({
       moved: false,
     }
 
-    control.dataset.weaveSliderPointerActive = 'true'
+    control.dataset.weaveSliderPointerActive = interactionId ?? 'true'
     applyShape(0)
     input.setPointerCapture?.(event.pointerId)
   }
@@ -121,7 +129,7 @@ export function useSliderInteraction({
 
     if (!drag.moved && Math.abs(distance) >= DRAG_THRESHOLD) {
       drag.moved = true
-      control.dataset.weaveSliderDragging = 'true'
+      control.dataset.weaveSliderDragging = interactionId ?? 'true'
     }
 
     applyShape(distance)

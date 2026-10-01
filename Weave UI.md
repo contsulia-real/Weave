@@ -4228,7 +4228,7 @@ size = "medium"
 
 Slider 支持 controlled / uncontrolled 两种状态。传入 value 或 defaultValue 超出 `min..max` 时，渲染值 clamp 到当前范围。
 
-Slider 第一版只支持单值 horizontal 模式；不提供双 thumb range、vertical / orientation、marks / ticks、tooltip、value bubble、formatter 或 `onChangeEnd`。
+Slider 本身只支持单值 horizontal 模式；双 thumb 范围选择由独立 `RangeSlider` 提供。Slider 仍不提供 vertical / orientation、marks / ticks、tooltip、value bubble、formatter 或 `onChangeEnd`。
 
 ## 18.15.2 Native interaction
 
@@ -4379,6 +4379,145 @@ sizes.large.trackHeight / thumbSize / thumbTrackGap
 
 states.disabled.opacity
 ```
+
+---
+
+# 18.15A `RangeSlider`
+
+`RangeSlider` 是双 thumb、水平范围滑块。它不是另一套 Slider 视觉或交互系统，而是直接复用 `Slider` 已冻结的视觉、Theme、thumb shape、step axis 与 motion，并使用两个真实 `<input type="range">` 保留浏览器原生键盘、拖动、focus 与 form participation。
+
+## 18.15A.1 API
+
+```tsx
+<RangeSlider />
+<RangeSlider value={[start, end]} onChange={setRange} />
+<RangeSlider min={0} max={100} step={5} defaultValue={[20, 80]} />
+```
+
+公开高层属性：
+
+```text
+value?: [number, number]
+defaultValue?: [number, number]
+onChange?: (value: [number, number]) => void
+startName?: string
+endName?: string
+startLabel?: string
+endLabel?: string
+min?: number
+max?: number
+step?: number
+disabled?: boolean
+label?: ReactNode
+size?: "small" | "medium" | "large"
+viewProps
+```
+
+默认值：
+
+```text
+min = 0
+max = 100
+step = 1
+defaultValue = [min, max]
+size = "medium"
+```
+
+RangeSlider 支持 controlled / uncontrolled 两种状态。渲染值先 clamp 到 `min..max`，再规范为 `start <= end`。
+
+`viewProps` 作为两个真实 range input 的共享 ViewHost 配置；因为 RangeSlider 内部必须拥有两个不同的原生 host，RangeSlider 的 `viewProps` 不开放单一 `id / ref` 覆盖。
+
+## 18.15A.2 Native interaction 与 thumb 边界
+
+两个 thumb 都继续由真实 `<input type="range">` 提供：
+
+```text
+track click
+thumb drag
+Arrow keys
+Home / End
+PageUp / PageDown
+focus
+native form participation
+```
+
+不创建自定义 ARIA slider 状态机。
+
+start thumb 不能越过 end thumb；end thumb 不能越过 start thumb。拖动或键盘操作到另一端当前值时直接停住，不交换两个 thumb 的身份。
+
+track 点击必须由离点击位置最近的 thumb 接管。框架按两个 thumb 当前中心的中点划分两个原生 range 的 pointer hit region；实际数值跳转与后续 drag 仍由命中的原生 range 自己处理，不另造 pointer-value 映射。
+
+两个 thumb 的实体圆形区域发生重叠时，重叠命中区域由 start thumb（较小值语义）优先接管；完全重合时整枚重合 thumb 的 pointer 命中也归 start。end thumb 仍可通过正常键盘 focus 独立操作。
+
+## 18.15A.3 Visual
+
+RangeSlider **完整复用 Slider 视觉体系**，不新增 `RangeSliderTheme`，全部视觉读取：
+
+```text
+theme.components.Slider
+```
+
+因此以下内容与 Slider 完全相同：
+
+```text
+small / medium / large
+trackHeight
+thumbSize
+thumbTrackGap
+trackColor / trackShadow
+fillColor / activeTrackShadow
+thumb background / border / shadow
+hover / press
+Switch thumbDragShrink / thumbDragMaxWidth
+focus outline
+disabled opacity
+step dot / center dot
+motion.spring.snappy
+reduced motion
+fieldGap
+```
+
+几何关系固定为：
+
+```text
+inactive track
+→ gap
+→ start thumb
+→ gap
+→ active raised track
+→ gap
+→ end thumb
+→ gap
+→ inactive track
+```
+
+start 到 end 之间是 Slider 的 active raised surface；两侧是 Slider 的 inactive recessed track。thumb 两侧都使用同一 `thumbTrackGap`，两个 thumb 都使用 Slider 同一圆形实体、center dot、shadow 与抓取 shape。
+
+RangeSlider 与 Slider 共用同一个 value axis。显式 `step > 0` 时，共用 Slider 的 step dot 尺寸、端点规则与位置映射；落在闭区间 `[start, end]` 内的 dot 使用 active 状态，区间外使用 inactive 状态。未显式传入 `step` 时不渲染 step dot。
+
+## 18.15A.4 Label 与 accessibility
+
+高层 `label` 与 Slider 一样，是旁边的普通可见文本，不建立原生 `<label htmlFor>` 激活关系，并继续使用 `theme.components.Slider.base.fieldGap`。
+
+两个原生 range 需要能被辅助技术分别区分：
+
+```text
+startLabel -> start range 的附加 accessible name
+endLabel   -> end range 的附加 accessible name
+```
+
+RangeSlider 为这两个字符串建立 visually-hidden 文本并通过 `aria-labelledby` 与公共 `label` / FormField label / `viewProps.labelledBy` 合并；不使用第二套 ARIA slider role。
+
+## 18.15A.5 FormData / reset
+
+```text
+startName -> start 原生 range input 的 name
+endName   -> end 原生 range input 的 name
+```
+
+因此两个值直接按两个真实 range input 参与 FormData。disabled 时遵循原生 disabled form-control 语义。
+
+uncontrolled RangeSlider 必须响应真实 `form.reset()` / `<button type="reset">`，恢复 `defaultValue`；未提供 `defaultValue` 时恢复 `[min, max]`。
 
 ---
 
@@ -4684,6 +4823,8 @@ FormError       -> body-small / danger
 
 ```text
 Slider.name
+RangeSlider.startName
+RangeSlider.endName
 Select.name
 Combobox.name
 Switch.name
@@ -4691,6 +4832,8 @@ Switch.value
 ```
 
 `Slider.name` 直接设置真实 range input 的 name。
+
+`RangeSlider.startName / endName` 分别设置两个真实 range input 的 name；两个值独立参与 FormData。
 
 `Select` 有已选择 value 且设置了 `name` 时，通过原生 hidden input 向 FormData 提交 selected value；未选择时不提交该 name；disabled 时不提交。
 
@@ -4704,7 +4847,7 @@ Select / Combobox / Switch 的 hidden form proxy 只承担 FormData participatio
 
 真实 `<button type="reset">` / `form.reset()` 必须恢复 uncontrolled Weave form controls 的默认值。
 
-当前覆盖 Input、Slider、Select、Combobox、Switch；Radio / Checkbox 直接依赖浏览器原生 reset。
+当前覆盖 Input、Slider、RangeSlider、Select、Combobox、Switch；Radio / Checkbox 直接依赖浏览器原生 reset。
 
 controlled control 继续由调用方拥有状态；native reset 不得擅自改变 controlled value，也不得触发其 value-change callback。
 
@@ -7917,7 +8060,7 @@ Weave 公开 API
 ├─ 公开组件
 │  ├─ Text / Image / Icon / Avatar
 │  ├─ Input / Button / Link / Card
-│  ├─ Slider / Switch / Radio / Checkbox
+│  ├─ Slider / RangeSlider / Switch / Radio / Checkbox
 │  ├─ Progress / Skeleton / Divider
 │  ├─ Badge / ToolTip / Popover / Dialog
 │  ├─ Select / SelectOption

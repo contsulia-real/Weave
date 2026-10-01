@@ -7,42 +7,10 @@ import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { ensureSliderStylesheet } from '../renderers/dom/slider-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { formFieldAssociationOverrides, useFormFieldContext } from './internal/form-field-context'
+import { clampSliderValue, sliderProgress, sliderStepPoints } from './internal/slider-values'
 import { useFormReset } from './internal/use-form-reset'
 import { useSliderInteraction } from './internal/use-slider-interaction'
 import { useViewHost } from './internal/use-view-host'
-
-function clampSliderValue(value: number, min: number, max: number): number {
-  return Math.min(max, Math.max(min, value))
-}
-
-function sliderProgress(value: number, min: number, max: number): number {
-  if (max <= min) return 0
-  return ((value - min) / (max - min)) * 100
-}
-
-function sliderStepPoints(min: number, max: number, step: number): number[] {
-  if (
-    !Number.isFinite(min) ||
-    !Number.isFinite(max) ||
-    !Number.isFinite(step) ||
-    step <= 0 ||
-    max <= min
-  ) {
-    return []
-  }
-
-  const intervals = Math.floor((max - min) / step + 1e-9)
-  const points = Array.from({ length: intervals + 1 }, (_, index) => {
-    const value = min + index * step
-    return Math.min(max, value)
-  })
-
-  if (points[points.length - 1] !== max) {
-    points.push(max)
-  }
-
-  return points
-}
 
 export function Slider({
   value,
@@ -162,8 +130,8 @@ export function Slider({
     >
       <span className="weave-slider__visual" aria-hidden="true">
         <span className="weave-slider__range">
-          <span className="weave-slider__active-track" />
-          <span className="weave-slider__inactive-track" />
+          <span className="weave-slider__track weave-slider__track--active weave-slider__active-track" />
+          <span className="weave-slider__track weave-slider__track--inactive weave-slider__inactive-track" />
           <span className="weave-slider__steps">
             {stepPoints.map((point, index) => {
               const pointProgress = sliderProgress(point, min, max)

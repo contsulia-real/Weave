@@ -36,6 +36,7 @@ export type { PresenceProps } from './components/Presence'
 export { Presence } from './components/Presence'
 export { Progress } from './components/Progress'
 export { Radio } from './components/Radio'
+export { RangeSlider } from './components/RangeSlider'
 export { Row } from './components/Row'
 export { Select } from './components/Select'
 export { SelectOption } from './components/SelectOption'
@@ -259,6 +260,9 @@ export type {
   SkeletonViewProps,
 } from './core/skeleton-types'
 export type {
+  RangeSliderProps,
+  RangeSliderValue,
+  RangeSliderViewProps,
   SliderProps,
   SliderSize,
   SliderViewProps,

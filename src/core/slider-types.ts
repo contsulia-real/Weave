@@ -9,6 +9,10 @@ export type SliderViewProps = Omit<
 > &
   ViewDynamicBreakpointProps
 
+export type RangeSliderValue = [number, number]
+
+export type RangeSliderViewProps = Omit<SliderViewProps, 'id' | 'ref'>
+
 export interface SliderProps {
   value?: number
   defaultValue?: number
@@ -21,4 +25,21 @@ export interface SliderProps {
   label?: ReactNode
   size?: SliderSize
   viewProps?: SliderViewProps
+}
+
+export interface RangeSliderProps {
+  value?: RangeSliderValue
+  defaultValue?: RangeSliderValue
+  onChange?: (value: RangeSliderValue) => void
+  startName?: string
+  endName?: string
+  startLabel?: string
+  endLabel?: string
+  min?: number
+  max?: number
+  step?: number
+  disabled?: boolean
+  label?: ReactNode
+  size?: SliderSize
+  viewProps?: RangeSliderViewProps
 }

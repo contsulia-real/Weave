@@ -12,6 +12,7 @@ import {
   Input,
   Progress,
   Radio,
+  RangeSlider,
   Row,
   Select,
   SelectOption,
@@ -24,6 +25,7 @@ import { PlaygroundSection } from './PlaygroundSection'
 export function FormPlayground() {
   const [progressHigh, setProgressHigh] = useState(false)
   const [sliderValue, setSliderValue] = useState(40)
+  const [rangeValue, setRangeValue] = useState<[number, number]>([25, 75])
   const [formResult, setFormResult] = useState('Not submitted')
   const progress = progressHigh ? 0.82 : 0.28
 
@@ -92,6 +94,17 @@ export function FormPlayground() {
                 defaultChecked
                 label="Enabled"
                 viewProps={{ data: { testid: 'form-notifications' } }}
+              />
+            </FormField>
+
+            <FormField label="Budget range">
+              <RangeSlider
+                startName="budgetMin"
+                endName="budgetMax"
+                startLabel="Minimum budget"
+                endLabel="Maximum budget"
+                defaultValue={[20, 80]}
+                step={10}
               />
             </FormField>
           </FormFieldset>
@@ -206,6 +219,62 @@ export function FormPlayground() {
               defaultValue={65}
               label="Disabled"
               viewProps={{ data: { testid: 'slider-disabled' } }}
+            />
+          </Row>
+        </Column>
+      </PlaygroundSection>
+
+      <PlaygroundSection
+        title="RangeSlider"
+        description="完整复用 Slider 视觉与 Theme；两个真实 range input 保留原生 drag / keyboard / form 行为，thumb 不穿越，track 点击由最近 thumb 接管，重叠时 start thumb 优先命中。"
+      >
+        <Column gap={1.25} align="start">
+          <Row gap={1.5} align="center" wrap>
+            <RangeSlider
+              size="small"
+              defaultValue={[20, 70]}
+              startLabel="Small start"
+              endLabel="Small end"
+              label="Small"
+            />
+            <RangeSlider
+              size="medium"
+              defaultValue={[30, 75]}
+              startLabel="Medium start"
+              endLabel="Medium end"
+              label="Medium"
+            />
+            <RangeSlider
+              size="large"
+              defaultValue={[35, 80]}
+              startLabel="Large start"
+              endLabel="Large end"
+              label="Large"
+            />
+          </Row>
+
+          <Row gap={1.5} align="center" wrap>
+            <RangeSlider
+              value={rangeValue}
+              onChange={setRangeValue}
+              step={5}
+              startLabel="Controlled start"
+              endLabel="Controlled end"
+              label={`Controlled · ${rangeValue[0]}–${rangeValue[1]}`}
+            />
+            <RangeSlider
+              defaultValue={[50, 50]}
+              step={5}
+              startLabel="Overlap start"
+              endLabel="Overlap end"
+              label="Overlap · start wins pointer hit"
+            />
+            <RangeSlider
+              disabled
+              defaultValue={[25, 75]}
+              startLabel="Disabled start"
+              endLabel="Disabled end"
+              label="Disabled"
             />
           </Row>
         </Column>

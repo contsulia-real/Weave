@@ -36,7 +36,7 @@ The main layers are:
 
 ### Forms and status
 
-`Input`, `Select`, `SelectOption`, `Combobox`, `ComboboxOption`, `Slider`, `Switch`, `Radio`, `Checkbox`, `Progress`, `Skeleton`.
+`Input`, `Select`, `SelectOption`, `Combobox`, `ComboboxOption`, `Slider`, `RangeSlider`, `Switch`, `Radio`, `Checkbox`, `Progress`, `Skeleton`.
 
 ### Composite UI
 
