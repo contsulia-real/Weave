@@ -43,7 +43,7 @@ export function Avatar({ src, name, fallback, viewProps = {} }: AvatarProps) {
   const themeClassName = useRuntimeStyleClass('avatar-theme', resolveAvatarTheme(theme))
   const [failedSource, setFailedSource] = useState<ImageSource | undefined>(undefined)
   const rootRef = useRef<HTMLDivElement | null>(null)
-  const fallbackTextRef = useRef<HTMLSpanElement | null>(null)
+  const fallbackTextRef = useRef<HTMLParagraphElement | null>(null)
   const defaultSize = length(theme.components.Avatar?.base?.defaultSize) ?? '2.5rem'
 
   useInsertionEffect(ensureAvatarStylesheet, [])
@@ -110,7 +110,7 @@ export function Avatar({ src, name, fallback, viewProps = {} }: AvatarProps) {
           }}
         />
       ) : fallbackContent === undefined || fallbackContent === null ? null : (
-        <span className="weave-avatar-fallback">
+        <div className="weave-avatar-fallback">
           {textFallback ? (
             <Text
               typo="body-large"
@@ -124,7 +124,7 @@ export function Avatar({ src, name, fallback, viewProps = {} }: AvatarProps) {
           ) : (
             fallbackContent
           )}
-        </span>
+        </div>
       )}
     </View>
   )

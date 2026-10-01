@@ -62,7 +62,7 @@ export function Badge({
             }
           }}
         >
-          {dot ? null : <Text typo={theme.components.Badge?.base?.typo}>{content.text}</Text>}
+          {dot ? null : <Text>{content.text}</Text>}
         </span>
       ) : null}
     </div>

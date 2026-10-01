@@ -88,7 +88,6 @@ export function Select({
   const listboxRef = useRef<HTMLDivElement>(null)
 
   const { theme, reducedMotion } = useTheme()
-  const inputBaseTheme = theme.components.Input?.base
   const inputThemeClassName = useRuntimeStyleClass('input-theme', resolveInputTheme(theme))
   const themeClassName = useRuntimeStyleClass('select-theme', resolveSelectTheme(theme))
   const exitDuration = durationMilliseconds(theme.tokens.motion?.duration?.fast, 120)
@@ -387,7 +386,6 @@ export function Select({
               })}
 
           <Text
-            typo={inputBaseTheme?.typo ?? 'body-large'}
             viewProps={{
               className: selected === undefined ? 'weave-select__placeholder' : undefined,
             }}

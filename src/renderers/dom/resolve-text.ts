@@ -46,6 +46,24 @@ function applyTypographyPreset(
   )
 }
 
+function resolveDecoration(props: TextStyleProps | TextResponsiveProps): string | undefined {
+  if (
+    props.underline === undefined &&
+    props.strikethrough === undefined &&
+    props.overline === undefined
+  ) {
+    return undefined
+  }
+
+  const lines = [
+    props.underline ? 'underline' : undefined,
+    props.strikethrough ? 'line-through' : undefined,
+    props.overline ? 'overline' : undefined,
+  ].filter((value): value is string => value !== undefined)
+
+  return lines.length === 0 ? 'none' : lines.join(' ')
+}
+
 function resolveTextStyle(
   props: TextStyleProps | TextResponsiveProps | undefined,
   breakpoint?: string,
@@ -95,6 +113,11 @@ function resolveTextStyle(
     output[variable('text-transform', breakpoint)] = props.case
   }
 
+  const decoration = resolveDecoration(props)
+  if (decoration !== undefined) {
+    output[variable('text-decoration-line', breakpoint)] = decoration
+  }
+
   return output
 }
 
@@ -103,8 +126,38 @@ export function resolveTextResponsiveStyle(input: {
   responsive?: Readonly<Record<string, TextResponsiveProps | undefined>>
 }): TextVariableStyle {
   const output = resolveTextStyle(input.base)
+  const decorationState = {
+    underline: input.base.underline,
+    strikethrough: input.base.strikethrough,
+    overline: input.base.overline,
+  }
 
   for (const [breakpoint, value] of Object.entries(input.responsive ?? {})) {
+    if (value === undefined) continue
+
+    const hasDecorationOverride =
+      value.underline !== undefined ||
+      value.strikethrough !== undefined ||
+      value.overline !== undefined
+
+    if (hasDecorationOverride) {
+      if (value.underline !== undefined) decorationState.underline = value.underline
+      if (value.strikethrough !== undefined) decorationState.strikethrough = value.strikethrough
+      if (value.overline !== undefined) decorationState.overline = value.overline
+
+      Object.assign(
+        output,
+        resolveTextStyle(
+          {
+            ...value,
+            ...decorationState,
+          },
+          breakpoint,
+        ),
+      )
+      continue
+    }
+
     Object.assign(output, resolveTextStyle(value, breakpoint))
   }
 

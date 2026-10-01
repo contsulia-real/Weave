@@ -1,6 +1,7 @@
 import { IconBell, IconSearch, IconSearchFilled, IconSettings, IconUser } from '@tabler/icons-react'
 import {
   Avatar,
+  Code,
   Column,
   createTheme,
   Icon,
@@ -93,6 +94,15 @@ export function FoundationVisualPlayground() {
           <Text typo="label-large">Label large</Text>
           <Text typo="label-medium">Label medium</Text>
           <Text typo="label-small">Label small</Text>
+          <Text typo="body-medium" underline>
+            Underline
+          </Text>
+          <Text typo="body-medium" strikethrough>
+            Strikethrough
+          </Text>
+          <Text typo="body-medium" underline overline>
+            Underline + overline
+          </Text>
           <Text
             typo="body-medium"
             viewProps={{
@@ -104,6 +114,16 @@ export function FoundationVisualPlayground() {
             Mono family token — 0123456789
           </Text>
         </Column>
+      </PlaygroundSection>
+
+      <PlaygroundSection
+        title="Code"
+        description="Shiki syntax highlighting · language is always explicit; Code uses the Weave mono typography context and theme-backed CSS-variable colors."
+      >
+        <Code
+          language="tsx"
+          viewProps={{ width: 'fill' }}
+        >{`function Greeting({ name }: { name: string }) {\n  return <Text typo="title-medium">Hello {name}</Text>\n}`}</Code>
       </PlaygroundSection>
 
       <PlaygroundSection

@@ -12,7 +12,7 @@ export default defineConfig({
       fileName: 'weave',
     },
     rollupOptions: {
-      external: ['react', 'react-dom', 'react-dom/client', 'react/jsx-runtime'],
+      external: ['react', 'react-dom', 'react-dom/client', 'react/jsx-runtime', 'shiki'],
     },
   },
 })

@@ -8,6 +8,7 @@ export { Badge } from './components/Badge'
 export { Button } from './components/Button'
 export { Card } from './components/Card'
 export { Checkbox } from './components/Checkbox'
+export { Code } from './components/Code'
 export { Column } from './components/Column'
 export { Combobox } from './components/Combobox'
 export { ComboboxOption } from './components/ComboboxOption'
@@ -103,6 +104,11 @@ export type {
   RadioProps,
   RadioViewProps,
 } from './core/choice-types'
+export type {
+  CodeLanguage,
+  CodeProps,
+  CodeViewProps,
+} from './core/code-types'
 export type {
   ComboboxFilter,
   ComboboxFilterOption,
@@ -311,6 +317,7 @@ export type {
   TextBreakpointProps,
   TextCase,
   TextColor,
+  TextHostElement,
   TextOverflow,
   TextProps,
   TextResponsiveProps,

@@ -48,15 +48,7 @@ function App() {
                   Weave playground
                 </Text>
 
-                <Text
-                  typo="display-large"
-                  viewProps={{
-                    role: 'heading',
-                    level: 1,
-                  }}
-                >
-                  Weave
-                </Text>
+                <Text typo="display-large">Weave</Text>
 
                 <Text
                   typo="body-medium"

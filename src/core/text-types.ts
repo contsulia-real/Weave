@@ -57,13 +57,18 @@ export interface TextStyleProps {
   overflow?: TextOverflow
   maxLines?: number
   case?: TextCase
+  underline?: boolean
+  strikethrough?: boolean
+  overline?: boolean
 }
 
 export type TextResponsiveProps = Partial<TextStyleProps>
 
-export type TextViewProps = Omit<ViewCoreProps<HTMLSpanElement>, 'children' | 'color'> &
+export type TextHostElement = HTMLHeadingElement | HTMLParagraphElement | HTMLSpanElement
+
+export type TextViewProps = Omit<ViewCoreProps<TextHostElement>, 'children' | 'color'> &
   ViewDynamicBreakpointProps & {
-    ref?: Ref<HTMLSpanElement>
+    ref?: Ref<TextHostElement>
   }
 
 export type TextBreakpointProps = Partial<Record<DefaultBreakpointName, TextResponsiveProps>>

@@ -1738,6 +1738,9 @@ wrap
 overflow
 maxLines
 case
+underline
+strikethrough
+overline
 ```
 
 ### typo
@@ -1798,21 +1801,18 @@ Playground 的普通说明文字使用 `body-medium`；`body-small` 保留给 ca
 </Text>
 ```
 
-标题语义与视觉排版保持分离，通过统一语义层表达：
+`typo` 同时决定 Text 的默认语义宿主标签；字号与字重等视觉值仍完全来自 Weave typography token，不使用浏览器默认标题/段落样式。固定映射为：
 
-```tsx
-<Text
-  typo="display-large"
-  viewProps={{
-    role: "heading",
-    level: 1,
-  }}
->
-  Weave
-</Text>
+```text
+display-*  -> <h1>
+headline-* -> <h2>
+title-*    -> <h3>
+body-*     -> <p>
+label-*    -> <span>
+无 typo     -> <span>
 ```
 
-DOM 实现将 `level` 映射到 `aria-level`。
+Text 会清除这些原生元素自带的 margin，最终视觉仍由 Weave 自己的 typo / 显式文本属性控制。响应式 `typo` 只切换排版样式，不在 breakpoint 变化时替换 DOM；宿主标签始终由基础 `typo` 决定。调用方仍可通过 `viewProps` 补充 ARIA 语义，但不再需要为了普通标题手工写 `role="heading" / level`。
 
 ### size
 
@@ -1910,6 +1910,18 @@ lowercase
 capitalize
 ```
 
+### decoration
+
+Text 直接提供三个可组合的布尔属性：
+
+```text
+underline
+strikethrough
+overline
+```
+
+它们统一映射到 `text-decoration-line`。可以单独使用，也可以组合；显式传 `false` 可在响应式层级关闭对应 decoration。
+
 ## 11.2 Text 的子内容
 
 `Text` 是否允许以及允许哪些 `children`，遵循其对应 DOM 元素的内容模型。
@@ -1935,6 +1947,41 @@ import { IconArrowRight } from "@tabler/icons-react"
   <Icon icon={IconArrowRight} />
 </Text>
 ```
+
+---
+
+# 11A. `Code`
+
+`Code` 用于渲染带语法高亮的代码块，语法解析与 tokenization 直接使用 Shiki。Weave 不实现自己的语法分析器，也不做语言自动探测。
+
+基础 API：
+
+```tsx
+<Code language="tsx">{source}</Code>
+```
+
+`language` 是必填属性，必须显式指定 Shiki 支持的 bundled language。没有 `language` 的调用无效。
+
+自定义语言使用：
+
+```tsx
+<Code language="custom" syntax={languageRegistration}>
+  {source}
+</Code>
+```
+
+约束固定为：
+
+```text
+language = "custom"  -> syntax 必填，类型为 Shiki LanguageRegistration
+language != "custom" -> syntax 禁止传入
+```
+
+这组约束同时由 TypeScript discriminated union 和运行时校验保证。`syntax` 直接作为 Shiki grammar registration 使用，不是另一个语言名称字符串。
+
+Code 输出使用 Shiki 的 `<pre><code>` 结果；高亮主题采用 Shiki CSS-variable theme，并映射到当前 Weave color token。代码字体使用 `theme.tokens.typography.family.mono`。Code 自身不增加另一套 Theme component，也不自动添加 surface、padding 或装饰；这些容器视觉继续通过 `viewProps` 控制。
+
+Shiki 是 Weave 的运行时依赖，并在 library bundle 中保持 external，不把整套 Shiki 语言实现复制进 Weave bundle。
 
 ---
 
@@ -8058,7 +8105,7 @@ Weave 公开 API
 │      └─ 对 View 布局能力的受约束封装，不增加额外 DOM
 │
 ├─ 公开组件
-│  ├─ Text / Image / Icon / Avatar
+│  ├─ Text / Code / Image / Icon / Avatar
 │  ├─ Input / Button / Link / Card
 │  ├─ Slider / RangeSlider / Switch / Radio / Checkbox
 │  ├─ Progress / Skeleton / Divider

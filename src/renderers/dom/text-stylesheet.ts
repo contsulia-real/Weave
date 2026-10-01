@@ -8,6 +8,7 @@ const TEXT_STYLE_PROPERTIES = [
   'text-wrap',
   'text-overflow',
   'text-transform',
+  'text-decoration-line',
   'max-lines',
 ] as const
 
@@ -37,6 +38,7 @@ const fallbackFor = (property: TextStyleProperty) => {
     case 'white-space':
     case 'text-wrap':
     case 'text-transform':
+    case 'text-decoration-line':
       return 'inherit'
     case 'text-overflow':
       return 'clip'
@@ -62,6 +64,7 @@ const stylesheet = `
 ${propertyRegistrationBlock()}
 
 :where([data-weave-text]) {
+  margin: 0;
   ${declarationBlock()}
 }
 

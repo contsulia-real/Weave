@@ -1,4 +1,5 @@
 import type { FormEventHandler, ReactNode, Ref } from 'react'
+import type { TextHostElement } from './text-types'
 import type { ViewCoreProps, ViewDynamicBreakpointProps } from './view-types'
 
 export type FormViewProps = Omit<
@@ -14,9 +15,9 @@ export type FormFieldViewProps = Omit<ViewCoreProps<HTMLDivElement>, 'children'>
     ref?: Ref<HTMLDivElement>
   }
 
-export type FormTextViewProps = Omit<ViewCoreProps<HTMLSpanElement>, 'children'> &
+export type FormTextViewProps = Omit<ViewCoreProps<TextHostElement>, 'children'> &
   ViewDynamicBreakpointProps & {
-    ref?: Ref<HTMLSpanElement>
+    ref?: Ref<TextHostElement>
   }
 
 export type FormFieldsetViewProps = Omit<ViewCoreProps<HTMLFieldSetElement>, 'children'> &

@@ -39,6 +39,7 @@ const expectedRuntimeExports = [
   'Button',
   'Card',
   'Checkbox',
+  'Code',
   'Column',
   'Combobox',
   'ComboboxOption',
@@ -166,6 +167,10 @@ assert(typeSource.includes('StackProps'), 'Built declarations are missing StackP
 assert(typeSource.includes('AvatarProps'), 'Built declarations are missing AvatarProps')
 assert(typeSource.includes('BadgeProps'), 'Built declarations are missing BadgeProps')
 assert(typeSource.includes('CardProps'), 'Built declarations are missing CardProps')
+assert(typeSource.includes('CodeProps'), 'Built declarations are missing CodeProps')
+assert(typeSource.includes('CodeLanguage'), 'Built declarations are missing CodeLanguage')
+assert(typeSource.includes('CodeViewProps'), 'Built declarations are missing CodeViewProps')
+assert(typeSource.includes('TextHostElement'), 'Built declarations are missing TextHostElement')
 assert(typeSource.includes('FormProps'), 'Built declarations are missing FormProps')
 assert(typeSource.includes('FormFieldProps'), 'Built declarations are missing FormFieldProps')
 assert(typeSource.includes('FormLabelProps'), 'Built declarations are missing FormLabelProps')
@@ -257,6 +262,7 @@ for (const name of expectedThemeTypeExports) {
   assert(typeSource.includes(name), `Built declarations are missing theme type export: ${name}`)
 }
 
+assert(/from\s*["']shiki["']/.test(runtimeSource), 'Built package must keep shiki external')
 assert(
   /from\s*["']react-dom\/client["']/.test(runtimeSource),
   'Built package must keep react-dom/client external',

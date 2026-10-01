@@ -1,11 +1,21 @@
-import { useInsertionEffect } from 'react'
-import type { TextProps, TextResponsiveProps } from '../core/text-types'
+import { createElement, useInsertionEffect } from 'react'
+import type { TextHostElement, TextProps, TextResponsiveProps, TextTypo } from '../core/text-types'
 import type { ViewProps, ViewResponsiveStyle } from '../core/view-types'
 import { breakpointEntries } from '../renderers/dom/breakpoint-utils'
 import { resolveTextResponsiveStyle } from '../renderers/dom/resolve-text'
 import { ensureTextStylesheet } from '../renderers/dom/text-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { useViewHost } from './internal/use-view-host'
+
+type TextTag = 'h1' | 'h2' | 'h3' | 'p' | 'span'
+
+function textTagForTypo(typo: TextTypo | undefined): TextTag {
+  if (typo?.startsWith('display-')) return 'h1'
+  if (typo?.startsWith('headline-')) return 'h2'
+  if (typo?.startsWith('title-')) return 'h3'
+  if (typo?.startsWith('body-')) return 'p'
+  return 'span'
+}
 
 function colorStyle(value: TextResponsiveProps | undefined): ViewResponsiveStyle | undefined {
   return value?.color === undefined ? undefined : { color: value.color }
@@ -51,6 +61,9 @@ export function Text(props: TextProps) {
     overflow,
     maxLines,
     case: textCase,
+    underline,
+    strikethrough,
+    overline,
   } = props
 
   const { theme } = useTheme()
@@ -60,7 +73,7 @@ export function Text(props: TextProps) {
   const responsiveText: Record<string, TextResponsiveProps | undefined> = {}
   const responsiveAttributes: Record<string, string> = {}
 
-  const hostProps: ViewProps<HTMLSpanElement> = {
+  const hostProps: ViewProps<TextHostElement> = {
     ...viewProps,
     color,
   }
@@ -93,6 +106,9 @@ export function Text(props: TextProps) {
       overflow,
       maxLines,
       case: textCase,
+      underline,
+      strikethrough,
+      overline,
     },
     responsive: responsiveText,
   })
@@ -105,21 +121,21 @@ export function Text(props: TextProps) {
 
   useInsertionEffect(ensureTextStylesheet, [])
 
-  return (
-    <span
-      {...resolved.domProps}
-      {...responsiveAttributes}
-      ref={elementRef}
-      data-weave-view=""
-      data-weave-text=""
-      data-weave-text-typo={typo}
-      data-weave-layout={resolved.layout}
-      data-weave-text-overflow={overflow}
-      data-weave-text-max-lines={maxLines === undefined ? undefined : String(maxLines)}
-      className={['weave-text', className].filter(Boolean).join(' ')}
-      style={inlineStyle}
-    >
-      {children}
-    </span>
+  return createElement(
+    textTagForTypo(typo),
+    {
+      ...resolved.domProps,
+      ...responsiveAttributes,
+      ref: elementRef,
+      'data-weave-view': '',
+      'data-weave-text': '',
+      'data-weave-text-typo': typo,
+      'data-weave-layout': resolved.layout,
+      'data-weave-text-overflow': overflow,
+      'data-weave-text-max-lines': maxLines === undefined ? undefined : String(maxLines),
+      className: ['weave-text', className].filter(Boolean).join(' '),
+      style: inlineStyle,
+    },
+    children,
   )
 }

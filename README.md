@@ -32,7 +32,7 @@ The main layers are:
 
 ### Content and actions
 
-`Text`, `Image`, `Icon`, `Avatar`, `Divider`, `Link`, `Badge`, `Button`, `Card`.
+`Text`, `Code`, `Image`, `Icon`, `Avatar`, `Divider`, `Link`, `Badge`, `Button`, `Card`.
 
 ### Forms and status
 

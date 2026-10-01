@@ -12,15 +12,7 @@ export function PlaygroundSection({
 }) {
   return (
     <Column gap={0.75}>
-      <Text
-        typo="headline-small"
-        viewProps={{
-          role: 'heading',
-          level: 2,
-        }}
-      >
-        {title}
-      </Text>
+      <Text typo="headline-small">{title}</Text>
 
       {description === undefined ? null : (
         <Text typo="body-medium" color="secondary">
