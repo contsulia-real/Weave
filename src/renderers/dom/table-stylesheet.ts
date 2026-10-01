@@ -21,8 +21,8 @@ const stylesheet = `
 }
 
 :where(.weave-table__table) {
-  width: 100%;
-  min-width: max-content;
+  width: max-content;
+  min-width: 100%;
   border-collapse: separate;
   border-spacing: 0;
   color: var(--weave-table-color);

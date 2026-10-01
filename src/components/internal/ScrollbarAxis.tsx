@@ -6,6 +6,7 @@ import type { ScrollbarOrientation } from './scrollbar-types'
 interface ScrollbarAxisProps {
   orientation: ScrollbarOrientation
   size: ScrollbarSize
+  outside?: boolean
   themeTokenClassName?: string
   scrollbarThemeClassName?: string
   hitRegionRef: RefObject<HTMLDivElement | null>
@@ -25,6 +26,7 @@ interface ScrollbarAxisProps {
 export function ScrollbarAxis({
   orientation,
   size,
+  outside = false,
   themeTokenClassName,
   scrollbarThemeClassName,
   hitRegionRef,
@@ -41,6 +43,7 @@ export function ScrollbarAxis({
       className={[
         'weave-scrollbar',
         `weave-scrollbar--${size}`,
+        outside ? 'weave-scrollbar--outside' : undefined,
         themeTokenClassName,
         scrollbarThemeClassName,
         `weave-scrollbar--${orientation}`,
@@ -55,6 +58,7 @@ export function ScrollbarAxis({
         'weave-scrollbar': '',
         'weave-scrollbar-orientation': orientation,
         'weave-scrollbar-visible': 'false',
+        'weave-scrollbar-outside': outside ? 'true' : 'false',
       }}
     >
       <ScrollbarView

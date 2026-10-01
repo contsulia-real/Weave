@@ -3234,10 +3234,13 @@ size
   small
   medium
   large
+outside
 color
 radius
 opacity
 ```
+
+`outside` 默认 `false`。默认 Scrollbar 保持当前 inside overlay：hit region 与 thumb 向宿主内部投影。`outside` 为 `true` 时复用同一套滚动源、thumb 长度、拖动与圆角安全区几何，但不再向宿主内部 translate；vertical Scrollbar 位于宿主右侧之外，horizontal Scrollbar 位于宿主下侧之外，thumb 从宿主外边缘一侧 inset。
 
 不提供 `tracked` 或 `trackColor`；Scrollbar 没有第二套带轨道的视觉模式。
 
@@ -4262,7 +4265,7 @@ onSelect?
 viewProps
 ```
 
-默认宽度为 `fill`。Table 自己提供横向滚动，并继续复用 Weave 的 View / Scrollbar 基础设施；内容宽度超过容器时不要求调用方额外包 scroll View。
+默认宽度为 `fill`。Table 自己提供横向滚动，并继续复用 Weave 的 View / Scrollbar 基础设施；内容宽度超过容器时不要求调用方额外包 scroll View。 内部原生 `<table>` 使用 `width: max-content; min-width: 100%`：内容较少时至少铺满容器，单列也可以占满整张 Table；内容或显式列宽超过容器时才产生横向 overflow。
 
 ## 18.12B.1 Density
 

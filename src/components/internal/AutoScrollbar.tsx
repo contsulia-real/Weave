@@ -90,6 +90,7 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
       <ScrollbarAxis
         orientation="vertical"
         size={size}
+        outside={config?.outside}
         themeTokenClassName={themeTokenClassName}
         scrollbarThemeClassName={scrollbarThemeClassName}
         hitRegionRef={verticalHitRegionRef}
@@ -102,6 +103,7 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
       <ScrollbarAxis
         orientation="horizontal"
         size={size}
+        outside={config?.outside}
         themeTokenClassName={themeTokenClassName}
         scrollbarThemeClassName={scrollbarThemeClassName}
         hitRegionRef={horizontalHitRegionRef}

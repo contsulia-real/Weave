@@ -72,7 +72,7 @@ export function FoundationLayoutPlayground() {
             dense
             verticalBorders
             stickyHeader
-            viewProps={{ maxHeight: 12, overflowY: 'auto' }}
+            viewProps={{ maxHeight: 12, overflowY: 'auto', scrollbar: { outside: true } }}
           >
             <TableHeader>
               <TableRow>
