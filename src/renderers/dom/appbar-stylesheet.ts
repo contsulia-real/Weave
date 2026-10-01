@@ -5,6 +5,7 @@ const stylesheet = `
   --weave-component-display: grid;
   --weave-component-grid-template-columns: max-content minmax(0, 1fr) max-content;
   --weave-component-align-items: center;
+  --weave-component-align-self: center;
   --weave-component-width: 100%;
   --weave-component-min-height: var(--weave-appbar-theme-medium-height);
   --weave-component-background: var(--weave-appbar-theme-background);

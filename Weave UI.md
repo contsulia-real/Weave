@@ -3492,6 +3492,8 @@ release
 
 这套反馈模拟“可按下实体”，与 Button 的行为语义一致。
 
+Button 的实体 depth 只向下延伸，因此三档 size 的内容盒都必须用 `feedback.restDepth` 做静态视觉补偿：`paddingBottom = paddingY - feedback.restDepth`。`paddingTop` 保持原始 `paddingY`。该补偿只使用 rest depth，不随 hover / press 的动态 depth 改变，避免交互状态触发布局跳动；hover / press 仍只通过现有 transform 与 box-shadow 表达深度变化。
+
 具体动力学不写死在 Button 私有常量中，而读取：
 
 ```text
@@ -4132,7 +4134,7 @@ large:
   titleTypo = title-large
 ```
 
-这些值来自 `theme.components.AppBar.sizes`，不是 renderer 常量。`marginX` 不作用于 AppBar 宿主：`leading` 只使用左 margin，`title` 使用左右 margin，`trailing` 只使用右 margin。相邻 slot 之间不会把两份 margin 叠加；`leading / trailing` 内多个 action 的间距仍由 `gap` 控制。 AppBar 宿主本身使用纵向居中对齐；`leading / title / trailing` 三个 slot 也必须各自纵向居中，其中 title slot 使用 flex vertical centering，不能只依赖文字自身 line-height。
+这些值来自 `theme.components.AppBar.sizes`，不是 renderer 常量。`marginX` 不作用于 AppBar 宿主：`leading` 只使用左 margin，`title` 使用左右 margin，`trailing` 只使用右 margin。相邻 slot 之间不会把两份 margin 叠加；`leading / trailing` 内多个 action 的间距仍由 `gap` 控制。 AppBar 宿主本身除了对内部 grid items 使用 `align-items: center`，还必须使用 `align-self: center` 在父布局中纵向居中；`leading / title / trailing` 三个 slot 也必须各自 `align-self: center`，其中 title slot 使用 flex vertical centering，不能只依赖文字自身 line-height。
 
 ## 18.12A.3 三区域与 titleAlign
 
