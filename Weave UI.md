@@ -4812,11 +4812,15 @@ Splitter 的视觉 thickness 与 pointer hit area 必须分离。`thickness?: Le
 
 ```ts
 collapsible?: false | 'start' | 'end' | 'both'
+collapsed?: false | 'start' | 'end'
+defaultCollapsed?: false | 'start' | 'end'
+onCollapsedChange?: (collapsed: false | 'start' | 'end') => void
 collapseThreshold?: Length
 expandThreshold?: Length
+disabled?: boolean
 ```
 
-默认 `collapsible = false`。`collapseThreshold` 默认 0；设置正值后，pointer 拖动可以越过正常 min 约束进入 collapse zone。`expandThreshold` 是折叠 Pane 重新展开的独立阈值；未显式提供时默认复用 `collapseThreshold`。
+默认 `collapsible = false`。`collapsed / defaultCollapsed / onCollapsedChange` 提供受控 / 非受控折叠状态；`collapsible` 只决定用户是否能通过 splitter 把对应 Pane 拖入折叠状态，不限制外部受控状态。`collapseThreshold` 默认 0；设置正值后，pointer 拖动可以越过正常 min 约束进入 collapse zone。`expandThreshold` 是折叠 Pane 重新展开的独立阈值；未显式提供时默认复用 `collapseThreshold`。
 
 collapse 在 pointer move 跨过阈值时立即判定：
 
@@ -4830,7 +4834,9 @@ collapse 在 pointer move 跨过阈值时立即判定：
 
 不增加默认 expand button，也不定义双击折叠。
 
-键盘方向键只执行正常 resize clamp；collapse threshold 属于 pointer release 行为。已经折叠时，朝展开方向的键盘 resize 会恢复到合法范围。
+键盘方向键只执行正常 resize clamp；collapse / expand threshold 只属于 pointer drag，不由键盘触发。已经折叠时，朝展开方向的键盘 resize 会恢复到合法范围。
+
+`disabled=true` 只禁用 splitter interaction：splitter 仍保留视觉与 `role="separator"`，但移出 Tab 顺序、标记 `aria-disabled=true`，并禁用 pointer / keyboard resize。
 
 ## 18.18.4 SplitBoxPane
 
@@ -5536,6 +5542,153 @@ exitScale
 ```
 
 这些 Dialog theme 字段只作用于 modal 原生 Dialog；non-modal 直接继承 Popover 的 theme 与 stylesheet。
+
+---
+# 19.8 `Drawer`
+
+`Drawer` 是同一份 drawer content 在 modal / non-modal 两种布局模型之间切换的响应式容器。它不是单纯的 overlay。
+
+```tsx
+<Drawer
+  drawer={<Navigation />}
+  open={open}
+  onOpenChange={setOpen}
+>
+  <MainContent />
+</Drawer>
+```
+
+`children` 始终是主视图，`drawer` 始终是 Drawer 内容。
+
+## 19.8.1 Mode 与 breakpoint
+
+```ts
+mode?: 'auto' | 'modal' | 'non-modal'
+breakpoint?: string
+side?: 'left' | 'right' | 'top' | 'bottom'
+```
+
+默认：
+
+```text
+mode = auto
+breakpoint = md
+side = right
+```
+
+`auto` 使用当前 Theme breakpoint：viewport 小于 breakpoint 时为 modal，大于等于 breakpoint 时为 non-modal。默认主题下 `md = 48rem`。显式 `mode="modal"` 或 `mode="non-modal"` 时忽略 breakpoint。
+
+SSR / 没有 `matchMedia` 时先按 modal 处理。`auto` 指定当前 Theme 中不存在的 breakpoint 时直接抛出明确错误，不静默 fallback。modal ↔ non-modal 切换不改变 `open`，也不触发 `onOpenChange`。
+
+## 19.8.2 Open 与 size
+
+```ts
+open?: boolean
+defaultOpen?: boolean
+onOpenChange?: (open: boolean) => void
+
+size?: Length
+defaultSize?: Length
+onSizeChange?: (size: string) => void
+minSize?: Length
+```
+
+`open` 使用标准受控 / 非受控模型。non-modal 下 `open=false` 等价于 Drawer 侧 Pane 折叠到 0；Drawer 内容保持 mounted 并 inert。重新打开时继续使用之前保存的 Drawer size。
+
+`size / defaultSize / onSizeChange` 控制 Drawer 自身沿 `side` 主轴的尺寸。都未提供时默认 `20rem`；`minSize` 默认 `12rem`。left/right 控制宽度，top/bottom 控制高度。auto 模式切换时保留当前 resize 后的尺寸；modal 下尺寸受 viewport 上限约束。
+
+## 19.8.3 Non-modal = SplitBox
+
+non-modal Drawer 必须直接复用 `SplitBox`，不能复制 splitter、键盘 resize、collapse 或 threshold 实现。
+
+```ts
+resizable?: boolean
+collapseThreshold?: Length
+expandThreshold?: Length
+```
+
+默认：
+
+```text
+resizable = true
+collapseThreshold = 2rem
+expandThreshold = 4rem
+```
+
+Drawer 位于 left/top 时复用 start Pane，位于 right/bottom 时复用 end Pane。拖动进入 `collapseThreshold` 时立即吸附关闭并请求 `onOpenChange(false)`；从折叠状态向外拖过 `expandThreshold` 时立即吸附到 `minSize` 并请求 `onOpenChange(true)`，之后继续按正常 SplitBox resize。
+
+`resizable=false` 映射到 SplitBox `disabled`：splitter 视觉仍存在，但不能 pointer / keyboard resize，也不进入 Tab 顺序。
+
+non-modal 不产生 backdrop、不让主内容 inert、不做 focus containment，也不显示 DrawerHandle。surface 不使用 ambient shadow；Drawer 与主视图的可拖边界由 SplitBox splitter 表达。
+
+## 19.8.4 Modal = native Dialog
+
+modal Drawer 直接复用 modal `Dialog` 的原生 `<dialog>.showModal()` 基础：top layer、背景 inert、focus containment、Escape、backdrop 与 restoreFocus 不另造第二套。
+
+默认：
+
+```text
+closeOnEscape = true
+closeOnBackdrop = true
+restoreFocus = true
+```
+
+支持 `initialFocus`。Drawer content 在 modal / non-modal 切换时不会重新创建 React subtree；同一 content host 在两个宿主之间移动，因此内部 React state 必须保持。模式切换本身不执行 restoreFocus。
+
+modal surface 贴对应 viewport edge；只有朝内容侧的两个角使用 Drawer radius，贴 viewport 的两个角为 0。
+
+## 19.8.5 DrawerHandle 与 drag / swipe close
+
+```tsx
+<DrawerHandle />
+```
+
+`DrawerHandle` 只能用于 Drawer 的 `drawer` 内容内。它在 modal 模式是 drag / swipe-to-close 的唯一起手区；在 non-modal 模式自动隐藏，因为 resize affordance 已经由 SplitBox splitter 提供。Handle 不是按钮，不承担 click-to-close。
+
+```ts
+closeThreshold?: Length
+```
+
+默认 `closeThreshold = 4rem`。mouse / pen / touch 统一使用 pointer gesture：
+
+- left 向左拖关闭；
+- right 向右拖关闭；
+- top 向上拖关闭；
+- bottom 向下拖关闭。
+
+surface 跟随 pointer 移动；release 时距离达到 threshold 就请求关闭，否则吸附回完全打开位置。pointer cancel 也回到打开位置。不增加 velocity / fling 判定。
+
+## 19.8.6 Overflow 与 Theme
+
+Drawer surface 内容溢出时必须使用现有 Weave AutoScrollbar，隐藏浏览器原生 scrollbar。`drawerViewProps.scrollbar` 继续配置该 scrollbar。
+
+Drawer 默认视觉来自：
+
+```text
+theme.components.Drawer.base
+```
+
+字段：
+
+```text
+background
+color
+borderColor
+borderWidth
+radius
+paddingX
+paddingY
+shadow
+backdropColor
+handleColor
+handleLength
+handleThickness
+handleRadius
+```
+
+默认视觉与 modal Dialog 的 surface 色系一致：`surface / tertiary / outline / 1px / 1rem padding / large shadow / 0.48 backdrop`。large shadow 只作用于 modal；non-modal 不使用 backdrop 与 ambient shadow。
+
+`viewProps` 配置 Drawer 的整体布局 root；`drawerViewProps` 配置 Drawer surface。
 
 ---
 # 20. `Snack`

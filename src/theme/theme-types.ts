@@ -500,6 +500,26 @@ export interface DialogTheme {
   base?: DialogThemeBase
 }
 
+export interface DrawerThemeBase {
+  background?: string
+  color?: string
+  borderColor?: string
+  borderWidth?: ThemeScaleValue
+  radius?: ThemeScaleValue
+  paddingX?: ThemeScaleValue
+  paddingY?: ThemeScaleValue
+  shadow?: string
+  backdropColor?: string
+  handleColor?: string
+  handleLength?: ThemeScaleValue
+  handleThickness?: ThemeScaleValue
+  handleRadius?: ThemeScaleValue
+}
+
+export interface DrawerTheme {
+  base?: DrawerThemeBase
+}
+
 export interface PopoverThemeBase {
   background?: string
   color?: string
@@ -739,6 +759,7 @@ export interface ThemeComponents {
   Scrollbar?: ScrollbarTheme
   ToolTip?: ToolTipTheme
   Dialog?: DialogTheme
+  Drawer?: DrawerTheme
   Popover?: PopoverTheme
   Menu?: MenuTheme
   Snack?: SnackTheme

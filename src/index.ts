@@ -13,6 +13,8 @@ export { Combobox } from './components/Combobox'
 export { ComboboxOption } from './components/ComboboxOption'
 export { Dialog } from './components/Dialog'
 export { Divider } from './components/Divider'
+export { Drawer } from './components/Drawer'
+export { DrawerHandle } from './components/DrawerHandle'
 export { Flex } from './components/Flex'
 export { Form } from './components/Form'
 export { FormDescription } from './components/FormDescription'
@@ -125,6 +127,15 @@ export type {
   DividerProps,
   DividerViewProps,
 } from './core/divider-types'
+export type {
+  DrawerHandleProps,
+  DrawerHandleViewProps,
+  DrawerMode,
+  DrawerProps,
+  DrawerSide,
+  DrawerSurfaceViewProps,
+  DrawerViewProps,
+} from './core/drawer-types'
 export type {
   FormDescriptionProps,
   FormErrorProps,
@@ -266,6 +277,7 @@ export type {
   SnackViewProps,
 } from './core/snack-types'
 export type {
+  SplitBoxCollapsed,
   SplitBoxCollapsible,
   SplitBoxControlledProps,
   SplitBoxDirection,
@@ -381,6 +393,8 @@ export type {
   DialogThemeBase,
   DividerTheme,
   DividerThemeBase,
+  DrawerTheme,
+  DrawerThemeBase,
   FormTheme,
   FormThemeBase,
   IconTheme,

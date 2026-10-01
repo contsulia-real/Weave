@@ -11,6 +11,8 @@ import {
   ComboboxOption,
   Dialog,
   Divider,
+  Drawer,
+  DrawerHandle,
   Menu,
   MenuItem,
   Popover,
@@ -341,6 +343,62 @@ function DialogPlayground() {
   )
 }
 
+function DrawerPlayground() {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <Column gap={0.75} align="start" width="fill">
+      <Text typo="body-small" color="secondary">
+        auto · md breakpoint · wide viewport = non-modal SplitBox · narrow viewport = modal
+      </Text>
+
+      <Drawer
+        open={open}
+        onOpenChange={setOpen}
+        minSize={10}
+        collapseThreshold={2}
+        expandThreshold={4}
+        drawer={
+          <Column gap={0.75} height="fill">
+            <DrawerHandle />
+            <Text typo="title-medium">Responsive Drawer</Text>
+            <Text typo="body-small" color="secondary">
+              Wide: drag the SplitBox splitter into the collapse / expand thresholds. Narrow: drag
+              this handle toward the right edge to close.
+            </Text>
+            <Button
+              text="Close Drawer"
+              size="small"
+              variant="secondary"
+              viewProps={{ onClick: () => setOpen(false) }}
+            />
+          </Column>
+        }
+        viewProps={{
+          width: 'fill',
+          maxWidth: 34,
+          height: 14,
+          border: 0.0625,
+          borderColor: 'outline',
+          borderStyle: 'dashed',
+        }}
+      >
+        <Column gap={0.75} padding={1} align="start">
+          <Text typo="title-medium">Main view</Text>
+          <Text typo="body-small" color="secondary">
+            Drawer content keeps the same React state when auto mode crosses the md breakpoint.
+          </Text>
+          <Button
+            text={open ? 'Drawer is open' : 'Open Drawer'}
+            size="small"
+            viewProps={{ onClick: () => setOpen(true) }}
+          />
+        </Column>
+      </Drawer>
+    </Column>
+  )
+}
+
 function SelectPlayground() {
   const [value, setValue] = useState('design')
 
@@ -532,6 +590,13 @@ export function FoundationControlPlayground() {
         description="非模态 Dialog 直接封装 Popover，跟随 trigger 定位；modal 才使用原生 <dialog>.showModal()，由浏览器提供 top layer、backdrop、背景 inert 与 focus containment。"
       >
         <DialogPlayground />
+      </PlaygroundSection>
+
+      <PlaygroundSection
+        title="Drawer"
+        description="响应式 Drawer：默认 auto 在 md 以下使用原生 modal Dialog，在 md 以上进入 SplitBox non-modal 布局；支持 splitter 自动吸附、显式 resizable=false，以及 modal DrawerHandle drag / swipe-to-close。"
+      >
+        <DrawerPlayground />
       </PlaygroundSection>
 
       <PlaygroundSection

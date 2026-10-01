@@ -23,6 +23,7 @@ export {
 } from './component-theme/lists'
 export {
   resolveDialogTheme,
+  resolveDrawerTheme,
   resolveMenuTheme,
   resolvePopoverTheme,
   resolveSnackTheme,

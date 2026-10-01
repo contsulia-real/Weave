@@ -558,6 +558,61 @@ describe('SplitBox', () => {
     rect.mockRestore()
   })
 
+  it('supports controlled collapse state and disables splitter interaction without removing it', () => {
+    const onCollapsedChange = vi.fn()
+    const { getByRole, getByTestId, rerender } = render(
+      <SplitBox
+        size="12rem"
+        collapsed="start"
+        onCollapsedChange={onCollapsedChange}
+        disabled
+        viewProps={{ data: { testid: 'splitbox' } }}
+      >
+        <SplitBoxPane viewProps={{ data: { testid: 'start' } }}>
+          <Text>Start</Text>
+        </SplitBoxPane>
+        <SplitBoxPane>
+          <Text>End</Text>
+        </SplitBoxPane>
+      </SplitBox>,
+    )
+
+    const root = getByTestId('splitbox')
+    const separator = getByRole('separator')
+
+    expect(root.getAttribute('data-weave-splitbox-collapsed')).toBe('start')
+    expect(root.getAttribute('data-weave-splitbox-disabled')).toBe('true')
+    expect(getByTestId('start').hasAttribute('inert')).toBe(true)
+    expect(separator.getAttribute('aria-disabled')).toBe('true')
+    expect(separator.tabIndex).toBe(-1)
+
+    fireEvent.pointerDown(separator, { button: 0, pointerId: 1, clientX: 100 })
+    expect(root.getAttribute('data-weave-splitbox-dragging')).toBe('false')
+    expect(onCollapsedChange).not.toHaveBeenCalled()
+
+    rerender(
+      <SplitBox
+        size="12rem"
+        collapsed={false}
+        onCollapsedChange={onCollapsedChange}
+        viewProps={{ data: { testid: 'splitbox' } }}
+      >
+        <SplitBoxPane viewProps={{ data: { testid: 'start' } }}>
+          <Text>Start</Text>
+        </SplitBoxPane>
+        <SplitBoxPane>
+          <Text>End</Text>
+        </SplitBoxPane>
+      </SplitBox>,
+    )
+
+    expect(root.getAttribute('data-weave-splitbox-collapsed')).toBe('false')
+    expect(root.getAttribute('data-weave-splitbox-disabled')).toBe('false')
+    expect(getByTestId('start').hasAttribute('inert')).toBe(false)
+    expect(getByRole('separator').getAttribute('aria-disabled')).toBeNull()
+    expect(getByRole('separator').tabIndex).toBe(0)
+  })
+
   it('uses the controlled size until the owner updates it', () => {
     const { getByTestId, rerender } = render(
       <SplitBox size="12rem" viewProps={{ data: { testid: 'splitbox' } }}>

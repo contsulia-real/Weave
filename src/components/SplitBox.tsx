@@ -12,7 +12,12 @@ import {
   useRef,
   useState,
 } from 'react'
-import type { SplitBoxCollapsible, SplitBoxDirection, SplitBoxProps } from '../core/splitbox-types'
+import type {
+  SplitBoxCollapsed,
+  SplitBoxCollapsible,
+  SplitBoxDirection,
+  SplitBoxProps,
+} from '../core/splitbox-types'
 import { length } from '../core/values'
 import type { Length, ViewProps } from '../core/view-types'
 import { resolveSplitBoxTheme } from '../renderers/dom/resolve-component-theme'
@@ -24,6 +29,14 @@ import { useViewHost } from './internal/use-view-host'
 import { SplitBoxPane } from './SplitBoxPane'
 
 type CollapsedPane = 'start' | 'end' | null
+
+function collapsedPane(value: SplitBoxCollapsed): CollapsedPane {
+  return value === false ? null : value
+}
+
+function publicCollapsed(value: CollapsedPane): SplitBoxCollapsed {
+  return value ?? false
+}
 
 interface DragGeometry {
   pointerId: number
@@ -129,10 +142,14 @@ export function SplitBox(props: SplitBoxProps) {
     minEnd = 0,
     maxEnd = '100%',
     collapsible = false,
+    collapsed: controlledCollapsed,
+    defaultCollapsed = false,
+    onCollapsedChange,
     collapseThreshold = 0,
     expandThreshold = collapseThreshold,
     step = 0.5,
     thickness,
+    disabled = false,
     onChange,
     viewProps = {},
   } = props
@@ -144,7 +161,14 @@ export function SplitBox(props: SplitBoxProps) {
   )
   const resolvedSize = controlled ? props.size : uncontrolledSize
   const [dragSize, setDragSize] = useState<number | null>(null)
-  const [collapsed, setCollapsed] = useState<CollapsedPane>(null)
+  const collapsedControlled = controlledCollapsed !== undefined
+  const [uncontrolledCollapsed, setUncontrolledCollapsed] =
+    useState<SplitBoxCollapsed>(defaultCollapsed)
+  const resolvedCollapsed = collapsedPane(
+    collapsedControlled ? controlledCollapsed : uncontrolledCollapsed,
+  )
+  const [dragCollapsed, setDragCollapsed] = useState<CollapsedPane | undefined>(undefined)
+  const effectiveCollapsed = dragCollapsed === undefined ? resolvedCollapsed : dragCollapsed
   const [valuePercent, setValuePercent] = useState<number | null>(null)
   const dragRef = useRef<DragGeometry | null>(null)
 
@@ -222,6 +246,20 @@ export function SplitBox(props: SplitBoxProps) {
     setValuePercent(percent)
   }, [readGeometry])
 
+  const requestCollapsed = useCallback(
+    (next: CollapsedPane) => {
+      const current = dragRef.current?.collapsed ?? resolvedCollapsed
+      if (current === next) return
+
+      if (!collapsedControlled) {
+        setUncontrolledCollapsed(publicCollapsed(next))
+      }
+
+      onCollapsedChange?.(publicCollapsed(next))
+    },
+    [collapsedControlled, onCollapsedChange, resolvedCollapsed],
+  )
+
   useEffect(() => {
     const root = elementRef.current
     if (root === null) return
@@ -236,7 +274,7 @@ export function SplitBox(props: SplitBoxProps) {
       cancelAnimationFrame(frame)
       observer?.disconnect()
     }
-  }, [collapsed, elementRef, resolvedSize, syncValuePercent])
+  }, [effectiveCollapsed, elementRef, resolvedSize, syncValuePercent])
 
   const commitSize = useCallback(
     (next: number) => {
@@ -252,7 +290,7 @@ export function SplitBox(props: SplitBoxProps) {
   )
 
   const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
-    if (event.button !== 0) return
+    if (disabled || event.button !== 0) return
 
     const geometry = readGeometry()
     if (geometry === null) return
@@ -269,9 +307,10 @@ export function SplitBox(props: SplitBoxProps) {
       upper: geometry.upper,
       collapseThreshold: geometry.collapseThreshold,
       expandThreshold: geometry.expandThreshold,
-      collapsed,
+      collapsed: resolvedCollapsed,
       raw: geometry.start,
     }
+    setDragCollapsed(resolvedCollapsed)
     setDragSize(geometry.start)
   }
 
@@ -289,25 +328,29 @@ export function SplitBox(props: SplitBoxProps) {
       if (raw < drag.expandThreshold) {
         visible = 0
       } else {
+        requestCollapsed(null)
         drag.collapsed = null
-        setCollapsed(null)
+        setDragCollapsed(null)
         visible = clamp(raw, drag.lower, drag.upper)
       }
     } else if (drag.collapsed === 'end') {
       if (drag.available - raw < drag.expandThreshold) {
         visible = drag.available
       } else {
+        requestCollapsed(null)
         drag.collapsed = null
-        setCollapsed(null)
+        setDragCollapsed(null)
         visible = clamp(raw, drag.lower, drag.upper)
       }
     } else if (allowsStartCollapse(collapsible) && raw <= drag.collapseThreshold) {
+      requestCollapsed('start')
       drag.collapsed = 'start'
-      setCollapsed('start')
+      setDragCollapsed('start')
       visible = 0
     } else if (allowsEndCollapse(collapsible) && drag.available - raw <= drag.collapseThreshold) {
+      requestCollapsed('end')
       drag.collapsed = 'end'
-      setCollapsed('end')
+      setDragCollapsed('end')
       visible = drag.available
     } else if (raw < drag.lower && allowsStartCollapse(collapsible)) {
       visible = raw
@@ -332,15 +375,18 @@ export function SplitBox(props: SplitBoxProps) {
           ? drag.available
           : clamp(drag.raw, drag.lower, drag.upper)
 
+    requestCollapsed(nextCollapsed)
     dragRef.current = null
     setDragSize(null)
-    setCollapsed(nextCollapsed)
+    setDragCollapsed(undefined)
     setValuePercent(drag.available <= 0 ? 0 : (next / drag.available) * 100)
     commitSize(next)
     event.currentTarget.releasePointerCapture?.(event.pointerId)
   }
 
   const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (disabled) return
+
     let sign = 0
 
     if (direction === 'horizontal') {
@@ -362,7 +408,7 @@ export function SplitBox(props: SplitBoxProps) {
     const stepPx = Math.max(0, measureLength(root, step, direction, 0))
     const next = clamp(geometry.start + stepPx * sign, geometry.lower, geometry.upper)
 
-    setCollapsed(null)
+    requestCollapsed(null)
     setValuePercent(geometry.available <= 0 ? 0 : (next / geometry.available) * 100)
     commitSize(next)
   }
@@ -385,16 +431,16 @@ export function SplitBox(props: SplitBoxProps) {
   const startPaneContext = useMemo(
     () => ({
       position: 'start' as const,
-      collapsed: collapsed === 'start',
+      collapsed: effectiveCollapsed === 'start',
     }),
-    [collapsed],
+    [effectiveCollapsed],
   )
   const endPaneContext = useMemo(
     () => ({
       position: 'end' as const,
-      collapsed: collapsed === 'end',
+      collapsed: effectiveCollapsed === 'end',
     }),
-    [collapsed],
+    [effectiveCollapsed],
   )
 
   return (
@@ -405,7 +451,8 @@ export function SplitBox(props: SplitBoxProps) {
       data-weave-splitbox=""
       data-weave-splitbox-direction={direction}
       data-weave-splitbox-dragging={dragSize === null ? 'false' : 'true'}
-      data-weave-splitbox-collapsed={collapsed ?? 'false'}
+      data-weave-splitbox-collapsed={effectiveCollapsed ?? 'false'}
+      data-weave-splitbox-disabled={disabled ? 'true' : 'false'}
       data-weave-layout={resolved.layout}
       className={['weave-splitbox', themeClassName, className].filter(Boolean).join(' ')}
       style={{ ...semanticStyle, ...inlineStyle }}
@@ -416,7 +463,8 @@ export function SplitBox(props: SplitBoxProps) {
 
       <div
         role="separator"
-        tabIndex={0}
+        tabIndex={disabled ? -1 : 0}
+        aria-disabled={disabled || undefined}
         aria-orientation={direction === 'horizontal' ? 'vertical' : 'horizontal'}
         aria-valuemin={0}
         aria-valuemax={100}

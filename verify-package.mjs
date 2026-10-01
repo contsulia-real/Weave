@@ -43,6 +43,8 @@ const expectedRuntimeExports = [
   'Combobox',
   'ComboboxOption',
   'Dialog',
+  'Drawer',
+  'DrawerHandle',
   'Flex',
   'Form',
   'FormDescription',
@@ -142,6 +144,10 @@ assert(
   'Built declarations are missing NonModalDialogProps',
 )
 assert(typeSource.includes('DividerProps'), 'Built declarations are missing DividerProps')
+assert(typeSource.includes('DrawerProps'), 'Built declarations are missing DrawerProps')
+assert(typeSource.includes('DrawerHandleProps'), 'Built declarations are missing DrawerHandleProps')
+assert(typeSource.includes('DrawerMode'), 'Built declarations are missing DrawerMode')
+assert(typeSource.includes('DrawerSide'), 'Built declarations are missing DrawerSide')
 assert(typeSource.includes('SelectProps'), 'Built declarations are missing SelectProps')
 assert(typeSource.includes('SelectOptionProps'), 'Built declarations are missing SelectOptionProps')
 assert(typeSource.includes('ComboboxProps'), 'Built declarations are missing ComboboxProps')
@@ -180,6 +186,7 @@ assert(
   typeSource.includes('SplitBoxCollapsible'),
   'Built declarations are missing SplitBoxCollapsible',
 )
+assert(typeSource.includes('SplitBoxCollapsed'), 'Built declarations are missing SplitBoxCollapsed')
 assert(typeSource.includes('ListProps'), 'Built declarations are missing ListProps')
 assert(typeSource.includes('LinkProps'), 'Built declarations are missing LinkProps')
 assert(typeSource.includes('AccordionProps'), 'Built declarations are missing AccordionProps')
@@ -223,6 +230,8 @@ const expectedThemeTypeExports = [
   'CardTheme',
   'SkeletonTheme',
   'DialogTheme',
+  'DrawerTheme',
+  'DrawerThemeBase',
   'FormTheme',
   'FormThemeBase',
   'AccordionTheme',

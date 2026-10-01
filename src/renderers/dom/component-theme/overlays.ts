@@ -49,6 +49,26 @@ export function resolveDialogTheme(theme: ResolvedTheme): RuntimeStyleDeclaratio
   }
 }
 
+export function resolveDrawerTheme(theme: ResolvedTheme): RuntimeStyleDeclarations {
+  const base = theme.components.Drawer?.base
+
+  return {
+    '--weave-drawer-background': color(base?.background),
+    '--weave-drawer-color': color(base?.color),
+    '--weave-drawer-border-color': color(base?.borderColor),
+    '--weave-drawer-border-width': length(base?.borderWidth),
+    '--weave-drawer-radius': radius(base?.radius),
+    '--weave-drawer-padding-x': length(base?.paddingX),
+    '--weave-drawer-padding-y': length(base?.paddingY),
+    '--weave-drawer-shadow': shadowToken(base?.shadow),
+    '--weave-drawer-backdrop-color': color(base?.backdropColor),
+    '--weave-drawer-handle-color': color(base?.handleColor),
+    '--weave-drawer-handle-length': length(base?.handleLength),
+    '--weave-drawer-handle-thickness': length(base?.handleThickness),
+    '--weave-drawer-handle-radius': radius(base?.handleRadius),
+  }
+}
+
 export function resolvePopoverTheme(theme: ResolvedTheme): RuntimeStyleDeclarations {
   const base = theme.components.Popover?.base
 

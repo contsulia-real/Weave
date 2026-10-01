@@ -136,6 +136,11 @@ const stylesheet = `
   outline: none;
 }
 
+:where(.weave-splitbox[data-weave-splitbox-disabled="true"] > .weave-splitbox-splitter) {
+  pointer-events: none;
+  cursor: default;
+}
+
 :where(.weave-splitbox[data-weave-splitbox-direction="horizontal"] > .weave-splitbox-splitter) {
   grid-column: 2;
   grid-row: 1;
@@ -180,12 +185,14 @@ const stylesheet = `
   transform: translateY(-50%);
 }
 
-:where(.weave-splitbox-splitter:hover)::before {
+:where(
+  .weave-splitbox[data-weave-splitbox-disabled="false"] > .weave-splitbox-splitter:hover
+)::before {
   background: var(--weave-splitbox-hover-color);
 }
 
 :where(
-  .weave-splitbox[data-weave-splitbox-direction="horizontal"]
+  .weave-splitbox[data-weave-splitbox-direction="horizontal"][data-weave-splitbox-disabled="false"]
     > .weave-splitbox-splitter:hover
 )::before,
 :where(
@@ -196,7 +203,7 @@ const stylesheet = `
 }
 
 :where(
-  .weave-splitbox[data-weave-splitbox-direction="vertical"]
+  .weave-splitbox[data-weave-splitbox-direction="vertical"][data-weave-splitbox-disabled="false"]
     > .weave-splitbox-splitter:hover
 )::before,
 :where(

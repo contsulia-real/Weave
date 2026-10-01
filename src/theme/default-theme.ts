@@ -925,6 +925,23 @@ export const defaultTheme: ResolvedTheme = {
         exitScale: 0.98,
       },
     },
+    Drawer: {
+      base: {
+        background: 'surface',
+        color: 'tertiary',
+        borderColor: 'outline',
+        borderWidth: 0.0625,
+        radius: 'large',
+        paddingX: 1,
+        paddingY: 1,
+        shadow: 'large',
+        backdropColor: 'rgb(0 0 0 / 0.48)',
+        handleColor: 'secondary',
+        handleLength: 2,
+        handleThickness: 0.25,
+        handleRadius: 'full',
+      },
+    },
     Popover: {
       base: {
         background: 'surface',

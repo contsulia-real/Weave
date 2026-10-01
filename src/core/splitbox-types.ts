@@ -3,6 +3,7 @@ import type { Length, ViewCoreProps, ViewDynamicBreakpointProps } from './view-t
 
 export type SplitBoxDirection = 'horizontal' | 'vertical'
 export type SplitBoxCollapsible = false | 'start' | 'end' | 'both'
+export type SplitBoxCollapsed = false | 'start' | 'end'
 
 export type SplitBoxViewProps = Omit<
   ViewCoreProps<HTMLDivElement>,
@@ -25,10 +26,14 @@ interface SplitBoxBaseProps {
   minEnd?: Length
   maxEnd?: Length
   collapsible?: SplitBoxCollapsible
+  collapsed?: SplitBoxCollapsed
+  defaultCollapsed?: SplitBoxCollapsed
+  onCollapsedChange?: (collapsed: SplitBoxCollapsed) => void
   collapseThreshold?: Length
   expandThreshold?: Length
   step?: Length
   thickness?: Length
+  disabled?: boolean
   onChange?: (size: string) => void
   viewProps?: SplitBoxViewProps
 }
