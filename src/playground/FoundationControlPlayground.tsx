@@ -398,6 +398,7 @@ function DrawerPlayground() {
           mode="modal"
           open={modalOpen}
           onOpenChange={setModalOpen}
+          side="left"
           drawer={
             <Column gap={0.75} height="fill">
               <Text typo="title-medium">Forced modal Drawer</Text>
