@@ -5621,6 +5621,8 @@ Drawer 位于 left/top 时复用 start Pane，位于 right/bottom 时复用 end 
 
 non-modal 不产生 backdrop、不让主内容 inert、不做 focus containment，也不显示 DrawerHandle。surface 不使用 ambient shadow；Drawer 与主视图的可拖边界由 SplitBox splitter 表达。
 
+non-modal 的 `SplitBoxPane` 必须继续保持纯布局槽位，Drawer surface 必须作为 Pane 内部的独立元素存在，不能把 surface 的 padding / border / background 直接施加到 Pane 本身。这样 Pane 折叠到 0 时由 Pane 的 `overflow: hidden` 完整裁掉 surface，关闭状态不得残留任何 Drawer padding、border 或内容绘制。
+
 ## 19.8.4 Modal = native Dialog
 
 modal Drawer 直接复用 modal `Dialog` 的原生 `<dialog>.showModal()` 基础：top layer、背景 inert、focus containment、Escape、backdrop 与 restoreFocus 不另造第二套。

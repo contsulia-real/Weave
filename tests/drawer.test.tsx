@@ -85,7 +85,12 @@ describe('Drawer', () => {
     expect(root.getAttribute('data-weave-splitbox-direction')).toBe('horizontal')
     expect(root.getAttribute('data-weave-splitbox-collapsed')).toBe('false')
     expect(surface).not.toBeNull()
-    expect(surface?.getAttribute('data-weave-splitbox-pane-position')).toBe('start')
+    const pane = surface?.closest<HTMLElement>('[data-weave-splitbox-pane]') ?? null
+    expect(pane).not.toBeNull()
+    expect(surface).not.toBe(pane)
+    expect(pane?.getAttribute('data-weave-splitbox-pane-position')).toBe('start')
+    expect(pane?.className).toContain('weave-drawer-pane')
+    expect(surface?.className).toContain('weave-scroll-host')
     expect(separator.getAttribute('aria-disabled')).toBeNull()
     expect(getByTestId('drawer-handle').getAttribute('data-weave-drawer-handle-active')).toBe(
       'false',
@@ -104,7 +109,13 @@ describe('Drawer', () => {
     )
 
     expect(root.getAttribute('data-weave-splitbox-collapsed')).toBe('start')
-    expect(surface?.hasAttribute('inert')).toBe(true)
+    expect(pane?.hasAttribute('inert')).toBe(true)
+    expect(surface?.hasAttribute('inert')).toBe(false)
+
+    const drawerStyles = document.querySelector<HTMLStyleElement>('style[data-weave-drawer-styles]')
+    expect(drawerStyles?.textContent).toContain(
+      '.weave-splitbox-pane.weave-drawer-pane {\n  overflow: hidden;',
+    )
   })
 
   it('keeps a non-modal splitter visible but non-interactive when resize is disabled', () => {

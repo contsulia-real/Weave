@@ -26,6 +26,7 @@ import { DrawerHandleContext } from './internal/drawer-context'
 import { useControllableBoolean } from './internal/use-controllable-boolean'
 import { SplitBox } from './SplitBox'
 import { SplitBoxPane } from './SplitBoxPane'
+import { View } from './View'
 
 const DEFAULT_SIZE: Length = 20
 const DEFAULT_MIN_SIZE: Length = 12
@@ -445,7 +446,10 @@ export function Drawer(props: DrawerProps) {
     'weave-drawer-side': side,
   }
 
-  const nonModalPaneViewProps = {
+  const nonModalSurfaceViewProps: ViewProps<HTMLDivElement> = {
+    width: 'fill',
+    height: 'fill',
+    overflow: 'auto',
     ...restDrawerViewProps,
     className: [surfaceClassName, 'weave-drawer-surface--non-modal'].filter(Boolean).join(' '),
     style: drawerStyle,
@@ -474,8 +478,10 @@ export function Drawer(props: DrawerProps) {
   const collapsed: SplitBoxCollapsed = effectiveMode === 'modal' || !resolvedOpen ? position : false
 
   const drawerPane = (
-    <SplitBoxPane viewProps={nonModalPaneViewProps}>
-      <div ref={nonModalMountRef} className="weave-drawer-content-mount" />
+    <SplitBoxPane viewProps={{ className: 'weave-drawer-pane' }}>
+      <View {...nonModalSurfaceViewProps}>
+        <div ref={nonModalMountRef} className="weave-drawer-content-mount" />
+      </View>
     </SplitBoxPane>
   )
 

@@ -6,6 +6,10 @@ const stylesheet = `
   display: contents;
 }
 
+.weave-splitbox-pane.weave-drawer-pane {
+  overflow: hidden;
+}
+
 .weave-drawer-surface {
   --weave-component-background: var(--weave-drawer-background);
   --weave-component-color: var(--weave-drawer-color);
