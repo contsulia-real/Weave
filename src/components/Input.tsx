@@ -180,12 +180,11 @@ function SingleLineInput({
       data-weave-input-has-leading-icon={hasLeadingIcon ? 'true' : 'false'}
       data-weave-input-has-trailing-icon={hasTrailingIcon ? 'true' : 'false'}
     >
-      {leadingIcon === undefined
-        ? null
-        : renderIconSource(leadingIcon, {
-            size: 'small',
-            viewProps: { className: 'weave-input__leading-icon' },
-          })}
+      {leadingIcon === undefined ? null : (
+        <span className="weave-input__leading-icon" aria-hidden="true">
+          {renderIconSource(leadingIcon, { size: 'small' })}
+        </span>
+      )}
 
       {input}
 
@@ -205,12 +204,11 @@ function SingleLineInput({
         />
       ) : null}
 
-      {trailingIcon === undefined
-        ? null
-        : renderIconSource(trailingIcon, {
-            size: 'small',
-            viewProps: { className: 'weave-input__trailing-icon' },
-          })}
+      {trailingIcon === undefined ? null : (
+        <span className="weave-input__trailing-icon" aria-hidden="true">
+          {renderIconSource(trailingIcon, { size: 'small' })}
+        </span>
+      )}
     </span>
   )
 }

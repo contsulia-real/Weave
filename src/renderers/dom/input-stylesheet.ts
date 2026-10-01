@@ -84,9 +84,12 @@ const stylesheet = `
   --weave-component-display: block;
 }
 
-:where(.weave-input[type="search"]::-webkit-search-cancel-button) {
+.weave-input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
   appearance: none;
-  display: none;
+  width: 0;
+  height: 0;
+  margin: 0;
 }
 
 :where(.weave-input-root) {
