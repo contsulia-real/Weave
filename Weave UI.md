@@ -3045,7 +3045,7 @@ linear
 />
 ```
 
-不确定 `linear` 必须在自身边界内同时裁切 X / Y 两轴，并保持连续的水平运动。实现需要让至少一个前景运动段持续处于可视运动阶段；单个运动段只能在完全离开可视区域后复位，因此循环边界不能出现可见空档、跳变、停顿或越界覆盖相邻内容。
+linear 支持 `direction?: "horizontal" | "vertical"`，默认 `horizontal`；同时支持 `inverse?: boolean`，默认 `false`。确定进度默认 horizontal 从左向右填充、vertical 从下向上填充；inverse 后分别改为从右向左、从上向下填充。不确定 `linear` 也必须沿同一 direction + inverse 主轴方向运动，并在自身边界内同时裁切 X / Y 两轴。实现需要让至少一个前景运动段持续处于可视运动阶段；单个运动段只能在完全离开可视区域后复位，因此循环边界不能出现可见空档、跳变、停顿或越界覆盖相邻内容。`direction` / `inverse` 只影响 `mode="linear"`；spin 不使用方向轴。
 
 默认：
 
@@ -3110,6 +3110,8 @@ tracked
 size
 color
 speed
+direction
+inverse
 viewProps
 ```
 
@@ -3123,6 +3125,8 @@ type ProgressProps =
     size?: "small" | "medium" | "large"
     color?: Color
     speed?: "slow" | "normal" | "fast" | number
+    direction?: "horizontal" | "vertical"
+    inverse?: boolean
     viewProps?: ViewProps
   } &
   (
@@ -4584,6 +4588,8 @@ step?: number
 disabled?: boolean
 label?: ReactNode
 size?: "small" | "medium" | "large"
+direction?: "horizontal" | "vertical"
+inverse?: boolean
 viewProps
 ```
 
@@ -4595,11 +4601,13 @@ max = 100
 step = 1
 defaultValue = min
 size = "medium"
+direction = "horizontal"
+inverse = false
 ```
 
 Slider 支持 controlled / uncontrolled 两种状态。传入 value 或 defaultValue 超出 `min..max` 时，渲染值 clamp 到当前范围。
 
-Slider 本身只支持单值 horizontal 模式；双 thumb 范围选择由独立 `RangeSlider` 提供。Slider 仍不提供 vertical / orientation、marks / ticks、tooltip、value bubble、formatter 或 `onChangeEnd`。
+Slider 本身只支持单值；双 thumb 范围选择由独立 `RangeSlider` 提供。`direction?: "horizontal" | "vertical"` 控制 value axis，默认 `horizontal`。`inverse?: boolean` 默认 `false`，只翻转 min/max 在空间里的端点，不交换 `min / max / value` 数值本身。默认 horizontal 为 min 在左、max 在右，inverse 后 min 在右、max 在左；默认 vertical 为 min 在下、max 在上，inverse 后 min 在上、max 在下。Slider 仍不提供独立 `orientation` 别名、marks / ticks、tooltip、value bubble、formatter 或 `onChangeEnd`。
 
 ## 18.15.2 Native interaction
 
@@ -4613,7 +4621,7 @@ focus
 native form participation
 ```
 
-pointer 的 click / drag 继续由统一的 Slider pointer interaction 处理，但 pointer → value 不再依赖浏览器各自的原生 range track 几何。Weave 必须使用与视觉 thumb / step dot 完全相同的 value axis：左端为 `thumbSize / 2`，右端为 `width - thumbSize / 2`，先将 pointer X 映射到该轴，再按 `min / max / step` 得到数值。这样同一 value 的可见 dot、thumb 中心与 pointer 命中位置必须严格重合。
+pointer 的 click / drag 继续由统一的 Slider pointer interaction 处理，但 pointer → value 不再依赖浏览器各自的原生 range track 几何。Weave 必须使用与视觉 thumb / step dot 完全相同的 value axis：horizontal 使用 pointer X，vertical 使用 pointer Y；轴两端都以 `thumbSize / 2` 为可达端点。默认 horizontal 的数值进度从左向右增长、默认 vertical 从下向上增长；`inverse` 时分别改为从右向左、从上向下增长。再按 `min / max / step` 得到数值。这样同一 value 的可见 dot、thumb 中心与 pointer 命中位置必须严格重合。
 
 这不是第二套 drag state machine；pointer capture、drag threshold、thumb shape 与 interaction state 仍只由现有 Slider interaction 负责，新增的 axis mapping 只是该 interaction 的唯一 pointer 数值来源。keyboard 仍由原生 range 处理。
 
@@ -4625,13 +4633,14 @@ pointer 的 click / drag 继续由统一的 Slider pointer interaction 处理，
 
 ## 18.15.4 Geometry
 
-Slider 默认宽度：
+Slider 默认主轴长度：
 
 ```text
-16rem
+horizontal -> width  = 16rem
+vertical   -> height = 16rem
 ```
 
-`viewProps.width` 可覆盖。Slider control 即使作为父布局中的 stretch item，也不得让承载 visual / input 的 grid track 独立拉伸；该 track 必须以真实 range input 的解析宽度为准，因此 visual track、marks / step dots、thumb 与 pointer hit layer 始终共享同一实际宽度。
+交叉轴默认使用当前 size 的 thumb 尺寸。horizontal 可通过 `viewProps.width` 覆盖主轴长度；vertical 可通过 `viewProps.height` 覆盖主轴长度，普通 View 宽高覆盖规则仍然有效。Slider control 即使作为父布局中的 stretch item，也不得让承载 visual / input 的 grid track 独立拉伸；该 track 必须以真实 range input 的解析尺寸为准，因此 visual track、marks / step dots、thumb 与 pointer hit layer 始终共享同一实际主轴尺寸。
 
 Slider 的基础几何采用 M3 Slider 的粗 track + 独立圆形 thumb + thumb-track gap 结构，再叠加 Weave 自己的实体层级与触感。
 
@@ -4667,7 +4676,7 @@ progress = (value - min) / (max - min)
 
 已选部分使用 `fillColor`；未选部分使用 `trackColor`。当 `max <= min` 时 progress 固定为 0。progress 表示 thumb 中心位置；active / inactive track 的内侧边界必须分别从该位置减去 / 加上 `thumbSize / 2 + thumbTrackGap`，保证视觉上始终存在真实断口。到达 max 时 inactive track 必须收敛为 0 宽，不得在 thumb 右侧残留凹槽。
 
-当调用方显式传入 `step > 0` 且范围有效时，Slider 进入离散视觉，每个从 `min` 到 `max` 的 step 都必须有明确 dot；未显式传 `step` 时完全不渲染 dot，包括 max 端。medium 的 dot 为 4px（track 高度的 1/4），small / large 按 track 比例缩放。dot 垂直严格居中；step dot 与 thumb 必须共享完全相同的 value axis，禁止再对 dot 容器做第二层左右内缩、clamp 或独立位置映射。同一个数值对应的 step dot 中心必须与该数值下的 thumb 中心完全重合，前后相邻 step 到 thumb 的中心距离必须相等。离散视觉下，两段轨道的最外侧圆角端帽圆心必须分别与 `min` / `max` 端点 step dot 的中心重合，因此轨道在对应 value axis 之外最多延伸 `trackHeight / 2`。这样端点 dot 完整位于圆角端帽中央，而不是与端帽边缘相切；该延伸不得改变 value axis、thumb gap 或内侧断口，并在对应轨道收敛为 0 时同步收敛为 0。active tick 使用 active surface 的对比色；inactive tick 使用 active color。
+当调用方显式传入 `step > 0` 且范围有效时，Slider 进入离散视觉，每个从 `min` 到 `max` 的 step 都必须有明确 dot；未显式传 `step` 时完全不渲染 dot，包括 max 端。medium 的 dot 为 4px（track 高度的 1/4），small / large 按 track 比例缩放。horizontal 时 dot 垂直严格居中，vertical 时 dot 水平严格居中；step dot 与 thumb 必须共享完全相同的 value axis，禁止再对 dot 容器做第二层主轴内缩、clamp 或独立位置映射。同一个数值对应的 step dot 中心必须与该数值下的 thumb 中心完全重合，前后相邻 step 到 thumb 的中心距离必须相等。离散视觉下，两段轨道的最外侧圆角端帽圆心必须分别与 `min` / `max` 端点 step dot 的中心重合，因此轨道在对应 value axis 之外最多延伸 `trackHeight / 2`。这样端点 dot 完整位于圆角端帽中央，而不是与端帽边缘相切；该延伸不得改变 value axis、thumb gap 或内侧断口，并在对应轨道收敛为 0 时同步收敛为 0。active tick 使用 active surface 的对比色；inactive tick 使用 active color。
 
 Slider 默认不复制一套独立的轨道视觉。未显式覆盖 Slider theme 时：
 
@@ -4784,7 +4793,9 @@ marks: readonly {
 restricted?: boolean
 ```
 
-其余 `value / defaultValue / onChange / name / min / max / step / disabled / label / size / viewProps` 与 `Slider` 相同。
+其余 `value / defaultValue / onChange / name / min / max / step / disabled / label / size / direction / inverse / viewProps` 与 `Slider` 相同。
+
+MarkSlider 永远默认提供两个端点 mark：`flag=min` 与 `flag=max`，默认 `label=<></>`。默认 `min=0 / max=100` 时因此默认存在 0 / 100 两个端点 dot。调用方在 `marks` 中显式提供与 min 或 max 相同的 `flag` 时，该显式 mark 完整覆盖对应默认端点 mark，包括 `label`，且不能重复渲染同一个 flag。
 
 每个 mark 的 `flag` 是该 mark 在 Slider value axis 上的真实数值；dot 位置直接按：
 
@@ -4805,16 +4816,16 @@ restricted?: boolean
 - pointer 点击 / 拖动得到的数值立即吸附到最近的 flag；
 - controlled / uncontrolled 的显示值都规范到最近的 flag；
 - `onChange` 只输出 flag 数值；
-- ArrowLeft / ArrowDown / PageDown 移到前一个 flag；
-- ArrowRight / ArrowUp / PageUp 移到后一个 flag；
+- `inverse=false` 时 ArrowLeft / ArrowDown / PageDown 移到前一个 flag，ArrowRight / ArrowUp / PageUp 移到后一个 flag；
+- `inverse=true` 时上述两组方向键映射交换，使键盘方向与翻转后的 value axis 一致；
 - Home / End 分别移到首 / 尾 flag；
 - restricted 模式不使用 `step` 生成中间合法值。
 
-因此 restricted 模式下 thumb 不存在位于两个 flag 之间的稳定状态。
+因此 restricted 模式下 thumb 不存在位于两个 flag 之间的稳定状态。合法 flag 集合包含合并后的默认 min/max 端点 mark，所以未显式覆盖端点时 min/max 仍然是 restricted 可停靠位置。
 
 ## 18.15B.3 Visual / Theme
 
-Mark dot 直接复用 Slider 的 `weave-slider__dot / weave-slider__step` 几何与 active / inactive 配色；只要存在 marks，就使用 dot 对应的端帽几何，与 `restricted` 是否开启无关。`restricted` 只决定 thumb 是否采用离散吸附 motion。mark flag 的视觉位置与 pointer 命中必须复用 Slider 的同一 value axis，禁止单独维护 mark 点击偏移。thumb、track、focus、disabled、drag shape 与尺寸全部继续读取：
+Mark dot 直接复用 Slider 的 `weave-slider__dot / weave-slider__step` 几何与 active / inactive 配色；只要存在 marks，就使用 dot 对应的端帽几何，与 `restricted` 是否开启无关。`restricted` 只决定 thumb 是否采用离散吸附 motion。mark flag 的视觉位置与 pointer 命中必须复用 Slider 的同一 value axis，禁止单独维护 mark 点击偏移。horizontal label 位于对应 dot 下方；vertical label 位于对应 dot 右侧；`inverse` 只翻转它们在 value axis 上的位置，不改变 label 相对轨道的侧边。thumb、track、focus、disabled、drag shape 与尺寸全部继续读取：
 
 ```text
 theme.components.Slider
@@ -4826,7 +4837,7 @@ theme.components.Slider
 
 # 18.15A `RangeSlider`
 
-`RangeSlider` 是双 thumb、水平范围滑块。它不是另一套 Slider 视觉或交互系统，而是直接复用 `Slider` 已冻结的视觉、Theme、thumb shape、step axis 与 motion，并使用两个真实 `<input type="range">` 保留浏览器原生键盘、拖动、focus 与 form participation。
+`RangeSlider` 是双 thumb 范围滑块，支持 horizontal / vertical。它不是另一套 Slider 视觉或交互系统，而是直接复用 `Slider` 已冻结的视觉、Theme、thumb shape、step axis、direction 与 motion，并使用两个真实 `<input type="range">` 保留浏览器原生键盘、focus 与 form participation。
 
 ## 18.15A.1 API
 
@@ -4852,6 +4863,8 @@ step?: number
 disabled?: boolean
 label?: ReactNode
 size?: "small" | "medium" | "large"
+direction?: "horizontal" | "vertical"
+inverse?: boolean
 viewProps
 ```
 
@@ -4863,6 +4876,8 @@ max = 100
 step = 1
 defaultValue = [min, max]
 size = "medium"
+direction = "horizontal"
+inverse = false
 ```
 
 RangeSlider 支持 controlled / uncontrolled 两种状态。渲染值先 clamp 到 `min..max`，再规范为 `start <= end`。
@@ -4935,7 +4950,7 @@ inactive track
 
 start 到 end 之间是 Slider 的 active raised surface；两侧是 Slider 的 inactive recessed track。thumb 两侧都使用同一 `thumbTrackGap`，两个 thumb 都使用 Slider 同一圆形实体、center dot、shadow 与抓取 shape。
 
-RangeSlider 与 Slider 共用同一个 value axis。显式 `step > 0` 时，共用 Slider 的 step dot 尺寸、端点规则与位置映射；落在闭区间 `[start, end]` 内的 dot 使用 active 状态，区间外使用 inactive 状态。未显式传入 `step` 时不渲染 step dot。
+RangeSlider 与 Slider 共用同一个 value axis。默认 horizontal 时 start（较小值）在左、end（较大值）在右，inverse 后 start 在右、end 在左；默认 vertical 时 start 在下、end 在上，inverse 后 start 在上、end 在下。两个 input 的 pointer hit split、thumb 中心与 step dot 都必须由同一个 direction + inverse aware axis 几何计算。显式 `step > 0` 时，共用 Slider 的 step dot 尺寸、端点规则与位置映射；落在闭区间 `[start, end]` 内的 dot 使用 active 状态，区间外使用 inactive 状态。未显式传入 `step` 时不渲染 step dot。
 
 ## 18.15A.4 Label 与 accessibility
 

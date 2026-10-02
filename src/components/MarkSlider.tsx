@@ -1,20 +1,46 @@
-import { useMemo } from 'react'
-import type { MarkSliderProps } from '../core/slider-types'
+import { Fragment, useMemo } from 'react'
+import type { MarkSliderMark, MarkSliderProps } from '../core/slider-types'
 import { SingleSlider } from './internal/SingleSlider'
 
-export function MarkSlider({ marks, restricted = false, ...props }: MarkSliderProps) {
+function resolvedMarks(
+  marks: readonly MarkSliderMark[],
+  min: number,
+  max: number,
+): readonly MarkSliderMark[] {
+  const merged = [...marks]
+
+  if (!marks.some((mark) => mark.flag === min)) {
+    merged.push({ flag: min, label: <Fragment /> })
+  }
+  if (max !== min && !marks.some((mark) => mark.flag === max)) {
+    merged.push({ flag: max, label: <Fragment /> })
+  }
+
+  return merged.sort((a, b) => a.flag - b.flag)
+}
+
+export function MarkSlider({
+  marks,
+  restricted = false,
+  min = 0,
+  max = 100,
+  ...props
+}: MarkSliderProps) {
+  const mergedMarks = useMemo(() => resolvedMarks(marks, min, max), [marks, max, min])
   const points = useMemo(
-    () => marks.map((mark) => ({ value: mark.flag, label: mark.label })),
-    [marks],
+    () => mergedMarks.map((mark) => ({ value: mark.flag, label: mark.label })),
+    [mergedMarks],
   )
   const restrictedValues = useMemo(
-    () => (restricted ? marks.map((mark) => mark.flag) : undefined),
-    [marks, restricted],
+    () => (restricted ? mergedMarks.map((mark) => mark.flag) : undefined),
+    [mergedMarks, restricted],
   )
 
   return (
     <SingleSlider
       {...props}
+      min={min}
+      max={max}
       points={points}
       restrictedValues={restrictedValues}
       stepped={restricted}

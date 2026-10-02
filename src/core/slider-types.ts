@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import type { ViewCoreProps, ViewDynamicBreakpointProps } from './view-types'
 
 export type SliderSize = 'small' | 'medium' | 'large'
+export type SliderDirection = 'horizontal' | 'vertical'
 
 export type SliderViewProps = Omit<
   ViewCoreProps<HTMLInputElement>,
@@ -29,6 +30,8 @@ export interface SliderProps {
   disabled?: boolean
   label?: ReactNode
   size?: SliderSize
+  direction?: SliderDirection
+  inverse?: boolean
   viewProps?: SliderViewProps
 }
 
@@ -51,5 +54,7 @@ export interface RangeSliderProps {
   disabled?: boolean
   label?: ReactNode
   size?: SliderSize
+  direction?: SliderDirection
+  inverse?: boolean
   viewProps?: RangeSliderViewProps
 }

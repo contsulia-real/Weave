@@ -1,3 +1,4 @@
+import type { SliderDirection } from '../../core/slider-types'
 import { cssLengthPixels } from './css-length-pixels'
 import { clampSliderValue } from './slider-values'
 
@@ -26,21 +27,24 @@ export interface SliderAxisGeometry {
   start: number
   length: number
   thumbSize: number
-  inputWidth: number
+  inputExtent: number
 }
 
-export function sliderAxisGeometry(input: HTMLInputElement): SliderAxisGeometry {
+export function sliderAxisGeometry(
+  input: HTMLInputElement,
+  direction: SliderDirection,
+): SliderAxisGeometry {
   const rect = input.getBoundingClientRect()
   const computed = getComputedStyle(input)
   const thumbSize = cssLengthPixels(input, computed.getPropertyValue('--weave-slider-thumb-size'))
-  const inputWidth = Math.max(0, rect.width)
-  const length = Math.max(0, inputWidth - thumbSize)
+  const inputExtent = Math.max(0, direction === 'horizontal' ? rect.width : rect.height)
+  const length = Math.max(0, inputExtent - thumbSize)
 
   return {
     start: thumbSize / 2,
     length,
     thumbSize,
-    inputWidth,
+    inputExtent,
   }
 }
 
@@ -49,29 +53,41 @@ export function sliderAxisPositionForValue(
   value: number,
   min: number,
   max: number,
+  direction: SliderDirection,
+  inverse: boolean,
 ): number {
-  const { start, length } = sliderAxisGeometry(input)
+  const { start, length, inputExtent } = sliderAxisGeometry(input, direction)
   if (max <= min || length <= 0) return start
 
   const progress = (clampSliderValue(value, min, max) - min) / (max - min)
-  return start + length * progress
+  const axisProgress = inverse ? 1 - progress : progress
+
+  return direction === 'horizontal'
+    ? start + length * axisProgress
+    : inputExtent - start - length * axisProgress
 }
 
-export function sliderValueFromClientX(
+export function sliderValueFromPointerPosition(
   input: HTMLInputElement,
-  clientX: number,
+  pointerPosition: number,
   min: number,
   max: number,
+  direction: SliderDirection,
+  inverse: boolean,
   step?: number,
 ): number {
   if (max <= min) return min
 
   const rect = input.getBoundingClientRect()
-  const { start, length } = sliderAxisGeometry(input)
+  const { start, length } = sliderAxisGeometry(input, direction)
   if (length <= 0) return min
 
-  const localX = clientX - rect.left
-  const progress = Math.min(1, Math.max(0, (localX - start) / length))
+  const local =
+    direction === 'horizontal'
+      ? pointerPosition - rect.left - start
+      : rect.bottom - pointerPosition - start
+  const axisProgress = Math.min(1, Math.max(0, local / length))
+  const progress = inverse ? 1 - axisProgress : axisProgress
   const rawValue = min + (max - min) * progress
 
   return step === undefined

@@ -4,6 +4,7 @@ export type ProgressSize = 'small' | 'medium' | 'large'
 export type ProgressColor = string
 export type ProgressSpeed = 'slow' | 'normal' | 'fast' | number
 export type ProgressMode = 'spin' | 'linear'
+export type ProgressDirection = 'horizontal' | 'vertical'
 
 export type ProgressViewProps = Omit<
   ViewCoreProps<HTMLSpanElement>,
@@ -17,6 +18,8 @@ interface ProgressBaseProps {
   size?: ProgressSize
   color?: ProgressColor
   speed?: ProgressSpeed
+  direction?: ProgressDirection
+  inverse?: boolean
   viewProps?: ProgressViewProps
 }
 

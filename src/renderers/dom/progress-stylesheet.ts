@@ -130,6 +130,11 @@ const stylesheet = `
   --weave-border-bottom-left-radius: var(--weave-progress-linear-radius);
 }
 
+:where(.weave-progress--linear[data-weave-progress-direction="vertical"]) {
+  --weave-component-width: var(--weave-progress-height);
+  --weave-component-height: var(--weave-progress-width);
+}
+
 :where(.weave-progress--linear) > :where(.weave-progress__track),
 :where(.weave-progress--linear) > :where(.weave-progress__value) {
   --weave-border-top-left-radius: var(--weave-progress-linear-radius);
@@ -146,6 +151,21 @@ const stylesheet = `
 
   transition:
     width
+    var(--weave-progress-duration)
+    var(--weave-motion-curve-standard);
+}
+
+:where(
+  .weave-progress--linear[data-weave-progress-direction="vertical"].weave-progress--determined
+) > :where(.weave-progress__value) {
+  --weave-top: auto;
+  --weave-right: 0;
+  --weave-bottom: 0;
+  --weave-width: auto;
+  --weave-height: var(--weave-progress-value);
+
+  transition:
+    height
     var(--weave-progress-duration)
     var(--weave-motion-curve-standard);
 }
@@ -170,6 +190,20 @@ const stylesheet = `
   width: 42%;
   border-radius: inherit;
   background: currentColor;
+}
+
+:where(
+  .weave-progress--linear[data-weave-progress-direction="vertical"].weave-progress--indeterminate
+) > :where(.weave-progress__value)::before,
+:where(
+  .weave-progress--linear[data-weave-progress-direction="vertical"].weave-progress--indeterminate
+) > :where(.weave-progress__value)::after {
+  top: 0;
+  right: 0;
+  bottom: auto;
+  left: 0;
+  width: auto;
+  height: 42%;
 }
 
 :where(.weave-progress--linear.weave-progress--indeterminate)
@@ -224,6 +258,73 @@ const stylesheet = `
   }
 }
 
+@keyframes weave-progress-linear-vertical-leading {
+  from {
+    transform: translateY(360%);
+  }
+
+  to {
+    transform: translateY(-120%);
+  }
+}
+
+@keyframes weave-progress-linear-vertical-trailing {
+  0% {
+    transform: translateY(120%);
+  }
+
+  49.999% {
+    transform: translateY(-120%);
+  }
+
+  50% {
+    transform: translateY(360%);
+  }
+
+  100% {
+    transform: translateY(120%);
+  }
+}
+
+:where(
+  .weave-progress--linear[data-weave-progress-direction="vertical"].weave-progress--indeterminate
+) > :where(.weave-progress__value)::before {
+  animation-name: weave-progress-linear-vertical-leading;
+}
+
+:where(
+  .weave-progress--linear[data-weave-progress-direction="vertical"].weave-progress--indeterminate
+) > :where(.weave-progress__value)::after {
+  animation-name: weave-progress-linear-vertical-trailing;
+}
+
+
+:where(
+  .weave-progress--linear[data-weave-progress-direction="horizontal"][data-weave-progress-inverse="true"].weave-progress--determined
+) > :where(.weave-progress__value) {
+  --weave-left: auto;
+  --weave-right: 0;
+}
+
+:where(
+  .weave-progress--linear[data-weave-progress-direction="vertical"][data-weave-progress-inverse="true"].weave-progress--determined
+) > :where(.weave-progress__value) {
+  --weave-top: 0;
+  --weave-bottom: auto;
+}
+
+:where(
+  .weave-progress--linear[data-weave-progress-direction="horizontal"][data-weave-progress-inverse="true"].weave-progress--indeterminate
+) > :where(.weave-progress__value) {
+  transform: scaleX(-1);
+}
+
+:where(
+  .weave-progress--linear[data-weave-progress-direction="vertical"][data-weave-progress-inverse="true"].weave-progress--indeterminate
+) > :where(.weave-progress__value) {
+  transform: scaleY(-1);
+}
+
 :where(
   .weave-progress[data-weave-reduced-motion="reduce"].weave-progress--spin.weave-progress--determined
 ) > :where(.weave-progress__value),
@@ -256,10 +357,52 @@ const stylesheet = `
 }
 
 :where(
+  .weave-progress[data-weave-reduced-motion="reduce"][data-weave-progress-direction="vertical"].weave-progress--linear.weave-progress--indeterminate
+) > :where(.weave-progress__value)::before {
+  transform: translateY(70%);
+}
+
+:where(
   .weave-progress[data-weave-reduced-motion="reduce"].weave-progress--linear.weave-progress--indeterminate
 ) > :where(.weave-progress__value)::after {
   display: none;
 }
+
+:where(
+  .weave-progress--linear[data-weave-progress-direction="horizontal"][data-weave-progress-inverse="true"].weave-progress--determined
+) > :where(.weave-progress__value) {
+  --weave-left: auto;
+  --weave-right: 0;
+}
+
+:where(
+  .weave-progress--linear[data-weave-progress-direction="vertical"][data-weave-progress-inverse="true"].weave-progress--determined
+) > :where(.weave-progress__value) {
+  --weave-top: 0;
+  --weave-bottom: auto;
+}
+
+:where(
+  .weave-progress--linear[data-weave-progress-inverse="true"].weave-progress--indeterminate
+) > :where(.weave-progress__value)::before,
+:where(
+  .weave-progress--linear[data-weave-progress-inverse="true"].weave-progress--indeterminate
+) > :where(.weave-progress__value)::after {
+  animation-direction: reverse;
+}
+
+:where(
+  .weave-progress[data-weave-reduced-motion="reduce"][data-weave-progress-direction="horizontal"][data-weave-progress-inverse="true"].weave-progress--linear.weave-progress--indeterminate
+) > :where(.weave-progress__value)::before {
+  transform: translateX(-70%);
+}
+
+:where(
+  .weave-progress[data-weave-reduced-motion="reduce"][data-weave-progress-direction="vertical"][data-weave-progress-inverse="true"].weave-progress--linear.weave-progress--indeterminate
+) > :where(.weave-progress__value)::before {
+  transform: translateY(-70%);
+}
+
 `
 
 export function ensureProgressStylesheet(): void {

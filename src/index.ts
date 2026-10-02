@@ -257,6 +257,7 @@ export type {
 } from './core/popover-types'
 export type {
   ProgressColor,
+  ProgressDirection,
   ProgressMode,
   ProgressProps,
   ProgressSize,
@@ -288,6 +289,7 @@ export type {
   RangeSliderProps,
   RangeSliderValue,
   RangeSliderViewProps,
+  SliderDirection,
   SliderProps,
   SliderSize,
   SliderViewProps,

@@ -7,7 +7,7 @@ import { useRuntimeStyleClass } from '../../renderers/dom/runtime-class'
 import { ensureSliderStylesheet } from '../../renderers/dom/slider-stylesheet'
 import { useTheme } from '../../theme/theme-context'
 import { formFieldAssociationOverrides, useFormFieldContext } from './form-field-context'
-import { sliderValueFromClientX } from './slider-axis'
+import { sliderValueFromPointerPosition } from './slider-axis'
 import { clampSliderValue, sliderProgress } from './slider-values'
 import { useFormReset } from './use-form-reset'
 import { useSliderInteraction } from './use-slider-interaction'
@@ -60,6 +60,8 @@ export function SingleSlider({
   disabled = false,
   label,
   size = 'medium',
+  direction = 'horizontal',
+  inverse = false,
   viewProps = {},
   points,
   restrictedValues: restrictedValuesProp,
@@ -144,6 +146,7 @@ export function SingleSlider({
     controlRef,
     thumbRef,
     disabled,
+    direction,
     dragShrink,
     dragMaxWidth,
     callbacks: {
@@ -152,9 +155,17 @@ export function SingleSlider({
       onPointerUp: viewProps.onPointerUp,
       onPointerCancel: viewProps.onPointerCancel,
     },
-    onPointerValue: (clientX, input) => {
+    onPointerValue: (pointerPosition, input) => {
       commitValue(
-        sliderValueFromClientX(input, clientX, min, max, restricted ? undefined : (stepProp ?? 1)),
+        sliderValueFromPointerPosition(
+          input,
+          pointerPosition,
+          min,
+          max,
+          direction,
+          inverse,
+          restricted ? undefined : (stepProp ?? 1),
+        ),
       )
     },
   })
@@ -187,25 +198,28 @@ export function SingleSlider({
     const currentIndex = index < 0 ? 0 : index
     let nextIndex: number | undefined
 
-    switch (event.key) {
-      case 'ArrowLeft':
-      case 'ArrowDown':
-      case 'PageDown':
-        nextIndex = Math.max(0, currentIndex - 1)
-        break
-      case 'ArrowRight':
-      case 'ArrowUp':
-      case 'PageUp':
-        nextIndex = Math.min(restrictedValues.length - 1, currentIndex + 1)
-        break
-      case 'Home':
-        nextIndex = 0
-        break
-      case 'End':
-        nextIndex = restrictedValues.length - 1
-        break
-      default:
-        return
+    const decrementKeys = inverse
+      ? ['ArrowRight', 'ArrowUp', 'PageUp']
+      : ['ArrowLeft', 'ArrowDown', 'PageDown']
+    const incrementKeys = inverse
+      ? ['ArrowLeft', 'ArrowDown', 'PageDown']
+      : ['ArrowRight', 'ArrowUp', 'PageUp']
+
+    if (decrementKeys.includes(event.key)) {
+      nextIndex = Math.max(0, currentIndex - 1)
+    } else if (incrementKeys.includes(event.key)) {
+      nextIndex = Math.min(restrictedValues.length - 1, currentIndex + 1)
+    } else {
+      switch (event.key) {
+        case 'Home':
+          nextIndex = 0
+          break
+        case 'End':
+          nextIndex = restrictedValues.length - 1
+          break
+        default:
+          return
+      }
     }
 
     const next = restrictedValues[nextIndex]
@@ -226,6 +240,8 @@ export function SingleSlider({
       ref={controlRef}
       className={['weave-slider-control', themeClassName].filter(Boolean).join(' ')}
       data-weave-slider-control=""
+      data-weave-slider-direction={direction}
+      data-weave-slider-inverse={inverse ? 'true' : 'false'}
       data-weave-mark-slider-control={markSlider ? 'true' : undefined}
       data-weave-slider-disabled={disabled ? 'true' : 'false'}
       data-weave-slider-points={points.length > 0 ? 'true' : 'false'}
@@ -290,6 +306,7 @@ export function SingleSlider({
         ref={elementRef}
         id={sliderId}
         type="range"
+        aria-orientation={direction}
         min={min}
         max={max}
         step={inputStep}
@@ -305,6 +322,8 @@ export function SingleSlider({
         onPointerCancel={interaction.handlePointerCancel}
         data-weave-view=""
         data-weave-slider=""
+        data-weave-slider-direction={direction}
+        data-weave-slider-inverse={inverse ? 'true' : 'false'}
         data-weave-mark-slider={markSlider ? '' : undefined}
         data-weave-slider-size={size}
         data-weave-layout={resolved.layout}
@@ -324,6 +343,8 @@ export function SingleSlider({
     <span
       className={['weave-slider-field', themeClassName].filter(Boolean).join(' ')}
       data-weave-slider-field=""
+      data-weave-slider-direction={direction}
+      data-weave-slider-inverse={inverse ? 'true' : 'false'}
       data-weave-slider-disabled={disabled ? 'true' : 'false'}
     >
       {control}

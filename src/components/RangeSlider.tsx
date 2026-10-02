@@ -18,7 +18,7 @@ import { formFieldAssociationOverrides, useFormFieldContext } from './internal/f
 import {
   sliderAxisGeometry,
   sliderAxisPositionForValue,
-  sliderValueFromClientX,
+  sliderValueFromPointerPosition,
 } from './internal/slider-axis'
 import {
   clampSliderValue,
@@ -44,6 +44,8 @@ export function RangeSlider({
   disabled = false,
   label,
   size = 'medium',
+  direction = 'horizontal',
+  inverse = false,
   viewProps = {},
 }: RangeSliderProps) {
   useInsertionEffect(ensureSliderStylesheet, [])
@@ -147,12 +149,16 @@ export function RangeSlider({
     controlRef,
     thumbRef: startThumbRef,
     disabled,
+    direction,
     dragShrink,
     dragMaxWidth,
     callbacks,
     interactionId: 'start',
-    onPointerValue: (clientX, input) => {
-      const nextStart = Math.min(sliderValueFromClientX(input, clientX, min, max, step), currentEnd)
+    onPointerValue: (pointerPosition, input) => {
+      const nextStart = Math.min(
+        sliderValueFromPointerPosition(input, pointerPosition, min, max, direction, inverse, step),
+        currentEnd,
+      )
       commitValue([nextStart, currentEnd])
     },
   })
@@ -161,12 +167,16 @@ export function RangeSlider({
     controlRef,
     thumbRef: endThumbRef,
     disabled,
+    direction,
     dragShrink,
     dragMaxWidth,
     callbacks,
     interactionId: 'end',
-    onPointerValue: (clientX, input) => {
-      const nextEnd = Math.max(sliderValueFromClientX(input, clientX, min, max, step), currentStart)
+    onPointerValue: (pointerPosition, input) => {
+      const nextEnd = Math.max(
+        sliderValueFromPointerPosition(input, pointerPosition, min, max, direction, inverse, step),
+        currentStart,
+      )
       commitValue([currentStart, nextEnd])
     },
   })
@@ -211,12 +221,24 @@ export function RangeSlider({
     if (control === null || input === null) return
 
     const updateHitSplit = () => {
-      const { inputWidth, thumbSize } = sliderAxisGeometry(input)
-      const startCenter = sliderAxisPositionForValue(input, currentStart, min, max)
-      const endCenter = sliderAxisPositionForValue(input, currentEnd, min, max)
+      const { inputExtent, thumbSize } = sliderAxisGeometry(input, direction)
+      const startCenter = sliderAxisPositionForValue(
+        input,
+        currentStart,
+        min,
+        max,
+        direction,
+        inverse,
+      )
+      const endCenter = sliderAxisPositionForValue(input, currentEnd, min, max, direction, inverse)
       const midpoint = (startCenter + endCenter) / 2
-      const thumbsOverlap = endCenter - startCenter < thumbSize
-      const split = thumbsOverlap ? Math.min(inputWidth, startCenter + thumbSize / 2) : midpoint
+      const thumbsOverlap = Math.abs(endCenter - startCenter) < thumbSize
+      const minAtAxisStart = direction === 'horizontal' ? !inverse : inverse
+      const split = thumbsOverlap
+        ? minAtAxisStart
+          ? Math.min(inputExtent, startCenter + thumbSize / 2)
+          : Math.max(0, startCenter - thumbSize / 2)
+        : midpoint
       control.style.setProperty('--weave-range-slider-hit-split', `${split}px`)
     }
 
@@ -226,7 +248,7 @@ export function RangeSlider({
     observer?.observe(input)
 
     return () => observer?.disconnect()
-  }, [currentEnd, currentStart, max, min, startInputRef, themeClassName])
+  }, [currentEnd, currentStart, direction, inverse, max, min, startInputRef, themeClassName])
 
   const startInput = (
     <input
@@ -234,6 +256,7 @@ export function RangeSlider({
       ref={startInputRef}
       id={startId}
       type="range"
+      aria-orientation={direction}
       min={min}
       max={max}
       step={step}
@@ -248,6 +271,8 @@ export function RangeSlider({
       onPointerCancel={startInteraction.handlePointerCancel}
       data-weave-view=""
       data-weave-slider=""
+      data-weave-slider-direction={direction}
+      data-weave-slider-inverse={inverse ? 'true' : 'false'}
       data-weave-range-slider=""
       data-weave-range-slider-thumb="start"
       data-weave-slider-size={size}
@@ -272,6 +297,7 @@ export function RangeSlider({
       ref={endInputRef}
       id={endId}
       type="range"
+      aria-orientation={direction}
       min={min}
       max={max}
       step={step}
@@ -286,6 +312,8 @@ export function RangeSlider({
       onPointerCancel={endInteraction.handlePointerCancel}
       data-weave-view=""
       data-weave-slider=""
+      data-weave-slider-direction={direction}
+      data-weave-slider-inverse={inverse ? 'true' : 'false'}
       data-weave-range-slider=""
       data-weave-range-slider-thumb="end"
       data-weave-slider-size={size}
@@ -311,6 +339,8 @@ export function RangeSlider({
         .filter(Boolean)
         .join(' ')}
       data-weave-slider-control=""
+      data-weave-slider-direction={direction}
+      data-weave-slider-inverse={inverse ? 'true' : 'false'}
       data-weave-range-slider-control=""
       data-weave-slider-disabled={disabled ? 'true' : 'false'}
       data-weave-slider-stepped={stepProp === undefined ? 'false' : 'true'}
@@ -383,6 +413,8 @@ export function RangeSlider({
     <span
       className={['weave-slider-field', themeClassName].filter(Boolean).join(' ')}
       data-weave-slider-field=""
+      data-weave-slider-direction={direction}
+      data-weave-slider-inverse={inverse ? 'true' : 'false'}
       data-weave-range-slider-field=""
       data-weave-slider-disabled={disabled ? 'true' : 'false'}
     >

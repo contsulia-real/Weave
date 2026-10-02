@@ -1,5 +1,6 @@
 import { useInsertionEffect } from 'react'
 import type {
+  ProgressDirection,
   ProgressMode,
   ProgressProps,
   ProgressSize,
@@ -21,6 +22,8 @@ interface ProgressVisualProps {
   size?: ProgressSize
   color?: string
   speed?: ProgressSpeed
+  direction?: ProgressDirection
+  inverse?: boolean
   viewProps?: ViewProps<HTMLSpanElement>
 }
 
@@ -32,6 +35,8 @@ function ProgressVisual({
   size = 'medium',
   color = 'primary',
   speed = 'normal',
+  direction = 'horizontal',
+  inverse = false,
   viewProps = {},
 }: ProgressVisualProps) {
   useInsertionEffect(ensureProgressStylesheet, [])
@@ -61,6 +66,8 @@ function ProgressVisual({
       data-weave-view=""
       data-weave-progress=""
       data-weave-progress-mode={mode}
+      data-weave-progress-direction={mode === 'linear' ? direction : undefined}
+      data-weave-progress-inverse={mode === 'linear' ? (inverse ? 'true' : 'false') : undefined}
       data-weave-progress-tracked={tracked || undefined}
       data-weave-layout={resolved.layout}
       className={[
@@ -118,6 +125,8 @@ export function Progress(props: ProgressProps) {
       size={props.size}
       color={props.color}
       speed={props.speed}
+      direction={props.direction}
+      inverse={props.inverse}
       viewProps={semanticViewProps}
     />
   )

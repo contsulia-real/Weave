@@ -1,5 +1,5 @@
 import { type PointerEvent as ReactPointerEvent, type RefObject, useRef } from 'react'
-import type { SliderViewProps } from '../../core/slider-types'
+import type { SliderDirection, SliderViewProps } from '../../core/slider-types'
 import { switchDragShapeScales } from './switch-drag'
 
 const DRAG_THRESHOLD = 3
@@ -16,20 +16,28 @@ interface UseSliderInteractionProps {
   controlRef: RefObject<HTMLSpanElement | null>
   thumbRef: RefObject<HTMLSpanElement | null>
   disabled: boolean
+  direction: SliderDirection
   dragShrink: number
   dragMaxWidth: number
   callbacks: SliderInteractionCallbacks
   interactionId?: string
-  onPointerValue?: (clientX: number, input: HTMLInputElement) => void
+  onPointerValue?: (pointerPosition: number, input: HTMLInputElement) => void
 }
 
 interface SliderDragState {
   pointerId: number
-  startX: number
+  startPosition: number
   maxDistance: number
   thumbWidth: number
   thumbHeight: number
   moved: boolean
+}
+
+function pointerPosition(
+  event: ReactPointerEvent<HTMLInputElement>,
+  direction: SliderDirection,
+): number {
+  return direction === 'horizontal' ? event.clientX : event.clientY
 }
 
 export function useSliderInteraction({
@@ -37,6 +45,7 @@ export function useSliderInteraction({
   controlRef,
   thumbRef,
   disabled,
+  direction,
   dragShrink,
   dragMaxWidth,
   callbacks,
@@ -57,8 +66,13 @@ export function useSliderInteraction({
       dragMaxWidth,
     )
 
-    thumb.style.width = `${drag.thumbWidth * widthScale}px`
-    thumb.style.height = `${drag.thumbHeight * heightScale}px`
+    if (direction === 'horizontal') {
+      thumb.style.width = `${drag.thumbWidth * widthScale}px`
+      thumb.style.height = `${drag.thumbHeight * heightScale}px`
+    } else {
+      thumb.style.width = `${drag.thumbWidth * heightScale}px`
+      thumb.style.height = `${drag.thumbHeight * widthScale}px`
+    }
   }
 
   const clearInteraction = (pointerId: number) => {
@@ -104,11 +118,16 @@ export function useSliderInteraction({
 
     const inputRect = input.getBoundingClientRect()
     const thumbRect = thumb.getBoundingClientRect()
+    const startPosition = pointerPosition(event, direction)
 
     dragRef.current = {
       pointerId: event.pointerId,
-      startX: event.clientX,
-      maxDistance: Math.max(0, inputRect.width - thumbRect.width),
+      startPosition,
+      maxDistance: Math.max(
+        0,
+        (direction === 'horizontal' ? inputRect.width : inputRect.height) -
+          (direction === 'horizontal' ? thumbRect.width : thumbRect.height),
+      ),
       thumbWidth: thumbRect.width,
       thumbHeight: thumbRect.height,
       moved: false,
@@ -117,7 +136,7 @@ export function useSliderInteraction({
     if (onPointerValue !== undefined) {
       event.preventDefault()
       input.focus({ preventScroll: true })
-      onPointerValue(event.clientX, input)
+      onPointerValue(startPosition, input)
     }
 
     control.dataset.weaveSliderPointerActive = interactionId ?? 'true'
@@ -133,7 +152,8 @@ export function useSliderInteraction({
     const control = controlRef.current
     if (drag === null || drag.pointerId !== event.pointerId || control === null) return
 
-    const distance = event.clientX - drag.startX
+    const currentPosition = pointerPosition(event, direction)
+    const distance = currentPosition - drag.startPosition
 
     if (!drag.moved && Math.abs(distance) >= DRAG_THRESHOLD) {
       drag.moved = true
@@ -142,7 +162,7 @@ export function useSliderInteraction({
 
     if (onPointerValue !== undefined) {
       event.preventDefault()
-      onPointerValue(event.clientX, event.currentTarget)
+      onPointerValue(currentPosition, event.currentTarget)
     }
 
     applyShape(distance)
