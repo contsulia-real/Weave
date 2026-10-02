@@ -1,5 +1,5 @@
 import { type RefObject, useEffect, useMemo, useState } from 'react'
-import { Card, Flex, Link, MarkSlider, Text } from '../index'
+import { Flex, Link, MarkSlider, Text } from '../index'
 
 interface DocumentationReadingMark {
   id: string
@@ -44,12 +44,23 @@ export function DocumentationReadingStatus({
 
     const sync = () => {
       const pageRect = page.getBoundingClientRect()
-      const nextMarks = sectionElements()
-        .map((element) => ({
-          id: element.id,
-          label: element.dataset.weaveDocSectionLabel ?? element.textContent?.trim() ?? '',
-          flag: Math.max(0, Math.round(element.getBoundingClientRect().top - pageRect.top)),
-        }))
+      const pageLength = Math.max(0, Math.round(page.scrollHeight))
+      const elements = sectionElements()
+
+      const nextMarks = elements
+        .map((element, index) => {
+          const nextElement = elements[index + 1]
+          const sectionEnd =
+            nextElement === undefined
+              ? pageLength
+              : Math.max(0, Math.round(nextElement.getBoundingClientRect().top - pageRect.top))
+
+          return {
+            id: element.id,
+            label: element.dataset.weaveDocSectionLabel ?? element.textContent?.trim() ?? '',
+            flag: sectionEnd,
+          }
+        })
         .filter((mark) => mark.id.length > 0 && mark.label.length > 0)
         .sort((a, b) => a.flag - b.flag)
 
@@ -60,11 +71,10 @@ export function DocumentationReadingStatus({
         return
       }
 
-      const min = nextMarks[0]?.flag ?? 0
-      const max = nextMarks[nextMarks.length - 1]?.flag ?? min
+      const max = nextMarks[nextMarks.length - 1]?.flag ?? 0
       const scrollRect = scrollContainer.getBoundingClientRect()
       const pageOffset = Math.max(0, Math.round(scrollRect.top - pageRect.top))
-      setValue(Math.min(max, Math.max(min, pageOffset)))
+      setValue(Math.min(max, pageOffset))
     }
 
     sync()
@@ -90,32 +100,31 @@ export function DocumentationReadingStatus({
     () =>
       marks.map((mark) => ({
         flag: mark.flag,
-        label: <Link href={`#${mark.id}`} text={<Text typo='label-medium'>{mark.label}</Text>} hideIcon hideUnderline />,
+        label: (
+          <Link
+            href={`#${mark.id}`}
+            text={<Text typo="label-medium">{mark.label}</Text>}
+            hideIcon
+            hideUnderline
+          />
+        ),
       })),
     [marks],
   )
 
   if (marks.length === 0) return null
 
-  const min = marks[0]?.flag ?? 0
-  const max = marks[marks.length - 1]?.flag ?? min
+  const max = marks[marks.length - 1]?.flag ?? 0
 
   return (
-    <Flex
-      top={2}
-      alignSelf='start'
-      shrink={0}
-      padding={1.5}
-      minWidth='280px'
-      position='sticky'
-    >
+    <Flex top={2} alignSelf="start" shrink={0} padding={1.5} minWidth="280px" position="sticky">
       <MarkSlider
         marks={sliderMarks}
         value={value}
         onChange={(next) => {
           scrollContainerRef.current?.scrollTo({ top: next })
         }}
-        min={min}
+        min={0}
         max={max}
         step={1}
         direction="vertical"

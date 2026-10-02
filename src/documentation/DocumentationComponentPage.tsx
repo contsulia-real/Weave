@@ -64,19 +64,15 @@ export function DocumentationComponentPage({
           <Text typo="body-medium">{definition.description}</Text>
         </Column>
 
-        <Column gap={1}>
-          <Text
-            typo="headline-small"
-            viewProps={{
-              id: 'playground',
-              data: {
-                'weave-doc-section': '',
-                'weave-doc-section-label': 'Playground',
-              },
-            }}
-          >
-            Playground
-          </Text>
+        <Column
+          id="playground"
+          data={{
+            'weave-doc-section': '',
+            'weave-doc-section-label': 'Playground',
+          }}
+          gap={1}
+        >
+          <Text typo="headline-small">Playground</Text>
 
           <Row gap={1.5} align="start">
             <Column key={previewKey} padding={1}>
