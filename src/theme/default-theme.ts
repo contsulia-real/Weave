@@ -1069,7 +1069,6 @@ const defaultThemeTemplate: ResolvedTheme = {
         dividerColor: 'outline',
         triggerBackground: 'transparent',
         triggerHoverBackground: 'surfaceHover',
-        triggerOpenBackground: 'surfaceHover',
         triggerPressedBackground:
           'color-mix(in srgb, var(--weave-color-outline) 44%, var(--weave-color-surface))',
         triggerColor: 'tertiary',

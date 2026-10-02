@@ -20,6 +20,7 @@ const stylesheet = `
   --weave-component-padding-right: var(--weave-card-theme-padding);
   --weave-component-padding-bottom: var(--weave-card-theme-padding);
   --weave-component-padding-left: var(--weave-card-theme-padding);
+  --weave-component-overflow: auto;
   --weave-component-box-shadow:
     0 var(--weave-card-theme-rest-depth) 0 var(--weave-card-theme-depth-color);
   --weave-component-outline-width: 0;

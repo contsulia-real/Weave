@@ -57,7 +57,8 @@ const stylesheet = `
 }
 
 :where(.weave-accordion-trigger[data-weave-accordion-open="true"]) {
-  --weave-component-background: var(--weave-accordion-trigger-open-background);
+  --weave-component-background:
+    var(--weave-accordion-trigger-open-background, var(--weave-accordion-trigger-background));
 }
 
 :where(.weave-accordion-trigger:hover:not(:disabled)) {
@@ -110,7 +111,8 @@ const stylesheet = `
 }
 
 :where(.weave-accordion-panel[data-weave-accordion-panel-open="true"]) {
-  --weave-component-background: var(--weave-accordion-trigger-open-background);
+  --weave-component-background:
+    var(--weave-accordion-trigger-open-background, var(--weave-accordion-trigger-background));
 }
 
 :where(.weave-accordion-panel__content) {

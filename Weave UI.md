@@ -500,9 +500,9 @@ Select 的 trigger 语义必须是 `<button role="combobox">`，因此不能直�
 
 `View` 是：
 
-> 面向 Weave 使用者的唯一公开基础原语，也是编写通用界面节点的统一入口。
+> 面向组件作者的公开基础原语，只用于构建新的 Weave 组件或底层基础设施；正常业务、Documentation 和示例代码不得直接使用 `View`。
 
-Weave 内部通过 `useViewHost` 抽取并复用 `View` 的通用宿主能力。其他组件最终建立在这套共同能力模型之上，但不要求实际渲染一个 `<View>` DOM 包装层。
+正常使用必须优先选择已有语义组件；纯布局使用 `Flex / Row / Column / Grid / Stack / Absolute`。只有在实现新的 Weave 组件或现有公开组件确实无法表达底层宿主职责时，组件作者才直接使用 `View`。Weave 内部通过 `useViewHost` 抽取并复用 `View` 的通用宿主能力。其他组件最终建立在这套共同能力模型之上，但不要求实际渲染一个 `<View>` DOM 包装层。
 
 ## 6.1 `View` 的通用职责
 
@@ -536,7 +536,7 @@ Switch = ViewHost 通用能力 + 开关行为
 
 ## 6.2 布局策略
 
-`View.layout` 仍然是底层布局能力和兼容逃生口，但业务代码的正式布局入口是布局组件：
+`View.layout` 是组件构建阶段的底层布局能力；正常业务、Documentation 和示例代码的布局入口只能使用正式布局组件：
 
 ```text
 Flex      → View layout="flex"
@@ -549,7 +549,7 @@ Absolute  → View layout="absolute"
 
 这些组件最终都只渲染一个 `View` 对应的 `<div>`，不增加 wrapper。`Row / Column` 锁定自己的方向，`Grid / Stack / Absolute` 锁定自己的 layout；`Flex` 保留完整 direction 能力。响应式、状态、尺寸、间距、事件、ARIA、scrollbar 等其他能力继续直接继承 `View`。
 
-推荐业务代码优先写：
+正常业务、Documentation 和示例代码必须写：
 
 ```tsx
 <Row gap={1} align="center" />
@@ -568,9 +568,9 @@ Absolute  → View layout="absolute"
 />
 ```
 
-`View layout="..."` 仍然可用，但不再是一般业务布局的首选写法。未设置 `layout` 的公开 `View` 仍保持其真实 `<div>` 的默认 block display；通用 View stylesheet 不得把它降级为 CSS 初始值 `inline`。
+正常业务、Documentation 和示例代码不得直接使用 `View`，无论是否设置 `layout`。公开 `View` 仅保留给组件作者构建新组件与内部基础设施；未设置 `layout` 时仍保持其真实 `<div>` 的默认 block display，通用 View stylesheet 不得把它降级为 CSS 初始值 `inline`。
 
-Weave 自身必须 dogfood 正式布局组件：Documentation 页面、示例页以及组件内部的一般布局应使用 `Flex / Row / Column / Grid / Stack / Absolute`。裸 `View layout="flex|grid|stack|absolute"` 只允许保留在这六个布局组件自己的实现边界，或确有底层实现理由且无法用正式布局组件表达的内部基础设施中；不能为了省事在业务/示例代码里继续回退到裸布局 View。
+Weave 自身必须 dogfood 正式组件：Documentation 页面和示例页不得直接使用裸 `View`；布局必须使用 `Flex / Row / Column / Grid / Stack / Absolute`，其他职责必须复用对应公开语义组件。裸 `View` 只允许保留在新组件的实现边界，或确有底层实现理由且现有公开组件无法表达的内部基础设施中。
 
 组件是否能够实际承载子项布局，遵循其对应 DOM 元素的内容模型。
 
@@ -3999,6 +3999,7 @@ background  = surface
 border      = outline / 0.0625rem
 radius      = large
 padding     = 1rem
+overflow    = auto
 restDepth   = 0.125rem   // 2px
 ```
 
@@ -4926,6 +4927,8 @@ single 模式默认允许通过再次激活当前 trigger 把全部 item 收起�
 
 multiple 模式允许同时展开多个 item，并允许分别关闭所有 item；multiple 模式不使用 `collapsible`。
 
+`noDividers?: boolean` 为可选结构属性，默认 `false`。默认在相邻 AccordionItem 之间渲染现有公开 `Divider` 组件；设置 `noDividers=true` 时不渲染这些 Divider。
+
 受控 / 非受控 API：
 
 ```ts
@@ -5004,18 +5007,18 @@ Panel 收起后不能继续参与 Tab 顺序。进入 closing 状态时立即设
 
 Accordion 默认背景透明，不提供默认 Card / raised surface / 外层边框。
 
-Item 之间只使用现有 Divider 视觉语言进行分隔。
+Item 之间默认直接渲染现有公开 `Divider` 组件进行分隔；Accordion 不得通过 border、伪元素或私有 divider 实现重复造轮子。设置 `noDividers=true` 时不渲染这些 Divider。
 
 Trigger：
 - 整行都是点击区域；
 - 默认背景透明；
-- 展开状态使用 `triggerOpenBackground`，默认映射现有 `surfaceHover` color token；
+- 展开状态默认不增加独立背景色，继续使用普通 trigger background；只有 Theme 显式提供 `triggerOpenBackground` 时才覆盖展开背景；
 - hover / press 只使用轻量 surface feedback；
 - 不使用 Button 的 raised physical surface；
 - 文本使用 Theme typography；
 - focus-visible 使用统一 focus outline。
 
-Panel 只提供内容 padding，不额外套 Card。对应 Item 展开时，Panel 内容区域与 Trigger 一样使用 `triggerOpenBackground`；收起状态不保留该展开背景。
+Panel 只提供内容 padding，不额外套 Card。默认展开时不增加独立背景色；只有 Theme 显式提供 `triggerOpenBackground` 时，Panel 内容区域才与 Trigger 一样使用该展开背景。
 
 默认 chevron 位于 trigger 尾部。默认图标使用同一个向右 chevron，并在展开时平滑旋转 90° 成向下状态；当调用方提供 `expandIcon` / `collapseIcon` 时按状态替换自定义图标，不附加默认旋转。
 
@@ -8537,8 +8540,8 @@ CSS variables + runtime classes + framework stylesheet
 2. 当前只支持 Web。
 3. 只支持函数组件。
 4. 组件通过组合构建，不走继承体系。
-5. 面向用户的基础原语只有 `View`；`useViewHost` 是 Weave 内部复用通用宿主能力的实现机制，不是第二个公开基础原语。
-6. `View` 直接使用 `ViewProps`；直接承载自身 DOM 的组件通过 `viewProps` 暴露通用能力，并在内部使用 `useViewHost` 复用这套能力；正式布局组件可以作为受约束的 `View` 封装直接接受对应布局属性。
+5. 公开基础原语只有 `View`，但它只供组件作者构建新组件或底层基础设施；正常业务、Documentation 和示例代码不得直接使用 `View`。`useViewHost` 是 Weave 内部复用通用宿主能力的实现机制，不是第二个公开基础原语。
+6. 组件作者可直接使用 `ViewProps`；直接承载自身 DOM 的组件通过 `viewProps` 暴露通用能力，并在内部使用 `useViewHost` 复用这套能力。正常布局必须使用正式布局组件，不能回退到裸 `View`。
 7. 组件是否允许 `children`、允许哪些 `children`，遵循其对应 DOM 元素的内容模型。
 8. 不以“基础 / 组合”组件层级限制复用；已有公开组件的语义与 API 匹配时直接复用。
 9. 只有现有公开组件、internal helper 与浏览器原生能力都不能表达需求时，才允许新增实现或抽象。
@@ -8564,7 +8567,7 @@ CSS variables + runtime classes + framework stylesheet
 29. 组件默认承担正确可访问性和键盘语义，不把标准行为推给业务开发者。
 30. 浮层使用语义 layer，普通用户不需要手工管理 portal 或全局 z-index。
 31. 具体组件已经提供同义语义状态属性时，该状态不在其 `viewProps` 中重复暴露，组件属性作为唯一真值。
-32. Documentation 页面本身的全部可见 UI 必须 **100% dogfood Weave 公共组件与 Theme**：页面 shell、导航、搜索、主题切换、内容布局和后续示例都不得使用裸 DOM 元素、Documentation 私有视觉 CSS 或第三方 UI 组件来替代已有 Weave 能力。React state、History router、i18n、数据处理等非视觉基础设施可以直接使用。框架组件自身仍按其实现边界复用 Weave 语义组件与内部基础设施，不再平行维护裸 DOM / 私有 CSS 的同义视觉实现。 Documentation AppBar 的 trailing 直接放置 Weave search Input、Theme Popover 与 Language Popover，不额外包 Row；三个真实控件直接由 AppBar trailing slot 的 flex `align-items: center` 与 `gap` 负责垂直居中和间距。语言选择必须包含 `Auto detect` 和当前实际注册的语言资源。`Auto detect` 按 `navigator.languages` 顺序匹配已注册语言，无法匹配时回退到 i18n fallback language，不得展示尚未存在的翻译语言。
+32. Documentation 页面本身的全部可见 UI 必须 **100% dogfood Weave 公共组件与 Theme**：页面 shell、导航、搜索、主题切换、内容布局和后续示例都不得直接使用裸 `View`、裸 DOM 元素、Documentation 私有视觉 CSS 或第三方 UI 组件来替代已有 Weave 能力。React state、History router、i18n、数据处理等非视觉基础设施可以直接使用。框架组件自身仍按其实现边界复用 Weave 语义组件与内部基础设施，不再平行维护裸 DOM / 私有 CSS 的同义视觉实现。 Documentation AppBar 的 trailing 直接放置 Weave search Input、Theme Popover 与 Language Popover，不额外包 Row；三个真实控件直接由 AppBar trailing slot 的 flex `align-items: center` 与 `gap` 负责垂直居中和间距。语言选择必须包含 `Auto detect` 和当前实际注册的语言资源。`Auto detect` 按 `navigator.languages` 顺序匹配已注册语言，无法匹配时回退到 i18n fallback language，不得展示尚未存在的翻译语言。
 33. 组件复用其他组件的视觉或交互能力时，外层组件仍承担自己的高层语义；不得因此重复暴露冲突的 ARIA 角色。
 34. `Text.typo` 必须来自主题中的完整 type scale；不能退回 renderer 内部的少量硬编码 preset。
 35. Scrollbar 只绘制 thumb，不提供 tracked / trackColor；带圆角宿主必须把圆角曲线区域排除出 thumb 的运动区。

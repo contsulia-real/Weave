@@ -27,7 +27,6 @@ import {
   ListItem,
   Popover,
   Text,
-  View,
 } from '../index'
 import documentationI18n, {
   type DocumentationLanguagePreference,
@@ -178,7 +177,7 @@ export function DocumentationPage({ themeMode, onThemeModeChange }: Documentatio
   }
 
   const navigation = (
-    <Card viewProps={{height: 'fill'}}>
+    <Card viewProps={{ height: 'fill' }}>
       <Accordion>
         <AccordionItem value="overview">
           <AccordionTrigger>{t('docs.nav.overview')}</AccordionTrigger>
@@ -326,15 +325,10 @@ export function DocumentationPage({ themeMode, onThemeModeChange }: Documentatio
         }
       />
 
-      <View grow={1} minHeight={0} width="fill" overflow="hidden">
-        <Drawer
-          side="left"
-          open={drawerOpen}
-          onOpenChange={setDrawerOpen}
-          drawer={navigation}
-        >
+      <Column grow={1} minHeight={0} width="fill" overflow="hidden">
+        <Drawer side="left" open={drawerOpen} onOpenChange={setDrawerOpen} drawer={navigation}>
           <Column width="fill" height="fill" overflow="auto">
-            <View grow={1} width="fill">
+            <Column grow={1} width="fill">
               <Column width="fill" padding={2} gap={0.75}>
                 <Text typo="headline-large">{routeTitle(route.section, t)}</Text>
                 <Text typo="body-medium" color="secondary">
@@ -344,10 +338,10 @@ export function DocumentationPage({ themeMode, onThemeModeChange }: Documentatio
                   {route.pathname}
                 </Text>
               </Column>
-            </View>
+            </Column>
           </Column>
         </Drawer>
-      </View>
+      </Column>
     </Column>
   )
 }

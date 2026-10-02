@@ -14,7 +14,7 @@ No open-source license has been selected yet; the package is therefore marked `U
 
 Weave does not implement a custom React renderer. Components ultimately render ordinary semantic DOM and CSS, so browser layout, text rendering, forms, focus, scrolling, accessibility and compositing remain browser-native.
 
-`View` is the public general-purpose primitive. Weave's own DOM-hosting components reuse the same common host capabilities through the internal `useViewHost` mechanism rather than requiring extra `<View>` wrappers.
+`View` is a public construction primitive for component authors and internal infrastructure, not a normal application-level UI component. Application code, Documentation and examples must use existing semantic components and the formal layout components instead of rendering `View` directly. Weave's own DOM-hosting components reuse the same common host capabilities through the internal `useViewHost` mechanism rather than requiring extra `<View>` wrappers.
 
 The main layers are:
 

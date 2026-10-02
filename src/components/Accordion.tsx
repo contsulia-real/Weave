@@ -61,8 +61,9 @@ function itemToken(value: string): string {
   return encodeURIComponent(value)
 }
 
-function accordionChildren(children: ReactNode): ReactNode {
+function accordionChildren(children: ReactNode, noDividers: boolean): ReactNode {
   const items = Children.toArray(children)
+  if (noDividers) return items
 
   return items.flatMap((child, index) => {
     if (index === items.length - 1) return [child]
@@ -87,6 +88,7 @@ function SingleAccordion({
   onValueChange,
   collapsible = true,
   disabled = false,
+  noDividers = false,
   viewProps = {},
 }: AccordionSingleProps) {
   const descriptors = useMemo(() => {
@@ -150,7 +152,7 @@ function SingleAccordion({
           'weave-accordion-disabled': disabled ? 'true' : 'false',
         }}
       >
-        {accordionChildren(children)}
+        {accordionChildren(children, noDividers)}
       </Column>
     </AccordionContext.Provider>
   )
@@ -162,6 +164,7 @@ function MultipleAccordion({
   defaultValue = [],
   onValueChange,
   disabled = false,
+  noDividers = false,
   viewProps = {},
 }: AccordionMultipleProps) {
   const descriptors = useMemo(() => {
@@ -224,7 +227,7 @@ function MultipleAccordion({
           'weave-accordion-disabled': disabled ? 'true' : 'false',
         }}
       >
-        {accordionChildren(children)}
+        {accordionChildren(children, noDividers)}
       </Column>
     </AccordionContext.Provider>
   )

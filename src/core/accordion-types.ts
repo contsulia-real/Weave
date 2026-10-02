@@ -36,6 +36,7 @@ export type AccordionPanelViewProps = Omit<
 interface AccordionBaseProps {
   children: ReactNode
   disabled?: boolean
+  noDividers?: boolean
   viewProps?: AccordionViewProps
 }
 
