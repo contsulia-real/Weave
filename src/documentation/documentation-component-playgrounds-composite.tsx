@@ -10,7 +10,6 @@ import {
   Menu,
   MenuItem,
   Popover,
-  SnackProvider,
   ToolTip,
 } from '../index'
 import type { DocumentationComponentDefinition } from './documentation-component-playground-data'
@@ -40,7 +39,6 @@ import {
   SampleTable,
   SampleTabs,
   SnackPreview,
-  SnackProviderTrigger,
 } from './documentation-component-playground-previews'
 
 export const compositeComponentDefinitions: Record<string, DocumentationComponentDefinition> = {
@@ -238,7 +236,7 @@ export const compositeComponentDefinitions: Record<string, DocumentationComponen
   },
   Snack: {
     description:
-      'A transient status or alert message with lifetime, progress, placement, and semantic variants.',
+      'A transient status or alert message rendered through SnackProvider, with lifetime, progress, placement, and semantic variants.',
     controls: [
       textControl('text'),
       selectControl('variant', snackVariantOptions),
@@ -256,17 +254,6 @@ export const compositeComponentDefinitions: Record<string, DocumentationComponen
       placement: 'bottom-center',
     },
     render: (values) => <SnackPreview values={values} />,
-  },
-  SnackProvider: {
-    description:
-      'Provides the queued Snack controller and an optional local portal container to descendants.',
-    controls: [textControl('children')],
-    defaults: { children: 'Show provider snack' },
-    render: (values) => (
-      <SnackProvider>
-        <SnackProviderTrigger label={textValue(values, 'children')} />
-      </SnackProvider>
-    ),
   },
   List: {
     description:

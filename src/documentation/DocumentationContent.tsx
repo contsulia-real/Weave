@@ -1,4 +1,5 @@
 import type { TFunction } from 'i18next'
+import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Column, Text } from '../index'
 import { DocumentationComponentPage } from './DocumentationComponentPage'
@@ -18,10 +19,11 @@ function routeTitle(section: string, t: TFunction): string {
 export function DocumentationContent({ section, pathname }: DocumentationContentProps) {
   const { t } = useTranslation()
   const componentName = documentationComponentNameForPath(pathname)
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
 
   if (pathname === '/docs/getting-started') {
     return (
-      <Column width="fill" height="fill" overflow="auto">
+      <Column ref={scrollContainerRef} width="fill" height="fill" overflow="auto">
         <DocumentationGettingStarted />
       </Column>
     )
@@ -29,14 +31,18 @@ export function DocumentationContent({ section, pathname }: DocumentationContent
 
   if (componentName !== null) {
     return (
-      <Column width="fill" height="fill" overflow="auto">
-        <DocumentationComponentPage key={componentName} componentName={componentName} />
+      <Column ref={scrollContainerRef} width="fill" height="fill" overflow="auto">
+        <DocumentationComponentPage
+          key={componentName}
+          componentName={componentName}
+          scrollContainerRef={scrollContainerRef}
+        />
       </Column>
     )
   }
 
   return (
-    <Column width="fill" height="fill" overflow="auto">
+    <Column ref={scrollContainerRef} width="fill" height="fill" overflow="auto">
       <Column grow={1} width="fill">
         <Column width="fill" padding={2} gap={0.75}>
           <Text typo="display-small">{routeTitle(section, t)}</Text>

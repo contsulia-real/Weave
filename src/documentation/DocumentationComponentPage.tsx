@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { type RefObject, useRef, useState } from 'react'
 import { Column, FormField, Input, Row, Select, SelectOption, Switch, Text } from '../index'
+import { DocumentationReadingStatus } from './DocumentationReadingStatus'
 import {
   type DocumentationPlaygroundControl,
   type DocumentationPlaygroundValue,
@@ -8,6 +9,7 @@ import {
 
 export interface DocumentationComponentPageProps {
   componentName: string
+  scrollContainerRef: RefObject<HTMLDivElement | null>
 }
 
 function parameterControl(
@@ -42,40 +44,59 @@ function parameterControl(
   }
 }
 
-export function DocumentationComponentPage({ componentName }: DocumentationComponentPageProps) {
+export function DocumentationComponentPage({
+  componentName,
+  scrollContainerRef,
+}: DocumentationComponentPageProps) {
   const definition = documentationComponentDefinition(componentName)
   const [values, setValues] = useState<Record<string, DocumentationPlaygroundValue>>(
     definition.defaults,
   )
+  const pageRef = useRef<HTMLDivElement>(null)
 
   const previewKey = JSON.stringify(values)
 
   return (
-    <Column width="fill" padding={2} gap={2}>
-      <Column width="fill" gap={0.75}>
-        <Text typo="display-medium">{componentName}</Text>
-        <Text typo="body-medium">{definition.description}</Text>
+    <Row ref={pageRef} width="fill" padding={2} gap={2} align="start">
+      <Column grow={1} minWidth={0} gap={2}>
+        <Column width="fill" gap={0.75}>
+          <Text typo="display-medium">{componentName}</Text>
+          <Text typo="body-medium">{definition.description}</Text>
+        </Column>
+
+        <Column gap={1}>
+          <Text
+            typo="headline-small"
+            viewProps={{
+              id: 'playground',
+              data: {
+                'weave-doc-section': '',
+                'weave-doc-section-label': 'Playground',
+              },
+            }}
+          >
+            Playground
+          </Text>
+
+          <Row gap={1.5} align="start">
+            <Column key={previewKey} padding={1}>
+              {definition.render(values)}
+            </Column>
+
+            <Column gap={1}>
+              {definition.controls.map((control) => (
+                <FormField key={control.prop} label={control.prop}>
+                  {parameterControl(control, values[control.prop], (next) => {
+                    setValues((current) => ({ ...current, [control.prop]: next }))
+                  })}
+                </FormField>
+              ))}
+            </Column>
+          </Row>
+        </Column>
       </Column>
 
-      <Column width="fill" gap={1.5}>
-        <Text typo="headline-small">Playground</Text>
-
-        <Row width="fill" gap={2} align="start">
-          <Column key={previewKey} grow={1} basis={0} minWidth={0} padding={2}>
-            {definition.render(values)}
-          </Column>
-
-          <Column grow={1} basis={0} minWidth={0} gap={1.5}>
-            {definition.controls.map((control) => (
-              <FormField key={control.prop} label={control.prop}>
-                {parameterControl(control, values[control.prop], (next) => {
-                  setValues((current) => ({ ...current, [control.prop]: next }))
-                })}
-              </FormField>
-            ))}
-          </Column>
-        </Row>
-      </Column>
-    </Column>
+      <DocumentationReadingStatus pageRef={pageRef} scrollContainerRef={scrollContainerRef} />
+    </Row>
   )
 }

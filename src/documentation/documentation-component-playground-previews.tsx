@@ -4,7 +4,6 @@ import {
   AccordionItem,
   AccordionPanel,
   AccordionTrigger,
-  Button,
   Column,
   Snack,
   SnackProvider,
@@ -18,7 +17,6 @@ import {
   TableRow,
   TabPanel,
   Tabs,
-  useSnack,
 } from '../index'
 import {
   booleanValue,
@@ -172,20 +170,5 @@ export function SnackPreview({ values }: { values: Record<string, DocumentationP
         />
       </SnackProvider>
     </Column>
-  )
-}
-
-export function SnackProviderTrigger({ label }: { label: string }) {
-  const snack = useSnack()
-
-  return (
-    <Button
-      text={label}
-      viewProps={{
-        onClick: () => {
-          snack.show({ text: 'Snack from this provider', variant: 'info' })
-        },
-      }}
-    />
   )
 }
