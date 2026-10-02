@@ -6929,7 +6929,7 @@ ListItem 是“列表行 / 可选择项”，不是 Button。
 
 默认视觉：
 
-- List 自身是一个轻量 surface 容器，默认不预设边框；统一圆角和小幅内边距用于组织多行，若产品需要外框再通过 `theme.components.List.base` 显式配置；
+- List 自身默认不提供 background、border、radius 或外层 padding，只负责列表布局、间距、Divider、选择与焦点语义；产品需要容器 surface 时再通过 `theme.components.List.base` 显式配置；
 - ListItem 是连续 row，不是彼此独立的卡片或大胶囊；默认行不设圆角，产品需要时再通过 `theme.components.ListItem.base.radius` 显式配置；
 - flat surface，不使用 Button 的 depth / hoverLift / pressDepth；
 - hover 只改变行 surface；

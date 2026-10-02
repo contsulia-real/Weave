@@ -1142,11 +1142,7 @@ const defaultThemeTemplate: ResolvedTheme = {
     },
     List: {
       base: {
-        background: 'surface',
-        borderWidth: 0,
-        radius: 'medium',
-        padding: 0.25,
-        gap: 0,
+        gap: 0.25,
       },
     },
     ListItem: {
