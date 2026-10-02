@@ -24,7 +24,6 @@ import {
   Link,
   Popover,
   Text,
-  ThemeProvider,
   View,
 } from '../index'
 import documentationI18n, {
@@ -33,7 +32,6 @@ import documentationI18n, {
   documentationLanguages,
 } from './i18n'
 import { useDocsRoute } from './router'
-import { ThemeContext } from '../theme/theme-context'
 
 const documentationComponents = [
   'Absolute',
