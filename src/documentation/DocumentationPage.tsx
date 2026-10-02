@@ -178,9 +178,9 @@ export function DocumentationPage({ themeMode, onThemeModeChange }: Documentatio
 
   const navigation = (
     <Card viewProps={{ height: 'fill' }}>
-      <Accordion>
+      <Accordion noDividers>
         <AccordionItem value="overview">
-          <AccordionTrigger>{t('docs.nav.overview')}</AccordionTrigger>
+          <AccordionTrigger viewProps={{radius: 'full'}}>{t('docs.nav.overview')}</AccordionTrigger>
           <AccordionPanel>
             <List noDividers>
               {documentationOverview.map(({ key, path }) => (
@@ -200,7 +200,7 @@ export function DocumentationPage({ themeMode, onThemeModeChange }: Documentatio
 
         {documentationComponentGroups.map(({ value, labelKey, components }) => (
           <AccordionItem key={value} value={value}>
-            <AccordionTrigger>{t(labelKey)}</AccordionTrigger>
+            <AccordionTrigger viewProps={{radius: 'full'}}>{t(labelKey)}</AccordionTrigger>
             <AccordionPanel>
               <List noDividers>
                 {components.map((component) => {
