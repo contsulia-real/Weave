@@ -11,13 +11,95 @@ import type { MouseEvent } from 'react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { ThemeMode } from '../index'
-import { AppBar, Button, Column, Drawer, Input, Link, Popover, Text, View } from '../index'
+import {
+  Accordion,
+  AccordionItem,
+  AccordionPanel,
+  AccordionTrigger,
+  AppBar,
+  Button,
+  Column,
+  Drawer,
+  Input,
+  Link,
+  Popover,
+  Text,
+  View,
+} from '../index'
 import documentationI18n, {
   type DocumentationLanguagePreference,
   detectDocumentationLanguage,
   documentationLanguages,
 } from './i18n'
 import { useDocsRoute } from './router'
+
+const documentationComponents = [
+  'Absolute',
+  'Accordion',
+  'AccordionItem',
+  'AccordionPanel',
+  'AccordionTrigger',
+  'AppBar',
+  'Avatar',
+  'Badge',
+  'Button',
+  'Card',
+  'Checkbox',
+  'Code',
+  'Column',
+  'Combobox',
+  'ComboboxOption',
+  'Dialog',
+  'Divider',
+  'Drawer',
+  'Flex',
+  'Form',
+  'FormDescription',
+  'FormError',
+  'FormField',
+  'FormFieldset',
+  'FormLabel',
+  'FormLegend',
+  'Grid',
+  'Icon',
+  'Image',
+  'Input',
+  'Link',
+  'List',
+  'ListItem',
+  'Menu',
+  'MenuItem',
+  'Popover',
+  'Presence',
+  'Progress',
+  'Radio',
+  'RangeSlider',
+  'Row',
+  'Select',
+  'SelectOption',
+  'Skeleton',
+  'Slider',
+  'Snack',
+  'SnackProvider',
+  'SplitBox',
+  'SplitBoxPane',
+  'Stack',
+  'Switch',
+  'Tab',
+  'TabList',
+  'Table',
+  'TableBody',
+  'TableCell',
+  'TableHead',
+  'TableHeader',
+  'TableRow',
+  'TabPanel',
+  'Tabs',
+  'Text',
+  'ThemeProvider',
+  'ToolTip',
+  'View',
+] as const
 
 export interface DocumentationPageProps {
   themeMode: ThemeMode
@@ -68,13 +150,29 @@ export function DocumentationPage({ themeMode, onThemeModeChange }: Documentatio
         hideUnderline
         viewProps={{ onClick: navigate('/docs') }}
       />
-      <Link
-        href="/docs/components"
-        text={t('docs.nav.components')}
-        hideIcon
-        hideUnderline
-        viewProps={{ onClick: navigate('/docs/components') }}
-      />
+      <Accordion multiple>
+        <AccordionItem value="components">
+          <AccordionTrigger>{t('docs.nav.components')}</AccordionTrigger>
+          <AccordionPanel>
+            <Column>
+              {documentationComponents.map((component) => {
+                const path = `/docs/components/${component}`
+
+                return (
+                  <Link
+                    key={component}
+                    href={path}
+                    text={component}
+                    hideIcon
+                    hideUnderline
+                    viewProps={{ onClick: navigate(path) }}
+                  />
+                )
+              })}
+            </Column>
+          </AccordionPanel>
+        </AccordionItem>
+      </Accordion>
     </Column>
   )
 
