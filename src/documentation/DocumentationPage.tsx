@@ -24,6 +24,7 @@ import {
   Link,
   Popover,
   Text,
+  ThemeProvider,
   View,
 } from '../index'
 import documentationI18n, {
@@ -32,6 +33,7 @@ import documentationI18n, {
   documentationLanguages,
 } from './i18n'
 import { useDocsRoute } from './router'
+import { ThemeContext } from '../theme/theme-context'
 
 const documentationComponents = [
   'Absolute',
@@ -141,15 +143,7 @@ export function DocumentationPage({ themeMode, onThemeModeChange }: Documentatio
   }
 
   const navigation = (
-    <Column gap={0.5} padding={1} label={t('docs.navigation')}>
-      <Text typo="title-medium">{t('docs.title')}</Text>
-      <Link
-        href="/docs"
-        text={t('docs.nav.overview')}
-        hideIcon
-        hideUnderline
-        viewProps={{ onClick: navigate('/docs') }}
-      />
+    <Column label={t('docs.navigation')}>
       <Accordion multiple>
         <AccordionItem value="components">
           <AccordionTrigger>{t('docs.nav.components')}</AccordionTrigger>
