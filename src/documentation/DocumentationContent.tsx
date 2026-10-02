@@ -21,7 +21,7 @@ export function DocumentationContent({ section, pathname }: DocumentationContent
     return (
       <Column width="fill" height="fill" overflow="auto">
         <Column width="fill" padding={2}>
-          <Text typo="headline-large">{componentName}</Text>
+          <Text typo="display-small">{componentName}</Text>
         </Column>
       </Column>
     )
@@ -31,13 +31,7 @@ export function DocumentationContent({ section, pathname }: DocumentationContent
     <Column width="fill" height="fill" overflow="auto">
       <Column grow={1} width="fill">
         <Column width="fill" padding={2} gap={0.75}>
-          <Text typo="headline-large">{routeTitle(section, t)}</Text>
-          <Text typo="body-medium" color="secondary">
-            {t('docs.route.placeholder')}
-          </Text>
-          <Text typo="body-small" color="secondary">
-            {pathname}
-          </Text>
+          <Text typo="display-small">{routeTitle(section, t)}</Text>
         </Column>
       </Column>
     </Column>

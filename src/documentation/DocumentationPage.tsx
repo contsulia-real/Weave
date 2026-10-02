@@ -55,6 +55,7 @@ export function DocumentationPage({ themeMode, onThemeModeChange }: Documentatio
 
       <Column grow={1} minHeight={0} width="fill" overflow="hidden">
         <Drawer
+          defaultOpen
           side="left"
           open={drawerOpen}
           onOpenChange={setDrawerOpen}
