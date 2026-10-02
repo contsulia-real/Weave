@@ -54,12 +54,10 @@ export function resolveDrawerTheme(theme: ResolvedTheme): RuntimeStyleDeclaratio
 
   return {
     '--weave-drawer-background': color(base?.background),
-    '--weave-drawer-non-modal-background': color(base?.nonModalBackground),
     '--weave-drawer-color': color(base?.color),
     '--weave-drawer-border-color': color(base?.borderColor),
     '--weave-drawer-border-width': length(base?.borderWidth),
     '--weave-drawer-radius': radius(base?.radius),
-    '--weave-drawer-non-modal-radius': radius(base?.nonModalRadius),
     '--weave-drawer-padding-x': length(base?.paddingX),
     '--weave-drawer-padding-y': length(base?.paddingY),
     '--weave-drawer-max-width': length(base?.maxWidth),

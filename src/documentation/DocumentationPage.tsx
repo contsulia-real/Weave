@@ -326,7 +326,18 @@ export function DocumentationPage({ themeMode, onThemeModeChange }: Documentatio
       />
 
       <View grow={1} minHeight={0} width="fill" overflow="hidden">
-        <Drawer side="left" open={drawerOpen} onOpenChange={setDrawerOpen} drawer={navigation}>
+        <Drawer
+          side="left"
+          open={drawerOpen}
+          onOpenChange={setDrawerOpen}
+          drawer={navigation}
+          drawerViewProps={{
+            md: {
+              background: 'surfaceHover',
+              radius: 'large',
+            },
+          }}
+        >
           <Column width="fill" height="fill" overflow="auto">
             <View grow={1} width="fill">
               <Column width="fill" padding={2} gap={0.75}>
