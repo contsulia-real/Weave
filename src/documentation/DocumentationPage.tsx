@@ -58,7 +58,7 @@ export function DocumentationPage({ themeMode, onThemeModeChange }: Documentatio
           side="left"
           open={drawerOpen}
           onOpenChange={setDrawerOpen}
-          drawer={<DocumentationNavigation onNavigate={route.navigate} />}
+          drawer={<DocumentationNavigation pathname={route.pathname} onNavigate={route.navigate} />}
         >
           <DocumentationContent section={route.section} pathname={route.pathname} />
         </Drawer>

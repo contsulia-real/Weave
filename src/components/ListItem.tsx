@@ -1,13 +1,59 @@
-import type { FocusEvent, KeyboardEvent, MouseEvent } from 'react'
-import { useContext, useInsertionEffect } from 'react'
+import type { FocusEvent, KeyboardEvent, MouseEvent, ReactElement, ReactNode } from 'react'
+import {
+  Children,
+  cloneElement,
+  Fragment,
+  isValidElement,
+  useContext,
+  useInsertionEffect,
+} from 'react'
 import type { ListItemProps } from '../core/list-types'
+import type { TextProps } from '../core/text-types'
 import { ensureListStylesheet } from '../renderers/dom/list-stylesheet'
 import { resolveListItemTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { useTheme } from '../theme/theme-context'
 import { fromInteractiveDescendant } from './internal/interactive-descendant'
 import { ListContext } from './internal/list-context'
+import { Text } from './Text'
 import { View } from './View'
+
+function singleLineChildren(children: ReactNode, enabled: boolean): ReactNode {
+  if (!enabled) return children
+
+  return Children.map(children, (child) => {
+    if (typeof child === 'string' || typeof child === 'number') {
+      return (
+        <Text singleLine viewProps={{ grow: 1, minWidth: 0 }}>
+          {child}
+        </Text>
+      )
+    }
+
+    if (!isValidElement(child)) return child
+
+    if (child.type === Fragment) {
+      const fragment = child as ReactElement<{ children?: ReactNode }>
+      return cloneElement(fragment, {
+        children: singleLineChildren(fragment.props.children, true),
+      })
+    }
+
+    if (child.type === Text) {
+      const text = child as ReactElement<TextProps>
+      return cloneElement(text, {
+        singleLine: true,
+        viewProps: {
+          grow: 1,
+          minWidth: 0,
+          ...text.props.viewProps,
+        },
+      })
+    }
+
+    return child
+  })
+}
 
 export function ListItem({ id, children, disabled = false, viewProps = {} }: ListItemProps) {
   const context = useContext(ListContext)
@@ -131,7 +177,7 @@ export function ListItem({ id, children, disabled = false, viewProps = {} }: Lis
         'weave-list-item-selected': selected ? 'true' : 'false',
       }}
     >
-      {children}
+      {singleLineChildren(children, context?.singleLine === true)}
     </View>
   )
 }

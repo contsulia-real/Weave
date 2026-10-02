@@ -61,6 +61,7 @@ export function Text(props: TextProps) {
     letterSpacing,
     wrap,
     overflow,
+    singleLine = false,
     maxLines,
     case: textCase,
     underline,
@@ -83,18 +84,31 @@ export function Text(props: TextProps) {
 
   for (const breakpoint of breakpoints) {
     const textResponsive = propsRecord[breakpoint.name] as TextResponsiveProps | undefined
+    const resolvedTextResponsive =
+      singleLine && textResponsive !== undefined
+        ? {
+            ...textResponsive,
+            wrap: 'nowrap' as const,
+            overflow: 'ellipsis' as const,
+            maxLines: undefined,
+          }
+        : textResponsive
     const viewResponsive = viewPropsRecord[breakpoint.name] as ViewResponsiveStyle | undefined
 
-    responsiveText[breakpoint.cssName] = textResponsive
+    responsiveText[breakpoint.cssName] = resolvedTextResponsive
 
-    const merged = mergeResponsive(viewResponsive, colorStyle(textResponsive))
+    const merged = mergeResponsive(viewResponsive, colorStyle(resolvedTextResponsive))
 
     if (merged !== undefined) {
       writableHostProps[breakpoint.name] = merged
     }
 
-    Object.assign(responsiveAttributes, responsiveData(breakpoint.cssName, textResponsive))
+    Object.assign(responsiveAttributes, responsiveData(breakpoint.cssName, resolvedTextResponsive))
   }
+
+  const resolvedWrap = singleLine ? 'nowrap' : wrap
+  const resolvedOverflow = singleLine ? 'ellipsis' : overflow
+  const resolvedMaxLines = singleLine ? undefined : maxLines
 
   const componentStyle = resolveTextResponsiveStyle({
     base: {
@@ -106,9 +120,9 @@ export function Text(props: TextProps) {
       align,
       lineHeight,
       letterSpacing,
-      wrap,
-      overflow,
-      maxLines,
+      wrap: resolvedWrap,
+      overflow: resolvedOverflow,
+      maxLines: resolvedMaxLines,
       case: textCase,
       underline,
       strikethrough,
@@ -135,8 +149,10 @@ export function Text(props: TextProps) {
       'data-weave-text': '',
       'data-weave-text-typo': typo,
       'data-weave-layout': resolved.layout,
-      'data-weave-text-overflow': overflow,
-      'data-weave-text-max-lines': maxLines === undefined ? undefined : String(maxLines),
+      'data-weave-text-single-line': singleLine ? 'true' : undefined,
+      'data-weave-text-overflow': resolvedOverflow,
+      'data-weave-text-max-lines':
+        resolvedMaxLines === undefined ? undefined : String(resolvedMaxLines),
       className: ['weave-text', className].filter(Boolean).join(' '),
       style: inlineStyle,
     },

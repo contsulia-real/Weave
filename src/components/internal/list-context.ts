@@ -7,6 +7,7 @@ interface ListContextValue {
   selection: ListSelection
   orientation: ListOrientation
   disabled: boolean
+  singleLine: boolean
   selectedIds: ReadonlySet<string>
   focusId: string | null
   setFocusId(id: string): void

@@ -1,4 +1,5 @@
 import { IconSearch } from '@tabler/icons-react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Accordion,
@@ -11,169 +12,144 @@ import {
   List,
   ListItem,
 } from '../index'
+import { DocumentationSearchHighlight } from './DocumentationSearchHighlight'
+import {
+  documentationNavigationSectionForPath,
+  documentationNavigationSections,
+} from './documentation-navigation-data'
 
-const documentationOverview = [
-  { key: 'docs.nav.gettingStarted', path: '/docs/getting-started' },
-  { key: 'docs.nav.installation', path: '/docs/installation' },
-  { key: 'docs.nav.weaveAZ', path: '/docs/a-z' },
-] as const
+interface ResolvedNavigationItem {
+  path: string
+  label: string
+}
 
-const documentationComponentGroups = [
-  {
-    value: 'foundation-layout',
-    labelKey: 'docs.nav.foundationLayout',
-    components: [
-      'View',
-      'Flex',
-      'Row',
-      'Column',
-      'Grid',
-      'Stack',
-      'Absolute',
-      'SplitBox',
-      'SplitBoxPane',
-      'Presence',
-    ],
-  },
-  {
-    value: 'content-actions',
-    labelKey: 'docs.nav.contentActions',
-    components: [
-      'Text',
-      'Code',
-      'Image',
-      'Icon',
-      'Avatar',
-      'Divider',
-      'Link',
-      'Badge',
-      'Button',
-      'Card',
-      'AppBar',
-    ],
-  },
-  {
-    value: 'forms-status',
-    labelKey: 'docs.nav.formsStatus',
-    components: [
-      'Input',
-      'Select',
-      'SelectOption',
-      'Combobox',
-      'ComboboxOption',
-      'Slider',
-      'RangeSlider',
-      'Switch',
-      'Radio',
-      'Checkbox',
-      'Progress',
-      'Skeleton',
-    ],
-  },
-  {
-    value: 'composite-ui',
-    labelKey: 'docs.nav.compositeUI',
-    components: [
-      'Form',
-      'FormField',
-      'FormLabel',
-      'FormDescription',
-      'FormError',
-      'FormFieldset',
-      'FormLegend',
-      'Table',
-      'TableHeader',
-      'TableBody',
-      'TableRow',
-      'TableHead',
-      'TableCell',
-      'Accordion',
-      'AccordionItem',
-      'AccordionTrigger',
-      'AccordionPanel',
-      'ToolTip',
-      'Popover',
-      'Dialog',
-      'Drawer',
-      'Menu',
-      'MenuItem',
-      'Tabs',
-      'TabList',
-      'Tab',
-      'TabPanel',
-      'Snack',
-      'SnackProvider',
-      'List',
-      'ListItem',
-    ],
-  },
-  {
-    value: 'theme-application',
-    labelKey: 'docs.nav.themeApplication',
-    components: ['ThemeProvider'],
-  },
-] as const
+interface ResolvedNavigationSection {
+  value: string
+  label: string
+  items: readonly ResolvedNavigationItem[]
+}
 
 export interface DocumentationNavigationProps {
+  pathname: string
   onNavigate: (path: string) => void
 }
 
-export function DocumentationNavigation({ onNavigate }: DocumentationNavigationProps) {
+function includesQuery(value: string, query: string): boolean {
+  return value.toLocaleLowerCase().includes(query)
+}
+
+export function DocumentationNavigation({ pathname, onNavigate }: DocumentationNavigationProps) {
   const { t } = useTranslation()
+  const [search, setSearch] = useState('')
+  const normalizedSearch = search.trim().toLocaleLowerCase()
+  const routeSection = documentationNavigationSectionForPath(pathname)
+
+  const sections = useMemo<readonly ResolvedNavigationSection[]>(
+    () =>
+      documentationNavigationSections.map((section) => ({
+        value: section.value,
+        label: t(section.labelKey),
+        items: section.items.map((item) => ({
+          path: item.path,
+          label: item.label ?? t(item.labelKey ?? ''),
+        })),
+      })),
+    [t],
+  )
+
+  const visibleSections = useMemo<readonly ResolvedNavigationSection[]>(() => {
+    if (normalizedSearch.length === 0) return sections
+
+    return sections.flatMap((section) => {
+      const sectionMatches = includesQuery(section.label, normalizedSearch)
+      const items = section.items.filter((item) => includesQuery(item.label, normalizedSearch))
+
+      if (!sectionMatches && items.length === 0) return []
+      return [{ ...section, items }]
+    })
+  }, [normalizedSearch, sections])
+
+  const visibleValues = useMemo(
+    () => visibleSections.map((section) => section.value),
+    [visibleSections],
+  )
+  const [navigationState, setNavigationState] = useState<{
+    pathname: string
+    openValue: string | null
+  }>(() => ({
+    pathname,
+    openValue: routeSection,
+  }))
+  const routeOpenValue =
+    navigationState.pathname === pathname ? navigationState.openValue : routeSection
+  const openValues =
+    normalizedSearch.length > 0 ? visibleValues : routeOpenValue === null ? [] : [routeOpenValue]
+
+  const handleSearchChange = (next: string) => {
+    setSearch(next)
+
+    if (next.trim().length === 0) {
+      setNavigationState({
+        pathname,
+        openValue: routeSection,
+      })
+    }
+  }
+
+  const handleAccordionChange = (next: readonly string[]) => {
+    if (normalizedSearch.length > 0) return
+
+    const newlyOpened = next.find((value) => value !== routeOpenValue)
+    setNavigationState({
+      pathname,
+      openValue: newlyOpened ?? null,
+    })
+  }
 
   return (
     <Card viewProps={{ height: 'fill', background: 'surfaceHover' }}>
       <Column gap={1} width="fill" align="center">
         <Input
-              type="search"
-              clearable
-              leadingIcon={IconSearch}
-              placeholder={t('docs.drawer.search')}
-              viewProps={{ label: t('docs.drawer.search'), width: 'fill', minWidth: 'auto'}}
+          type="search"
+          clearable
+          value={search}
+          onChange={handleSearchChange}
+          leadingIcon={IconSearch}
+          placeholder={t('docs.drawer.search')}
+          viewProps={{ label: t('docs.drawer.search'), width: 'fill', minWidth: 'auto' }}
         />
-        <Accordion noDividers viewProps={{ width: 'fill'}}>
-          <AccordionItem value="overview">
-            <AccordionTrigger viewProps={{ radius: 'full' }}>
-              {t('docs.nav.overview')}
-            </AccordionTrigger>
-            <AccordionPanel>
-              <List noDividers>
-                {documentationOverview.map(({ key, path }) => (
-                  <ListItem
-                    key={path}
-                    id={path}
-                    viewProps={{ clickable: true, onClick: () => onNavigate(path), radius: 'full' }}
-                  >
-                    {t(key)}
-                  </ListItem>
-                ))}
-              </List>
-            </AccordionPanel>
-          </AccordionItem>
 
-          {documentationComponentGroups.map(({ value, labelKey, components }) => (
-            <AccordionItem key={value} value={value}>
-              <AccordionTrigger viewProps={{ radius: 'full' }}>{t(labelKey)}</AccordionTrigger>
+        <Accordion
+          multiple
+          noDividers
+          value={openValues}
+          onValueChange={handleAccordionChange}
+          viewProps={{ width: 'fill' }}
+        >
+          {visibleSections.map((section) => (
+            <AccordionItem key={section.value} value={section.value}>
+              <AccordionTrigger viewProps={{ radius: 'full' }}>
+                <DocumentationSearchHighlight text={section.label} query={search} />
+              </AccordionTrigger>
+
               <AccordionPanel>
-                <List noDividers>
-                  {components.map((component) => {
-                    const path = `/docs/components/${component}`
-
-                    return (
+                {section.items.length === 0 ? null : (
+                  <List noDividers singleLine selection="single" selected={pathname}>
+                    {section.items.map((item) => (
                       <ListItem
-                        key={component}
-                        id={component}
+                        key={item.path}
+                        id={item.path}
                         viewProps={{
                           clickable: true,
-                          onClick: () => onNavigate(path),
+                          onClick: () => onNavigate(item.path),
                           radius: 'full',
                         }}
                       >
-                        {component}
+                        <DocumentationSearchHighlight text={item.label} query={search} />
                       </ListItem>
-                    )
-                  })}
-                </List>
+                    ))}
+                  </List>
+                )}
               </AccordionPanel>
             </AccordionItem>
           ))}

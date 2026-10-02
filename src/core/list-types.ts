@@ -41,6 +41,7 @@ interface ListBaseProps {
   orientation?: ListOrientation
   gap?: ViewStyleProps['gap']
   noDividers?: boolean
+  singleLine?: boolean
   virtualized?: boolean
   viewProps?: ListViewProps
 }

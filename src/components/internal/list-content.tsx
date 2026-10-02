@@ -115,17 +115,21 @@ function dataItemContent(
   item: ListDataItem,
   primaryTypo: TextTypo | undefined,
   secondaryTypo: TextTypo | undefined,
+  singleLine: boolean,
 ) {
   return (
     <>
       {item.icon === undefined ? null : listIcon(item.icon)}
 
       <View className="weave-list-item__text">
-        <Text typo={primaryTypo ?? 'body-medium'}>{item.text}</Text>
+        <Text typo={primaryTypo ?? 'body-medium'} singleLine={singleLine}>
+          {item.text}
+        </Text>
 
         {item.secondaryText === undefined ? null : (
           <Text
             typo={secondaryTypo ?? 'body-small'}
+            singleLine={singleLine}
             viewProps={{
               className: 'weave-list-item__secondary',
             }}
@@ -145,6 +149,7 @@ function dataItemContent(
 export function dataVirtualEntries(
   items: readonly ListDataItem[],
   disabled: boolean,
+  singleLine: boolean,
   primaryTypo: TextTypo | undefined,
   secondaryTypo: TextTypo | undefined,
 ): VirtualListEntry[] {
@@ -152,7 +157,7 @@ export function dataVirtualEntries(
     id: item.id,
     node: (
       <ListItem key={item.id} id={item.id} disabled={disabled || item.disabled}>
-        {dataItemContent(item, primaryTypo, secondaryTypo)}
+        {dataItemContent(item, primaryTypo, secondaryTypo, singleLine)}
       </ListItem>
     ),
   }))

@@ -79,5 +79,6 @@ export type TextProps = TextStyleProps &
   TextBreakpointProps &
   DynamicViewportBreakpointProps<TextResponsiveProps> & {
     children?: ReactNode
+    singleLine?: boolean
     viewProps?: TextViewProps
   }

@@ -24,6 +24,7 @@ export function List(props: ListProps) {
     orientation = 'vertical',
     gap,
     noDividers = false,
+    singleLine = false,
     virtualized = false,
     viewProps = {},
   } = props
@@ -52,13 +53,24 @@ export function List(props: ListProps) {
       selection,
       orientation,
       disabled,
+      singleLine,
       selectedIds,
       focusId,
       setFocusId,
       selectItem,
       moveFocus,
     }),
-    [disabled, focusId, moveFocus, orientation, selectItem, selectedIds, selection, setFocusId],
+    [
+      disabled,
+      focusId,
+      moveFocus,
+      orientation,
+      selectItem,
+      selectedIds,
+      selection,
+      setFocusId,
+      singleLine,
+    ],
   )
 
   const setRootRef = useCallback(
@@ -73,7 +85,13 @@ export function List(props: ListProps) {
   const dataEntries =
     props.items === undefined
       ? undefined
-      : dataVirtualEntries(props.items, disabled, itemTheme?.primaryTypo, itemTheme?.secondaryTypo)
+      : dataVirtualEntries(
+          props.items,
+          disabled,
+          singleLine,
+          itemTheme?.primaryTypo,
+          itemTheme?.secondaryTypo,
+        )
   const virtualEntries = dataEntries ?? compositeVirtualEntries(props.children)
 
   const Root = virtualized ? View : Flex
@@ -127,6 +145,7 @@ export function List(props: ListProps) {
           'weave-list': '',
           'weave-list-orientation': orientation,
           'weave-list-selection': selection,
+          'weave-list-single-line': singleLine ? 'true' : 'false',
           'weave-list-dividers': noDividers ? 'false' : 'true',
           'weave-list-virtualized': virtualized ? 'true' : 'false',
         }}
