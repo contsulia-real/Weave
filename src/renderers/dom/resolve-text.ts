@@ -13,7 +13,7 @@ function textWrapValues(
   wrap: TextStyleProps['wrap'],
   overflow: TextStyleProps['overflow'],
 ): { whiteSpace?: string; textWrap?: string } {
-  if (wrap === 'nowrap') return { whiteSpace: 'nowrap' }
+  if (wrap === 'nowrap') return { whiteSpace: 'nowrap', textWrap: 'nowrap' }
   if (wrap === 'balance') {
     return {
       whiteSpace: 'normal',
@@ -26,7 +26,7 @@ function textWrapValues(
       textWrap: 'wrap',
     }
   }
-  if (overflow === 'ellipsis') return { whiteSpace: 'nowrap' }
+  if (overflow === 'ellipsis') return { whiteSpace: 'nowrap', textWrap: 'nowrap' }
   return {}
 }
 

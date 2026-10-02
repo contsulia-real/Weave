@@ -1889,7 +1889,7 @@ ellipsis
 
 ### singleLine
 
-`singleLine?: boolean` 是单行省略快捷语义。为 `true` 时，Text 必须始终保持单行、不自动换行，并在可用宽度不足时使用 `...` 省略超出内容；实现直接复用 Text 现有的 `nowrap + ellipsis` 通道，不建立第二套截断 CSS。它覆盖基础和响应式的 `wrap / overflow / maxLines`，因此调用方不能在 breakpoint 中重新把同一个 Text 变回多行。
+`singleLine?: boolean` 是单行省略快捷语义。为 `true` 时，Text 必须始终保持单行、不自动换行，并在可用宽度不足时使用 `...` 省略超出内容；实现直接复用 Text 现有的 `nowrap + ellipsis` 通道，不建立第二套截断 CSS。由于 Text stylesheet 同时声明 `white-space` 与 `text-wrap`，`nowrap` / `ellipsis` 必须同时把两者锁为 `nowrap`，不能让后声明的 `text-wrap` 把单行语义覆盖回可换行。它覆盖基础和响应式的 `wrap / overflow / maxLines`，因此调用方不能在 breakpoint 中重新把同一个 Text 变回多行。
 
 ### lineHeight / letterSpacing
 
