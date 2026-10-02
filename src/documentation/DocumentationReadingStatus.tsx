@@ -1,4 +1,4 @@
-import { type RefObject, useLayoutEffect, useMemo, useState } from 'react'
+import { type RefObject, useEffect, useMemo, useState } from 'react'
 import { Card, Link, MarkSlider } from '../index'
 
 interface DocumentationReadingMark {
@@ -34,7 +34,7 @@ export function DocumentationReadingStatus({
   const [marks, setMarks] = useState<readonly DocumentationReadingMark[]>([])
   const [value, setValue] = useState(0)
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const page = pageRef.current
     const scrollContainer = scrollContainerRef.current
     if (page === null || scrollContainer === null) return
