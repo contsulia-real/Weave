@@ -118,7 +118,7 @@ export function DocumentationNavigation({ pathname, onNavigate }: DocumentationN
           onChange={handleSearchChange}
           leadingIcon={IconSearch}
           placeholder={t('docs.drawer.search')}
-          viewProps={{ label: t('docs.drawer.search'), width: 'fill', minWidth: 'auto' }}
+          viewProps={{ label: t('docs.drawer.search'), width: 'fill'}}
         />
 
         <Accordion
