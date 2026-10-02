@@ -53,7 +53,7 @@ export function DocumentationComponentPage({ componentName }: DocumentationCompo
   return (
     <Column width="fill" padding={2} gap={2}>
       <Column width="fill" gap={0.75}>
-        <Text typo="display-small">{componentName}</Text>
+        <Text typo="display-medium">{componentName}</Text>
         <Text typo="body-medium">{definition.description}</Text>
       </Column>
 
