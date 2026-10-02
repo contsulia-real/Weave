@@ -1,5 +1,5 @@
 import { type RefObject, useRef, useState } from 'react'
-import { Column, FormField, Input, Row, Select, SelectOption, Switch, Text } from '../index'
+import { Card, Column, FormField, Input, Row, Select, SelectOption, Switch, Text } from '../index'
 import { DocumentationReadingStatus } from './DocumentationReadingStatus'
 import {
   type DocumentationPlaygroundControl,
@@ -74,21 +74,32 @@ export function DocumentationComponentPage({
         >
           <Text typo="headline-small">Playground</Text>
 
-          <Row gap={1.5} align="start">
-            <Column key={previewKey} padding={1}>
-              {definition.render(values)}
-            </Column>
+          <Card viewProps={{padding: 0}}>
+            <Row maxHeight={24}>
+              <Column key={previewKey} overflow='auto' padding={1} style={{height: 'fill',flex: 1}}>
+                {definition.render(values)}
+              </Column>
 
-            <Column gap={1}>
-              {definition.controls.map((control) => (
-                <FormField key={control.prop} label={control.prop}>
-                  {parameterControl(control, values[control.prop], (next) => {
-                    setValues((current) => ({ ...current, [control.prop]: next }))
-                  })}
-                </FormField>
-              ))}
-            </Column>
-          </Row>
+              <Column gap={1} background='surfaceHover' overflow='auto' padding={1} minWidth='30%'>
+                {definition.controls.map((control) => (
+                  <FormField
+                    key={control.prop}
+                    label={control.prop}
+                    viewProps={{
+                      direction: 'row',
+                      align: 'center',
+                      justify: 'space-between',
+                      style: { display: 'flex' },
+                    }}
+                  >
+                    {parameterControl(control, values[control.prop], (next) => {
+                      setValues((current) => ({ ...current, [control.prop]: next }))
+                    })}
+                  </FormField>
+                ))}
+              </Column>
+            </Row>
+          </Card>
         </Column>
       </Column>
 

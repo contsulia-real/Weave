@@ -130,7 +130,6 @@ export function DocumentationReadingStatus({
         }}
         min={0}
         max={max}
-        step={1}
         direction="vertical"
         inverse
       />
