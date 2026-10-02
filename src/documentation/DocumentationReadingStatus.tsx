@@ -1,5 +1,5 @@
 import { type RefObject, useEffect, useMemo, useState } from 'react'
-import { Card, Link, MarkSlider } from '../index'
+import { Card, Flex, Link, MarkSlider, Text } from '../index'
 
 interface DocumentationReadingMark {
   id: string
@@ -90,7 +90,7 @@ export function DocumentationReadingStatus({
     () =>
       marks.map((mark) => ({
         flag: mark.flag,
-        label: <Link href={`#${mark.id}`} text={mark.label} hideIcon />,
+        label: <Link href={`#${mark.id}`} text={<Text typo='label-medium'>{mark.label}</Text>} hideIcon hideUnderline />,
       })),
     [marks],
   )
@@ -101,14 +101,13 @@ export function DocumentationReadingStatus({
   const max = marks[marks.length - 1]?.flag ?? min
 
   return (
-    <Card
-      viewProps={{
-        position: 'sticky',
-        top: 2,
-        alignSelf: 'start',
-        shrink: 0,
-        padding: 1.5,
-      }}
+    <Flex
+      top={2}
+      alignSelf='start'
+      shrink={0}
+      padding={1.5}
+      minWidth='280px'
+      position='sticky'
     >
       <MarkSlider
         marks={sliderMarks}
@@ -122,6 +121,6 @@ export function DocumentationReadingStatus({
         direction="vertical"
         inverse
       />
-    </Card>
+    </Flex>
   )
 }
