@@ -178,7 +178,7 @@ export function DocumentationPage({ themeMode, onThemeModeChange }: Documentatio
   }
 
   const navigation = (
-    <Card viewProps={{height: 'fill', background: 'surfaceHover'}}>
+    <Card viewProps={{height: 'fill'}}>
       <Accordion>
         <AccordionItem value="overview">
           <AccordionTrigger>{t('docs.nav.overview')}</AccordionTrigger>
