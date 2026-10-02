@@ -60,6 +60,7 @@ void i18n.use(initReactI18next).init({
         'docs.route.overview': 'Documentation',
         'docs.route.components': 'Components',
         'docs.route.placeholder': 'Documentation page framework',
+        'docs.drawer.search': 'Search Weave',
       },
     },
   },

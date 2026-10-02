@@ -1,3 +1,4 @@
+import { IconSearch } from '@tabler/icons-react'
 import { useTranslation } from 'react-i18next'
 import {
   Accordion,
@@ -5,6 +6,8 @@ import {
   AccordionPanel,
   AccordionTrigger,
   Card,
+  Column,
+  Input,
   List,
   ListItem,
 } from '../index'
@@ -119,50 +122,63 @@ export function DocumentationNavigation({ onNavigate }: DocumentationNavigationP
   const { t } = useTranslation()
 
   return (
-    <Card viewProps={{ height: 'fill' }}>
-      <Accordion noDividers>
-        <AccordionItem value="overview">
-          <AccordionTrigger viewProps={{ radius: 'full' }}>
-            {t('docs.nav.overview')}
-          </AccordionTrigger>
-          <AccordionPanel>
-            <List noDividers>
-              {documentationOverview.map(({ key, path }) => (
-                <ListItem
-                  key={path}
-                  id={path}
-                  viewProps={{ clickable: true, onClick: () => onNavigate(path) }}
-                >
-                  {t(key)}
-                </ListItem>
-              ))}
-            </List>
-          </AccordionPanel>
-        </AccordionItem>
-
-        {documentationComponentGroups.map(({ value, labelKey, components }) => (
-          <AccordionItem key={value} value={value}>
-            <AccordionTrigger viewProps={{ radius: 'full' }}>{t(labelKey)}</AccordionTrigger>
+    <Card viewProps={{ height: 'fill', background: 'surfaceHover' }}>
+      <Column gap={1} width="fill" align="center">
+        <Input
+              type="search"
+              clearable
+              leadingIcon={IconSearch}
+              placeholder={t('docs.drawer.search')}
+              viewProps={{ label: t('docs.drawer.search'), width: 'fill', minWidth: 'auto'}}
+        />
+        <Accordion noDividers viewProps={{ width: 'fill'}}>
+          <AccordionItem value="overview">
+            <AccordionTrigger viewProps={{ radius: 'full' }}>
+              {t('docs.nav.overview')}
+            </AccordionTrigger>
             <AccordionPanel>
               <List noDividers>
-                {components.map((component) => {
-                  const path = `/docs/components/${component}`
-
-                  return (
-                    <ListItem
-                      key={component}
-                      id={component}
-                      viewProps={{ clickable: true, onClick: () => onNavigate(path) }}
-                    >
-                      {component}
-                    </ListItem>
-                  )
-                })}
+                {documentationOverview.map(({ key, path }) => (
+                  <ListItem
+                    key={path}
+                    id={path}
+                    viewProps={{ clickable: true, onClick: () => onNavigate(path), radius: 'full' }}
+                  >
+                    {t(key)}
+                  </ListItem>
+                ))}
               </List>
             </AccordionPanel>
           </AccordionItem>
-        ))}
-      </Accordion>
+
+          {documentationComponentGroups.map(({ value, labelKey, components }) => (
+            <AccordionItem key={value} value={value}>
+              <AccordionTrigger viewProps={{ radius: 'full' }}>{t(labelKey)}</AccordionTrigger>
+              <AccordionPanel>
+                <List noDividers>
+                  {components.map((component) => {
+                    const path = `/docs/components/${component}`
+
+                    return (
+                      <ListItem
+                        key={component}
+                        id={component}
+                        viewProps={{
+                          clickable: true,
+                          onClick: () => onNavigate(path),
+                          radius: 'full',
+                        }}
+                      >
+                        {component}
+                      </ListItem>
+                    )
+                  })}
+                </List>
+              </AccordionPanel>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      </Column>
     </Card>
   )
 }
