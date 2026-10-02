@@ -1,6 +1,7 @@
 import type { TFunction } from 'i18next'
 import { useTranslation } from 'react-i18next'
 import { Column, Text } from '../index'
+import { DocumentationComponentPage } from './DocumentationComponentPage'
 import { DocumentationGettingStarted } from './DocumentationGettingStarted'
 import { documentationComponentNameForPath } from './documentation-navigation-data'
 
@@ -29,9 +30,7 @@ export function DocumentationContent({ section, pathname }: DocumentationContent
   if (componentName !== null) {
     return (
       <Column width="fill" height="fill" overflow="auto">
-        <Column width="fill" padding={2}>
-          <Text typo="display-small">{componentName}</Text>
-        </Column>
+        <DocumentationComponentPage key={componentName} componentName={componentName} />
       </Column>
     )
   }
