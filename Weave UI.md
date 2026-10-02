@@ -4631,7 +4631,7 @@ Slider 默认宽度：
 16rem
 ```
 
-`viewProps.width` 可覆盖。
+`viewProps.width` 可覆盖。Slider control 即使作为父布局中的 stretch item，也不得让承载 visual / input 的 grid track 独立拉伸；该 track 必须以真实 range input 的解析宽度为准，因此 visual track、marks / step dots、thumb 与 pointer hit layer 始终共享同一实际宽度。
 
 Slider 的基础几何采用 M3 Slider 的粗 track + 独立圆形 thumb + thumb-track gap 结构，再叠加 Weave 自己的实体层级与触感。
 

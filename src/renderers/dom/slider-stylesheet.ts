@@ -24,6 +24,7 @@ const stylesheet = `
   display: inline-grid;
   position: relative;
   align-items: center;
+  justify-content: start;
   cursor: var(--weave-slider-cursor);
   vertical-align: middle;
 }
