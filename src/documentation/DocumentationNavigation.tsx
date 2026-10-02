@@ -62,7 +62,9 @@ export function DocumentationNavigation({ pathname, onNavigate }: DocumentationN
 
     return sections.flatMap((section) => {
       const sectionMatches = includesQuery(section.label, normalizedSearch)
-      const items = section.items.filter((item) => includesQuery(item.label, normalizedSearch))
+      const items = sectionMatches
+        ? section.items
+        : section.items.filter((item) => includesQuery(item.label, normalizedSearch))
 
       if (!sectionMatches && items.length === 0) return []
       return [{ ...section, items }]

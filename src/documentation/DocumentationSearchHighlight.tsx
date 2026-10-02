@@ -45,13 +45,7 @@ export function DocumentationSearchHighlight({ text, query }: DocumentationSearc
     }
 
     content.push(
-      <Text
-        key={`match-${start}`}
-        viewProps={{
-          background:
-            'color-mix(in srgb, var(--weave-color-primary) 14%, var(--weave-color-surface))',
-        }}
-      >
+      <Text key={`match-${start}`} color="onPrimary" viewProps={{ background: 'primary' }}>
         {text.slice(start, end)}
       </Text>,
     )
