@@ -191,7 +191,7 @@ export function DocumentationPage({ themeMode, onThemeModeChange }: Documentatio
                     text={t(key)}
                     hideIcon
                     hideUnderline
-                    viewProps={{ onClick: navigate(path) }}
+                    viewProps={{ onClick: navigate(path), width: 'fill' }}
                   />
                 </ListItem>
               ))}
