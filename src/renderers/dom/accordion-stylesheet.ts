@@ -24,6 +24,7 @@ const stylesheet = `
 :where(.weave-accordion-trigger) {
   appearance: none;
   text-align: left;
+  min-width: 0;
 
   --weave-component-display: flex;
   --weave-component-width: 100%;
