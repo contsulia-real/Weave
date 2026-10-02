@@ -6123,7 +6123,7 @@ Drawer 位于 left/top 时复用 start Pane，位于 right/bottom 时复用 end 
 
 `resizable=false` 映射到 SplitBox `disabled`：splitter 元素仍保留，但 non-modal Drawer 固定 `thickness=0`，且不能 pointer / keyboard resize，也不进入 Tab 顺序。
 
-non-modal 不产生 backdrop、不让主内容 inert、不做 focus containment。surface 默认不使用 ambient shadow，也不由 Drawer 自己添加任何 border；只有调用方通过 `drawerViewProps` 显式配置时才可以出现 border。Drawer 与主视图的可拖边界只由 SplitBox splitter 表达。non-modal Drawer 的 splitter `thickness` 固定为 0，只保留 hit area 与 hover / active feedback。
+non-modal 不产生 backdrop、不让主内容 inert、不做 focus containment。surface 默认使用 `theme.components.Drawer.base.background` 与 `theme.components.Drawer.base.radius`，不使用 ambient shadow，也不由 Drawer 自己添加任何 border；只有调用方通过 `drawerViewProps` 显式配置时才可以出现 border。Drawer 与主视图的可拖边界只由 SplitBox splitter 表达。non-modal Drawer 的 splitter `thickness` 固定为 0，只保留 hit area 与 hover / active feedback。
 
 non-modal 的 `SplitBoxPane` 必须继续保持纯布局槽位，Drawer surface 必须作为 Pane 内部的独立元素存在，不能把 surface 的 padding / border / background 直接施加到 Pane 本身。Pane 折叠时由 SplitBoxPane 的 collapsed `display: none` 完整移出布局与绘制，关闭状态不得残留任何 Drawer padding、border、内容或 Scrollbar 绘制。
 

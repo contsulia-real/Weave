@@ -31,14 +31,15 @@ const stylesheet = `
 }
 
 .weave-drawer-surface--non-modal {
+  --weave-component-background: var(--weave-drawer-background);
   --weave-component-border-top-width: 0;
   --weave-component-border-right-width: 0;
   --weave-component-border-bottom-width: 0;
   --weave-component-border-left-width: 0;
-  --weave-component-border-top-left-radius: 0;
-  --weave-component-border-top-right-radius: 0;
-  --weave-component-border-bottom-right-radius: 0;
-  --weave-component-border-bottom-left-radius: 0;
+  --weave-component-border-top-left-radius: var(--weave-drawer-radius);
+  --weave-component-border-top-right-radius: var(--weave-drawer-radius);
+  --weave-component-border-bottom-right-radius: var(--weave-drawer-radius);
+  --weave-component-border-bottom-left-radius: var(--weave-drawer-radius);
   --weave-component-box-shadow: none;
   opacity: 1;
   transition: opacity var(--weave-motion-duration-fast) var(--weave-motion-curve-enter);

@@ -22,6 +22,8 @@ import {
   Drawer,
   Input,
   Link,
+  List,
+  ListItem,
   Popover,
   Text,
   View,
@@ -33,72 +35,106 @@ import documentationI18n, {
 } from './i18n'
 import { useDocsRoute } from './router'
 
-const documentationComponents = [
-  'Absolute',
-  'Accordion',
-  'AccordionItem',
-  'AccordionPanel',
-  'AccordionTrigger',
-  'AppBar',
-  'Avatar',
-  'Badge',
-  'Button',
-  'Card',
-  'Checkbox',
-  'Code',
-  'Column',
-  'Combobox',
-  'ComboboxOption',
-  'Dialog',
-  'Divider',
-  'Drawer',
-  'Flex',
-  'Form',
-  'FormDescription',
-  'FormError',
-  'FormField',
-  'FormFieldset',
-  'FormLabel',
-  'FormLegend',
-  'Grid',
-  'Icon',
-  'Image',
-  'Input',
-  'Link',
-  'List',
-  'ListItem',
-  'Menu',
-  'MenuItem',
-  'Popover',
-  'Presence',
-  'Progress',
-  'Radio',
-  'RangeSlider',
-  'Row',
-  'Select',
-  'SelectOption',
-  'Skeleton',
-  'Slider',
-  'Snack',
-  'SnackProvider',
-  'SplitBox',
-  'SplitBoxPane',
-  'Stack',
-  'Switch',
-  'Tab',
-  'TabList',
-  'Table',
-  'TableBody',
-  'TableCell',
-  'TableHead',
-  'TableHeader',
-  'TableRow',
-  'TabPanel',
-  'Tabs',
-  'Text',
-  'ThemeProvider',
-  'ToolTip',
-  'View',
+const documentationOverview = [
+  { key: 'docs.nav.gettingStarted', path: '/docs/getting-started' },
+  { key: 'docs.nav.installation', path: '/docs/installation' },
+  { key: 'docs.nav.weaveAZ', path: '/docs/a-z' },
+] as const
+
+const documentationComponentGroups = [
+  {
+    value: 'foundation-layout',
+    labelKey: 'docs.nav.foundationLayout',
+    components: [
+      'View',
+      'Flex',
+      'Row',
+      'Column',
+      'Grid',
+      'Stack',
+      'Absolute',
+      'SplitBox',
+      'SplitBoxPane',
+      'Presence',
+    ],
+  },
+  {
+    value: 'content-actions',
+    labelKey: 'docs.nav.contentActions',
+    components: [
+      'Text',
+      'Code',
+      'Image',
+      'Icon',
+      'Avatar',
+      'Divider',
+      'Link',
+      'Badge',
+      'Button',
+      'Card',
+      'AppBar',
+    ],
+  },
+  {
+    value: 'forms-status',
+    labelKey: 'docs.nav.formsStatus',
+    components: [
+      'Input',
+      'Select',
+      'SelectOption',
+      'Combobox',
+      'ComboboxOption',
+      'Slider',
+      'RangeSlider',
+      'Switch',
+      'Radio',
+      'Checkbox',
+      'Progress',
+      'Skeleton',
+    ],
+  },
+  {
+    value: 'composite-ui',
+    labelKey: 'docs.nav.compositeUI',
+    components: [
+      'Form',
+      'FormField',
+      'FormLabel',
+      'FormDescription',
+      'FormError',
+      'FormFieldset',
+      'FormLegend',
+      'Table',
+      'TableHeader',
+      'TableBody',
+      'TableRow',
+      'TableHead',
+      'TableCell',
+      'Accordion',
+      'AccordionItem',
+      'AccordionTrigger',
+      'AccordionPanel',
+      'ToolTip',
+      'Popover',
+      'Dialog',
+      'Drawer',
+      'Menu',
+      'MenuItem',
+      'Tabs',
+      'TabList',
+      'Tab',
+      'TabPanel',
+      'Snack',
+      'SnackProvider',
+      'List',
+      'ListItem',
+    ],
+  },
+  {
+    value: 'theme-application',
+    labelKey: 'docs.nav.themeApplication',
+    components: ['ThemeProvider'],
+  },
 ] as const
 
 export interface DocumentationPageProps {
@@ -143,27 +179,49 @@ export function DocumentationPage({ themeMode, onThemeModeChange }: Documentatio
   const navigation = (
     <Column label={t('docs.navigation')}>
       <Accordion multiple>
-        <AccordionItem value="components">
-          <AccordionTrigger>{t('docs.nav.components')}</AccordionTrigger>
+        <AccordionItem value="overview">
+          <AccordionTrigger>{t('docs.nav.overview')}</AccordionTrigger>
           <AccordionPanel>
-            <Column>
-              {documentationComponents.map((component) => {
-                const path = `/docs/components/${component}`
-
-                return (
+            <List noDividers>
+              {documentationOverview.map(({ key, path }) => (
+                <ListItem key={path} id={path}>
                   <Link
-                    key={component}
                     href={path}
-                    text={component}
+                    text={t(key)}
                     hideIcon
                     hideUnderline
                     viewProps={{ onClick: navigate(path) }}
                   />
-                )
-              })}
-            </Column>
+                </ListItem>
+              ))}
+            </List>
           </AccordionPanel>
         </AccordionItem>
+
+        {documentationComponentGroups.map(({ value, labelKey, components }) => (
+          <AccordionItem key={value} value={value}>
+            <AccordionTrigger>{t(labelKey)}</AccordionTrigger>
+            <AccordionPanel>
+              <List noDividers>
+                {components.map((component) => {
+                  const path = `/docs/components/${component}`
+
+                  return (
+                    <ListItem key={component} id={component}>
+                      <Link
+                        href={path}
+                        text={component}
+                        hideIcon
+                        hideUnderline
+                        viewProps={{ onClick: navigate(path) }}
+                      />
+                    </ListItem>
+                  )
+                })}
+              </List>
+            </AccordionPanel>
+          </AccordionItem>
+        ))}
       </Accordion>
     </Column>
   )
