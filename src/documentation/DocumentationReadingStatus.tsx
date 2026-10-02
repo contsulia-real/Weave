@@ -72,9 +72,9 @@ export function DocumentationReadingStatus({
       }
 
       const max = nextMarks[nextMarks.length - 1]?.flag ?? 0
-      const scrollRect = scrollContainer.getBoundingClientRect()
-      const contentOffset = Math.max(0, Math.round(scrollRect.top - contentRect.top))
-      setValue(Math.min(max, contentOffset))
+      const maxScroll = Math.max(0, scrollContainer.scrollHeight - scrollContainer.clientHeight)
+      const scrollTop = Math.min(maxScroll, Math.max(0, scrollContainer.scrollTop))
+      setValue(maxScroll === 0 ? max : (scrollTop / maxScroll) * max)
     }
 
     sync()
@@ -122,14 +122,17 @@ export function DocumentationReadingStatus({
         marks={sliderMarks}
         value={value}
         onChange={(next) => {
-          scrollContainerRef.current?.scrollTo({ top: next })
+          const scrollContainer = scrollContainerRef.current
+          if (scrollContainer === null || max <= 0) return
+
+          const maxScroll = Math.max(0, scrollContainer.scrollHeight - scrollContainer.clientHeight)
+          scrollContainer.scrollTo({ top: (next / max) * maxScroll })
         }}
         min={0}
         max={max}
         step={1}
         direction="vertical"
         inverse
-        viewProps={{ height: `${max}px` }}
       />
     </Flex>
   )
