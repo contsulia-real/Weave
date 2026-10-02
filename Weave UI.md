@@ -522,6 +522,8 @@ CSS 样式与布局
 
 具体组件可以在 ViewHost 通用能力之上增加自身特有能力，也可以直接复用已有公开组件提供的匹配职责。
 
+`clickable?: boolean` 是 View / ViewHost 的通用可选交互视觉能力。为 `true` 时，默认 hover background 使用现有 `surfaceHover`，pointer active background 复用 ListItem / Accordion / Menu 已有的 pressed surface 混色；调用方显式提供 `hover.background` 或 `active.background` 时继续按 View 状态优先级覆盖这些默认值。`clickable` 只提供通用 hover / active 变色，不替组件决定业务点击语义、ARIA role 或键盘行为。已有同名高层组件属性时，不在该组件的 `viewProps` 中重复暴露第二份 `clickable` 真值。
+
 例如：
 
 ```text
@@ -5001,7 +5003,7 @@ Trigger aria-controls -> 对应 Panel id
 Panel aria-labelledby -> 对应 Trigger id
 ```
 
-Panel 收起后不能继续参与 Tab 顺序。进入 closing 状态时立即设置 `inert` 并从可访问树隐藏；Panel semantic host 保持挂载，以便 AccordionItem 的第二条 grid row 从 `1fr` 连续过渡到 `0fr`，内部内容则通过现有 `Presence` 完成 exit 后卸载。展开时该 row 从 `0fr` 连续过渡到 `1fr`。这只使用 ViewHost 已有 transition 通道、Theme motion token 与 Presence，不建立 Accordion 私有 JavaScript 高度测量或另一套 motion runtime。
+Panel 收起后不能继续参与 Tab 顺序。进入 closing 状态时立即设置 `inert` 并从可访问树隐藏；Panel semantic host 保持挂载。AccordionItem 的第一条 Trigger grid row 固定使用 `max-content`，禁止使用可被 grid content alignment 拉伸的 `auto` track；第二条 Panel row 从 `1fr` 连续过渡到 `0fr`，展开时再从 `0fr` 连续过渡到 `1fr`，内部内容则通过现有 `Presence` 完成 exit 后卸载。这样动画期间剩余空间只能属于 Panel row，不能把 Trigger 撑高。这只使用 ViewHost 已有 transition 通道、Theme motion token 与 Presence，不建立 Accordion 私有 JavaScript 高度测量或另一套 motion runtime。
 
 默认内容 motion 使用现有 `fade-down` enter 与 `fade-up` exit，并使用 Theme 的 `gentle` physical spring；AccordionItem 的 `grid-template-rows` 也直接通过现有 View `transition` + `gentle` spring 驱动，因此内容透明度 / 位移与真实布局高度连续变化，而不是在开关时瞬间跳变。调用方可以通过 `AccordionPanel.viewProps.enter / exit` 覆盖内容 motion，也可以通过 `AccordionItem.viewProps.transition` 覆盖布局 motion；reduced motion 继续由 View motion runtime 统一处理，默认 chevron 的 CSS transition 也必须关闭。
 
@@ -8569,7 +8571,7 @@ CSS variables + runtime classes + framework stylesheet
 29. 组件默认承担正确可访问性和键盘语义，不把标准行为推给业务开发者。
 30. 浮层使用语义 layer，普通用户不需要手工管理 portal 或全局 z-index。
 31. 具体组件已经提供同义语义状态属性时，该状态不在其 `viewProps` 中重复暴露，组件属性作为唯一真值。
-32. Documentation 页面本身的全部可见 UI 必须 **100% dogfood Weave 公共组件与 Theme**：页面 shell、导航、搜索、主题切换、内容布局和后续示例都不得直接使用裸 `View`、裸 DOM 元素、Documentation 私有视觉 CSS 或第三方 UI 组件来替代已有 Weave 能力。React state、History router、i18n、数据处理等非视觉基础设施可以直接使用。框架组件自身仍按其实现边界复用 Weave 语义组件与内部基础设施，不再平行维护裸 DOM / 私有 CSS 的同义视觉实现。 Documentation AppBar 的 trailing 直接放置 Weave search Input、Theme Popover 与 Language Popover，不额外包 Row；三个真实控件直接由 AppBar trailing slot 的 flex `align-items: center` 与 `gap` 负责垂直居中和间距。语言选择必须包含 `Auto detect` 和当前实际注册的语言资源。`Auto detect` 按 `navigator.languages` 顺序匹配已注册语言，无法匹配时回退到 i18n fallback language，不得展示尚未存在的翻译语言。 Drawer 导航项直接使用 `ListItem` 的点击事件触发 History 路由，不在 `ListItem` 内嵌 `Link`。页面真实文档加载期间在 AppBar 后、主内容前直接使用公开 `Progress mode="linear" indeterminate`；加载状态以 `document.readyState !== "complete"` 为真值，不为同步 SPA 路由制造假延迟。
+32. Documentation 页面本身的全部可见 UI 必须 **100% dogfood Weave 公共组件与 Theme**：页面 shell、导航、搜索、主题切换、内容布局和后续示例都不得直接使用裸 `View`、裸 DOM 元素、Documentation 私有视觉 CSS 或第三方 UI 组件来替代已有 Weave 能力。React state、History router、i18n、数据处理等非视觉基础设施可以直接使用。框架组件自身仍按其实现边界复用 Weave 语义组件与内部基础设施，不再平行维护裸 DOM / 私有 CSS 的同义视觉实现。 Documentation AppBar 的 trailing 直接放置 Weave search Input、Theme Popover 与 Language Popover，不额外包 Row；三个真实控件直接由 AppBar trailing slot 的 flex `align-items: center` 与 `gap` 负责垂直居中和间距。语言选择必须包含 `Auto detect` 和当前实际注册的语言资源。`Auto detect` 按 `navigator.languages` 顺序匹配已注册语言，无法匹配时回退到 i18n fallback language，不得展示尚未存在的翻译语言。 Drawer 导航项直接使用 `ListItem` 的点击事件触发 History 路由，不在 `ListItem` 内嵌 `Link`，并通过 `ListItem.viewProps.clickable=true` 复用 ViewHost 的通用 hover / active 变色反馈。页面真实文档加载期间在 AppBar 后、主内容前直接使用公开 `Progress mode="linear" indeterminate`；加载状态以 `document.readyState !== "complete"` 为真值，不为同步 SPA 路由制造假延迟。
 33. 组件复用其他组件的视觉或交互能力时，外层组件仍承担自己的高层语义；不得因此重复暴露冲突的 ARIA 角色。
 34. `Text.typo` 必须来自主题中的完整 type scale；不能退回 renderer 内部的少量硬编码 preset。
 35. Scrollbar 只绘制 thumb，不提供 tracked / trackColor；带圆角宿主必须把圆角曲线区域排除出 thumb 的运动区。

@@ -128,7 +128,11 @@ export function DocumentationNavigation({ onNavigate }: DocumentationNavigationP
           <AccordionPanel>
             <List noDividers>
               {documentationOverview.map(({ key, path }) => (
-                <ListItem key={path} id={path} viewProps={{ onClick: () => onNavigate(path) }}>
+                <ListItem
+                  key={path}
+                  id={path}
+                  viewProps={{ clickable: true, onClick: () => onNavigate(path) }}
+                >
                   {t(key)}
                 </ListItem>
               ))}
@@ -148,7 +152,7 @@ export function DocumentationNavigation({ onNavigate }: DocumentationNavigationP
                     <ListItem
                       key={component}
                       id={component}
-                      viewProps={{ onClick: () => onNavigate(path) }}
+                      viewProps={{ clickable: true, onClick: () => onNavigate(path) }}
                     >
                       {component}
                     </ListItem>

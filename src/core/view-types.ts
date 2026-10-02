@@ -302,6 +302,7 @@ export type ViewCoreProps<TElement extends HTMLElement = HTMLDivElement> =
       id?: string
       data?: ViewData
 
+      clickable?: boolean
       focusable?: boolean
       hidden?: boolean
       draggable?: boolean

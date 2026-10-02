@@ -3,7 +3,7 @@ import type { ViewCoreProps, ViewDynamicBreakpointProps } from './view-types'
 
 export type CardViewProps = Omit<
   ViewCoreProps<HTMLDivElement>,
-  'children' | 'pressed' | 'selected'
+  'children' | 'clickable' | 'pressed' | 'selected'
 > &
   ViewDynamicBreakpointProps
 

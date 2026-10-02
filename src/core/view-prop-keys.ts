@@ -147,6 +147,7 @@ const VIEW_CONTROL_PROP_KEYS = [
   'className',
   'style',
   'data',
+  'clickable',
   'focusable',
   'autoFocus',
   'hover',

@@ -420,8 +420,22 @@ export function resolveDOMView<TElement extends HTMLElement>(
     )
   }
 
-  stateStyles(attributeStyle, 'hover', props.hover)
-  stateStyles(attributeStyle, 'active', props.active)
+  stateStyles(
+    attributeStyle,
+    'hover',
+    props.clickable ? { background: 'surfaceHover', ...props.hover } : props.hover,
+  )
+  stateStyles(
+    attributeStyle,
+    'active',
+    props.clickable
+      ? {
+          background:
+            'color-mix(in srgb, var(--weave-color-outline) 44%, var(--weave-color-surface))',
+          ...props.active,
+        }
+      : props.active,
+  )
   stateStyles(attributeStyle, 'focus', props.focus)
   stateStyles(attributeStyle, 'focus-visible', props.focusVisible)
   stateStyles(attributeStyle, 'disabled', props.disabledStyle)

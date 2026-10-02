@@ -8,12 +8,12 @@ const stylesheet = `
 
 :where(.weave-accordion-item) {
   --weave-component-display: grid;
-  grid-template-rows: auto minmax(0, 0fr);
+  grid-template-rows: max-content minmax(0, 0fr);
   min-width: 0;
 }
 
 :where(.weave-accordion-item[data-weave-accordion-item-open="true"]) {
-  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-rows: max-content minmax(0, 1fr);
 }
 
 :where(.weave-divider).weave-accordion__divider {
