@@ -83,6 +83,8 @@ const stylesheet = `
 
 :where(.weave-accordion-trigger__content) {
   min-width: 0;
+  flex: 1 1 0;
+  overflow: hidden;
 }
 
 :where(.weave-accordion-trigger__indicator) {
