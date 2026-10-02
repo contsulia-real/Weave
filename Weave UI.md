@@ -4603,17 +4603,19 @@ Slider 本身只支持单值 horizontal 模式；双 thumb 范围选择由独立
 
 ## 18.15.2 Native interaction
 
-Slider 直接保留原生 range 的行为：
+Slider 保留原生 range 的 keyboard、focus、form participation 与可访问性语义：
 
 ```text
-track click
-thumb drag
 Arrow keys
 Home / End
 PageUp / PageDown
+focus
+native form participation
 ```
 
-拖动过程中原生 range 的连续数值更新进入 `onChange`。组件不创建第二套 pointer drag 或 keyboard state machine。
+pointer 的 click / drag 继续由统一的 Slider pointer interaction 处理，但 pointer → value 不再依赖浏览器各自的原生 range track 几何。Weave 必须使用与视觉 thumb / step dot 完全相同的 value axis：左端为 `thumbSize / 2`，右端为 `width - thumbSize / 2`，先将 pointer X 映射到该轴，再按 `min / max / step` 得到数值。这样同一 value 的可见 dot、thumb 中心与 pointer 命中位置必须严格重合。
+
+这不是第二套 drag state machine；pointer capture、drag threshold、thumb shape 与 interaction state 仍只由现有 Slider interaction 负责，新增的 axis mapping 只是该 interaction 的唯一 pointer 数值来源。keyboard 仍由原生 range 处理。
 
 ## 18.15.3 Label
 
@@ -4812,7 +4814,7 @@ restricted?: boolean
 
 ## 18.15B.3 Visual / Theme
 
-Mark dot 直接复用 Slider 的 `weave-slider__dot / weave-slider__step` 几何与 active / inactive 配色；只要存在 marks，就使用 dot 对应的端帽几何，与 `restricted` 是否开启无关。`restricted` 只决定 thumb 是否采用离散吸附 motion。thumb、track、focus、disabled、drag shape 与尺寸全部继续读取：
+Mark dot 直接复用 Slider 的 `weave-slider__dot / weave-slider__step` 几何与 active / inactive 配色；只要存在 marks，就使用 dot 对应的端帽几何，与 `restricted` 是否开启无关。`restricted` 只决定 thumb 是否采用离散吸附 motion。mark flag 的视觉位置与 pointer 命中必须复用 Slider 的同一 value axis，禁止单独维护 mark 点击偏移。thumb、track、focus、disabled、drag shape 与尺寸全部继续读取：
 
 ```text
 theme.components.Slider
@@ -4885,7 +4887,7 @@ native form participation
 
 start thumb 不能越过 end thumb；end thumb 不能越过 start thumb。拖动或键盘操作到另一端当前值时直接停住，不交换两个 thumb 的身份。
 
-track 点击必须由离点击位置最近的 thumb 接管。框架按两个 thumb 当前中心的中点划分两个原生 range 的 pointer hit region；实际数值跳转与后续 drag 仍由命中的原生 range 自己处理，不另造 pointer-value 映射。
+track 点击必须由离点击位置最近的 thumb 接管。框架按两个 thumb 当前中心的中点划分两个原生 range 的 pointer hit region；该中点、两个 thumb 中心、step dot 与 pointer → value 都必须调用 Slider 的同一 value-axis 几何。命中的原生 range 继续提供 focus、keyboard、form participation 与可访问性语义，但 pointer 数值由统一 axis mapping 计算，禁止再让浏览器内部 range track 几何成为第二份 pointer-value 真值。
 
 两个 thumb 的实体圆形区域发生重叠时，重叠命中区域由 start thumb（较小值语义）优先接管；完全重合时整枚重合 thumb 的 pointer 命中也归 start。end thumb 仍可通过正常键盘 focus 独立操作。
 

@@ -7,6 +7,7 @@ import { useRuntimeStyleClass } from '../../renderers/dom/runtime-class'
 import { ensureSliderStylesheet } from '../../renderers/dom/slider-stylesheet'
 import { useTheme } from '../../theme/theme-context'
 import { formFieldAssociationOverrides, useFormFieldContext } from './form-field-context'
+import { sliderValueFromClientX } from './slider-axis'
 import { clampSliderValue, sliderProgress } from './slider-values'
 import { useFormReset } from './use-form-reset'
 import { useSliderInteraction } from './use-slider-interaction'
@@ -150,6 +151,11 @@ export function SingleSlider({
       onPointerMove: viewProps.onPointerMove,
       onPointerUp: viewProps.onPointerUp,
       onPointerCancel: viewProps.onPointerCancel,
+    },
+    onPointerValue: (clientX, input) => {
+      commitValue(
+        sliderValueFromClientX(input, clientX, min, max, restricted ? undefined : (stepProp ?? 1)),
+      )
     },
   })
 

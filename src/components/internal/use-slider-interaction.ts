@@ -20,6 +20,7 @@ interface UseSliderInteractionProps {
   dragMaxWidth: number
   callbacks: SliderInteractionCallbacks
   interactionId?: string
+  onPointerValue?: (clientX: number, input: HTMLInputElement) => void
 }
 
 interface SliderDragState {
@@ -40,6 +41,7 @@ export function useSliderInteraction({
   dragMaxWidth,
   callbacks,
   interactionId,
+  onPointerValue,
 }: UseSliderInteractionProps) {
   const dragRef = useRef<SliderDragState | null>(null)
 
@@ -112,6 +114,12 @@ export function useSliderInteraction({
       moved: false,
     }
 
+    if (onPointerValue !== undefined) {
+      event.preventDefault()
+      input.focus({ preventScroll: true })
+      onPointerValue(event.clientX, input)
+    }
+
     control.dataset.weaveSliderPointerActive = interactionId ?? 'true'
     applyShape(0)
     input.setPointerCapture?.(event.pointerId)
@@ -130,6 +138,11 @@ export function useSliderInteraction({
     if (!drag.moved && Math.abs(distance) >= DRAG_THRESHOLD) {
       drag.moved = true
       control.dataset.weaveSliderDragging = interactionId ?? 'true'
+    }
+
+    if (onPointerValue !== undefined) {
+      event.preventDefault()
+      onPointerValue(event.clientX, event.currentTarget)
     }
 
     applyShape(distance)

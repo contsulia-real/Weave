@@ -14,8 +14,12 @@ import { resolveSliderTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { ensureSliderStylesheet } from '../renderers/dom/slider-stylesheet'
 import { useTheme } from '../theme/theme-context'
-import { cssLengthPixels } from './internal/css-length-pixels'
 import { formFieldAssociationOverrides, useFormFieldContext } from './internal/form-field-context'
+import {
+  sliderAxisGeometry,
+  sliderAxisPositionForValue,
+  sliderValueFromClientX,
+} from './internal/slider-axis'
 import {
   clampSliderValue,
   normalizeSliderRangeValue,
@@ -147,6 +151,10 @@ export function RangeSlider({
     dragMaxWidth,
     callbacks,
     interactionId: 'start',
+    onPointerValue: (clientX, input) => {
+      const nextStart = Math.min(sliderValueFromClientX(input, clientX, min, max, step), currentEnd)
+      commitValue([nextStart, currentEnd])
+    },
   })
   const endInteraction = useSliderInteraction({
     inputRef: endInputRef,
@@ -157,6 +165,10 @@ export function RangeSlider({
     dragMaxWidth,
     callbacks,
     interactionId: 'end',
+    onPointerValue: (clientX, input) => {
+      const nextEnd = Math.max(sliderValueFromClientX(input, clientX, min, max, step), currentStart)
+      commitValue([currentStart, nextEnd])
+    },
   })
 
   const commitValue = (next: RangeSliderValue) => {
@@ -199,17 +211,12 @@ export function RangeSlider({
     if (control === null || input === null) return
 
     const updateHitSplit = () => {
-      const rect = input.getBoundingClientRect()
-      const computed = getComputedStyle(input)
-      const thumbSizeValue = computed.getPropertyValue('--weave-slider-thumb-size')
-      const thumbSize = cssLengthPixels(input, thumbSizeValue)
-      const valueAxis = Math.max(0, rect.width - thumbSize)
-      const thumbHalf = thumbSize / 2
-      const startCenter = thumbHalf + valueAxis * (startProgress / 100)
-      const endCenter = thumbHalf + valueAxis * (endProgress / 100)
+      const { inputWidth, thumbSize } = sliderAxisGeometry(input)
+      const startCenter = sliderAxisPositionForValue(input, currentStart, min, max)
+      const endCenter = sliderAxisPositionForValue(input, currentEnd, min, max)
       const midpoint = (startCenter + endCenter) / 2
       const thumbsOverlap = endCenter - startCenter < thumbSize
-      const split = thumbsOverlap ? Math.min(rect.width, startCenter + thumbHalf) : midpoint
+      const split = thumbsOverlap ? Math.min(inputWidth, startCenter + thumbSize / 2) : midpoint
       control.style.setProperty('--weave-range-slider-hit-split', `${split}px`)
     }
 
@@ -219,7 +226,7 @@ export function RangeSlider({
     observer?.observe(input)
 
     return () => observer?.disconnect()
-  }, [endProgress, startInputRef, startProgress, themeClassName])
+  }, [currentEnd, currentStart, max, min, startInputRef, themeClassName])
 
   const startInput = (
     <input
