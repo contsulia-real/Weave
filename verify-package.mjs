@@ -76,6 +76,7 @@ const expectedRuntimeExports = [
   'List',
   'ListItem',
   'Link',
+  'MarkSlider',
   'Menu',
   'MenuItem',
   'Divider',

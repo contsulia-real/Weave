@@ -31,6 +31,7 @@ export { Input } from './components/Input'
 export { Link } from './components/Link'
 export { List } from './components/List'
 export { ListItem } from './components/ListItem'
+export { MarkSlider } from './components/MarkSlider'
 export { Menu } from './components/Menu'
 export { MenuItem } from './components/MenuItem'
 export { Popover } from './components/Popover'
@@ -282,6 +283,8 @@ export type {
   SkeletonViewProps,
 } from './core/skeleton-types'
 export type {
+  MarkSliderMark,
+  MarkSliderProps,
   RangeSliderProps,
   RangeSliderValue,
   RangeSliderViewProps,

@@ -13,6 +13,11 @@ export type RangeSliderValue = [number, number]
 
 export type RangeSliderViewProps = Omit<SliderViewProps, 'id' | 'ref'>
 
+export interface MarkSliderMark {
+  flag: number
+  label: ReactNode
+}
+
 export interface SliderProps {
   value?: number
   defaultValue?: number
@@ -25,6 +30,11 @@ export interface SliderProps {
   label?: ReactNode
   size?: SliderSize
   viewProps?: SliderViewProps
+}
+
+export interface MarkSliderProps extends SliderProps {
+  marks: readonly MarkSliderMark[]
+  restricted?: boolean
 }
 
 export interface RangeSliderProps {

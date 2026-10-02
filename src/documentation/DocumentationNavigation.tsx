@@ -111,7 +111,14 @@ export function DocumentationNavigation({ pathname, onNavigate }: DocumentationN
   }
 
   return (
-    <Card viewProps={{ maxHeight: 'fill', background: 'surfaceHover', marginRight: '12px', scrollbar: {outside: true}}}>
+    <Card
+      viewProps={{
+        maxHeight: 'fill',
+        background: 'surfaceHover',
+        marginRight: '12px',
+        scrollbar: { outside: true },
+      }}
+    >
       <Column gap={1} width="fill" align="center">
         <Input
           type="search"

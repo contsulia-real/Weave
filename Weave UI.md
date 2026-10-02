@@ -4753,6 +4753,75 @@ states.disabled.opacity
 
 ---
 
+# 18.15B `MarkSlider`
+
+`MarkSlider` 是 `Slider` 的 marks 变种。它不根据 `step` 均匀生成 dot，而是直接由调用方提供的 `marks` 决定 dot 的数值位置与显示 label。它与 `Slider` 共用同一单值 range host、Theme、track、thumb、drag shape、FormField / form reset 与 motion 实现，不维护第二套 slider 视觉或交互系统。
+
+## 18.15B.1 API
+
+```tsx
+<MarkSlider
+  marks={[
+    { flag: 10, label: <Text>10</Text> },
+    { flag: 35, label: <Text>35</Text> },
+    { flag: 80, label: <Text>80</Text> },
+  ]}
+/>
+
+<MarkSlider marks={marks} restricted />
+```
+
+公开新增属性：
+
+```text
+marks: readonly {
+  flag: number
+  label: ReactNode
+}[]
+
+restricted?: boolean
+```
+
+其余 `value / defaultValue / onChange / name / min / max / step / disabled / label / size / viewProps` 与 `Slider` 相同。
+
+每个 mark 的 `flag` 是该 mark 在 Slider value axis 上的真实数值；dot 位置直接按：
+
+```text
+(flag - min) / (max - min)
+```
+
+映射，因此相邻 mark 可以拥有完全不同的数值间距。MarkSlider 不从 `step` 派生任何 dot，也不要求 marks 等距。
+
+`label` 是该 `flag` 对应的可见 ReactNode。label 与 dot 使用同一个 value axis 并显示在对应 dot 下方；label 只是 mark 的显示内容，不建立第二个交互目标。
+
+## 18.15B.2 restricted
+
+默认 `restricted = false`。此时 thumb 与普通 Slider 一样可以停在 track 上；若提供 `step`，`step` 只控制普通 range 的数值步进，不影响 marks 的位置或数量。
+
+`restricted = true` 时，thumb 的合法值集合严格等于 `marks[].flag`：
+
+- pointer 点击 / 拖动得到的数值立即吸附到最近的 flag；
+- controlled / uncontrolled 的显示值都规范到最近的 flag；
+- `onChange` 只输出 flag 数值；
+- ArrowLeft / ArrowDown / PageDown 移到前一个 flag；
+- ArrowRight / ArrowUp / PageUp 移到后一个 flag；
+- Home / End 分别移到首 / 尾 flag；
+- restricted 模式不使用 `step` 生成中间合法值。
+
+因此 restricted 模式下 thumb 不存在位于两个 flag 之间的稳定状态。
+
+## 18.15B.3 Visual / Theme
+
+Mark dot 直接复用 Slider 的 `weave-slider__dot / weave-slider__step` 几何与 active / inactive 配色；只要存在 marks，就使用 dot 对应的端帽几何，与 `restricted` 是否开启无关。`restricted` 只决定 thumb 是否采用离散吸附 motion。thumb、track、focus、disabled、drag shape 与尺寸全部继续读取：
+
+```text
+theme.components.Slider
+```
+
+不新增 `MarkSliderTheme`。
+
+---
+
 # 18.15A `RangeSlider`
 
 `RangeSlider` 是双 thumb、水平范围滑块。它不是另一套 Slider 视觉或交互系统，而是直接复用 `Slider` 已冻结的视觉、Theme、thumb shape、step axis 与 motion，并使用两个真实 `<input type="range">` 保留浏览器原生键盘、拖动、focus 与 form participation。
