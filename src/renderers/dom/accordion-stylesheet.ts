@@ -87,6 +87,15 @@ const stylesheet = `
   overflow: hidden;
 }
 
+:where(
+  .weave-accordion-trigger[data-weave-accordion-single-line="true"]
+    .weave-accordion-trigger__content
+) {
+  white-space: nowrap;
+  text-wrap: nowrap;
+  text-overflow: ellipsis;
+}
+
 :where(.weave-accordion-trigger__indicator) {
   display: inline-flex;
   width: var(--weave-accordion-indicator-size);

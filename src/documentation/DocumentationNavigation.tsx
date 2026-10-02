@@ -118,7 +118,7 @@ export function DocumentationNavigation({ pathname, onNavigate }: DocumentationN
           onChange={handleSearchChange}
           leadingIcon={IconSearch}
           placeholder={t('docs.drawer.search')}
-          viewProps={{ label: t('docs.drawer.search'), width: 'fill'}}
+          viewProps={{ label: t('docs.drawer.search'), width: 'fill' }}
         />
 
         <Accordion
@@ -130,7 +130,7 @@ export function DocumentationNavigation({ pathname, onNavigate }: DocumentationN
         >
           {visibleSections.map((section) => (
             <AccordionItem key={section.value} value={section.value}>
-              <AccordionTrigger viewProps={{ radius: 'full' }}>
+              <AccordionTrigger singleLine viewProps={{ radius: 'full' }}>
                 <DocumentationSearchHighlight text={section.label} query={search} />
               </AccordionTrigger>
 

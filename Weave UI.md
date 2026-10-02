@@ -5021,6 +5021,7 @@ Item 之间默认直接渲染现有公开 `Divider` 组件进行分隔；Accordi
 Trigger：
 - 整行都是点击区域；
 - content slot 必须以 `flex: 1 1 0` 占据扣除尾部 indicator 与 gap 后的剩余宽度，并允许收缩到 0；content slot 自身裁切 overflow，不能让单行内容把 Trigger / Accordion / Drawer 横向撑宽；
+- `AccordionTrigger.singleLine?: boolean` 为可选单行省略语义；为 `true` 时由 Trigger 自己把 content slot 锁为 `nowrap + ellipsis`，超出剩余宽度时显示 `...`，不能依赖子 Text 恰好如何布局；
 - 默认背景透明；
 - 展开状态默认不增加独立背景色，继续使用普通 trigger background；只有 Theme 显式提供 `triggerOpenBackground` 时才覆盖展开背景；
 - hover / press 只使用轻量 surface feedback；

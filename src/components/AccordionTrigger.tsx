@@ -8,6 +8,7 @@ import { useViewHost } from './internal/use-view-host'
 
 export function AccordionTrigger({
   children,
+  singleLine = false,
   expandIcon,
   collapseIcon,
   viewProps = {},
@@ -49,6 +50,7 @@ export function AccordionTrigger({
       data-weave-accordion-trigger=""
       data-weave-accordion-open={open ? 'true' : 'false'}
       data-weave-accordion-default-icons={usesDefaultIcons ? 'true' : 'false'}
+      data-weave-accordion-single-line={singleLine ? 'true' : undefined}
       data-weave-layout={resolved.layout}
       className={['weave-accordion-trigger', className].filter(Boolean).join(' ')}
       style={inlineStyle}

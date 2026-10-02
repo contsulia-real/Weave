@@ -67,6 +67,7 @@ export interface AccordionItemProps {
 
 export interface AccordionTriggerProps {
   children: ReactNode
+  singleLine?: boolean
   expandIcon?: AccordionIcon
   collapseIcon?: AccordionIcon
   viewProps?: AccordionTriggerViewProps
