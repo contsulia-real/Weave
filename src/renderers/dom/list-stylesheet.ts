@@ -5,29 +5,6 @@ const stylesheet = `
   --weave-component-display: flex;
   --weave-component-align-items: stretch;
   --weave-component-gap: var(--weave-list-gap);
-  --weave-component-background: var(--weave-list-background);
-
-  --weave-component-border-top-width: var(--weave-list-border-width);
-  --weave-component-border-right-width: var(--weave-list-border-width);
-  --weave-component-border-bottom-width: var(--weave-list-border-width);
-  --weave-component-border-left-width: var(--weave-list-border-width);
-  --weave-component-border-style: solid;
-  --weave-component-border-top-color: var(--weave-list-border-color);
-  --weave-component-border-right-color: var(--weave-list-border-color);
-  --weave-component-border-bottom-color: var(--weave-list-border-color);
-  --weave-component-border-left-color: var(--weave-list-border-color);
-
-  --weave-component-border-top-left-radius: var(--weave-list-radius);
-  --weave-component-border-top-right-radius: var(--weave-list-radius);
-  --weave-component-border-bottom-right-radius: var(--weave-list-radius);
-  --weave-component-border-bottom-left-radius: var(--weave-list-radius);
-
-  --weave-component-padding-top: var(--weave-list-padding);
-  --weave-component-padding-right: var(--weave-list-padding);
-  --weave-component-padding-bottom: var(--weave-list-padding);
-  --weave-component-padding-left: var(--weave-list-padding);
-
-  box-sizing: border-box;
 }
 
 :where(.weave-list[data-weave-list-orientation="vertical"]) {

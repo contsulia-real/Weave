@@ -6123,7 +6123,7 @@ Drawer 位于 left/top 时复用 start Pane，位于 right/bottom 时复用 end 
 
 `resizable=false` 映射到 SplitBox `disabled`：splitter 元素仍保留，但 non-modal Drawer 固定 `thickness=0`，且不能 pointer / keyboard resize，也不进入 Tab 顺序。
 
-non-modal 不产生 backdrop、不让主内容 inert、不做 focus containment。surface 默认使用 `theme.components.Drawer.base.background` 与 `theme.components.Drawer.base.radius`，不使用 ambient shadow，也不由 Drawer 自己添加任何 border；只有调用方通过 `drawerViewProps` 显式配置时才可以出现 border。Drawer 与主视图的可拖边界只由 SplitBox splitter 表达。non-modal Drawer 的 splitter `thickness` 固定为 0，只保留 hit area 与 hover / active feedback。
+non-modal 不产生 backdrop、不让主内容 inert、不做 focus containment。surface 默认使用 `theme.components.Drawer.base.nonModalBackground` 与 `theme.components.Drawer.base.nonModalRadius`；未提供时分别回退到 `background` 与 `radius`。non-modal 默认不使用 ambient shadow，也不由 Drawer 自己添加任何 border；只有调用方通过 `drawerViewProps` 显式配置时才可以出现 border。Drawer 与主视图的可拖边界只由 SplitBox splitter 表达。non-modal Drawer 的 splitter `thickness` 固定为 0，只保留 hit area 与 hover / active feedback。
 
 non-modal 的 `SplitBoxPane` 必须继续保持纯布局槽位，Drawer surface 必须作为 Pane 内部的独立元素存在，不能把 surface 的 padding / border / background 直接施加到 Pane 本身。Pane 折叠时由 SplitBoxPane 的 collapsed `display: none` 完整移出布局与绘制，关闭状态不得残留任何 Drawer padding、border、内容或 Scrollbar 绘制。
 
@@ -6929,7 +6929,7 @@ ListItem 是“列表行 / 可选择项”，不是 Button。
 
 默认视觉：
 
-- List 自身默认不提供 background、border、radius 或外层 padding，只负责列表布局、间距、Divider、选择与焦点语义；产品需要容器 surface 时再通过 `theme.components.List.base` 显式配置；
+- List 自身不提供 background、border、radius 或外层 padding，只负责列表布局、间距、Divider、选择与焦点语义；`theme.components.List.base` 只提供 gap。
 - ListItem 是连续 row，不是彼此独立的卡片或大胶囊；默认行不设圆角，产品需要时再通过 `theme.components.ListItem.base.radius` 显式配置；
 - flat surface，不使用 Button 的 depth / hoverLift / pressDepth；
 - hover 只改变行 surface；
@@ -6951,11 +6951,6 @@ theme.components.ListItem.base
 `List.base`：
 
 ```text
-background
-borderColor
-borderWidth
-radius
-padding
 gap
 ```
 

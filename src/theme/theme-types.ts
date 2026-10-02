@@ -525,10 +525,12 @@ export interface DialogTheme {
 
 export interface DrawerThemeBase {
   background?: string
+  nonModalBackground?: string
   color?: string
   borderColor?: string
   borderWidth?: ThemeScaleValue
   radius?: ThemeScaleValue
+  nonModalRadius?: ThemeScaleValue
   paddingX?: ThemeScaleValue
   paddingY?: ThemeScaleValue
   maxWidth?: ThemeScaleValue
@@ -745,11 +747,6 @@ export interface TableTheme {
 }
 
 export interface ListThemeBase {
-  background?: string
-  borderColor?: string
-  borderWidth?: ThemeScaleValue
-  radius?: ThemeScaleValue
-  padding?: ThemeScaleValue
   gap?: ThemeScaleValue
 }
 

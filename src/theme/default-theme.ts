@@ -960,10 +960,12 @@ const defaultThemeTemplate: ResolvedTheme = {
     Drawer: {
       base: {
         background: 'surface',
+        nonModalBackground: 'surfaceHover',
         color: 'tertiary',
         borderColor: 'outline',
         borderWidth: 0.0625,
         radius: 'large',
+        nonModalRadius: 'large',
         paddingX: 1,
         paddingY: 1,
         maxWidth: '360px',

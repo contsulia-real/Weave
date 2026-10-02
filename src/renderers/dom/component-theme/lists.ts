@@ -6,11 +6,6 @@ export function resolveListTheme(theme: ResolvedTheme): RuntimeStyleDeclarations
   const base = theme.components.List?.base
 
   return {
-    '--weave-list-background': color(base?.background),
-    '--weave-list-border-color': color(base?.borderColor),
-    '--weave-list-border-width': length(base?.borderWidth),
-    '--weave-list-radius': radius(base?.radius),
-    '--weave-list-padding': length(base?.padding),
     '--weave-list-gap': length(base?.gap),
   }
 }
