@@ -8,7 +8,7 @@ interface DocumentationReadingMark {
 }
 
 export interface DocumentationReadingStatusProps {
-  pageRef: RefObject<HTMLDivElement | null>
+  contentRef: RefObject<HTMLDivElement | null>
   scrollContainerRef: RefObject<HTMLDivElement | null>
 }
 
@@ -28,23 +28,23 @@ function sameMarks(
 }
 
 export function DocumentationReadingStatus({
-  pageRef,
+  contentRef,
   scrollContainerRef,
 }: DocumentationReadingStatusProps) {
   const [marks, setMarks] = useState<readonly DocumentationReadingMark[]>([])
   const [value, setValue] = useState(0)
 
   useEffect(() => {
-    const page = pageRef.current
+    const content = contentRef.current
     const scrollContainer = scrollContainerRef.current
-    if (page === null || scrollContainer === null) return
+    if (content === null || scrollContainer === null) return
 
     const sectionElements = () =>
-      Array.from(page.querySelectorAll<HTMLElement>('[data-weave-doc-section]'))
+      Array.from(content.querySelectorAll<HTMLElement>('[data-weave-doc-section]'))
 
     const sync = () => {
-      const pageRect = page.getBoundingClientRect()
-      const pageLength = Math.max(0, Math.round(page.scrollHeight))
+      const contentRect = content.getBoundingClientRect()
+      const contentLength = Math.max(0, Math.round(content.scrollHeight))
       const elements = sectionElements()
 
       const nextMarks = elements
@@ -52,8 +52,8 @@ export function DocumentationReadingStatus({
           const nextElement = elements[index + 1]
           const sectionEnd =
             nextElement === undefined
-              ? pageLength
-              : Math.max(0, Math.round(nextElement.getBoundingClientRect().top - pageRect.top))
+              ? contentLength
+              : Math.max(0, Math.round(nextElement.getBoundingClientRect().top - contentRect.top))
 
           return {
             id: element.id,
@@ -73,15 +73,15 @@ export function DocumentationReadingStatus({
 
       const max = nextMarks[nextMarks.length - 1]?.flag ?? 0
       const scrollRect = scrollContainer.getBoundingClientRect()
-      const pageOffset = Math.max(0, Math.round(scrollRect.top - pageRect.top))
-      setValue(Math.min(max, pageOffset))
+      const contentOffset = Math.max(0, Math.round(scrollRect.top - contentRect.top))
+      setValue(Math.min(max, contentOffset))
     }
 
     sync()
 
     const resizeObserver =
       typeof ResizeObserver === 'undefined' ? undefined : new ResizeObserver(sync)
-    resizeObserver?.observe(page)
+    resizeObserver?.observe(content)
     for (const element of sectionElements()) {
       resizeObserver?.observe(element)
     }
@@ -94,7 +94,7 @@ export function DocumentationReadingStatus({
       scrollContainer.removeEventListener('scroll', sync)
       window.removeEventListener('resize', sync)
     }
-  }, [pageRef, scrollContainerRef])
+  }, [contentRef, scrollContainerRef])
 
   const sliderMarks = useMemo(
     () =>
@@ -129,6 +129,7 @@ export function DocumentationReadingStatus({
         step={1}
         direction="vertical"
         inverse
+        viewProps={{ height: `${max}px` }}
       />
     </Flex>
   )

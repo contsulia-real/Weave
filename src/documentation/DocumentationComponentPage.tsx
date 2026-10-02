@@ -52,13 +52,13 @@ export function DocumentationComponentPage({
   const [values, setValues] = useState<Record<string, DocumentationPlaygroundValue>>(
     definition.defaults,
   )
-  const pageRef = useRef<HTMLDivElement>(null)
+  const contentRef = useRef<HTMLDivElement>(null)
 
   const previewKey = JSON.stringify(values)
 
   return (
-    <Row ref={pageRef} width="fill" padding={2} gap={2} align="start">
-      <Column grow={1} minWidth={0} gap={2}>
+    <Row width="fill" padding={2} gap={2} align="start">
+      <Column ref={contentRef} grow={1} minWidth={0} gap={2}>
         <Column width="fill" gap={0.75}>
           <Text typo="display-medium">{componentName}</Text>
           <Text typo="body-medium">{definition.description}</Text>
@@ -92,7 +92,7 @@ export function DocumentationComponentPage({
         </Column>
       </Column>
 
-      <DocumentationReadingStatus pageRef={pageRef} scrollContainerRef={scrollContainerRef} />
+      <DocumentationReadingStatus contentRef={contentRef} scrollContainerRef={scrollContainerRef} />
     </Row>
   )
 }
