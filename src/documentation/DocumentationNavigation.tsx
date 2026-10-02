@@ -11,6 +11,7 @@ import {
   Input,
   List,
   ListItem,
+  useTheme,
 } from '../index'
 import { DocumentationSearchHighlight } from './DocumentationSearchHighlight'
 import {
@@ -40,6 +41,7 @@ function includesQuery(value: string, query: string): boolean {
 
 export function DocumentationNavigation({ pathname, onNavigate }: DocumentationNavigationProps) {
   const { t } = useTranslation()
+  const { theme } = useTheme()
   const [search, setSearch] = useState('')
   const normalizedSearch = search.trim().toLocaleLowerCase()
   const routeSection = documentationNavigationSectionForPath(pathname)
@@ -118,7 +120,7 @@ export function DocumentationNavigation({ pathname, onNavigate }: DocumentationN
           onChange={handleSearchChange}
           leadingIcon={IconSearch}
           placeholder={t('docs.drawer.search')}
-          viewProps={{ label: t('docs.drawer.search'), width: 'fill' }}
+          viewProps={{ label: t('docs.drawer.search'), width: 'fill', minWidth: 'auto' }}
         />
 
         <Accordion
@@ -128,33 +130,51 @@ export function DocumentationNavigation({ pathname, onNavigate }: DocumentationN
           onValueChange={handleAccordionChange}
           viewProps={{ width: 'fill' }}
         >
-          {visibleSections.map((section) => (
-            <AccordionItem key={section.value} value={section.value}>
-              <AccordionTrigger singleLine viewProps={{ radius: 'full' }}>
-                <DocumentationSearchHighlight text={section.label} query={search} />
-              </AccordionTrigger>
+          {visibleSections.map((section) => {
+            const sectionSelected = section.items.some((item) => item.path === pathname)
+            const listItemTheme = theme.components.ListItem?.base
 
-              <AccordionPanel>
-                {section.items.length === 0 ? null : (
-                  <List noDividers singleLine selection="single" selected={pathname}>
-                    {section.items.map((item) => (
-                      <ListItem
-                        key={item.path}
-                        id={item.path}
-                        viewProps={{
-                          clickable: true,
-                          onClick: () => onNavigate(item.path),
-                          radius: 'full',
-                        }}
-                      >
-                        <DocumentationSearchHighlight text={item.label} query={search} />
-                      </ListItem>
-                    ))}
-                  </List>
-                )}
-              </AccordionPanel>
-            </AccordionItem>
-          ))}
+            return (
+              <AccordionItem key={section.value} value={section.value}>
+                <AccordionTrigger
+                  singleLine
+                  viewProps={{
+                    radius: 'full',
+                    background: sectionSelected ? listItemTheme?.selectedBackground : undefined,
+                    color: sectionSelected ? listItemTheme?.selectedColor : undefined,
+                    hover: sectionSelected
+                      ? { background: listItemTheme?.selectedHoverBackground }
+                      : undefined,
+                    active: sectionSelected
+                      ? { background: listItemTheme?.activeBackground }
+                      : undefined,
+                  }}
+                >
+                  <DocumentationSearchHighlight text={section.label} query={search} />
+                </AccordionTrigger>
+
+                <AccordionPanel>
+                  {section.items.length === 0 ? null : (
+                    <List noDividers singleLine selection="single" selected={pathname}>
+                      {section.items.map((item) => (
+                        <ListItem
+                          key={item.path}
+                          id={item.path}
+                          viewProps={{
+                            clickable: true,
+                            onClick: () => onNavigate(item.path),
+                            radius: 'full',
+                          }}
+                        >
+                          <DocumentationSearchHighlight text={item.label} query={search} />
+                        </ListItem>
+                      ))}
+                    </List>
+                  )}
+                </AccordionPanel>
+              </AccordionItem>
+            )
+          })}
         </Accordion>
       </Column>
     </Card>

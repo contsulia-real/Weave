@@ -116,3 +116,17 @@ export function documentationNavigationSectionForPath(pathname: string): string 
     )?.value ?? 'overview'
   )
 }
+
+export function documentationComponentNameForPath(pathname: string): string | null {
+  const prefix = '/docs/components/'
+  if (!pathname.startsWith(prefix)) return null
+
+  const name = pathname.slice(prefix.length)
+  if (name.length === 0 || name.includes('/')) return null
+
+  const exists = documentationNavigationSections.some((section) =>
+    section.items.some((item) => item.path === pathname && item.label === name),
+  )
+
+  return exists ? name : null
+}

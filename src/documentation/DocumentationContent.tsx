@@ -1,6 +1,7 @@
 import type { TFunction } from 'i18next'
 import { useTranslation } from 'react-i18next'
 import { Column, Text } from '../index'
+import { documentationComponentNameForPath } from './documentation-navigation-data'
 
 export interface DocumentationContentProps {
   section: string
@@ -14,6 +15,17 @@ function routeTitle(section: string, t: TFunction): string {
 
 export function DocumentationContent({ section, pathname }: DocumentationContentProps) {
   const { t } = useTranslation()
+  const componentName = documentationComponentNameForPath(pathname)
+
+  if (componentName !== null) {
+    return (
+      <Column width="fill" height="fill" overflow="auto">
+        <Column width="fill" padding={2}>
+          <Text typo="headline-large">{componentName}</Text>
+        </Column>
+      </Column>
+    )
+  }
 
   return (
     <Column width="fill" height="fill" overflow="auto">
