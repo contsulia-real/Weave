@@ -105,8 +105,6 @@ const stylesheet = `
 }
 
 :where(.weave-accordion-panel) {
-  --weave-component-min-height: 0;
-  --weave-component-overflow: hidden;
   min-width: 0;
 }
 

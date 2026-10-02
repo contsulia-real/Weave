@@ -16,6 +16,8 @@ export function AccordionPanel({ children, viewProps = {} }: AccordionPanelProps
   return (
     <View
       {...panelViewProps}
+      minHeight={panelViewProps.minHeight ?? 0}
+      overflow={panelViewProps.overflow ?? 'hidden'}
       id={accordion.panelId(item.value)}
       role="region"
       labelledBy={accordion.triggerId(item.value)}

@@ -76,6 +76,7 @@ export function Card({
   return (
     <View
       {...viewProps}
+      overflow={viewProps.overflow ?? 'auto'}
       role={interactive ? 'button' : viewProps.role}
       pressed={selectable ? resolvedSelected : undefined}
       tabIndex={interactive ? (viewProps.tabIndex ?? 0) : viewProps.tabIndex}

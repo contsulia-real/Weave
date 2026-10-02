@@ -4003,6 +4003,8 @@ overflow    = auto
 restDepth   = 0.125rem   // 2px
 ```
 
+`overflow = auto` 必须作为 Card 内部传给 View 的真实默认 overflow 属性，使 Card 进入既有 scroll-host / AutoScrollbar 路径；不能只在 Card stylesheet 里写一个组件级 overflow 变量冒充滚动语义。
+
 Card 的实体 depth 明确弱于 Button。默认 raised surface 与 Button secondary 共用颜色来源：
 
 ```text
@@ -5018,7 +5020,7 @@ Trigger：
 - 文本使用 Theme typography；
 - focus-visible 使用统一 focus outline。
 
-Panel 只提供内容 padding，不额外套 Card。默认展开时不增加独立背景色；只有 Theme 显式提供 `triggerOpenBackground` 时，Panel 内容区域才与 Trigger 一样使用该展开背景。
+Panel 只提供内容 padding，不额外套 Card。Panel semantic host 默认通过 View 的真实 `minHeight={0}` 与 `overflow="hidden"` 参与 grid 收放并裁切 Presence 内容，不能只依赖 Accordion stylesheet 的组件级尺寸 / overflow 变量；这保证切换 item 时 grid row 可以真实收缩，closing 内容不会越过当前 Panel 与相邻 Trigger 重叠，也不会把 Trigger 异常撑高。默认展开时不增加独立背景色；只有 Theme 显式提供 `triggerOpenBackground` 时，Panel 内容区域才与 Trigger 一样使用该展开背景。
 
 默认 chevron 位于 trigger 尾部。默认图标使用同一个向右 chevron，并在展开时平滑旋转 90° 成向下状态；当调用方提供 `expandIcon` / `collapseIcon` 时按状态替换自定义图标，不附加默认旋转。
 
@@ -8567,7 +8569,7 @@ CSS variables + runtime classes + framework stylesheet
 29. 组件默认承担正确可访问性和键盘语义，不把标准行为推给业务开发者。
 30. 浮层使用语义 layer，普通用户不需要手工管理 portal 或全局 z-index。
 31. 具体组件已经提供同义语义状态属性时，该状态不在其 `viewProps` 中重复暴露，组件属性作为唯一真值。
-32. Documentation 页面本身的全部可见 UI 必须 **100% dogfood Weave 公共组件与 Theme**：页面 shell、导航、搜索、主题切换、内容布局和后续示例都不得直接使用裸 `View`、裸 DOM 元素、Documentation 私有视觉 CSS 或第三方 UI 组件来替代已有 Weave 能力。React state、History router、i18n、数据处理等非视觉基础设施可以直接使用。框架组件自身仍按其实现边界复用 Weave 语义组件与内部基础设施，不再平行维护裸 DOM / 私有 CSS 的同义视觉实现。 Documentation AppBar 的 trailing 直接放置 Weave search Input、Theme Popover 与 Language Popover，不额外包 Row；三个真实控件直接由 AppBar trailing slot 的 flex `align-items: center` 与 `gap` 负责垂直居中和间距。语言选择必须包含 `Auto detect` 和当前实际注册的语言资源。`Auto detect` 按 `navigator.languages` 顺序匹配已注册语言，无法匹配时回退到 i18n fallback language，不得展示尚未存在的翻译语言。
+32. Documentation 页面本身的全部可见 UI 必须 **100% dogfood Weave 公共组件与 Theme**：页面 shell、导航、搜索、主题切换、内容布局和后续示例都不得直接使用裸 `View`、裸 DOM 元素、Documentation 私有视觉 CSS 或第三方 UI 组件来替代已有 Weave 能力。React state、History router、i18n、数据处理等非视觉基础设施可以直接使用。框架组件自身仍按其实现边界复用 Weave 语义组件与内部基础设施，不再平行维护裸 DOM / 私有 CSS 的同义视觉实现。 Documentation AppBar 的 trailing 直接放置 Weave search Input、Theme Popover 与 Language Popover，不额外包 Row；三个真实控件直接由 AppBar trailing slot 的 flex `align-items: center` 与 `gap` 负责垂直居中和间距。语言选择必须包含 `Auto detect` 和当前实际注册的语言资源。`Auto detect` 按 `navigator.languages` 顺序匹配已注册语言，无法匹配时回退到 i18n fallback language，不得展示尚未存在的翻译语言。 Drawer 导航项直接使用 `ListItem` 的点击事件触发 History 路由，不在 `ListItem` 内嵌 `Link`。页面真实文档加载期间在 AppBar 后、主内容前直接使用公开 `Progress mode="linear" indeterminate`；加载状态以 `document.readyState !== "complete"` 为真值，不为同步 SPA 路由制造假延迟。
 33. 组件复用其他组件的视觉或交互能力时，外层组件仍承担自己的高层语义；不得因此重复暴露冲突的 ARIA 角色。
 34. `Text.typo` 必须来自主题中的完整 type scale；不能退回 renderer 内部的少量硬编码 preset。
 35. Scrollbar 只绘制 thumb，不提供 tracked / trackColor；带圆角宿主必须把圆角曲线区域排除出 thumb 的运动区。
