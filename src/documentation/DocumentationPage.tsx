@@ -18,6 +18,7 @@ import {
   AccordionTrigger,
   AppBar,
   Button,
+  Card,
   Column,
   Drawer,
   Input,
@@ -177,8 +178,8 @@ export function DocumentationPage({ themeMode, onThemeModeChange }: Documentatio
   }
 
   const navigation = (
-    <Column label={t('docs.navigation')}>
-      <Accordion multiple>
+    <Card viewProps={{height: 'fill', background: 'surfaceHover'}}>
+      <Accordion>
         <AccordionItem value="overview">
           <AccordionTrigger>{t('docs.nav.overview')}</AccordionTrigger>
           <AccordionPanel>
@@ -223,7 +224,7 @@ export function DocumentationPage({ themeMode, onThemeModeChange }: Documentatio
           </AccordionItem>
         ))}
       </Accordion>
-    </Column>
+    </Card>
   )
 
   const themeSelector = (
@@ -331,12 +332,6 @@ export function DocumentationPage({ themeMode, onThemeModeChange }: Documentatio
           open={drawerOpen}
           onOpenChange={setDrawerOpen}
           drawer={navigation}
-          drawerViewProps={{
-            md: {
-              background: 'surfaceHover',
-              radius: 'large',
-            },
-          }}
         >
           <Column width="fill" height="fill" overflow="auto">
             <View grow={1} width="fill">
