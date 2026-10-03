@@ -33,6 +33,9 @@ export function DocumentationComponentPage({ componentName }: DocumentationCompo
             gap={1}
           >
             <Text typo="headline-small">{example.title}</Text>
+            {example.description === undefined ? null : (
+              <Text typo="body-medium">{example.description}</Text>
+            )}
             <DocumentationComponentExampleCard preview={example.preview} code={example.code} />
           </Column>
         ))}

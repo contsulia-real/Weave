@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 export interface DocumentationComponentExampleDefinition {
   id: string
   title: string
+  description?: ReactNode
   preview: ReactNode
   code: string
 }

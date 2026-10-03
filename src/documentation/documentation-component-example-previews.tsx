@@ -1,10 +1,14 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import {
   Accordion,
   AccordionItem,
   AccordionPanel,
   AccordionTrigger,
+  Button,
   Column,
+  Form,
+  Input,
+  Row,
   Snack,
   SnackProvider,
   Tab,
@@ -17,7 +21,68 @@ import {
   TableRow,
   TabPanel,
   Tabs,
+  Text,
 } from '../index'
+
+export function ButtonClickExample() {
+  const [clicks, setClicks] = useState(0)
+
+  return (
+    <Row gap={1} align="center">
+      <Button
+        text="Click me"
+        viewProps={{
+          onClick: () => {
+            setClicks((current) => current + 1)
+          },
+        }}
+      />
+      <Text>{clicks === 1 ? '1 click' : `${clicks} clicks`}</Text>
+    </Row>
+  )
+}
+
+export function ButtonPressedExample() {
+  const [pressed, setPressed] = useState(false)
+
+  return (
+    <Button
+      text={pressed ? 'Pressed' : 'Not pressed'}
+      pressed={pressed}
+      viewProps={{
+        onClick: () => {
+          setPressed((current) => !current)
+        },
+      }}
+    />
+  )
+}
+
+export function ButtonFormExample() {
+  const [status, setStatus] = useState('Waiting')
+
+  return (
+    <Form
+      onSubmit={(event) => {
+        event.preventDefault()
+        setStatus('Submitted')
+      }}
+      onReset={() => {
+        setStatus('Reset')
+      }}
+      viewProps={{ width: 20 }}
+    >
+      <Column gap={1}>
+        <Input placeholder="Message" type="text" />
+        <Row gap={1}>
+          <Button type="submit" text="Submit" />
+          <Button type="reset" text="Reset" variant="secondary" />
+        </Row>
+        <Text typo="body-small">{status}</Text>
+      </Column>
+    </Form>
+  )
+}
 
 export function SampleTable() {
   return (

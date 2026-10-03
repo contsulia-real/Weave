@@ -6,6 +6,7 @@ import {
   Button,
   Card,
   Code,
+  Column,
   Divider,
   Icon,
   Image,
@@ -20,6 +21,12 @@ import {
 
 const sampleImage =
   'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="320" height="180" viewBox="0 0 320 180"%3E%3Crect width="320" height="180" rx="24" fill="%238E8E93"/%3E%3Ccircle cx="92" cy="72" r="28" fill="%23FFFFFF"/%3E%3Cpath d="M34 150l72-62 45 38 38-32 97 56H34z" fill="%23FFFFFF"/%3E%3C/svg%3E'
+
+import {
+  ButtonClickExample,
+  ButtonFormExample,
+  ButtonPressedExample,
+} from './documentation-component-example-previews'
 
 export const contentComponentExamples: Record<
   string,
@@ -128,10 +135,168 @@ export const contentComponentExamples: Record<
   Button: {
     description: 'A semantic action control with themed variants, sizes, pressed state, and icons.',
     examples: [
-      basicExample(
-        <Button text="Button" variant="primary" size="medium" />,
-        `<Button text="Button" variant="primary" size="medium" />`,
-      ),
+      {
+        id: 'basic-button',
+        title: 'Basic button',
+        description:
+          'Use the same Button component for different emphasis levels without changing its action semantics.',
+        preview: (
+          <Row gap={1} wrap>
+            <Button text="Primary" />
+            <Button text="Secondary" variant="secondary" />
+            <Button text="Tertiary" variant="tertiary" />
+          </Row>
+        ),
+        code: `<Row gap={1} wrap>
+  <Button text="Primary" />
+  <Button text="Secondary" variant="secondary" />
+  <Button text="Tertiary" variant="tertiary" />
+</Row>`,
+      },
+      {
+        id: 'handling-clicks',
+        title: 'Handling clicks',
+        description:
+          'Button event handlers are supplied through viewProps, preserving the native button event surface.',
+        preview: <ButtonClickExample />,
+        code: `const [clicks, setClicks] = useState(0)
+
+<Button
+  text="Click me"
+  viewProps={{ onClick: () => setClicks((current) => current + 1) }}
+/>
+<Text>{clicks} clicks</Text>`,
+      },
+      {
+        id: 'icons-and-labels',
+        title: 'Icons and labels',
+        description:
+          'Pair semantic text with an icon at either edge when the action benefits from a visual cue.',
+        preview: (
+          <Row gap={1} wrap>
+            <Button text="Favorite" icon={IconStar} />
+            <Button text="Search" icon={IconSearch} variant="secondary" />
+            <Button text="More" icon={IconDots} iconPosition="end" variant="tertiary" />
+          </Row>
+        ),
+        code: `<Row gap={1} wrap>
+  <Button text="Favorite" icon={IconStar} />
+  <Button text="Search" icon={IconSearch} variant="secondary" />
+  <Button text="More" icon={IconDots} iconPosition="end" variant="tertiary" />
+</Row>`,
+      },
+      {
+        id: 'icon-only-actions',
+        title: 'Icon-only actions',
+        description:
+          'For compact actions, omit text and provide the accessible name through the button viewProps.',
+        preview: (
+          <Row gap={1} align="center">
+            <Button icon={IconSearch} viewProps={{ label: 'Search' }} />
+            <Button icon={IconStar} variant="secondary" viewProps={{ label: 'Favorite' }} />
+            <Button icon={IconDots} variant="ghost" viewProps={{ label: 'More actions' }} />
+          </Row>
+        ),
+        code: `<Row gap={1} align="center">
+  <Button icon={IconSearch} viewProps={{ label: 'Search' }} />
+  <Button icon={IconStar} variant="secondary" viewProps={{ label: 'Favorite' }} />
+  <Button icon={IconDots} variant="ghost" viewProps={{ label: 'More actions' }} />
+</Row>`,
+      },
+      {
+        id: 'form-actions',
+        title: 'Form actions',
+        description:
+          'Use native button types inside Form so submit and reset behavior remains browser-native.',
+        preview: <ButtonFormExample />,
+        code: `<Form onSubmit={handleSubmit} onReset={handleReset}>
+  <Column gap={1}>
+    <Input placeholder="Message" type="text" />
+    <Row gap={1}>
+      <Button type="submit" text="Submit" />
+      <Button type="reset" text="Reset" variant="secondary" />
+    </Row>
+  </Column>
+</Form>`,
+      },
+      {
+        id: 'pressed-state',
+        title: 'Pressed state',
+        description:
+          'Use pressed for toggle-style actions whose selected state belongs to the surrounding application.',
+        preview: <ButtonPressedExample />,
+        code: `const [pressed, setPressed] = useState(false)
+
+<Button
+  text={pressed ? 'Pressed' : 'Not pressed'}
+  pressed={pressed}
+  viewProps={{ onClick: () => setPressed((current) => !current) }}
+/>`,
+      },
+      {
+        id: 'disabled-actions',
+        title: 'Disabled actions',
+        description:
+          'Disable actions that cannot currently run while keeping their semantic button role.',
+        preview: (
+          <Row gap={1} wrap>
+            <Button text="Unavailable" disabled />
+            <Button text="Cannot delete" variant="danger" disabled />
+          </Row>
+        ),
+        code: `<Row gap={1} wrap>
+  <Button text="Unavailable" disabled />
+  <Button text="Cannot delete" variant="danger" disabled />
+</Row>`,
+      },
+      {
+        id: 'custom-content',
+        title: 'Custom content',
+        description:
+          'Use children when an action needs richer composition than the semantic text-and-icon shortcut.',
+        preview: (
+          <Button>
+            <Row gap={0.5} align="center">
+              <Icon icon={IconStar} size="small" />
+              <Column gap={0}>
+                <Text weight="semibold">Save favorite</Text>
+                <Text typo="body-xsmall">Available offline</Text>
+              </Column>
+            </Row>
+          </Button>
+        ),
+        code: `<Button>
+  <Row gap={0.5} align="center">
+    <Icon icon={IconStar} size="small" />
+    <Column gap={0}>
+      <Text weight="semibold">Save favorite</Text>
+      <Text typo="body-xsmall">Available offline</Text>
+    </Column>
+  </Row>
+</Button>`,
+      },
+      {
+        id: 'responsive-button',
+        title: 'Responsive button',
+        description:
+          'Button can change its size and emphasis at viewport breakpoints without replacing the component.',
+        preview: (
+          <Button
+            text="Responsive action"
+            size="small"
+            variant="ghost"
+            md={{ size: 'medium', variant: 'secondary' }}
+            lg={{ size: 'large', variant: 'primary' }}
+          />
+        ),
+        code: `<Button
+  text="Responsive action"
+  size="small"
+  variant="ghost"
+  md={{ size: 'medium', variant: 'secondary' }}
+  lg={{ size: 'large', variant: 'primary' }}
+/>`,
+      },
     ],
   },
   Card: {
