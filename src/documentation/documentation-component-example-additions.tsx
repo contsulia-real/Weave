@@ -175,12 +175,25 @@ export const documentationComponentExampleAdditions: Record<
         'Constrain long snippets with ordinary View sizing so only the code surface becomes scrollable.',
       preview: (
         <Code language="typescript" viewProps={{ maxHeight: 8, overflow: 'auto', width: 24 }}>
-          {
-            'const first = 1\nconst second = 2\nconst third = 3\nconst fourth = 4\nconst fifth = 5\nconst sixth = 6'
-          }
+          {`const first = 1
+const second = 2
+const third = 3
+const fourth = 4
+const fifth = 5
+const sixth = 6`}
         </Code>
       ),
-      code: "<Code\n  language=\"typescript\"\n  viewProps={{ maxHeight: 8, overflow: 'auto', width: 24 }}\n>\n  {'const first = 1\\\\nconst second = 2\\\\nconst third = 3\\\\nconst fourth = 4\\\\nconst fifth = 5\\\\nconst sixth = 6'}\n</Code>",
+      code: `<Code
+  language="typescript"
+  viewProps={{ maxHeight: 8, overflow: 'auto', width: 24 }}
+>
+  {\`const first = 1
+const second = 2
+const third = 3
+const fourth = 4
+const fifth = 5
+const sixth = 6\`}
+</Code>`,
     },
   ],
   Image: [
