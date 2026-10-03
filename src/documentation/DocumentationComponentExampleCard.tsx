@@ -65,6 +65,7 @@ export function DocumentationComponentExampleCard({
   const codeRef = useRef<HTMLDivElement>(null)
   const preview = useMemo(() => compilePreview(source, codeMode), [codeMode, source])
   const LivePreview = preview.component
+  const codeRows = Math.max(1, source.split('\n').length)
 
   return (
     <Card
@@ -76,7 +77,7 @@ export function DocumentationComponentExampleCard({
       }}
     >
       <Column width="fill">
-        <Flex minHeight={12} width="fill" padding={2} align="center" justify="center">
+        <Flex width="fill" padding={2} align="center" justify="center">
           {LivePreview === undefined ? (
             <Text color="danger">{preview.error}</Text>
           ) : (
@@ -132,13 +133,14 @@ export function DocumentationComponentExampleCard({
           exit={{ animation: 'fade-up', spring: 'gentle' }}
         >
           <Divider />
-          <Stack width="fill">
+          <Stack width="fill" maxHeight={16}>
             <Code
               language="tsx"
               viewProps={{
                 ref: codeRef,
                 width: 'fill',
-                height: 'fill',
+                maxHeight: 16,
+                overflow: 'auto',
                 paddingX: 1,
                 paddingY: 1,
                 pointerEvents: 'none',
@@ -148,12 +150,13 @@ export function DocumentationComponentExampleCard({
             </Code>
             <Input
               multiline
-              rows={8}
+              rows={codeRows}
               value={source}
               onChange={setSource}
               viewProps={{
                 width: 'fill',
-                height: 'fill',
+                maxHeight: 16,
+                overflow: 'auto',
                 paddingX: 1,
                 paddingY: 1,
                 background: 'transparent',

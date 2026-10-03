@@ -49,6 +49,9 @@ export function DocumentationReadingStatus({ contentRef }: DocumentationReadingS
       position="sticky"
       gap={0.75}
     >
+      <Text bold typo="body-large">
+        CONTENTS
+      </Text>
       {items.map((item) => (
         <Link
           key={item.id}
