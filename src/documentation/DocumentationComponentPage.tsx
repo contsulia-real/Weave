@@ -28,7 +28,7 @@ export function DocumentationComponentPage({ componentName }: DocumentationCompo
       containerMd={{ padding: 2 }}
       containerLg={{ direction: 'row' }}
     >
-      <Column ref={contentRef} grow={1} minWidth={0} width="fill" gap={3}>
+      <Column ref={contentRef} grow={1} minWidth={0} width="fill" maxWidth={56} gap={3}>
         <Column width="fill" gap={0.75}>
           <Text typo="display-medium">{componentName}</Text>
           <Text typo="body-large">{definition.description}</Text>

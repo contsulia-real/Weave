@@ -42,6 +42,7 @@ export function DocumentationReadingStatus({ contentRef }: DocumentationReadingS
   return (
     <Column
       width="fill"
+      maxWidth={56}
       alignSelf="start"
       padding={1}
       position="relative"
