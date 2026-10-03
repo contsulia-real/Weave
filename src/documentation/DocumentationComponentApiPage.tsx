@@ -1,4 +1,4 @@
-import { type RefObject, useRef } from 'react'
+import { useRef } from 'react'
 import {
   Card,
   Code,
@@ -19,7 +19,6 @@ import { documentationComponentDemoNameForApi } from './documentation-navigation
 
 export interface DocumentationComponentApiPageProps {
   componentName: string
-  scrollContainerRef: RefObject<HTMLDivElement | null>
 }
 
 interface PropsTableRow {
@@ -94,7 +93,6 @@ function PropsTable({
 
 export function DocumentationComponentApiPage({
   componentName,
-  scrollContainerRef,
 }: DocumentationComponentApiPageProps) {
   const api = documentationComponentApi(componentName)
   const contentRef = useRef<HTMLDivElement>(null)
@@ -143,11 +141,21 @@ export function DocumentationComponentApiPage({
         >
           <Text typo="headline-small">Props</Text>
           <Text typo="body-medium">Public props accepted by this component.</Text>
-          <PropsTable props={api.props} includeViewProps={api.hasViewProps} />
+          {api.usesViewProps ? (
+            <Link
+              href="/docs/components-api/View#props"
+              text={<Text typo="body-small">ViewProps</Text>}
+              hideUnderline
+              viewProps={{ width: 'content' }}
+            />
+          ) : null}
+          {api.props.length > 0 || api.hasViewProps ? (
+            <PropsTable props={api.props} includeViewProps={api.hasViewProps} />
+          ) : null}
         </Column>
       </Column>
 
-      <DocumentationReadingStatus contentRef={contentRef} scrollContainerRef={scrollContainerRef} />
+      <DocumentationReadingStatus contentRef={contentRef} />
     </Row>
   )
 }

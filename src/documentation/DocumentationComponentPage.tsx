@@ -1,4 +1,4 @@
-import { type RefObject, useRef } from 'react'
+import { useRef } from 'react'
 import { Column, Row, Text } from '../index'
 import { DocumentationComponentApiLink } from './DocumentationComponentApiLink'
 import { DocumentationComponentExampleCard } from './DocumentationComponentExampleCard'
@@ -7,13 +7,9 @@ import { documentationComponentDocumentation } from './documentation-component-e
 
 export interface DocumentationComponentPageProps {
   componentName: string
-  scrollContainerRef: RefObject<HTMLDivElement | null>
 }
 
-export function DocumentationComponentPage({
-  componentName,
-  scrollContainerRef,
-}: DocumentationComponentPageProps) {
+export function DocumentationComponentPage({ componentName }: DocumentationComponentPageProps) {
   const definition = documentationComponentDocumentation(componentName)
   const contentRef = useRef<HTMLDivElement>(null)
   const apiComponents = definition.apiComponents ?? [componentName]
@@ -44,7 +40,7 @@ export function DocumentationComponentPage({
         <DocumentationComponentApiLink componentNames={apiComponents} />
       </Column>
 
-      <DocumentationReadingStatus contentRef={contentRef} scrollContainerRef={scrollContainerRef} />
+      <DocumentationReadingStatus contentRef={contentRef} />
     </Row>
   )
 }

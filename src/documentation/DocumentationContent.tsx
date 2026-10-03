@@ -37,11 +37,7 @@ export function DocumentationContent({ section, pathname }: DocumentationContent
   if (componentName !== null) {
     return (
       <Column ref={scrollContainerRef} width="fill" height="fill" overflow="auto">
-        <DocumentationComponentPage
-          key={componentName}
-          componentName={componentName}
-          scrollContainerRef={scrollContainerRef}
-        />
+        <DocumentationComponentPage key={componentName} componentName={componentName} />
       </Column>
     )
   }
@@ -49,11 +45,7 @@ export function DocumentationContent({ section, pathname }: DocumentationContent
   if (componentApiName !== null) {
     return (
       <Column ref={scrollContainerRef} width="fill" height="fill" overflow="auto">
-        <DocumentationComponentApiPage
-          key={componentApiName}
-          componentName={componentApiName}
-          scrollContainerRef={scrollContainerRef}
-        />
+        <DocumentationComponentApiPage key={componentApiName} componentName={componentApiName} />
       </Column>
     )
   }
