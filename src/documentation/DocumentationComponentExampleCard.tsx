@@ -8,11 +8,13 @@ import {
   Column,
   Divider,
   Flex,
+  Grid,
   Input,
   Presence,
   Row,
   Stack,
   Text,
+  ToolTip,
 } from '../index'
 import type { DocumentationExampleCodeMode } from './documentation-component-example-data'
 import { compileDocumentationExample } from './documentation-example-runtime'
@@ -250,7 +252,6 @@ export function DocumentationComponentExampleCard({
         padding: 0,
         overflow: 'hidden',
         align: 'center',
-        layoutAnimation: { spring: 'gentle' },
       }}
     >
       <Column width="fill">
@@ -265,100 +266,114 @@ export function DocumentationComponentExampleCard({
         </Flex>
 
         <Row width="fill" paddingX={1} paddingY={0.5} gap={0.5} justify="end">
-          <Button
-            icon={IconCode}
-            variant="ghost"
-            size="small"
-            pressed={expanded}
-            viewProps={{
-              label: expanded ? 'Collapse code' : 'Expand code',
-              onClick: () => {
-                setExpanded((current) => !current)
-              },
-            }}
-          />
-          <Button
-            icon={IconCopy}
-            variant="ghost"
-            size="small"
-            viewProps={{
-              label: 'Copy code',
-              onClick: () => {
-                void navigator.clipboard.writeText(source)
-              },
-            }}
-          />
-          <Button
-            icon={IconRefresh}
-            variant="ghost"
-            size="small"
-            viewProps={{
-              label: 'Reset code',
-              onClick: () => {
-                setSource(initialSource)
-              },
-            }}
-          />
-        </Row>
-      </Column>
-
-      <Presence present={expanded}>
-        <Column
-          width="fill"
-          overflow="hidden"
-          enter={{ animation: 'fade-down', spring: 'gentle' }}
-          exit={{ animation: 'fade-up', spring: 'gentle' }}
-        >
-          <Divider />
-          <Stack width="fill" maxHeight={16} background="surfaceHover">
-            <Code
-              language="tsx"
+          <ToolTip content={expanded ? 'Collapse code' : 'Expand code'}>
+            <Button
+              icon={IconCode}
+              variant="ghost"
+              size="small"
+              pressed={expanded}
               viewProps={{
-                ref: codeRef,
-                width: 'fill',
-                maxHeight: 16,
-                overflow: 'hidden',
-                paddingX: 1,
-                paddingY: 1,
-                pointerEvents: 'none',
-              }}
-            >
-              {source}
-            </Code>
-            <Input
-              multiline
-              rows={codeRows}
-              value={source}
-              onChange={setSource}
-              viewProps={{
-                width: 'fill',
-                maxHeight: 16,
-                overflow: 'auto',
-                paddingX: 1,
-                paddingY: 1,
-                background: 'transparent',
-                color: 'transparent',
-                border: 0,
-                shadow: 'none',
-                outlineWidth: 0,
-                style: {
-                  caretColor: 'var(--weave-color-primary)',
-                  fontFamily: 'var(--weave-typography-family-mono)',
-                  whiteSpace: 'pre',
-                  overflowWrap: 'normal',
-                },
-                onScroll: (event) => {
-                  const codeElement = codeRef.current
-                  if (codeElement === null) return
-
-                  codeElement.scrollTop = event.currentTarget.scrollTop
-                  codeElement.scrollLeft = event.currentTarget.scrollLeft
+                label: expanded ? 'Collapse code' : 'Expand code',
+                onClick: () => {
+                  setExpanded((current) => !current)
                 },
               }}
             />
-          </Stack>
-        </Column>
-      </Presence>
+          </ToolTip>
+          <ToolTip content="Copy code">
+            <Button
+              icon={IconCopy}
+              variant="ghost"
+              size="small"
+              viewProps={{
+                label: 'Copy code',
+                onClick: () => {
+                  void navigator.clipboard.writeText(source)
+                },
+              }}
+            />
+          </ToolTip>
+          <ToolTip content="Reset code">
+            <Button
+              icon={IconRefresh}
+              variant="ghost"
+              size="small"
+              viewProps={{
+                label: 'Reset code',
+                onClick: () => {
+                  setSource(initialSource)
+                },
+              }}
+            />
+          </ToolTip>
+        </Row>
+      </Column>
+
+      <Grid
+        width="fill"
+        overflow="hidden"
+        transition={{ properties: ['gridTemplateRows'], spring: 'gentle' }}
+        style={{ gridTemplateRows: expanded ? 'minmax(0, 1fr)' : 'minmax(0, 0fr)' }}
+      >
+        <Presence present={expanded}>
+          <Column
+            width="fill"
+            minHeight={0}
+            overflow="hidden"
+            enter={{ animation: 'fade-down', spring: 'gentle' }}
+            exit={{ animation: 'fade-up', spring: 'gentle' }}
+          >
+            <Divider />
+            <Stack width="fill" maxHeight={16} background="surfaceHover">
+              <Code
+                language="tsx"
+                viewProps={{
+                  ref: codeRef,
+                  width: 'fill',
+                  maxHeight: 16,
+                  overflow: 'hidden',
+                  paddingX: 1,
+                  paddingY: 1,
+                  pointerEvents: 'none',
+                }}
+              >
+                {source}
+              </Code>
+              <Input
+                multiline
+                rows={codeRows}
+                value={source}
+                onChange={setSource}
+                viewProps={{
+                  width: 'fill',
+                  maxHeight: 16,
+                  overflow: 'auto',
+                  paddingX: 1,
+                  paddingY: 1,
+                  background: 'transparent',
+                  color: 'transparent',
+                  border: 0,
+                  shadow: 'none',
+                  outlineWidth: 0,
+                  style: {
+                    caretColor: 'var(--weave-color-primary)',
+                    fontFamily: 'var(--weave-typography-family-mono)',
+                    whiteSpace: 'pre',
+                    overflowWrap: 'normal',
+                  },
+                  onScroll: (event) => {
+                    const codeElement = codeRef.current
+                    if (codeElement === null) return
+
+                    codeElement.scrollTop = event.currentTarget.scrollTop
+                    codeElement.scrollLeft = event.currentTarget.scrollLeft
+                  },
+                }}
+              />
+            </Stack>
+          </Column>
+        </Presence>
+      </Grid>
     </Card>
   )
 }

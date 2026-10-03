@@ -62,7 +62,7 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
   }, [targetRef, topLayerRevision])
   /* oxlint-enable react/set-state-in-effect */
 
-  const { syncThumbOffsets } = useAutoScrollbarSync({
+  const { syncThumbOffsets, updateGeometry } = useAutoScrollbarSync({
     targetRef,
     overflowIntent,
     verticalHitRegionRef,
@@ -72,6 +72,11 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
     themeTokenClassName,
     scrollbarThemeClassName,
   })
+
+  useLayoutEffect(() => {
+    if (portalTarget === null) return
+    updateGeometry()
+  }, [portalTarget, updateGeometry])
 
   const { beginDrag, continueDrag, endDrag, handleHitRegionPointerDown } =
     useAutoScrollbarInteraction({

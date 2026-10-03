@@ -52,7 +52,6 @@ export function DocumentationReadingStatus({ contentRef }: DocumentationReadingS
         top: 2,
         shrink: 0,
         padding: 1.5,
-        minWidth: 17.5,
         width: 'content',
         position: 'sticky',
         order: 0,
@@ -61,16 +60,17 @@ export function DocumentationReadingStatus({ contentRef }: DocumentationReadingS
       <Text bold typo="body-large">
         CONTENTS
       </Text>
-      {items.map((item) => (
-        <Link
-          key={item.id}
-          href={`#${item.id}`}
-          text={<Text typo="label-medium">{item.label}</Text>}
-          hideIcon
-          hideUnderline
-          viewProps={{ width: 'content' }}
-        />
-      ))}
+      <Column gap={0.75} padding={2} width={12}>
+        {items.map((item) => (
+          <Link
+            key={item.id}
+            href={`#${item.id}`}
+            text={<Text typo="label-medium">{item.label}</Text>}
+            hideIcon
+            viewProps={{ width: 'content' }}
+          />
+        ))}
+      </Column>
     </Column>
   )
 }

@@ -242,7 +242,7 @@ export const compositeComponentExamples: Record<
         code: `const hostRef = useRef(null)
 
 return (
-  <Column ref={hostRef} minHeight={8}>
+  <Column ref={hostRef} width="fill" minHeight={8}>
     <SnackProvider container={hostRef}>
       <Snack
         text="Saved successfully"

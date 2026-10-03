@@ -774,7 +774,7 @@ return (
         'A Snack can expose one immediate action alongside the status message without becoming a dialog.',
       preview: <SnackExample />,
       codeMode: 'body',
-      code: 'const hostRef = useRef(null)\n\nreturn (\n  <Column ref={hostRef} minHeight={8}>\n    <SnackProvider container={hostRef}>\n      <Snack\n        text="Item archived"\n        action="Undo"\n        onAction={() => {}}\n        persistent\n        placement="bottom-center"\n        defaultOpen\n      />\n    </SnackProvider>\n  </Column>\n)',
+      code: 'const hostRef = useRef(null)\n\nreturn (\n  <Column ref={hostRef} width="fill" minHeight={8}>\n    <SnackProvider container={hostRef}>\n      <Snack\n        text="Item archived"\n        action="Undo"\n        onAction={() => {}}\n        persistent\n        placement="bottom-center"\n        defaultOpen\n      />\n    </SnackProvider>\n  </Column>\n)',
     },
     {
       id: 'snack-variant',
@@ -783,7 +783,7 @@ return (
         'Semantic variants let transient messages communicate success, warning, or failure consistently.',
       preview: <SnackExample />,
       codeMode: 'body',
-      code: 'const hostRef = useRef(null)\n\nreturn (\n  <Column ref={hostRef} minHeight={8}>\n    <SnackProvider container={hostRef}>\n      <Snack\n        text="Could not save changes"\n        variant="danger"\n        persistent\n        placement="bottom-center"\n        defaultOpen\n      />\n    </SnackProvider>\n  </Column>\n)',
+      code: 'const hostRef = useRef(null)\n\nreturn (\n  <Column ref={hostRef} width="fill" minHeight={8}>\n    <SnackProvider container={hostRef}>\n      <Snack\n        text="Could not save changes"\n        variant="danger"\n        persistent\n        placement="bottom-center"\n        defaultOpen\n      />\n    </SnackProvider>\n  </Column>\n)',
     },
   ],
   List: [
