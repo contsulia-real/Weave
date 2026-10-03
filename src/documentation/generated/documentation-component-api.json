@@ -12262,18 +12262,12 @@
     "p0": {
       "name": "about",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p1": {
       "name": "accessKey",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p2": {
       "name": "active",
@@ -12283,20 +12277,12 @@
     "p3": {
       "name": "align",
       "type": "ViewAlign | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["start", "center", "end", "stretch", "baseline"]
-      }
+      "optional": true
     },
     "p4": {
       "name": "alignSelf",
       "type": "\"auto\" | ViewAlign | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["auto", "start", "center", "end", "stretch", "baseline"]
-      }
+      "optional": true
     },
     "p5": {
       "name": "animation",
@@ -12306,10 +12292,7 @@
     "p6": {
       "name": "aria-activedescendant",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p7": {
       "name": "aria-atomic",
@@ -12319,27 +12302,17 @@
     "p8": {
       "name": "aria-autocomplete",
       "type": "\"none\" | \"inline\" | \"list\" | \"both\" | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["none", "inline", "list", "both"]
-      }
+      "optional": true
     },
     "p9": {
       "name": "aria-braillelabel",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p10": {
       "name": "aria-brailleroledescription",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p11": {
       "name": "aria-busy",
@@ -12354,42 +12327,27 @@
     "p13": {
       "name": "aria-colcount",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p14": {
       "name": "aria-colindex",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p15": {
       "name": "aria-colindextext",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p16": {
       "name": "aria-colspan",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p17": {
       "name": "aria-controls",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p18": {
       "name": "aria-current",
@@ -12399,26 +12357,17 @@
     "p19": {
       "name": "aria-describedby",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p20": {
       "name": "aria-description",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p21": {
       "name": "aria-details",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p22": {
       "name": "aria-disabled",
@@ -12428,19 +12377,12 @@
     "p23": {
       "name": "aria-dropeffect",
       "type": "\"none\" | \"copy\" | \"execute\" | \"link\" | \"move\" | \"popup\" | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["none", "copy", "execute", "link", "move", "popup"]
-      }
+      "optional": true
     },
     "p24": {
       "name": "aria-errormessage",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p25": {
       "name": "aria-expanded",
@@ -12450,10 +12392,7 @@
     "p26": {
       "name": "aria-flowto",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p27": {
       "name": "aria-grabbed",
@@ -12478,43 +12417,27 @@
     "p31": {
       "name": "aria-keyshortcuts",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p32": {
       "name": "aria-label",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p33": {
       "name": "aria-labelledby",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p34": {
       "name": "aria-level",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p35": {
       "name": "aria-live",
       "type": "\"off\" | \"assertive\" | \"polite\" | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["off", "assertive", "polite"]
-      }
+      "optional": true
     },
     "p36": {
       "name": "aria-modal",
@@ -12534,35 +12457,22 @@
     "p39": {
       "name": "aria-orientation",
       "type": "\"horizontal\" | \"vertical\" | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["horizontal", "vertical"]
-      }
+      "optional": true
     },
     "p40": {
       "name": "aria-owns",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p41": {
       "name": "aria-placeholder",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p42": {
       "name": "aria-posinset",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p43": {
       "name": "aria-pressed",
@@ -12577,22 +12487,7 @@
     "p45": {
       "name": "aria-relevant",
       "type": "\"text\" | \"additions\" | \"additions removals\" | \"additions text\" | \"all\" | \"removals\" | \"removals additions\" | \"removals text\" | \"text additions\" | \"text removals\" | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": [
-          "text",
-          "additions",
-          "additions removals",
-          "additions text",
-          "all",
-          "removals",
-          "removals additions",
-          "removals text",
-          "text additions",
-          "text removals"
-        ]
-      }
+      "optional": true
     },
     "p46": {
       "name": "aria-required",
@@ -12602,42 +12497,27 @@
     "p47": {
       "name": "aria-roledescription",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p48": {
       "name": "aria-rowcount",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p49": {
       "name": "aria-rowindex",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p50": {
       "name": "aria-rowindextext",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p51": {
       "name": "aria-rowspan",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p52": {
       "name": "aria-selected",
@@ -12647,51 +12527,32 @@
     "p53": {
       "name": "aria-setsize",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p54": {
       "name": "aria-sort",
       "type": "\"none\" | \"ascending\" | \"descending\" | \"other\" | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["none", "ascending", "descending", "other"]
-      }
+      "optional": true
     },
     "p55": {
       "name": "aria-valuemax",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p56": {
       "name": "aria-valuemin",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p57": {
       "name": "aria-valuenow",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p58": {
       "name": "aria-valuetext",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p59": {
       "name": "aspectRatio",
@@ -12706,26 +12567,17 @@
     "p61": {
       "name": "autoCorrect",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p62": {
       "name": "autoFocus",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p63": {
       "name": "autoSave",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p64": {
       "name": "backdropBlur",
@@ -12735,10 +12587,7 @@
     "p65": {
       "name": "backdropSaturate",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p66": {
       "name": "background",
@@ -12753,28 +12602,7 @@
     "p68": {
       "name": "blend",
       "type": "BlendMode | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": [
-          "color",
-          "overlay",
-          "normal",
-          "multiply",
-          "screen",
-          "darken",
-          "lighten",
-          "color-dodge",
-          "color-burn",
-          "hard-light",
-          "soft-light",
-          "difference",
-          "exclusion",
-          "hue",
-          "saturation",
-          "luminosity"
-        ]
-      }
+      "optional": true
     },
     "p69": {
       "name": "blur",
@@ -12844,18 +12672,12 @@
     "p82": {
       "name": "brightness",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p83": {
       "name": "busy",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p84": {
       "name": "checked",
@@ -12870,18 +12692,12 @@
     "p86": {
       "name": "className",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p87": {
       "name": "clickable",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p88": {
       "name": "clip",
@@ -12896,10 +12712,7 @@
     "p90": {
       "name": "column",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p91": {
       "name": "columns",
@@ -12909,18 +12722,12 @@
     "p92": {
       "name": "columnSpan",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p93": {
       "name": "container",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p94": {
       "name": "containerLg",
@@ -12945,10 +12752,7 @@
     "p98": {
       "name": "content",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p99": {
       "name": "contentEditable",
@@ -12958,18 +12762,12 @@
     "p100": {
       "name": "contextMenu",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p101": {
       "name": "contrast",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p102": {
       "name": "controls",
@@ -12994,18 +12792,12 @@
     "p106": {
       "name": "datatype",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p107": {
       "name": "defaultChecked",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p108": {
       "name": "defaultValue",
@@ -13020,35 +12812,22 @@
     "p110": {
       "name": "description",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p111": {
       "name": "dir",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p112": {
       "name": "direction",
       "type": "ViewDirection | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["row", "row-reverse", "column", "column-reverse"]
-      }
+      "optional": true
     },
     "p113": {
       "name": "disabled",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p114": {
       "name": "disabledStyle",
@@ -13058,10 +12837,7 @@
     "p115": {
       "name": "draggable",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p116": {
       "name": "enter",
@@ -13071,11 +12847,7 @@
     "p117": {
       "name": "enterKeyHint",
       "type": "\"enter\" | \"done\" | \"go\" | \"next\" | \"previous\" | \"search\" | \"send\" | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["enter", "done", "go", "next", "previous", "search", "send"]
-      }
+      "optional": true
     },
     "p118": {
       "name": "exit",
@@ -13085,18 +12857,12 @@
     "p119": {
       "name": "expanded",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p120": {
       "name": "exportparts",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p121": {
       "name": "focus",
@@ -13106,10 +12872,7 @@
     "p122": {
       "name": "focusable",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p123": {
       "name": "focusVisible",
@@ -13124,18 +12887,12 @@
     "p125": {
       "name": "grayscale",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p126": {
       "name": "grow",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p127": {
       "name": "height",
@@ -13145,10 +12902,7 @@
     "p128": {
       "name": "hidden",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p129": {
       "name": "hover",
@@ -13163,18 +12917,12 @@
     "p131": {
       "name": "id",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p132": {
       "name": "inert",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p133": {
       "name": "inlist",
@@ -13184,11 +12932,7 @@
     "p134": {
       "name": "inputMode",
       "type": "\"none\" | \"search\" | \"text\" | \"tel\" | \"url\" | \"email\" | \"numeric\" | \"decimal\" | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["none", "search", "text", "tel", "url", "email", "numeric", "decimal"]
-      }
+      "optional": true
     },
     "p135": {
       "name": "inset",
@@ -13208,84 +12952,52 @@
     "p138": {
       "name": "invalid",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p139": {
       "name": "is",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p140": {
       "name": "itemID",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p141": {
       "name": "itemProp",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p142": {
       "name": "itemRef",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p143": {
       "name": "itemScope",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p144": {
       "name": "itemType",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p145": {
       "name": "justify",
       "type": "ViewJustify | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["start", "center", "end", "space-between", "space-around", "space-evenly"]
-      }
+      "optional": true
     },
     "p146": {
       "name": "justifySelf",
       "type": "\"auto\" | ViewAlign | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["auto", "start", "center", "end", "stretch", "baseline"]
-      }
+      "optional": true
     },
     "p147": {
       "name": "label",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p148": {
       "name": "labelledBy",
@@ -13295,27 +13007,17 @@
     "p149": {
       "name": "lang",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p150": {
       "name": "layer",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p151": {
       "name": "layout",
       "type": "ViewLayout | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["grid", "flex", "stack", "absolute"]
-      }
+      "optional": true
     },
     "p152": {
       "name": "layoutAnimation",
@@ -13330,10 +13032,7 @@
     "p154": {
       "name": "level",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p155": {
       "name": "lg",
@@ -13408,10 +13107,7 @@
     "p169": {
       "name": "nonce",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p170": {
       "name": "onAbort",
@@ -14256,18 +13952,12 @@
     "p338": {
       "name": "opacity",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p339": {
       "name": "order",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p340": {
       "name": "outlineColor",
@@ -14282,28 +13972,7 @@
     "p342": {
       "name": "outlineStyle",
       "type": "Property.OutlineStyle | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": [
-          "none",
-          "inherit",
-          "auto",
-          "-moz-initial",
-          "initial",
-          "revert",
-          "revert-layer",
-          "unset",
-          "dashed",
-          "dotted",
-          "double",
-          "groove",
-          "inset",
-          "outset",
-          "ridge",
-          "solid"
-        ]
-      }
+      "optional": true
     },
     "p343": {
       "name": "outlineWidth",
@@ -14318,48 +13987,12 @@
     "p345": {
       "name": "overflowX",
       "type": "Property.OverflowX | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": [
-          "hidden",
-          "inherit",
-          "auto",
-          "-moz-initial",
-          "initial",
-          "revert",
-          "revert-layer",
-          "unset",
-          "-moz-hidden-unscrollable",
-          "clip",
-          "overlay",
-          "scroll",
-          "visible"
-        ]
-      }
+      "optional": true
     },
     "p346": {
       "name": "overflowY",
       "type": "Property.OverflowY | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": [
-          "hidden",
-          "inherit",
-          "auto",
-          "-moz-initial",
-          "initial",
-          "revert",
-          "revert-layer",
-          "unset",
-          "-moz-hidden-unscrollable",
-          "clip",
-          "overlay",
-          "scroll",
-          "visible"
-        ]
-      }
+      "optional": true
     },
     "p347": {
       "name": "owns",
@@ -14404,92 +14037,37 @@
     "p355": {
       "name": "part",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p356": {
       "name": "pointerEvents",
       "type": "Property.PointerEvents | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": [
-          "none",
-          "inherit",
-          "auto",
-          "all",
-          "fill",
-          "-moz-initial",
-          "initial",
-          "revert",
-          "revert-layer",
-          "unset",
-          "visible",
-          "painted",
-          "stroke",
-          "visibleFill",
-          "visiblePainted",
-          "visibleStroke"
-        ]
-      }
+      "optional": true
     },
     "p357": {
       "name": "popover",
       "type": "\"\" | \"auto\" | \"manual\" | \"hint\" | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["", "auto", "manual", "hint"]
-      }
+      "optional": true
     },
     "p358": {
       "name": "popoverTarget",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p359": {
       "name": "popoverTargetAction",
       "type": "\"toggle\" | \"show\" | \"hide\" | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["toggle", "show", "hide"]
-      }
+      "optional": true
     },
     "p360": {
       "name": "position",
       "type": "Property.Position | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": [
-          "inherit",
-          "absolute",
-          "-moz-initial",
-          "initial",
-          "revert",
-          "revert-layer",
-          "unset",
-          "-webkit-sticky",
-          "fixed",
-          "relative",
-          "static",
-          "sticky"
-        ]
-      }
+      "optional": true
     },
     "p361": {
       "name": "prefix",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p362": {
       "name": "pressed",
@@ -14499,18 +14077,12 @@
     "p363": {
       "name": "property",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p364": {
       "name": "radioGroup",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p365": {
       "name": "radius",
@@ -14540,10 +14112,7 @@
     "p370": {
       "name": "readOnly",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p371": {
       "name": "ref",
@@ -14553,42 +14122,27 @@
     "p372": {
       "name": "rel",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p373": {
       "name": "required",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p374": {
       "name": "resource",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p375": {
       "name": "results",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p376": {
       "name": "rev",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p377": {
       "name": "right",
@@ -14608,10 +14162,7 @@
     "p380": {
       "name": "row",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p381": {
       "name": "rows",
@@ -14621,42 +14172,27 @@
     "p382": {
       "name": "rowSpan",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p383": {
       "name": "saturate",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p384": {
       "name": "scale",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p385": {
       "name": "scaleX",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p386": {
       "name": "scaleY",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p387": {
       "name": "scrollbar",
@@ -14666,34 +14202,22 @@
     "p388": {
       "name": "security",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p389": {
       "name": "selectable",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p390": {
       "name": "selected",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p391": {
       "name": "sepia",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p392": {
       "name": "shadow",
@@ -14703,10 +14227,7 @@
     "p393": {
       "name": "shrink",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p394": {
       "name": "skewX",
@@ -14721,10 +14242,7 @@
     "p396": {
       "name": "slot",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p397": {
       "name": "sm",
@@ -14744,34 +14262,22 @@
     "p400": {
       "name": "suppressContentEditableWarning",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p401": {
       "name": "suppressHydrationWarning",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p402": {
       "name": "tabIndex",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p403": {
       "name": "title",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p404": {
       "name": "top",
@@ -14796,11 +14302,7 @@
     "p408": {
       "name": "translate",
       "type": "\"yes\" | \"no\" | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["yes", "no"]
-      }
+      "optional": true
     },
     "p409": {
       "name": "translateX",
@@ -14815,59 +14317,37 @@
     "p411": {
       "name": "typeof",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p412": {
       "name": "unselectable",
       "type": "\"off\" | \"on\" | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["off", "on"]
-      }
+      "optional": true
     },
     "p413": {
       "name": "valueMax",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p414": {
       "name": "valueMin",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p415": {
       "name": "valueNow",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p416": {
       "name": "valueText",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p417": {
       "name": "vocab",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p418": {
       "name": "width",
@@ -14887,10 +14367,7 @@
     "p421": {
       "name": "zIndex",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p422": {
       "name": "layout",
@@ -15775,11 +15252,7 @@
     "p598": {
       "name": "direction",
       "type": "SplitBoxDirection | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["horizontal", "vertical"]
-      }
+      "optional": true
     },
     "p599": {
       "name": "expandThreshold",
@@ -15839,36 +15312,22 @@
     "p610": {
       "name": "present",
       "type": "boolean",
-      "optional": false,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": false
     },
     "p611": {
       "name": "align",
       "type": "TextAlign | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["start", "center", "end", "justify"]
-      }
+      "optional": true
     },
     "p612": {
       "name": "bold",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p613": {
       "name": "case",
       "type": "TextCase | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["none", "uppercase", "lowercase", "capitalize"]
-      }
+      "optional": true
     },
     "p614": {
       "name": "color",
@@ -15878,10 +15337,7 @@
     "p615": {
       "name": "italic",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p616": {
       "name": "letterSpacing",
@@ -15901,10 +15357,7 @@
     "p619": {
       "name": "maxLines",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p620": {
       "name": "md",
@@ -15914,36 +15367,22 @@
     "p621": {
       "name": "overflow",
       "type": "TextOverflow | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["clip", "ellipsis"]
-      }
+      "optional": true
     },
     "p622": {
       "name": "overline",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p623": {
       "name": "singleLine",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p624": {
       "name": "size",
       "type": "TextSize | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["small", "medium", "large", "xsmall", "xlarge", "xxlarge"]
-      }
+      "optional": true
     },
     "p625": {
       "name": "sm",
@@ -15953,62 +15392,27 @@
     "p626": {
       "name": "strikethrough",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p627": {
       "name": "typo",
       "type": "TextTypo | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": [
-          "display-large",
-          "display-medium",
-          "display-small",
-          "headline-large",
-          "headline-medium",
-          "headline-small",
-          "title-large",
-          "title-medium",
-          "title-small",
-          "body-large",
-          "body-medium",
-          "body-small",
-          "body-xsmall",
-          "label-large",
-          "label-medium",
-          "label-small"
-        ]
-      }
+      "optional": true
     },
     "p628": {
       "name": "underline",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p629": {
       "name": "weight",
       "type": "TextWeight | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["medium", "light", "regular", "semibold", "bold"]
-      }
+      "optional": true
     },
     "p630": {
       "name": "wrap",
       "type": "TextWrap | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["wrap", "nowrap", "balance"]
-      }
+      "optional": true
     },
     "p631": {
       "name": "xl",
@@ -16863,367 +16267,12 @@
     "p801": {
       "name": "children",
       "type": "string",
-      "optional": false,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": false
     },
     "p802": {
       "name": "language",
       "type": "BundledLanguage | \"custom\"",
-      "optional": false,
-      "editor": {
-        "kind": "select",
-        "options": [
-          "rel",
-          "md",
-          "go",
-          "move",
-          "log",
-          "1c",
-          "1c-query",
-          "abap",
-          "actionscript",
-          "actionscript-3",
-          "ada",
-          "adoc",
-          "ahk",
-          "ahk1",
-          "ahk2",
-          "angular-html",
-          "angular-ts",
-          "apache",
-          "apex",
-          "apl",
-          "applescript",
-          "ara",
-          "as3",
-          "asciidoc",
-          "asm",
-          "astro",
-          "awk",
-          "ballerina",
-          "bash",
-          "bat",
-          "batch",
-          "be",
-          "beancount",
-          "berry",
-          "bibtex",
-          "bicep",
-          "bird",
-          "bird2",
-          "blade",
-          "bsl",
-          "c",
-          "c#",
-          "c++",
-          "c3",
-          "cadence",
-          "cairo",
-          "cdc",
-          "chapel",
-          "chpl",
-          "cjs",
-          "clarity",
-          "clj",
-          "clojure",
-          "closure-templates",
-          "cmake",
-          "cmd",
-          "cobol",
-          "codeowners",
-          "codeql",
-          "coffee",
-          "coffeescript",
-          "common-lisp",
-          "console",
-          "coq",
-          "cpp",
-          "cql",
-          "crystal",
-          "cs",
-          "csharp",
-          "css",
-          "csv",
-          "cts",
-          "cue",
-          "cypher",
-          "d",
-          "dart",
-          "dax",
-          "desktop",
-          "diff",
-          "docker",
-          "dockerfile",
-          "dotenv",
-          "dream-maker",
-          "edge",
-          "elisp",
-          "elixir",
-          "elm",
-          "emacs-lisp",
-          "erb",
-          "erl",
-          "erlang",
-          "f",
-          "f#",
-          "f03",
-          "f08",
-          "f18",
-          "f77",
-          "f90",
-          "f95",
-          "fennel",
-          "fish",
-          "fluent",
-          "for",
-          "fortran-fixed-form",
-          "fortran-free-form",
-          "fs",
-          "fsharp",
-          "fsl",
-          "ftl",
-          "gd",
-          "gdresource",
-          "gdscript",
-          "gdshader",
-          "genie",
-          "gherkin",
-          "git-commit",
-          "git-rebase",
-          "gjs",
-          "gleam",
-          "glimmer-js",
-          "glimmer-ts",
-          "glsl",
-          "gn",
-          "gnuplot",
-          "gql",
-          "graphql",
-          "groovy",
-          "gts",
-          "hack",
-          "haml",
-          "handlebars",
-          "haskell",
-          "haxe",
-          "hbs",
-          "hcl",
-          "hjson",
-          "hlsl",
-          "hs",
-          "html",
-          "html-derivative",
-          "http",
-          "hurl",
-          "hxml",
-          "hy",
-          "imba",
-          "ini",
-          "jade",
-          "java",
-          "javascript",
-          "jinja",
-          "jison",
-          "jl",
-          "js",
-          "json",
-          "json5",
-          "jsonc",
-          "jsonl",
-          "jsonnet",
-          "jssm",
-          "jsx",
-          "julia",
-          "just",
-          "justfile",
-          "kdl",
-          "kotlin",
-          "kql",
-          "kt",
-          "kts",
-          "kusto",
-          "latex",
-          "lean",
-          "lean4",
-          "less",
-          "liquid",
-          "lisp",
-          "lit",
-          "llvm",
-          "logo",
-          "lua",
-          "luau",
-          "make",
-          "makefile",
-          "markdown",
-          "marko",
-          "matlab",
-          "mbt",
-          "mbti",
-          "mdc",
-          "mdx",
-          "mediawiki",
-          "mermaid",
-          "mips",
-          "mipsasm",
-          "mjs",
-          "mmd",
-          "mojo",
-          "moonbit",
-          "mts",
-          "nar",
-          "narrat",
-          "nextflow",
-          "nextflow-groovy",
-          "nf",
-          "nginx",
-          "nim",
-          "nix",
-          "nsis",
-          "nu",
-          "nushell",
-          "objc",
-          "objective-c",
-          "objective-cpp",
-          "ocaml",
-          "odin",
-          "openscad",
-          "org",
-          "pascal",
-          "perl",
-          "perl6",
-          "php",
-          "pkl",
-          "plsql",
-          "po",
-          "polar",
-          "postcss",
-          "pot",
-          "potx",
-          "powerquery",
-          "powershell",
-          "prisma",
-          "prolog",
-          "properties",
-          "proto",
-          "protobuf",
-          "ps",
-          "ps1",
-          "pug",
-          "puppet",
-          "purescript",
-          "pwsh",
-          "py",
-          "python",
-          "ql",
-          "qml",
-          "qmldir",
-          "qss",
-          "r",
-          "racket",
-          "raku",
-          "razor",
-          "rb",
-          "rbs",
-          "reg",
-          "regex",
-          "regexp",
-          "riscv",
-          "ron",
-          "rosmsg",
-          "rs",
-          "rst",
-          "ruby",
-          "ruby-signature",
-          "rust",
-          "sas",
-          "sass",
-          "scad",
-          "scala",
-          "scheme",
-          "scss",
-          "sdbl",
-          "sh",
-          "shader",
-          "shaderlab",
-          "shell",
-          "shellscript",
-          "shellsession",
-          "smalltalk",
-          "smithy",
-          "solidity",
-          "soy",
-          "sparql",
-          "spl",
-          "splunk",
-          "sql",
-          "ssh-config",
-          "stata",
-          "styl",
-          "stylus",
-          "surql",
-          "surrealql",
-          "svelte",
-          "swift",
-          "system-verilog",
-          "systemd",
-          "talon",
-          "talonscript",
-          "tasl",
-          "tcl",
-          "templ",
-          "terraform",
-          "tex",
-          "tf",
-          "tfvars",
-          "toml",
-          "tres",
-          "ts",
-          "ts-tags",
-          "tscn",
-          "tsp",
-          "tsv",
-          "tsx",
-          "turtle",
-          "twig",
-          "typ",
-          "typescript",
-          "typespec",
-          "typst",
-          "v",
-          "vala",
-          "vb",
-          "verilog",
-          "vhdl",
-          "vim",
-          "viml",
-          "vimscript",
-          "vue",
-          "vue-html",
-          "vue-vine",
-          "vy",
-          "vyper",
-          "wasm",
-          "wenyan",
-          "wgsl",
-          "wiki",
-          "wikitext",
-          "wit",
-          "wl",
-          "wolfram",
-          "xml",
-          "xsl",
-          "yaml",
-          "yml",
-          "zenscript",
-          "zig",
-          "zsh",
-          "文言",
-          "custom"
-        ]
-      }
+      "optional": false
     },
     "p803": {
       "name": "syntax",
@@ -17233,28 +16282,17 @@
     "p804": {
       "name": "alt",
       "type": "string",
-      "optional": false,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": false
     },
     "p805": {
       "name": "fit",
       "type": "ImageFit | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["none", "fill", "contain", "cover", "scale-down"]
-      }
+      "optional": true
     },
     "p806": {
       "name": "loading",
       "type": "ImageLoading | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["lazy", "eager"]
-      }
+      "optional": true
     },
     "p807": {
       "name": "onError",
@@ -18119,20 +17157,12 @@
     "p979": {
       "name": "size",
       "type": "IconSize | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["small", "medium", "large", "xlarge"]
-      }
+      "optional": true
     },
     "p980": {
       "name": "stroke",
       "type": "IconStroke | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["regular", "bold", "thin"]
-      }
+      "optional": true
     },
     "p981": {
       "name": "svg",
@@ -18992,10 +18022,7 @@
     "p1152": {
       "name": "name",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p1153": {
       "name": "src",
@@ -19005,43 +18032,27 @@
     "p1154": {
       "name": "direction",
       "type": "DividerDirection | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["horizontal", "vertical"]
-      }
+      "optional": true
     },
     "p1155": {
       "name": "size",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p1156": {
       "name": "hideIcon",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p1157": {
       "name": "hideUnderline",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p1158": {
       "name": "href",
       "type": "string",
-      "optional": false,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": false
     },
     "p1159": {
       "name": "target",
@@ -19901,36 +18912,17 @@
     "p1330": {
       "name": "dot",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p1331": {
       "name": "placement",
       "type": "BadgePlacement | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": [
-          "top",
-          "right",
-          "bottom",
-          "left",
-          "top-left",
-          "top-right",
-          "bottom-left",
-          "bottom-right"
-        ]
-      }
+      "optional": true
     },
     "p1332": {
       "name": "visible",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p1333": {
       "name": "icon",
@@ -19940,11 +18932,7 @@
     "p1334": {
       "name": "iconPosition",
       "type": "ButtonIconPosition | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["start", "end"]
-      }
+      "optional": true
     },
     "p1335": {
       "name": "lg",
@@ -19959,19 +18947,12 @@
     "p1337": {
       "name": "pressed",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p1338": {
       "name": "size",
       "type": "ButtonSize | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["small", "medium", "large"]
-      }
+      "optional": true
     },
     "p1339": {
       "name": "sm",
@@ -19981,20 +18962,12 @@
     "p1340": {
       "name": "type",
       "type": "ButtonType | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["button", "submit", "reset"]
-      }
+      "optional": true
     },
     "p1341": {
       "name": "variant",
       "type": "ButtonVariant | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["primary", "secondary", "tertiary", "danger", "ghost"]
-      }
+      "optional": true
     },
     "p1342": {
       "name": "xl",
@@ -20849,10 +19822,7 @@
     "p1512": {
       "name": "defaultSelected",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p1513": {
       "name": "onSelectedChange",
@@ -20862,10 +19832,7 @@
     "p1514": {
       "name": "elevated",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p1515": {
       "name": "leading",
@@ -20875,28 +19842,17 @@
     "p1516": {
       "name": "mode",
       "type": "AppBarMode | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["full", "floating"]
-      }
+      "optional": true
     },
     "p1517": {
       "name": "size",
       "type": "AppBarSize | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["small", "medium", "large"]
-      }
+      "optional": true
     },
     "p1518": {
       "name": "sticky",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p1519": {
       "name": "title",
@@ -20906,11 +19862,7 @@
     "p1520": {
       "name": "titleAlign",
       "type": "AppBarTitleAlign | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["start", "center", "end"]
-      }
+      "optional": true
     },
     "p1521": {
       "name": "trailing",
@@ -21765,26 +20717,17 @@
     "p1691": {
       "name": "autoComplete",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p1692": {
       "name": "clearable",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p1693": {
       "name": "clearLabel",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p1694": {
       "name": "defaultValue",
@@ -21799,26 +20742,17 @@
     "p1696": {
       "name": "maxLength",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p1697": {
       "name": "minLength",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p1698": {
       "name": "multiline",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p1699": {
       "name": "onChange",
@@ -21828,26 +20762,17 @@
     "p1700": {
       "name": "pattern",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p1701": {
       "name": "placeholder",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p1702": {
       "name": "rows",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p1703": {
       "name": "trailingIcon",
@@ -21857,11 +20782,7 @@
     "p1704": {
       "name": "type",
       "type": "InputType | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["number", "search", "text", "tel", "url", "email", "password"]
-      }
+      "optional": true
     },
     "p1705": {
       "name": "value",
@@ -22711,10 +21632,7 @@
     "p1874": {
       "name": "defaultOpen",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p1875": {
       "name": "defaultValue",
@@ -22744,18 +21662,12 @@
     "p1880": {
       "name": "open",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p1881": {
       "name": "overlapTrigger",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p1882": {
       "name": "placeholder",
@@ -22765,20 +21677,7 @@
     "p1883": {
       "name": "placement",
       "type": "PopoverPlacement | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": [
-          "top",
-          "right",
-          "bottom",
-          "left",
-          "top-left",
-          "top-right",
-          "bottom-left",
-          "bottom-right"
-        ]
-      }
+      "optional": true
     },
     "p1884": {
       "name": "value",
@@ -22793,10 +21692,7 @@
     "p1886": {
       "name": "defaultInputValue",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p1887": {
       "name": "emptyContent",
@@ -22811,10 +21707,7 @@
     "p1889": {
       "name": "inputValue",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p1890": {
       "name": "listboxViewProps",
@@ -23674,27 +22567,17 @@
     "p2061": {
       "name": "defaultValue",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p2062": {
       "name": "direction",
       "type": "SliderDirection | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["horizontal", "vertical"]
-      }
+      "optional": true
     },
     "p2063": {
       "name": "inverse",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p2064": {
       "name": "label",
@@ -23704,18 +22587,12 @@
     "p2065": {
       "name": "max",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p2066": {
       "name": "min",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p2067": {
       "name": "onChange",
@@ -23725,27 +22602,17 @@
     "p2068": {
       "name": "size",
       "type": "SliderSize | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["small", "medium", "large"]
-      }
+      "optional": true
     },
     "p2069": {
       "name": "step",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p2070": {
       "name": "value",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p2071": {
       "name": "marks",
@@ -23755,10 +22622,7 @@
     "p2072": {
       "name": "restricted",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p2073": {
       "name": "defaultValue",
@@ -23768,18 +22632,12 @@
     "p2074": {
       "name": "endLabel",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p2075": {
       "name": "endName",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p2076": {
       "name": "onChange",
@@ -23789,18 +22647,12 @@
     "p2077": {
       "name": "startLabel",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p2078": {
       "name": "startName",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p2079": {
       "name": "value",
@@ -23810,10 +22662,7 @@
     "p2080": {
       "name": "checked",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p2081": {
       "name": "onChange",
@@ -23823,36 +22672,22 @@
     "p2082": {
       "name": "size",
       "type": "SwitchSize | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["small", "medium", "large"]
-      }
+      "optional": true
     },
     "p2083": {
       "name": "value",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p2084": {
       "name": "group",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p2085": {
       "name": "size",
       "type": "ChoiceControlSize | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["small", "medium", "large"]
-      }
+      "optional": true
     },
     "p2086": {
       "name": "value",
@@ -23862,53 +22697,32 @@
     "p2087": {
       "name": "indeterminate",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p2088": {
       "name": "color",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p2089": {
       "name": "direction",
       "type": "ProgressDirection | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["horizontal", "vertical"]
-      }
+      "optional": true
     },
     "p2090": {
       "name": "mode",
       "type": "ProgressMode | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["spin", "linear"]
-      }
+      "optional": true
     },
     "p2091": {
       "name": "progress",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p2092": {
       "name": "size",
       "type": "ProgressSize | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["small", "medium", "large"]
-      }
+      "optional": true
     },
     "p2093": {
       "name": "speed",
@@ -23918,19 +22732,12 @@
     "p2094": {
       "name": "tracked",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p2095": {
       "name": "shape",
       "type": "SkeletonShape | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["text", "circle", "rect"]
-      }
+      "optional": true
     },
     "p2096": {
       "name": "onReset",
@@ -24785,10 +23592,7 @@
     "p2266": {
       "name": "dense",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p2267": {
       "name": "onSelect",
@@ -24803,26 +23607,17 @@
     "p2269": {
       "name": "stickyHeader",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p2270": {
       "name": "verticalBorders",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p2271": {
       "name": "collapsible",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p2272": {
       "name": "defaultValue",
@@ -24832,18 +23627,12 @@
     "p2273": {
       "name": "multiple",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p2274": {
       "name": "noDividers",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p2275": {
       "name": "onValueChange",
@@ -24868,35 +23657,22 @@
     "p2279": {
       "name": "delay",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p2280": {
       "name": "placement",
       "type": "ToolTipPlacement | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["top", "right", "bottom", "left"]
-      }
+      "optional": true
     },
     "p2281": {
       "name": "restoreFocus",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p2282": {
       "name": "modal",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p2283": {
       "name": "onAbort",
@@ -25746,26 +24522,17 @@
     "p2452": {
       "name": "breakpoint",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p2453": {
       "name": "closeOnBackdrop",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p2454": {
       "name": "closeOnEscape",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p2455": {
       "name": "closeThreshold",
@@ -25795,11 +24562,7 @@
     "p2460": {
       "name": "mode",
       "type": "DrawerMode | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["auto", "modal", "non-modal"]
-      }
+      "optional": true
     },
     "p2461": {
       "name": "onSizeChange",
@@ -25809,27 +24572,17 @@
     "p2462": {
       "name": "resizable",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p2463": {
       "name": "side",
       "type": "DrawerSide | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["top", "right", "bottom", "left"]
-      }
+      "optional": true
     },
     "p2464": {
       "name": "closeOnSelect",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p2465": {
       "name": "submenuOffset",
@@ -25844,27 +24597,17 @@
     "p2467": {
       "name": "activation",
       "type": "TabsActivation | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["manual", "automatic"]
-      }
+      "optional": true
     },
     "p2468": {
       "name": "defaultValue",
       "type": "string | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "text"
-      }
+      "optional": true
     },
     "p2469": {
       "name": "indicatorThickness",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p2470": {
       "name": "onValueChange",
@@ -25874,20 +24617,12 @@
     "p2471": {
       "name": "orientation",
       "type": "TabsOrientation | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["horizontal", "vertical"]
-      }
+      "optional": true
     },
     "p2472": {
       "name": "variant",
       "type": "TabsVariant | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["underline", "pill"]
-      }
+      "optional": true
     },
     "p2473": {
       "name": "action",
@@ -25897,10 +24632,7 @@
     "p2474": {
       "name": "duration",
       "type": "number | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "number"
-      }
+      "optional": true
     },
     "p2475": {
       "name": "onAction",
@@ -25915,43 +24647,22 @@
     "p2477": {
       "name": "persistent",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p2478": {
       "name": "placement",
       "type": "SnackPlacement | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": [
-          "top-left",
-          "top-right",
-          "bottom-left",
-          "bottom-right",
-          "top-center",
-          "bottom-center"
-        ]
-      }
+      "optional": true
     },
     "p2479": {
       "name": "progress",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p2480": {
       "name": "variant",
       "type": "SnackVariant | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["default", "success", "warning", "danger", "info"]
-      }
+      "optional": true
     },
     "p2481": {
       "name": "defaultSelected",
@@ -25971,11 +24682,7 @@
     "p2484": {
       "name": "orientation",
       "type": "ListOrientation | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["horizontal", "vertical"]
-      }
+      "optional": true
     },
     "p2485": {
       "name": "selected",
@@ -25985,37 +24692,22 @@
     "p2486": {
       "name": "selection",
       "type": "\"none\" | \"single\" | \"multiple\" | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["none", "single", "multiple"]
-      }
+      "optional": true
     },
     "p2487": {
       "name": "virtualized",
       "type": "boolean | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "boolean"
-      }
+      "optional": true
     },
     "p2488": {
       "name": "mode",
       "type": "ThemeMode | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["light", "dark", "system"]
-      }
+      "optional": true
     },
     "p2489": {
       "name": "reducedMotion",
       "type": "ReducedMotionPreference | undefined",
-      "optional": true,
-      "editor": {
-        "kind": "select",
-        "options": ["system", "reduce", "no-preference"]
-      }
+      "optional": true
     },
     "p2490": {
       "name": "theme",

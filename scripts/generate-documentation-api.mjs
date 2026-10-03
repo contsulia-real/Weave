@@ -75,42 +75,6 @@ function withoutNullish(checker, type) {
   return checker.getUnionType(parts, ts.UnionReduction.None)
 }
 
-function editorForType(checker, type) {
-  const parts = unionParts(type).filter(
-    (part) =>
-      (part.flags & ts.TypeFlags.Undefined) === 0 && (part.flags & ts.TypeFlags.Never) === 0,
-  )
-
-  if (parts.some((part) => (part.flags & ts.TypeFlags.Null) !== 0)) {
-    return undefined
-  }
-
-  if (parts.length === 0) return undefined
-
-  if (parts.every((part) => (part.flags & ts.TypeFlags.BooleanLike) !== 0)) {
-    return { kind: 'boolean' }
-  }
-
-  if (parts.every((part) => (part.flags & ts.TypeFlags.NumberLike) !== 0)) {
-    return { kind: 'number' }
-  }
-
-  if (parts.every((part) => (part.flags & ts.TypeFlags.StringLiteral) !== 0)) {
-    return {
-      kind: 'select',
-      options: [...new Set(parts.map((part) => part.value))],
-    }
-  }
-
-  const nonNullish = withoutNullish(checker, type)
-
-  if ((nonNullish.flags & ts.TypeFlags.String) !== 0) {
-    return { kind: 'text' }
-  }
-
-  return undefined
-}
-
 function propertyEntries(checker, type, fallbackNode) {
   return checker
     .getPropertiesOfType(type)
@@ -128,7 +92,6 @@ function propertyEntries(checker, type, fallbackNode) {
         optional:
           (symbol.flags & ts.SymbolFlags.Optional) !== 0 ||
           unionParts(propertyType).some((part) => (part.flags & ts.TypeFlags.Undefined) !== 0),
-        editor: editorForType(checker, propertyType),
       }
     })
     .sort((left, right) => left.name.localeCompare(right.name))

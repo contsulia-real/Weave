@@ -1,19 +1,9 @@
 import apiData from './generated/documentation-component-api.json'
 
-export type DocumentationApiEditor =
-  | {
-      kind: 'boolean' | 'number' | 'text'
-    }
-  | {
-      kind: 'select'
-      options: readonly string[]
-    }
-
 export interface DocumentationApiProp {
   name: string
   type: string
   optional: boolean
-  editor?: DocumentationApiEditor
 }
 
 export interface DocumentationComponentApi {
