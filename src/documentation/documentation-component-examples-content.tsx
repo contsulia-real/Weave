@@ -29,6 +29,102 @@ export const contentComponentExamples: Record<
   string,
   DocumentationComponentDocumentationDefinition
 > = {
+  Typo: {
+    description:
+      'The complete Weave typography scale exposed through Text.typo and theme typography tokens.',
+    apiComponents: [],
+    examples: [
+      {
+        id: 'display',
+        title: 'Display',
+        description:
+          'Display styles are the largest typography roles for prominent page-level statements.',
+        preview: (
+          <Column gap={1}>
+            <Text typo="display-large">Display large</Text>
+            <Text typo="display-medium">Display medium</Text>
+            <Text typo="display-small">Display small</Text>
+          </Column>
+        ),
+        code: `<Column gap={1}>
+  <Text typo="display-large">Display large</Text>
+  <Text typo="display-medium">Display medium</Text>
+  <Text typo="display-small">Display small</Text>
+</Column>`,
+      },
+      {
+        id: 'headline',
+        title: 'Headline',
+        description: 'Headline styles establish major section hierarchy below display text.',
+        preview: (
+          <Column gap={1}>
+            <Text typo="headline-large">Headline large</Text>
+            <Text typo="headline-medium">Headline medium</Text>
+            <Text typo="headline-small">Headline small</Text>
+          </Column>
+        ),
+        code: `<Column gap={1}>
+  <Text typo="headline-large">Headline large</Text>
+  <Text typo="headline-medium">Headline medium</Text>
+  <Text typo="headline-small">Headline small</Text>
+</Column>`,
+      },
+      {
+        id: 'title',
+        title: 'Title',
+        description: 'Title styles label cards, panels, and smaller content regions.',
+        preview: (
+          <Column gap={1}>
+            <Text typo="title-large">Title large</Text>
+            <Text typo="title-medium">Title medium</Text>
+            <Text typo="title-small">Title small</Text>
+          </Column>
+        ),
+        code: `<Column gap={1}>
+  <Text typo="title-large">Title large</Text>
+  <Text typo="title-medium">Title medium</Text>
+  <Text typo="title-small">Title small</Text>
+</Column>`,
+      },
+      {
+        id: 'body',
+        title: 'Body',
+        description:
+          'Body styles cover ordinary reading text from standard copy down to compact supporting text.',
+        preview: (
+          <Column gap={1}>
+            <Text typo="body-large">Body large</Text>
+            <Text typo="body-medium">Body medium</Text>
+            <Text typo="body-small">Body small</Text>
+            <Text typo="body-xsmall">Body xsmall</Text>
+          </Column>
+        ),
+        code: `<Column gap={1}>
+  <Text typo="body-large">Body large</Text>
+  <Text typo="body-medium">Body medium</Text>
+  <Text typo="body-small">Body small</Text>
+  <Text typo="body-xsmall">Body xsmall</Text>
+</Column>`,
+      },
+      {
+        id: 'label',
+        title: 'Label',
+        description: 'Label styles provide compact emphasized text for controls and metadata.',
+        preview: (
+          <Column gap={1}>
+            <Text typo="label-large">Label large</Text>
+            <Text typo="label-medium">Label medium</Text>
+            <Text typo="label-small">Label small</Text>
+          </Column>
+        ),
+        code: `<Column gap={1}>
+  <Text typo="label-large">Label large</Text>
+  <Text typo="label-medium">Label medium</Text>
+  <Text typo="label-small">Label small</Text>
+</Column>`,
+      },
+    ],
+  },
   Text: {
     description:
       'Theme-driven text with typography, emphasis, alignment, wrapping, and case controls.',

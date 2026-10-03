@@ -5,6 +5,12 @@ const stylesheet = `
   scrollbar-width: none;
 }
 
+:where(.weave-scroll-host)::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
 :where(.weave-scrollbar) {
   --weave-component-pointer-events: auto;
   --weave-component-display: none;

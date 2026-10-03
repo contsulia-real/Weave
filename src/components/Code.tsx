@@ -7,6 +7,7 @@ import {
 } from 'shiki'
 import type { CodeLanguage, CodeProps } from '../core/code-types'
 import { ensureCodeStylesheet } from '../renderers/dom/code-stylesheet'
+import { AutoScrollbar } from './internal/AutoScrollbar'
 import { useViewHost } from './internal/use-view-host'
 
 const codeTheme = createCssVariablesTheme({
@@ -129,23 +130,39 @@ export function Code(props: CodeProps) {
   }
 
   return (
-    <div
-      {...resolved.domProps}
-      ref={elementRef}
-      data-weave-view=""
-      data-weave-code=""
-      data-weave-code-language={language}
-      data-weave-layout={resolved.layout}
-      className={['weave-code', className].filter(Boolean).join(' ')}
-      style={inlineStyle}
-    >
-      {visible?.html === undefined ? (
-        <pre className="weave-code__fallback">
-          <code>{children}</code>
-        </pre>
-      ) : (
-        <div dangerouslySetInnerHTML={{ __html: visible.html }} />
-      )}
-    </div>
+    <>
+      <div
+        {...resolved.domProps}
+        ref={elementRef}
+        data-weave-view=""
+        data-weave-code=""
+        data-weave-code-language={language}
+        data-weave-layout={resolved.layout}
+        data-weave-scroll-host=""
+        className={['weave-code', 'weave-scroll-host', className].filter(Boolean).join(' ')}
+        style={inlineStyle}
+      >
+        {visible?.html === undefined ? (
+          <pre className="weave-code__fallback">
+            <code>{children}</code>
+          </pre>
+        ) : (
+          <div dangerouslySetInnerHTML={{ __html: visible.html }} />
+        )}
+      </div>
+
+      <AutoScrollbar
+        targetRef={elementRef}
+        config={viewProps.scrollbar}
+        overflowIntent={{
+          styleOverflow:
+            typeof viewProps.style?.overflow === 'string' ? viewProps.style.overflow : undefined,
+          styleOverflowX:
+            typeof viewProps.style?.overflowX === 'string' ? viewProps.style.overflowX : undefined,
+          styleOverflowY:
+            typeof viewProps.style?.overflowY === 'string' ? viewProps.style.overflowY : undefined,
+        }}
+      />
+    </>
   )
 }

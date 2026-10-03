@@ -8676,3 +8676,5 @@ CSS variables + runtime classes + framework stylesheet
 37. 所有框架拥有的文字视觉必须选择或继承 `theme.tokens.typography.styles` 中的 typo；Button、Input 等组件不得平行维护 `fontSize / fontWeight / lineHeight / letterSpacing`。
 38. 普通 View 继承当前排版上下文；根节点与 ThemeProvider 默认建立 `body-large` 上下文，允许 Button 等组件建立自己的 typo 上下文后由内部 Text 继承。
 39. API 的目标是：AI 易写易读，同时人类易读。
+40. Documentation 的 `Content and actions` 必须提供独立 `Typo` 页面并置于 `Text` 之前；该页按 `Display / Headline / Title / Body / Label` 展示 `theme.tokens.typography.styles` 的完整 type scale。`Typo` 是文档主题而非公开 React 组件，因此不生成或链接伪造的 Typo API。
+41. `Code` 的可滚动宿主必须复用框架现有 `AutoScrollbar`；所有 `weave-scroll-host` 必须隐藏浏览器原生滚动条（包括 WebKit scrollbar），不得让默认滚动条与 Weave scrollbar 同时出现。

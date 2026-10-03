@@ -28,6 +28,7 @@ const componentSection = (
 const componentNavigationSections: readonly DocumentationNavigationSectionDefinition[] = [
   componentSection('foundation', 'docs.nav.foundation', ['View', 'Layout', 'Presence']),
   componentSection('content-actions', 'docs.nav.contentActions', [
+    'Typo',
     'Text',
     'Code',
     'Image',

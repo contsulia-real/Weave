@@ -44,7 +44,9 @@ export function DocumentationComponentPage({ componentName }: DocumentationCompo
           </Column>
         ))}
 
-        <DocumentationComponentApiLink componentNames={apiComponents} />
+        {apiComponents.length > 0 ? (
+          <DocumentationComponentApiLink componentNames={apiComponents} />
+        ) : null}
 
         <Row width="fill" gap={1}>
           <Card

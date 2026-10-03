@@ -140,7 +140,7 @@ export function DocumentationComponentExampleCard({
                 ref: codeRef,
                 width: 'fill',
                 maxHeight: 16,
-                overflow: 'auto',
+                overflow: 'hidden',
                 paddingX: 1,
                 paddingY: 1,
                 pointerEvents: 'none',
