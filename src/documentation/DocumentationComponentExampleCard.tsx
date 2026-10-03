@@ -310,7 +310,7 @@ export function DocumentationComponentExampleCard({
           exit={{ animation: 'fade-up', spring: 'gentle' }}
         >
           <Divider />
-          <Stack width="fill" maxHeight={16}>
+          <Stack width="fill" maxHeight={16} background="surfaceHover">
             <Code
               language="tsx"
               viewProps={{
