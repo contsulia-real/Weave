@@ -11,18 +11,12 @@ export function DocumentationComponentExampleCard({
   code,
 }: DocumentationComponentExampleCardProps) {
   return (
-    <Card viewProps={{ padding: 0, overflow: 'hidden' }}>
+    <Card viewProps={{ padding: 0, overflow: 'hidden', align: 'center' }}>
       <Flex minHeight={12} width="fill" padding={2} align="center" justify="center">
         {preview}
       </Flex>
       <Divider />
-      <Code
-        language="tsx"
-        viewProps={{
-          width: 'fill',
-          padding: 1.25,
-        }}
-      >
+      <Code language="tsx" viewProps={{width: 'fill', maxHeight: 1, padding: 1}}>
         {code}
       </Code>
     </Card>

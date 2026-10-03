@@ -49,12 +49,12 @@ function PropsTable({
   rows.sort((left, right) => left.name.localeCompare(right.name))
 
   return (
-    <Table dense>
+    <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Name</TableHead>
-          <TableHead>Type</TableHead>
-          <TableHead>Optional</TableHead>
+          <TableHead align='start'>Name</TableHead>
+          <TableHead align='start'>Type</TableHead>
+          <TableHead align='start'>Optional</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -129,8 +129,8 @@ export function DocumentationComponentApiPage({
           gap={1}
         >
           <Text typo="headline-small">Import</Text>
-          <Card viewProps={{ padding: 0, overflow: 'hidden' }}>
-            <Code language="typescript" viewProps={{ width: 'fill', padding: 1.25 }}>
+          <Card viewProps={{ overflow: 'auto', align:'center' }}>
+            <Code language="typescript" viewProps={{ width: 'fill'}}>
               {`import { ${componentName} } from 'weave'`}
             </Code>
           </Card>
