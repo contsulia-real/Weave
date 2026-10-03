@@ -1,6 +1,6 @@
 import { type RefObject, useRef } from 'react'
 import { Column, Row, Text } from '../index'
-import { DocumentationComponentApiSection } from './DocumentationComponentApiSection'
+import { DocumentationComponentApiLink } from './DocumentationComponentApiLink'
 import { DocumentationComponentExampleCard } from './DocumentationComponentExampleCard'
 import { DocumentationReadingStatus } from './DocumentationReadingStatus'
 import { documentationComponentDocumentation } from './documentation-component-examples'
@@ -40,7 +40,7 @@ export function DocumentationComponentPage({
           </Column>
         ))}
 
-        <DocumentationComponentApiSection componentName={componentName} />
+        <DocumentationComponentApiLink componentName={componentName} />
       </Column>
 
       <DocumentationReadingStatus contentRef={contentRef} scrollContainerRef={scrollContainerRef} />

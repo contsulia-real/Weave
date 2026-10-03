@@ -1,3 +1,5 @@
+import apiData from './generated/documentation-component-api.json'
+
 export interface DocumentationNavigationItemDefinition {
   path: string
   labelKey?: string
@@ -23,6 +25,98 @@ const componentSection = (
   })),
 })
 
+const componentNavigationSections: readonly DocumentationNavigationSectionDefinition[] = [
+  componentSection('foundation', 'docs.nav.foundation', ['View', 'Presence']),
+  componentSection('layout', 'docs.nav.layout', [
+    'Flex',
+    'Row',
+    'Column',
+    'Grid',
+    'Stack',
+    'Absolute',
+    'SplitBox',
+  ]),
+  componentSection('content-actions', 'docs.nav.contentActions', [
+    'Text',
+    'Code',
+    'Image',
+    'Icon',
+    'Avatar',
+    'Divider',
+    'Link',
+    'Badge',
+    'Button',
+    'Card',
+    'AppBar',
+  ]),
+  componentSection('forms-status', 'docs.nav.formsStatus', [
+    'Input',
+    'Select',
+    'Combobox',
+    'Slider',
+    'MarkSlider',
+    'RangeSlider',
+    'Switch',
+    'Radio',
+    'Checkbox',
+    'Progress',
+    'Skeleton',
+  ]),
+  componentSection('composite-ui', 'docs.nav.compositeUI', [
+    'Form',
+    'Table',
+    'Accordion',
+    'ToolTip',
+    'Popover',
+    'Dialog',
+    'Drawer',
+    'Menu',
+    'Tabs',
+    'Snack',
+    'List',
+  ]),
+  componentSection('theme-application', 'docs.nav.themeApplication', ['ThemeProvider']),
+]
+
+const componentApiNames = Object.keys(apiData.components).sort((left, right) =>
+  left.localeCompare(right),
+)
+
+const componentApiSection: DocumentationNavigationSectionDefinition = {
+  value: 'components-api',
+  labelKey: 'docs.nav.componentsApi',
+  items: componentApiNames.map((component) => ({
+    label: component,
+    path: `/docs/components-api/${component}`,
+  })),
+}
+
+const apiDemoParents: Readonly<Record<string, string>> = {
+  AccordionItem: 'Accordion',
+  AccordionPanel: 'Accordion',
+  AccordionTrigger: 'Accordion',
+  ComboboxOption: 'Combobox',
+  FormDescription: 'Form',
+  FormError: 'Form',
+  FormField: 'Form',
+  FormFieldset: 'Form',
+  FormLabel: 'Form',
+  FormLegend: 'Form',
+  ListItem: 'List',
+  MenuItem: 'Menu',
+  SelectOption: 'Select',
+  SnackProvider: 'Snack',
+  SplitBoxPane: 'SplitBox',
+  Tab: 'Tabs',
+  TabList: 'Tabs',
+  TabPanel: 'Tabs',
+  TableBody: 'Table',
+  TableCell: 'Table',
+  TableHead: 'Table',
+  TableHeader: 'Table',
+  TableRow: 'Table',
+}
+
 export const documentationNavigationSections: readonly DocumentationNavigationSectionDefinition[] =
   [
     {
@@ -34,57 +128,8 @@ export const documentationNavigationSections: readonly DocumentationNavigationSe
         { labelKey: 'docs.nav.weaveAZ', path: '/docs/a-z' },
       ],
     },
-    componentSection('foundation-layout', 'docs.nav.foundationLayout', [
-      'View',
-      'Flex',
-      'Row',
-      'Column',
-      'Grid',
-      'Stack',
-      'Absolute',
-      'SplitBox',
-      'Presence',
-    ]),
-    componentSection('content-actions', 'docs.nav.contentActions', [
-      'Text',
-      'Code',
-      'Image',
-      'Icon',
-      'Avatar',
-      'Divider',
-      'Link',
-      'Badge',
-      'Button',
-      'Card',
-      'AppBar',
-    ]),
-    componentSection('forms-status', 'docs.nav.formsStatus', [
-      'Input',
-      'Select',
-      'Combobox',
-      'Slider',
-      'MarkSlider',
-      'RangeSlider',
-      'Switch',
-      'Radio',
-      'Checkbox',
-      'Progress',
-      'Skeleton',
-    ]),
-    componentSection('composite-ui', 'docs.nav.compositeUI', [
-      'Form',
-      'Table',
-      'Accordion',
-      'ToolTip',
-      'Popover',
-      'Dialog',
-      'Drawer',
-      'Menu',
-      'Tabs',
-      'Snack',
-      'List',
-    ]),
-    componentSection('theme-application', 'docs.nav.themeApplication', ['ThemeProvider']),
+    ...componentNavigationSections,
+    componentApiSection,
   ]
 
 export function documentationNavigationSectionForPath(pathname: string): string {
@@ -95,16 +140,33 @@ export function documentationNavigationSectionForPath(pathname: string): string 
   )
 }
 
-export function documentationComponentNameForPath(pathname: string): string | null {
-  const prefix = '/docs/components/'
+function documentedComponentNameForPath(pathname: string, prefix: string): string | null {
   if (!pathname.startsWith(prefix)) return null
 
   const name = pathname.slice(prefix.length)
   if (name.length === 0 || name.includes('/')) return null
 
-  const exists = documentationNavigationSections.some((section) =>
-    section.items.some((item) => item.path === pathname && item.label === name),
+  const exists = componentNavigationSections.some((section) =>
+    section.items.some((item) => item.label === name),
   )
 
   return exists ? name : null
+}
+
+export function documentationComponentNameForPath(pathname: string): string | null {
+  return documentedComponentNameForPath(pathname, '/docs/components/')
+}
+
+export function documentationComponentApiNameForPath(pathname: string): string | null {
+  const prefix = '/docs/components-api/'
+  if (!pathname.startsWith(prefix)) return null
+
+  const name = pathname.slice(prefix.length)
+  if (name.length === 0 || name.includes('/') || !componentApiNames.includes(name)) return null
+
+  return name
+}
+
+export function documentationComponentDemoNameForApi(componentName: string): string {
+  return apiDemoParents[componentName] ?? componentName
 }

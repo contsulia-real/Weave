@@ -2,9 +2,13 @@ import type { TFunction } from 'i18next'
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Column, Text } from '../index'
+import { DocumentationComponentApiPage } from './DocumentationComponentApiPage'
 import { DocumentationComponentPage } from './DocumentationComponentPage'
 import { DocumentationGettingStarted } from './DocumentationGettingStarted'
-import { documentationComponentNameForPath } from './documentation-navigation-data'
+import {
+  documentationComponentApiNameForPath,
+  documentationComponentNameForPath,
+} from './documentation-navigation-data'
 
 export interface DocumentationContentProps {
   section: string
@@ -19,6 +23,7 @@ function routeTitle(section: string, t: TFunction): string {
 export function DocumentationContent({ section, pathname }: DocumentationContentProps) {
   const { t } = useTranslation()
   const componentName = documentationComponentNameForPath(pathname)
+  const componentApiName = documentationComponentApiNameForPath(pathname)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
 
   if (pathname === '/docs/getting-started') {
@@ -35,6 +40,18 @@ export function DocumentationContent({ section, pathname }: DocumentationContent
         <DocumentationComponentPage
           key={componentName}
           componentName={componentName}
+          scrollContainerRef={scrollContainerRef}
+        />
+      </Column>
+    )
+  }
+
+  if (componentApiName !== null) {
+    return (
+      <Column ref={scrollContainerRef} width="fill" height="fill" overflow="auto">
+        <DocumentationComponentApiPage
+          key={componentApiName}
+          componentName={componentApiName}
           scrollContainerRef={scrollContainerRef}
         />
       </Column>

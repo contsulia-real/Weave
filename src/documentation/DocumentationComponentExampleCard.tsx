@@ -12,7 +12,7 @@ export function DocumentationComponentExampleCard({
 }: DocumentationComponentExampleCardProps) {
   return (
     <Card viewProps={{ padding: 0, overflow: 'hidden' }}>
-      <Flex minHeight={12} width="fill" padding={2} align="center" justify="center" overflow="auto">
+      <Flex minHeight={12} width="fill" padding={2} align="center" justify="center">
         {preview}
       </Flex>
       <Divider />
@@ -20,8 +20,6 @@ export function DocumentationComponentExampleCard({
         language="tsx"
         viewProps={{
           width: 'fill',
-          maxHeight: 18,
-          overflow: 'auto',
           padding: 1.25,
           background: 'surfaceHover',
         }}

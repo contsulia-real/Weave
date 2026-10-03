@@ -23,33 +23,6 @@ function readConfig() {
   return ts.parseJsonConfigFileContent(config.config, ts.sys, root, undefined, configPath)
 }
 
-function componentNamesFromNavigation(sourceFile) {
-  const names = []
-
-  function visit(node) {
-    if (
-      ts.isCallExpression(node) &&
-      ts.isIdentifier(node.expression) &&
-      node.expression.text === 'componentSection'
-    ) {
-      const components = node.arguments[2]
-
-      if (components !== undefined && ts.isArrayLiteralExpression(components)) {
-        for (const element of components.elements) {
-          if (ts.isStringLiteral(element)) {
-            names.push(element.text)
-          }
-        }
-      }
-    }
-
-    ts.forEachChild(node, visit)
-  }
-
-  visit(sourceFile)
-  return names
-}
-
 function resolvedSymbol(checker, symbol) {
   return symbol.flags & ts.SymbolFlags.Alias ? checker.getAliasedSymbol(symbol) : symbol
 }
@@ -107,12 +80,10 @@ function main() {
   const checker = program.getTypeChecker()
 
   const indexPath = path.join(root, 'src', 'index.ts')
-  const navigationPath = path.join(root, 'src', 'documentation', 'documentation-navigation-data.ts')
   const indexSource = program.getSourceFile(indexPath)
-  const navigationSource = program.getSourceFile(navigationPath)
 
-  if (indexSource === undefined || navigationSource === undefined) {
-    throw new Error('Documentation API generation could not load its source files.')
+  if (indexSource === undefined) {
+    throw new Error('Documentation API generation could not load src/index.ts.')
   }
 
   const indexSymbol = checker.getSymbolAtLocation(indexSource)
@@ -124,7 +95,15 @@ function main() {
   const exportsByName = new Map(
     checker.getExportsOfModule(indexSymbol).map((symbol) => [symbol.getName(), symbol]),
   )
-  const componentNames = componentNamesFromNavigation(navigationSource)
+  const componentNames = [...exportsByName.keys()]
+    .filter(
+      (name) =>
+        /^[A-Z]/.test(name) &&
+        exportsByName.has(`${name}Props`) &&
+        (resolvedSymbol(checker, exportsByName.get(name)).flags & ts.SymbolFlags.Value) !== 0,
+    )
+    .sort((left, right) => left.localeCompare(right))
+
   const propPool = {}
   const profilePool = {}
   const propIds = new Map()
@@ -162,7 +141,7 @@ function main() {
 
     if (exported === undefined) {
       throw new Error(
-        `Missing public type export ${propsName} for Documentation component ${componentName}.`,
+        `Missing public type export ${propsName} for public component ${componentName}.`,
       )
     }
 
