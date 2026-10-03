@@ -41,13 +41,21 @@ export function DocumentationReadingStatus({ contentRef }: DocumentationReadingS
 
   return (
     <Column
-      top={2}
+      width="fill"
       alignSelf="start"
-      shrink={0}
-      padding={1.5}
-      minWidth="280px"
-      position="sticky"
+      padding={1}
+      position="relative"
+      order={-1}
       gap={0.75}
+      xl={{
+        top: 2,
+        shrink: 0,
+        padding: 1.5,
+        minWidth: 17.5,
+        width: 'content',
+        position: 'sticky',
+        order: 0,
+      }}
     >
       <Text bold typo="body-large">
         CONTENTS

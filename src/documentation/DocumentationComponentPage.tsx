@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { Card, Column, Row, Text } from '../index'
+import { Card, Column, Flex, Text } from '../index'
 import { DocumentationComponentApiLink } from './DocumentationComponentApiLink'
 import { DocumentationComponentExampleCard } from './DocumentationComponentExampleCard'
 import { DocumentationReadingStatus } from './DocumentationReadingStatus'
@@ -19,8 +19,16 @@ export function DocumentationComponentPage({ componentName }: DocumentationCompo
   const adjacent = documentationAdjacentComponentNames(componentName)
 
   return (
-    <Row width="fill" padding={2} gap={2} align="start">
-      <Column ref={contentRef} grow={1} minWidth={0} gap={3}>
+    <Flex
+      width="fill"
+      padding={1}
+      gap={2}
+      align="start"
+      direction="column"
+      md={{ padding: 2 }}
+      xl={{ direction: 'row' }}
+    >
+      <Column ref={contentRef} grow={1} minWidth={0} width="fill" gap={3}>
         <Column width="fill" gap={0.75}>
           <Text typo="display-medium">{componentName}</Text>
           <Text typo="body-large">{definition.description}</Text>
@@ -34,6 +42,8 @@ export function DocumentationComponentPage({ componentName }: DocumentationCompo
               'weave-doc-section': '',
               'weave-doc-section-label': example.title,
             }}
+            width="fill"
+            minWidth={0}
             gap={1}
           >
             <Text typo="headline-small">{example.title}</Text>
@@ -48,11 +58,12 @@ export function DocumentationComponentPage({ componentName }: DocumentationCompo
           <DocumentationComponentApiLink componentNames={apiComponents} />
         ) : null}
 
-        <Row width="fill" gap={1}>
+        <Flex width="fill" gap={1} direction="column" md={{ direction: 'row' }}>
           <Card
             clickable={adjacent.previous !== null}
             viewProps={{
               grow: 1,
+              width: 'fill',
               padding: 1.5,
               disabled: adjacent.previous === null,
               onClick:
@@ -75,6 +86,7 @@ export function DocumentationComponentPage({ componentName }: DocumentationCompo
             clickable={adjacent.next !== null}
             viewProps={{
               grow: 1,
+              width: 'fill',
               padding: 1.5,
               disabled: adjacent.next === null,
               onClick:
@@ -92,10 +104,10 @@ export function DocumentationComponentPage({ componentName }: DocumentationCompo
               <Text typo="title-medium">{adjacent.next ?? '—'}</Text>
             </Column>
           </Card>
-        </Row>
+        </Flex>
       </Column>
 
       <DocumentationReadingStatus contentRef={contentRef} />
-    </Row>
+    </Flex>
   )
 }

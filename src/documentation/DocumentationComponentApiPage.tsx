@@ -3,8 +3,8 @@ import {
   Card,
   Code,
   Column,
+  Flex,
   Link,
-  Row,
   Table,
   TableBody,
   TableCell,
@@ -99,8 +99,16 @@ export function DocumentationComponentApiPage({
   const demoComponentName = documentationComponentDemoNameForApi(componentName)
 
   return (
-    <Row width="fill" padding={2} gap={2} align="start">
-      <Column ref={contentRef} grow={1} minWidth={0} gap={3}>
+    <Flex
+      width="fill"
+      padding={1}
+      gap={2}
+      align="start"
+      direction="column"
+      md={{ padding: 2 }}
+      xl={{ direction: 'row' }}
+    >
+      <Column ref={contentRef} grow={1} minWidth={0} width="fill" gap={3}>
         <Column width="fill" gap={0.75}>
           <Text typo="display-medium">{componentName} API</Text>
           <Text typo="body-large">API reference for the Weave {componentName} component.</Text>
@@ -150,12 +158,14 @@ export function DocumentationComponentApiPage({
             />
           ) : null}
           {api.props.length > 0 || api.hasViewProps ? (
-            <PropsTable props={api.props} includeViewProps={api.hasViewProps} />
+            <Column width="fill" overflow="auto">
+              <PropsTable props={api.props} includeViewProps={api.hasViewProps} />
+            </Column>
           ) : null}
         </Column>
       </Column>
 
       <DocumentationReadingStatus contentRef={contentRef} />
-    </Row>
+    </Flex>
   )
 }
