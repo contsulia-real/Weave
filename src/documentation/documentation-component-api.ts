@@ -8,14 +8,12 @@ export interface DocumentationApiProp {
 
 export interface DocumentationComponentApi {
   hasViewProps: boolean
-  attributes: readonly DocumentationApiProp[]
-  viewProps: readonly DocumentationApiProp[]
+  props: readonly DocumentationApiProp[]
 }
 
 interface GeneratedComponentApi {
   hasViewProps: boolean
-  attributes: string
-  viewProps: string
+  props: string
 }
 
 interface GeneratedDocumentationApi {
@@ -53,7 +51,6 @@ export function documentationComponentApi(componentName: string): DocumentationC
 
   return {
     hasViewProps: component.hasViewProps,
-    attributes: profile(component.attributes),
-    viewProps: profile(component.viewProps),
+    props: profile(component.props),
   }
 }

@@ -53,7 +53,6 @@ void i18n.use(initReactI18next).init({
         'docs.nav.installation': 'Installation',
         'docs.nav.weaveAZ': 'Weave A-Z',
         'docs.nav.foundation': 'Foundation',
-        'docs.nav.layout': 'Layout',
         'docs.nav.contentActions': 'Content and actions',
         'docs.nav.formsStatus': 'Forms and status',
         'docs.nav.compositeUI': 'Composite UI',

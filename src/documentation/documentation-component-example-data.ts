@@ -10,6 +10,7 @@ export interface DocumentationComponentExampleDefinition {
 export interface DocumentationComponentDocumentationDefinition {
   description: string
   examples: readonly DocumentationComponentExampleDefinition[]
+  apiComponents?: readonly string[]
 }
 
 export function basicExample(

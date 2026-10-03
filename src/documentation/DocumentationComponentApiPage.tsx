@@ -22,7 +22,32 @@ export interface DocumentationComponentApiPageProps {
   scrollContainerRef: RefObject<HTMLDivElement | null>
 }
 
-function PropsTable({ props }: { props: readonly DocumentationApiProp[] }) {
+interface PropsTableRow {
+  name: string
+  optional: boolean
+  type?: string
+  viewPropsReference?: boolean
+}
+
+function PropsTable({
+  props,
+  includeViewProps,
+}: {
+  props: readonly DocumentationApiProp[]
+  includeViewProps: boolean
+}) {
+  const rows: PropsTableRow[] = props.map((prop) => ({ ...prop }))
+
+  if (includeViewProps) {
+    rows.push({
+      name: 'viewProps',
+      optional: true,
+      viewPropsReference: true,
+    })
+  }
+
+  rows.sort((left, right) => left.name.localeCompare(right.name))
+
   return (
     <Table dense>
       <TableHeader>
@@ -33,23 +58,32 @@ function PropsTable({ props }: { props: readonly DocumentationApiProp[] }) {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {props.map((prop) => (
-          <TableRow key={prop.name} id={prop.name}>
+        {rows.map((row) => (
+          <TableRow key={row.name} id={row.name}>
             <TableCell>
               <Text typo="body-small" color="primary" weight="semibold">
-                {prop.name}
+                {row.name}
               </Text>
             </TableCell>
             <TableCell>
-              <Text
-                typo="body-small"
-                viewProps={{ style: { fontFamily: 'var(--weave-typography-family-mono)' } }}
-              >
-                {prop.type}
-              </Text>
+              {row.viewPropsReference === true ? (
+                <Link
+                  href="/docs/components-api/View#props"
+                  text={<Text typo="body-small">ViewProps</Text>}
+                  hideUnderline
+                  viewProps={{ width: 'content' }}
+                />
+              ) : (
+                <Text
+                  typo="body-small"
+                  viewProps={{ style: { fontFamily: 'var(--weave-typography-family-mono)' } }}
+                >
+                  {row.type}
+                </Text>
+              )}
             </TableCell>
             <TableCell>
-              <Text typo="body-small">{prop.optional ? 'Yes' : 'No'}</Text>
+              <Text typo="body-small">{row.optional ? 'Yes' : 'No'}</Text>
             </TableCell>
           </TableRow>
         ))}
@@ -64,7 +98,6 @@ export function DocumentationComponentApiPage({
 }: DocumentationComponentApiPageProps) {
   const api = documentationComponentApi(componentName)
   const contentRef = useRef<HTMLDivElement>(null)
-  const directProps = api.hasViewProps ? api.attributes : api.viewProps
   const demoComponentName = documentationComponentDemoNameForApi(componentName)
 
   return (
@@ -82,7 +115,12 @@ export function DocumentationComponentApiPage({
         >
           <Text typo="headline-small">Demos</Text>
           <Text typo="body-medium">For examples and usage details, visit the component page.</Text>
-          <Link href={`/docs/components/${demoComponentName}`} text={demoComponentName} hideIcon />
+          <Link
+            href={`/docs/components/${demoComponentName}`}
+            text={demoComponentName}
+            hideUnderline
+            viewProps={{ width: 'content' }}
+          />
         </Column>
 
         <Column
@@ -92,10 +130,7 @@ export function DocumentationComponentApiPage({
         >
           <Text typo="headline-small">Import</Text>
           <Card viewProps={{ padding: 0, overflow: 'hidden' }}>
-            <Code
-              language="typescript"
-              viewProps={{ width: 'fill', padding: 1.25, background: 'surfaceHover' }}
-            >
+            <Code language="typescript" viewProps={{ width: 'fill', padding: 1.25 }}>
               {`import { ${componentName} } from 'weave'`}
             </Code>
           </Card>
@@ -108,14 +143,7 @@ export function DocumentationComponentApiPage({
         >
           <Text typo="headline-small">Props</Text>
           <Text typo="body-medium">Public props accepted by this component.</Text>
-          {directProps.length > 0 ? <PropsTable props={directProps} /> : null}
-
-          {api.hasViewProps && api.viewProps.length > 0 ? (
-            <Column gap={1}>
-              <Text typo="title-medium">viewProps</Text>
-              <PropsTable props={api.viewProps} />
-            </Column>
-          ) : null}
+          <PropsTable props={api.props} includeViewProps={api.hasViewProps} />
         </Column>
       </Column>
 

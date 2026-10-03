@@ -27,6 +27,11 @@ function sameMarks(
   )
 }
 
+function percentage(value: number, total: number): number {
+  if (total <= 0) return 0
+  return Math.min(100, Math.max(0, (value / total) * 100))
+}
+
 export function DocumentationReadingStatus({
   contentRef,
   scrollContainerRef,
@@ -43,22 +48,24 @@ export function DocumentationReadingStatus({
       Array.from(content.querySelectorAll<HTMLElement>('[data-weave-doc-section]'))
 
     const sync = () => {
-      const contentRect = content.getBoundingClientRect()
-      const contentLength = Math.max(0, Math.round(content.scrollHeight))
+      const scrollRect = scrollContainer.getBoundingClientRect()
+      const pageLength = Math.max(0, scrollContainer.scrollHeight)
       const elements = sectionElements()
 
       const nextMarks = elements
-        .map((element, index) => {
-          const nextElement = elements[index + 1]
-          const sectionEnd =
-            nextElement === undefined
-              ? contentLength
-              : Math.max(0, Math.round(nextElement.getBoundingClientRect().top - contentRect.top))
+        .map((element) => {
+          const sectionStart = Math.max(
+            0,
+            Math.min(
+              pageLength,
+              element.getBoundingClientRect().top - scrollRect.top + scrollContainer.scrollTop,
+            ),
+          )
 
           return {
             id: element.id,
             label: element.dataset.weaveDocSectionLabel ?? element.textContent?.trim() ?? '',
-            flag: sectionEnd,
+            flag: percentage(sectionStart, pageLength),
           }
         })
         .filter((mark) => mark.id.length > 0 && mark.label.length > 0)
@@ -66,15 +73,9 @@ export function DocumentationReadingStatus({
 
       setMarks((current) => (sameMarks(current, nextMarks) ? current : nextMarks))
 
-      if (nextMarks.length === 0) {
-        setValue(0)
-        return
-      }
-
-      const max = nextMarks[nextMarks.length - 1]?.flag ?? 0
       const maxScroll = Math.max(0, scrollContainer.scrollHeight - scrollContainer.clientHeight)
       const scrollTop = Math.min(maxScroll, Math.max(0, scrollContainer.scrollTop))
-      setValue(maxScroll === 0 ? max : (scrollTop / maxScroll) * max)
+      setValue(maxScroll === 0 ? 100 : percentage(scrollTop, maxScroll))
     }
 
     sync()
@@ -114,8 +115,6 @@ export function DocumentationReadingStatus({
 
   if (marks.length === 0) return null
 
-  const max = marks[marks.length - 1]?.flag ?? 0
-
   return (
     <Flex top={2} alignSelf="start" shrink={0} padding={1.5} minWidth="280px" position="sticky">
       <MarkSlider
@@ -123,13 +122,13 @@ export function DocumentationReadingStatus({
         value={value}
         onChange={(next) => {
           const scrollContainer = scrollContainerRef.current
-          if (scrollContainer === null || max <= 0) return
+          if (scrollContainer === null) return
 
           const maxScroll = Math.max(0, scrollContainer.scrollHeight - scrollContainer.clientHeight)
-          scrollContainer.scrollTo({ top: (next / max) * maxScroll })
+          scrollContainer.scrollTo({ top: (next / 100) * maxScroll })
         }}
         min={0}
-        max={max}
+        max={100}
         direction="vertical"
         inverse
       />

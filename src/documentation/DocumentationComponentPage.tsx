@@ -16,6 +16,7 @@ export function DocumentationComponentPage({
 }: DocumentationComponentPageProps) {
   const definition = documentationComponentDocumentation(componentName)
   const contentRef = useRef<HTMLDivElement>(null)
+  const apiComponents = definition.apiComponents ?? [componentName]
 
   return (
     <Row width="fill" padding={2} gap={2} align="start">
@@ -40,7 +41,7 @@ export function DocumentationComponentPage({
           </Column>
         ))}
 
-        <DocumentationComponentApiLink componentName={componentName} />
+        <DocumentationComponentApiLink componentNames={apiComponents} />
       </Column>
 
       <DocumentationReadingStatus contentRef={contentRef} scrollContainerRef={scrollContainerRef} />

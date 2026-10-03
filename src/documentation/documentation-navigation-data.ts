@@ -26,16 +26,7 @@ const componentSection = (
 })
 
 const componentNavigationSections: readonly DocumentationNavigationSectionDefinition[] = [
-  componentSection('foundation', 'docs.nav.foundation', ['View', 'Presence']),
-  componentSection('layout', 'docs.nav.layout', [
-    'Flex',
-    'Row',
-    'Column',
-    'Grid',
-    'Stack',
-    'Absolute',
-    'SplitBox',
-  ]),
+  componentSection('foundation', 'docs.nav.foundation', ['View', 'Layout', 'Presence']),
   componentSection('content-actions', 'docs.nav.contentActions', [
     'Text',
     'Code',
@@ -92,21 +83,28 @@ const componentApiSection: DocumentationNavigationSectionDefinition = {
 }
 
 const apiDemoParents: Readonly<Record<string, string>> = {
+  Absolute: 'Layout',
   AccordionItem: 'Accordion',
   AccordionPanel: 'Accordion',
   AccordionTrigger: 'Accordion',
+  Column: 'Layout',
   ComboboxOption: 'Combobox',
+  Flex: 'Layout',
   FormDescription: 'Form',
   FormError: 'Form',
   FormField: 'Form',
   FormFieldset: 'Form',
   FormLabel: 'Form',
   FormLegend: 'Form',
+  Grid: 'Layout',
   ListItem: 'List',
   MenuItem: 'Menu',
+  Row: 'Layout',
   SelectOption: 'Select',
   SnackProvider: 'Snack',
-  SplitBoxPane: 'SplitBox',
+  SplitBox: 'Layout',
+  SplitBoxPane: 'Layout',
+  Stack: 'Layout',
   Tab: 'Tabs',
   TabList: 'Tabs',
   TabPanel: 'Tabs',

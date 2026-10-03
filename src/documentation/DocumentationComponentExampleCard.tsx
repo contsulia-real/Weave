@@ -21,7 +21,6 @@ export function DocumentationComponentExampleCard({
         viewProps={{
           width: 'fill',
           padding: 1.25,
-          background: 'surfaceHover',
         }}
       >
         {code}

@@ -35,19 +35,6 @@ function unionParts(type) {
   return type.isUnion() ? type.types : [type]
 }
 
-function withoutNullish(checker, type) {
-  const parts = unionParts(type).filter(
-    (part) =>
-      (part.flags & ts.TypeFlags.Undefined) === 0 &&
-      (part.flags & ts.TypeFlags.Null) === 0 &&
-      (part.flags & ts.TypeFlags.Never) === 0,
-  )
-
-  if (parts.length === 0) return type
-  if (parts.length === 1) return parts[0]
-  return checker.getUnionType(parts, ts.UnionReduction.None)
-}
-
 function propertyEntries(checker, type, fallbackNode) {
   return checker
     .getPropertiesOfType(type)
@@ -148,28 +135,14 @@ function main() {
     const propsSymbol = resolvedSymbol(checker, exported)
     const propsType = checker.getDeclaredTypeOfSymbol(propsSymbol)
     const propsDeclaration = declarationForSymbol(propsSymbol, indexSource)
-    const viewPropsSymbol = checker.getPropertyOfType(propsType, 'viewProps')
     const allProps = propertyEntries(checker, propsType, propsDeclaration)
-
-    if (viewPropsSymbol === undefined) {
-      components[componentName] = {
-        hasViewProps: false,
-        attributes: internProfile([]),
-        viewProps: internProfile(allProps),
-      }
-      continue
-    }
-
-    const viewPropsDeclaration = declarationForSymbol(viewPropsSymbol, propsDeclaration)
-    const viewPropsType = withoutNullish(
-      checker,
-      checker.getTypeOfSymbolAtLocation(viewPropsSymbol, viewPropsDeclaration),
-    )
+    const hasViewProps = checker.getPropertyOfType(propsType, 'viewProps') !== undefined
 
     components[componentName] = {
-      hasViewProps: true,
-      attributes: internProfile(allProps.filter((prop) => prop.name !== 'viewProps')),
-      viewProps: internProfile(propertyEntries(checker, viewPropsType, viewPropsDeclaration)),
+      hasViewProps,
+      props: internProfile(
+        hasViewProps ? allProps.filter((prop) => prop.name !== 'viewProps') : allProps,
+      ),
     }
   }
 
