@@ -1,5 +1,18 @@
-import { Component, type ComponentType, type ReactNode, useMemo, useState } from 'react'
-import { Button, Card, Column, Divider, Flex, Input, Row, Text } from '../index'
+import { IconCode, IconCopy, IconRefresh } from '@tabler/icons-react'
+import { Component, type ComponentType, type ReactNode, useMemo, useRef, useState } from 'react'
+import {
+  Button,
+  Card,
+  Code,
+  Column,
+  Divider,
+  Flex,
+  Input,
+  Presence,
+  Row,
+  Stack,
+  Text,
+} from '../index'
 import type { DocumentationExampleCodeMode } from './documentation-component-example-data'
 import { compileDocumentationExample } from './documentation-example-runtime'
 
@@ -49,11 +62,19 @@ export function DocumentationComponentExampleCard({
 }: DocumentationComponentExampleCardProps) {
   const [source, setSource] = useState(code)
   const [expanded, setExpanded] = useState(true)
+  const codeRef = useRef<HTMLDivElement>(null)
   const preview = useMemo(() => compilePreview(source, codeMode), [codeMode, source])
   const LivePreview = preview.component
 
   return (
-    <Card viewProps={{ padding: 0, overflow: 'hidden', align: 'center' }}>
+    <Card
+      viewProps={{
+        padding: 0,
+        overflow: 'hidden',
+        align: 'center',
+        layoutAnimation: { spring: 'gentle' },
+      }}
+    >
       <Column width="fill">
         <Flex minHeight={12} width="fill" padding={2} align="center" justify="center">
           {LivePreview === undefined ? (
@@ -67,30 +88,34 @@ export function DocumentationComponentExampleCard({
 
         <Row width="fill" paddingX={1} paddingY={0.5} gap={0.5} justify="end">
           <Button
-            text={expanded ? 'Collapse code' : 'Expand code'}
+            icon={IconCode}
             variant="ghost"
             size="small"
+            pressed={expanded}
             viewProps={{
+              label: expanded ? 'Collapse code' : 'Expand code',
               onClick: () => {
                 setExpanded((current) => !current)
               },
             }}
           />
           <Button
-            text="Copy code"
+            icon={IconCopy}
             variant="ghost"
             size="small"
             viewProps={{
+              label: 'Copy code',
               onClick: () => {
                 void navigator.clipboard.writeText(source)
               },
             }}
           />
           <Button
-            text="Reset code"
+            icon={IconRefresh}
             variant="ghost"
             size="small"
             viewProps={{
+              label: 'Reset code',
               onClick: () => {
                 setSource(code)
               },
@@ -99,10 +124,28 @@ export function DocumentationComponentExampleCard({
         </Row>
       </Column>
 
-      {expanded ? (
-        <>
+      <Presence present={expanded}>
+        <Column
+          width="fill"
+          overflow="hidden"
+          enter={{ animation: 'fade-down', spring: 'gentle' }}
+          exit={{ animation: 'fade-up', spring: 'gentle' }}
+        >
           <Divider />
-          <Column width="fill" paddingX={1} paddingY={1}>
+          <Stack width="fill">
+            <Code
+              language="tsx"
+              viewProps={{
+                ref: codeRef,
+                width: 'fill',
+                height: 'fill',
+                paddingX: 1,
+                paddingY: 1,
+                pointerEvents: 'none',
+              }}
+            >
+              {source}
+            </Code>
             <Input
               multiline
               rows={8}
@@ -110,17 +153,31 @@ export function DocumentationComponentExampleCard({
               onChange={setSource}
               viewProps={{
                 width: 'fill',
+                height: 'fill',
+                paddingX: 1,
+                paddingY: 1,
                 background: 'transparent',
+                color: 'transparent',
                 border: 0,
                 shadow: 'none',
                 style: {
+                  caretColor: 'var(--weave-color-primary)',
                   fontFamily: 'var(--weave-typography-family-mono)',
+                  whiteSpace: 'pre',
+                  overflowWrap: 'normal',
+                },
+                onScroll: (event) => {
+                  const codeElement = codeRef.current
+                  if (codeElement === null) return
+
+                  codeElement.scrollTop = event.currentTarget.scrollTop
+                  codeElement.scrollLeft = event.currentTarget.scrollLeft
                 },
               }}
             />
-          </Column>
-        </>
-      ) : null}
+          </Stack>
+        </Column>
+      </Presence>
     </Card>
   )
 }
