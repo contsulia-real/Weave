@@ -123,7 +123,64 @@ function formatJsxChild(child: ts.JsxChild, sourceFile: ts.SourceFile, level: nu
     return formatJsxNode(child, sourceFile, level)
   }
 
+  if (
+    ts.isJsxExpression(child) &&
+    child.expression !== undefined &&
+    (ts.isStringLiteral(child.expression) || ts.isNoSubstitutionTemplateLiteral(child.expression))
+  ) {
+    const escape = '\\'
+    const value = child.expression.text
+      .replaceAll('\\', '\\\\')
+      .replaceAll('`', escape + '`')
+      .replaceAll('${', escape + '${')
+
+    return `${indentation(level)}{\`${value}\`}`
+  }
+
   return `${indentation(level)}${child.getText(sourceFile).trim()}`
+}
+
+function normalizeJsxStringChildren(source: string): string {
+  const prefix = 'const documentationExample = ('
+  const sourceFile = ts.createSourceFile(
+    'documentation-example.tsx',
+    `${prefix}${source})`,
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TSX,
+  )
+  const edits: { start: number; end: number; text: string }[] = []
+
+  function visit(node: ts.Node): void {
+    if (
+      ts.isJsxExpression(node) &&
+      node.expression !== undefined &&
+      (ts.isStringLiteral(node.expression) || ts.isNoSubstitutionTemplateLiteral(node.expression))
+    ) {
+      const start = node.getStart(sourceFile) - prefix.length
+      const end = node.end - prefix.length
+
+      if (start >= 0 && end <= source.length) {
+        const escape = '\\'
+        const value = node.expression.text
+          .replaceAll('\\', '\\\\')
+          .replaceAll('`', escape + '`')
+          .replaceAll('${', escape + '${')
+        edits.push({ start, end, text: `{\`${value}\`}` })
+      }
+    }
+
+    ts.forEachChild(node, visit)
+  }
+
+  visit(sourceFile)
+
+  return edits
+    .sort((left, right) => right.start - left.start)
+    .reduce(
+      (current, edit) => `${current.slice(0, edit.start)}${edit.text}${current.slice(edit.end)}`,
+      source,
+    )
 }
 
 function formatDocumentationExampleSource(
@@ -132,13 +189,19 @@ function formatDocumentationExampleSource(
 ): string {
   const trimmed = source.trim()
 
-  if (codeMode !== 'expression' || trimmed.includes('\n')) {
+  if (codeMode !== 'expression') {
     return trimmed
+  }
+
+  const normalized = normalizeJsxStringChildren(trimmed)
+
+  if (normalized.includes('\n')) {
+    return normalized
   }
 
   const sourceFile = ts.createSourceFile(
     'documentation-example.tsx',
-    `const documentationExample = (${trimmed})`,
+    `const documentationExample = (${normalized})`,
     ts.ScriptTarget.Latest,
     true,
     ts.ScriptKind.TSX,
@@ -146,7 +209,7 @@ function formatDocumentationExampleSource(
   const statement = sourceFile.statements[0]
 
   if (!ts.isVariableStatement(statement)) {
-    return trimmed
+    return normalized
   }
 
   let initializer = statement.declarationList.declarations[0]?.initializer
@@ -160,7 +223,7 @@ function formatDocumentationExampleSource(
       !ts.isJsxSelfClosingElement(initializer) &&
       !ts.isJsxFragment(initializer))
   ) {
-    return trimmed
+    return normalized
   }
 
   return formatJsxNode(initializer, sourceFile)
