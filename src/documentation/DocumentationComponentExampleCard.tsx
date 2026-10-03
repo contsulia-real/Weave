@@ -16,7 +16,7 @@ export function DocumentationComponentExampleCard({
         {preview}
       </Flex>
       <Divider />
-      <Code language="tsx" viewProps={{width: 'fill', maxHeight: 1, padding: 1}}>
+      <Code language="tsx" viewProps={{ width: 'fill', maxHeight: 1, padding: 1 }}>
         {code}
       </Code>
     </Card>

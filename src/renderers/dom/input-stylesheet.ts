@@ -82,6 +82,7 @@ const stylesheet = `
 
 :where(.weave-input) {
   --weave-component-display: block;
+  --weave-component-width: var(--weave-input-min-width);
 }
 
 .weave-input[type="search"]::-webkit-search-cancel-button {

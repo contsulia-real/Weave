@@ -52,9 +52,9 @@ function PropsTable({
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead align='start'>Name</TableHead>
-          <TableHead align='start'>Type</TableHead>
-          <TableHead align='start'>Optional</TableHead>
+          <TableHead align="start">Name</TableHead>
+          <TableHead align="start">Type</TableHead>
+          <TableHead align="start">Optional</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -129,8 +129,8 @@ export function DocumentationComponentApiPage({
           gap={1}
         >
           <Text typo="headline-small">Import</Text>
-          <Card viewProps={{ overflow: 'auto', align:'center' }}>
-            <Code language="typescript" viewProps={{ width: 'fill'}}>
+          <Card viewProps={{ overflow: 'auto', align: 'center' }}>
+            <Code language="typescript" viewProps={{ width: 'fill' }}>
               {`import { ${componentName} } from 'weave'`}
             </Code>
           </Card>
