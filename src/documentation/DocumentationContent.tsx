@@ -28,7 +28,13 @@ export function DocumentationContent({ section, pathname }: DocumentationContent
 
   if (pathname === '/docs/getting-started') {
     return (
-      <Column ref={scrollContainerRef} width="fill" height="fill" overflow="auto">
+      <Column
+        ref={scrollContainerRef}
+        width="fill"
+        height="fill"
+        overflow="auto"
+        container="documentation-content"
+      >
         <DocumentationGettingStarted />
       </Column>
     )
@@ -36,7 +42,13 @@ export function DocumentationContent({ section, pathname }: DocumentationContent
 
   if (componentName !== null) {
     return (
-      <Column ref={scrollContainerRef} width="fill" height="fill" overflow="auto">
+      <Column
+        ref={scrollContainerRef}
+        width="fill"
+        height="fill"
+        overflow="auto"
+        container="documentation-content"
+      >
         <DocumentationComponentPage key={componentName} componentName={componentName} />
       </Column>
     )
@@ -44,14 +56,26 @@ export function DocumentationContent({ section, pathname }: DocumentationContent
 
   if (componentApiName !== null) {
     return (
-      <Column ref={scrollContainerRef} width="fill" height="fill" overflow="auto">
+      <Column
+        ref={scrollContainerRef}
+        width="fill"
+        height="fill"
+        overflow="auto"
+        container="documentation-content"
+      >
         <DocumentationComponentApiPage key={componentApiName} componentName={componentApiName} />
       </Column>
     )
   }
 
   return (
-    <Column ref={scrollContainerRef} width="fill" height="fill" overflow="auto">
+    <Column
+      ref={scrollContainerRef}
+      width="fill"
+      height="fill"
+      overflow="auto"
+      container="documentation-content"
+    >
       <Column grow={1} width="fill">
         <Column width="fill" padding={2} gap={0.75}>
           <Text typo="display-small">{routeTitle(section, t)}</Text>

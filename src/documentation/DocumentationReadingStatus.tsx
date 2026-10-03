@@ -47,7 +47,7 @@ export function DocumentationReadingStatus({ contentRef }: DocumentationReadingS
       position="relative"
       order={-1}
       gap={0.75}
-      xl={{
+      containerXl={{
         top: 2,
         shrink: 0,
         padding: 1.5,

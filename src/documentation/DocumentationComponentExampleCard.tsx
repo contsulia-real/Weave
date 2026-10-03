@@ -1,5 +1,6 @@
 import { IconCode, IconCopy, IconRefresh } from '@tabler/icons-react'
 import { Component, type ComponentType, type ReactNode, useMemo, useRef, useState } from 'react'
+import ts from 'typescript'
 import {
   Button,
   Card,
@@ -56,11 +57,124 @@ function compilePreview(
   }
 }
 
+function indentation(level: number): string {
+  return '  '.repeat(level)
+}
+
+function formatAttributes(
+  tagName: string,
+  attributes: readonly string[],
+  level: number,
+  selfClosing: boolean,
+): string {
+  const suffix = selfClosing ? ' />' : '>'
+  const inline = `<${tagName}${attributes.length === 0 ? '' : ` ${attributes.join(' ')}`}${suffix}`
+
+  if (inline.length + level * 2 <= 88) {
+    return `${indentation(level)}${inline}`
+  }
+
+  return [
+    `${indentation(level)}<${tagName}`,
+    ...attributes.map((attribute) => `${indentation(level + 1)}${attribute}`),
+    `${indentation(level)}${selfClosing ? '/>' : '>'}`,
+  ].join('\n')
+}
+
+function formatJsxNode(
+  node: ts.JsxElement | ts.JsxSelfClosingElement | ts.JsxFragment,
+  sourceFile: ts.SourceFile,
+  level = 0,
+): string {
+  if (ts.isJsxSelfClosingElement(node)) {
+    return formatAttributes(
+      node.tagName.getText(sourceFile),
+      node.attributes.properties.map((attribute) => attribute.getText(sourceFile)),
+      level,
+      true,
+    )
+  }
+
+  if (ts.isJsxFragment(node)) {
+    const children = node.children
+      .filter((child) => !(ts.isJsxText(child) && child.getText(sourceFile).trim().length === 0))
+      .map((child) => formatJsxChild(child, sourceFile, level + 1))
+      .join('\n')
+
+    return `${indentation(level)}<>\n${children}\n${indentation(level)}</>`
+  }
+
+  const opening = formatAttributes(
+    node.openingElement.tagName.getText(sourceFile),
+    node.openingElement.attributes.properties.map((attribute) => attribute.getText(sourceFile)),
+    level,
+    false,
+  )
+  const children = node.children
+    .filter((child) => !(ts.isJsxText(child) && child.getText(sourceFile).trim().length === 0))
+    .map((child) => formatJsxChild(child, sourceFile, level + 1))
+    .join('\n')
+
+  return `${opening}\n${children}\n${indentation(level)}</${node.closingElement.tagName.getText(sourceFile)}>`
+}
+
+function formatJsxChild(child: ts.JsxChild, sourceFile: ts.SourceFile, level: number): string {
+  if (ts.isJsxElement(child) || ts.isJsxSelfClosingElement(child) || ts.isJsxFragment(child)) {
+    return formatJsxNode(child, sourceFile, level)
+  }
+
+  return `${indentation(level)}${child.getText(sourceFile).trim()}`
+}
+
+function formatDocumentationExampleSource(
+  source: string,
+  codeMode: DocumentationExampleCodeMode,
+): string {
+  const trimmed = source.trim()
+
+  if (codeMode !== 'expression' || trimmed.includes('\n')) {
+    return trimmed
+  }
+
+  const sourceFile = ts.createSourceFile(
+    'documentation-example.tsx',
+    `const documentationExample = (${trimmed})`,
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TSX,
+  )
+  const statement = sourceFile.statements[0]
+
+  if (!ts.isVariableStatement(statement)) {
+    return trimmed
+  }
+
+  let initializer = statement.declarationList.declarations[0]?.initializer
+  while (initializer !== undefined && ts.isParenthesizedExpression(initializer)) {
+    initializer = initializer.expression
+  }
+
+  if (
+    initializer === undefined ||
+    (!ts.isJsxElement(initializer) &&
+      !ts.isJsxSelfClosingElement(initializer) &&
+      !ts.isJsxFragment(initializer))
+  ) {
+    return trimmed
+  }
+
+  return formatJsxNode(initializer, sourceFile)
+}
+
 export function DocumentationComponentExampleCard({
   code,
   codeMode = 'expression',
 }: DocumentationComponentExampleCardProps) {
-  const [source, setSource] = useState(code)
+  const initialSource = useMemo(
+    () => formatDocumentationExampleSource(code, codeMode),
+    [code, codeMode],
+  )
+  const [source, setSource] = useState(initialSource)
   const [expanded, setExpanded] = useState(true)
   const codeRef = useRef<HTMLDivElement>(null)
   const preview = useMemo(() => compilePreview(source, codeMode), [codeMode, source])
@@ -118,7 +232,7 @@ export function DocumentationComponentExampleCard({
             viewProps={{
               label: 'Reset code',
               onClick: () => {
-                setSource(code)
+                setSource(initialSource)
               },
             }}
           />

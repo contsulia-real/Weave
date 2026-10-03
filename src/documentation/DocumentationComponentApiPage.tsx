@@ -105,8 +105,8 @@ export function DocumentationComponentApiPage({
       gap={2}
       align="start"
       direction="column"
-      md={{ padding: 2 }}
-      xl={{ direction: 'row' }}
+      containerMd={{ padding: 2 }}
+      containerXl={{ direction: 'row' }}
     >
       <Column ref={contentRef} grow={1} minWidth={0} width="fill" gap={3}>
         <Column width="fill" gap={0.75}>
