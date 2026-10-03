@@ -15,6 +15,11 @@ interface RuntimeClassRule {
 
 const runtimeRuleCache = new WeakMap<object, Map<string, RuntimeClassRule | null>>()
 
+function cssPropertyName(name: string): string {
+  if (name.startsWith('--') || name.includes('-')) return name
+  return name.replace(/[A-Z]/g, (character) => `-${character.toLowerCase()}`)
+}
+
 function entries(declarations: Readonly<object> | undefined): readonly RuntimeEntry[] {
   if (declarations === undefined) return []
 
@@ -83,7 +88,7 @@ function createStyleElement(rule: RuntimeClassRule): HTMLStyleElement {
 
   if (cssRule !== null) {
     for (const [name, value] of rule.declarations) {
-      cssRule.style.setProperty(name, String(value))
+      cssRule.style.setProperty(cssPropertyName(name), String(value))
     }
 
     // Serialize through CSSOM so arbitrary public string values can never
