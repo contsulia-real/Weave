@@ -160,6 +160,7 @@ export function DocumentationComponentExampleCard({
                 color: 'transparent',
                 border: 0,
                 shadow: 'none',
+                outlineWidth: 0,
                 style: {
                   caretColor: 'var(--weave-color-primary)',
                   fontFamily: 'var(--weave-typography-family-mono)',

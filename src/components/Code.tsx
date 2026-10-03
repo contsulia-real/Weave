@@ -116,6 +116,13 @@ export function Code(props: CodeProps) {
     highlighted.syntax === syntax
       ? highlighted
       : null
+  const visible =
+    current ??
+    (highlighted?.html !== undefined &&
+    highlighted.language === language &&
+    highlighted.syntax === syntax
+      ? highlighted
+      : null)
 
   if (current?.error !== undefined) {
     throw current.error
@@ -132,12 +139,12 @@ export function Code(props: CodeProps) {
       className={['weave-code', className].filter(Boolean).join(' ')}
       style={inlineStyle}
     >
-      {current?.html === undefined ? (
+      {visible?.html === undefined ? (
         <pre className="weave-code__fallback">
           <code>{children}</code>
         </pre>
       ) : (
-        <div dangerouslySetInnerHTML={{ __html: current.html }} />
+        <div dangerouslySetInnerHTML={{ __html: visible.html }} />
       )}
     </div>
   )
