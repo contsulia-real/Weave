@@ -1,11 +1,12 @@
 import { useRef } from 'react'
-import { Card, Column, Flex, Text } from '../index'
+import { Card, Column, Flex, Icon, Row, Text } from '../index'
 import { DocumentationComponentApiLink } from './DocumentationComponentApiLink'
 import { DocumentationComponentExampleCard } from './DocumentationComponentExampleCard'
 import { DocumentationReadingStatus } from './DocumentationReadingStatus'
 import { documentationComponentDocumentation } from './documentation-component-examples'
 import { documentationAdjacentComponentNames } from './documentation-navigation-data'
 import { useDocsRoute } from './router'
+import { IconArrowLeft, IconArrowRight } from '@tabler/icons-react'
 
 export interface DocumentationComponentPageProps {
   componentName: string
@@ -74,12 +75,16 @@ export function DocumentationComponentPage({ componentName }: DocumentationCompo
                     },
             }}
           >
+            <Row gap={1} align='center' justify='start'>
+
+              <IconArrowLeft size={36}/>
             <Column gap={0.25}>
               <Text typo="label-medium" color="secondary">
                 Previous component
               </Text>
               <Text typo="title-medium">{adjacent.previous ?? '—'}</Text>
             </Column>
+            </Row>
           </Card>
 
           <Card
@@ -97,12 +102,16 @@ export function DocumentationComponentPage({ componentName }: DocumentationCompo
                     },
             }}
           >
-            <Column gap={0.25}>
+            <Row gap={1} align='center' justify='end'>
+
+            <Column gap={0.25} align='end'>
               <Text typo="label-medium" color="secondary">
                 Next component
               </Text>
               <Text typo="title-medium">{adjacent.next ?? '—'}</Text>
             </Column>
+              <IconArrowRight size={36}/>
+            </Row>
           </Card>
         </Flex>
       </Column>
