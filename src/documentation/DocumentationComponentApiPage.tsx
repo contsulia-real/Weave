@@ -108,7 +108,7 @@ export function DocumentationComponentApiPage({
       containerMd={{ padding: 2 }}
       containerLg={{ direction: 'row', justify: 'center' }}
     >
-      <Column ref={contentRef} grow={1} minWidth={0} width="fill" maxWidth={56} gap={3}>
+      <Column ref={contentRef} grow={1} minWidth={0} width="fill" maxWidth={52} gap={3}>
         <Column width="fill" gap={0.75}>
           <Text typo="display-medium">{componentName} API</Text>
           <Text typo="body-large">API reference for the Weave {componentName} component.</Text>
