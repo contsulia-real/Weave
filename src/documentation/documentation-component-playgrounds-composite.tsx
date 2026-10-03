@@ -59,8 +59,10 @@ export const compositeComponentDefinitions: Record<string, DocumentationComponen
       booleanControl('selectable'),
     ],
     defaults: { dense: false, verticalBorders: false, stickyHeader: false, selectable: false },
-    render: (values) => (
+    render: (values, overrides) => (
       <SampleTable
+        playgroundAttributes={overrides.attributes}
+        playgroundViewProps={overrides.viewProps}
         dense={booleanValue(values, 'dense')}
         verticalBorders={booleanValue(values, 'verticalBorders')}
         stickyHeader={booleanValue(values, 'stickyHeader')}
@@ -78,8 +80,10 @@ export const compositeComponentDefinitions: Record<string, DocumentationComponen
       booleanControl('noDividers'),
     ],
     defaults: { multiple: false, collapsible: true, disabled: false, noDividers: false },
-    render: (values) => (
+    render: (values, overrides) => (
       <SampleAccordion
+        playgroundAttributes={overrides.attributes}
+        playgroundViewProps={overrides.viewProps}
         multiple={booleanValue(values, 'multiple')}
         collapsible={booleanValue(values, 'collapsible')}
         disabled={booleanValue(values, 'disabled')}
@@ -225,8 +229,10 @@ export const compositeComponentDefinitions: Record<string, DocumentationComponen
       variant: 'underline',
       indicatorThickness: 2,
     },
-    render: (values) => (
+    render: (values, overrides) => (
       <SampleTabs
+        playgroundAttributes={overrides.attributes}
+        playgroundViewProps={overrides.viewProps}
         orientation={optionValue(values, 'orientation', tabsOrientationOptions)}
         activation={optionValue(values, 'activation', tabsActivationOptions)}
         variant={optionValue(values, 'variant', tabsVariantOptions)}
@@ -253,7 +259,13 @@ export const compositeComponentDefinitions: Record<string, DocumentationComponen
       progress: false,
       placement: 'bottom-center',
     },
-    render: (values) => <SnackPreview values={values} />,
+    render: (values, overrides) => (
+      <SnackPreview
+        values={values}
+        playgroundAttributes={overrides.attributes}
+        playgroundViewProps={overrides.viewProps}
+      />
+    ),
   },
   List: {
     description:

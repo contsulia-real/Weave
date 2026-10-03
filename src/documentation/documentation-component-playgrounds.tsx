@@ -8,6 +8,7 @@ import { themeComponentDefinitions } from './documentation-component-playgrounds
 export type {
   DocumentationComponentDefinition,
   DocumentationPlaygroundControl,
+  DocumentationPlaygroundOverrides,
   DocumentationPlaygroundValue,
 } from './documentation-component-playground-data'
 

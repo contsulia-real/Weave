@@ -13,11 +13,19 @@ export type DocumentationPlaygroundControl =
       options: readonly string[]
     }
 
+export interface DocumentationPlaygroundOverrides {
+  attributes: Record<string, DocumentationPlaygroundValue>
+  viewProps: Record<string, DocumentationPlaygroundValue>
+}
+
 export interface DocumentationComponentDefinition {
   description: string
   controls: readonly DocumentationPlaygroundControl[]
   defaults: Record<string, DocumentationPlaygroundValue>
-  render: (values: Record<string, DocumentationPlaygroundValue>) => ReactNode
+  render: (
+    values: Record<string, DocumentationPlaygroundValue>,
+    overrides: DocumentationPlaygroundOverrides,
+  ) => ReactNode
 }
 
 export const sizeOptions = ['small', 'medium', 'large'] as const

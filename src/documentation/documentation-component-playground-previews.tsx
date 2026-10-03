@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { createElement, type ElementType, useRef } from 'react'
 import {
   Accordion,
   AccordionItem,
@@ -36,11 +36,15 @@ export function SampleTable({
   verticalBorders = false,
   stickyHeader = false,
   selectable = false,
+  playgroundAttributes = {},
+  playgroundViewProps = {},
 }: {
   dense?: boolean
   verticalBorders?: boolean
   stickyHeader?: boolean
   selectable?: boolean
+  playgroundAttributes?: Record<string, DocumentationPlaygroundValue>
+  playgroundViewProps?: Record<string, DocumentationPlaygroundValue>
 }) {
   const content = (
     <>
@@ -67,19 +71,19 @@ export function SampleTable({
     </>
   )
 
-  return selectable ? (
-    <Table selectable dense={dense} verticalBorders={verticalBorders} stickyHeader={stickyHeader}>
-      {content}
-    </Table>
-  ) : (
-    <Table
-      selectable={false}
-      dense={dense}
-      verticalBorders={verticalBorders}
-      stickyHeader={stickyHeader}
-    >
-      {content}
-    </Table>
+  const resolvedChildren = playgroundAttributes.children ?? content
+
+  return createElement(
+    Table as ElementType,
+    {
+      selectable,
+      dense,
+      verticalBorders,
+      stickyHeader,
+      ...playgroundAttributes,
+      viewProps: playgroundViewProps,
+    },
+    resolvedChildren,
   )
 }
 
@@ -88,11 +92,15 @@ export function SampleAccordion({
   collapsible = true,
   disabled = false,
   noDividers = false,
+  playgroundAttributes = {},
+  playgroundViewProps = {},
 }: {
   multiple?: boolean
   collapsible?: boolean
   disabled?: boolean
   noDividers?: boolean
+  playgroundAttributes?: Record<string, DocumentationPlaygroundValue>
+  playgroundViewProps?: Record<string, DocumentationPlaygroundValue>
 }) {
   const children = (
     <>
@@ -107,20 +115,20 @@ export function SampleAccordion({
     </>
   )
 
-  return multiple ? (
-    <Accordion multiple defaultValue={['first']} disabled={disabled} noDividers={noDividers}>
-      {children}
-    </Accordion>
-  ) : (
-    <Accordion
-      multiple={false}
-      defaultValue="first"
-      collapsible={collapsible}
-      disabled={disabled}
-      noDividers={noDividers}
-    >
-      {children}
-    </Accordion>
+  const resolvedChildren = playgroundAttributes.children ?? children
+
+  return createElement(
+    Accordion as ElementType,
+    {
+      multiple,
+      defaultValue: multiple ? ['first'] : 'first',
+      collapsible: multiple ? undefined : collapsible,
+      disabled,
+      noDividers,
+      ...playgroundAttributes,
+      viewProps: playgroundViewProps,
+    },
+    resolvedChildren,
   )
 }
 
@@ -129,46 +137,63 @@ export function SampleTabs({
   activation = 'automatic',
   variant = 'underline',
   indicatorThickness = 2,
+  playgroundAttributes = {},
+  playgroundViewProps = {},
 }: {
   orientation?: (typeof tabsOrientationOptions)[number]
   activation?: (typeof tabsActivationOptions)[number]
   variant?: (typeof tabsVariantOptions)[number]
   indicatorThickness?: number
+  playgroundAttributes?: Record<string, DocumentationPlaygroundValue>
+  playgroundViewProps?: Record<string, DocumentationPlaygroundValue>
 }) {
-  return (
-    <Tabs
-      defaultValue="overview"
-      orientation={orientation}
-      activation={activation}
-      variant={variant}
-      indicatorThickness={indicatorThickness}
-    >
+  return createElement(
+    Tabs as ElementType,
+    {
+      defaultValue: 'overview',
+      orientation,
+      activation,
+      variant,
+      indicatorThickness,
+      ...playgroundAttributes,
+      viewProps: playgroundViewProps,
+    },
+    <>
       <TabList>
         <Tab value="overview">Overview</Tab>
         <Tab value="details">Details</Tab>
       </TabList>
       <TabPanel value="overview">Overview panel.</TabPanel>
       <TabPanel value="details">Details panel.</TabPanel>
-    </Tabs>
+    </>,
   )
 }
 
-export function SnackPreview({ values }: { values: Record<string, DocumentationPlaygroundValue> }) {
+export function SnackPreview({
+  values,
+  playgroundAttributes = {},
+  playgroundViewProps = {},
+}: {
+  values: Record<string, DocumentationPlaygroundValue>
+  playgroundAttributes?: Record<string, DocumentationPlaygroundValue>
+  playgroundViewProps?: Record<string, DocumentationPlaygroundValue>
+}) {
   const hostRef = useRef<HTMLDivElement>(null)
+  const snack = createElement(Snack as ElementType, {
+    text: textValue(values, 'text'),
+    variant: optionValue(values, 'variant', snackVariantOptions),
+    duration: numberValue(values, 'duration'),
+    persistent: booleanValue(values, 'persistent'),
+    progress: booleanValue(values, 'progress'),
+    placement: optionValue(values, 'placement', snackPlacementOptions),
+    defaultOpen: true,
+    ...playgroundAttributes,
+    viewProps: playgroundViewProps,
+  })
 
   return (
     <Column ref={hostRef} minHeight={8}>
-      <SnackProvider container={hostRef}>
-        <Snack
-          text={textValue(values, 'text')}
-          variant={optionValue(values, 'variant', snackVariantOptions)}
-          duration={numberValue(values, 'duration')}
-          persistent={booleanValue(values, 'persistent')}
-          progress={booleanValue(values, 'progress')}
-          placement={optionValue(values, 'placement', snackPlacementOptions)}
-          defaultOpen
-        />
-      </SnackProvider>
+      <SnackProvider container={hostRef}>{snack}</SnackProvider>
     </Column>
   )
 }
