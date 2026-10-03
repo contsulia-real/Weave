@@ -18,15 +18,12 @@ import {
   basicExample,
   type DocumentationComponentDocumentationDefinition,
 } from './documentation-component-example-data'
-
-const sampleImage =
-  'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="320" height="180" viewBox="0 0 320 180"%3E%3Crect width="320" height="180" rx="24" fill="%238E8E93"/%3E%3Ccircle cx="92" cy="72" r="28" fill="%23FFFFFF"/%3E%3Cpath d="M34 150l72-62 45 38 38-32 97 56H34z" fill="%23FFFFFF"/%3E%3C/svg%3E'
-
 import {
   ButtonClickExample,
   ButtonFormExample,
   ButtonPressedExample,
 } from './documentation-component-example-previews'
+import { documentationSampleImage } from './documentation-example-fixtures'
 
 export const contentComponentExamples: Record<
   string,
@@ -58,7 +55,7 @@ export const contentComponentExamples: Record<
     examples: [
       basicExample(
         <Image
-          src={sampleImage}
+          src={documentationSampleImage}
           alt="Example landscape"
           fit="cover"
           loading="lazy"
@@ -141,17 +138,31 @@ export const contentComponentExamples: Record<
         description:
           'Use the same Button component for different emphasis levels without changing its action semantics.',
         preview: (
-          <Row gap={1} wrap>
-            <Button text="Primary" />
-            <Button text="Secondary" variant="secondary" />
-            <Button text="Tertiary" variant="tertiary" />
-          </Row>
+          <Column gap={1}>
+            <Row gap={1} wrap>
+              <Button text="Primary" />
+              <Button text="Secondary" variant="secondary" />
+              <Button text="Tertiary" variant="tertiary" />
+            </Row>
+            <Row gap={1} wrap align="center">
+              <Button text="Small" size="small" />
+              <Button text="Medium" size="medium" />
+              <Button text="Large" size="large" />
+            </Row>
+          </Column>
         ),
-        code: `<Row gap={1} wrap>
-  <Button text="Primary" />
-  <Button text="Secondary" variant="secondary" />
-  <Button text="Tertiary" variant="tertiary" />
-</Row>`,
+        code: `<Column gap={1}>
+  <Row gap={1} wrap>
+    <Button text="Primary" />
+    <Button text="Secondary" variant="secondary" />
+    <Button text="Tertiary" variant="tertiary" />
+  </Row>
+  <Row gap={1} wrap align="center">
+    <Button text="Small" size="small" />
+    <Button text="Medium" size="medium" />
+    <Button text="Large" size="large" />
+  </Row>
+</Column>`,
       },
       {
         id: 'handling-clicks',
@@ -159,13 +170,18 @@ export const contentComponentExamples: Record<
         description:
           'Button event handlers are supplied through viewProps, preserving the native button event surface.',
         preview: <ButtonClickExample />,
+        codeMode: 'body',
         code: `const [clicks, setClicks] = useState(0)
 
-<Button
-  text="Click me"
-  viewProps={{ onClick: () => setClicks((current) => current + 1) }}
-/>
-<Text>{clicks} clicks</Text>`,
+return (
+  <Row gap={1} align="center">
+    <Button
+      text="Click me"
+      viewProps={{ onClick: () => setClicks((current) => current + 1) }}
+    />
+    <Text>{clicks === 1 ? '1 click' : clicks + ' clicks'}</Text>
+  </Row>
+)`,
       },
       {
         id: 'icons-and-labels',
@@ -209,15 +225,28 @@ export const contentComponentExamples: Record<
         description:
           'Use native button types inside Form so submit and reset behavior remains browser-native.',
         preview: <ButtonFormExample />,
-        code: `<Form onSubmit={handleSubmit} onReset={handleReset}>
-  <Column gap={1}>
-    <Input placeholder="Message" type="text" />
-    <Row gap={1}>
-      <Button type="submit" text="Submit" />
-      <Button type="reset" text="Reset" variant="secondary" />
-    </Row>
-  </Column>
-</Form>`,
+        codeMode: 'body',
+        code: `const [status, setStatus] = useState('Waiting')
+
+return (
+  <Form
+    onSubmit={(event) => {
+      event.preventDefault()
+      setStatus('Submitted')
+    }}
+    onReset={() => setStatus('Reset')}
+    viewProps={{ width: 20 }}
+  >
+    <Column gap={1}>
+      <Input placeholder="Message" type="text" />
+      <Row gap={1}>
+        <Button type="submit" text="Submit" />
+        <Button type="reset" text="Reset" variant="secondary" />
+      </Row>
+      <Text typo="body-small">{status}</Text>
+    </Column>
+  </Form>
+)`,
       },
       {
         id: 'pressed-state',
@@ -225,13 +254,16 @@ export const contentComponentExamples: Record<
         description:
           'Use pressed for toggle-style actions whose selected state belongs to the surrounding application.',
         preview: <ButtonPressedExample />,
+        codeMode: 'body',
         code: `const [pressed, setPressed] = useState(false)
 
-<Button
-  text={pressed ? 'Pressed' : 'Not pressed'}
-  pressed={pressed}
-  viewProps={{ onClick: () => setPressed((current) => !current) }}
-/>`,
+return (
+  <Button
+    text={pressed ? 'Pressed' : 'Not pressed'}
+    pressed={pressed}
+    viewProps={{ onClick: () => setPressed((current) => !current) }}
+  />
+)`,
       },
       {
         id: 'disabled-actions',

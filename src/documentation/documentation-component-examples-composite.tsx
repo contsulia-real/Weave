@@ -234,19 +234,28 @@ export const compositeComponentExamples: Record<
     description:
       'A transient status or alert message rendered through SnackProvider, with lifetime, progress, placement, and semantic variants.',
     examples: [
-      basicExample(
-        <SnackExample />,
-        `<SnackProvider container={hostRef}>
-  <Snack
-    text="Saved successfully"
-    variant="success"
-    duration={4000}
-    persistent
-    placement="bottom-center"
-    defaultOpen
-  />
-</SnackProvider>`,
-      ),
+      {
+        id: 'basic-usage',
+        title: 'Basic usage',
+        preview: <SnackExample />,
+        codeMode: 'body',
+        code: `const hostRef = useRef(null)
+
+return (
+  <Column ref={hostRef} minHeight={8}>
+    <SnackProvider container={hostRef}>
+      <Snack
+        text="Saved successfully"
+        variant="success"
+        duration={4000}
+        persistent
+        placement="bottom-center"
+        defaultOpen
+      />
+    </SnackProvider>
+  </Column>
+)`,
+      },
     ],
   },
   List: {

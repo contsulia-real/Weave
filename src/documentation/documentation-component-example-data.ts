@@ -1,11 +1,14 @@
 import type { ReactNode } from 'react'
 
+export type DocumentationExampleCodeMode = 'expression' | 'body'
+
 export interface DocumentationComponentExampleDefinition {
   id: string
   title: string
   description?: ReactNode
   preview: ReactNode
   code: string
+  codeMode?: DocumentationExampleCodeMode
 }
 
 export interface DocumentationComponentDocumentationDefinition {
@@ -23,5 +26,6 @@ export function basicExample(
     title: 'Basic usage',
     preview,
     code,
+    codeMode: 'expression',
   }
 }

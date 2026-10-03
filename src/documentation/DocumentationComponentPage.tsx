@@ -1,9 +1,11 @@
 import { useRef } from 'react'
-import { Column, Row, Text } from '../index'
+import { Card, Column, Row, Text } from '../index'
 import { DocumentationComponentApiLink } from './DocumentationComponentApiLink'
 import { DocumentationComponentExampleCard } from './DocumentationComponentExampleCard'
 import { DocumentationReadingStatus } from './DocumentationReadingStatus'
 import { documentationComponentDocumentation } from './documentation-component-examples'
+import { documentationAdjacentComponentNames } from './documentation-navigation-data'
+import { useDocsRoute } from './router'
 
 export interface DocumentationComponentPageProps {
   componentName: string
@@ -13,6 +15,8 @@ export function DocumentationComponentPage({ componentName }: DocumentationCompo
   const definition = documentationComponentDocumentation(componentName)
   const contentRef = useRef<HTMLDivElement>(null)
   const apiComponents = definition.apiComponents ?? [componentName]
+  const { navigate } = useDocsRoute()
+  const adjacent = documentationAdjacentComponentNames(componentName)
 
   return (
     <Row width="fill" padding={2} gap={2} align="start">
@@ -36,11 +40,57 @@ export function DocumentationComponentPage({ componentName }: DocumentationCompo
             {example.description === undefined ? null : (
               <Text typo="body-medium">{example.description}</Text>
             )}
-            <DocumentationComponentExampleCard preview={example.preview} code={example.code} />
+            <DocumentationComponentExampleCard code={example.code} codeMode={example.codeMode} />
           </Column>
         ))}
 
         <DocumentationComponentApiLink componentNames={apiComponents} />
+
+        <Row width="fill" gap={1}>
+          <Card
+            clickable={adjacent.previous !== null}
+            viewProps={{
+              grow: 1,
+              padding: 1.5,
+              disabled: adjacent.previous === null,
+              onClick:
+                adjacent.previous === null
+                  ? undefined
+                  : () => {
+                      navigate(`/docs/components/${adjacent.previous}`)
+                    },
+            }}
+          >
+            <Column gap={0.25}>
+              <Text typo="label-medium" color="secondary">
+                Previous component
+              </Text>
+              <Text typo="title-medium">{adjacent.previous ?? '—'}</Text>
+            </Column>
+          </Card>
+
+          <Card
+            clickable={adjacent.next !== null}
+            viewProps={{
+              grow: 1,
+              padding: 1.5,
+              disabled: adjacent.next === null,
+              onClick:
+                adjacent.next === null
+                  ? undefined
+                  : () => {
+                      navigate(`/docs/components/${adjacent.next}`)
+                    },
+            }}
+          >
+            <Column gap={0.25}>
+              <Text typo="label-medium" color="secondary">
+                Next component
+              </Text>
+              <Text typo="title-medium">{adjacent.next ?? '—'}</Text>
+            </Column>
+          </Card>
+        </Row>
       </Column>
 
       <DocumentationReadingStatus contentRef={contentRef} />

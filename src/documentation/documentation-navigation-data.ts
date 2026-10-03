@@ -168,3 +168,23 @@ export function documentationComponentApiNameForPath(pathname: string): string |
 export function documentationComponentDemoNameForApi(componentName: string): string {
   return apiDemoParents[componentName] ?? componentName
 }
+
+const documentedComponentNames = componentNavigationSections.flatMap((section) =>
+  section.items.flatMap((item) => (item.label === undefined ? [] : [item.label])),
+)
+
+export function documentationAdjacentComponentNames(componentName: string): {
+  previous: string | null
+  next: string | null
+} {
+  const index = documentedComponentNames.indexOf(componentName)
+
+  if (index < 0) {
+    return { previous: null, next: null }
+  }
+
+  return {
+    previous: documentedComponentNames[index - 1] ?? null,
+    next: documentedComponentNames[index + 1] ?? null,
+  }
+}
