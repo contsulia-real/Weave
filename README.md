@@ -6,7 +6,7 @@ The authoritative framework design specification is [Weave UI.md](./Weave%20UI.m
 
 ## Status
 
-Weave is currently an **alpha public package targeting JSR**. npm publication remains intentionally disabled with `private: true`; the current version is `0.1.0-alpha.0`.
+Weave is currently an **alpha public package targeting JSR**. npm publication remains intentionally disabled with `private: true`; the current version is `0.1.0-alpha.1`.
 
 Weave is licensed under the MIT License. See [LICENSE](./LICENSE).
 
@@ -14,6 +14,20 @@ Weave is licensed under the MIT License. See [LICENSE](./LICENSE).
 
 ```bash
 pnpm add jsr:@contsulia/weave
+```
+
+### Optional packages
+
+Weave's `Icon` accepts any compatible icon component or SVG. The documentation examples use Tabler Icons; install it only if you want to use those icons:
+
+```bash
+pnpm add @tabler/icons-react
+```
+
+Weave's `Code` component uses Shiki for syntax highlighting. Install Shiki when using `Code`:
+
+```bash
+pnpm add shiki
 ```
 
 ## Architecture
