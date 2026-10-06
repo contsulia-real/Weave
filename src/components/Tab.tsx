@@ -29,7 +29,8 @@ function movedTab(current: HTMLButtonElement, move: TabMove): HTMLButtonElement 
   return tabs[nextIndex] ?? null
 }
 
-export function Tab({ value, children, disabled = false, viewProps = {} }: TabProps) {
+export function Tab(props: TabProps): import('react').JSX.Element {
+  const { value, children, disabled = false, viewProps = {} } = props
   const context = useTabsContext('Tab')
   const selected = context.value === value
   const focused = context.focusValue === value

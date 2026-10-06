@@ -7,7 +7,8 @@ import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { useTheme } from '../theme/theme-context'
 import { View } from './View'
 
-export function Divider({ direction = 'horizontal', gap = 0, size, viewProps = {} }: DividerProps) {
+export function Divider(props: DividerProps): import('react').JSX.Element {
+  const { direction = 'horizontal', gap = 0, size, viewProps = {} } = props
   const { theme } = useTheme()
   const themeClassName = useRuntimeStyleClass('divider-theme', resolveDividerTheme(theme))
 

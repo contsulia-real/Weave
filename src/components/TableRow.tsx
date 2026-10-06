@@ -3,7 +3,8 @@ import { Checkbox } from './Checkbox'
 import { TableRowContext, useTableContext, useTableSection } from './internal/table-context'
 import { useViewHost } from './internal/use-view-host'
 
-export function TableRow({ id, children, viewProps = {} }: TableRowProps) {
+export function TableRow(props: TableRowProps): import('react').JSX.Element {
+  const { id, children, viewProps = {} } = props
   const table = useTableContext()
   const section = useTableSection()
   const { elementRef, className, inlineStyle, resolved } = useViewHost(viewProps)

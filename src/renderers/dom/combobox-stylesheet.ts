@@ -51,6 +51,7 @@ const stylesheet = `
 :where(.weave-combobox__chevron) {
   width: var(--weave-combobox-icon-size);
   height: var(--weave-combobox-icon-size);
+  translate: 0 calc(var(--weave-feedback-rest-depth) / 2);
   pointer-events: none;
   transition:
     transform

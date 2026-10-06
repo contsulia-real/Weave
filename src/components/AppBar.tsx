@@ -7,17 +7,18 @@ import { useTheme } from '../theme/theme-context'
 import { useViewHost } from './internal/use-view-host'
 import { Text } from './Text'
 
-export function AppBar({
-  leading,
-  title,
-  trailing,
-  size = 'medium',
-  mode = 'full',
-  titleAlign = 'start',
-  sticky = false,
-  elevated = false,
-  viewProps = {},
-}: AppBarProps) {
+export function AppBar(props: AppBarProps): import('react').JSX.Element {
+  const {
+    leading,
+    title,
+    trailing,
+    size = 'medium',
+    mode = 'full',
+    titleAlign = 'start',
+    sticky = false,
+    elevated = false,
+    viewProps = {},
+  } = props
   const { theme } = useTheme()
   const themeDeclarations = useMemo(() => resolveAppBarTheme(theme), [theme])
   const themeClassName = useRuntimeStyleClass('appbar-theme', themeDeclarations)

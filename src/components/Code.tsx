@@ -1,32 +1,42 @@
 import { useEffect, useInsertionEffect, useState } from 'react'
-import {
-  codeToHtml,
-  createCssVariablesTheme,
-  createHighlighter,
-  type LanguageRegistration,
-} from 'shiki'
+import type { LanguageRegistration } from 'shiki'
 import type { CodeLanguage, CodeProps } from '../core/code-types'
 import { ensureCodeStylesheet } from '../renderers/dom/code-stylesheet'
 import { AutoScrollbar } from './internal/AutoScrollbar'
 import { useViewHost } from './internal/use-view-host'
 
-const codeTheme = createCssVariablesTheme({
-  name: 'weave-code-theme',
-  variablePrefix: '--weave-code-',
-  variableDefaults: {
-    foreground: 'var(--weave-color-tertiary)',
-    background: 'transparent',
-    'token-comment': 'var(--weave-color-secondary)',
-    'token-string': 'var(--weave-color-success)',
-    'token-constant': 'var(--weave-color-warning)',
-    'token-keyword': 'var(--weave-color-primary)',
-    'token-parameter': 'var(--weave-color-tertiary)',
-    'token-function': 'var(--weave-color-primary)',
-    'token-string-expression': 'var(--weave-color-success)',
-    'token-punctuation': 'var(--weave-color-secondary)',
-    'token-link': 'var(--weave-color-primary)',
-  },
-})
+async function createCodeRuntime() {
+  const { codeToHtml, createCssVariablesTheme, createHighlighter } = await import('shiki')
+
+  return {
+    codeToHtml,
+    createHighlighter,
+    codeTheme: createCssVariablesTheme({
+      name: 'weave-code-theme',
+      variablePrefix: '--weave-code-',
+      variableDefaults: {
+        foreground: 'var(--weave-color-tertiary)',
+        background: 'transparent',
+        'token-comment': 'var(--weave-color-secondary)',
+        'token-string': 'var(--weave-color-success)',
+        'token-constant': 'var(--weave-color-warning)',
+        'token-keyword': 'var(--weave-color-primary)',
+        'token-parameter': 'var(--weave-color-tertiary)',
+        'token-function': 'var(--weave-color-primary)',
+        'token-string-expression': 'var(--weave-color-success)',
+        'token-punctuation': 'var(--weave-color-secondary)',
+        'token-link': 'var(--weave-color-primary)',
+      },
+    }),
+  }
+}
+
+let codeRuntimePromise: ReturnType<typeof createCodeRuntime> | undefined
+
+function loadCodeRuntime(): ReturnType<typeof createCodeRuntime> {
+  codeRuntimePromise ??= createCodeRuntime()
+  return codeRuntimePromise
+}
 
 interface HighlightResult {
   code: string
@@ -41,6 +51,7 @@ async function highlightCode(
   language: CodeLanguage,
   syntax: LanguageRegistration | undefined,
 ): Promise<string> {
+  const { codeToHtml, createHighlighter, codeTheme } = await loadCodeRuntime()
   if (language === 'custom') {
     if (syntax === undefined) {
       throw new TypeError('Code language="custom" requires syntax')
@@ -71,7 +82,7 @@ async function highlightCode(
   })
 }
 
-export function Code(props: CodeProps) {
+export function Code(props: CodeProps): import('react').JSX.Element {
   const { children, viewProps = {} } = props
   const language = props.language
   const syntax = language === 'custom' ? props.syntax : undefined

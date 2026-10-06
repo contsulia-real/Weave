@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react'
 import { createElement, useInsertionEffect } from 'react'
 import type { TextHostElement, TextProps, TextResponsiveProps, TextTypo } from '../core/text-types'
 import type { ViewProps, ViewResponsiveStyle } from '../core/view-types'
@@ -46,7 +47,7 @@ function responsiveData(
   return output
 }
 
-export function Text(props: TextProps) {
+export function Text(props: TextProps): ReactElement {
   const {
     children,
     viewProps = {},

@@ -314,7 +314,7 @@ function MultilineInput({
   )
 }
 
-export function Input(props: InputProps) {
+export function Input(props: InputProps): import('react').JSX.Element {
   useInsertionEffect(ensureInputStylesheet, [])
 
   if (props.multiline) {

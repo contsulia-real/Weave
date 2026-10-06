@@ -50,24 +50,25 @@ function printableKey(event: KeyboardEvent<HTMLButtonElement>): boolean {
   )
 }
 
-export function Select({
-  children,
-  value,
-  defaultValue = null,
-  onValueChange,
-  placeholder = 'Select…',
-  name,
-  disabled = false,
-  placement = 'bottom-left',
-  offset,
-  overlapTrigger = false,
-  viewportPadding = 0.5,
-  open,
-  defaultOpen = false,
-  onOpenChange,
-  viewProps = {},
-  listboxViewProps = {},
-}: SelectProps) {
+export function Select(props: SelectProps): import('react').JSX.Element {
+  const {
+    children,
+    value,
+    defaultValue = null,
+    onValueChange,
+    placeholder = 'Select…',
+    name,
+    disabled = false,
+    placement = 'bottom-left',
+    offset,
+    overlapTrigger = false,
+    viewportPadding = 0.5,
+    open,
+    defaultOpen = false,
+    onOpenChange,
+    viewProps = {},
+    listboxViewProps = {},
+  } = props
   const options = useMemo(() => selectOptionDescriptors(children), [children])
 
   const controlledValue = value !== undefined

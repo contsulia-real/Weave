@@ -5,16 +5,8 @@ import { ensureImageStylesheet } from '../renderers/dom/image-stylesheet'
 import { resolveImageStyle } from '../renderers/dom/resolve-image'
 import { useViewHost } from './internal/use-view-host'
 
-export function Image({
-  src,
-  alt,
-  fit,
-  position,
-  loading,
-  onLoad,
-  onError,
-  viewProps = {},
-}: ImageProps) {
+export function Image(props: ImageProps): import('react').JSX.Element {
+  const { src, alt, fit, position, loading, onLoad, onError, viewProps = {} } = props
   const hostProps: ViewProps<HTMLImageElement> = viewProps
   const componentStyle = resolveImageStyle({
     fit,

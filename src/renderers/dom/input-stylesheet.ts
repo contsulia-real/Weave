@@ -97,6 +97,7 @@ const stylesheet = `
 :where(.weave-input-root) {
   position: relative;
   display: inline-block;
+  width: fit-content;
   min-width: 0;
   max-width: 100%;
   vertical-align: middle;

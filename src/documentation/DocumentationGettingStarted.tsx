@@ -7,22 +7,21 @@ const markSliderExampleMarks = [
   { flag: 80, label: <Text typo="body-small">80</Text> },
 ] as const
 
-const overriddenEndpointMarks = [
-  { flag: 0, label: <Text typo="body-small">Min</Text> },
-  { flag: 25, label: <Text typo="body-small">25</Text> },
-  { flag: 70, label: <Text typo="body-small">70</Text> },
-  { flag: 100, label: <Text typo="body-small">Max</Text> },
-] as const
-
 export function DocumentationGettingStarted() {
   const { t } = useTranslation()
+  const overriddenEndpointMarks = [
+    { flag: 0, label: <Text typo="body-small">{t('docs.gettingStarted.min')}</Text> },
+    { flag: 25, label: <Text typo="body-small">25</Text> },
+    { flag: 70, label: <Text typo="body-small">70</Text> },
+    { flag: 100, label: <Text typo="body-small">{t('docs.gettingStarted.max')}</Text> },
+  ] as const
 
   return (
     <Column width="fill" padding={2} gap={3}>
       <Text typo="display-small">{t('docs.nav.gettingStarted')}</Text>
 
       <Column gap={1.5}>
-        <Text typo="headline-small">Slider family · horizontal</Text>
+        <Text typo="headline-small">{t('docs.gettingStarted.sliderHorizontal')}</Text>
         <Slider defaultValue={35} step={25} />
         <MarkSlider
           marks={markSliderExampleMarks}
@@ -34,14 +33,14 @@ export function DocumentationGettingStarted() {
       </Column>
 
       <Column gap={1.5}>
-        <Text typo="headline-small">Slider family · horizontal · inverse</Text>
+        <Text typo="headline-small">{t('docs.gettingStarted.sliderHorizontalInverse')}</Text>
         <Slider defaultValue={35} step={25} inverse />
         <MarkSlider marks={markSliderExampleMarks} defaultValue={35} restricted inverse />
         <RangeSlider defaultValue={[25, 75]} step={25} inverse />
       </Column>
 
       <Column gap={1.5}>
-        <Text typo="headline-small">Slider family · vertical</Text>
+        <Text typo="headline-small">{t('docs.gettingStarted.sliderVertical')}</Text>
         <Row gap={4} align="center">
           <Slider defaultValue={35} step={25} direction="vertical" />
           <MarkSlider
@@ -55,7 +54,7 @@ export function DocumentationGettingStarted() {
       </Column>
 
       <Column gap={1.5}>
-        <Text typo="headline-small">Slider family · vertical · inverse</Text>
+        <Text typo="headline-small">{t('docs.gettingStarted.sliderVerticalInverse')}</Text>
         <Row gap={4} align="center">
           <Slider defaultValue={35} step={25} direction="vertical" inverse />
           <MarkSlider
@@ -70,7 +69,7 @@ export function DocumentationGettingStarted() {
       </Column>
 
       <Column gap={1.5}>
-        <Text typo="headline-small">Linear Progress · horizontal</Text>
+        <Text typo="headline-small">{t('docs.gettingStarted.progressHorizontal')}</Text>
         <Progress mode="linear" progress={0.65} tracked direction="horizontal" />
         <Progress mode="linear" indeterminate tracked direction="horizontal" />
         <Progress mode="linear" progress={0.65} tracked direction="horizontal" inverse />
@@ -78,7 +77,7 @@ export function DocumentationGettingStarted() {
       </Column>
 
       <Column gap={1.5}>
-        <Text typo="headline-small">Linear Progress · vertical</Text>
+        <Text typo="headline-small">{t('docs.gettingStarted.progressVertical')}</Text>
         <Row gap={4} align="center">
           <Progress mode="linear" progress={0.65} tracked direction="vertical" />
           <Progress mode="linear" indeterminate tracked direction="vertical" />

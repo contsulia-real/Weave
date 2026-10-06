@@ -7,14 +7,22 @@ import { DocumentationContent } from './DocumentationContent'
 import { DocumentationControls } from './DocumentationControls'
 import { DocumentationLoadingProgress } from './DocumentationLoadingProgress'
 import { DocumentationNavigation } from './DocumentationNavigation'
+import type { DocumentationThemeColorId } from './documentation-theme'
 import { useDocsRoute } from './router'
 
 export interface DocumentationPageProps {
   themeMode: ThemeMode
   onThemeModeChange: (mode: ThemeMode) => void
+  themeColorId: DocumentationThemeColorId
+  onThemeColorChange: (id: DocumentationThemeColorId) => void
 }
 
-export function DocumentationPage({ themeMode, onThemeModeChange }: DocumentationPageProps) {
+export function DocumentationPage({
+  themeMode,
+  onThemeModeChange,
+  themeColorId,
+  onThemeColorChange,
+}: DocumentationPageProps) {
   const { t } = useTranslation()
   const route = useDocsRoute()
   const [drawerOpen, setDrawerOpen] = useState(true)
@@ -46,7 +54,12 @@ export function DocumentationPage({ themeMode, onThemeModeChange }: Documentatio
               placeholder={t('docs.search')}
               viewProps={{ label: t('docs.search') }}
             />
-            <DocumentationControls themeMode={themeMode} onThemeModeChange={onThemeModeChange} />
+            <DocumentationControls
+              themeMode={themeMode}
+              onThemeModeChange={onThemeModeChange}
+              themeColorId={themeColorId}
+              onThemeColorChange={onThemeColorChange}
+            />
           </>
         }
       />

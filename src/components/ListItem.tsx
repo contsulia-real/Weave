@@ -55,7 +55,8 @@ function singleLineChildren(children: ReactNode, enabled: boolean): ReactNode {
   })
 }
 
-export function ListItem({ id, children, disabled = false, viewProps = {} }: ListItemProps) {
+export function ListItem(props: ListItemProps): import('react').JSX.Element {
+  const { id, children, disabled = false, viewProps = {} } = props
   const context = useContext(ListContext)
   const { theme } = useTheme()
 

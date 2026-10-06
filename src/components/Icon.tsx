@@ -13,7 +13,7 @@ const STROKE_WIDTH: Readonly<Record<IconStroke, number>> = {
   bold: 2.5,
 }
 
-export function Icon(props: IconProps) {
+export function Icon(props: IconProps): import('react').JSX.Element {
   const { size = 'medium', stroke = 'regular', viewProps = {} } = props
   const { theme } = useTheme()
   const themeClassName = useRuntimeStyleClass('icon-theme', resolveIconTheme(theme, size))

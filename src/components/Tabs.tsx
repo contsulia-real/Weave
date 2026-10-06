@@ -70,17 +70,18 @@ function assertUniqueTabValues(descriptors: readonly TabDescriptor[]): void {
   }
 }
 
-export function Tabs({
-  children,
-  value,
-  defaultValue,
-  onValueChange,
-  orientation = 'horizontal',
-  activation = 'automatic',
-  variant = 'underline',
-  indicatorThickness,
-  viewProps = {},
-}: TabsProps) {
+export function Tabs(props: TabsProps): import('react').JSX.Element {
+  const {
+    children,
+    value,
+    defaultValue,
+    onValueChange,
+    orientation = 'horizontal',
+    activation = 'automatic',
+    variant = 'underline',
+    indicatorThickness,
+    viewProps = {},
+  } = props
   useInsertionEffect(ensureTabsStylesheet, [])
 
   const descriptors = useMemo(() => {

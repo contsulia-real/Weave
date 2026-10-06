@@ -38,17 +38,18 @@ function menuIcon(icon: MenuItemIcon) {
   })
 }
 
-export function MenuItem({
-  text,
-  secondaryText,
-  icon,
-  disabled = false,
-  danger = false,
-  onSelect,
-  closeOnSelect,
-  submenu,
-  viewProps = {},
-}: MenuItemProps) {
+export function MenuItem(props: MenuItemProps): import('react').JSX.Element {
+  const {
+    text,
+    secondaryText,
+    icon,
+    disabled = false,
+    danger = false,
+    onSelect,
+    closeOnSelect,
+    submenu,
+    viewProps = {},
+  } = props
   const root = useContext(MenuRootContext)
   const level = useContext(MenuLevelContext)
 

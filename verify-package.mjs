@@ -2,6 +2,8 @@ import { execFileSync } from 'node:child_process'
 import { readdir, readFile } from 'node:fs/promises'
 import { dirname, join, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { createElement } from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
 
 function assert(condition, message) {
   if (!condition) {
@@ -9,9 +11,75 @@ function assert(condition, message) {
   }
 }
 
+async function listFiles(directory, suffix) {
+  const files = []
+
+  for (const entry of await readdir(directory, { withFileTypes: true })) {
+    const path = join(directory, entry.name)
+
+    if (entry.isDirectory()) {
+      files.push(...(await listFiles(path, suffix)))
+    } else if (entry.name.endsWith(suffix)) {
+      files.push(path)
+    }
+  }
+
+  return files
+}
+
 const repositoryRoot = dirname(fileURLToPath(import.meta.url))
 const packageJson = JSON.parse(await readFile(new URL('./package.json', import.meta.url), 'utf8'))
+const jsrJson = JSON.parse(await readFile(new URL('./jsr.json', import.meta.url), 'utf8'))
+const licenseText = await readFile(new URL('./LICENSE', import.meta.url), 'utf8')
 const packageEntry = packageJson.exports?.['.']
+const componentEntry = packageJson.exports?.['./components/*']
+
+assert(packageJson.name === '@contsulia/weave', 'Public package name must remain @contsulia/weave')
+assert(packageJson.private === true, 'npm publication must remain disabled with private=true')
+assert(packageJson.license === 'MIT', 'Package license must remain MIT')
+assert(licenseText.startsWith('MIT License'), 'LICENSE must contain the MIT license')
+assert(jsrJson.name === packageJson.name, 'JSR package name must match package.json')
+assert(jsrJson.version === packageJson.version, 'JSR package version must match package.json')
+assert(jsrJson.license === packageJson.license, 'JSR license must match package.json')
+assert(jsrJson.exports?.['.'] === './src/package.ts', 'JSR root export must use src/package.ts')
+assert(
+  jsrJson.exports?.['./registry'] === './src/core/registry-types.ts',
+  'JSR registry export must use src/core/registry-types.ts',
+)
+assert(
+  packageJson.exports?.['./registry']?.types === './dist/core/registry-types.d.ts',
+  'Package registry export must expose registry declarations',
+)
+
+const jsrExportNames = Object.keys(jsrJson.exports ?? {})
+const sourceComponentEntries = (
+  await readdir(join(repositoryRoot, 'src', 'components'), {
+    withFileTypes: true,
+  })
+)
+  .filter((entry) => entry.isFile() && /\.(?:ts|tsx)$/.test(entry.name))
+  .sort((left, right) => left.name.localeCompare(right.name))
+
+assert(
+  jsrExportNames.length === sourceComponentEntries.length + 2,
+  'JSR exports must contain exactly the root, registry and every public component source entry',
+)
+
+for (const entry of sourceComponentEntries) {
+  const name = entry.name.replace(/\.(?:ts|tsx)$/, '')
+  assert(
+    jsrJson.exports?.[`./components/${name}`] === `./src/components/${entry.name}`,
+    `JSR export is missing or stale for components/${name}`,
+  )
+}
+
+assert(
+  !jsrExportNames.some((name) => name.startsWith('./components/internal/')),
+  'JSR exports must not expose internal component modules',
+)
+for (const required of ['LICENSE', 'README.md', 'package.json', 'src/package.ts', 'src/index.ts']) {
+  assert(jsrJson.publish?.include?.includes(required), `JSR publish include is missing ${required}`)
+}
 
 assert(
   packageJson.devDependencies?.i18next !== undefined &&
@@ -25,102 +93,167 @@ assert(
 )
 
 assert(
+  packageJson.peerDependencies?.shiki !== undefined &&
+    packageJson.peerDependenciesMeta?.shiki?.optional === true,
+  'Shiki must remain an optional peer dependency',
+)
+assert(
+  packageJson.devDependencies?.shiki !== undefined,
+  'Shiki must remain available for local builds',
+)
+assert(packageJson.dependencies?.shiki === undefined, 'Shiki must not be a runtime dependency')
+
+assert(packageJson.sideEffects === false, 'Package must remain side-effect free for tree-shaking')
+assert(
   packageEntry?.import === './dist/weave.js',
   'Package import entry must point to ./dist/weave.js',
 )
 assert(
-  packageEntry?.types === './dist/index.d.ts',
-  'Package type entry must point to ./dist/index.d.ts',
+  packageEntry?.types === './dist/package.d.ts',
+  'Package type entry must point to ./dist/package.d.ts',
+)
+
+assert(
+  componentEntry?.import === './dist/components/*.js' &&
+    componentEntry?.types === './dist/components/*.d.ts',
+  'Component subpath exports must point at preserved component modules',
+)
+assert(
+  packageJson.exports?.['./components/internal/*'] === null,
+  'Internal component modules must not be public package subpaths',
 )
 
 const runtimeEntry = new URL(packageEntry.import, import.meta.url)
 const typeEntry = new URL(packageEntry.types, import.meta.url)
-const runtimeSource = await readFile(runtimeEntry, 'utf8')
+const runtimeFiles = await listFiles(join(repositoryRoot, 'dist'), '.js')
+const runtimeSource = (await Promise.all(runtimeFiles.map((file) => readFile(file, 'utf8')))).join(
+  '\n',
+)
 assert(
   !runtimeSource.includes('i18next'),
   'Built Weave runtime must not include documentation i18n',
 )
-const typeSource = await readFile(typeEntry, 'utf8')
+assert(
+  !runtimeSource.includes('@tabler/icons-react'),
+  'Built Weave runtime must not include Tabler Icons',
+)
+const rootTypeSource = await readFile(typeEntry, 'utf8')
+assert(
+  rootTypeSource.includes("export type * from './index';"),
+  'Package type entry must expose root types without restoring component runtime exports',
+)
+const typeSource = `${rootTypeSource}\n${await readFile(new URL('./dist/index.d.ts', import.meta.url), 'utf8')}`
+assert(
+  typeSource.includes('BreakpointRegistry'),
+  'Built declarations are missing BreakpointRegistry',
+)
+assert(
+  typeSource.includes('ColorTokenRegistry'),
+  'Built declarations are missing ColorTokenRegistry',
+)
+assert(
+  typeSource.includes('RegisteredBreakpointName'),
+  'Built declarations are missing RegisteredBreakpointName',
+)
+assert(
+  typeSource.includes('RegisteredColorTokenName'),
+  'Built declarations are missing RegisteredColorTokenName',
+)
 const weave = await import(runtimeEntry.href)
+const componentButton = await import(`${packageJson.name}/components/Button`)
+const componentDataGrid = await import(`${packageJson.name}/components/DataGrid`)
+assert(typeof componentButton.Button === 'function', 'Button subpath must expose Button')
+assert(!('Button' in weave), 'Package root must not expose Button')
+
+let internalSubpathBlocked = false
+try {
+  await import(`${packageJson.name}/components/internal/use-view-host`)
+} catch (error) {
+  internalSubpathBlocked = error?.code === 'ERR_PACKAGE_PATH_NOT_EXPORTED'
+}
+assert(internalSubpathBlocked, 'Internal component modules must stay package-private')
 
 const expectedRuntimeExports = [
-  'Absolute',
-  'Accordion',
-  'AccordionItem',
-  'AccordionPanel',
-  'AccordionTrigger',
-  'AppBar',
-  'Avatar',
-  'Badge',
-  'Button',
-  'Card',
-  'Checkbox',
-  'Code',
-  'Column',
-  'Combobox',
-  'ComboboxOption',
-  'Dialog',
-  'Drawer',
-  'Flex',
-  'Form',
-  'FormDescription',
-  'FormError',
-  'FormField',
-  'FormFieldset',
-  'FormLabel',
-  'FormLegend',
-  'Grid',
-  'Icon',
-  'Image',
-  'Input',
-  'List',
-  'ListItem',
-  'Link',
-  'MarkSlider',
-  'Menu',
-  'MenuItem',
-  'Divider',
-  'Presence',
-  'Popover',
-  'Progress',
-  'Radio',
-  'RangeSlider',
-  'Row',
-  'Select',
-  'SelectOption',
-  'Skeleton',
-  'Slider',
-  'SplitBox',
-  'SplitBoxPane',
-  'Snack',
-  'Stack',
-  'SnackProvider',
-  'Switch',
-  'Tab',
-  'TabList',
-  'TabPanel',
-  'Tabs',
-  'Table',
-  'TableBody',
-  'TableCell',
-  'TableHead',
-  'TableHeader',
-  'TableRow',
-  'Text',
   'ThemeProvider',
-  'ToolTip',
-  'View',
   'createRoot',
   'createTheme',
   'createThemeFromColorSeed',
   'defaultTheme',
-  'useSnack',
   'useTheme',
 ]
 
 for (const name of expectedRuntimeExports) {
   assert(name in weave, `Built package is missing runtime export: ${name}`)
 }
+
+const dataGridRows = [{ id: 'row-1', name: 'Ada', role: 'Engineering', score: 99 }]
+const dataGridColumns = [
+  {
+    id: 'name',
+    header: 'Name',
+    cell: (row) => row.name,
+    minWidth: 140,
+    maxWidth: 320,
+    resizable: true,
+  },
+  {
+    id: 'role',
+    header: 'Role',
+    cell: (row) => row.role,
+    minWidth: 140,
+    maxWidth: 280,
+    resizable: true,
+  },
+  {
+    id: 'score',
+    header: 'Score',
+    cell: (row) => row.score,
+    minWidth: 96,
+    maxWidth: 180,
+    resizable: true,
+  },
+]
+const dataGridMarkup = renderToStaticMarkup(
+  createElement(componentDataGrid.DataGrid, {
+    columns: dataGridColumns,
+    rows: dataGridRows,
+    defaultColumnWidths: { name: 180, role: 500, score: 120 },
+  }),
+)
+assert(
+  dataGridMarkup.includes('data-weave-data-grid-tracks="fixed"') &&
+    dataGridMarkup.includes('<colgroup>'),
+  'Built DataGrid must render fixed column tracks when widths are known',
+)
+assert(
+  dataGridMarkup.includes('width:180px') &&
+    dataGridMarkup.includes('width:280px') &&
+    dataGridMarkup.includes('width:120px') &&
+    !dataGridMarkup.includes('width:500px'),
+  'Built DataGrid column tracks must clamp rendered widths to min/max constraints',
+)
+assert(
+  runtimeSource.includes('data-weave-data-grid-last-column') &&
+    runtimeSource.includes('inset-inline-end:0'),
+  'Built DataGrid final resize handle must stay inside the table scroll extent',
+)
+assert(
+  dataGridMarkup.includes('weave-data-grid__filler-column') &&
+    dataGridMarkup.includes('weave-data-grid__filler-cell') &&
+    runtimeSource.includes('width:max(100%, var(--weave-data-grid-table-width))') &&
+    runtimeSource.includes('border-left:0!important'),
+  'Built DataGrid must fill unused viewport width without exposing a fake column divider',
+)
+assert(
+  runtimeSource.includes('width:1rem') &&
+    runtimeSource.includes('background:var(--weave-table-row-hover-background)'),
+  'Built DataGrid must use the larger resize hit target and Table-themed sortable header feedback',
+)
+assert(
+  runtimeSource.includes(':where(.weave-data-grid__spacer-cell)') &&
+    runtimeSource.includes('visibility:hidden'),
+  'Built DataGrid virtualization spacers must remain visually inert',
+)
 
 const defaultSeedTheme = weave.createThemeFromColorSeed(weave.defaultTheme.tokens.color.primary)
 assert(
@@ -164,6 +297,16 @@ assert(
 assert(
   /export\s*\{\s*ListItem\s*\}\s*from\s*['"]\.\/components\/ListItem['"]/.test(typeSource),
   'Built declarations are missing the ListItem export',
+)
+assert(
+  /export\s*\{\s*SegmentedButton\s*\}\s*from\s*['"]\.\/components\/SegmentedButton['"]/.test(
+    typeSource,
+  ),
+  'Built declarations are missing the SegmentedButton export',
+)
+assert(
+  /export\s*\{\s*DataGrid\s*\}\s*from\s*['"]\.\/components\/DataGrid['"]/.test(typeSource),
+  'Built declarations are missing the DataGrid export',
 )
 assert(typeSource.includes('ViewTransition'), 'Built declarations are missing ViewTransition')
 assert(typeSource.includes('ViewEnterExit'), 'Built declarations are missing ViewEnterExit')
@@ -331,7 +474,10 @@ for (const name of expectedThemeTypeExports) {
   assert(typeSource.includes(name), `Built declarations are missing theme type export: ${name}`)
 }
 
-assert(/from\s*["']shiki["']/.test(runtimeSource), 'Built package must keep shiki external')
+assert(
+  !/from\s*["']shiki["']/.test(runtimeSource) && /import\(["']shiki["']\)/.test(runtimeSource),
+  'Built package must lazy-load external shiki',
+)
 assert(
   /from\s*["']react-dom\/client["']/.test(runtimeSource),
   'Built package must keep react-dom/client external',
@@ -374,7 +520,12 @@ assert(packResult?.files, 'npm pack did not return a package file manifest')
 const packedFiles = new Set(packResult.files.map((file) => file.path.replaceAll('\\', '/')))
 
 assert(packedFiles.has('dist/weave.js'), 'Packed npm artifact is missing dist/weave.js')
-assert(packedFiles.has('dist/index.d.ts'), 'Packed npm artifact is missing dist/index.d.ts')
+assert(packedFiles.has('dist/package.d.ts'), 'Packed npm artifact is missing dist/package.d.ts')
+assert(
+  packedFiles.has('dist/components/Button.js'),
+  'Packed npm artifact is missing Button subpath',
+)
+assert(packedFiles.has('dist/components/Code.js'), 'Packed npm artifact is missing Code subpath')
 assert(
   !packedFiles.has('dist/favicon.svg'),
   'Packed npm artifact must not include the playground favicon',
@@ -384,23 +535,7 @@ assert(
   'Packed npm artifact must not include declaration maps without their source files',
 )
 
-async function listDeclarationFiles(directory) {
-  const files = []
-
-  for (const entry of await readdir(directory, { withFileTypes: true })) {
-    const path = join(directory, entry.name)
-
-    if (entry.isDirectory()) {
-      files.push(...(await listDeclarationFiles(path)))
-    } else if (entry.name.endsWith('.d.ts')) {
-      files.push(path)
-    }
-  }
-
-  return files
-}
-
-for (const declaration of await listDeclarationFiles(join(repositoryRoot, 'dist'))) {
+for (const declaration of await listFiles(join(repositoryRoot, 'dist'), '.d.ts')) {
   const packagePath = relative(repositoryRoot, declaration).replaceAll('\\', '/')
   assert(packedFiles.has(packagePath), `Packed npm artifact is missing declaration: ${packagePath}`)
 }

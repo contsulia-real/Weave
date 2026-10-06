@@ -19,19 +19,20 @@ function urgentVariant(variant: SnackVariant): boolean {
   return variant === 'warning' || variant === 'danger'
 }
 
-export function Snack({
-  variant = 'default',
-  duration = 4000,
-  persistent = false,
-  progress = false,
-  placement = 'bottom-center',
-  open,
-  defaultOpen = true,
-  onOpenChange,
-  onDismissed,
-  viewProps = {},
-  ...contentProps
-}: SnackProps) {
+export function Snack(props: SnackProps): import('react').JSX.Element | null {
+  const {
+    variant = 'default',
+    duration = 4000,
+    persistent = false,
+    progress = false,
+    placement = 'bottom-center',
+    open,
+    defaultOpen = true,
+    onOpenChange,
+    onDismissed,
+    viewProps = {},
+    ...contentProps
+  } = props
   const { value: resolvedOpen, request: requestOpen } = useControllableBoolean(
     open,
     defaultOpen,

@@ -22,7 +22,8 @@ function useAccordionEnter(open: boolean): boolean {
   return nextState.animateEnter
 }
 
-export function AccordionPanel({ children, viewProps = {} }: AccordionPanelProps) {
+export function AccordionPanel(props: AccordionPanelProps): import('react').JSX.Element {
+  const { children, viewProps = {} } = props
   const accordion = useAccordionContext('AccordionPanel')
   const item = useAccordionItemContext('AccordionPanel')
   const open = accordion.isOpen(item.value)

@@ -1,4 +1,7 @@
+import { useTranslation } from 'react-i18next'
 import { Column, Link, Text } from '../index'
+import { DocumentationPropsTable } from './DocumentationPropsTable'
+import { documentationComponentApi } from './documentation-component-api'
 
 export interface DocumentationComponentApiLinkProps {
   componentNames: readonly string[]
@@ -7,28 +10,54 @@ export interface DocumentationComponentApiLinkProps {
 export function DocumentationComponentApiLink({
   componentNames,
 }: DocumentationComponentApiLinkProps) {
+  const { t } = useTranslation()
+
   return (
     <Column
       id="api"
       data={{
         'weave-doc-section': '',
-        'weave-doc-section-label': 'API',
+        'weave-doc-section-label': t('docs.api.heading'),
       }}
-      gap={1}
+      gap={1.5}
     >
-      <Text typo="headline-small">API</Text>
-      <Text typo="body-medium">See the complete public API reference for these components.</Text>
       <Column gap={0.5}>
-        {componentNames.map((componentName) => (
-          <Link
-            key={componentName}
-            href={`/docs/components-api/${componentName}`}
-            text={<Text>{'<' + componentName + '/>'}</Text>}
-            hideUnderline
-            viewProps={{ width: 'content' }}
-          />
-        ))}
+        <Text typo="headline-small">{t('docs.api.heading')}</Text>
+        <Text typo="body-medium">{t('docs.api.linkDescription')}</Text>
       </Column>
+
+      {componentNames.map((componentName) => {
+        const api = documentationComponentApi(componentName)
+
+        return (
+          <Column key={componentName} gap={0.75} width="fill">
+            <Link
+              href={`/docs/components-api/${componentName}`}
+              text={<Text typo="title-medium">{'<' + componentName + '/>'}</Text>}
+              hideUnderline
+              viewProps={{ width: 'content' }}
+            />
+            {api.usesViewProps ? (
+              <Link
+                href="/docs/components-api/View#props"
+                text={<Text typo="body-small">ViewProps</Text>}
+                hideUnderline
+                viewProps={{ width: 'content' }}
+              />
+            ) : null}
+            {api.nativeProps ? (
+              <Text typo="body-small" color="secondary">
+                {t('docs.api.nativePropsDescription')}
+              </Text>
+            ) : null}
+            {api.props.length > 0 || api.hasViewProps ? (
+              <Column width="fill" overflow="auto">
+                <DocumentationPropsTable props={api.props} includeViewProps={api.hasViewProps} />
+              </Column>
+            ) : null}
+          </Column>
+        )
+      })}
     </Column>
   )
 }

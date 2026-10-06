@@ -2,21 +2,25 @@ import { IconDeviceDesktop, IconLanguage, IconMoon, IconSun } from '@tabler/icon
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { ThemeMode } from '../index'
-import { Button, Column, Popover } from '../index'
+import { Button, Column, Grid, Popover, SegmentedButton } from '../index'
+import { type DocumentationThemeColorId, documentationThemeColors } from './documentation-theme'
 import documentationI18n, {
   type DocumentationLanguagePreference,
-  detectDocumentationLanguage,
   documentationLanguages,
 } from './i18n'
 
 export interface DocumentationControlsProps {
   themeMode: ThemeMode
   onThemeModeChange: (mode: ThemeMode) => void
+  themeColorId: DocumentationThemeColorId
+  onThemeColorChange: (id: DocumentationThemeColorId) => void
 }
 
 export function DocumentationControls({
   themeMode,
   onThemeModeChange,
+  themeColorId,
+  onThemeColorChange,
 }: DocumentationControlsProps) {
   const { t } = useTranslation()
   const [themePopoverOpen, setThemePopoverOpen] = useState(false)
@@ -27,15 +31,21 @@ export function DocumentationControls({
   const themeIcon =
     themeMode === 'light' ? IconSun : themeMode === 'dark' ? IconMoon : IconDeviceDesktop
 
-  const selectThemeMode = (mode: ThemeMode) => {
-    onThemeModeChange(mode)
+  const selectThemeMode = (selected: string | null) => {
+    if (selected === 'system' || selected === 'light' || selected === 'dark') {
+      onThemeModeChange(selected)
+      setThemePopoverOpen(false)
+    }
+  }
+
+  const selectThemeColor = (id: DocumentationThemeColorId) => {
+    onThemeColorChange(id)
     setThemePopoverOpen(false)
   }
 
   const selectLanguage = (preference: DocumentationLanguagePreference) => {
     setLanguagePreference(preference)
-    const language = preference === 'auto' ? detectDocumentationLanguage() : preference
-    void documentationI18n.changeLanguage(language)
+    void documentationI18n.changeLanguage(preference === 'auto' ? undefined : preference)
     setLanguagePopoverOpen(false)
   }
 
@@ -46,22 +56,34 @@ export function DocumentationControls({
         open={themePopoverOpen}
         onOpenChange={setThemePopoverOpen}
         content={
-          <Column gap={0.5} padding={0.5}>
-            <Button
-              text={t('docs.theme.system')}
-              pressed={themeMode === 'system'}
-              viewProps={{ onClick: () => selectThemeMode('system') }}
+          <Column gap={1} padding={0.5}>
+            <SegmentedButton
+              variant="secondary"
+              selection="single"
+              selected={themeMode}
+              onSelect={selectThemeMode}
+              items={[
+                { id: 'system', children: t('docs.theme.system') },
+                { id: 'light', children: t('docs.theme.light') },
+                { id: 'dark', children: t('docs.theme.dark') },
+              ]}
             />
-            <Button
-              text={t('docs.theme.light')}
-              pressed={themeMode === 'light'}
-              viewProps={{ onClick: () => selectThemeMode('light') }}
-            />
-            <Button
-              text={t('docs.theme.dark')}
-              pressed={themeMode === 'dark'}
-              viewProps={{ onClick: () => selectThemeMode('dark') }}
-            />
+            <Grid columns={3} gap={0.5}>
+              {documentationThemeColors.map(({ id, labelKey, seed }) => (
+                <Button
+                  key={id}
+                  text=""
+                  variant="secondary"
+                  pressed={themeColorId === id}
+                  viewProps={{
+                    width: 'fill',
+                    label: t(labelKey),
+                    style: { backgroundColor: seed },
+                    onClick: () => selectThemeColor(id),
+                  }}
+                />
+              ))}
+            </Grid>
           </Column>
         }
       >
@@ -84,10 +106,10 @@ export function DocumentationControls({
               pressed={languagePreference === 'auto'}
               viewProps={{ onClick: () => selectLanguage('auto') }}
             />
-            {documentationLanguages.map(({ code, labelKey }) => (
+            {documentationLanguages.map(({ code, label }) => (
               <Button
                 key={code}
-                text={t(labelKey)}
+                text={label}
                 pressed={languagePreference === code}
                 viewProps={{ onClick: () => selectLanguage(code) }}
               />

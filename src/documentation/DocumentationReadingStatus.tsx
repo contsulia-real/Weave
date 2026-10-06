@@ -1,4 +1,5 @@
 import { type RefObject, useLayoutEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Column, Link, Text } from '../index'
 
 interface DocumentationDirectoryItem {
@@ -21,6 +22,7 @@ function sameItems(
 }
 
 export function DocumentationReadingStatus({ contentRef }: DocumentationReadingStatusProps) {
+  const { t, i18n } = useTranslation()
   const [items, setItems] = useState<readonly DocumentationDirectoryItem[]>([])
 
   useLayoutEffect(() => {
@@ -35,7 +37,7 @@ export function DocumentationReadingStatus({ contentRef }: DocumentationReadingS
       .filter((item) => item.id.length > 0 && item.label.length > 0)
 
     setItems((current) => (sameItems(current, nextItems) ? current : nextItems))
-  }, [contentRef])
+  }, [contentRef, i18n.resolvedLanguage])
 
   if (items.length === 0) return null
 
@@ -58,9 +60,9 @@ export function DocumentationReadingStatus({ contentRef }: DocumentationReadingS
       }}
     >
       <Text bold typo="body-large">
-        CONTENTS
+        {t('docs.contents')}
       </Text>
-      <Column gap={0.75} padding={2} width={12}>
+      <Column gap={0.75} width={12}>
         {items.map((item) => (
           <Link
             key={item.id}

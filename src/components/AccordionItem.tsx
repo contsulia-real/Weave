@@ -2,12 +2,8 @@ import type { AccordionItemProps } from '../core/accordion-types'
 import { AccordionItemContext, useAccordionContext } from './internal/accordion-context'
 import { View } from './View'
 
-export function AccordionItem({
-  value,
-  children,
-  disabled = false,
-  viewProps = {},
-}: AccordionItemProps) {
+export function AccordionItem(props: AccordionItemProps): import('react').JSX.Element {
+  const { value, children, disabled = false, viewProps = {} } = props
   const accordion = useAccordionContext('AccordionItem')
   const resolvedDisabled = accordion.disabled || disabled
   const open = accordion.isOpen(value)

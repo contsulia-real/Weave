@@ -6,13 +6,8 @@ import { chevronDownIcon, chevronRightIcon } from './internal/control-icons'
 import { renderIconSource } from './internal/render-icon-source'
 import { useViewHost } from './internal/use-view-host'
 
-export function AccordionTrigger({
-  children,
-  singleLine = false,
-  expandIcon,
-  collapseIcon,
-  viewProps = {},
-}: AccordionTriggerProps) {
+export function AccordionTrigger(props: AccordionTriggerProps): import('react').JSX.Element {
+  const { children, singleLine = false, expandIcon, collapseIcon, viewProps = {} } = props
   const accordion = useAccordionContext('AccordionTrigger')
   const item = useAccordionItemContext('AccordionTrigger')
   const open = accordion.isOpen(item.value)

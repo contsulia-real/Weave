@@ -1,0 +1,197 @@
+{
+  "version": 1,
+  "tasks": [
+    {
+      "id": "login-form",
+      "prompt": "Create a login form with email and password fields, labels, descriptions/errors, and a submit action.",
+      "requiredComponents": ["Form", "FormField", "FormLabel", "Input", "Button"],
+      "forbiddenComponents": ["View"]
+    },
+    {
+      "id": "search-projects",
+      "prompt": "Create a searchable editable project picker from a predefined list.",
+      "requiredComponents": ["Combobox"],
+      "forbiddenComponents": ["Select", "View"]
+    },
+    {
+      "id": "fixed-country-select",
+      "prompt": "Create a country picker where users must choose one predefined country and cannot enter arbitrary text.",
+      "requiredComponents": ["Select"],
+      "forbiddenComponents": ["Combobox", "View"]
+    },
+    {
+      "id": "profile-note",
+      "prompt": "Create a multiline profile note editor.",
+      "requiredComponents": ["Input"],
+      "forbiddenComponents": ["View"]
+    },
+    {
+      "id": "primary-action",
+      "prompt": "Create a primary Save action.",
+      "requiredComponents": ["Button"],
+      "forbiddenComponents": ["Link", "View"]
+    },
+    {
+      "id": "navigation-link",
+      "prompt": "Create navigation to the account settings page.",
+      "requiredComponents": ["Link"],
+      "forbiddenComponents": ["Button", "View"]
+    },
+    {
+      "id": "vertical-settings",
+      "prompt": "Arrange several settings controls in a vertical sequence.",
+      "requiredComponents": ["Column"],
+      "forbiddenComponents": ["View"]
+    },
+    {
+      "id": "horizontal-actions",
+      "prompt": "Arrange Cancel and Save actions horizontally.",
+      "requiredComponents": ["Row"],
+      "forbiddenComponents": ["View"]
+    },
+    {
+      "id": "dashboard-grid",
+      "prompt": "Create a two-dimensional dashboard of cards.",
+      "requiredComponents": ["Grid", "Card"],
+      "forbiddenComponents": ["View"]
+    },
+    {
+      "id": "overlap-badge",
+      "prompt": "Overlay a status badge on another piece of content.",
+      "requiredComponents": ["Stack", "Badge"],
+      "forbiddenComponents": ["View"]
+    },
+    {
+      "id": "positioned-decoration",
+      "prompt": "Create a positioned child inside a layout using Weave's positioned layout component.",
+      "requiredComponents": ["Absolute"],
+      "forbiddenComponents": ["View"]
+    },
+    {
+      "id": "simple-table",
+      "prompt": "Render semantic tabular data with a header and body but no sorting or virtualization.",
+      "requiredComponents": ["Table"],
+      "forbiddenComponents": ["DataGrid", "View"]
+    },
+    {
+      "id": "sortable-grid",
+      "prompt": "Render a data table with sorting, column resizing, row selection, and virtualization.",
+      "requiredComponents": ["DataGrid"],
+      "forbiddenComponents": ["Table", "View"]
+    },
+    {
+      "id": "help-hint",
+      "prompt": "Show a brief non-interactive explanation when a user hovers or focuses an icon.",
+      "requiredComponents": ["ToolTip"],
+      "forbiddenComponents": ["Popover", "View"]
+    },
+    {
+      "id": "anchored-actions",
+      "prompt": "Show interactive anchored content with several actions next to a trigger.",
+      "requiredComponents": ["Popover"],
+      "forbiddenComponents": ["ToolTip", "View"]
+    },
+    {
+      "id": "confirm-dialog",
+      "prompt": "Open a focused confirmation dialog for deleting an account.",
+      "requiredComponents": ["Dialog", "Button"],
+      "forbiddenComponents": ["View"]
+    },
+    {
+      "id": "settings-drawer",
+      "prompt": "Open an edge-attached settings panel.",
+      "requiredComponents": ["Drawer"],
+      "forbiddenComponents": ["View"]
+    },
+    {
+      "id": "command-menu",
+      "prompt": "Build a keyboard-navigable command menu with menu items.",
+      "requiredComponents": ["Menu", "MenuItem"],
+      "forbiddenComponents": ["View"]
+    },
+    {
+      "id": "exit-motion",
+      "prompt": "Animate content out and keep it mounted until its exit motion completes.",
+      "requiredComponents": ["Presence"],
+      "forbiddenComponents": ["View"]
+    },
+    {
+      "id": "accordion-faq",
+      "prompt": "Build an FAQ disclosure list with accordion items, triggers, and panels.",
+      "requiredComponents": ["Accordion", "AccordionItem", "AccordionTrigger", "AccordionPanel"],
+      "forbiddenComponents": ["View"]
+    },
+    {
+      "id": "tabs-settings",
+      "prompt": "Build settings tabs with a tab list, tabs, and tab panels.",
+      "requiredComponents": ["Tabs", "TabList", "Tab", "TabPanel"],
+      "forbiddenComponents": ["View"]
+    },
+    {
+      "id": "single-choice-form",
+      "prompt": "Show a small visible form choice where exactly one option is selected.",
+      "requiredComponents": ["Radio"],
+      "forbiddenComponents": ["SegmentedButton", "View"]
+    },
+    {
+      "id": "mode-switcher",
+      "prompt": "Create a compact three-way view mode switcher.",
+      "requiredComponents": ["SegmentedButton"],
+      "forbiddenComponents": ["Radio", "View"]
+    },
+    {
+      "id": "loading-state",
+      "prompt": "Show an indeterminate loading state while work is running.",
+      "requiredComponents": ["Progress"],
+      "forbiddenComponents": ["View"]
+    },
+    {
+      "id": "loading-placeholder",
+      "prompt": "Show a visual placeholder while a content card is loading.",
+      "requiredComponents": ["Skeleton"],
+      "forbiddenComponents": ["View"]
+    },
+    {
+      "id": "range-filter",
+      "prompt": "Create a min/max numeric range filter with two thumbs.",
+      "requiredComponents": ["RangeSlider"],
+      "forbiddenComponents": ["Slider", "View"]
+    },
+    {
+      "id": "boolean-setting",
+      "prompt": "Create an on/off notification setting.",
+      "requiredComponents": ["Switch"],
+      "forbiddenComponents": ["View"]
+    },
+    {
+      "id": "check-consent",
+      "prompt": "Create a consent checkbox in a form.",
+      "requiredComponents": ["Checkbox"],
+      "forbiddenComponents": ["View"]
+    },
+    {
+      "id": "toast-feedback",
+      "prompt": "Show transient application feedback using Weave's snack system.",
+      "anyOfComponents": ["Snack", "SnackProvider"],
+      "forbiddenComponents": ["View"]
+    },
+    {
+      "id": "responsive-layout",
+      "prompt": "Create a responsive content layout using formal Weave layout components rather than the low-level primitive.",
+      "anyOfComponents": ["Column", "Row", "Flex", "Grid"],
+      "forbiddenComponents": ["View"]
+    },
+    {
+      "id": "themed-app",
+      "prompt": "Wrap an application in Weave's theme provider.",
+      "requiredComponents": ["ThemeProvider"],
+      "forbiddenComponents": ["View"]
+    },
+    {
+      "id": "avatar-list",
+      "prompt": "Create a list of users with avatars and list items.",
+      "requiredComponents": ["List", "ListItem", "Avatar"],
+      "forbiddenComponents": ["View"]
+    }
+  ]
+}

@@ -3,7 +3,8 @@ import { useTheme } from '../theme/theme-context'
 import { useRequiredFormFieldContext } from './internal/form-field-context'
 import { Text } from './Text'
 
-export function FormError({ children, viewProps = {} }: FormErrorProps) {
+export function FormError(props: FormErrorProps): import('react').JSX.Element {
+  const { children, viewProps = {} } = props
   const field = useRequiredFormFieldContext('FormError')
   const { theme } = useTheme()
   const typo = theme.components.Form?.base?.errorTypo

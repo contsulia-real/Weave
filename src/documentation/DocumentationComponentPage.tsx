@@ -1,18 +1,22 @@
-import { useRef } from 'react'
+import { IconArrowLeft, IconArrowRight } from '@tabler/icons-react'
+import { Suspense, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Card, Column, Flex, Icon, Row, Text } from '../index'
 import { DocumentationComponentApiLink } from './DocumentationComponentApiLink'
-import { DocumentationComponentExampleCard } from './DocumentationComponentExampleCard'
+import { DocumentationComponentExample } from './DocumentationComponentExampleCard'
 import { DocumentationReadingStatus } from './DocumentationReadingStatus'
 import { documentationComponentDocumentation } from './documentation-component-examples'
+import { documentationCopy } from './documentation-copy'
+import { documentationDemo } from './documentation-demo-registry'
 import { documentationAdjacentComponentNames } from './documentation-navigation-data'
 import { useDocsRoute } from './router'
-import { IconArrowLeft, IconArrowRight } from '@tabler/icons-react'
 
 export interface DocumentationComponentPageProps {
   componentName: string
 }
 
 export function DocumentationComponentPage({ componentName }: DocumentationComponentPageProps) {
+  const { t } = useTranslation(['translation', 'copy'])
   const definition = documentationComponentDocumentation(componentName)
   const contentRef = useRef<HTMLDivElement>(null)
   const apiComponents = definition.apiComponents ?? [componentName]
@@ -32,28 +36,37 @@ export function DocumentationComponentPage({ componentName }: DocumentationCompo
       <Column ref={contentRef} grow={1} minWidth={0} width="fill" maxWidth={52} gap={3}>
         <Column width="fill" gap={0.75}>
           <Text typo="display-medium">{componentName}</Text>
-          <Text typo="body-large">{definition.description}</Text>
+          <Text typo="body-large">{documentationCopy(t, definition.description)}</Text>
         </Column>
 
-        {definition.examples.map((example) => (
-          <Column
-            key={example.id}
-            id={example.id}
-            data={{
-              'weave-doc-section': '',
-              'weave-doc-section-label': example.title,
-            }}
-            width="fill"
-            minWidth={0}
-            gap={1}
-          >
-            <Text typo="headline-small">{example.title}</Text>
-            {example.description === undefined ? null : (
-              <Text typo="body-medium">{example.description}</Text>
-            )}
-            <DocumentationComponentExampleCard code={example.code} codeMode={example.codeMode} />
-          </Column>
-        ))}
+        {definition.examples.map((example) => {
+          const demo = documentationDemo(example.demo)
+          const title = documentationCopy(t, example.title)
+          const description =
+            typeof example.description === 'string'
+              ? documentationCopy(t, example.description)
+              : example.description
+
+          return (
+            <Column
+              key={example.demo}
+              id={example.id}
+              data={{
+                'weave-doc-section': '',
+                'weave-doc-section-label': title,
+              }}
+              width="fill"
+              minWidth={0}
+              gap={1}
+            >
+              <Text typo="headline-small">{title}</Text>
+              {description === undefined ? null : <Text typo="body-medium">{description}</Text>}
+              <Suspense fallback={null}>
+                <DocumentationComponentExample demo={demo} />
+              </Suspense>
+            </Column>
+          )
+        })}
 
         {apiComponents.length > 0 ? (
           <DocumentationComponentApiLink componentNames={apiComponents} />
@@ -75,15 +88,14 @@ export function DocumentationComponentPage({ componentName }: DocumentationCompo
                     },
             }}
           >
-            <Row gap={1} align='center' justify='start'>
-
-              <IconArrowLeft size={36}/>
-            <Column gap={0.25}>
-              <Text typo="label-medium" color="secondary">
-                Previous component
-              </Text>
-              <Text typo="title-medium">{adjacent.previous ?? '—'}</Text>
-            </Column>
+            <Row gap={1} align="center" justify="start">
+              <Icon icon={IconArrowLeft} size="large" />
+              <Column gap={0.25}>
+                <Text typo="label-medium" color="secondary">
+                  {t('docs.component.previous')}
+                </Text>
+                <Text typo="title-medium">{adjacent.previous ?? '—'}</Text>
+              </Column>
             </Row>
           </Card>
 
@@ -102,15 +114,14 @@ export function DocumentationComponentPage({ componentName }: DocumentationCompo
                     },
             }}
           >
-            <Row gap={1} align='center' justify='end'>
-
-            <Column gap={0.25} align='end'>
-              <Text typo="label-medium" color="secondary">
-                Next component
-              </Text>
-              <Text typo="title-medium">{adjacent.next ?? '—'}</Text>
-            </Column>
-              <IconArrowRight size={36}/>
+            <Row gap={1} align="center" justify="end">
+              <Column gap={0.25} align="end">
+                <Text typo="label-medium" color="secondary">
+                  {t('docs.component.next')}
+                </Text>
+                <Text typo="title-medium">{adjacent.next ?? '—'}</Text>
+              </Column>
+              <Icon icon={IconArrowRight} size="large" />
             </Row>
           </Card>
         </Flex>

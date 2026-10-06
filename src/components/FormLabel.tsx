@@ -3,7 +3,8 @@ import { useTheme } from '../theme/theme-context'
 import { useRequiredFormFieldContext } from './internal/form-field-context'
 import { Text } from './Text'
 
-export function FormLabel({ children, viewProps = {} }: FormLabelProps) {
+export function FormLabel(props: FormLabelProps): import('react').JSX.Element {
+  const { children, viewProps = {} } = props
   const field = useRequiredFormFieldContext('FormLabel')
   const { theme } = useTheme()
   const typo = theme.components.Form?.base?.labelTypo

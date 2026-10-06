@@ -1,0 +1,196 @@
+{
+  "version": 1,
+  "generatedContract": {
+    "api": "src/index.ts + src/documentation/generated/documentation-component-api.json",
+    "examples": "src/documentation/demos/**/*.tsx",
+    "documentation": "src/documentation/documentation-component-examples*.tsx",
+    "design": "Weave UI.md",
+    "theme": "src/theme/default-theme.ts"
+  },
+  "decisionGuide": [
+    {
+      "id": "action-vs-navigation",
+      "intent": "Trigger an in-place action versus navigate to another location.",
+      "recommended": ["Button", "Link"],
+      "rule": "Use Button for actions. Use Link for navigation."
+    },
+    {
+      "id": "text-entry-vs-choice",
+      "intent": "Collect free-form text versus choose from known values.",
+      "recommended": ["Input", "Select", "Combobox"],
+      "rule": "Use Input for free-form text, Select for a known non-editable option set, and Combobox when editable/searchable text is part of option selection."
+    },
+    {
+      "id": "small-visible-choice",
+      "intent": "Choose from a small option set that should remain visible.",
+      "recommended": ["Radio", "SegmentedButton"],
+      "rule": "Use Radio for form choice semantics. Use SegmentedButton for compact mutually exclusive view/action modes."
+    },
+    {
+      "id": "layout-axis",
+      "intent": "Arrange content vertically, horizontally, generically with flex, in two dimensions, overlapped, or positioned.",
+      "recommended": ["Column", "Row", "Flex", "Grid", "Stack", "Absolute"],
+      "rule": "Prefer Column for vertical sequences, Row for horizontal sequences, Grid for two-dimensional layout, Stack for overlap, Absolute for positioned children, and Flex only when the axis is genuinely generic or dynamic."
+    },
+    {
+      "id": "view-boundary",
+      "intent": "Build ordinary application layout.",
+      "recommended": ["Column", "Row", "Flex", "Grid", "Stack", "Absolute"],
+      "avoid": ["View"],
+      "rule": "Do not use View for normal application layout. View is the component-author primitive and the View documentation demo exception."
+    },
+    {
+      "id": "data-table",
+      "intent": "Render tabular data with or without data-grid behavior.",
+      "recommended": ["Table", "DataGrid"],
+      "rule": "Use Table for semantic tabular composition. Use DataGrid when sorting, resizing, selection, or virtualization is required."
+    },
+    {
+      "id": "overlay-choice",
+      "intent": "Choose between hint, anchored interactive surface, dialog, drawer, or menu.",
+      "recommended": ["ToolTip", "Popover", "Dialog", "Drawer", "Menu"],
+      "rule": "Use ToolTip for brief non-interactive hints, Popover for anchored interactive content, Dialog for a focused dialog surface, Drawer for edge-attached panels, and Menu for command/menu navigation semantics."
+    },
+    {
+      "id": "motion-presence",
+      "intent": "Keep exiting content mounted while exit motion completes.",
+      "recommended": ["Presence"],
+      "rule": "Use Presence for enter/exit mount lifecycle. Do not build a parallel exit-presence mechanism."
+    },
+    {
+      "id": "form-composition",
+      "intent": "Associate labels, descriptions, errors, fields, fieldsets, and legends.",
+      "recommended": [
+        "Form",
+        "FormField",
+        "FormLabel",
+        "FormDescription",
+        "FormError",
+        "FormFieldset",
+        "FormLegend"
+      ],
+      "rule": "Use Weave form composition instead of manually duplicating label/description/error association logic."
+    }
+  ],
+  "components": {
+    "View": {
+      "intent": "Low-level public construction primitive for component authors and framework infrastructure.",
+      "preferWhen": ["authoring a new Weave-style component", "the View documentation demo"],
+      "avoidWhen": [
+        "ordinary application layout",
+        "documentation page layout",
+        "examples other than the View demo"
+      ],
+      "alternatives": ["Column", "Row", "Flex", "Grid", "Stack", "Absolute"]
+    },
+    "Input": {
+      "intent": "Single-line or multiline free-form native text input.",
+      "preferWhen": ["the user types arbitrary text", "notes or multiline free-form content"],
+      "avoidWhen": ["the user must choose only from known options"],
+      "alternatives": ["Select", "Combobox"]
+    },
+    "Select": {
+      "intent": "Single-value selection from a known option set without editable text entry.",
+      "preferWhen": ["options are predefined", "arbitrary text must not be entered"],
+      "avoidWhen": ["searchable editable text is part of the interaction"],
+      "alternatives": ["Combobox", "Radio"]
+    },
+    "Combobox": {
+      "intent": "Searchable/editable single-value listbox that combines text input with option selection.",
+      "preferWhen": ["users search a known option set", "editable text drives filtering"],
+      "avoidWhen": ["a simple non-editable known option set is sufficient"],
+      "alternatives": ["Select", "Input"]
+    },
+    "Radio": {
+      "intent": "Visible single-choice form control.",
+      "preferWhen": ["a small option set should remain visible", "form choice semantics matter"],
+      "alternatives": ["Select", "SegmentedButton"]
+    },
+    "SegmentedButton": {
+      "intent": "Compact mutually exclusive segmented actions or modes.",
+      "preferWhen": ["switching a small set of modes or views"],
+      "avoidWhen": ["the control is primarily a form field choice"],
+      "alternatives": ["Radio"]
+    },
+    "Button": {
+      "intent": "Trigger an action.",
+      "avoidWhen": ["the intent is navigation"],
+      "alternatives": ["Link"]
+    },
+    "Link": {
+      "intent": "Navigate to another location.",
+      "avoidWhen": ["the intent is an in-place action"],
+      "alternatives": ["Button"]
+    },
+    "Column": {
+      "intent": "Vertical sequence layout.",
+      "preferWhen": ["children form a vertical sequence"],
+      "alternatives": ["Row", "Flex", "Grid"]
+    },
+    "Row": {
+      "intent": "Horizontal sequence layout.",
+      "preferWhen": ["children form a horizontal sequence"],
+      "alternatives": ["Column", "Flex", "Grid"]
+    },
+    "Flex": {
+      "intent": "Generic flex layout when Row or Column would not express the intended axis clearly.",
+      "avoidWhen": [
+        "a fixed vertical sequence can use Column",
+        "a fixed horizontal sequence can use Row"
+      ],
+      "alternatives": ["Column", "Row"]
+    },
+    "Grid": {
+      "intent": "Two-dimensional grid layout.",
+      "preferWhen": ["both rows and columns matter"]
+    },
+    "Stack": {
+      "intent": "Overlapping layout.",
+      "preferWhen": ["children intentionally occupy the same grid area or overlap"]
+    },
+    "Absolute": {
+      "intent": "Position children with absolute-layout semantics.",
+      "preferWhen": ["explicit positioned-child layout is required"]
+    },
+    "Table": {
+      "intent": "Semantic tabular content composed from public table subcomponents.",
+      "avoidWhen": ["sorting, resizing, selection, or virtualization is required"],
+      "alternatives": ["DataGrid"]
+    },
+    "DataGrid": {
+      "intent": "Interactive data table with data-grid behaviors.",
+      "preferWhen": [
+        "sorting is required",
+        "column resizing is required",
+        "selection is required",
+        "virtualization is required"
+      ],
+      "alternatives": ["Table"]
+    },
+    "ToolTip": {
+      "intent": "Brief anchored non-interactive explanatory hint.",
+      "avoidWhen": ["interactive anchored content is required"],
+      "alternatives": ["Popover"]
+    },
+    "Popover": {
+      "intent": "Anchored interactive overlay surface.",
+      "alternatives": ["ToolTip", "Dialog", "Menu"]
+    },
+    "Dialog": {
+      "intent": "Focused dialog surface, modal or non-modal according to its API.",
+      "alternatives": ["Popover", "Drawer"]
+    },
+    "Drawer": {
+      "intent": "Edge-attached panel with drawer semantics.",
+      "alternatives": ["Dialog"]
+    },
+    "Menu": {
+      "intent": "Menu/command surface with menu-item keyboard semantics.",
+      "alternatives": ["Popover", "Select"]
+    },
+    "Presence": {
+      "intent": "Enter/exit mount lifecycle orchestration without producing its own DOM.",
+      "preferWhen": ["exit content must remain mounted until exit motion completes"]
+    }
+  }
+}

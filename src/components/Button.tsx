@@ -42,7 +42,7 @@ function semanticContent(props: ButtonProps) {
   )
 }
 
-export function Button(props: ButtonProps) {
+export function Button(props: ButtonProps): import('react').JSX.Element {
   const {
     type = 'button',
     variant = 'primary',

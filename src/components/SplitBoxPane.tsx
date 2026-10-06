@@ -6,7 +6,8 @@ import { useViewHost } from './internal/use-view-host'
 
 const splitBoxPaneOverflowIntent = {}
 
-export function SplitBoxPane({ children, viewProps = {} }: SplitBoxPaneProps) {
+export function SplitBoxPane(props: SplitBoxPaneProps): import('react').JSX.Element {
+  const { children, viewProps = {} } = props
   const pane = useSplitBoxPaneContext()
   const hostProps: ViewProps<HTMLDivElement> = {
     ...viewProps,

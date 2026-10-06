@@ -120,7 +120,7 @@ function assertPaneChildren(children: SplitBoxProps['children']): [ReactElement,
   return items as [ReactElement, ReactElement]
 }
 
-export function SplitBox(props: SplitBoxProps) {
+export function SplitBox(props: SplitBoxProps): import('react').JSX.Element {
   const {
     children,
     direction = 'horizontal',

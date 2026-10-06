@@ -19,13 +19,8 @@ function resolvedMarks(
   return merged.sort((a, b) => a.flag - b.flag)
 }
 
-export function MarkSlider({
-  marks,
-  restricted = false,
-  min = 0,
-  max = 100,
-  ...props
-}: MarkSliderProps) {
+export function MarkSlider(props: MarkSliderProps): import('react').JSX.Element {
+  const { marks, restricted = false, min = 0, max = 100, ...sliderProps } = props
   const mergedMarks = useMemo(() => resolvedMarks(marks, min, max), [marks, max, min])
   const points = useMemo(
     () => mergedMarks.map((mark) => ({ value: mark.flag, label: mark.label })),
@@ -38,7 +33,7 @@ export function MarkSlider({
 
   return (
     <SingleSlider
-      {...props}
+      {...sliderProps}
       min={min}
       max={max}
       points={points}

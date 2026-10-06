@@ -35,7 +35,8 @@ function sameRect(previous: IndicatorRect | null, next: IndicatorRect): boolean 
   )
 }
 
-export function TabList({ children, viewProps = {} }: TabListProps) {
+export function TabList(props: TabListProps): import('react').JSX.Element {
+  const { children, viewProps = {} } = props
   const context = useTabsContext('TabList')
   const { theme } = useTheme()
   const inputThemeClassName = useRuntimeStyleClass('input-theme', resolveInputTheme(theme))

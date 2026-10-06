@@ -1,0 +1,28 @@
+# Weave
+
+> Browser-native React UI framework with semantic components, real DOM, and CSS.
+
+## Imports
+- Root application/theme runtime: `@contsulia/weave`.
+- Components: `@contsulia/weave/components/<ComponentName>`.
+- `ThemeProvider` is a root runtime export and imports from `@contsulia/weave`.
+- `@contsulia/weave/components/internal/*` is package-private.
+
+## LLM resources
+- `DESIGN.md` — generated concise design contract.
+- `ai/generated/framework.json` — package and framework contract.
+- `ai/generated/components.json` — component intent, imports, props, relationships, and examples.
+- `ai/generated/examples.json` — real Documentation demo source.
+- `ai/generated/theme.json` — default Theme projection.
+
+## Agent workflow
+1. Search by intent.
+2. Read the component contract and a real example.
+3. Generate package-correct imports.
+4. Run `pnpm ai:check -- <files>`.
+5. Use `pnpm ai:mcp` from MCP-capable clients.
+
+Authoritative design: `Weave UI.md`.
+Public API: `src/index.ts`.
+Root runtime: `src/package.ts`.
+Real examples: `src/documentation/demos/**/*.tsx`.

@@ -2,7 +2,8 @@ import type { TableHeaderProps } from '../core/table-types'
 import { TableSectionContext } from './internal/table-context'
 import { useViewHost } from './internal/use-view-host'
 
-export function TableHeader({ children, viewProps = {} }: TableHeaderProps) {
+export function TableHeader(props: TableHeaderProps): import('react').JSX.Element {
+  const { children, viewProps = {} } = props
   const { elementRef, className, inlineStyle, resolved } = useViewHost(viewProps)
 
   return (

@@ -49,31 +49,32 @@ import { usePopoverPosition } from './internal/use-popover-position'
 import { Text } from './Text'
 import { View } from './View'
 
-export function Combobox({
-  children,
-  value,
-  defaultValue = null,
-  onValueChange,
-  inputValue,
-  defaultInputValue,
-  onInputValueChange,
-  filter,
-  emptyContent = 'No options',
-  placeholder,
-  name,
-  disabled = false,
-  clearable = true,
-  clearLabel = 'Clear selection',
-  placement = 'bottom-left',
-  offset,
-  overlapTrigger = false,
-  viewportPadding = 0.5,
-  open,
-  defaultOpen = false,
-  onOpenChange,
-  viewProps = {},
-  listboxViewProps = {},
-}: ComboboxProps) {
+export function Combobox(props: ComboboxProps): import('react').JSX.Element {
+  const {
+    children,
+    value,
+    defaultValue = null,
+    onValueChange,
+    inputValue,
+    defaultInputValue,
+    onInputValueChange,
+    filter,
+    emptyContent = 'No options',
+    placeholder,
+    name,
+    disabled = false,
+    clearable = true,
+    clearLabel = 'Clear selection',
+    placement = 'bottom-left',
+    offset,
+    overlapTrigger = false,
+    viewportPadding = 0.5,
+    open,
+    defaultOpen = false,
+    onOpenChange,
+    viewProps = {},
+    listboxViewProps = {},
+  } = props
   const entries = useMemo(() => comboboxOptionEntries(children), [children])
   const options = useMemo(() => comboboxOptionDescriptors(entries), [entries])
 

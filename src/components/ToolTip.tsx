@@ -13,17 +13,18 @@ import { useToolTipPosition } from './internal/use-tooltip-position'
 import { Text } from './Text'
 import { View } from './View'
 
-export function ToolTip({
-  children,
-  content,
-  placement = 'top',
-  delay = 500,
-  offset = 0.5,
-  open,
-  defaultOpen = false,
-  onOpenChange,
-  viewProps = {},
-}: ToolTipProps) {
+export function ToolTip(props: ToolTipProps): import('react').JSX.Element {
+  const {
+    children,
+    content,
+    placement = 'top',
+    delay = 500,
+    offset = 0.5,
+    open,
+    defaultOpen = false,
+    onOpenChange,
+    viewProps = {},
+  } = props
   const { value: resolvedOpen, request: requestOpen } = useControllableBoolean(
     open,
     defaultOpen,

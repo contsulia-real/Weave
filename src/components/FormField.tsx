@@ -21,14 +21,8 @@ function hasContent(value: FormFieldProps['description'] | FormFieldProps['error
   return value !== undefined && value !== null && value !== false && value !== ''
 }
 
-export function FormField({
-  children,
-  label,
-  description,
-  error,
-  required = false,
-  viewProps = {},
-}: FormFieldProps) {
+export function FormField(props: FormFieldProps): import('react').JSX.Element {
+  const { children, label, description, error, required = false, viewProps = {} } = props
   const baseId = useId().replace(/:/g, '')
   const hasExplicitLabel = hasDirectChild(children, FormLabel)
   const hasExplicitDescription = hasDirectChild(children, FormDescription)

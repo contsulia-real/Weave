@@ -13,6 +13,7 @@ export { Code } from './components/Code'
 export { Column } from './components/Column'
 export { Combobox } from './components/Combobox'
 export { ComboboxOption } from './components/ComboboxOption'
+export { DataGrid } from './components/DataGrid'
 export { Dialog } from './components/Dialog'
 export { Divider } from './components/Divider'
 export { Drawer } from './components/Drawer'
@@ -41,6 +42,7 @@ export { Progress } from './components/Progress'
 export { Radio } from './components/Radio'
 export { RangeSlider } from './components/RangeSlider'
 export { Row } from './components/Row'
+export { SegmentedButton } from './components/SegmentedButton'
 export { Select } from './components/Select'
 export { SelectOption } from './components/SelectOption'
 export { Skeleton } from './components/Skeleton'
@@ -137,6 +139,14 @@ export type {
   ComboboxProps,
   ComboboxValue,
 } from './core/combobox-types'
+export type {
+  DataGridColumn,
+  DataGridColumnWidths,
+  DataGridProps,
+  DataGridRow,
+  DataGridSort,
+  DataGridSortDirection,
+} from './core/data-grid-types'
 export type {
   DialogProps,
   DialogViewProps,
@@ -265,9 +275,17 @@ export type {
   ProgressViewProps,
 } from './core/progress-types'
 export type {
+  BreakpointRegistry,
+  ColorTokenRegistry,
   RegisteredBreakpointName,
   RegisteredColorTokenName,
 } from './core/registry-types'
+export type {
+  SegmentedButtonItem,
+  SegmentedButtonProps,
+  SegmentedButtonSelection,
+  SegmentedButtonViewProps,
+} from './core/segmented-button-types'
 export type {
   SelectIcon,
   SelectListboxViewProps,

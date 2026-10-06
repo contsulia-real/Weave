@@ -14,11 +14,11 @@ import {
 } from './internal/list-content'
 import { ListContext } from './internal/list-context'
 import { useListFocus } from './internal/use-list-focus'
-import { useListSelection } from './internal/use-list-selection'
+import { useSelection } from './internal/use-selection'
 import { VirtualListWindow } from './internal/VirtualListWindow'
 import { View } from './View'
 
-export function List(props: ListProps) {
+export function List(props: ListProps): import('react').JSX.Element {
   const {
     disabled = false,
     orientation = 'vertical',
@@ -45,7 +45,7 @@ export function List(props: ListProps) {
     [descriptors, disabled],
   )
 
-  const { selection, selectedIds, selectItem } = useListSelection(props, enabledIds)
+  const { selection, selectedIds, selectItem } = useSelection(props, enabledIds)
   const { focusId, setFocusId, moveFocus } = useListFocus(enabledIds, selectedIds, rootRef)
 
   const contextValue = useMemo(

@@ -30,24 +30,25 @@ import { useFormReset } from './internal/use-form-reset'
 import { useSliderInteraction } from './internal/use-slider-interaction'
 import { useViewHost } from './internal/use-view-host'
 
-export function RangeSlider({
-  value,
-  defaultValue,
-  onChange,
-  startName,
-  endName,
-  startLabel,
-  endLabel,
-  min = 0,
-  max = 100,
-  step: stepProp,
-  disabled = false,
-  label,
-  size = 'medium',
-  direction = 'horizontal',
-  inverse = false,
-  viewProps = {},
-}: RangeSliderProps) {
+export function RangeSlider(props: RangeSliderProps): import('react').JSX.Element {
+  const {
+    value,
+    defaultValue,
+    onChange,
+    startName,
+    endName,
+    startLabel,
+    endLabel,
+    min = 0,
+    max = 100,
+    step: stepProp,
+    disabled = false,
+    label,
+    size = 'medium',
+    direction = 'horizontal',
+    inverse = false,
+    viewProps = {},
+  } = props
   useInsertionEffect(ensureSliderStylesheet, [])
 
   const { theme, reducedMotion } = useTheme()

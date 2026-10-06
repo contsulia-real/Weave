@@ -69,7 +69,7 @@ function viewMayScroll(
   )
 }
 
-export function View(props: ViewProps<HTMLDivElement>) {
+export function View(props: ViewProps<HTMLDivElement>): import('react').JSX.Element {
   const { children } = props
   const { theme } = useTheme()
   const { elementRef, className, inlineStyle, resolved } = useViewHost(

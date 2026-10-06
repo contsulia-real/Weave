@@ -1,70 +1,77 @@
 import i18n from 'i18next'
+import LanguageDetector from 'i18next-browser-languagedetector'
 import { initReactI18next } from 'react-i18next'
+import { documentationTranslationResources } from './documentation-translations'
+import copyTranslations from './locales/documentation-copy.json'
 
 export const documentationLanguages = [
-  {
-    code: 'en',
-    labelKey: 'docs.language.english',
-  },
+  { code: 'en', label: 'English' },
+  { code: 'zh-CN', label: '简体中文' },
+  { code: 'zh-TW', label: '繁體中文' },
+  { code: 'fr', label: 'Français' },
 ] as const
 
 export type DocumentationLanguage = (typeof documentationLanguages)[number]['code']
 export type DocumentationLanguagePreference = 'auto' | DocumentationLanguage
 
-const supportedLanguages = new Set<DocumentationLanguage>(
-  documentationLanguages.map(({ code }) => code),
-)
-
-export function detectDocumentationLanguage(): DocumentationLanguage {
-  if (typeof navigator !== 'undefined') {
-    for (const language of navigator.languages) {
-      const base = language.toLowerCase().split('-')[0] as DocumentationLanguage
-      if (supportedLanguages.has(base)) return base
-    }
-  }
-
-  return 'en'
+type CopyTranslation = {
+  'zh-CN': string
+  'zh-TW': string
+  fr: string
 }
 
-void i18n.use(initReactI18next).init({
-  lng: detectDocumentationLanguage(),
-  fallbackLng: 'en',
-  supportedLngs: documentationLanguages.map(({ code }) => code),
-  load: 'languageOnly',
-  interpolation: {
-    escapeValue: false,
-  },
-  resources: {
-    en: {
-      translation: {
-        'docs.title': 'Weave',
-        'docs.navigation': 'Documentation navigation',
-        'docs.menu': 'Toggle navigation',
-        'docs.search': 'Search documentation',
-        'docs.theme': 'Theme mode',
-        'docs.theme.system': 'System',
-        'docs.theme.light': 'Light',
-        'docs.theme.dark': 'Dark',
-        'docs.language': 'Language',
-        'docs.language.auto': 'Auto detect',
-        'docs.language.english': 'English',
-        'docs.nav.overview': 'Overview',
-        'docs.nav.gettingStarted': 'Getting Started',
-        'docs.nav.installation': 'Installation',
-        'docs.nav.weaveAZ': 'Weave A-Z',
-        'docs.nav.foundation': 'Foundation',
-        'docs.nav.contentActions': 'Content and actions',
-        'docs.nav.formsStatus': 'Forms and status',
-        'docs.nav.compositeUI': 'Composite UI',
-        'docs.nav.themeApplication': 'Theme and application',
-        'docs.nav.componentsApi': 'Components API',
-        'docs.route.overview': 'Documentation',
-        'docs.route.components': 'Components',
-        'docs.route.placeholder': 'Documentation page framework',
-        'docs.drawer.search': 'Search Weave',
-      },
+const copyResources = {
+  en: Object.fromEntries(Object.keys(copyTranslations).map((key) => [key, key])),
+  'zh-CN': Object.fromEntries(
+    Object.entries(copyTranslations).map(([key, value]) => [
+      key,
+      (value as CopyTranslation)['zh-CN'],
+    ]),
+  ),
+  'zh-TW': Object.fromEntries(
+    Object.entries(copyTranslations).map(([key, value]) => [
+      key,
+      (value as CopyTranslation)['zh-TW'],
+    ]),
+  ),
+  fr: Object.fromEntries(
+    Object.entries(copyTranslations).map(([key, value]) => [key, (value as CopyTranslation).fr]),
+  ),
+}
+
+const applyDocumentLanguage = (language: string | undefined) => {
+  if (typeof document !== 'undefined' && language !== undefined) {
+    document.documentElement.lang = language
+  }
+}
+
+i18n.on('languageChanged', applyDocumentLanguage)
+
+void i18n
+  .use(LanguageDetector)
+  .use(initReactI18next)
+  .init({
+    fallbackLng: 'en',
+    supportedLngs: documentationLanguages.map(({ code }) => code),
+    ns: ['translation', 'copy'],
+    defaultNS: 'translation',
+    interpolation: {
+      escapeValue: false,
     },
-  },
-})
+    detection: {
+      order: ['navigator'],
+      caches: [],
+    },
+    resources: Object.fromEntries(
+      documentationLanguages.map(({ code }) => [
+        code,
+        {
+          translation: documentationTranslationResources[code],
+          copy: copyResources[code],
+        },
+      ]),
+    ),
+  })
+  .then(() => applyDocumentLanguage(i18n.resolvedLanguage))
 
 export default i18n

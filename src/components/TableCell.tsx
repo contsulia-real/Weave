@@ -5,15 +5,8 @@ import { dimension } from '../core/values'
 import { useTableContext, useTableRow } from './internal/table-context'
 import { useViewHost } from './internal/use-view-host'
 
-export function TableCell({
-  id,
-  children,
-  align = 'start',
-  width,
-  minWidth,
-  maxWidth,
-  viewProps = {},
-}: TableCellProps) {
+export function TableCell(props: TableCellProps): import('react').JSX.Element {
+  const { id, children, align = 'start', width, minWidth, maxWidth, viewProps = {} } = props
   const table = useTableContext()
   const row = useTableRow()
   const { selectable, registerCell, cellSelected, toggleCell } = table

@@ -1,0 +1,1632 @@
+{
+  "Basic usage": {
+    "zh-CN": "基本用法",
+    "zh-TW": "基本用法",
+    "fr": "Utilisation de base"
+  },
+  "The low-level public host primitive for shared layout, styling, semantic, motion, and interaction capabilities.": {
+    "zh-CN": "用于共享布局、样式、语义、动效和交互能力的底层公开宿主原语。",
+    "zh-TW": "用於共享版面配置、樣式、語意、動效與互動能力的底層公開宿主原語。",
+    "fr": "Primitive d’hôte publique de bas niveau pour les capacités partagées de mise en page, de style, de sémantique, de mouvement et d’interaction."
+  },
+  "Weave layout primitives for flex, row, column, grid, stacking, absolute positioning, and split panes.": {
+    "zh-CN": "Weave 的布局原语，涵盖 flex、行、列、网格、堆叠、绝对定位和分栏面板。",
+    "zh-TW": "Weave 的版面配置原語，涵蓋 flex、列、欄、格線、堆疊、絕對定位與分割面板。",
+    "fr": "Primitives de mise en page Weave pour flex, ligne, colonne, grille, empilement, positionnement absolu et volets divisés."
+  },
+  "Flex": {
+    "zh-CN": "Flex",
+    "zh-TW": "Flex",
+    "fr": "Flex"
+  },
+  "Row": {
+    "zh-CN": "Row",
+    "zh-TW": "Row",
+    "fr": "Row"
+  },
+  "Column": {
+    "zh-CN": "Column",
+    "zh-TW": "Column",
+    "fr": "Column"
+  },
+  "Grid": {
+    "zh-CN": "Grid",
+    "zh-TW": "Grid",
+    "fr": "Grid"
+  },
+  "Stack": {
+    "zh-CN": "Stack",
+    "zh-TW": "Stack",
+    "fr": "Stack"
+  },
+  "Absolute": {
+    "zh-CN": "Absolute",
+    "zh-TW": "Absolute",
+    "fr": "Absolute"
+  },
+  "SplitBox": {
+    "zh-CN": "SplitBox",
+    "zh-TW": "SplitBox",
+    "fr": "SplitBox"
+  },
+  "Keeps enter/exit content mounted long enough for Weave presence motion to complete.": {
+    "zh-CN": "让进入/退出内容保持挂载足够长的时间，以完成 Weave 的 Presence 动效。",
+    "zh-TW": "讓進入／退出內容維持掛載足夠長的時間，以完成 Weave 的 Presence 動效。",
+    "fr": "Maintient le contenu entrant ou sortant monté assez longtemps pour terminer l’animation de présence Weave."
+  },
+  "The complete Weave typography scale exposed through Text.typo and theme typography tokens.": {
+    "zh-CN": "通过 Text.typo 和主题排版 token 暴露的完整 Weave 字体层级。",
+    "zh-TW": "透過 Text.typo 與主題排版 token 暴露的完整 Weave 字體層級。",
+    "fr": "Échelle typographique complète de Weave exposée via Text.typo et les jetons typographiques du thème."
+  },
+  "Display": {
+    "zh-CN": "Display",
+    "zh-TW": "Display",
+    "fr": "Display"
+  },
+  "Display styles are the largest typography roles for prominent page-level statements.": {
+    "zh-CN": "Display 样式是最大的排版角色，用于突出页面级信息。",
+    "zh-TW": "Display 樣式是最大的排版角色，用於突顯頁面層級資訊。",
+    "fr": "Les styles Display sont les rôles typographiques les plus grands pour les messages importants au niveau de la page."
+  },
+  "Headline": {
+    "zh-CN": "Headline",
+    "zh-TW": "Headline",
+    "fr": "Headline"
+  },
+  "Headline styles establish major section hierarchy below display text.": {
+    "zh-CN": "Headline 样式用于建立 Display 文本之下的主要章节层级。",
+    "zh-TW": "Headline 樣式用於建立 Display 文字之下的主要章節層級。",
+    "fr": "Les styles Headline établissent la hiérarchie principale des sections sous le texte Display."
+  },
+  "Title": {
+    "zh-CN": "Title",
+    "zh-TW": "Title",
+    "fr": "Title"
+  },
+  "Title styles label cards, panels, and smaller content regions.": {
+    "zh-CN": "Title 样式用于标记卡片、面板和较小的内容区域。",
+    "zh-TW": "Title 樣式用於標記卡片、面板與較小的內容區域。",
+    "fr": "Les styles Title servent à libeller les cartes, panneaux et zones de contenu plus petites."
+  },
+  "Body": {
+    "zh-CN": "Body",
+    "zh-TW": "Body",
+    "fr": "Body"
+  },
+  "Body styles cover ordinary reading text from standard copy down to compact supporting text.": {
+    "zh-CN": "Body 样式覆盖常规阅读文本，从标准正文到紧凑的辅助文字。",
+    "zh-TW": "Body 樣式涵蓋一般閱讀文字，從標準正文到精簡的輔助文字。",
+    "fr": "Les styles Body couvrent le texte de lecture courant, du corps standard au texte d’accompagnement compact."
+  },
+  "Label": {
+    "zh-CN": "Label",
+    "zh-TW": "Label",
+    "fr": "Label"
+  },
+  "Label styles provide compact emphasized text for controls and metadata.": {
+    "zh-CN": "Label 样式为控件和元数据提供紧凑的强调文本。",
+    "zh-TW": "Label 樣式為控制項與中繼資料提供精簡的強調文字。",
+    "fr": "Les styles Label fournissent un texte compact et accentué pour les contrôles et les métadonnées."
+  },
+  "Theme-driven text with typography, emphasis, alignment, wrapping, and case controls.": {
+    "zh-CN": "由主题驱动的文本，支持排版、强调、对齐、换行和大小写控制。",
+    "zh-TW": "由主題驅動的文字，支援排版、強調、對齊、換行與大小寫控制。",
+    "fr": "Texte piloté par le thème avec contrôle de la typographie, de l’emphase, de l’alignement, du retour à la ligne et de la casse."
+  },
+  "A syntax-highlighted code block backed by Weave typography and scrolling behavior.": {
+    "zh-CN": "由 Weave 排版与滚动行为支持的语法高亮代码块。",
+    "zh-TW": "由 Weave 排版與捲動行為支援的語法醒目提示程式碼區塊。",
+    "fr": "Bloc de code avec coloration syntaxique, basé sur la typographie et le défilement Weave."
+  },
+  "An image host with explicit fit, position, loading, and accessible alternative text.": {
+    "zh-CN": "图像宿主，支持明确的适配、位置、加载和无障碍替代文本。",
+    "zh-TW": "影像宿主，支援明確的適配、位置、載入與無障礙替代文字。",
+    "fr": "Hôte d’image avec ajustement, position, chargement et texte alternatif accessible explicites."
+  },
+  "Renders an icon source through Weave size, stroke, color, and ViewHost semantics.": {
+    "zh-CN": "通过 Weave 的尺寸、描边、颜色和 ViewHost 语义渲染图标源。",
+    "zh-TW": "透過 Weave 的尺寸、筆畫、顏色與 ViewHost 語意渲染圖示來源。",
+    "fr": "Rend une source d’icône avec les règles Weave de taille, trait, couleur et sémantique ViewHost."
+  },
+  "Displays a person or entity image with a semantic name and fallback content.": {
+    "zh-CN": "显示人物或实体图像，并提供语义名称和后备内容。",
+    "zh-TW": "顯示人物或實體影像，並提供語意名稱與備援內容。",
+    "fr": "Affiche l’image d’une personne ou d’une entité avec un nom sémantique et un contenu de repli."
+  },
+  "A horizontal or vertical separator with configurable gap and line thickness.": {
+    "zh-CN": "水平或垂直分隔线，间距和线条粗细均可配置。",
+    "zh-TW": "水平或垂直分隔線，間距與線條粗細皆可設定。",
+    "fr": "Séparateur horizontal ou vertical avec espacement et épaisseur de ligne configurables."
+  },
+  "A semantic anchor with Weave link styling and optional external-link affordances.": {
+    "zh-CN": "带有 Weave 链接样式和可选外部链接提示的语义锚点。",
+    "zh-TW": "具有 Weave 連結樣式與可選外部連結提示的語意錨點。",
+    "fr": "Ancre sémantique avec style de lien Weave et affordances facultatives pour les liens externes."
+  },
+  "Anchors a compact text or dot indicator to another piece of content.": {
+    "zh-CN": "将紧凑文本或圆点指示器附着到另一段内容上。",
+    "zh-TW": "將精簡文字或圓點指示器附著到另一段內容。",
+    "fr": "Ancre un texte compact ou un indicateur ponctuel à un autre contenu."
+  },
+  "A semantic action control with themed variants, sizes, pressed state, and icons.": {
+    "zh-CN": "语义操作控件，支持主题变体、尺寸、按下状态和图标。",
+    "zh-TW": "語意操作控制項，支援主題變體、尺寸、按下狀態與圖示。",
+    "fr": "Contrôle d’action sémantique avec variantes thématiques, tailles, état pressé et icônes."
+  },
+  "Basic button": {
+    "zh-CN": "基础按钮",
+    "zh-TW": "基本按鈕",
+    "fr": "Bouton de base"
+  },
+  "Use the same Button component for different emphasis levels without changing its action semantics.": {
+    "zh-CN": "使用同一个 Button 组件表达不同强调级别，而不改变其操作语义。",
+    "zh-TW": "使用同一個 Button 元件表達不同強調層級，而不改變其操作語意。",
+    "fr": "Utilisez le même composant Button pour différents niveaux d’emphase sans modifier sa sémantique d’action."
+  },
+  "Handling clicks": {
+    "zh-CN": "处理点击",
+    "zh-TW": "處理點擊",
+    "fr": "Gestion des clics"
+  },
+  "Button event handlers are supplied through viewProps, preserving the native button event surface.": {
+    "zh-CN": "Button 的事件处理器通过 viewProps 提供，从而保留原生按钮事件接口。",
+    "zh-TW": "Button 的事件處理器透過 viewProps 提供，保留原生按鈕事件介面。",
+    "fr": "Les gestionnaires d’événements de Button sont fournis via viewProps, en conservant la surface d’événements native du bouton."
+  },
+  "Icons and labels": {
+    "zh-CN": "图标与标签",
+    "zh-TW": "圖示與標籤",
+    "fr": "Icônes et libellés"
+  },
+  "Pair semantic text with an icon at either edge when the action benefits from a visual cue.": {
+    "zh-CN": "当操作需要视觉提示时，可在语义文本任一侧搭配图标。",
+    "zh-TW": "當操作需要視覺提示時，可在語意文字任一側搭配圖示。",
+    "fr": "Associez un texte sémantique à une icône sur l’un ou l’autre bord lorsque l’action bénéficie d’un repère visuel."
+  },
+  "Icon-only actions": {
+    "zh-CN": "仅图标操作",
+    "zh-TW": "僅圖示操作",
+    "fr": "Actions avec icône seule"
+  },
+  "For compact actions, omit text and provide the accessible name through the button viewProps.": {
+    "zh-CN": "对于紧凑操作，可省略文本，并通过按钮 viewProps 提供无障碍名称。",
+    "zh-TW": "對於精簡操作，可省略文字，並透過按鈕 viewProps 提供無障礙名稱。",
+    "fr": "Pour les actions compactes, omettez le texte et fournissez le nom accessible via les viewProps du bouton."
+  },
+  "Form actions": {
+    "zh-CN": "表单操作",
+    "zh-TW": "表單操作",
+    "fr": "Actions de formulaire"
+  },
+  "Use native button types inside Form so submit and reset behavior remains browser-native.": {
+    "zh-CN": "在 Form 中使用原生按钮类型，使提交和重置行为保持浏览器原生。",
+    "zh-TW": "在 Form 中使用原生按鈕類型，讓提交與重設行為維持瀏覽器原生。",
+    "fr": "Utilisez les types de bouton natifs dans Form afin que les comportements d’envoi et de réinitialisation restent natifs du navigateur."
+  },
+  "Pressed state": {
+    "zh-CN": "按下状态",
+    "zh-TW": "按下狀態",
+    "fr": "État pressé"
+  },
+  "Use pressed for toggle-style actions whose selected state belongs to the surrounding application.": {
+    "zh-CN": "对于选择状态由外围应用管理的切换式操作，请使用 pressed。",
+    "zh-TW": "對於選取狀態由外圍應用管理的切換式操作，請使用 pressed。",
+    "fr": "Utilisez pressed pour les actions de type bascule dont l’état sélectionné appartient à l’application environnante."
+  },
+  "Disabled actions": {
+    "zh-CN": "禁用操作",
+    "zh-TW": "停用操作",
+    "fr": "Actions désactivées"
+  },
+  "Disable actions that cannot currently run while keeping their semantic button role.": {
+    "zh-CN": "禁用当前无法执行的操作，同时保留其语义按钮角色。",
+    "zh-TW": "停用目前無法執行的操作，同時保留其語意按鈕角色。",
+    "fr": "Désactivez les actions indisponibles tout en conservant leur rôle sémantique de bouton."
+  },
+  "Custom content": {
+    "zh-CN": "自定义内容",
+    "zh-TW": "自訂內容",
+    "fr": "Contenu personnalisé"
+  },
+  "Use children when an action needs richer composition than the semantic text-and-icon shortcut.": {
+    "zh-CN": "当操作需要比语义文本与图标快捷方式更丰富的组合时，请使用 children。",
+    "zh-TW": "當操作需要比語意文字與圖示捷徑更豐富的組合時，請使用 children。",
+    "fr": "Utilisez children lorsqu’une action exige une composition plus riche que le raccourci sémantique texte-et-icône."
+  },
+  "Responsive button": {
+    "zh-CN": "响应式按钮",
+    "zh-TW": "響應式按鈕",
+    "fr": "Bouton adaptatif"
+  },
+  "Button can change its size and emphasis at viewport breakpoints without replacing the component.": {
+    "zh-CN": "Button 可在视口断点处改变尺寸和强调级别，无需替换组件。",
+    "zh-TW": "Button 可在視口斷點改變尺寸與強調層級，無需替換元件。",
+    "fr": "Button peut changer de taille et d’emphase aux points de rupture de la fenêtre sans remplacer le composant."
+  },
+  "A connected group of real Button controls with optional single or multiple selection.": {
+    "zh-CN": "一组相连的真实 Button 控件，可选单选或多选。",
+    "zh-TW": "一組相連的真實 Button 控制項，可選單選或多選。",
+    "fr": "Groupe connecté de véritables contrôles Button avec sélection facultative simple ou multiple."
+  },
+  "Default selection": {
+    "zh-CN": "默认选中项",
+    "zh-TW": "預設選取項",
+    "fr": "Sélection par défaut"
+  },
+  "Use defaultSelected to choose the initial item while keeping the group uncontrolled.": {
+    "zh-CN": "使用 defaultSelected 选择初始项，同时让分组保持非受控。",
+    "zh-TW": "使用 defaultSelected 選擇初始項，同時讓群組維持非受控。",
+    "fr": "Utilisez defaultSelected pour choisir l’élément initial tout en laissant le groupe non contrôlé."
+  },
+  "Multiple selection": {
+    "zh-CN": "多选",
+    "zh-TW": "多選",
+    "fr": "Sélection multiple"
+  },
+  "Multiple selection toggles each segment independently while retaining Button pressed feedback.": {
+    "zh-CN": "多选可独立切换每个分段，同时保留 Button 的按压反馈。",
+    "zh-TW": "多選可獨立切換每個分段，同時保留 Button 的按壓回饋。",
+    "fr": "La sélection multiple bascule chaque segment indépendamment tout en conservant le retour visuel pressé de Button."
+  },
+  "A themed surface that can optionally expose click and selection states.": {
+    "zh-CN": "主题化表面，可选择暴露点击和选择状态。",
+    "zh-TW": "主題化表面，可選擇暴露點擊與選取狀態。",
+    "fr": "Surface thématisée pouvant exposer facultativement des états de clic et de sélection."
+  },
+  "A top application bar with leading, title, trailing, size, mode, and elevation slots.": {
+    "zh-CN": "顶部应用栏，提供 leading、title、trailing、size、mode 和 elevation 插槽。",
+    "zh-TW": "頂部應用列，提供 leading、title、trailing、size、mode 與 elevation 插槽。",
+    "fr": "Barre d’application supérieure avec emplacements leading, title, trailing, size, mode et elevation."
+  },
+  "A single-line or multiline form input with native semantics and Weave field styling.": {
+    "zh-CN": "支持单行或多行的表单输入，保留原生语义并使用 Weave 字段样式。",
+    "zh-TW": "支援單行或多行的表單輸入，保留原生語意並使用 Weave 欄位樣式。",
+    "fr": "Champ de formulaire mono- ou multiligne avec sémantique native et style de champ Weave."
+  },
+  "Multiline input": {
+    "zh-CN": "多行输入",
+    "zh-TW": "多行輸入",
+    "fr": "Saisie multiligne"
+  },
+  "Use multiline input for notes and other free-form content while keeping native text-area behavior.": {
+    "zh-CN": "使用多行输入承载备注和其他自由格式内容，同时保留原生 textarea 行为。",
+    "zh-TW": "使用多行輸入承載備註與其他自由格式內容，同時保留原生 textarea 行為。",
+    "fr": "Utilisez une saisie multiligne pour les notes et autres contenus libres tout en conservant le comportement natif de textarea."
+  },
+  "Form states": {
+    "zh-CN": "表单状态",
+    "zh-TW": "表單狀態",
+    "fr": "États du formulaire"
+  },
+  "Required, read-only, and disabled fields keep their native semantics while sharing the same field styling.": {
+    "zh-CN": "必填、只读和禁用字段保留各自原生语义，同时共享同一套字段样式。",
+    "zh-TW": "必填、唯讀與停用欄位保留各自原生語意，同時共享同一套欄位樣式。",
+    "fr": "Les champs obligatoires, en lecture seule et désactivés conservent leur sémantique native tout en partageant le même style."
+  },
+  "A single-value listbox select with keyboard navigation, placement, and native form value.": {
+    "zh-CN": "单值列表框选择器，支持键盘导航、定位和原生表单值。",
+    "zh-TW": "單值清單方塊選擇器，支援鍵盤導覽、定位與原生表單值。",
+    "fr": "Sélecteur listbox à valeur unique avec navigation clavier, placement et valeur de formulaire native."
+  },
+  "Rich options": {
+    "zh-CN": "丰富选项",
+    "zh-TW": "豐富選項",
+    "fr": "Options enrichies"
+  },
+  "Options can include icons, secondary text, and disabled choices without changing listbox semantics.": {
+    "zh-CN": "选项可包含图标、辅助文本和禁用项，而不改变 listbox 语义。",
+    "zh-TW": "選項可包含圖示、輔助文字與停用項，而不改變 listbox 語意。",
+    "fr": "Les options peuvent inclure des icônes, du texte secondaire et des choix désactivés sans modifier la sémantique listbox."
+  },
+  "Preselected value": {
+    "zh-CN": "预选值",
+    "zh-TW": "預選值",
+    "fr": "Valeur présélectionnée"
+  },
+  "Use defaultValue when a form has a sensible initial choice but should remain user-editable.": {
+    "zh-CN": "当表单有合理的初始选择但仍应允许用户编辑时，请使用 defaultValue。",
+    "zh-TW": "當表單有合理的初始選擇但仍應允許使用者編輯時，請使用 defaultValue。",
+    "fr": "Utilisez defaultValue lorsqu’un formulaire possède un choix initial pertinent tout en restant modifiable par l’utilisateur."
+  },
+  "A searchable single-value listbox that combines text input and option selection.": {
+    "zh-CN": "可搜索的单值列表框，将文本输入和选项选择结合在一起。",
+    "zh-TW": "可搜尋的單值清單方塊，結合文字輸入與選項選擇。",
+    "fr": "Listbox recherchable à valeur unique combinant saisie de texte et sélection d’option."
+  },
+  "Empty search state": {
+    "zh-CN": "空搜索状态",
+    "zh-TW": "空搜尋狀態",
+    "fr": "État de recherche vide"
+  },
+  "emptyContent gives a searchable picker an explicit no-results state instead of leaving an empty listbox.": {
+    "zh-CN": "emptyContent 为可搜索选择器提供明确的“无结果”状态，而不是留下空的 listbox。",
+    "zh-TW": "emptyContent 為可搜尋選擇器提供明確的「無結果」狀態，而不是留下空的 listbox。",
+    "fr": "emptyContent fournit à un sélecteur recherchable un état explicite sans résultat plutôt qu’une listbox vide."
+  },
+  "Searchable rich options": {
+    "zh-CN": "可搜索的丰富选项",
+    "zh-TW": "可搜尋的豐富選項",
+    "fr": "Options enrichies et recherchables"
+  },
+  "Searchable options can retain icons and supporting text while the input filters by their text value.": {
+    "zh-CN": "可搜索选项可保留图标和辅助文本，同时输入框按其文本值进行过滤。",
+    "zh-TW": "可搜尋選項可保留圖示與輔助文字，同時輸入框依其文字值進行篩選。",
+    "fr": "Les options recherchables peuvent conserver icônes et texte d’accompagnement pendant que l’entrée filtre selon leur valeur textuelle."
+  },
+  "A single-value range control with native input semantics and a shared visual value axis.": {
+    "zh-CN": "单值范围控件，具有原生输入语义和共享的可视数值轴。",
+    "zh-TW": "單值範圍控制項，具有原生輸入語意與共享的視覺數值軸。",
+    "fr": "Contrôle de plage à valeur unique avec sémantique native d’entrée et axe visuel partagé."
+  },
+  "Vertical control": {
+    "zh-CN": "纵向控件",
+    "zh-TW": "縱向控制項",
+    "fr": "Contrôle vertical"
+  },
+  "Vertical orientation is useful when the control belongs beside a tall canvas or reading surface.": {
+    "zh-CN": "当控件位于高画布或阅读区域旁时，纵向方向很有用。",
+    "zh-TW": "當控制項位於高畫布或閱讀區域旁時，縱向方向很實用。",
+    "fr": "L’orientation verticale est utile lorsque le contrôle se trouve à côté d’un canevas ou d’une surface de lecture haute."
+  },
+  "Inverse scale": {
+    "zh-CN": "反向刻度",
+    "zh-TW": "反向刻度",
+    "fr": "Échelle inversée"
+  },
+  "Use inverse when the visual direction of increasing values should run opposite the default axis.": {
+    "zh-CN": "当数值增大的视觉方向应与默认轴相反时，请使用 inverse。",
+    "zh-TW": "當數值增加的視覺方向應與預設軸相反時，請使用 inverse。",
+    "fr": "Utilisez inverse lorsque la direction visuelle des valeurs croissantes doit être opposée à l’axe par défaut."
+  },
+  "A Slider variant with explicit value marks and optional mark-only value restriction.": {
+    "zh-CN": "带显式数值标记的 Slider 变体，可选择限制只能取标记值。",
+    "zh-TW": "帶明確數值標記的 Slider 變體，可選擇限制只能取標記值。",
+    "fr": "Variante de Slider avec repères de valeur explicites et restriction facultative aux seules valeurs marquées."
+  },
+  "Continuous with landmarks": {
+    "zh-CN": "连续值与地标",
+    "zh-TW": "連續值與地標",
+    "fr": "Continu avec repères"
+  },
+  "Marks can label meaningful landmarks while the thumb remains free to select values between them.": {
+    "zh-CN": "标记可以标注有意义的地标，同时滑块仍可自由选择其间的值。",
+    "zh-TW": "標記可以標示有意義的地標，同時滑塊仍可自由選擇其間的值。",
+    "fr": "Les repères peuvent identifier des jalons significatifs tout en laissant le curseur choisir librement les valeurs intermédiaires."
+  },
+  "Vertical marks": {
+    "zh-CN": "纵向标记",
+    "zh-TW": "縱向標記",
+    "fr": "Repères verticaux"
+  },
+  "Marks follow the same value axis when the slider is used vertically.": {
+    "zh-CN": "Slider 纵向使用时，标记沿用同一条数值轴。",
+    "zh-TW": "Slider 縱向使用時，標記沿用同一條數值軸。",
+    "fr": "Les repères suivent le même axe de valeurs lorsque le slider est utilisé verticalement."
+  },
+  "A two-thumb range selector that shares Slider geometry, motion, and native input behavior.": {
+    "zh-CN": "双滑块范围选择器，共享 Slider 的几何、动效和原生输入行为。",
+    "zh-TW": "雙滑塊範圍選擇器，共享 Slider 的幾何、動效與原生輸入行為。",
+    "fr": "Sélecteur de plage à deux curseurs partageant la géométrie, le mouvement et le comportement d’entrée natif de Slider."
+  },
+  "Vertical interval": {
+    "zh-CN": "纵向区间",
+    "zh-TW": "縱向區間",
+    "fr": "Intervalle vertical"
+  },
+  "The two-thumb interval can use a vertical axis without changing range semantics.": {
+    "zh-CN": "双滑块区间可使用纵向轴，而不改变范围语义。",
+    "zh-TW": "雙滑塊區間可使用縱向軸，而不改變範圍語意。",
+    "fr": "L’intervalle à deux curseurs peut utiliser un axe vertical sans modifier la sémantique de plage."
+  },
+  "Inverse range": {
+    "zh-CN": "反向范围",
+    "zh-TW": "反向範圍",
+    "fr": "Plage inversée"
+  },
+  "Inverse preserves the selected interval while reversing the visual value direction.": {
+    "zh-CN": "Inverse 在反转可视数值方向的同时保留已选区间。",
+    "zh-TW": "Inverse 在反轉視覺數值方向的同時保留已選區間。",
+    "fr": "Inverse conserve l’intervalle sélectionné tout en inversant la direction visuelle des valeurs."
+  },
+  "A binary toggle control with native form participation, label, size, and disabled state.": {
+    "zh-CN": "二元切换控件，支持原生表单参与、标签、尺寸和禁用状态。",
+    "zh-TW": "二元切換控制項，支援原生表單參與、標籤、尺寸與停用狀態。",
+    "fr": "Contrôle binaire avec participation native au formulaire, libellé, taille et état désactivé."
+  },
+  "Disabled preference": {
+    "zh-CN": "禁用偏好项",
+    "zh-TW": "停用偏好項",
+    "fr": "Préférence désactivée"
+  },
+  "Disable a switch when the setting is visible but cannot currently be changed.": {
+    "zh-CN": "当设置可见但当前无法更改时，禁用 Switch。",
+    "zh-TW": "當設定可見但目前無法變更時，停用 Switch。",
+    "fr": "Désactivez un Switch lorsque le réglage est visible mais ne peut pas être modifié actuellement."
+  },
+  "Compact settings": {
+    "zh-CN": "紧凑设置",
+    "zh-TW": "精簡設定",
+    "fr": "Réglages compacts"
+  },
+  "Small switches work well for dense preference lists without changing the interaction model.": {
+    "zh-CN": "小尺寸 Switch 适合密集的偏好列表，而无需改变交互模型。",
+    "zh-TW": "小尺寸 Switch 適合密集的偏好清單，而無需改變互動模型。",
+    "fr": "Les petits Switch conviennent aux listes de préférences denses sans modifier le modèle d’interaction."
+  },
+  "A radio choice control with native grouping, themed state layers, and three sizes.": {
+    "zh-CN": "单选控件，支持原生分组、主题状态层和三种尺寸。",
+    "zh-TW": "單選控制項，支援原生分組、主題狀態層與三種尺寸。",
+    "fr": "Contrôle de choix radio avec groupement natif, couches d’état thématisées et trois tailles."
+  },
+  "Unavailable choice": {
+    "zh-CN": "不可用选项",
+    "zh-TW": "不可用選項",
+    "fr": "Choix indisponible"
+  },
+  "A disabled radio keeps an unavailable option visible without allowing it to enter the group value.": {
+    "zh-CN": "禁用的 Radio 可让不可用选项保持可见，同时不允许其进入分组值。",
+    "zh-TW": "停用的 Radio 可讓不可用選項維持可見，同時不允許其進入群組值。",
+    "fr": "Un Radio désactivé garde une option indisponible visible sans lui permettre d’entrer dans la valeur du groupe."
+  },
+  "Compact choice group": {
+    "zh-CN": "紧凑选项组",
+    "zh-TW": "精簡選項群組",
+    "fr": "Groupe de choix compact"
+  },
+  "Small radios fit dense option groups while keeping the same native grouping behavior.": {
+    "zh-CN": "小尺寸 Radio 适合密集选项组，同时保持相同的原生分组行为。",
+    "zh-TW": "小尺寸 Radio 適合密集選項群組，同時維持相同的原生分組行為。",
+    "fr": "Les petits Radio conviennent aux groupes d’options denses tout en conservant le même comportement de groupement natif."
+  },
+  "A checkbox control with checked, indeterminate, disabled, label, and size states.": {
+    "zh-CN": "复选框控件，支持选中、不确定、禁用、标签和尺寸状态。",
+    "zh-TW": "核取方塊控制項，支援勾選、不確定、停用、標籤與尺寸狀態。",
+    "fr": "Contrôle de case à cocher avec états coché, indéterminé, désactivé, libellé et taille."
+  },
+  "Indeterminate parent": {
+    "zh-CN": "不确定父项",
+    "zh-TW": "不確定父項",
+    "fr": "Parent indéterminé"
+  },
+  "Use indeterminate for a parent choice when only part of its child set is selected.": {
+    "zh-CN": "当仅选中部分子项时，对父选项使用 indeterminate。",
+    "zh-TW": "當僅選中部分子項時，對父選項使用 indeterminate。",
+    "fr": "Utilisez indeterminate pour un choix parent lorsque seule une partie de ses enfants est sélectionnée."
+  },
+  "Locked selection": {
+    "zh-CN": "锁定选择",
+    "zh-TW": "鎖定選取",
+    "fr": "Sélection verrouillée"
+  },
+  "Disabled checked items can communicate selections that are required by policy.": {
+    "zh-CN": "禁用且已选中的项目可以表达策略要求的固定选择。",
+    "zh-TW": "停用且已勾選的項目可以表達政策要求的固定選擇。",
+    "fr": "Les éléments cochés et désactivés peuvent indiquer des sélections imposées par une règle."
+  },
+  "A spin or linear progress indicator supporting determinate and indeterminate states.": {
+    "zh-CN": "旋转或线性进度指示器，支持确定和不确定状态。",
+    "zh-TW": "旋轉或線性進度指示器，支援確定與不確定狀態。",
+    "fr": "Indicateur de progression circulaire ou linéaire prenant en charge les états déterminé et indéterminé."
+  },
+  "Indeterminate loading": {
+    "zh-CN": "不确定加载",
+    "zh-TW": "不確定載入",
+    "fr": "Chargement indéterminé"
+  },
+  "Use indeterminate progress when work is active but its remaining duration is unknown.": {
+    "zh-CN": "当任务正在进行但剩余时长未知时，使用不确定进度。",
+    "zh-TW": "當工作正在進行但剩餘時間未知時，使用不確定進度。",
+    "fr": "Utilisez une progression indéterminée lorsqu’une tâche est active mais que sa durée restante est inconnue."
+  },
+  "Compact spinner": {
+    "zh-CN": "紧凑旋转指示器",
+    "zh-TW": "精簡旋轉指示器",
+    "fr": "Indicateur circulaire compact"
+  },
+  "Spin mode fits next to status text when progress belongs to a small local action.": {
+    "zh-CN": "当进度属于小型局部操作时，Spin 模式适合放在状态文本旁。",
+    "zh-TW": "當進度屬於小型局部操作時，Spin 模式適合放在狀態文字旁。",
+    "fr": "Le mode Spin convient à côté d’un texte d’état lorsque la progression concerne une petite action locale."
+  },
+  "A themed loading placeholder with rectangular, circular, and text shapes.": {
+    "zh-CN": "主题化加载占位符，支持矩形、圆形和文本形状。",
+    "zh-TW": "主題化載入預留位置，支援矩形、圓形與文字形狀。",
+    "fr": "Espace réservé de chargement thématisé avec formes rectangulaires, circulaires et textuelles."
+  },
+  "Profile placeholder": {
+    "zh-CN": "个人资料占位",
+    "zh-TW": "個人資料預留位置",
+    "fr": "Espace réservé de profil"
+  },
+  "Combine circular and text skeletons to reserve a profile row without shifting content later.": {
+    "zh-CN": "组合圆形和文本 Skeleton，为个人资料行预留空间，避免后续内容位移。",
+    "zh-TW": "組合圓形與文字 Skeleton，為個人資料列預留空間，避免後續內容位移。",
+    "fr": "Combinez des Skeleton circulaires et textuels pour réserver une ligne de profil sans décaler le contenu ensuite."
+  },
+  "Feed placeholder": {
+    "zh-CN": "信息流占位",
+    "zh-TW": "動態消息預留位置",
+    "fr": "Espace réservé de flux"
+  },
+  "Repeat text skeletons to preserve the rhythm of content that has not arrived yet.": {
+    "zh-CN": "重复文本 Skeleton，以保持尚未到达内容的版面节奏。",
+    "zh-TW": "重複文字 Skeleton，以維持尚未到達內容的版面節奏。",
+    "fr": "Répétez les Skeleton textuels pour préserver le rythme du contenu qui n’est pas encore arrivé."
+  },
+  "A semantic form root that preserves native submit/reset behavior while using Weave layout.": {
+    "zh-CN": "语义表单根节点，在使用 Weave 布局的同时保留原生提交/重置行为。",
+    "zh-TW": "語意表單根節點，在使用 Weave 版面配置的同時保留原生提交／重設行為。",
+    "fr": "Racine de formulaire sémantique qui conserve les comportements natifs d’envoi et de réinitialisation tout en utilisant la mise en page Weave."
+  },
+  "A structured table surface with density, borders, sticky header, and optional cell selection.": {
+    "zh-CN": "结构化表格表面，支持密度、边框、粘性表头和可选单元格选择。",
+    "zh-TW": "結構化表格表面，支援密度、邊框、固定表頭與可選儲存格選取。",
+    "fr": "Surface de tableau structurée avec densité, bordures, en-tête collant et sélection facultative des cellules."
+  },
+  "A single- or multi-open disclosure group with shared item, trigger, and panel semantics.": {
+    "zh-CN": "可单开或多开的披露分组，共享 item、trigger 和 panel 语义。",
+    "zh-TW": "可單開或多開的揭露群組，共享 item、trigger 與 panel 語意。",
+    "fr": "Groupe de divulgation à ouverture simple ou multiple partageant les sémantiques d’item, de trigger et de panel."
+  },
+  "A delayed, positioned tooltip attached to a single trigger element.": {
+    "zh-CN": "附着于单个触发元素、支持延迟和定位的 Tooltip。",
+    "zh-TW": "附著於單一觸發元素、支援延遲與定位的 Tooltip。",
+    "fr": "Info-bulle positionnée et différée attachée à un seul élément déclencheur."
+  },
+  "A positioned non-modal surface anchored to a trigger with focus and placement controls.": {
+    "zh-CN": "锚定到触发器的定位非模态表面，支持焦点和位置控制。",
+    "zh-TW": "錨定到觸發器的定位非模態表面，支援焦點與位置控制。",
+    "fr": "Surface non modale positionnée, ancrée à un déclencheur, avec contrôle du focus et du placement."
+  },
+  "A dialog surface that supports non-modal anchored and native modal top-layer modes.": {
+    "zh-CN": "对话框表面，支持锚定非模态模式和原生模态顶层模式。",
+    "zh-TW": "對話框表面，支援錨定非模態模式與原生模態頂層模式。",
+    "fr": "Surface de dialogue prenant en charge les modes ancré non modal et modal natif dans la couche supérieure."
+  },
+  "A side surface that reuses modal Dialog on narrow layouts and SplitBox for non-modal layouts.": {
+    "zh-CN": "侧边表面，在窄布局中复用模态 Dialog，在非模态布局中复用 SplitBox。",
+    "zh-TW": "側邊表面，在窄版面中複用模態 Dialog，在非模態版面中複用 SplitBox。",
+    "fr": "Surface latérale réutilisant Dialog modal sur les mises en page étroites et SplitBox pour les mises en page non modales."
+  },
+  "A trigger-anchored command menu with keyboard focus, placement, and selection dismissal.": {
+    "zh-CN": "锚定触发器的命令菜单，支持键盘焦点、定位和选择后关闭。",
+    "zh-TW": "錨定觸發器的命令選單，支援鍵盤焦點、定位與選取後關閉。",
+    "fr": "Menu de commandes ancré au déclencheur avec focus clavier, placement et fermeture après sélection."
+  },
+  "Coordinates TabList, Tab, and TabPanel with orientation, activation, and indicator variants.": {
+    "zh-CN": "协调 TabList、Tab 和 TabPanel，并支持方向、激活和指示器变体。",
+    "zh-TW": "協調 TabList、Tab 與 TabPanel，並支援方向、啟用與指示器變體。",
+    "fr": "Coordonne TabList, Tab et TabPanel avec des variantes d’orientation, d’activation et d’indicateur."
+  },
+  "A transient status or alert message rendered through SnackProvider, with lifetime, progress, placement, and semantic variants.": {
+    "zh-CN": "通过 SnackProvider 渲染的临时状态或警报消息，支持生命周期、进度、位置和语义变体。",
+    "zh-TW": "透過 SnackProvider 渲染的暫時狀態或警示訊息，支援生命週期、進度、位置與語意變體。",
+    "fr": "Message d’état ou d’alerte transitoire rendu via SnackProvider, avec durée, progression, placement et variantes sémantiques."
+  },
+  "A vertical or horizontal item collection with optional selection and virtualization semantics.": {
+    "zh-CN": "纵向或横向项目集合，支持可选选择和虚拟化语义。",
+    "zh-TW": "縱向或橫向項目集合，支援可選選取與虛擬化語意。",
+    "fr": "Collection d’éléments verticale ou horizontale avec sémantiques facultatives de sélection et de virtualisation."
+  },
+  "Scopes theme definition, color mode, and reduced-motion preference for descendant Weave UI.": {
+    "zh-CN": "为后代 Weave UI 限定主题定义、颜色模式和减少动效偏好。",
+    "zh-TW": "為後代 Weave UI 限定主題定義、色彩模式與減少動效偏好。",
+    "fr": "Délimite la définition du thème, le mode de couleur et la préférence de réduction des animations pour l’interface Weave descendante."
+  },
+  "Semantic host": {
+    "zh-CN": "语义宿主",
+    "zh-TW": "語意宿主",
+    "fr": "Hôte sémantique"
+  },
+  "View can add semantic and interaction behavior while remaining the same low-level layout host.": {
+    "zh-CN": "View 可以增加语义与交互行为，同时仍保持为同一个底层布局宿主。",
+    "zh-TW": "View 可以增加語意與互動行為，同時仍維持為同一個底層版面宿主。",
+    "fr": "View peut ajouter des comportements sémantiques et interactifs tout en restant le même hôte de mise en page de bas niveau."
+  },
+  "Responsive view": {
+    "zh-CN": "响应式 View",
+    "zh-TW": "響應式 View",
+    "fr": "View adaptative"
+  },
+  "Breakpoint props let the same View change layout values without creating a second responsive wrapper.": {
+    "zh-CN": "断点属性让同一个 View 改变布局值，而无需创建第二层响应式包装。",
+    "zh-TW": "斷點屬性讓同一個 View 改變版面值，而無需建立第二層響應式包裝。",
+    "fr": "Les propriétés de point de rupture permettent au même View de modifier ses valeurs de mise en page sans créer un second wrapper adaptatif."
+  },
+  "Toggle presence": {
+    "zh-CN": "切换 Presence",
+    "zh-TW": "切換 Presence",
+    "fr": "Basculer Presence"
+  },
+  "Presence keeps exiting content mounted long enough for its View exit motion to complete.": {
+    "zh-CN": "Presence 会让退出内容保持挂载，直到其 View 的退出动效完成。",
+    "zh-TW": "Presence 會讓退出內容維持掛載，直到其 View 的退出動效完成。",
+    "fr": "Presence maintient le contenu sortant monté assez longtemps pour que l’animation de sortie de son View se termine."
+  },
+  "Presence in layout": {
+    "zh-CN": "布局中的 Presence",
+    "zh-TW": "版面中的 Presence",
+    "fr": "Presence dans la mise en page"
+  },
+  "Presence can reserve no extra wrapper semantics while its child participates in the surrounding layout.": {
+    "zh-CN": "Presence 可以不引入额外包装语义，同时让其子元素参与外围布局。",
+    "zh-TW": "Presence 可以不引入額外包裝語意，同時讓其子元素參與外圍版面。",
+    "fr": "Presence peut n’ajouter aucune sémantique de wrapper supplémentaire tandis que son enfant participe à la mise en page environnante."
+  },
+  "Truncated copy": {
+    "zh-CN": "截断文本",
+    "zh-TW": "截斷文字",
+    "fr": "Texte tronqué"
+  },
+  "Limit long content to a known number of lines when the surrounding layout must stay compact.": {
+    "zh-CN": "当外围布局必须保持紧凑时，将长内容限制为已知行数。",
+    "zh-TW": "當外圍版面必須維持緊湊時，將長內容限制為已知行數。",
+    "fr": "Limitez le contenu long à un nombre de lignes connu lorsque la mise en page environnante doit rester compacte."
+  },
+  "Text emphasis": {
+    "zh-CN": "文本强调",
+    "zh-TW": "文字強調",
+    "fr": "Mise en valeur du texte"
+  },
+  "Weight, decoration, case, and semantic colors can communicate emphasis without replacing Text.": {
+    "zh-CN": "字重、装饰、大小写和语义颜色可以表达强调，而无需替换 Text。",
+    "zh-TW": "字重、裝飾、大小寫與語意顏色可以表達強調，而無需替換 Text。",
+    "fr": "La graisse, la décoration, la casse et les couleurs sémantiques peuvent exprimer l’emphase sans remplacer Text."
+  },
+  "TSX snippet": {
+    "zh-CN": "TSX 片段",
+    "zh-TW": "TSX 片段",
+    "fr": "Extrait TSX"
+  },
+  "Use TSX highlighting when documentation needs to show component composition rather than plain TypeScript.": {
+    "zh-CN": "当文档需要展示组件组合而不是纯 TypeScript 时，使用 TSX 高亮。",
+    "zh-TW": "當文件需要展示元件組合而不是純 TypeScript 時，使用 TSX 醒目提示。",
+    "fr": "Utilisez la coloration TSX lorsque la documentation doit montrer la composition de composants plutôt que du TypeScript pur."
+  },
+  "Scrolling code": {
+    "zh-CN": "滚动代码",
+    "zh-TW": "捲動程式碼",
+    "fr": "Code défilant"
+  },
+  "Constrain long snippets with ordinary View sizing so only the code surface becomes scrollable.": {
+    "zh-CN": "使用普通 View 尺寸约束长代码片段，使只有代码区域可滚动。",
+    "zh-TW": "使用一般 View 尺寸約束長程式碼片段，使只有程式碼區域可捲動。",
+    "fr": "Contraignez les longs extraits avec le dimensionnement normal de View afin que seule la surface de code puisse défiler."
+  },
+  "Contained image": {
+    "zh-CN": "完整适配图片",
+    "zh-TW": "完整適配圖片",
+    "fr": "Image contenue"
+  },
+  "contain keeps the complete source visible when the image should fit inside a fixed presentation box.": {
+    "zh-CN": "当图片需要适配固定展示框时，contain 会保持完整源图可见。",
+    "zh-TW": "當圖片需要適配固定展示框時，contain 會維持完整來源圖片可見。",
+    "fr": "contain garde la source complète visible lorsque l’image doit tenir dans une zone de présentation fixe."
+  },
+  "Focal position": {
+    "zh-CN": "焦点位置",
+    "zh-TW": "焦點位置",
+    "fr": "Position focale"
+  },
+  "Combine cover with position when a crop should preserve a particular area of the source.": {
+    "zh-CN": "当裁剪需要保留源图特定区域时，将 cover 与 position 组合使用。",
+    "zh-TW": "當裁切需要保留來源圖片特定區域時，將 cover 與 position 組合使用。",
+    "fr": "Combinez cover et position lorsqu’un recadrage doit préserver une zone particulière de la source."
+  },
+  "Stroke emphasis": {
+    "zh-CN": "描边强调",
+    "zh-TW": "描邊強調",
+    "fr": "Accentuation du trait"
+  },
+  "Stroke weight lets one icon source adapt to quieter metadata or stronger action affordances.": {
+    "zh-CN": "描边粗细让同一个图标源适应更低调的元数据或更强的操作提示。",
+    "zh-TW": "描邊粗細讓同一個圖示來源適應更低調的中繼資料或更強的操作提示。",
+    "fr": "L’épaisseur du trait permet à une même source d’icône de s’adapter à des métadonnées discrètes ou à des actions plus affirmées."
+  },
+  "Semantic icon color": {
+    "zh-CN": "语义图标颜色",
+    "zh-TW": "語意圖示顏色",
+    "fr": "Couleur sémantique des icônes"
+  },
+  "Icons inherit View color so they can follow the same semantic color system as surrounding content.": {
+    "zh-CN": "图标继承 View 的颜色，因此可以遵循与周围内容相同的语义颜色系统。",
+    "zh-TW": "圖示繼承 View 的顏色，因此可以遵循與周圍內容相同的語意色彩系統。",
+    "fr": "Les icônes héritent de la couleur de View afin de suivre le même système de couleurs sémantiques que le contenu environnant."
+  },
+  "Image avatar": {
+    "zh-CN": "图片头像",
+    "zh-TW": "圖片頭像",
+    "fr": "Avatar avec image"
+  },
+  "Provide src when an entity has an image and retain name plus fallback for accessible and failure states.": {
+    "zh-CN": "当实体有图片时提供 src，并保留 name 与 fallback 以处理无障碍和失败状态。",
+    "zh-TW": "當實體有圖片時提供 src，並保留 name 與 fallback 以處理無障礙與失敗狀態。",
+    "fr": "Fournissez src lorsqu’une entité possède une image et conservez name ainsi qu’un fallback pour l’accessibilité et les états d’échec."
+  },
+  "Avatar status": {
+    "zh-CN": "头像状态",
+    "zh-TW": "頭像狀態",
+    "fr": "Statut de l’avatar"
+  },
+  "Compose Avatar with Badge when status belongs to the entity rather than the image itself.": {
+    "zh-CN": "当状态属于实体而不是图片本身时，将 Avatar 与 Badge 组合使用。",
+    "zh-TW": "當狀態屬於實體而不是圖片本身時，將 Avatar 與 Badge 組合使用。",
+    "fr": "Composez Avatar avec Badge lorsque le statut appartient à l’entité plutôt qu’à l’image elle-même."
+  },
+  "Vertical divider": {
+    "zh-CN": "纵向分隔线",
+    "zh-TW": "縱向分隔線",
+    "fr": "Séparateur vertical"
+  },
+  "Vertical dividers separate adjacent actions without introducing another layout primitive.": {
+    "zh-CN": "纵向分隔线可分隔相邻操作，而无需引入另一个布局原语。",
+    "zh-TW": "縱向分隔線可分隔相鄰操作，而無需引入另一個版面原語。",
+    "fr": "Les séparateurs verticaux séparent les actions adjacentes sans introduire une autre primitive de mise en page."
+  },
+  "Spaced divider": {
+    "zh-CN": "带间距的分隔线",
+    "zh-TW": "帶間距的分隔線",
+    "fr": "Séparateur espacé"
+  },
+  "Use gap when a divider should carry its own breathing room between content groups.": {
+    "zh-CN": "当分隔线需要在内容组之间自带留白时，使用 gap。",
+    "zh-TW": "當分隔線需要在內容群組之間自帶留白時，使用 gap。",
+    "fr": "Utilisez gap lorsqu’un séparateur doit porter son propre espace entre des groupes de contenu."
+  },
+  "Quiet link": {
+    "zh-CN": "弱化链接",
+    "zh-TW": "弱化連結",
+    "fr": "Lien discret"
+  },
+  "Hide the underline when the surrounding layout already makes the affordance obvious.": {
+    "zh-CN": "当周围布局已经明确表达可点击性时，可以隐藏下划线。",
+    "zh-TW": "當周圍版面已經明確表達可點擊性時，可以隱藏底線。",
+    "fr": "Masquez le soulignement lorsque la mise en page environnante rend déjà l’affordance évidente."
+  },
+  "New tab link": {
+    "zh-CN": "新标签页链接",
+    "zh-TW": "新分頁連結",
+    "fr": "Lien dans un nouvel onglet"
+  },
+  "target remains native anchor behavior, so links can opt into a new browsing context without custom routing.": {
+    "zh-CN": "target 保持原生锚点行为，因此链接可以进入新的浏览上下文，而无需自定义路由。",
+    "zh-TW": "target 保持原生錨點行為，因此連結可以進入新的瀏覽情境，而無需自訂路由。",
+    "fr": "target conserve le comportement natif de l’ancre, permettant aux liens d’ouvrir un nouveau contexte de navigation sans routage personnalisé."
+  },
+  "Status dot": {
+    "zh-CN": "状态圆点",
+    "zh-TW": "狀態圓點",
+    "fr": "Point de statut"
+  },
+  "Dot badges communicate status without introducing another text label.": {
+    "zh-CN": "圆点 Badge 可以表达状态，而无需再增加文本标签。",
+    "zh-TW": "圓點 Badge 可以表達狀態，而無需再增加文字標籤。",
+    "fr": "Les badges en point communiquent un état sans ajouter un autre libellé textuel."
+  },
+  "Badge placement": {
+    "zh-CN": "Badge 位置",
+    "zh-TW": "Badge 位置",
+    "fr": "Placement du badge"
+  },
+  "Placement attaches the same badge content to the edge that best fits its host.": {
+    "zh-CN": "Placement 会把同一份 Badge 内容附着到最适合宿主的边缘。",
+    "zh-TW": "Placement 會把同一份 Badge 內容附著到最適合宿主的邊緣。",
+    "fr": "Placement attache le même contenu de badge au bord qui convient le mieux à son hôte."
+  },
+  "Clickable card": {
+    "zh-CN": "可点击卡片",
+    "zh-TW": "可點擊卡片",
+    "fr": "Carte cliquable"
+  },
+  "Clickable cards keep the whole surface interactive when the content represents one action.": {
+    "zh-CN": "当内容代表一个操作时，可点击卡片让整个表面保持可交互。",
+    "zh-TW": "當內容代表一個操作時，可點擊卡片讓整個表面維持可互動。",
+    "fr": "Les cartes cliquables gardent toute la surface interactive lorsque le contenu représente une seule action."
+  },
+  "Selectable card": {
+    "zh-CN": "可选卡片",
+    "zh-TW": "可選卡片",
+    "fr": "Carte sélectionnable"
+  },
+  "Selectable cards expose a persistent selection state for pickers and choice grids.": {
+    "zh-CN": "可选卡片为选择器和选项网格提供持久的选中状态。",
+    "zh-TW": "可選卡片為選擇器與選項網格提供持久的選取狀態。",
+    "fr": "Les cartes sélectionnables exposent un état de sélection persistant pour les sélecteurs et les grilles de choix."
+  },
+  "Centered title": {
+    "zh-CN": "居中标题",
+    "zh-TW": "置中標題",
+    "fr": "Titre centré"
+  },
+  "Center the title when leading and trailing actions should frame a single page identity.": {
+    "zh-CN": "当 leading 与 trailing 操作需要围绕单一页面标识时，将标题居中。",
+    "zh-TW": "當 leading 與 trailing 操作需要圍繞單一頁面識別時，將標題置中。",
+    "fr": "Centrez le titre lorsque les actions leading et trailing doivent encadrer une identité de page unique."
+  },
+  "Floating app bar": {
+    "zh-CN": "悬浮应用栏",
+    "zh-TW": "懸浮應用列",
+    "fr": "Barre d’application flottante"
+  },
+  "Floating mode and elevation create a detached navigation surface when the bar should sit over page content.": {
+    "zh-CN": "当应用栏需要悬在页面内容上方时，floating 模式与 elevation 会创建独立的导航表面。",
+    "zh-TW": "當應用列需要懸在頁面內容上方時，floating 模式與 elevation 會建立獨立的導覽表面。",
+    "fr": "Le mode floating et l’elevation créent une surface de navigation détachée lorsque la barre doit se placer au-dessus du contenu de la page."
+  },
+  "Field metadata": {
+    "zh-CN": "字段元数据",
+    "zh-TW": "欄位中繼資料",
+    "fr": "Métadonnées du champ"
+  },
+  "FormField convenience props connect label, description, required state, and error feedback to the enclosed Weave control.": {
+    "zh-CN": "FormField 的便捷属性会把标签、说明、必填状态和错误反馈关联到内部的 Weave 控件。",
+    "zh-TW": "FormField 的便捷屬性會把標籤、說明、必填狀態與錯誤回饋關聯到內部的 Weave 控制項。",
+    "fr": "Les propriétés de commodité de FormField associent le libellé, la description, l’état requis et le retour d’erreur au contrôle Weave contenu."
+  },
+  "Explicit field parts": {
+    "zh-CN": "显式字段部件",
+    "zh-TW": "明確欄位部件",
+    "fr": "Parties de champ explicites"
+  },
+  "Use FormLabel, FormDescription, and FormError directly when field metadata needs custom composition.": {
+    "zh-CN": "当字段元数据需要自定义组合时，直接使用 FormLabel、FormDescription 和 FormError。",
+    "zh-TW": "當欄位中繼資料需要自訂組合時，直接使用 FormLabel、FormDescription 與 FormError。",
+    "fr": "Utilisez directement FormLabel, FormDescription et FormError lorsque les métadonnées du champ nécessitent une composition personnalisée."
+  },
+  "Fieldset and legend": {
+    "zh-CN": "字段组与图例",
+    "zh-TW": "欄位群組與圖例",
+    "fr": "Groupe de champs et légende"
+  },
+  "FormFieldset and FormLegend preserve native grouping semantics without adding a card-like surface.": {
+    "zh-CN": "FormFieldset 与 FormLegend 保留原生分组语义，不额外添加类似 Card 的表面。",
+    "zh-TW": "FormFieldset 與 FormLegend 保留原生分組語意，不額外加入類似 Card 的表面。",
+    "fr": "FormFieldset et FormLegend conservent la sémantique native de regroupement sans ajouter de surface de type carte."
+  },
+  "Submit and reset": {
+    "zh-CN": "提交与重置",
+    "zh-TW": "提交與重設",
+    "fr": "Envoyer et réinitialiser"
+  },
+  "Form keeps native submit and reset events while Weave components provide the visible fields and actions.": {
+    "zh-CN": "Form 保留原生提交与重置事件，同时由 Weave 组件提供可见字段和操作。",
+    "zh-TW": "Form 保留原生提交與重設事件，同時由 Weave 元件提供可見欄位與操作。",
+    "fr": "Form conserve les événements natifs d’envoi et de réinitialisation tandis que les composants Weave fournissent les champs et actions visibles."
+  },
+  "Native validation": {
+    "zh-CN": "原生验证",
+    "zh-TW": "原生驗證",
+    "fr": "Validation native"
+  },
+  "Required and pattern constraints stay on the native input elements inside the semantic Form root.": {
+    "zh-CN": "required 与 pattern 约束保留在语义 Form 根节点内部的原生输入元素上。",
+    "zh-TW": "required 與 pattern 約束保留在語意 Form 根節點內部的原生輸入元素上。",
+    "fr": "Les contraintes required et pattern restent sur les éléments d’entrée natifs à l’intérieur de la racine Form sémantique."
+  },
+  "Column sizing": {
+    "zh-CN": "列尺寸",
+    "zh-TW": "欄尺寸",
+    "fr": "Dimensionnement des colonnes"
+  },
+  "TableHead and TableCell accept shared width, minWidth, maxWidth, and alignment controls while retaining native table layout.": {
+    "zh-CN": "TableHead 与 TableCell 共享 width、minWidth、maxWidth 和对齐控制，同时保留原生表格布局。",
+    "zh-TW": "TableHead 與 TableCell 共用 width、minWidth、maxWidth 與對齊控制，同時保留原生表格版面配置。",
+    "fr": "TableHead et TableCell partagent les contrôles width, minWidth, maxWidth et d’alignement tout en conservant la mise en page native du tableau."
+  },
+  "Sticky header": {
+    "zh-CN": "粘性表头",
+    "zh-TW": "黏性表頭",
+    "fr": "En-tête fixe"
+  },
+  "stickyHeader keeps header cells pinned inside the Table scroll container when vertical overflow is present.": {
+    "zh-CN": "存在纵向溢出时，stickyHeader 会让表头单元格固定在 Table 的滚动容器内。",
+    "zh-TW": "存在縱向溢位時，stickyHeader 會讓表頭儲存格固定在 Table 的捲動容器內。",
+    "fr": "stickyHeader maintient les cellules d’en-tête épinglées dans le conteneur de défilement de Table en présence d’un dépassement vertical."
+  },
+  "Dense data table": {
+    "zh-CN": "紧凑数据表",
+    "zh-TW": "緊湊資料表",
+    "fr": "Tableau de données dense"
+  },
+  "Dense rows and vertical borders fit data-heavy surfaces while preserving the same semantic table structure.": {
+    "zh-CN": "紧凑行与纵向边框适合数据密集界面，同时保持相同的语义表格结构。",
+    "zh-TW": "緊湊列與縱向邊框適合資料密集介面，同時保持相同的語意表格結構。",
+    "fr": "Des lignes denses et des bordures verticales conviennent aux surfaces riches en données tout en conservant la même structure sémantique de tableau."
+  },
+  "Selectable cells": {
+    "zh-CN": "可选单元格",
+    "zh-TW": "可選儲存格",
+    "fr": "Cellules sélectionnables"
+  },
+  "Selectable tables track explicit row and cell identifiers instead of coupling selection to visual position.": {
+    "zh-CN": "可选表格跟踪显式行与单元格标识，而不是把选择状态绑定到视觉位置。",
+    "zh-TW": "可選表格追蹤明確的列與儲存格識別，而不是把選取狀態綁定到視覺位置。",
+    "fr": "Les tableaux sélectionnables suivent des identifiants explicites de ligne et de cellule au lieu de lier la sélection à la position visuelle."
+  },
+  "Controlled single accordion": {
+    "zh-CN": "受控单选手风琴",
+    "zh-TW": "受控單選手風琴",
+    "fr": "Accordéon simple contrôlé"
+  },
+  "Control the open item from the parent and use collapsible=false when one item must remain open.": {
+    "zh-CN": "由父级控制展开项，并在必须始终保持一个项目展开时使用 collapsible=false。",
+    "zh-TW": "由父層控制展開項，並在必須始終保持一個項目展開時使用 collapsible=false。",
+    "fr": "Contrôlez l’élément ouvert depuis le parent et utilisez collapsible=false lorsqu’un élément doit rester ouvert."
+  },
+  "Disabled states": {
+    "zh-CN": "禁用状态",
+    "zh-TW": "停用狀態",
+    "fr": "États désactivés"
+  },
+  "Disable one AccordionItem or the whole Accordion without forcing already-open content to close.": {
+    "zh-CN": "可以禁用单个 AccordionItem 或整个 Accordion，而不会强制关闭已经展开的内容。",
+    "zh-TW": "可以停用單個 AccordionItem 或整個 Accordion，而不會強制關閉已經展開的內容。",
+    "fr": "Désactivez un AccordionItem ou l’Accordion entier sans forcer la fermeture du contenu déjà ouvert."
+  },
+  "Trigger options": {
+    "zh-CN": "触发器选项",
+    "zh-TW": "觸發器選項",
+    "fr": "Options du déclencheur"
+  },
+  "AccordionTrigger supports single-line truncation and custom expand and collapse icons.": {
+    "zh-CN": "AccordionTrigger 支持单行截断，以及自定义展开和收起图标。",
+    "zh-TW": "AccordionTrigger 支援單行截斷，以及自訂展開與收起圖示。",
+    "fr": "AccordionTrigger prend en charge la troncature sur une ligne ainsi que des icônes personnalisées d’ouverture et de fermeture."
+  },
+  "Multiple panels": {
+    "zh-CN": "多个面板",
+    "zh-TW": "多個面板",
+    "fr": "Panneaux multiples"
+  },
+  "multiple lets more than one disclosure stay open when sections are independent.": {
+    "zh-CN": "当各章节彼此独立时，multiple 可让多个披露项同时保持展开。",
+    "zh-TW": "當各章節彼此獨立時，multiple 可讓多個揭露項同時保持展開。",
+    "fr": "multiple permet à plusieurs sections de divulgation de rester ouvertes lorsque les sections sont indépendantes."
+  },
+  "Dividerless accordion": {
+    "zh-CN": "无分隔线手风琴",
+    "zh-TW": "無分隔線手風琴",
+    "fr": "Accordéon sans séparateurs"
+  },
+  "Remove dividers when disclosure items already live inside another clearly bounded surface.": {
+    "zh-CN": "当披露项已经位于边界清晰的其他表面中时，可移除分隔线。",
+    "zh-TW": "當揭露項已經位於邊界清楚的其他表面中時，可移除分隔線。",
+    "fr": "Supprimez les séparateurs lorsque les éléments de divulgation se trouvent déjà dans une autre surface clairement délimitée."
+  },
+  "Controlled tooltip": {
+    "zh-CN": "受控 Tooltip",
+    "zh-TW": "受控 Tooltip",
+    "fr": "Info-bulle contrôlée"
+  },
+  "Use open and onOpenChange when the parent owns tooltip visibility while hover, focus, and Escape still request changes.": {
+    "zh-CN": "当 Tooltip 的可见状态由父级管理时，使用 open 与 onOpenChange；悬停、聚焦和 Escape 仍会请求状态变化。",
+    "zh-TW": "當 Tooltip 的可見狀態由父層管理時，使用 open 與 onOpenChange；懸停、聚焦與 Escape 仍會請求狀態變化。",
+    "fr": "Utilisez open et onOpenChange lorsque le parent contrôle la visibilité de l’info-bulle ; le survol, le focus et Échap continuent de demander des changements."
+  },
+  "Rich tooltip content": {
+    "zh-CN": "丰富 Tooltip 内容",
+    "zh-TW": "豐富 Tooltip 內容",
+    "fr": "Contenu enrichi de l’info-bulle"
+  },
+  "Tooltip content can be composed from Weave components instead of being limited to a single text string.": {
+    "zh-CN": "Tooltip 内容可以由 Weave 组件组合，而不局限于单个文本字符串。",
+    "zh-TW": "Tooltip 內容可以由 Weave 元件組合，而不侷限於單一文字字串。",
+    "fr": "Le contenu de l’info-bulle peut être composé avec des composants Weave au lieu d’être limité à une simple chaîne de texte."
+  },
+  "Icon button tooltip": {
+    "zh-CN": "图标按钮 Tooltip",
+    "zh-TW": "圖示按鈕 Tooltip",
+    "fr": "Info-bulle de bouton icône"
+  },
+  "Tooltips are useful when an icon-only action needs a visible description on hover or focus.": {
+    "zh-CN": "当仅图标操作需要在悬停或聚焦时显示可见说明时，Tooltip 很有用。",
+    "zh-TW": "當僅圖示操作需要在懸停或聚焦時顯示可見說明時，Tooltip 很實用。",
+    "fr": "Les info-bulles sont utiles lorsqu’une action avec icône seule nécessite une description visible au survol ou au focus."
+  },
+  "Tooltip placement": {
+    "zh-CN": "Tooltip 位置",
+    "zh-TW": "Tooltip 位置",
+    "fr": "Placement de l’info-bulle"
+  },
+  "Placement and offset keep help text attached to the trigger edge that fits the surrounding layout.": {
+    "zh-CN": "Placement 与 offset 让帮助文本附着在最适合周围布局的触发器边缘。",
+    "zh-TW": "Placement 與 offset 讓說明文字附著在最適合周圍版面的觸發器邊緣。",
+    "fr": "Placement et offset maintiennent le texte d’aide attaché au bord du déclencheur qui convient à la mise en page environnante."
+  },
+  "Controlled popover": {
+    "zh-CN": "受控 Popover",
+    "zh-TW": "受控 Popover",
+    "fr": "Popover contrôlé"
+  },
+  "Use open and onOpenChange when the parent owns visibility while Popover continues to request trigger, outside-click, and Escape changes.": {
+    "zh-CN": "当 Popover 的可见状态由父级管理时，使用 open 与 onOpenChange；触发器、外部点击和 Escape 仍会请求状态变化。",
+    "zh-TW": "當 Popover 的可見狀態由父層管理時，使用 open 與 onOpenChange；觸發器、外部點擊與 Escape 仍會請求狀態變化。",
+    "fr": "Utilisez open et onOpenChange lorsque le parent contrôle la visibilité ; le déclencheur, le clic extérieur et Échap continuent de demander des changements."
+  },
+  "Contextual actions": {
+    "zh-CN": "上下文操作",
+    "zh-TW": "情境操作",
+    "fr": "Actions contextuelles"
+  },
+  "Popover can host a small action surface without promoting those controls into a modal flow.": {
+    "zh-CN": "Popover 可以承载小型操作表面，而无需把这些控件提升为模态流程。",
+    "zh-TW": "Popover 可以承載小型操作表面，而無需把這些控制項提升為模態流程。",
+    "fr": "Popover peut accueillir une petite surface d’actions sans transformer ces contrôles en flux modal."
+  },
+  "Focused popover": {
+    "zh-CN": "聚焦的 Popover",
+    "zh-TW": "聚焦的 Popover",
+    "fr": "Popover avec focus"
+  },
+  "autoFocus moves focus into an interactive popover when its content should immediately accept keyboard input.": {
+    "zh-CN": "当 Popover 内容需要立即接受键盘输入时，autoFocus 会把焦点移入交互式 Popover。",
+    "zh-TW": "當 Popover 內容需要立即接受鍵盤輸入時，autoFocus 會把焦點移入互動式 Popover。",
+    "fr": "autoFocus déplace le focus dans un popover interactif lorsque son contenu doit accepter immédiatement la saisie clavier."
+  },
+  "Modal dialog": {
+    "zh-CN": "模态对话框",
+    "zh-TW": "模態對話框",
+    "fr": "Dialogue modal"
+  },
+  "Modal Dialog uses the native top layer while the surrounding application owns the open state.": {
+    "zh-CN": "模态 Dialog 使用浏览器原生顶层，同时由外围应用持有打开状态。",
+    "zh-TW": "模態 Dialog 使用瀏覽器原生頂層，同時由外圍應用持有開啟狀態。",
+    "fr": "Dialog modal utilise la couche supérieure native tandis que l’application environnante possède l’état d’ouverture."
+  },
+  "Non-modal dialog": {
+    "zh-CN": "非模态对话框",
+    "zh-TW": "非模態對話框",
+    "fr": "Dialogue non modal"
+  },
+  "Non-modal Dialog reuses anchored Popover behavior for lightweight contextual surfaces.": {
+    "zh-CN": "非模态 Dialog 复用锚定 Popover 行为，用于轻量上下文表面。",
+    "zh-TW": "非模態 Dialog 複用錨定 Popover 行為，用於輕量情境表面。",
+    "fr": "Dialog non modal réutilise le comportement de Popover ancré pour les surfaces contextuelles légères."
+  },
+  "Controlled drawer": {
+    "zh-CN": "受控 Drawer",
+    "zh-TW": "受控 Drawer",
+    "fr": "Drawer contrôlé"
+  },
+  "Control open state and drawer size from the parent while resize gestures continue to report the next size.": {
+    "zh-CN": "由父级控制 Drawer 的打开状态和尺寸，同时调整尺寸的手势继续报告下一尺寸。",
+    "zh-TW": "由父層控制 Drawer 的開啟狀態與尺寸，同時調整尺寸的手勢繼續回報下一尺寸。",
+    "fr": "Contrôlez l’état d’ouverture et la taille du Drawer depuis le parent tandis que les gestes de redimensionnement continuent de signaler la taille suivante."
+  },
+  "Responsive drawer mode": {
+    "zh-CN": "响应式 Drawer 模式",
+    "zh-TW": "響應式 Drawer 模式",
+    "fr": "Mode Drawer adaptatif"
+  },
+  "auto mode switches between modal and non-modal layout at the selected Theme breakpoint without changing open state.": {
+    "zh-CN": "auto 模式会在选定的 Theme 断点处切换模态与非模态布局，而不会改变打开状态。",
+    "zh-TW": "auto 模式會在選定的 Theme 斷點切換模態與非模態版面配置，而不會改變開啟狀態。",
+    "fr": "Le mode auto bascule entre les mises en page modale et non modale au point de rupture Theme sélectionné sans modifier l’état d’ouverture."
+  },
+  "Modal drawer": {
+    "zh-CN": "模态 Drawer",
+    "zh-TW": "模態 Drawer",
+    "fr": "Drawer modal"
+  },
+  "Modal Drawer reuses native Dialog behavior for backdrop, Escape, focus containment, initial focus, and focus restoration.": {
+    "zh-CN": "模态 Drawer 复用原生 Dialog 的遮罩、Escape、焦点约束、初始焦点和焦点恢复行为。",
+    "zh-TW": "模態 Drawer 複用原生 Dialog 的遮罩、Escape、焦點約束、初始焦點與焦點恢復行為。",
+    "fr": "Le Drawer modal réutilise le comportement natif de Dialog pour le backdrop, Échap, le confinement du focus, le focus initial et sa restauration."
+  },
+  "Right-side drawer": {
+    "zh-CN": "右侧抽屉",
+    "zh-TW": "右側抽屜",
+    "fr": "Tiroir à droite"
+  },
+  "The same drawer model can place auxiliary content on the opposite side without changing the content tree.": {
+    "zh-CN": "同一套 Drawer 模型可以把辅助内容放到另一侧，而无需改变内容树。",
+    "zh-TW": "同一套 Drawer 模型可以把輔助內容放到另一側，而無需改變內容樹。",
+    "fr": "Le même modèle de Drawer peut placer le contenu auxiliaire de l’autre côté sans modifier l’arbre de contenu."
+  },
+  "Closed drawer": {
+    "zh-CN": "关闭的抽屉",
+    "zh-TW": "關閉的抽屜",
+    "fr": "Tiroir fermé"
+  },
+  "A drawer can start closed while the main content keeps the same layout host.": {
+    "zh-CN": "Drawer 可以初始关闭，同时主内容保持同一个布局宿主。",
+    "zh-TW": "Drawer 可以初始關閉，同時主內容維持同一個版面宿主。",
+    "fr": "Un Drawer peut démarrer fermé tandis que le contenu principal conserve le même hôte de mise en page."
+  },
+  "Controlled menu": {
+    "zh-CN": "受控菜单",
+    "zh-TW": "受控選單",
+    "fr": "Menu contrôlé"
+  },
+  "Control root visibility from the parent while placement, overlap, and viewport collision remain owned by Menu.": {
+    "zh-CN": "由父级控制根菜单的可见状态，同时位置、覆盖触发器和视口碰撞仍由 Menu 管理。",
+    "zh-TW": "由父層控制根選單的可見狀態，同時位置、覆蓋觸發器與視口碰撞仍由 Menu 管理。",
+    "fr": "Contrôlez la visibilité du menu racine depuis le parent tandis que le placement, le chevauchement et les collisions avec la fenêtre restent gérés par Menu."
+  },
+  "Nested submenu": {
+    "zh-CN": "嵌套子菜单",
+    "zh-TW": "巢狀子選單",
+    "fr": "Sous-menu imbriqué"
+  },
+  "MenuItem submenu content opens as a keyboard-navigable child menu that reuses the shared anchored overlay geometry.": {
+    "zh-CN": "MenuItem 的 submenu 内容会作为可用键盘导航的子菜单打开，并复用共享的锚定浮层几何。",
+    "zh-TW": "MenuItem 的 submenu 內容會作為可用鍵盤導覽的子選單開啟，並複用共享的錨定浮層幾何。",
+    "fr": "Le contenu submenu de MenuItem s’ouvre comme un menu enfant navigable au clavier qui réutilise la géométrie partagée des overlays ancrés."
+  },
+  "Selection dismissal": {
+    "zh-CN": "选择后的关闭行为",
+    "zh-TW": "選取後的關閉行為",
+    "fr": "Fermeture après sélection"
+  },
+  "Menu and individual MenuItem instances can keep the menu open or close it after selection.": {
+    "zh-CN": "Menu 和单个 MenuItem 都可以控制选择后保持菜单打开或将其关闭。",
+    "zh-TW": "Menu 與單個 MenuItem 都可以控制選取後保持選單開啟或將其關閉。",
+    "fr": "Menu et chaque MenuItem peuvent conserver le menu ouvert ou le fermer après une sélection."
+  },
+  "Menu item states": {
+    "zh-CN": "菜单项状态",
+    "zh-TW": "選單項目狀態",
+    "fr": "États des éléments de menu"
+  },
+  "Menu items can communicate secondary information, unavailable commands, and destructive actions.": {
+    "zh-CN": "菜单项可以表达辅助信息、不可用命令和破坏性操作。",
+    "zh-TW": "選單項目可以表達輔助資訊、不可用命令與破壞性操作。",
+    "fr": "Les éléments de menu peuvent communiquer des informations secondaires, des commandes indisponibles et des actions destructrices."
+  },
+  "Menu with icons": {
+    "zh-CN": "带图标的菜单",
+    "zh-TW": "帶圖示的選單",
+    "fr": "Menu avec icônes"
+  },
+  "Icons can reinforce command identity while text remains the primary accessible label.": {
+    "zh-CN": "图标可以强化命令识别，同时文本仍作为主要无障碍标签。",
+    "zh-TW": "圖示可以強化命令識別，同時文字仍作為主要無障礙標籤。",
+    "fr": "Les icônes peuvent renforcer l’identité des commandes tandis que le texte reste le libellé accessible principal."
+  },
+  "Controlled tabs": {
+    "zh-CN": "受控标签页",
+    "zh-TW": "受控分頁",
+    "fr": "Onglets contrôlés"
+  },
+  "Own the selected tab in parent state while Tabs continues to coordinate selection, roving focus, and panel visibility.": {
+    "zh-CN": "由父级状态持有所选标签，同时 Tabs 继续协调选择、游走焦点和面板可见性。",
+    "zh-TW": "由父層狀態持有所選分頁，同時 Tabs 繼續協調選取、游移焦點與面板可見性。",
+    "fr": "Conservez l’onglet sélectionné dans l’état parent tandis que Tabs continue de coordonner la sélection, le focus itinérant et la visibilité des panneaux."
+  },
+  "Pill tabs": {
+    "zh-CN": "胶囊标签页",
+    "zh-TW": "膠囊分頁",
+    "fr": "Onglets pilule"
+  },
+  "The pill variant changes the shared indicator and TabList surface while preserving the same selection and keyboard model.": {
+    "zh-CN": "pill 变体会改变共享指示器与 TabList 表面，同时保留相同的选择和键盘模型。",
+    "zh-TW": "pill 變體會改變共享指示器與 TabList 表面，同時保留相同的選取與鍵盤模型。",
+    "fr": "La variante pill modifie l’indicateur partagé et la surface TabList tout en conservant le même modèle de sélection et de clavier."
+  },
+  "Disabled tab": {
+    "zh-CN": "禁用标签页",
+    "zh-TW": "停用分頁",
+    "fr": "Onglet désactivé"
+  },
+  "Disabled tabs are skipped by default selection and keyboard focus while their panels remain part of the compound structure.": {
+    "zh-CN": "禁用标签会被默认选择和键盘焦点跳过，但其面板仍保留在组合结构中。",
+    "zh-TW": "停用分頁會被預設選取與鍵盤焦點跳過，但其面板仍保留在組合結構中。",
+    "fr": "Les onglets désactivés sont ignorés par la sélection par défaut et le focus clavier, tandis que leurs panneaux restent dans la structure composée."
+  },
+  "Vertical tabs": {
+    "zh-CN": "纵向标签页",
+    "zh-TW": "縱向分頁",
+    "fr": "Onglets verticaux"
+  },
+  "Vertical orientation works for settings and inspector layouts where labels need more horizontal space.": {
+    "zh-CN": "当标签需要更多横向空间时，纵向方向适合设置页和检查器布局。",
+    "zh-TW": "當標籤需要更多橫向空間時，縱向方向適合設定頁與檢查器版面。",
+    "fr": "L’orientation verticale convient aux mises en page de réglages et d’inspecteur où les libellés nécessitent davantage d’espace horizontal."
+  },
+  "Manual activation": {
+    "zh-CN": "手动激活",
+    "zh-TW": "手動啟用",
+    "fr": "Activation manuelle"
+  },
+  "Manual activation separates keyboard focus from selection when switching panels is expensive.": {
+    "zh-CN": "当切换面板代价较高时，手动激活会把键盘焦点与选择状态分离。",
+    "zh-TW": "當切換面板成本較高時，手動啟用會把鍵盤焦點與選取狀態分離。",
+    "fr": "L’activation manuelle sépare le focus clavier de la sélection lorsque le changement de panneau est coûteux."
+  },
+  "Provider queue": {
+    "zh-CN": "Provider 队列",
+    "zh-TW": "Provider 佇列",
+    "fr": "File d’attente du Provider"
+  },
+  "SnackProvider with useSnack creates independent queued notifications and exposes show, dismiss, and dismissAll controls.": {
+    "zh-CN": "SnackProvider 配合 useSnack 创建独立的通知队列，并提供 show、dismiss 与 dismissAll 控制。",
+    "zh-TW": "SnackProvider 搭配 useSnack 建立獨立的通知佇列，並提供 show、dismiss 與 dismissAll 控制。",
+    "fr": "SnackProvider avec useSnack crée une file de notifications indépendante et expose les contrôles show, dismiss et dismissAll."
+  },
+  "Controlled lifetime progress": {
+    "zh-CN": "受控生命周期进度",
+    "zh-TW": "受控生命週期進度",
+    "fr": "Progression de durée de vie contrôlée"
+  },
+  "A controlled Snack can expose its timed lifetime progress and report when its exit transition has fully dismissed.": {
+    "zh-CN": "受控 Snack 可以显示定时生命周期进度，并在退出过渡完全结束后报告已完成关闭。",
+    "zh-TW": "受控 Snack 可以顯示定時生命週期進度，並在退出過渡完全結束後回報已完成關閉。",
+    "fr": "Un Snack contrôlé peut afficher la progression de sa durée de vie et signaler la fin complète de sa transition de sortie."
+  },
+  "Custom snack content": {
+    "zh-CN": "自定义 Snack 内容",
+    "zh-TW": "自訂 Snack 內容",
+    "fr": "Contenu Snack personnalisé"
+  },
+  "Use children for fully composed Snack content instead of the text, icon, and action shortcut API.": {
+    "zh-CN": "使用 children 完整组合 Snack 内容，而不是使用 text、icon 和 action 的快捷 API。",
+    "zh-TW": "使用 children 完整組合 Snack 內容，而不是使用 text、icon 與 action 的快捷 API。",
+    "fr": "Utilisez children pour composer entièrement le contenu du Snack plutôt que l’API raccourcie text, icon et action."
+  },
+  "Snack action": {
+    "zh-CN": "Snack 操作",
+    "zh-TW": "Snack 操作",
+    "fr": "Action de Snack"
+  },
+  "A Snack can expose one immediate action alongside the status message without becoming a dialog.": {
+    "zh-CN": "Snack 可以在状态消息旁提供一个即时操作，而无需变成对话框。",
+    "zh-TW": "Snack 可以在狀態訊息旁提供一個即時操作，而無需變成對話框。",
+    "fr": "Un Snack peut exposer une action immédiate à côté du message d’état sans devenir un dialogue."
+  },
+  "Status variant": {
+    "zh-CN": "状态变体",
+    "zh-TW": "狀態變體",
+    "fr": "Variante de statut"
+  },
+  "Semantic variants let transient messages communicate success, warning, or failure consistently.": {
+    "zh-CN": "语义变体让临时消息以一致方式表达成功、警告或失败。",
+    "zh-TW": "語意變體讓暫時訊息以一致方式表達成功、警告或失敗。",
+    "fr": "Les variantes sémantiques permettent aux messages transitoires de communiquer de façon cohérente le succès, l’avertissement ou l’échec."
+  },
+  "Controlled multiple selection": {
+    "zh-CN": "受控多选",
+    "zh-TW": "受控多選",
+    "fr": "Sélection multiple contrôlée"
+  },
+  "Own a multiple-selection value in parent state while List handles option semantics, roving focus, and disabled items.": {
+    "zh-CN": "由父级状态持有多选值，同时 List 负责选项语义、游走焦点和禁用项。",
+    "zh-TW": "由父層狀態持有多選值，同時 List 負責選項語義、游移焦點與停用項目。",
+    "fr": "Conservez la valeur de sélection multiple dans l’état parent tandis que List gère la sémantique des options, le focus itinérant et les éléments désactivés."
+  },
+  "Horizontal list": {
+    "zh-CN": "横向列表",
+    "zh-TW": "橫向列表",
+    "fr": "Liste horizontale"
+  },
+  "orientation, gap, noDividers, and singleLine compose the same List model into a compact horizontal collection.": {
+    "zh-CN": "orientation、gap、noDividers 和 singleLine 可将同一套 List 模型组合成紧凑的横向集合。",
+    "zh-TW": "orientation、gap、noDividers 與 singleLine 可將同一套 List 模型組合成緊湊的橫向集合。",
+    "fr": "orientation, gap, noDividers et singleLine composent le même modèle List en une collection horizontale compacte."
+  },
+  "Virtualized list": {
+    "zh-CN": "虚拟化列表",
+    "zh-TW": "虛擬化列表",
+    "fr": "Liste virtualisée"
+  },
+  "virtualized windows a long collection inside the List scroll host while preserving List selection and focus semantics.": {
+    "zh-CN": "virtualized 会在 List 滚动宿主内对长集合进行窗口化，同时保留 List 的选择和焦点语义。",
+    "zh-TW": "virtualized 會在 List 捲動宿主內對長集合進行視窗化，同時保留 List 的選取與焦點語義。",
+    "fr": "virtualized fenêtré une longue collection dans l’hôte de défilement List tout en préservant les sémantiques de sélection et de focus."
+  },
+  "Single selection": {
+    "zh-CN": "单选",
+    "zh-TW": "單選",
+    "fr": "Sélection simple"
+  },
+  "Single selection makes a list suitable for navigation or one-of-many pickers.": {
+    "zh-CN": "单选让 List 适合导航或多选一选择器。",
+    "zh-TW": "單選讓 List 適合導覽或多選一選擇器。",
+    "fr": "La sélection simple rend une List adaptée à la navigation ou aux sélecteurs à choix unique."
+  },
+  "Data-driven list": {
+    "zh-CN": "数据驱动列表",
+    "zh-TW": "資料驅動清單",
+    "fr": "Liste pilotée par les données"
+  },
+  "items renders the same List model from data when the application already owns a collection.": {
+    "zh-CN": "当应用已经持有一个集合时，items 可以从数据渲染同一套 List 模型。",
+    "zh-TW": "當應用已經持有一個集合時，items 可以從資料渲染同一套 List 模型。",
+    "fr": "items rend le même modèle de List à partir des données lorsque l’application possède déjà une collection."
+  },
+  "Nested theme override": {
+    "zh-CN": "嵌套主题覆盖",
+    "zh-TW": "巢狀主題覆寫",
+    "fr": "Surcharge de thème imbriquée"
+  },
+  "A nested ThemeProvider deep-merges a partial theme override with the surrounding theme instead of replacing unspecified tokens.": {
+    "zh-CN": "嵌套 ThemeProvider 会把局部主题覆盖与外围主题深度合并，而不是替换未指定的 token。",
+    "zh-TW": "巢狀 ThemeProvider 會把局部主題覆寫與外圍主題深度合併，而不是取代未指定的 token。",
+    "fr": "Un ThemeProvider imbriqué fusionne en profondeur une surcharge partielle avec le thème environnant au lieu de remplacer les tokens non spécifiés."
+  },
+  "Scoped color mode": {
+    "zh-CN": "局部颜色模式",
+    "zh-TW": "局部色彩模式",
+    "fr": "Mode de couleur localisé"
+  },
+  "A nested provider can force a color mode for one subtree without changing the surrounding application.": {
+    "zh-CN": "嵌套 Provider 可以为一个子树强制指定颜色模式，而不改变外围应用。",
+    "zh-TW": "巢狀 Provider 可以為一個子樹強制指定色彩模式，而不改變外圍應用。",
+    "fr": "Un provider imbriqué peut imposer un mode de couleur à un sous-arbre sans modifier l’application environnante."
+  },
+  "Reduced motion scope": {
+    "zh-CN": "局部减少动效",
+    "zh-TW": "局部減少動效",
+    "fr": "Portée de réduction des animations"
+  },
+  "Reduced-motion preference can be scoped for previews, accessibility testing, or motion-sensitive regions.": {
+    "zh-CN": "减少动效偏好可以限定在预览、无障碍测试或对动效敏感的区域。",
+    "zh-TW": "減少動效偏好可以限定在預覽、無障礙測試或對動效敏感的區域。",
+    "fr": "La préférence de réduction des animations peut être limitée aux aperçus, aux tests d’accessibilité ou aux zones sensibles au mouvement."
+  },
+  "A data-driven table with sorting, column resizing, row and cell selection, and virtualized rows.": {
+    "zh-CN": "一个数据驱动的表格，支持排序、列宽调整、行与单元格选择以及行虚拟化。",
+    "zh-TW": "一個資料驅動的表格，支援排序、欄寬調整、列與儲存格選取以及列虛擬化。",
+    "fr": "Un tableau piloté par les données avec tri, redimensionnement des colonnes, sélection des lignes et des cellules, et virtualisation des lignes."
+  },
+  "Controlled grid state": {
+    "zh-CN": "受控网格状态",
+    "zh-TW": "受控網格狀態",
+    "fr": "État contrôlé de la grille"
+  },
+  "Control sorting, resized column widths, and cell selection from the parent while using the same DataGrid interaction model.": {
+    "zh-CN": "由父级控制排序、调整后的列宽和单元格选择，同时继续使用同一套 DataGrid 交互模型。",
+    "zh-TW": "由父層控制排序、調整後的欄寬與儲存格選取，同時繼續使用同一套 DataGrid 互動模型。",
+    "fr": "Contrôlez le tri, les largeurs de colonnes redimensionnées et la sélection des cellules depuis le parent tout en conservant le même modèle d’interaction DataGrid."
+  },
+  "State styles": {
+    "zh-CN": "状态样式",
+    "zh-TW": "狀態樣式",
+    "fr": "Styles d’état"
+  },
+  "State-style props let View define hover, active, focus-visible, and disabled feedback without a second wrapper.": {
+    "zh-CN": "状态样式属性让 View 直接定义 hover、active、focus-visible 和 disabled 反馈，无需再包一层。",
+    "zh-TW": "狀態樣式屬性讓 View 直接定義 hover、active、focus-visible 與 disabled 回饋，無需再包一層。",
+    "fr": "Les propriétés de style d’état permettent à View de définir directement les retours hover, active, focus-visible et disabled sans wrapper supplémentaire."
+  },
+  "Container responsive": {
+    "zh-CN": "容器响应式",
+    "zh-TW": "容器響應式",
+    "fr": "Réactivité au conteneur"
+  },
+  "Container breakpoint props respond to the nearest View container instead of the viewport.": {
+    "zh-CN": "容器断点属性响应最近的 View 容器，而不是 viewport。",
+    "zh-TW": "容器斷點屬性回應最近的 View 容器，而不是 viewport。",
+    "fr": "Les propriétés de breakpoint de conteneur répondent au conteneur View le plus proche plutôt qu’au viewport."
+  },
+  "Motion": {
+    "zh-CN": "动效",
+    "zh-TW": "動效",
+    "fr": "Mouvement"
+  },
+  "View enter and exit props plug directly into Presence for mount and unmount motion.": {
+    "zh-CN": "View 的 enter 和 exit 属性可直接与 Presence 配合，用于挂载和卸载动效。",
+    "zh-TW": "View 的 enter 與 exit 屬性可直接與 Presence 配合，用於掛載與卸載動效。",
+    "fr": "Les propriétés enter et exit de View s’intègrent directement à Presence pour les animations de montage et de démontage."
+  },
+  "Layout animation": {
+    "zh-CN": "布局动画",
+    "zh-TW": "版面動畫",
+    "fr": "Animation de mise en page"
+  },
+  "layoutAnimation animates geometry changes without moving layout state into a separate animation component.": {
+    "zh-CN": "layoutAnimation 可以直接为几何变化制作动画，无需把布局状态移到单独的动画组件。",
+    "zh-TW": "layoutAnimation 可以直接為幾何變化製作動畫，無需把版面狀態移到獨立的動畫元件。",
+    "fr": "layoutAnimation anime les changements de géométrie sans déplacer l’état de mise en page vers un composant d’animation séparé."
+  },
+  "Scrolling": {
+    "zh-CN": "滚动",
+    "zh-TW": "捲動",
+    "fr": "Défilement"
+  },
+  "Overflow and scrollbar props turn View into the framework scroll host while keeping native scrolling as the source of truth.": {
+    "zh-CN": "overflow 和 scrollbar 属性让 View 成为框架滚动宿主，同时仍以原生滚动作为真实状态来源。",
+    "zh-TW": "overflow 與 scrollbar 屬性讓 View 成為框架捲動宿主，同時仍以原生捲動作為真實狀態來源。",
+    "fr": "Les propriétés overflow et scrollbar transforment View en hôte de défilement du framework tout en conservant le défilement natif comme source de vérité."
+  },
+  "Responsive text": {
+    "zh-CN": "响应式文本",
+    "zh-TW": "響應式文字",
+    "fr": "Texte adaptatif"
+  },
+  "Text-specific breakpoint props can change typography, alignment, wrapping, and emphasis without replacing the Text component.": {
+    "zh-CN": "Text 专属断点属性可以改变排版、对齐、换行和强调方式，而无需替换 Text 组件。",
+    "zh-TW": "Text 專屬斷點屬性可以改變排版、對齊、換行與強調方式，而無需替換 Text 元件。",
+    "fr": "Les propriétés de breakpoint propres à Text peuvent modifier la typographie, l’alignement, le retour à la ligne et l’emphase sans remplacer le composant Text."
+  },
+  "Custom syntax": {
+    "zh-CN": "自定义语法",
+    "zh-TW": "自訂語法",
+    "fr": "Syntaxe personnalisée"
+  },
+  "Use language=\"custom\" with a TextMate grammar when syntax highlighting is not provided by a bundled Shiki language.": {
+    "zh-CN": "当内置 Shiki 语言不提供所需语法高亮时，使用 language=\"custom\" 并传入 TextMate grammar。",
+    "zh-TW": "當內建 Shiki 語言未提供所需語法醒目提示時，使用 language=\"custom\" 並傳入 TextMate grammar。",
+    "fr": "Utilisez language=\"custom\" avec une grammaire TextMate lorsque la coloration voulue n’est pas fournie par une langue Shiki intégrée."
+  },
+  "Blob sources and events": {
+    "zh-CN": "Blob 来源与事件",
+    "zh-TW": "Blob 來源與事件",
+    "fr": "Sources Blob et événements"
+  },
+  "Image accepts Blob sources directly and exposes native load and error lifecycle callbacks.": {
+    "zh-CN": "Image 可直接接收 Blob 来源，并暴露原生加载与错误生命周期回调。",
+    "zh-TW": "Image 可直接接收 Blob 來源，並暴露原生載入與錯誤生命週期回呼。",
+    "fr": "Image accepte directement les sources Blob et expose les callbacks natifs de chargement et d’erreur."
+  },
+  "Custom SVG": {
+    "zh-CN": "自定义 SVG",
+    "zh-TW": "自訂 SVG",
+    "fr": "SVG personnalisé"
+  },
+  "Icon accepts a direct SVG element and uses viewProps.label when the icon itself needs an accessible name.": {
+    "zh-CN": "Icon 可直接接收 SVG 元素；当图标自身需要可访问名称时，使用 viewProps.label。",
+    "zh-TW": "Icon 可直接接收 SVG 元素；當圖示本身需要可存取名稱時，使用 viewProps.label。",
+    "fr": "Icon accepte directement un élément SVG et utilise viewProps.label lorsque l’icône elle-même doit avoir un nom accessible."
+  },
+  "Fallback behavior": {
+    "zh-CN": "回退行为",
+    "zh-TW": "回退行為",
+    "fr": "Comportement de repli"
+  },
+  "Avatar derives initials from name by default, accepts custom ReactNode fallback content, and falls back automatically when an image fails.": {
+    "zh-CN": "Avatar 默认从 name 推导首字母，也支持自定义 ReactNode 回退内容，并会在图片加载失败时自动回退。",
+    "zh-TW": "Avatar 預設從 name 推導首字母，也支援自訂 ReactNode 回退內容，並會在圖片載入失敗時自動回退。",
+    "fr": "Avatar déduit les initiales depuis name par défaut, accepte un fallback ReactNode personnalisé et revient automatiquement au fallback si l’image échoue."
+  },
+  "Badge visibility": {
+    "zh-CN": "Badge 显隐",
+    "zh-TW": "Badge 顯隱",
+    "fr": "Visibilité du badge"
+  },
+  "visible controls only the badge surface, so the anchored child stays mounted while the badge enters or exits.": {
+    "zh-CN": "visible 只控制 Badge 本体，因此在 Badge 进入或退出时，被附着的子内容仍保持挂载。",
+    "zh-TW": "visible 只控制 Badge 本體，因此在 Badge 進入或退出時，被附著的子內容仍保持掛載。",
+    "fr": "visible ne contrôle que la surface du badge : l’enfant ancré reste monté pendant l’entrée ou la sortie du badge."
+  },
+  "Combined interaction": {
+    "zh-CN": "组合交互",
+    "zh-TW": "組合互動",
+    "fr": "Interaction combinée"
+  },
+  "A controlled Card can be clickable and selectable at the same time while nested interactive controls remain independent.": {
+    "zh-CN": "受控 Card 可以同时开启 clickable 与 selectable，而内部交互控件仍保持独立。",
+    "zh-TW": "受控 Card 可以同時開啟 clickable 與 selectable，而內部互動控制項仍保持獨立。",
+    "fr": "Une Card contrôlée peut être à la fois cliquable et sélectionnable tandis que les contrôles interactifs imbriqués restent indépendants."
+  },
+  "Action group": {
+    "zh-CN": "动作组",
+    "zh-TW": "動作組",
+    "fr": "Groupe d’actions"
+  },
+  "With selection omitted, SegmentedButton is a connected group of real Button actions with no persistent selection state.": {
+    "zh-CN": "省略 selection 时，SegmentedButton 是一组连续排列的真实 Button 动作，不保留选择状态。",
+    "zh-TW": "省略 selection 時，SegmentedButton 是一組連續排列的真實 Button 動作，不保留選取狀態。",
+    "fr": "Sans selection, SegmentedButton est un groupe connecté de vraies actions Button sans état de sélection persistant."
+  },
+  "Controlled selection": {
+    "zh-CN": "受控选择",
+    "zh-TW": "受控選取",
+    "fr": "Sélection contrôlée"
+  },
+  "Use selected and onSelect when the parent owns the selection state; disabled items remain unavailable.": {
+    "zh-CN": "当父级持有选择状态时使用 selected 和 onSelect；disabled 项保持不可用。",
+    "zh-TW": "當父層持有選取狀態時使用 selected 與 onSelect；disabled 項保持不可用。",
+    "fr": "Utilisez selected et onSelect lorsque le parent possède l’état de sélection ; les éléments disabled restent indisponibles."
+  },
+  "Sticky app bar": {
+    "zh-CN": "粘性 AppBar",
+    "zh-TW": "黏性 AppBar",
+    "fr": "AppBar collante"
+  },
+  "sticky uses native sticky positioning inside a scroll container; this example also shows the large size and end-aligned title.": {
+    "zh-CN": "sticky 在滚动容器内使用原生粘性定位；此示例同时展示 large 尺寸与末端对齐标题。",
+    "zh-TW": "sticky 在捲動容器內使用原生黏性定位；此範例同時展示 large 尺寸與末端對齊標題。",
+    "fr": "sticky utilise le positionnement sticky natif dans un conteneur défilant ; cet exemple montre aussi la taille large et un titre aligné en fin."
+  },
+  "Controlled input": {
+    "zh-CN": "受控输入",
+    "zh-TW": "受控輸入",
+    "fr": "Saisie contrôlée"
+  },
+  "Use value and onChange when the parent owns the current text while native input attributes remain available.": {
+    "zh-CN": "当父级持有当前文本时使用 value 和 onChange，同时仍可使用原生 input 属性。",
+    "zh-TW": "當父層持有目前文字時使用 value 與 onChange，同時仍可使用原生 input 屬性。",
+    "fr": "Utilisez value et onChange lorsque le parent possède le texte courant, tout en conservant les attributs input natifs."
+  },
+  "Controlled select": {
+    "zh-CN": "受控选择器",
+    "zh-TW": "受控選擇器",
+    "fr": "Select contrôlé"
+  },
+  "Control value and open independently when the parent owns both selection and popup state.": {
+    "zh-CN": "当父级同时持有选择值和弹出层状态时，可分别控制 value 与 open。",
+    "zh-TW": "當父層同時持有選取值與彈出層狀態時，可分別控制 value 與 open。",
+    "fr": "Contrôlez value et open séparément lorsque le parent possède à la fois la sélection et l’état du popup."
+  },
+  "Overlay placement": {
+    "zh-CN": "浮层定位",
+    "zh-TW": "浮層定位",
+    "fr": "Placement du panneau"
+  },
+  "placement, offset, overlapTrigger, and viewportPadding configure the shared anchored listbox geometry.": {
+    "zh-CN": "placement、offset、overlapTrigger 和 viewportPadding 用于配置共享 anchored listbox 的几何定位。",
+    "zh-TW": "placement、offset、overlapTrigger 與 viewportPadding 用於設定共享 anchored listbox 的幾何定位。",
+    "fr": "placement, offset, overlapTrigger et viewportPadding configurent la géométrie du listbox ancré partagé."
+  },
+  "Controlled values": {
+    "zh-CN": "受控双状态",
+    "zh-TW": "受控雙狀態",
+    "fr": "Valeurs contrôlées"
+  },
+  "Control committed value and inputValue separately when the parent owns both selection and search text.": {
+    "zh-CN": "当父级同时持有已提交选择和搜索文字时，可分别控制 value 与 inputValue。",
+    "zh-TW": "當父層同時持有已提交選取與搜尋文字時，可分別控制 value 與 inputValue。",
+    "fr": "Contrôlez séparément value et inputValue lorsque le parent possède à la fois la sélection validée et le texte de recherche."
+  },
+  "Custom filter": {
+    "zh-CN": "自定义过滤",
+    "zh-TW": "自訂過濾",
+    "fr": "Filtre personnalisé"
+  },
+  "Provide filter when matching should use application-specific logic instead of the default textValue substring match.": {
+    "zh-CN": "当匹配需要使用业务逻辑，而不是默认的 textValue 子串匹配时，提供 filter。",
+    "zh-TW": "當比對需要使用應用邏輯，而不是預設的 textValue 子字串比對時，提供 filter。",
+    "fr": "Fournissez filter lorsque la correspondance doit utiliser une logique propre à l’application plutôt que la recherche par sous-chaîne de textValue."
+  },
+  "Controlled continuous slider": {
+    "zh-CN": "受控连续滑块",
+    "zh-TW": "受控連續滑桿",
+    "fr": "Slider continu contrôlé"
+  },
+  "Without step, Slider remains continuous; value and onChange let the parent own the current numeric value.": {
+    "zh-CN": "未传 step 时 Slider 保持连续；value 与 onChange 让父级持有当前数值。",
+    "zh-TW": "未傳 step 時 Slider 保持連續；value 與 onChange 讓父層持有目前數值。",
+    "fr": "Sans step, Slider reste continu ; value et onChange permettent au parent de posséder la valeur numérique courante."
+  },
+  "Controlled range": {
+    "zh-CN": "受控范围",
+    "zh-TW": "受控範圍",
+    "fr": "Plage contrôlée"
+  },
+  "Use value and onChange when the parent owns both endpoints; startName and endName keep the two native ranges in FormData.": {
+    "zh-CN": "当父级持有两个端点时使用 value 和 onChange；startName 与 endName 让两个原生 range 继续参与 FormData。",
+    "zh-TW": "當父層持有兩個端點時使用 value 與 onChange；startName 與 endName 讓兩個原生 range 繼續參與 FormData。",
+    "fr": "Utilisez value et onChange lorsque le parent possède les deux extrémités ; startName et endName conservent les deux ranges natifs dans FormData."
+  },
+  "Controlled switch": {
+    "zh-CN": "受控开关",
+    "zh-TW": "受控開關",
+    "fr": "Switch contrôlé"
+  },
+  "Use checked and onChange when the parent owns the state; name and value keep the checked switch in native form data.": {
+    "zh-CN": "当父级持有开关状态时使用 checked 和 onChange；name 与 value 让选中的开关继续参与原生表单数据。",
+    "zh-TW": "當父層持有開關狀態時使用 checked 與 onChange；name 與 value 讓選中的開關繼續參與原生表單資料。",
+    "fr": "Utilisez checked et onChange lorsque le parent possède l’état ; name et value conservent le switch activé dans les données de formulaire natives."
+  },
+  "Controlled sizes": {
+    "zh-CN": "受控尺寸",
+    "zh-TW": "受控尺寸",
+    "fr": "Tailles contrôlées"
+  },
+  "A controlled radio group can render small, medium, and large controls while native grouping still owns mutual exclusion.": {
+    "zh-CN": "受控 Radio 组可以同时渲染 small、medium 和 large 控件，同时继续由原生分组负责互斥。",
+    "zh-TW": "受控 Radio 組可以同時呈現 small、medium 與 large 控制項，同時繼續由原生分組負責互斥。",
+    "fr": "Un groupe Radio contrôlé peut afficher des contrôles small, medium et large tout en conservant l’exclusion mutuelle du groupe natif."
+  },
+  "Vertical inverse progress": {
+    "zh-CN": "垂直反向进度",
+    "zh-TW": "垂直反向進度",
+    "fr": "Progression verticale inversée"
+  },
+  "Linear progress can use a vertical axis and inverse direction while retaining the same determinate semantics.": {
+    "zh-CN": "Linear Progress 可以使用垂直轴与反向方向，同时保持相同的确定进度语义。",
+    "zh-TW": "Linear Progress 可以使用垂直軸與反向方向，同時保持相同的確定進度語義。",
+    "fr": "La progression linéaire peut utiliser un axe vertical et une direction inversée tout en conservant la même sémantique déterminée."
+  }
+}

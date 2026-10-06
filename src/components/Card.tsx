@@ -9,15 +9,16 @@ import { fromInteractiveDescendant } from './internal/interactive-descendant'
 import { useControllableBoolean } from './internal/use-controllable-boolean'
 import { View } from './View'
 
-export function Card({
-  children,
-  clickable = false,
-  selectable = false,
-  selected,
-  defaultSelected = false,
-  onSelectedChange,
-  viewProps = {},
-}: CardProps) {
+export function Card(props: CardProps): import('react').JSX.Element {
+  const {
+    children,
+    clickable = false,
+    selectable = false,
+    selected,
+    defaultSelected = false,
+    onSelectedChange,
+    viewProps = {},
+  } = props
   const { theme } = useTheme()
   const themeClassName = useRuntimeStyleClass('card-theme', resolveCardTheme(theme))
   const { value: resolvedSelected, request: requestSelected } = useControllableBoolean(

@@ -210,6 +210,6 @@ function ModalDialog({
   )
 }
 
-export function Dialog(props: DialogProps) {
+export function Dialog(props: DialogProps): import('react').JSX.Element {
   return props.modal === true ? <ModalDialog {...props} /> : <NonModalDialog {...props} />
 }

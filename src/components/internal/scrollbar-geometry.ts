@@ -22,8 +22,101 @@ interface ScrollbarElements {
   horizontalThumb: HTMLDivElement
 }
 
+interface ClipRect {
+  top: number
+  right: number
+  bottom: number
+  left: number
+}
+
 function isAutoScrolling(value: string): boolean {
   return value === 'auto' || value === 'overlay'
+}
+
+function clipsOverflow(value: string): boolean {
+  return value !== 'visible'
+}
+
+function clippingRectForTarget(target: HTMLElement): ClipRect {
+  const clip: ClipRect = {
+    top: 0,
+    right: window.innerWidth,
+    bottom: window.innerHeight,
+    left: 0,
+  }
+
+  let ancestor = target.parentElement
+
+  while (ancestor !== null && ancestor !== document.body && ancestor !== document.documentElement) {
+    const computed = getComputedStyle(ancestor)
+    const rect = ancestor.getBoundingClientRect()
+    const left = rect.left + ancestor.clientLeft
+    const top = rect.top + ancestor.clientTop
+
+    if (clipsOverflow(computed.overflowX)) {
+      clip.left = Math.max(clip.left, left)
+      clip.right = Math.min(clip.right, left + ancestor.clientWidth)
+    }
+
+    if (clipsOverflow(computed.overflowY)) {
+      clip.top = Math.max(clip.top, top)
+      clip.bottom = Math.min(clip.bottom, top + ancestor.clientHeight)
+    }
+
+    ancestor = ancestor.parentElement
+  }
+
+  return clip
+}
+
+function clipScrollbarToAncestors(hitRegion: HTMLElement, clip: ClipRect): void {
+  const rect = hitRegion.getBoundingClientRect()
+
+  if (
+    rect.width <= 0 ||
+    rect.height <= 0 ||
+    clip.right <= rect.left ||
+    clip.left >= rect.right ||
+    clip.bottom <= rect.top ||
+    clip.top >= rect.bottom
+  ) {
+    hitRegion.style.clipPath = 'inset(100%)'
+    return
+  }
+
+  const top = Math.max(0, clip.top - rect.top)
+  const right = Math.max(0, rect.right - clip.right)
+  const bottom = Math.max(0, rect.bottom - clip.bottom)
+  const left = Math.max(0, clip.left - rect.left)
+
+  hitRegion.style.clipPath = `inset(${top}px ${right}px ${bottom}px ${left}px)`
+}
+
+function visualOpacityForTarget(target: HTMLElement, portalElement: HTMLElement): number {
+  let opacity = 1
+  let node: HTMLElement | null = target
+
+  while (node !== null && !node.contains(portalElement)) {
+    const value = Number.parseFloat(getComputedStyle(node).opacity)
+    if (Number.isFinite(value)) {
+      opacity *= value
+    }
+    node = node.parentElement
+  }
+
+  return Math.max(0, Math.min(1, opacity))
+}
+
+function syncScrollbarVisualOpacity(hitRegion: HTMLElement, target: HTMLElement): void {
+  const themeOpacity = Number.parseFloat(
+    getComputedStyle(hitRegion).getPropertyValue('--weave-scrollbar-opacity'),
+  )
+  const baseOpacity = Number.isFinite(themeOpacity) ? themeOpacity : 1
+
+  hitRegion.style.setProperty(
+    '--weave-component-opacity',
+    String(baseOpacity * visualOpacityForTarget(target, hitRegion)),
+  )
 }
 
 function scrollbarVisible(overflow: string, scrollSize: number, clientSize: number): boolean {
@@ -137,9 +230,12 @@ export function updateScrollbarGeometry(
   const borderLeft = parseFloat(computed.borderLeftWidth) || 0
   const inset = SCROLLBAR_INSET_PX
   const radii = effectiveCornerRadii(computed, rect)
+  const clippingRect = clippingRectForTarget(target)
 
   syncScrollbarLayer(verticalHitRegion, target)
   syncScrollbarLayer(horizontalHitRegion, target)
+  syncScrollbarVisualOpacity(verticalHitRegion, target)
+  syncScrollbarVisualOpacity(horizontalHitRegion, target)
 
   const verticalOverflow =
     (overflowIntent.styleOverflowY ?? overflowIntent.styleOverflow) ||
@@ -202,6 +298,7 @@ export function updateScrollbarGeometry(
     verticalHitRegion.style.height = `${hitRegionLength}px`
     verticalHitRegion.style.setProperty('--weave-scrollbar-edge-inset', `${borderRight + inset}px`)
     verticalThumb.style.height = `${thumbLength}px`
+    clipScrollbarToAncestors(verticalHitRegion, clippingRect)
   }
 
   if (horizontalVisible) {
@@ -222,6 +319,7 @@ export function updateScrollbarGeometry(
       `${borderBottom + inset}px`,
     )
     horizontalThumb.style.width = `${thumbLength}px`
+    clipScrollbarToAncestors(horizontalHitRegion, clippingRect)
   }
 
   return {

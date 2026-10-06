@@ -1,6 +1,14 @@
 import { IconCode, IconCopy, IconRefresh } from '@tabler/icons-react'
-import { Component, type ComponentType, type ReactNode, useMemo, useRef, useState } from 'react'
-import ts from 'typescript'
+import {
+  Component,
+  type ComponentType,
+  type ReactNode,
+  use,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Button,
   Card,
@@ -16,12 +24,16 @@ import {
   Text,
   ToolTip,
 } from '../index'
-import type { DocumentationExampleCodeMode } from './documentation-component-example-data'
+import type { DocumentationDemo } from './documentation-demo-registry'
 import { compileDocumentationExample } from './documentation-example-runtime'
 
 export interface DocumentationComponentExampleCardProps {
-  code: string
-  codeMode?: DocumentationExampleCodeMode
+  component: ComponentType
+  source: string
+}
+
+export interface DocumentationComponentExampleProps {
+  demo: Promise<DocumentationDemo>
 }
 
 interface PreviewBoundaryState {
@@ -46,12 +58,9 @@ class PreviewBoundary extends Component<{ children: ReactNode }, PreviewBoundary
   }
 }
 
-function compilePreview(
-  source: string,
-  codeMode: DocumentationExampleCodeMode,
-): { component?: ComponentType; error?: string } {
+function compilePreview(source: string): { component?: ComponentType; error?: string } {
   try {
-    return { component: compileDocumentationExample(source, codeMode) }
+    return { component: compileDocumentationExample(source) }
   } catch (error) {
     return {
       error: error instanceof Error ? error.message : String(error),
@@ -59,190 +68,26 @@ function compilePreview(
   }
 }
 
-function indentation(level: number): string {
-  return '  '.repeat(level)
-}
+export function DocumentationComponentExample({ demo }: DocumentationComponentExampleProps) {
+  const resolved = use(demo)
 
-function formatAttributes(
-  tagName: string,
-  attributes: readonly string[],
-  level: number,
-  selfClosing: boolean,
-): string {
-  const suffix = selfClosing ? ' />' : '>'
-  const inline = `<${tagName}${attributes.length === 0 ? '' : ` ${attributes.join(' ')}`}${suffix}`
-
-  if (inline.length + level * 2 <= 88) {
-    return `${indentation(level)}${inline}`
-  }
-
-  return [
-    `${indentation(level)}<${tagName}`,
-    ...attributes.map((attribute) => `${indentation(level + 1)}${attribute}`),
-    `${indentation(level)}${selfClosing ? '/>' : '>'}`,
-  ].join('\n')
-}
-
-function formatJsxNode(
-  node: ts.JsxElement | ts.JsxSelfClosingElement | ts.JsxFragment,
-  sourceFile: ts.SourceFile,
-  level = 0,
-): string {
-  if (ts.isJsxSelfClosingElement(node)) {
-    return formatAttributes(
-      node.tagName.getText(sourceFile),
-      node.attributes.properties.map((attribute) => attribute.getText(sourceFile)),
-      level,
-      true,
-    )
-  }
-
-  if (ts.isJsxFragment(node)) {
-    const children = node.children
-      .filter((child) => !(ts.isJsxText(child) && child.getText(sourceFile).trim().length === 0))
-      .map((child) => formatJsxChild(child, sourceFile, level + 1))
-      .join('\n')
-
-    return `${indentation(level)}<>\n${children}\n${indentation(level)}</>`
-  }
-
-  const opening = formatAttributes(
-    node.openingElement.tagName.getText(sourceFile),
-    node.openingElement.attributes.properties.map((attribute) => attribute.getText(sourceFile)),
-    level,
-    false,
+  return (
+    <DocumentationComponentExampleCard component={resolved.component} source={resolved.source} />
   )
-  const children = node.children
-    .filter((child) => !(ts.isJsxText(child) && child.getText(sourceFile).trim().length === 0))
-    .map((child) => formatJsxChild(child, sourceFile, level + 1))
-    .join('\n')
-
-  return `${opening}\n${children}\n${indentation(level)}</${node.closingElement.tagName.getText(sourceFile)}>`
-}
-
-function formatJsxChild(child: ts.JsxChild, sourceFile: ts.SourceFile, level: number): string {
-  if (ts.isJsxElement(child) || ts.isJsxSelfClosingElement(child) || ts.isJsxFragment(child)) {
-    return formatJsxNode(child, sourceFile, level)
-  }
-
-  if (
-    ts.isJsxExpression(child) &&
-    child.expression !== undefined &&
-    (ts.isStringLiteral(child.expression) || ts.isNoSubstitutionTemplateLiteral(child.expression))
-  ) {
-    const escape = '\\'
-    const value = child.expression.text
-      .replaceAll('\\', '\\\\')
-      .replaceAll('`', escape + '`')
-      .replaceAll('${', escape + '${')
-
-    return `${indentation(level)}{\`${value}\`}`
-  }
-
-  return `${indentation(level)}${child.getText(sourceFile).trim()}`
-}
-
-function normalizeJsxStringChildren(source: string): string {
-  const prefix = 'const documentationExample = ('
-  const sourceFile = ts.createSourceFile(
-    'documentation-example.tsx',
-    `${prefix}${source})`,
-    ts.ScriptTarget.Latest,
-    true,
-    ts.ScriptKind.TSX,
-  )
-  const edits: { start: number; end: number; text: string }[] = []
-
-  function visit(node: ts.Node): void {
-    if (
-      ts.isJsxExpression(node) &&
-      node.expression !== undefined &&
-      (ts.isStringLiteral(node.expression) || ts.isNoSubstitutionTemplateLiteral(node.expression))
-    ) {
-      const start = node.getStart(sourceFile) - prefix.length
-      const end = node.end - prefix.length
-
-      if (start >= 0 && end <= source.length) {
-        const escape = '\\'
-        const value = node.expression.text
-          .replaceAll('\\', '\\\\')
-          .replaceAll('`', escape + '`')
-          .replaceAll('${', escape + '${')
-        edits.push({ start, end, text: `{\`${value}\`}` })
-      }
-    }
-
-    ts.forEachChild(node, visit)
-  }
-
-  visit(sourceFile)
-
-  return edits
-    .sort((left, right) => right.start - left.start)
-    .reduce(
-      (current, edit) => `${current.slice(0, edit.start)}${edit.text}${current.slice(edit.end)}`,
-      source,
-    )
-}
-
-function formatDocumentationExampleSource(
-  source: string,
-  codeMode: DocumentationExampleCodeMode,
-): string {
-  const trimmed = source.trim()
-
-  if (codeMode !== 'expression') {
-    return trimmed
-  }
-
-  const normalized = normalizeJsxStringChildren(trimmed)
-
-  if (normalized.includes('\n')) {
-    return normalized
-  }
-
-  const sourceFile = ts.createSourceFile(
-    'documentation-example.tsx',
-    `const documentationExample = (${normalized})`,
-    ts.ScriptTarget.Latest,
-    true,
-    ts.ScriptKind.TSX,
-  )
-  const statement = sourceFile.statements[0]
-
-  if (!ts.isVariableStatement(statement)) {
-    return normalized
-  }
-
-  let initializer = statement.declarationList.declarations[0]?.initializer
-  while (initializer !== undefined && ts.isParenthesizedExpression(initializer)) {
-    initializer = initializer.expression
-  }
-
-  if (
-    initializer === undefined ||
-    (!ts.isJsxElement(initializer) &&
-      !ts.isJsxSelfClosingElement(initializer) &&
-      !ts.isJsxFragment(initializer))
-  ) {
-    return normalized
-  }
-
-  return formatJsxNode(initializer, sourceFile)
 }
 
 export function DocumentationComponentExampleCard({
-  code,
-  codeMode = 'expression',
+  component,
+  source: initialSource,
 }: DocumentationComponentExampleCardProps) {
-  const initialSource = useMemo(
-    () => formatDocumentationExampleSource(code, codeMode),
-    [code, codeMode],
-  )
+  const { t } = useTranslation()
   const [source, setSource] = useState(initialSource)
   const [expanded, setExpanded] = useState(true)
   const codeRef = useRef<HTMLDivElement>(null)
-  const preview = useMemo(() => compilePreview(source, codeMode), [codeMode, source])
+  const preview = useMemo(
+    () => (source === initialSource ? { component } : compilePreview(source)),
+    [component, initialSource, source],
+  )
   const LivePreview = preview.component
   const codeRows = Math.max(1, source.split('\n').length)
 
@@ -266,40 +111,40 @@ export function DocumentationComponentExampleCard({
         </Flex>
 
         <Row width="fill" paddingX={1} paddingY={0.5} gap={0.5} justify="end">
-          <ToolTip content={expanded ? 'Collapse code' : 'Expand code'}>
+          <ToolTip content={t(expanded ? 'docs.example.collapseCode' : 'docs.example.expandCode')}>
             <Button
               icon={IconCode}
               variant="ghost"
               size="small"
               pressed={expanded}
               viewProps={{
-                label: expanded ? 'Collapse code' : 'Expand code',
+                label: t(expanded ? 'docs.example.collapseCode' : 'docs.example.expandCode'),
                 onClick: () => {
                   setExpanded((current) => !current)
                 },
               }}
             />
           </ToolTip>
-          <ToolTip content="Copy code">
+          <ToolTip content={t('docs.example.copyCode')}>
             <Button
               icon={IconCopy}
               variant="ghost"
               size="small"
               viewProps={{
-                label: 'Copy code',
+                label: t('docs.example.copyCode'),
                 onClick: () => {
                   void navigator.clipboard.writeText(source)
                 },
               }}
             />
           </ToolTip>
-          <ToolTip content="Reset code">
+          <ToolTip content={t('docs.example.resetCode')}>
             <Button
               icon={IconRefresh}
               variant="ghost"
               size="small"
               viewProps={{
-                label: 'Reset code',
+                label: t('docs.example.resetCode'),
                 onClick: () => {
                   setSource(initialSource)
                 },

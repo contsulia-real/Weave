@@ -3,7 +3,7 @@ import type { SliderProps } from '../core/slider-types'
 import { SingleSlider } from './internal/SingleSlider'
 import { sliderStepPoints } from './internal/slider-values'
 
-export function Slider(props: SliderProps) {
+export function Slider(props: SliderProps): import('react').JSX.Element {
   const min = props.min ?? 0
   const max = props.max ?? 100
   const points = useMemo(

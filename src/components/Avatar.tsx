@@ -38,7 +38,8 @@ function sizeMode(width: unknown, height: unknown): 'default' | 'width' | 'heigh
   return 'both'
 }
 
-export function Avatar({ src, name, fallback, viewProps = {} }: AvatarProps) {
+export function Avatar(props: AvatarProps): import('react').JSX.Element {
+  const { src, name, fallback, viewProps = {} } = props
   const { theme } = useTheme()
   const themeClassName = useRuntimeStyleClass('avatar-theme', resolveAvatarTheme(theme))
   const [failedSource, setFailedSource] = useState<ImageSource | undefined>(undefined)

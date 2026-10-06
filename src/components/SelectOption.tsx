@@ -5,14 +5,8 @@ import { useTheme } from '../theme/theme-context'
 import { OptionItem } from './internal/OptionItem'
 import { SelectContext } from './internal/select-context'
 
-export function SelectOption({
-  value,
-  text,
-  secondaryText,
-  icon,
-  disabled = false,
-  viewProps = {},
-}: SelectOptionProps) {
+export function SelectOption(props: SelectOptionProps): import('react').JSX.Element {
+  const { value, text, secondaryText, icon, disabled = false, viewProps = {} } = props
   const context = useContext(SelectContext)
 
   if (context === null) {

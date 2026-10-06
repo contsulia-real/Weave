@@ -6,9 +6,15 @@ The authoritative framework design specification is [Weave UI.md](./Weave%20UI.m
 
 ## Status
 
-Weave is currently an **alpha, private development package**. The repository package remains `private: true` intentionally, so it cannot be published accidentally. The current development version is `0.1.0-alpha.0`.
+Weave is currently an **alpha public package targeting JSR**. npm publication remains intentionally disabled with `private: true`; the current version is `0.1.0-alpha.0`.
 
-No open-source license has been selected yet; the package is therefore marked `UNLICENSED`.
+Weave is licensed under the MIT License. See [LICENSE](./LICENSE).
+
+## Install
+
+```bash
+pnpm add jsr:@contsulia/weave
+```
 
 ## Architecture
 
@@ -25,6 +31,8 @@ The main layers are:
 - native React DOM and browser behavior.
 
 ## Public API
+
+Runtime components are published through component subpaths such as `@contsulia/weave/components/Button` and `@contsulia/weave/components/Column`. The package root `@contsulia/weave` exposes application/theme runtime APIs (`createRoot`, `ThemeProvider`, `useTheme`, `createTheme`, `createThemeFromColorSeed`, `defaultTheme`) plus the public type surface.
 
 ### Foundation and layout
 
@@ -51,13 +59,10 @@ The root package also exports the public prop, motion and theme customization ty
 ## Basic usage
 
 ```tsx
-import {
-  Button,
-  Column,
-  Text,
-  ThemeProvider,
-  createRoot,
-} from 'weave'
+import { ThemeProvider, createRoot } from '@contsulia/weave'
+import { Button } from '@contsulia/weave/components/Button'
+import { Column } from '@contsulia/weave/components/Column'
+import { Text } from '@contsulia/weave/components/Text'
 
 const root = createRoot(
   document.getElementById('app')!,
@@ -84,11 +89,8 @@ root.render(
 ## Theme customization
 
 ```tsx
-import {
-  Button,
-  ThemeProvider,
-  createTheme,
-} from 'weave'
+import { ThemeProvider, createTheme } from '@contsulia/weave'
+import { Button } from '@contsulia/weave/components/Button'
 
 const theme = createTheme({
   components: {
@@ -115,7 +117,7 @@ export function App() {
 }
 ```
 
-Theme definitions support tokens, component themes, dynamic breakpoints, light/dark mode overrides and motion configuration. Runtime custom breakpoint thresholds come from `theme.breakpoints`; projects that want typed custom breakpoint prop names register those names through `Weave.BreakpointRegistry`. Custom color-token names can likewise be registered through `Weave.ColorTokenRegistry` for editor completion while their values remain owned by the active theme. See the specification for the complete contract.
+Theme definitions support tokens, component themes, dynamic breakpoints, light/dark mode overrides and motion configuration. Runtime custom breakpoint thresholds come from `theme.breakpoints`; projects that want typed custom breakpoint prop names augment `BreakpointRegistry` from `@contsulia/weave/registry`. Custom color-token names can likewise augment `ColorTokenRegistry` from that module for editor completion while their values remain owned by the active theme. See the specification for the complete contract.
 
 ## Documentation
 
@@ -128,7 +130,31 @@ pnpm dev
 
 Node.js: `^22.22.2 || ^24.15.0 || >=26`.
 
-The library entry is `src/index.ts`; production output is generated under `dist/`.
+The root runtime entry is `src/package.ts`. Public component/type metadata is sourced from `src/index.ts`, while each runtime component is built from its own `src/components/*` entry. Production output is generated under `dist/`.
+
+## AI and LLM tooling
+
+Weave exposes a generated AI-facing layer without introducing a second API or Theme source of truth. `llms.txt` and `DESIGN.md` summarize the framework, while `ai/generated/*.json` contains machine-readable component contracts, real Documentation examples, Theme data and framework/package metadata derived from the existing sources.
+
+```bash
+pnpm ai:generate
+pnpm ai:metadata:check
+pnpm ai:check -- path/to/file.tsx
+pnpm ai:mcp
+pnpm ai:mcp:verify
+pnpm ai:benchmark:check
+```
+
+`ai/guidance.json` only adds component-selection intent that cannot be derived from TypeScript types alone. The MCP server reads the generated metadata, and the semantic checker adds Weave-specific diagnostics such as package-correct imports, the application-level `View` boundary, incompatible `Input` props and fixed-axis layout guidance.
+
+## JSR publishing
+
+```bash
+pnpm verify:jsr
+pnpm publish:jsr
+```
+
+The GitHub Actions `Publish JSR` workflow uses JSR's OIDC publishing path and performs a dry run before publishing. Before the first CI publish, create `@contsulia/weave` on JSR and link it to `contsulia-real/Weave` in the package settings.
 
 ## Verification
 
@@ -145,4 +171,4 @@ The automated test suite was removed by project decision on 2026-10-01 after fal
 
 Development repository: `contsulia-real/Weave` on GitHub.
 
-Until the package is deliberately made publishable and a license is selected, treat the repository artifacts as private development output rather than a published npm release.
+Public releases target JSR as `@contsulia/weave`; npm publication remains disabled by the repository's `private: true` guard.

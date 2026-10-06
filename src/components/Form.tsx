@@ -7,7 +7,8 @@ import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { useTheme } from '../theme/theme-context'
 import { useViewHost } from './internal/use-view-host'
 
-export function Form({ children, onSubmit, onReset, viewProps = {} }: FormProps) {
+export function Form(props: FormProps): import('react').JSX.Element {
+  const { children, onSubmit, onReset, viewProps = {} } = props
   const { theme } = useTheme()
   const themeClassName = useRuntimeStyleClass('form-theme', resolveFormTheme(theme))
   const hostProps: ViewProps<HTMLFormElement> = {

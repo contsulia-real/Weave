@@ -1,26 +1,34 @@
 import { useCallback, useMemo, useState } from 'react'
-import type { ListProps } from '../../core/list-types'
 
-interface SingleListSelectionState {
+interface NoSelectionProps {
+  selection?: 'none'
+  selected?: never
+  defaultSelected?: never
+  onSelect?: never
+}
+
+interface SingleSelectionProps {
   selection: 'single'
   selected?: string | null
   defaultSelected?: string | null
   onSelect?: (selected: string | null) => void
 }
 
-interface MultipleListSelectionState {
+interface MultipleSelectionProps {
   selection: 'multiple'
   selected?: readonly string[]
   defaultSelected?: readonly string[]
   onSelect?: (selected: readonly string[]) => void
 }
 
+type SelectionProps = NoSelectionProps | SingleSelectionProps | MultipleSelectionProps
+
 const EMPTY_SELECTED_IDS: readonly string[] = []
 
-export function useListSelection(props: ListProps, enabledIds: readonly string[]) {
+export function useSelection(props: SelectionProps, enabledIds: readonly string[]) {
   const selection = props.selection ?? 'none'
-  const singleProps = selection === 'single' ? (props as SingleListSelectionState) : undefined
-  const multipleProps = selection === 'multiple' ? (props as MultipleListSelectionState) : undefined
+  const singleProps = selection === 'single' ? (props as SingleSelectionProps) : undefined
+  const multipleProps = selection === 'multiple' ? (props as MultipleSelectionProps) : undefined
 
   const [uncontrolledSingle, setUncontrolledSingle] = useState<string | null>(
     singleProps?.defaultSelected ?? null,
@@ -53,7 +61,7 @@ export function useListSelection(props: ListProps, enabledIds: readonly string[]
       if (!enabledIds.includes(id)) return
 
       if (selection === 'single') {
-        const selectionProps = props as SingleListSelectionState
+        const selectionProps = props as SingleSelectionProps
 
         if (currentSingle === id) return
 
@@ -66,7 +74,7 @@ export function useListSelection(props: ListProps, enabledIds: readonly string[]
       }
 
       if (selection === 'multiple') {
-        const selectionProps = props as MultipleListSelectionState
+        const selectionProps = props as MultipleSelectionProps
         const next = currentMultiple.includes(id)
           ? currentMultiple.filter((selectedId) => selectedId !== id)
           : [...currentMultiple, id]

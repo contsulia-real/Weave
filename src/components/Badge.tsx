@@ -11,13 +11,8 @@ import { useExitPresence } from './internal/use-exit-presence'
 import { useViewHost } from './internal/use-view-host'
 import { Text } from './Text'
 
-export function Badge({
-  children,
-  placement = 'top-right',
-  visible = true,
-  viewProps = {},
-  ...content
-}: BadgeProps) {
+export function Badge(props: BadgeProps): import('react').JSX.Element {
+  const { children, placement = 'top-right', visible = true, viewProps = {}, ...content } = props
   const { theme, reducedMotion } = useTheme()
   const themeClassName = useRuntimeStyleClass('badge-theme', resolveBadgeTheme(theme))
   const hostProps: ViewProps<HTMLDivElement> = viewProps

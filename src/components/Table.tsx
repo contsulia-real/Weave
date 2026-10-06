@@ -8,7 +8,7 @@ import { TableContext } from './internal/table-context'
 import { useTableSelection } from './internal/use-table-selection'
 import { View } from './View'
 
-export function Table(props: TableProps) {
+export function Table(props: TableProps): import('react').JSX.Element {
   const {
     children,
     dense = false,

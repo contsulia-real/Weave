@@ -2,17 +2,22 @@ import apiData from './generated/documentation-component-api.json'
 
 export interface DocumentationApiProp {
   name: string
+  description: string
   type: string
   optional: boolean
 }
 
 export interface DocumentationComponentApi {
+  importPath: string
+  nativeProps: boolean
   hasViewProps: boolean
   usesViewProps: boolean
   props: readonly DocumentationApiProp[]
 }
 
 interface GeneratedComponentApi {
+  importPath: string
+  nativeProps: boolean
   hasViewProps: boolean
   usesViewProps: boolean
   props: string
@@ -52,6 +57,8 @@ export function documentationComponentApi(componentName: string): DocumentationC
   }
 
   return {
+    importPath: component.importPath,
+    nativeProps: component.nativeProps,
     hasViewProps: component.hasViewProps,
     usesViewProps: component.usesViewProps,
     props: profile(component.props),

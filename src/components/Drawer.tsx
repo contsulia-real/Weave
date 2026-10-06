@@ -193,7 +193,7 @@ function paneAvailableSize(root: HTMLDivElement, direction: SplitBoxDirection): 
   )
 }
 
-export function Drawer(props: DrawerProps) {
+export function Drawer(props: DrawerProps): import('react').JSX.Element {
   const {
     children,
     drawer,

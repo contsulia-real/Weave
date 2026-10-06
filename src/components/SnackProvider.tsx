@@ -17,7 +17,8 @@ export interface SnackProviderProps {
   container?: SnackContainer
 }
 
-export function SnackProvider({ children, container }: SnackProviderProps) {
+export function SnackProvider(props: SnackProviderProps): import('react').JSX.Element {
+  const { children, container } = props
   const [items, setItems] = useState<SnackQueueItem[]>([])
   const nextId = useRef(0)
   const scopeId = useId()

@@ -1,9 +1,9 @@
 {
-  "name": "weave",
+  "name": "@contsulia/weave",
   "private": true,
   "version": "0.1.0-alpha.0",
   "description": "A browser-native React UI framework built on semantic components, DOM and CSS.",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/contsulia-real/Weave.git"
@@ -20,13 +20,22 @@
     "web"
   ],
   "type": "module",
+  "sideEffects": false,
   "main": "./dist/weave.js",
   "module": "./dist/weave.js",
-  "types": "./dist/index.d.ts",
+  "types": "./dist/package.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
+      "types": "./dist/package.d.ts",
       "import": "./dist/weave.js"
+    },
+    "./components/internal/*": null,
+    "./components/*": {
+      "types": "./dist/components/*.d.ts",
+      "import": "./dist/components/*.js"
+    },
+    "./registry": {
+      "types": "./dist/core/registry-types.d.ts"
     }
   },
   "files": [
@@ -38,38 +47,58 @@
     "build:types": "tsc -p tsconfig.lib.json && node scripts/prune-declarations.mjs",
     "docs:api": "node scripts/generate-documentation-api.mjs",
     "docs:api:check": "node scripts/generate-documentation-api.mjs --check",
+    "docs:demos:check": "node scripts/verify-documentation-demos.mjs",
     "prepack": "pnpm build",
     "typecheck": "tsc -b",
     "format": "biome check --write .",
     "format:check": "biome check .",
-    "lint": "pnpm run docs:api:check && pnpm run format:check && oxlint",
+    "lint": "pnpm run docs:api:check && pnpm run docs:demos:check && pnpm run ai:metadata:check && pnpm run ai:check:verify && pnpm run ai:benchmark:check && pnpm run format:check && oxlint",
     "verify:package": "node verify-package.mjs",
     "verify:task": "node scripts/verify-task-complete.mjs",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "ai:generate": "node scripts/generate-documentation-api.mjs && node scripts/generate-ai-metadata.mjs && biome format --write src/documentation/generated/documentation-component-api.json ai/generated/framework.json ai/generated/components.json ai/generated/examples.json ai/generated/theme.json",
+    "ai:metadata:check": "node scripts/generate-documentation-api.mjs --check && node scripts/generate-ai-metadata.mjs --check",
+    "ai:check": "node scripts/weave-check.mjs",
+    "ai:mcp": "node scripts/weave-mcp.mjs",
+    "ai:mcp:verify": "node scripts/verify-ai-mcp.mjs",
+    "ai:benchmark": "node scripts/ai-benchmark.mjs",
+    "ai:benchmark:check": "node scripts/ai-benchmark.mjs --check",
+    "ai:check:verify": "node scripts/verify-ai-check.mjs",
+    "verify:jsr": "pnpm dlx jsr publish --dry-run --allow-dirty",
+    "publish:jsr": "pnpm dlx jsr publish"
   },
   "peerDependencies": {
     "react": "^19.3.0",
-    "react-dom": "^19.3.0"
+    "react-dom": "^19.3.0",
+    "shiki": "^4.4.3"
+  },
+  "peerDependenciesMeta": {
+    "shiki": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.14",
+    "@modelcontextprotocol/client": "^2.3.0",
+    "@modelcontextprotocol/server": "^2.3.0",
     "@tabler/icons-react": "^3.48.0",
     "@types/node": "^24.13.6",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.1",
     "i18next": "^26.4.2",
+    "i18next-browser-languagedetector": "^8.2.1",
+    "lightningcss": "1.33.0",
     "oxlint": "^1.85.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "react-i18next": "^17.0.15",
+    "shiki": "^4.4.3",
     "typescript": "~6.0.3",
-    "vite": "^8.3.0"
+    "vite": "^8.3.0",
+    "zod": "^4.6.5"
   },
   "engines": {
     "node": "^22.22.2 || ^24.15.0 || >=26"
-  },
-  "dependencies": {
-    "shiki": "^4.4.3"
   }
 }

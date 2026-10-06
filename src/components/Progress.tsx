@@ -103,7 +103,7 @@ function ProgressVisual({
   )
 }
 
-export function Progress(props: ProgressProps) {
+export function Progress(props: ProgressProps): import('react').JSX.Element {
   const indeterminate = props.indeterminate === true
   const progress = indeterminate ? undefined : Math.min(1, Math.max(0, props.progress))
 

@@ -2,7 +2,8 @@ import type { TableBodyProps } from '../core/table-types'
 import { TableSectionContext } from './internal/table-context'
 import { useViewHost } from './internal/use-view-host'
 
-export function TableBody({ children, viewProps = {} }: TableBodyProps) {
+export function TableBody(props: TableBodyProps): import('react').JSX.Element {
+  const { children, viewProps = {} } = props
   const { elementRef, className, inlineStyle, resolved } = useViewHost(viewProps)
 
   return (

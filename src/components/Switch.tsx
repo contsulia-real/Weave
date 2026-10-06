@@ -13,17 +13,18 @@ import { useViewHost } from './internal/use-view-host'
 
 const DEFAULT_AUTO_DRAG_DURATION = 200
 
-export function Switch({
-  checked,
-  defaultChecked = false,
-  onChange,
-  name,
-  value = 'on',
-  disabled = false,
-  label,
-  size = 'medium',
-  viewProps = {},
-}: SwitchProps) {
+export function Switch(props: SwitchProps): import('react').JSX.Element {
+  const {
+    checked,
+    defaultChecked = false,
+    onChange,
+    name,
+    value = 'on',
+    disabled = false,
+    label,
+    size = 'medium',
+    viewProps = {},
+  } = props
   useInsertionEffect(ensureSwitchStylesheet, [])
 
   const { theme, reducedMotion } = useTheme()

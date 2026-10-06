@@ -2,7 +2,8 @@ import type { TabPanelProps } from '../core/tabs-types'
 import { useTabsContext } from './internal/tabs-context'
 import { View } from './View'
 
-export function TabPanel({ value, children, viewProps = {} }: TabPanelProps) {
+export function TabPanel(props: TabPanelProps): import('react').JSX.Element {
+  const { value, children, viewProps = {} } = props
   const context = useTabsContext('TabPanel')
   const selected = context.value === value
 

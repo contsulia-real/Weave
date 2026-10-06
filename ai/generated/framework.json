@@ -1,0 +1,99 @@
+{
+  "generatedFrom": [
+    "src/package.ts",
+    "src/index.ts",
+    "src/documentation/generated/documentation-component-api.json",
+    "src/documentation/demos/**/*.tsx",
+    "src/documentation/documentation-navigation-data.ts",
+    "Weave UI.md"
+  ],
+  "package": "@contsulia/weave",
+  "platform": "web",
+  "host": "React DOM",
+  "rendering": "real DOM + CSS",
+  "rootRuntimeExports": [
+    "ThemeProvider",
+    "createRoot",
+    "createTheme",
+    "createThemeFromColorSeed",
+    "defaultTheme",
+    "useTheme"
+  ],
+  "componentImportPattern": "@contsulia/weave/components/<ComponentName>",
+  "internalImportPattern": "@contsulia/weave/components/internal/*",
+  "internalImportsPublic": false,
+  "publicComponentCount": 68,
+  "realExampleCount": 182,
+  "rules": [
+    {
+      "id": "action-vs-navigation",
+      "intent": "Trigger an in-place action versus navigate to another location.",
+      "recommended": ["Button", "Link"],
+      "rule": "Use Button for actions. Use Link for navigation."
+    },
+    {
+      "id": "text-entry-vs-choice",
+      "intent": "Collect free-form text versus choose from known values.",
+      "recommended": ["Input", "Select", "Combobox"],
+      "rule": "Use Input for free-form text, Select for a known non-editable option set, and Combobox when editable/searchable text is part of option selection."
+    },
+    {
+      "id": "small-visible-choice",
+      "intent": "Choose from a small option set that should remain visible.",
+      "recommended": ["Radio", "SegmentedButton"],
+      "rule": "Use Radio for form choice semantics. Use SegmentedButton for compact mutually exclusive view/action modes."
+    },
+    {
+      "id": "layout-axis",
+      "intent": "Arrange content vertically, horizontally, generically with flex, in two dimensions, overlapped, or positioned.",
+      "recommended": ["Column", "Row", "Flex", "Grid", "Stack", "Absolute"],
+      "rule": "Prefer Column for vertical sequences, Row for horizontal sequences, Grid for two-dimensional layout, Stack for overlap, Absolute for positioned children, and Flex only when the axis is genuinely generic or dynamic."
+    },
+    {
+      "id": "view-boundary",
+      "intent": "Build ordinary application layout.",
+      "recommended": ["Column", "Row", "Flex", "Grid", "Stack", "Absolute"],
+      "avoid": ["View"],
+      "rule": "Do not use View for normal application layout. View is the component-author primitive and the View documentation demo exception."
+    },
+    {
+      "id": "data-table",
+      "intent": "Render tabular data with or without data-grid behavior.",
+      "recommended": ["Table", "DataGrid"],
+      "rule": "Use Table for semantic tabular composition. Use DataGrid when sorting, resizing, selection, or virtualization is required."
+    },
+    {
+      "id": "overlay-choice",
+      "intent": "Choose between hint, anchored interactive surface, dialog, drawer, or menu.",
+      "recommended": ["ToolTip", "Popover", "Dialog", "Drawer", "Menu"],
+      "rule": "Use ToolTip for brief non-interactive hints, Popover for anchored interactive content, Dialog for a focused dialog surface, Drawer for edge-attached panels, and Menu for command/menu navigation semantics."
+    },
+    {
+      "id": "motion-presence",
+      "intent": "Keep exiting content mounted while exit motion completes.",
+      "recommended": ["Presence"],
+      "rule": "Use Presence for enter/exit mount lifecycle. Do not build a parallel exit-presence mechanism."
+    },
+    {
+      "id": "form-composition",
+      "intent": "Associate labels, descriptions, errors, fields, fieldsets, and legends.",
+      "recommended": [
+        "Form",
+        "FormField",
+        "FormLabel",
+        "FormDescription",
+        "FormError",
+        "FormFieldset",
+        "FormLegend"
+      ],
+      "rule": "Use Weave form composition instead of manually duplicating label/description/error association logic."
+    }
+  ],
+  "commands": {
+    "generateMetadata": "pnpm ai:generate",
+    "checkMetadata": "pnpm ai:metadata:check",
+    "semanticCheck": "pnpm ai:check -- <files>",
+    "mcpServer": "pnpm ai:mcp",
+    "benchmark": "pnpm ai:benchmark -- --candidates <dir>"
+  }
+}

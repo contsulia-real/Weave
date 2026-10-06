@@ -4,14 +4,8 @@ import { dimension } from '../core/values'
 import { useTableRow } from './internal/table-context'
 import { useViewHost } from './internal/use-view-host'
 
-export function TableHead({
-  children,
-  align = 'start',
-  width,
-  minWidth,
-  maxWidth,
-  viewProps = {},
-}: TableHeadProps) {
+export function TableHead(props: TableHeadProps): import('react').JSX.Element {
+  const { children, align = 'start', width, minWidth, maxWidth, viewProps = {} } = props
   const row = useTableRow()
 
   if (row.section !== 'head') {

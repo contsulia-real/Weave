@@ -1,6 +1,6 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import type { TableProps, TableSelectedCell } from '../../core/table-types'
-import type { TableSelectionState } from './table-context'
+import { TableDeclaredCellsContext, type TableSelectionState } from './table-context'
 
 function keyFor(rowId: string, cellId: string): string {
   return JSON.stringify([rowId, cellId])
@@ -30,6 +30,7 @@ function stateFor(keys: readonly string[], selected: ReadonlySet<string>): Table
 }
 
 export function useTableSelection(props: TableProps) {
+  const declaredCells = useContext(TableDeclaredCellsContext)
   const selectable = props.selectable === true
   const controlledSelected = selectable ? props.selected : undefined
   const defaultSelected = selectable ? props.defaultSelected : undefined
@@ -40,6 +41,8 @@ export function useTableSelection(props: TableProps) {
   const [registry, setRegistry] = useState<ReadonlyMap<string, ReadonlySet<string>>>(
     () => new Map(),
   )
+
+  const declaredRowIds = useMemo(() => new Set(declaredCells?.rowIds ?? []), [declaredCells])
 
   const selectedKeys = useMemo(
     () => (controlledSelected === undefined ? uncontrolledSelected : keysFor(controlledSelected)),
@@ -86,18 +89,38 @@ export function useTableSelection(props: TableProps) {
   }, [])
 
   const rowKeys = useCallback(
-    (rowId: string): string[] =>
-      [...(registry.get(rowId) ?? [])].map((cellId) => keyFor(rowId, cellId)),
-    [registry],
+    (rowId: string): string[] => {
+      const cellIds = new Set(registry.get(rowId) ?? [])
+      if (declaredRowIds.has(rowId)) {
+        for (const cellId of declaredCells?.cellIds ?? []) {
+          cellIds.add(cellId)
+        }
+      }
+
+      return [...cellIds].map((cellId) => keyFor(rowId, cellId))
+    },
+    [declaredCells, declaredRowIds, registry],
   )
 
-  const allKeys = useMemo(
-    () =>
-      [...registry].flatMap(([rowId, cellIds]) =>
-        [...cellIds].map((cellId) => keyFor(rowId, cellId)),
-      ),
-    [registry],
-  )
+  const allKeys = useMemo(() => {
+    const keys = new Set<string>()
+
+    if (declaredCells !== null) {
+      for (const rowId of declaredCells.rowIds) {
+        for (const cellId of declaredCells.cellIds) {
+          keys.add(keyFor(rowId, cellId))
+        }
+      }
+    }
+
+    for (const [rowId, cellIds] of registry) {
+      for (const cellId of cellIds) {
+        keys.add(keyFor(rowId, cellId))
+      }
+    }
+
+    return [...keys]
+  }, [declaredCells, registry])
 
   const cellSelected = useCallback(
     (rowId: string, cellId: string) => selectedKeys.has(keyFor(rowId, cellId)),

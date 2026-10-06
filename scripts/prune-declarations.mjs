@@ -1,9 +1,14 @@
-import { access, readdir, readFile, rm } from 'node:fs/promises'
+import { access, readdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { dirname, join, relative, resolve } from 'node:path'
 
 const rootDir = resolve('dist')
-const entryFile = join(rootDir, 'index.d.ts')
+const entryFile = join(rootDir, 'package.d.ts')
+const codeTypesFile = join(rootDir, 'core', 'code-types.d.ts')
+const codeShikiTypesFile = join(rootDir, 'core', 'code-shiki-types.d.ts')
 const checkOnly = process.argv.includes('--check')
+const shikiTypeImport = "import type { BundledLanguage, LanguageRegistration } from 'shiki';"
+const packagedTypeImport =
+  "import type { BundledLanguage, LanguageRegistration } from './code-shiki-types';"
 
 async function listDeclarationFiles(directory) {
   const files = []
@@ -28,6 +33,66 @@ async function pathExists(path) {
   } catch {
     return false
   }
+}
+
+function packagedShikiTypesDeclaration(bundledLanguages) {
+  const languageUnion = Object.keys(bundledLanguages)
+    .sort()
+    .map((language) => `  | ${JSON.stringify(language)}`)
+    .join('\n')
+
+  return `export type BundledLanguage =
+${languageUnion}
+
+export interface LanguageRegistration {
+  name: string
+  scopeName: string
+  repository: Readonly<Record<string, unknown>>
+  patterns: readonly unknown[]
+  displayName?: string
+  aliases?: readonly string[]
+  embeddedLangs?: readonly string[]
+  embeddedLanguages?: readonly string[]
+  embeddedLangsLazy?: readonly string[]
+  balancedBracketSelectors?: readonly string[]
+  unbalancedBracketSelectors?: readonly string[]
+  foldingStopMarker?: string
+  foldingStartMarker?: string
+  injectTo?: readonly string[]
+  injections?: Readonly<Record<string, unknown>>
+  injectionSelector?: string
+  fileTypes?: readonly string[]
+  firstLineMatch?: string
+}
+`
+}
+
+async function prepareCodeDeclarations() {
+  const { bundledLanguages } = await import('shiki')
+  const expectedShikiTypes = packagedShikiTypesDeclaration(bundledLanguages)
+  const codeTypesSource = await readFile(codeTypesFile, 'utf8')
+
+  if (checkOnly) {
+    if (
+      codeTypesSource.includes(shikiTypeImport) ||
+      !codeTypesSource.includes(packagedTypeImport)
+    ) {
+      throw new Error('Published Code declarations must not require Shiki types')
+    }
+
+    const packagedShikiTypes = await readFile(codeShikiTypesFile, 'utf8')
+    if (packagedShikiTypes !== expectedShikiTypes) {
+      throw new Error('Published Code language types are out of sync with Shiki')
+    }
+    return
+  }
+
+  if (!codeTypesSource.includes(shikiTypeImport)) {
+    throw new Error('Code declaration output no longer matches the expected Shiki type import')
+  }
+
+  await writeFile(codeTypesFile, codeTypesSource.replace(shikiTypeImport, packagedTypeImport))
+  await writeFile(codeShikiTypesFile, expectedShikiTypes)
 }
 
 async function resolveDeclaration(fromFile, specifier) {
@@ -79,6 +144,7 @@ async function collectReachableDeclarations() {
   return reachable
 }
 
+await prepareCodeDeclarations()
 const declarations = await listDeclarationFiles(rootDir)
 const reachable = await collectReachableDeclarations()
 const unreachable = declarations.filter((file) => !reachable.has(file))

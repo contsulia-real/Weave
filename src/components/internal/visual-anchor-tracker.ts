@@ -16,22 +16,40 @@ interface VisualAnchorTrackerOptions {
   continuousAnimations?: boolean
 }
 
+function animationRunning(animation: Animation): boolean {
+  return animation.playState === 'running' || animation.pending
+}
+
 export function trackVisualAnchor(
   target: HTMLElement,
   onUpdate: () => void,
   options: VisualAnchorTrackerOptions = {},
 ): () => void {
   const view = target.ownerDocument.defaultView
+  const additionalTargets = [...new Set(options.additionalTargets ?? [])].filter(
+    (element) => element !== target,
+  )
+  const resizeTargets = [target, ...additionalTargets]
   let frame: number | undefined
   let settleFrames = 0
   let visualEffects = 0
 
-  const hasRunningAnimation = () =>
-    options.continuousAnimations === true &&
-    typeof target.getAnimations === 'function' &&
-    target
-      .getAnimations({ subtree: true })
-      .some((animation) => animation.playState === 'running' || animation.pending)
+  const hasRunningAnimation = () => {
+    if (options.continuousAnimations !== true) return false
+
+    if (
+      typeof target.getAnimations === 'function' &&
+      target.getAnimations({ subtree: true }).some(animationRunning)
+    ) {
+      return true
+    }
+
+    return additionalTargets.some(
+      (element) =>
+        typeof element.getAnimations === 'function' &&
+        element.getAnimations().some(animationRunning),
+    )
+  }
 
   const queueFrame = () => {
     if (frame !== undefined || view === null || typeof view.requestAnimationFrame !== 'function') {
@@ -73,10 +91,21 @@ export function trackVisualAnchor(
     schedule()
   }
 
+  const beginAdditionalVisualEffect = (event: Event) => {
+    if (event.target === event.currentTarget) {
+      beginVisualEffect()
+    }
+  }
+
+  const endAdditionalVisualEffect = (event: Event) => {
+    if (event.target === event.currentTarget) {
+      endVisualEffect()
+    }
+  }
+
   const resizeObserver = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(schedule)
 
-  resizeObserver?.observe(target)
-  for (const element of options.additionalTargets ?? []) {
+  for (const element of resizeTargets) {
     resizeObserver?.observe(element)
   }
 
@@ -91,6 +120,12 @@ export function trackVisualAnchor(
     subtree: true,
   })
 
+  for (const element of additionalTargets) {
+    mutationObserver?.observe(element, {
+      attributes: true,
+    })
+  }
+
   for (const eventName of options.interactionEvents ?? []) {
     target.addEventListener(eventName, schedule)
   }
@@ -102,6 +137,15 @@ export function trackVisualAnchor(
     target.addEventListener('animationstart', beginVisualEffect)
     target.addEventListener('animationend', endVisualEffect)
     target.addEventListener('animationcancel', endVisualEffect)
+
+    for (const element of additionalTargets) {
+      element.addEventListener('transitionrun', beginAdditionalVisualEffect)
+      element.addEventListener('transitionend', endAdditionalVisualEffect)
+      element.addEventListener('transitioncancel', endAdditionalVisualEffect)
+      element.addEventListener('animationstart', beginAdditionalVisualEffect)
+      element.addEventListener('animationend', endAdditionalVisualEffect)
+      element.addEventListener('animationcancel', endAdditionalVisualEffect)
+    }
   }
 
   view?.addEventListener('resize', schedule)
@@ -127,6 +171,15 @@ export function trackVisualAnchor(
       target.removeEventListener('animationstart', beginVisualEffect)
       target.removeEventListener('animationend', endVisualEffect)
       target.removeEventListener('animationcancel', endVisualEffect)
+
+      for (const element of additionalTargets) {
+        element.removeEventListener('transitionrun', beginAdditionalVisualEffect)
+        element.removeEventListener('transitionend', endAdditionalVisualEffect)
+        element.removeEventListener('transitioncancel', endAdditionalVisualEffect)
+        element.removeEventListener('animationstart', beginAdditionalVisualEffect)
+        element.removeEventListener('animationend', endAdditionalVisualEffect)
+        element.removeEventListener('animationcancel', endAdditionalVisualEffect)
+      }
     }
 
     view?.removeEventListener('resize', schedule)

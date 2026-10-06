@@ -11,6 +11,7 @@
   },
   "include": [
     "src/index.ts",
+    "src/package.ts",
     "src/core/**/*.ts",
     "src/core/**/*.tsx",
     "src/components/**/*.ts",

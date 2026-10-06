@@ -38,6 +38,7 @@ const componentNavigationSections: readonly DocumentationNavigationSectionDefini
     'Link',
     'Badge',
     'Button',
+    'SegmentedButton',
     'Card',
     'AppBar',
   ]),
@@ -57,6 +58,7 @@ const componentNavigationSections: readonly DocumentationNavigationSectionDefini
   componentSection('composite-ui', 'docs.nav.compositeUI', [
     'Form',
     'Table',
+    'DataGrid',
     'Accordion',
     'ToolTip',
     'Popover',

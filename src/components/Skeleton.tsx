@@ -6,7 +6,8 @@ import { ensureSkeletonStylesheet } from '../renderers/dom/skeleton-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { View } from './View'
 
-export function Skeleton({ shape = 'rect', viewProps = {} }: SkeletonProps) {
+export function Skeleton(props: SkeletonProps): import('react').JSX.Element {
+  const { shape = 'rect', viewProps = {} } = props
   const { theme, reducedMotion } = useTheme()
   const themeClassName = useRuntimeStyleClass('skeleton-theme', resolveSkeletonTheme(theme))
 

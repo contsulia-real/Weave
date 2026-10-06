@@ -22,20 +22,21 @@ import { useExitPresence, useExitTransitionEnd } from './internal/use-exit-prese
 import { type MenuInitialFocus, useMenuTrigger } from './internal/use-menu-trigger'
 import { usePopoverPosition } from './internal/use-popover-position'
 
-export function Menu({
-  trigger,
-  children,
-  placement = 'bottom-left',
-  offset,
-  overlapTrigger = false,
-  submenuOffset = 0.25,
-  viewportPadding = 0.5,
-  open,
-  defaultOpen = false,
-  onOpenChange,
-  closeOnSelect = true,
-  viewProps = {},
-}: MenuProps) {
+export function Menu(props: MenuProps): import('react').JSX.Element {
+  const {
+    trigger,
+    children,
+    placement = 'bottom-left',
+    offset,
+    overlapTrigger = false,
+    submenuOffset = 0.25,
+    viewportPadding = 0.5,
+    open,
+    defaultOpen = false,
+    onOpenChange,
+    closeOnSelect = true,
+    viewProps = {},
+  } = props
   const { value: resolvedOpen, request: requestOpenState } = useControllableBoolean(
     open,
     defaultOpen,

@@ -13,19 +13,20 @@ import { usePopoverInteraction } from './internal/use-popover-interaction'
 import { usePopoverPosition } from './internal/use-popover-position'
 import { View } from './View'
 
-export function Popover({
-  children,
-  content,
-  placement = 'bottom',
-  offset = 0.5,
-  viewportPadding = 0.5,
-  open,
-  defaultOpen = false,
-  onOpenChange,
-  autoFocus = true,
-  restoreFocus = true,
-  viewProps = {},
-}: PopoverProps) {
+export function Popover(props: PopoverProps): import('react').JSX.Element {
+  const {
+    children,
+    content,
+    placement = 'bottom',
+    offset = 0.5,
+    viewportPadding = 0.5,
+    open,
+    defaultOpen = false,
+    onOpenChange,
+    autoFocus = true,
+    restoreFocus = true,
+    viewProps = {},
+  } = props
   const { value: resolvedOpen, request: requestOpen } = useControllableBoolean(
     open,
     defaultOpen,

@@ -8,7 +8,8 @@ export interface PresenceProps {
   onExitComplete?: () => void
 }
 
-export function Presence({ present, children, onExitComplete }: PresenceProps) {
+export function Presence(props: PresenceProps): import('react').JSX.Element | null {
+  const { present, children, onExitComplete } = props
   const {
     present: mounted,
     visualState,

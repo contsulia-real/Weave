@@ -14,7 +14,12 @@ export interface ThemeProviderProps {
   children?: ReactNode
 }
 
-export function ThemeProvider({ theme = {}, mode, reducedMotion, children }: ThemeProviderProps) {
+export function ThemeProvider({
+  theme = {},
+  mode,
+  reducedMotion,
+  children,
+}: ThemeProviderProps): import('react').JSX.Element {
   const parent = useContext(ThemeContext)
   const requestedMode = mode ?? parent.requestedMode
   const activeMode = useResolvedThemeMode(requestedMode)

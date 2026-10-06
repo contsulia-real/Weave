@@ -5,14 +5,8 @@ import { useTheme } from '../theme/theme-context'
 import { ComboboxContext } from './internal/combobox-context'
 import { OptionItem } from './internal/OptionItem'
 
-export function ComboboxOption({
-  value,
-  text,
-  secondaryText,
-  icon,
-  disabled = false,
-  viewProps = {},
-}: ComboboxOptionProps) {
+export function ComboboxOption(props: ComboboxOptionProps): import('react').JSX.Element {
+  const { value, text, secondaryText, icon, disabled = false, viewProps = {} } = props
   const context = useContext(ComboboxContext)
 
   if (context === null) {

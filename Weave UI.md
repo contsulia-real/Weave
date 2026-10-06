@@ -46,6 +46,31 @@ Web
 - 多平台适配层
 - 原生控件映射
 
+### 1.2 包导出模型
+
+当前运行时导出分为根包与组件子路径两类。
+
+根包 `@contsulia/weave` 只导出应用挂载与主题运行时 API：
+
+```text
+createRoot
+ThemeProvider
+useTheme
+createTheme
+createThemeFromColorSeed
+defaultTheme
+```
+
+除根包运行时已经导出的 `ThemeProvider` 外，React 组件运行时通过独立组件子路径导入：
+
+```tsx
+import { Button } from "@contsulia/weave/components/Button"
+import { Column } from "@contsulia/weave/components/Column"
+import { Text } from "@contsulia/weave/components/Text"
+```
+
+根包继续导出公开 prop、motion、theme 等 TypeScript 类型。`src/package.ts` 是根运行时入口；`src/index.ts` 继续作为公开组件与公共类型的源码索引，并作为 Documentation API 元数据的组件真值；每个组件运行时从对应 `src/components/<ComponentName>` 入口独立构建。`src/components/internal/*` 不属于公开包子路径。公开发布目标为 JSR 的 `@contsulia/weave`；`package.json` 保持 `private: true` 仅用于阻止 npm registry 误发布，不阻止 JSR 发布。
+
 ---
 
 ## 2. 顶层设计原则
@@ -1542,12 +1567,12 @@ wide
 可以直接覆盖组件语义属性。默认 breakpoint 名称直接可用；自定义 breakpoint 名称同时来自当前主题的运行时 `breakpoints` 与 Weave 的静态 breakpoint 注册表。两者名称必须一致：主题决定实际阈值，注册表只让 TypeScript 知道哪些自定义顶层属性是合法 breakpoint，避免开放任意字符串属性并泄漏到 DOM。
 
 ```ts
-declare global {
-  namespace Weave {
-    interface BreakpointRegistry {
-      compact: true
-      wide: true
-    }
+import type {} from '@contsulia/weave/registry'
+
+declare module '@contsulia/weave/registry' {
+  interface BreakpointRegistry {
+    compact: true
+    wide: true
   }
 }
 ```
@@ -2794,7 +2819,7 @@ theme.components.Combobox.listbox
 theme.components.Combobox.option
 ```
 
-Combobox 的真实输入直接是公开 `Input`，所以 field surface 与 typography 只由 `theme.components.Input` 控制。Combobox 关闭 Input 自身的 clear action，因为 Combobox clear 还必须同步清理 committed value；`Combobox.base` 控制 Combobox 自己新增的 chevron / action 尺寸、`actionGap / actionInset` 与空状态 `emptyPaddingX / emptyPaddingY`。clear 与 chevron 之间必须有显式 gap，chevron 到 field 右边缘必须有显式 inset，不能依赖 SVG 自身空白或偶然 padding。`listbox` 控制 popup surface / gap / size / shadow / motion，包括 `enterScale / exitScale`；`option` 控制 active / selected / disabled、icon、check、`textGap` 和 typography。
+Combobox 的真实输入直接是公开 `Input`，所以 field surface 与 typography 只由 `theme.components.Input` 控制。Combobox 关闭 Input 自身的 clear action，因为 Combobox clear 还必须同步清理 committed value；`Combobox.base` 控制 Combobox 自己新增的 chevron / action 尺寸、`actionGap / actionInset` 与空状态 `emptyPaddingX / emptyPaddingY`。clear 与 chevron 之间必须有显式 gap，chevron 到 field 右边缘必须有显式 inset，不能依赖 SVG 自身空白或偶然 padding。clear action 继续使用真实 Button 的物理深度与非对称内容盒；同一 action rail 内的 chevron 必须按 Button 内容中心补偿半个 restDepth，使 clear icon 与 chevron 的视觉中心处于同一水平线。`listbox` 控制 popup surface / gap / size / shadow / motion，包括 `enterScale / exitScale`；`option` 控制 active / selected / disabled、icon、check、`textGap` 和 typography。
 
 `viewProps` 作用于真实 input；`listboxViewProps` 作用于 popup listbox。
 
@@ -3560,7 +3585,7 @@ createTheme({
 />
 ```
 
-自定义 breakpoint 名称同样适用；其名称需要同时注册到 `Weave.BreakpointRegistry`，阈值仍由当前 ThemeProvider 的 `breakpoints` 提供：
+自定义 breakpoint 名称同样适用；其名称需要通过 `@contsulia/weave/registry` 的 `BreakpointRegistry` 模块增强注册，阈值仍由当前 ThemeProvider 的 `breakpoints` 提供：
 
 ```tsx
 <Button
@@ -3600,6 +3625,31 @@ style
 > Button semantic props / current ThemeProvider component theme
 > defaultTheme
 ```
+
+## 18.11 SegmentedButton
+
+`SegmentedButton` 是一组连续排列的真实 `Button`。它不复制 Button 的主题、variant、size、pressed、disabled 或交互反馈；每个 segment 直接渲染公开 Button，组件自身只负责分段连接几何与选择状态。
+
+核心 API：
+
+```text
+items
+variant
+size
+selection = none | single | multiple
+selected
+defaultSelected
+onSelect
+viewProps
+```
+
+`items` 中每项使用稳定 `id` 作为选择值，以 `children` 接受任意 ReactNode 内容，并提供 `disabled / viewProps`；SegmentedButton 必须把该 `children` 直接作为真实 Button 的 custom content 渲染，不得先包装成 Text，因此 Icon 或其他组件继续由 Button 的 flex 布局直接居中。
+
+`selection` 默认 `none`。单选时 `selected / defaultSelected` 为 `string | null`；多选时为 `readonly string[]`。单选已选项再次点击不取消选择；多选再次点击会移除该项。受控模式通过 `selected + onSelect` 使用；未传 `selected` 时由 `defaultSelected` 提供初始项。
+
+选择状态直接映射到每个真实 Button 的 `pressed`，完整复用 Button 的 `aria-pressed`、activeBackground、pressOffset、pressScale、pressDepth、focus 与 reduced-motion 行为；选中项保持 Button 原有的按压位移与缩放，且其底部视觉基线必须与未选中项一致。外层只使用 `role="group"` 表达一组相关按钮，不另造 radio / checkbox DOM。
+
+SegmentedButton 只增加连接几何：相邻 Button 共用边界，中间 segment 去除内部圆角；选中项保留 Button 原本的 pressDepth 外阴影，并额外使用 Input 式左右方向 inset 凹陷阴影，不得出现顶部或底部 inset 阴影；其余颜色、边框、hover、typography 与 icon 全部继续来自 Button。
 
 ---
 
@@ -4376,6 +4426,84 @@ theme.components.Table.densities.normal / dense:
   paddingX
   paddingY
 ```
+
+---
+
+# 18.12C `DataGrid`
+
+`DataGrid` 是建立在公开 `Table` 之上的 data-driven 表格组件。它不创建第二套 table surface、selection 或 theme；dense、vertical borders、sticky header、row / cell selection 继续由真实 `Table / TableHeader / TableBody / TableRow / TableHead / TableCell` 提供。
+
+核心 API：
+
+```text
+columns
+rows
+dense
+verticalBorders
+stickyHeader
+virtualized
+sort / defaultSort / onSortChange
+columnWidths / defaultColumnWidths / onColumnWidthsChange
+selectable / selected / defaultSelected / onSelect
+viewProps
+```
+
+行必须提供稳定 `id: string`。列定义：
+
+```ts
+type DataGridColumn<Row> = {
+  id: string
+  header: ReactNode
+  cell: (row: Row) => ReactNode
+  sort?: (left: Row, right: Row) => number
+  minWidth?: number
+  maxWidth?: number
+  resizable?: boolean
+}
+```
+
+列宽状态以 CSS pixel number 表达：
+
+```ts
+type DataGridColumnWidths = Readonly<Record<string, number>>
+```
+
+## 18.12C.1 Sorting
+
+排序状态为：
+
+```ts
+type DataGridSort = {
+  columnId: string
+  direction: 'asc' | 'desc'
+}
+```
+
+`sort` 存在时为受控；否则使用 `defaultSort` 初始化内部状态。点击或键盘激活具有 `column.sort` comparator 的 header 时，同一列在 asc / desc 之间切换；切换到另一列时从 asc 开始。排序必须稳定，相等项保留输入 rows 的原始顺序。不存在 comparator 的列不可排序。
+
+## 18.12C.2 Column resizing
+
+只有 `resizable=true` 的列显示 resize hit target。DataGrid 必须把各数据列解析为独立的真实 column track；pointer drag 以当前 header 的实际 pixel 宽度为起点，只改变目标 column track，不得由浏览器重新分配其他数据列宽。`minWidth / maxWidth` 必须约束最终渲染 track，而不只是约束状态值。`columnWidths` 存在时为受控；否则由 `defaultColumnWidths` 初始化内部状态。未显式给宽度的列首次布局时从真实 header 宽度测量并锁定为 track。当数据列总宽度小于 viewport 时，DataGrid 使用一个无语义 presentation filler track 吸收剩余宽度，使 header 背景、row surface 与横向 divider 铺满 viewport，同时不拉伸任何数据列；filler 不得绘制纵向 divider、padding 或其他会让它看起来像真实数据列的视觉边界。当数据列总宽度超过 viewport 时 filler 收缩为 0，并只由真实数据列宽产生横向滚动。resize hit target 使用与 SplitBox splitter 相同的 1rem 交互宽度，可见 divider 仍由 Table theme 决定且不得随 hit target 变粗。resize 过程中通过 `onColumnWidthsChange` 连续发布完整宽度映射；resize hit target 必须完全位于 table scroll extent 内。DataGrid 只新增 resize interaction geometry，不复制 Table theme。
+
+## 18.12C.3 Selection
+
+`selectable` 完整复用 Table selection，公开状态继续只使用：
+
+```ts
+readonly TableSelectedCell[]
+```
+
+DataGrid 的 cellId 等于 column.id；rowId 等于 row.id。整行 checkbox 与 header 全选 checkbox 仍由同一原子 cell 集合推导，不创建独立 row-selection 状态。即使启用 virtualization，Table selection 也必须知道全部 DataGrid row / column cell，而不能只把当前已挂载窗口当作完整数据集。
+
+## 18.12C.4 Virtualization
+
+`virtualized=true` 使用真正的 row windowing，并直接复用 List 的 `virtual-list-layout` 计算、measurement cache、overscan 与可见索引算法。DataGrid 保留原生 `<table> / <thead> / <tbody> / <tr> / <td>` 结构，仅在 tbody 前后放置无语义、不可见且不绘制背景或边框的 spacer row 来维持总滚动高度；spacer 不得在 sticky header 下方暴露为空白行或主题色带。不可再实现第二套 virtualization 算法。可视 row 通过 ResizeObserver 回写真实高度，因此列宽调整造成换行时 layout 会重新测量。
+
+virtualized DataGrid 的 scroll viewport 继续是 Table 外层 View；调用方用 `viewProps.height / maxHeight` 等普通 View 尺寸能力决定 viewport 高度。
+
+## 18.12C.5 Theme
+
+DataGrid 没有独立 component theme。所有 surface、typography、divider、selected、hover、sticky header 与 checkbox 视觉继续来自 `theme.components.Table` 以及其复用的公开组件；sortable header 在 hover 与 focus-visible 时必须使用 Table 的 `rowHoverBackground` 作为交互反馈，不创建 DataGrid 私有 hover 色。DataGrid stylesheet 只负责 sortable cursor、该主题反馈的状态映射、resize hit target、sort indicator 与 virtualization spacer 的结构性样式。
 
 ---
 
@@ -7527,11 +7655,11 @@ tokens: {
 例如：
 
 ```ts
-declare global {
-  namespace Weave {
-    interface ColorTokenRegistry {
-      brand: true
-    }
+import type {} from '@contsulia/weave/registry'
+
+declare module '@contsulia/weave/registry' {
+  interface ColorTokenRegistry {
+    brand: true
   }
 }
 
@@ -8668,13 +8796,42 @@ CSS variables + runtime classes + framework stylesheet
 29. 组件默认承担正确可访问性和键盘语义，不把标准行为推给业务开发者。
 30. 浮层使用语义 layer，普通用户不需要手工管理 portal 或全局 z-index。
 31. 具体组件已经提供同义语义状态属性时，该状态不在其 `viewProps` 中重复暴露，组件属性作为唯一真值。
-32. Documentation 页面本身的全部可见 UI 必须 **100% dogfood Weave 公共组件与 Theme**：页面 shell、导航、搜索、主题切换、内容布局和后续示例都不得直接使用裸 `View`、裸 DOM 元素、Documentation 私有视觉 CSS 或第三方 UI 组件来替代已有 Weave 能力。React state、History router、i18n、数据处理等非视觉基础设施可以直接使用。框架组件自身仍按其实现边界复用 Weave 语义组件与内部基础设施，不再平行维护裸 DOM / 私有 CSS 的同义视觉实现。 Documentation AppBar 的 trailing 直接放置 Weave search Input、Theme Popover 与 Language Popover，不额外包 Row；三个真实控件直接由 AppBar trailing slot 的 flex `align-items: center` 与 `gap` 负责垂直居中和间距。语言选择必须包含 `Auto detect` 和当前实际注册的语言资源。`Auto detect` 按 `navigator.languages` 顺序匹配已注册语言，无法匹配时回退到 i18n fallback language，不得展示尚未存在的翻译语言。 Drawer 导航项直接使用 `ListItem` 的点击事件触发 History 路由，不在 `ListItem` 内嵌 `Link`，并通过 `ListItem.viewProps.clickable=true` 复用 ViewHost 的通用 hover / active 变色反馈。Drawer 导航必须以当前 docs pathname 为唯一选中真值：进入某个导航路由时，对应 Accordion section 自动展开，对应 `ListItem` 通过 List 的受控 single selection 呈现 selected 高亮；不能在 Documentation 再维护一套与路由分离的“当前项”。 当该 section 内存在当前选中的 ListItem 时，对应 Accordion Trigger 必须直接复用 `theme.components.ListItem.base` 的 `selectedBackground / selectedColor / selectedHoverBackground / activeBackground`，使其选中反馈与该 ListItem 一致，不单独设计 Accordion selected 视觉。Drawer search 与同一份导航数据联动：有查询时只保留 section 标题或 item 文本包含该关键词的结果。若 section 标题本身命中，则保留并显示该 section 下全部 ListItem；若只有 item 命中，则只显示命中的 ListItem。所有命中 section 自动展开。命中的关键词片段直接使用 Weave `Text`，以 Theme `primary` 作为背景、`onPrimary` 作为文字颜色做明确背景高亮，不增加 Documentation 私有 CSS。页面真实文档加载期间在 AppBar 后、主内容前直接使用公开 `Progress mode="linear" indeterminate`；加载状态以 `document.readyState !== "complete"` 为真值，不为同步 SPA 路由制造假延迟。 Documentation 的 Drawer 当前由页面持有受控 `open` 真值，因此首屏默认打开必须直接把该受控真值初始化为 `true`；不得同时传 `open=false` 与 `defaultOpen=true` 并期待 uncontrolled default 覆盖 controlled value。 `/docs/components/<ComponentName>` 组件页的正文标题直接使用对应组件名，不再显示 `Documentation` / `Components` 泛化标题；组件页不渲染 `Documentation page framework` 占位文字和路由路径。
-33. `/docs/components/<ComponentName>` 的组件正文采用统一文档页面流：组件名标题下方立即显示该组件的简短介绍，介绍使用 Documentation 普通说明文字 `body-large`；其下按章节纵向排列真实组件示例，不再存在 `Playground`、参数编辑区、Documentation-only 参数状态、`viewProps / attributes` 编辑 Tab 或运行时 props 覆写系统。每个示例章节必须围绕一个独立的真实使用主题/场景组织，不得把单个 `variant / size / disabled` 等 prop 枚举机械拆成章节来凑数量；章节可包含简短说明文字。Button 页的 Basic button 示例必须同时展示 primary / secondary / tertiary 与 small / medium / large 三种 size。每个示例章节必须有独立 heading，并使用 Weave `Card` 承载：Card 上部真实渲染当前源码产生的组件结果，并在展示区域提供三个 icon-only Weave `Button`：代码展开/收起、复制当前代码、Reset 当前代码；三个按钮必须使用图标而不是文字 label，仍通过语义 label 提供可访问名称，并分别直接复用 Weave `ToolTip` 显示 Expand/Collapse code、Copy code、Reset code；Reset 必须恢复该示例初始源码。展开/收起必须复用 Weave `Presence` 与 View motion，不能瞬时出现/消失；收起时代码内容的 fade 与代码区域高度收缩必须同步进行，不得先留下空白区域再瞬间跳高。展开代码时，中间使用 Weave `Divider` 分隔，下部代码区继续以可编辑 Weave multiline `Input` 作为真实输入层，同时复用 Weave `Code language="tsx"` 作为与当前 source 同步的语法高亮显示层；编辑层保持透明文本并同步滚动，从而保留可编辑性、caret 与 Code 的 Shiki token 颜色；编辑层获得焦点时不得显示额外 focus outline。Code 在同一 language / syntax 的新高亮结果尚未完成时必须继续保留上一帧已高亮 HTML，不得短暂退回纯文本 fallback 造成颜色闪烁。代码区必须有明确左右 padding；代码区高度必须跟随当前源码内容自动变化，并以 16rem 为最大高度，超过后仅代码区内部滚动；示例展示区不得设置固定高度或最小高度，必须由实际渲染组件高度加既有 padding 自然撑开；每次编辑直接重新生成上方真实结果，代码语法或运行错误直接显示在上方结果区域，不得继续显示与当前代码脱节的旧 preview。示例区不得用与目标组件无关的视觉替身。布局组件不再分别建立 `Flex / Row / Column / Grid / Stack / Absolute / SplitBox` 示例页，也不建立 `Layout` Accordion；`Foundation` 导航中提供单一 `Layout` 组件页，页面标题为 `Layout`，正文依次以 `Flex / Row / Column / Grid / Stack / Absolute / SplitBox` 作为真实 section heading 展示各布局组件示例和对应源码。组件页最后提供 `API` 章节，仅使用 Weave `Link` 跳转到独立 API 页面；API 章节之后必须再放置两个 Weave `Card` 作为组件顺序导航，分别跳转到导航顺序中的上一个 component 与下一个 component；不存在相邻 component 时对应 Card 保留但禁用。`Layout` 页的 API 章节分别链接上述七个真实布局组件 API。Drawer 导航中的 `Components API` Accordion 继续包含 `src/index.ts` 中全部公开 React 组件 API（包括组合子件与 Provider）并按组件名排序。独立 API 页面标题为 `<ComponentName> API`，正文采用 `Demos → Import → Props` 页面流：`Demos` 使用 Weave `Link` 返回对应组件页；布局组件与 `SplitBoxPane` 返回 `Layout` 页，其他组合子件与 Provider 返回所属父组件页；`Import` 使用 Weave `Card + Code` 展示 `import { ComponentName } from "weave"`；`Props` 使用 Weave `Table` 展示公开 prop 的 Name / Type / Optional。组件存在公开 `viewProps` 属性时，Props 表只保留一行 `viewProps`，其 Type 使用 Weave `Link` 指向 `/docs/components-api/View#props` 的 `ViewProps`，不得在每个组件 API 页面重复展开整套 View props。像 `Flex / Row / Column / Grid / Stack / Absolute` 这类 props 表面直接复用 `ViewProps<HTMLDivElement>` 的布局原语，也不得再次展开整套 View props；API 只链接 `ViewProps`，并仅保留其相对 ViewProps 的真实类型差异。只有 `View API` 自身完整展示 View props。API 元数据继续以 `src/index.ts` 暴露的 TypeScript 公开类型为唯一真值，生成器从公开 value export 与同名 `XxxProps` 类型自动识别公开组件，并且对存在 `viewProps` 的组件只生成组件自身顶层 props（排除 `viewProps` 的展开内容），通过开发/构建阶段生成的派生元数据供 Documentation 使用，并通过验证阻止元数据与公开类型漂移。专门用于组成父组件的公开组合子件不得拥有独立组件示例页，但仍必须拥有独立 API 页面。组件页及独立 API 页改为基于 DocumentationContent 实际可用宽度的 container-responsive 正文布局，不得使用 viewport 宽度判断 Drawer 打开后的正文空间：小于 container lg 断点时正文与目录纵向排列，目录进入普通文档流且不使用 sticky；从 container lg 起恢复正文 + 右侧目录横向布局，目录 sticky 于正文右侧。组件页与独立 API 页的正文阅读列在宽屏下最大宽度固定为 52rem，示例 Card、标题、说明与 API 内容不得继续随超宽屏无限拉伸；窄于该宽度时继续使用 fill。宽屏横排时正文阅读列与右侧 CONTENTS 必须作为一个整体在 DocumentationContent 的可用区域内水平居中，不得贴左后把全部剩余空间堆到右侧。示例 Card 的可编辑 Code 区必须使用 Theme 现有 surfaceHover 作为独立背景层，与 Card 的 surface 表面形成区分，不得自定义 Documentation 私有颜色。Snack 文档示例使用 container-bound SnackProvider 时，作为 container 的真实 Column 必须 fill 示例展示区宽度，不能使用塌缩的 intrinsic-width 宿主导致 Snack 定位区域不可见。目录不再使用 MarkSlider、阅读进度轴、thumb、dot 或基于滚动比例的 section 位置计算，按正文 DOM 中 `data-weave-doc-section` 的实际顺序列出 section；每项直接复用 Weave `Link + Text` 指向对应 section id，页面主标题不进入目录。API Props 表在窄宽度下只允许自身横向滚动，不得撑破正文。组件页底部 Previous / Next Card 在窄宽度下纵向排列，从 container md 起恢复横向。示例源码必须以人为可读的格式书写，避免为了运行方便展示未整理的转义字符串或挤成一行的 JSX。DocumentationComponentExampleCard 在初始加载和 Reset 时统一格式化单行 JSX expression：带 children 的 JSX 必须展开为多行，字符串 child 必须使用 template literal 表达，超过单行宽度的 props 必须拆行；已经人工排好的多行源码不得被二次重排，用户编辑过程中也不得自动格式化。Documentation 的页面布局继续禁止直接使用 `View`；唯一例外是 `View` 自己的组件示例必须真实渲染 `View`。
+32. Documentation 页面本身的全部可见 UI 必须 **100% dogfood Weave 公共组件与 Theme**：页面 shell、导航、搜索、主题切换、内容布局和后续示例都不得直接使用裸 `View`、裸 DOM 元素、Documentation 私有视觉 CSS 或第三方 UI 组件来替代已有 Weave 能力。React state、History router、i18n、数据处理等非视觉基础设施可以直接使用。框架组件自身仍按其实现边界复用 Weave 语义组件与内部基础设施，不再平行维护裸 DOM / 私有 CSS 的同义视觉实现。 Documentation AppBar 的 trailing 直接放置 Weave search Input、Theme Popover 与 Language Popover，不额外包 Row；三个真实控件直接由 AppBar trailing slot 的 flex `align-items: center` 与 `gap` 负责垂直居中和间距。Theme Popover 内的 System / Light / Dark 模式选择必须使用公开 `SegmentedButton selection="single"`；其下使用公开 `Grid columns={3}` 以 3 × 4 排列 12 个颜色 Button，通过现有 `createThemeFromColorSeed` 切换 Documentation Theme seed，不创建第二套主题系统。Documentation 默认颜色为 Pink `#c2185b`，其余固定 seed 为 Red `#d32f2f`、Deep orange `#e64a19`、Orange `#ef6c00`、Amber `#ff6f00`、Light green `#558b2f`、Green `#388e3c`、Teal `#00796b`、Cyan `#00838f`、Blue `#1976d2`、Indigo `#303f9f`、Purple `#7b1fa2`；此默认仅属于 Documentation，不修改框架 `defaultTheme`。语言选择必须包含 `Auto detect` 与当前实际注册的 English、简体中文、繁體中文、Français 四套语言资源。语言检测必须由 `i18next-browser-languagedetector` 通过 i18next 的 `supportedLngs` 与 fallback 机制完成；Documentation 业务代码不得自行读取、匹配或判定 `navigator.language` / `navigator.languages`。`Auto detect` 必须通过 i18next 重新触发 detector。Documentation shell、导航、页面说明、组件介绍、示例章节标题与说明、API 页面和操作 Tooltip 等可见文案必须进入 i18n；组件名、公开 API 标识符与代码示例源码保持原始代码语言，不随 Documentation 语言切换。 Drawer 导航项直接使用 `ListItem` 的点击事件触发 History 路由，不在 `ListItem` 内嵌 `Link`，并通过 `ListItem.viewProps.clickable=true` 复用 ViewHost 的通用 hover / active 变色反馈。Drawer 导航必须以当前 docs pathname 为唯一选中真值：进入某个导航路由时，对应 Accordion section 自动展开，对应 `ListItem` 通过 List 的受控 single selection 呈现 selected 高亮；不能在 Documentation 再维护一套与路由分离的“当前项”。 当该 section 内存在当前选中的 ListItem 时，对应 Accordion Trigger 必须直接复用 `theme.components.ListItem.base` 的 `selectedBackground / selectedColor / selectedHoverBackground / activeBackground`，使其选中反馈与该 ListItem 一致，不单独设计 Accordion selected 视觉。Drawer search 与同一份导航数据联动：有查询时只保留 section 标题或 item 文本包含该关键词的结果。若 section 标题本身命中，则保留并显示该 section 下全部 ListItem；若只有 item 命中，则只显示命中的 ListItem。所有命中 section 自动展开。命中的关键词片段直接使用 Weave `Text`，以 Theme `primary` 作为背景、`onPrimary` 作为文字颜色做明确背景高亮，不增加 Documentation 私有 CSS。页面真实文档加载期间在 AppBar 后、主内容前直接使用公开 `Progress mode="linear" indeterminate`；加载状态以 `document.readyState !== "complete"` 为真值，不为同步 SPA 路由制造假延迟。 Documentation 的 Drawer 当前由页面持有受控 `open` 真值，因此首屏默认打开必须直接把该受控真值初始化为 `true`；不得同时传 `open=false` 与 `defaultOpen=true` 并期待 uncontrolled default 覆盖 controlled value。 `/docs/components/<ComponentName>` 组件页的正文标题直接使用对应组件名，不再显示 `Documentation` / `Components` 泛化标题；组件页不渲染 `Documentation page framework` 占位文字和路由路径。
+33. `/docs/components/<ComponentName>` 的组件正文采用统一文档页面流：组件名标题下方立即显示该组件的简短介绍，介绍使用 Documentation 普通说明文字 `body-large`；其下按章节纵向排列真实组件示例，不再存在 `Playground`、参数编辑区、Documentation-only 参数状态、`viewProps / attributes` 编辑 Tab 或运行时 props 覆写系统。每个示例章节必须围绕一个独立的真实使用主题/场景组织，不得把单个 `variant / size / disabled` 等 prop 枚举机械拆成章节来凑数量；章节可包含简短说明文字。Button 页的 Basic button 示例必须同时展示 primary / secondary / tertiary 与 small / medium / large 三种 size。每个示例章节必须有独立 heading，并使用 Weave `Card` 承载：Card 上部真实渲染当前源码产生的组件结果，并在展示区域提供三个 icon-only Weave `Button`：代码展开/收起、复制当前代码、Reset 当前代码；三个按钮必须使用图标而不是文字 label，仍通过语义 label 提供可访问名称，并分别直接复用 Weave `ToolTip` 显示 Expand/Collapse code、Copy code、Reset code；Reset 必须恢复该示例初始源码。展开/收起必须复用 Weave `Presence` 与 View motion，不能瞬时出现/消失；收起时代码内容的 fade 与代码区域高度收缩必须同步进行，不得先留下空白区域再瞬间跳高。展开代码时，中间使用 Weave `Divider` 分隔，下部代码区继续以可编辑 Weave multiline `Input` 作为真实输入层，同时复用 Weave `Code language="tsx"` 作为与当前 source 同步的语法高亮显示层；编辑层保持透明文本并同步滚动，从而保留可编辑性、caret 与 Code 的 Shiki token 颜色；编辑层获得焦点时不得显示额外 focus outline。Code 在同一 language / syntax 的新高亮结果尚未完成时必须继续保留上一帧已高亮 HTML，不得短暂退回纯文本 fallback 造成颜色闪烁。代码区必须有明确左右 padding；代码区高度必须跟随当前源码内容自动变化，并以 16rem 为最大高度，超过后仅代码区内部滚动；示例展示区不得设置固定高度或最小高度，必须由实际渲染组件高度加既有 padding 自然撑开；每次编辑直接重新生成上方真实结果，代码语法或运行错误直接显示在上方结果区域，不得继续显示与当前代码脱节的旧 preview。示例区不得用与目标组件无关的视觉替身。布局组件不再分别建立 `Flex / Row / Column / Grid / Stack / Absolute / SplitBox` 示例页，也不建立 `Layout` Accordion；`Foundation` 导航中提供单一 `Layout` 组件页，页面标题为 `Layout`，正文依次以 `Flex / Row / Column / Grid / Stack / Absolute / SplitBox` 作为真实 section heading 展示各布局组件示例和对应源码。组件页最后提供 `API` 章节，仅使用 Weave `Link` 跳转到独立 API 页面；API 章节之后必须再放置两个 Weave `Card` 作为组件顺序导航，分别跳转到导航顺序中的上一个 component 与下一个 component；不存在相邻 component 时对应 Card 保留但禁用。`Layout` 页的 API 章节分别链接上述七个真实布局组件 API。Drawer 导航中的 `Components API` Accordion 继续包含 `src/index.ts` 中全部公开 React 组件 API（包括组合子件与 Provider）并按组件名排序。独立 API 页面标题为 `<ComponentName> API`，正文采用 `Demos → Import → Props` 页面流：`Demos` 使用 Weave `Link` 返回对应组件页；布局组件与 `SplitBoxPane` 返回 `Layout` 页，其他组合子件与 Provider 返回所属父组件页；`Import` 使用 Weave `Card + Code` 展示 `import { ComponentName } from "@contsulia/weave/components/ComponentName"`；`Props` 使用 Weave `Table` 展示公开 prop 的 Name / Type / Optional。组件存在公开 `viewProps` 属性时，Props 表只保留一行 `viewProps`，其 Type 使用 Weave `Link` 指向 `/docs/components-api/View#props` 的 `ViewProps`，不得在每个组件 API 页面重复展开整套 View props。像 `Flex / Row / Column / Grid / Stack / Absolute` 这类 props 表面直接复用 `ViewProps<HTMLDivElement>` 的布局原语，也不得再次展开整套 View props；API 只链接 `ViewProps`，并仅保留其相对 ViewProps 的真实类型差异。只有 `View API` 自身完整展示 View props。API 元数据继续以 `src/index.ts` 暴露的 TypeScript 公开类型为唯一真值，生成器从公开 value export 与同名 `XxxProps` 类型自动识别公开组件，并且对存在 `viewProps` 的组件只生成组件自身顶层 props（排除 `viewProps` 的展开内容），通过开发/构建阶段生成的派生元数据供 Documentation 使用，并通过验证阻止元数据与公开类型漂移。专门用于组成父组件的公开组合子件不得拥有独立组件示例页，但仍必须拥有独立 API 页面。组件页及独立 API 页改为基于 DocumentationContent 实际可用宽度的 container-responsive 正文布局，不得使用 viewport 宽度判断 Drawer 打开后的正文空间：小于 container lg 断点时正文与目录纵向排列，目录进入普通文档流且不使用 sticky；从 container lg 起恢复正文 + 右侧目录横向布局，目录 sticky 于正文右侧。组件页与独立 API 页的正文阅读列在宽屏下最大宽度固定为 52rem，示例 Card、标题、说明与 API 内容不得继续随超宽屏无限拉伸；窄于该宽度时继续使用 fill。宽屏横排时正文阅读列与右侧 CONTENTS 必须作为一个整体在 DocumentationContent 的可用区域内水平居中，不得贴左后把全部剩余空间堆到右侧。示例 Card 的可编辑 Code 区必须使用 Theme 现有 surfaceHover 作为独立背景层，与 Card 的 surface 表面形成区分，不得自定义 Documentation 私有颜色。Snack 文档示例使用 container-bound SnackProvider 时，作为 container 的真实 Column 必须 fill 示例展示区宽度，不能使用塌缩的 intrinsic-width 宿主导致 Snack 定位区域不可见。目录不再使用 MarkSlider、阅读进度轴、thumb、dot 或基于滚动比例的 section 位置计算，按正文 DOM 中 `data-weave-doc-section` 的实际顺序列出 section；每项直接复用 Weave `Link + Text` 指向对应 section id，页面主标题不进入目录。API Props 表在窄宽度下只允许自身横向滚动，不得撑破正文。组件页底部 Previous / Next Card 在窄宽度下纵向排列，从 container md 起恢复横向。每个 Documentation 示例必须以独立 `.tsx` demo 文件作为唯一源码真值：初始预览直接渲染该文件经过 Vite / TypeScript 构建后的默认导出，代码区直接展示同一文件的 raw source；示例 metadata 不得再保存独立的 preview JSX、code 字符串或 codeMode。Documentation demo registry 必须 lazy-load 当前页面实际使用的 demo module 与 raw source，不得在任意组件页首屏 eager import 全部 demo。只有用户编辑当前 source 后才进入 Documentation 的 live runtime 编译路径；Reset 恢复该 demo 文件的初始 raw source，并重新使用真实构建模块作为预览。示例源码必须以人为可读的格式书写并通过仓库 formatter / typecheck，不得为了运行方便展示未整理的转义字符串或挤成一行的 JSX；用户编辑过程中不得自动格式化。Documentation 的页面布局继续禁止直接使用 `View`；唯一例外是 `View` 自己的组件示例必须真实渲染 `View`。
 34. 组件复用其他组件的视觉或交互能力时，外层组件仍承担自己的高层语义；不得因此重复暴露冲突的 ARIA 角色。
 35. `Text.typo` 必须来自主题中的完整 type scale；不能退回 renderer 内部的少量硬编码 preset。
-36. Scrollbar 只绘制 thumb，不提供 tracked / trackColor；带圆角宿主必须把圆角曲线区域排除出 thumb 的运动区。AutoScrollbar 的 portal axis 首次挂载后必须立即重新计算 geometry 与 thumb offset，初始位置不得依赖用户先滚动目标或页面。
+36. Scrollbar 只绘制 thumb，不提供 tracked / trackColor；带圆角宿主必须把圆角曲线区域排除出 thumb 的运动区。AutoScrollbar 的 portal axis 首次挂载后必须立即重新计算 geometry 与 thumb offset，初始位置不得依赖用户先滚动目标或页面；portal 后仍必须遵守目标元素真实祖先 overflow viewport 的裁剪边界，目标滚出祖先可视区域时 scrollbar 不得逃逸到该区域之外；目标或其祖先发生 transition、animation、Presence enter/exit 或 layoutAnimation 等视觉移动时，portal scrollbar 必须在动画期间逐帧同步目标 geometry、祖先裁剪与有效 opacity，不能停留在旧 viewport 坐标或脱离原视觉树。
 37. 所有框架拥有的文字视觉必须选择或继承 `theme.tokens.typography.styles` 中的 typo；Button、Input 等组件不得平行维护 `fontSize / fontWeight / lineHeight / letterSpacing`。
 38. 普通 View 继承当前排版上下文；根节点与 ThemeProvider 默认建立 `body-large` 上下文，允许 Button 等组件建立自己的 typo 上下文后由内部 Text 继承。
 39. API 的目标是：AI 易写易读，同时人类易读。
 40. Documentation 的 `Content and actions` 必须提供独立 `Typo` 页面并置于 `Text` 之前；该页按 `Display / Headline / Title / Body / Label` 展示 `theme.tokens.typography.styles` 的完整 type scale。`Typo` 是文档主题而非公开 React 组件，因此不生成或链接伪造的 Typo API。
 41. `Code` 的可滚动宿主必须复用框架现有 `AutoScrollbar`；所有 `weave-scroll-host` 必须隐藏浏览器原生滚动条（包括 WebKit scrollbar），不得让默认滚动条与 Weave scrollbar 同时出现。
+42. LLM / AI 使用面只能是现有框架真值的派生入口，不得建立平行 API、Theme、示例或组件关系真值。公开组件与 props 继续来自 `src/index.ts` 与 Documentation API 生成器；运行时 import 路径同时服从 `src/package.ts`；示例源码继续只来自真实 Documentation demo；Theme 数据继续来自现有 default Theme；设计规则继续以本文件为权威。`ai/guidance.json` 只允许补充源码类型无法表达的组件选择 intent / prefer / avoid / alternative 注解，不得复制 props、类型或 Theme 值。第 33 条的普通组件 `@contsulia/weave/components/ComponentName` Import 规则对根包运行时组件例外；当前 `ThemeProvider` 必须从 `@contsulia/weave` 导入。
+
+---
+
+# 29. LLM / AI 使用面
+
+Weave 的 LLM 使用面建立在现有公开 API、真实 Documentation 示例、Theme 与本设计规范之上，不引入第二套组件描述系统。
+
+生成链路固定为：
+
+```text
+现有源码与规范真值
+├─ src/index.ts + Documentation API metadata
+├─ src/package.ts
+├─ src/documentation/demos/**/*.tsx
+├─ src/theme/default-theme.ts
+├─ Weave UI.md
+└─ ai/guidance.json（仅组件选择意图注解）
+        ↓
+ai/generated/*.json
+├─ framework.json
+├─ components.json
+├─ examples.json
+└─ theme.json
+        ↓
+llms.txt / DESIGN.md / MCP / weave check / LLM benchmark
+```
+
+`llms.txt` 与 `DESIGN.md` 都由生成器产生，不作为独立设计真值手工维护。MCP 只查询生成后的 machine metadata，不复制组件实现或业务逻辑。`weave check` 在 TypeScript 之外补充 Weave 特有、可静态确定的语义错误与修复提示。LLM benchmark 使用独立任务语料验证组件选择、导入契约与静态规则，但 benchmark 预期不得反向成为组件 API 真值。

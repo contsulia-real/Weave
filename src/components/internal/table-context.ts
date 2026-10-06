@@ -7,6 +7,11 @@ export interface TableSelectionState {
   indeterminate: boolean
 }
 
+export interface TableDeclaredCells {
+  rowIds: readonly string[]
+  cellIds: readonly string[]
+}
+
 interface TableContextValue {
   selectable: boolean
   dense: boolean
@@ -24,6 +29,7 @@ interface TableRowContextValue {
   rowId?: string
 }
 
+export const TableDeclaredCellsContext = createContext<TableDeclaredCells | null>(null)
 export const TableContext = createContext<TableContextValue | null>(null)
 export const TableSectionContext = createContext<TableSection | null>(null)
 export const TableRowContext = createContext<TableRowContextValue | null>(null)

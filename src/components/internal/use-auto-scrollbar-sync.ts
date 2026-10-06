@@ -6,6 +6,7 @@ import {
   type ScrollbarElementRefs,
   type ScrollbarOverflowIntent,
 } from './scrollbar-types'
+import { trackVisualAnchor } from './visual-anchor-tracker'
 
 interface UseAutoScrollbarSyncProps<TTarget extends HTMLElement> extends ScrollbarElementRefs {
   targetRef: RefObject<TTarget | null>
@@ -35,6 +36,19 @@ function elementsFromRefs(refs: ScrollbarElementRefs) {
     verticalThumb,
     horizontalThumb,
   }
+}
+
+function visualAncestors(target: HTMLElement): HTMLElement[] {
+  const output: HTMLElement[] = []
+  const document = target.ownerDocument
+  let ancestor = target.parentElement
+
+  while (ancestor !== null && ancestor !== document.body && ancestor !== document.documentElement) {
+    output.push(ancestor)
+    ancestor = ancestor.parentElement
+  }
+
+  return output
 }
 
 export function useAutoScrollbarSync<TTarget extends HTMLElement>({
@@ -133,8 +147,15 @@ export function useAutoScrollbarSync<TTarget extends HTMLElement>({
     }
 
     target.addEventListener('scroll', onScroll, { passive: true })
+    target.addEventListener('input', scheduleGeometrySync)
     window.addEventListener('resize', onWindowResize)
     document.addEventListener('scroll', onDocumentScroll, true)
+
+    const stopVisualTracking = trackVisualAnchor(target, updateGeometry, {
+      additionalTargets: visualAncestors(target),
+      trackMutations: true,
+      continuousAnimations: true,
+    })
 
     const resizeObserver =
       typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(updateGeometry)
@@ -175,8 +196,10 @@ export function useAutoScrollbarSync<TTarget extends HTMLElement>({
 
     return () => {
       target.removeEventListener('scroll', onScroll)
+      target.removeEventListener('input', scheduleGeometrySync)
       window.removeEventListener('resize', onWindowResize)
       document.removeEventListener('scroll', onDocumentScroll, true)
+      stopVisualTracking()
       cancelThumbFrame?.()
       cancelGeometryFrame?.()
       resizeObserver?.disconnect()

@@ -22,14 +22,8 @@ const linkIcon = (
   </svg>
 )
 
-export function Link({
-  href,
-  text,
-  hideIcon = false,
-  hideUnderline = false,
-  target,
-  viewProps = {},
-}: LinkProps) {
+export function Link(props: LinkProps): import('react').JSX.Element {
+  const { href, text, hideIcon = false, hideUnderline = false, target, viewProps = {} } = props
   const { theme } = useTheme()
   const themeClassName = useRuntimeStyleClass('link-theme', resolveLinkTheme(theme))
   const hostProps: ViewProps<HTMLAnchorElement> = viewProps

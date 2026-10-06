@@ -1,6 +1,8 @@
+import { createHash } from 'node:crypto'
 import fs from 'node:fs'
 import path from 'node:path'
 import ts from 'typescript'
+import { documentationPropDescription } from './documentation-prop-descriptions.mjs'
 
 const root = process.cwd()
 const outputPath = path.join(
@@ -11,6 +13,7 @@ const outputPath = path.join(
   'documentation-component-api.json',
 )
 const checkOnly = process.argv.includes('--check')
+const packageJson = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'))
 
 function readConfig() {
   const configPath = path.join(root, 'tsconfig.app.json')
@@ -35,26 +38,95 @@ function unionParts(type) {
   return type.isUnion() ? type.types : [type]
 }
 
-function propertyEntries(checker, type, fallbackNode) {
-  return checker
-    .getPropertiesOfType(type)
-    .map((symbol) => {
-      const declaration = declarationForSymbol(symbol, fallbackNode)
-      const propertyType = checker.getTypeOfSymbolAtLocation(symbol, declaration)
+function isProjectSource(fileName) {
+  const relative = path.relative(path.join(root, 'src'), fileName)
+  return (
+    relative !== '' &&
+    relative !== '..' &&
+    !relative.startsWith(`..${path.sep}`) &&
+    !path.isAbsolute(relative)
+  )
+}
 
-      return {
-        name: symbol.getName(),
-        type: checker.typeToString(
-          propertyType,
-          declaration,
-          ts.TypeFormatFlags.NoTruncation | ts.TypeFormatFlags.UseAliasDefinedOutsideCurrentScope,
-        ),
-        optional:
-          (symbol.flags & ts.SymbolFlags.Optional) !== 0 ||
-          unionParts(propertyType).some((part) => (part.flags & ts.TypeFlags.Undefined) !== 0),
-      }
+function stablePoolId(prefix, key) {
+  return `${prefix}${createHash('sha256').update(key).digest('hex').slice(0, 12)}`
+}
+
+function propertyEntry(checker, symbol, fallbackNode) {
+  const declaration = declarationForSymbol(symbol, fallbackNode)
+  const propertyType = checker.getTypeOfSymbolAtLocation(symbol, declaration)
+
+  return {
+    name: symbol.getName(),
+    description: ts.displayPartsToString(symbol.getDocumentationComment(checker)).trim(),
+    external: !isProjectSource(declaration.getSourceFile().fileName),
+    type: checker.typeToString(
+      propertyType,
+      declaration,
+      ts.TypeFormatFlags.NoTruncation | ts.TypeFormatFlags.UseAliasDefinedOutsideCurrentScope,
+    ),
+    optional:
+      (symbol.flags & ts.SymbolFlags.Optional) !== 0 ||
+      unionParts(propertyType).some((part) => (part.flags & ts.TypeFlags.Undefined) !== 0),
+  }
+}
+
+function propertyEntries(checker, type, fallbackNode) {
+  const entries = checker
+    .getPropertiesOfType(type)
+    .map((symbol) => propertyEntry(checker, symbol, fallbackNode))
+
+  if (!type.isUnion()) {
+    return entries.sort((left, right) => left.name.localeCompare(right.name))
+  }
+
+  const entriesByName = new Map(entries.map((entry) => [entry.name, entry]))
+  const extraEntries = new Map()
+
+  for (const typePart of type.types) {
+    for (const symbol of checker.getPropertiesOfType(typePart)) {
+      const entry = propertyEntry(checker, symbol, fallbackNode)
+      if (entriesByName.has(entry.name)) continue
+
+      const existing = extraEntries.get(entry.name) ?? []
+      existing.push(entry)
+      extraEntries.set(entry.name, existing)
+    }
+  }
+
+  for (const [name, variants] of extraEntries) {
+    const types = [...new Set(variants.map((entry) => entry.type))]
+    entriesByName.set(name, {
+      name,
+      description: variants.find((entry) => entry.description !== '')?.description ?? '',
+      external: variants.every((entry) => entry.external),
+      type: types.join(' | '),
+      optional: variants.length < type.types.length || variants.some((entry) => entry.optional),
     })
-    .sort((left, right) => left.name.localeCompare(right.name))
+  }
+
+  return [...entriesByName.values()].sort((left, right) => left.name.localeCompare(right.name))
+}
+
+function runtimeExportNames(source) {
+  const names = new Set()
+
+  for (const statement of source.statements) {
+    if (
+      !ts.isExportDeclaration(statement) ||
+      statement.isTypeOnly ||
+      statement.exportClause === undefined ||
+      !ts.isNamedExports(statement.exportClause)
+    ) {
+      continue
+    }
+
+    for (const element of statement.exportClause.elements) {
+      if (!element.isTypeOnly) names.add(element.name.text)
+    }
+  }
+
+  return names
 }
 
 function main() {
@@ -79,6 +151,14 @@ function main() {
     throw new Error('Documentation API generation could not resolve src/index.ts exports.')
   }
 
+  const packagePath = path.join(root, 'src', 'package.ts')
+  const packageSource = program.getSourceFile(packagePath)
+
+  if (packageSource === undefined) {
+    throw new Error('Documentation API generation could not load src/package.ts.')
+  }
+
+  const rootRuntimeExports = runtimeExportNames(packageSource)
   const exportsByName = new Map(
     checker.getExportsOfModule(indexSymbol).map((symbol) => [symbol.getName(), symbol]),
   )
@@ -112,13 +192,17 @@ function main() {
   const profileIds = new Map()
   const components = {}
 
-  function internProp(prop) {
+  function internProp({ external: _external, ...prop }) {
     const key = JSON.stringify(prop)
     const existing = propIds.get(key)
 
     if (existing !== undefined) return existing
 
-    const id = `p${propIds.size}`
+    const id = stablePoolId('p', key)
+    if (propPool[id] !== undefined) {
+      throw new Error(`Documentation API prop id collision for ${id}.`)
+    }
+
     propIds.set(key, id)
     propPool[id] = prop
     return id
@@ -131,7 +215,11 @@ function main() {
 
     if (existing !== undefined) return existing
 
-    const id = `r${profileIds.size}`
+    const id = stablePoolId('r', key)
+    if (profilePool[id] !== undefined) {
+      throw new Error(`Documentation API profile id collision for ${id}.`)
+    }
+
     profileIds.set(key, id)
     profilePool[id] = ids
     return id
@@ -171,10 +259,19 @@ function main() {
           })
         : allProps
 
+    const documentedOwnProps = ownProps.map((prop) => ({
+      ...prop,
+      description: prop.description || documentationPropDescription(componentName, prop.name),
+    }))
+
     components[componentName] = {
+      importPath: rootRuntimeExports.has(componentName)
+        ? packageJson.name
+        : `${packageJson.name}/components/${componentName}`,
+      nativeProps: documentedOwnProps.some((prop) => prop.external),
       hasViewProps,
       usesViewProps,
-      props: internProfile(ownProps),
+      props: internProfile(documentedOwnProps.filter((prop) => !prop.external)),
     }
   }
 
