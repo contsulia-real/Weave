@@ -351,7 +351,7 @@ const componentPropDescriptions = {
   },
   Input: {
     locale:
-      'BCP 47 language tag overriding the document language for the calendar when type is date.',
+      'BCP 47 language tag overriding the document language for Weave calendar and clock pickers when type is date, time, datetime-local, month, or week.',
     autoComplete: 'Passes the native autocomplete hint to the input or textarea host.',
     clearable:
       'Controls the built-in clear action for single-line Input. It defaults to true and is unavailable in multiline mode.',
@@ -366,6 +366,7 @@ const componentPropDescriptions = {
     minLength: 'Passes the native minimum text length constraint to the input or textarea.',
     min: 'Sets the native lower value constraint on supported single-line input types.',
     max: 'Sets the native upper value constraint on supported single-line input types.',
+    step: 'Passes the native step constraint to number and temporal input types; time and datetime-local steps use seconds, month uses months, week uses weeks.',
     multiline:
       'Switches the native host from input to textarea. Multiline mode disables type, clear action, and leading/trailing icons.',
     name: 'Sets the native form field name used for form submission.',
@@ -381,7 +382,7 @@ const componentPropDescriptions = {
       'Non-interactive trailing icon for single-line Input. When clear is also visible, this icon remains the rightmost adornment.',
     trailingAction:
       'Interactive content rendered inside the trailing edge of a single-line Input, e.g. a calendar Popover trigger.',
-    type: 'Sets the native single-line input type. Date uses the Weave calendar popover while preserving native date editing.',
+    type: 'Sets the native single-line input type, including date, time, datetime-local, month, and week. Temporal types use the Weave calendar or clock Popover while preserving native segment editing and form values.',
     value:
       'Controlled field value. When provided, the parent owns the rendered value and must update it from onChange.',
   },

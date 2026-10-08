@@ -4,13 +4,21 @@
     "zh-TW": "日期輸入",
     "fr": "Saisie de date"
   },
-  "Controlled date": { "zh-CN": "受控日期", "zh-TW": "受控日期", "fr": "Date contrôlée" },
+  "Controlled date": {
+    "zh-CN": "受控日期",
+    "zh-TW": "受控日期",
+    "fr": "Date contrôlée"
+  },
   "Use value and onChange to own the selected YYYY-MM-DD date.": {
     "zh-CN": "使用 value 和 onChange 管理所选的 YYYY-MM-DD 日期。",
     "zh-TW": "使用 value 和 onChange 管理選取的 YYYY-MM-DD 日期。",
     "fr": "Utilisez value et onChange pour gérer la date sélectionnée au format YYYY-MM-DD."
   },
-  "Forced locale": { "zh-CN": "指定语言", "zh-TW": "指定語言", "fr": "Langue imposée" },
+  "Forced locale": {
+    "zh-CN": "指定语言",
+    "zh-TW": "指定語言",
+    "fr": "Langue imposée"
+  },
   "Override the document language for this calendar with locale, without changing the YYYY-MM-DD value.": {
     "zh-CN": "通过 locale 为日历指定语言，不改变 YYYY-MM-DD 日期值。",
     "zh-TW": "透過 locale 為日曆指定語言，不改變 YYYY-MM-DD 日期值。",
@@ -1650,5 +1658,65 @@
     "zh-CN": "Linear Progress 可以使用垂直轴与反向方向，同时保持相同的确定进度语义。",
     "zh-TW": "Linear Progress 可以使用垂直軸與反向方向，同時保持相同的確定進度語義。",
     "fr": "La progression linéaire peut utiliser un axe vertical et une direction inversée tout en conservant la même sémantique déterminée."
+  },
+  "Time input": {
+    "zh-CN": "时间输入",
+    "zh-TW": "時間輸入",
+    "fr": "Saisie de l’heure"
+  },
+  "Use the Weave clock popover with 24-hour values, limits, and second-based step.": {
+    "zh-CN": "使用 Weave 自定义时钟弹窗选择时间，支持 24 小时制、范围限制及秒级 step。",
+    "zh-TW": "使用 Weave 自訂時鐘彈窗選擇時間，支援 24 小時制、範圍限制及秒級 step。",
+    "fr": "Utilisez la fenêtre horaire Weave avec valeurs sur 24 heures, limites et pas en secondes."
+  },
+  "Local date and time": {
+    "zh-CN": "本地日期与时间",
+    "zh-TW": "本地日期與時間",
+    "fr": "Date et heure locales"
+  },
+  "Edit a local date and time without applying a timezone conversion.": {
+    "zh-CN": "编辑本地日期和时间，不进行时区转换。",
+    "zh-TW": "編輯本地日期和時間，不進行時區轉換。",
+    "fr": "Modifiez une date et une heure locales sans conversion de fuseau horaire."
+  },
+  "Month input": {
+    "zh-CN": "月份输入",
+    "zh-TW": "月份輸入",
+    "fr": "Saisie du mois"
+  },
+  "Select a month from the Weave month-and-year popover; form values remain YYYY-MM.": {
+    "zh-CN": "通过 Weave 年月弹窗选择月份，表单值仍为 YYYY-MM。",
+    "zh-TW": "透過 Weave 年月彈窗選擇月份，表單值仍為 YYYY-MM。",
+    "fr": "Sélectionnez le mois via la fenêtre Weave ; la valeur du formulaire reste YYYY-MM."
+  },
+  "Week input": {
+    "zh-CN": "周次输入",
+    "zh-TW": "週次輸入",
+    "fr": "Saisie de la semaine"
+  },
+  "Select an ISO week from the Weave calendar popover; form values remain YYYY-Www.": {
+    "zh-CN": "通过 Weave 日历弹窗选择 ISO 周，表单值仍为 YYYY-Www。",
+    "zh-TW": "透過 Weave 日曆彈窗選擇 ISO 週，表單值仍為 YYYY-Www。",
+    "fr": "Sélectionnez une semaine ISO dans le calendrier Weave ; valeur YYYY-Www."
+  },
+  "Controlled time": {
+    "zh-CN": "受控时间",
+    "zh-TW": "受控時間",
+    "fr": "Heure contrôlée"
+  },
+  "Use value and onChange with the Weave time picker and native time input.": {
+    "zh-CN": "通过 value 和 onChange 控制带 Weave 自定义时间选择器的原生时间输入。",
+    "zh-TW": "透過 value 和 onChange 控制附帶 Weave 自訂時間選擇器的原生時間輸入。",
+    "fr": "Utilisez value et onChange avec la sélection horaire Weave et le champ natif."
+  },
+  "Time with seconds": {
+    "zh-CN": "精确到秒的时间",
+    "zh-TW": "精確到秒的時間",
+    "fr": "Heure à la seconde"
+  },
+  "Choose hours, minutes, and seconds from the Weave clock popover.": {
+    "zh-CN": "使用 Weave 时钟弹窗选择小时、分钟和秒。",
+    "zh-TW": "使用 Weave 時鐘彈窗選擇小時、分鐘和秒。",
+    "fr": "Choisissez les heures, minutes et secondes dans la fenêtre horaire Weave."
   }
 }

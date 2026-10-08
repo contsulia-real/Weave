@@ -31,6 +31,45 @@ export const formsComponentExamples: Record<string, DocumentationComponentDocume
           demo: 'Input/forced-locale',
         },
         {
+          id: 'time-input',
+          title: 'Time input',
+          description:
+            'Use the Weave clock popover with 24-hour values, limits, and second-based step.',
+          demo: 'Input/time-input',
+        },
+        {
+          id: 'time-seconds',
+          title: 'Time with seconds',
+          description: 'Choose hours, minutes, and seconds from the Weave clock popover.',
+          demo: 'Input/time-seconds',
+        },
+        {
+          id: 'datetime-local-input',
+          title: 'Local date and time',
+          description: 'Edit a local date and time without applying a timezone conversion.',
+          demo: 'Input/datetime-local-input',
+        },
+        {
+          id: 'month-input',
+          title: 'Month input',
+          description:
+            'Select a month from the Weave month-and-year popover; form values remain YYYY-MM.',
+          demo: 'Input/month-input',
+        },
+        {
+          id: 'week-input',
+          title: 'Week input',
+          description:
+            'Select an ISO week from the Weave calendar popover; form values remain YYYY-Www.',
+          demo: 'Input/week-input',
+        },
+        {
+          id: 'controlled-time',
+          title: 'Controlled time',
+          description: 'Use value and onChange with the Weave time picker and native time input.',
+          demo: 'Input/controlled-time',
+        },
+        {
           id: 'controlled-input',
           title: 'Controlled input',
           description:

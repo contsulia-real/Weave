@@ -72,3 +72,16 @@ export const calendarIcon: IconSvg = (
     <path d="M7 3v4M17 3v4M3 10h18" />
   </svg>
 )
+
+export const clockIcon: IconSvg = (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <circle cx="12" cy="12" r="9" />
+    <path d="M12 7v5l3 2" />
+  </svg>
+)

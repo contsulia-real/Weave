@@ -2,7 +2,19 @@ import type { ReactNode, Ref } from 'react'
 import type { IconComponent, IconSvg } from './icon-types'
 import type { ViewCoreProps, ViewDynamicBreakpointProps } from './view-types'
 
-export type InputType = 'text' | 'password' | 'email' | 'number' | 'search' | 'tel' | 'url' | 'date'
+export type InputType =
+  | 'text'
+  | 'password'
+  | 'email'
+  | 'number'
+  | 'search'
+  | 'tel'
+  | 'url'
+  | 'date'
+  | 'time'
+  | 'datetime-local'
+  | 'month'
+  | 'week'
 
 export type InputValue = string | number
 export type InputIcon = IconComponent | IconSvg
@@ -37,7 +49,8 @@ export type InputProps =
       type?: InputType
       min?: string
       max?: string
-      /** BCP 47 language tag for the calendar when type is date; otherwise ignored. */
+      step?: number | 'any'
+      /** BCP 47 language tag for custom calendar and clock pickers on temporal inputs. */
       locale?: string
       clearable?: boolean
       clearLabel?: string

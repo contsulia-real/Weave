@@ -216,7 +216,7 @@
       "nativeProps": false,
       "hasViewProps": true,
       "usesViewProps": false,
-      "props": "r4bcbde17cd6a"
+      "props": "reeee25867ae2"
     },
     "Link": {
       "importPath": "@contsulia/weave/components/Link",
@@ -662,14 +662,14 @@
       "pdb938e985939",
       "p56b319ce7534"
     ],
-    "r4bcbde17cd6a": [
+    "reeee25867ae2": [
       "p09dfda480597",
       "p1991f3528ab9",
       "p2541cc34f243",
       "pacfbc3a0393d",
       "peca00c66d21e",
       "p84e214bf1fec",
-      "pbaa02d958d53",
+      "pca7a3bfc740f",
       "p5a18a4ef7ce3",
       "pe86b218f8316",
       "p072781055457",
@@ -682,9 +682,10 @@
       "p7777d18e7c8f",
       "pb4180f0628bc",
       "p9a2bb9672e5c",
+      "pb43445793700",
       "p997eede96271",
       "p1b61d78dec8b",
-      "pac0e13b5f75d",
+      "p4db563326315",
       "pebdbfdb46a40"
     ],
     "rcf9e50bc3992": [
@@ -2212,9 +2213,9 @@
       "type": "InputIcon | undefined",
       "optional": true
     },
-    "pbaa02d958d53": {
+    "pca7a3bfc740f": {
       "name": "locale",
-      "description": "BCP 47 language tag for the calendar when type is date; otherwise ignored.",
+      "description": "BCP 47 language tag for custom calendar and clock pickers on temporal inputs.",
       "type": "string | undefined",
       "optional": true
     },
@@ -2290,6 +2291,12 @@
       "type": "number | undefined",
       "optional": true
     },
+    "pb43445793700": {
+      "name": "step",
+      "description": "Passes the native step constraint to number and temporal input types; time and datetime-local steps use seconds, month uses months, week uses weeks.",
+      "type": "number | \"any\" | undefined",
+      "optional": true
+    },
     "p997eede96271": {
       "name": "trailingAction",
       "description": "A focusable action displayed inside the trailing edge of a single-line Input.",
@@ -2302,9 +2309,9 @@
       "type": "InputIcon | undefined",
       "optional": true
     },
-    "pac0e13b5f75d": {
+    "p4db563326315": {
       "name": "type",
-      "description": "Sets the native single-line input type. Date uses the Weave calendar popover while preserving native date editing.",
+      "description": "Sets the native single-line input type, including date, time, datetime-local, month, and week. Temporal types use the Weave calendar or clock Popover while preserving native segment editing and form values.",
       "type": "InputType | undefined",
       "optional": true
     },

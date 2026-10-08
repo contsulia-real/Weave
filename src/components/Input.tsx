@@ -49,6 +49,7 @@ interface SingleLineInputHostProps {
   type?: InputType
   min?: string
   max?: string
+  step?: number | 'any'
   readOnly?: boolean
   required?: boolean
   name?: string
@@ -73,6 +74,7 @@ function SingleLineInput({
   type,
   min,
   max,
+  step,
   readOnly,
   required,
   name,
@@ -160,6 +162,7 @@ function SingleLineInput({
       type={type}
       min={min}
       max={max}
+      step={step}
       readOnly={readOnly}
       required={nativeRequired}
       name={name}
@@ -356,8 +359,14 @@ export function Input(props: InputProps): import('react').JSX.Element {
     )
   }
 
-  if (props.type === 'date') {
-    return <DateInput {...props} InputHost={SingleLineInput} />
+  if (
+    props.type === 'date' ||
+    props.type === 'time' ||
+    props.type === 'datetime-local' ||
+    props.type === 'month' ||
+    props.type === 'week'
+  ) {
+    return <DateInput {...props} type={props.type} InputHost={SingleLineInput} />
   }
 
   return (
@@ -370,6 +379,7 @@ export function Input(props: InputProps): import('react').JSX.Element {
       type={props.type}
       min={props.min}
       max={props.max}
+      step={props.step}
       readOnly={props.readOnly}
       required={props.required}
       name={props.name}

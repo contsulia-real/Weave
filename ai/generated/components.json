@@ -794,8 +794,10 @@
         "Image/blob-events",
         "Input/controlled-date",
         "Input/controlled-input",
+        "Input/controlled-time",
         "Input/forced-locale",
         "Input/form-states",
+        "Input/time-input",
         "Layout/absolute",
         "Layout/column",
         "Layout/grid",
@@ -1559,7 +1561,12 @@
         "Form/fieldset-and-legend",
         "Form/native-validation",
         "Form/submit-and-reset",
-        "Input/date-input"
+        "Input/date-input",
+        "Input/datetime-local-input",
+        "Input/month-input",
+        "Input/time-input",
+        "Input/time-seconds",
+        "Input/week-input"
       ],
       "props": [
         {
@@ -1658,7 +1665,12 @@
         "Form/explicit-field-parts",
         "Form/field-metadata",
         "Form/submit-and-reset",
-        "Input/date-input"
+        "Input/date-input",
+        "Input/datetime-local-input",
+        "Input/month-input",
+        "Input/time-input",
+        "Input/time-seconds",
+        "Input/week-input"
       ],
       "props": [
         {
@@ -1948,10 +1960,16 @@
         "Input/basic-usage",
         "Input/controlled-date",
         "Input/controlled-input",
+        "Input/controlled-time",
         "Input/date-input",
+        "Input/datetime-local-input",
         "Input/forced-locale",
         "Input/form-states",
+        "Input/month-input",
         "Input/multiline-input",
+        "Input/time-input",
+        "Input/time-seconds",
+        "Input/week-input",
         "Popover/focused-popover"
       ],
       "props": [
@@ -1993,7 +2011,7 @@
         },
         {
           "name": "locale",
-          "description": "BCP 47 language tag for the calendar when type is date; otherwise ignored.",
+          "description": "BCP 47 language tag for custom calendar and clock pickers on temporal inputs.",
           "type": "string | undefined",
           "optional": true
         },
@@ -2070,6 +2088,12 @@
           "optional": true
         },
         {
+          "name": "step",
+          "description": "Passes the native step constraint to number and temporal input types; time and datetime-local steps use seconds, month uses months, week uses weeks.",
+          "type": "number | \"any\" | undefined",
+          "optional": true
+        },
+        {
           "name": "trailingAction",
           "description": "A focusable action displayed inside the trailing edge of a single-line Input.",
           "type": "ReactNode",
@@ -2083,7 +2107,7 @@
         },
         {
           "name": "type",
-          "description": "Sets the native single-line input type. Date uses the Weave calendar popover while preserving native date editing.",
+          "description": "Sets the native single-line input type, including date, time, datetime-local, month, and week. Temporal types use the Weave calendar or clock Popover while preserving native segment editing and form values.",
           "type": "InputType | undefined",
           "optional": true
         },
@@ -4363,6 +4387,7 @@
         "Image/blob-events",
         "Input/controlled-date",
         "Input/controlled-input",
+        "Input/controlled-time",
         "Layout/absolute",
         "Layout/grid",
         "Layout/splitbox",

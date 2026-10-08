@@ -1646,6 +1646,27 @@
       "source": "import { useState } from 'react'\nimport { Column, Input, Text } from '../../../index'\n\nexport default function InputControlledInputDemo() {\n  const [value, setValue] = useState('Weave')\n\n  return (\n    <Column gap={12} width={320}>\n      <Input\n        value={value}\n        onChange={setValue}\n        name=\"project\"\n        autoComplete=\"off\"\n        maxLength={24}\n        placeholder=\"Project name\"\n      />\n      <Text typo=\"body-small\" color=\"secondary\">\n        Value: {value || 'empty'}\n      </Text>\n    </Column>\n  )\n}"
     },
     {
+      "id": "Input/controlled-time",
+      "component": "Input",
+      "title": "Controlled time",
+      "description": "Use value and onChange with the Weave time picker and native time input.",
+      "components": ["Column", "Input", "Text"],
+      "concepts": [
+        "change",
+        "column",
+        "controlled",
+        "input",
+        "native",
+        "picker",
+        "text",
+        "time",
+        "value",
+        "weave"
+      ],
+      "documentationRoute": "/docs/components/Input",
+      "source": "import { useState } from 'react'\nimport { Column, Input, Text } from '../../../index'\n\nexport default function ControlledTimeDemo() {\n  const [value, setValue] = useState('14:30')\n\n  return (\n    <Column width={352} gap={12}>\n      <Input\n        type=\"time\"\n        value={value}\n        onChange={setValue}\n        min=\"09:00\"\n        max=\"18:00\"\n        step={60}\n        viewProps={{ label: 'Selected time' }}\n      />\n      <Text typo=\"body-small\" color=\"secondary\">\n        Value: {value || 'empty'}\n      </Text>\n    </Column>\n  )\n}"
+    },
+    {
       "id": "Input/date-input",
       "component": "Input",
       "title": "Date input",
@@ -1668,6 +1689,29 @@
       ],
       "documentationRoute": "/docs/components/Input",
       "source": "import { Form, FormField, Input } from '../../../index'\n\nexport default function DateBasicUsageDemo() {\n  return (\n    <Form viewProps={{ width: 352 }}>\n      <FormField label=\"Appointment date\">\n        <Input\n          type=\"date\"\n          name=\"appointment\"\n          defaultValue=\"2026-10-09\"\n          min=\"2026-01-01\"\n          max=\"2026-12-31\"\n        />\n      </FormField>\n    </Form>\n  )\n}"
+    },
+    {
+      "id": "Input/datetime-local-input",
+      "component": "Input",
+      "title": "Local date and time",
+      "description": "Edit a local date and time without applying a timezone conversion.",
+      "components": ["Form", "FormField", "Input"],
+      "concepts": [
+        "applying",
+        "conversion",
+        "date",
+        "datetime",
+        "edit",
+        "field",
+        "form",
+        "input",
+        "local",
+        "time",
+        "timezone",
+        "without"
+      ],
+      "documentationRoute": "/docs/components/Input",
+      "source": "import { Form, FormField, Input } from '../../../index'\n\nexport default function DateTimeLocalInputDemo() {\n  return (\n    <Form viewProps={{ width: 352 }}>\n      <FormField label=\"Appointment date and time\">\n        <Input\n          type=\"datetime-local\"\n          name=\"appointmentAt\"\n          defaultValue=\"2026-10-09T14:30\"\n          min=\"2026-10-01T09:00\"\n          max=\"2026-10-31T18:00\"\n          step={900}\n        />\n      </FormField>\n    </Form>\n  )\n}"
     },
     {
       "id": "Input/forced-locale",
@@ -1725,6 +1769,28 @@
       "source": "import { Column, Input } from '../../../index'\n\nexport default function InputFormStatesDemo() {\n  return (\n    <Column gap={16} width={320}>\n      <Input placeholder=\"Required value\" required />\n      <Input value=\"Read-only value\" readOnly />\n      <Input value=\"Unavailable value\" disabled />\n    </Column>\n  )\n}"
     },
     {
+      "id": "Input/month-input",
+      "component": "Input",
+      "title": "Month input",
+      "description": "Select a month from the Weave month-and-year popover; form values remain YYYY-MM.",
+      "components": ["Form", "FormField", "Input"],
+      "concepts": [
+        "field",
+        "form",
+        "input",
+        "month",
+        "popover",
+        "remain",
+        "select",
+        "values",
+        "weave",
+        "year",
+        "yyyy"
+      ],
+      "documentationRoute": "/docs/components/Input",
+      "source": "import { Form, FormField, Input } from '../../../index'\n\nexport default function MonthInputDemo() {\n  return (\n    <Form viewProps={{ width: 352 }}>\n      <FormField label=\"Billing month\">\n        <Input\n          type=\"month\"\n          name=\"billingMonth\"\n          defaultValue=\"2026-10\"\n          min=\"2026-01\"\n          max=\"2026-12\"\n        />\n      </FormField>\n    </Form>\n  )\n}"
+    },
+    {
       "id": "Input/multiline-input",
       "component": "Input",
       "title": "Multiline input",
@@ -1747,6 +1813,77 @@
       ],
       "documentationRoute": "/docs/components/Input",
       "source": "import { Input } from '../../../index'\n\nexport default function InputMultilineInputDemo() {\n  return <Input multiline rows={4} placeholder=\"Write a short note…\" />\n}"
+    },
+    {
+      "id": "Input/time-input",
+      "component": "Input",
+      "title": "Time input",
+      "description": "Use the Weave clock popover with 24-hour values, limits, and second-based step.",
+      "components": ["Column", "Form", "FormField", "Input"],
+      "concepts": [
+        "based",
+        "clock",
+        "column",
+        "field",
+        "form",
+        "hour",
+        "input",
+        "limits",
+        "popover",
+        "second",
+        "step",
+        "time",
+        "values",
+        "weave"
+      ],
+      "documentationRoute": "/docs/components/Input",
+      "source": "import { Column, Form, FormField, Input } from '../../../index'\n\nexport default function TimeInputDemo() {\n  return (\n    <Form viewProps={{ width: 352 }}>\n      <Column gap={16}>\n        <FormField label=\"Meeting time\">\n          <Input\n            type=\"time\"\n            name=\"meetingTime\"\n            defaultValue=\"14:30\"\n            min=\"09:00\"\n            max=\"18:00\"\n            step={900}\n            required\n          />\n        </FormField>\n      </Column>\n    </Form>\n  )\n}"
+    },
+    {
+      "id": "Input/time-seconds",
+      "component": "Input",
+      "title": "Time with seconds",
+      "description": "Choose hours, minutes, and seconds from the Weave clock popover.",
+      "components": ["Form", "FormField", "Input"],
+      "concepts": [
+        "choose",
+        "clock",
+        "field",
+        "form",
+        "hours",
+        "input",
+        "minutes",
+        "popover",
+        "seconds",
+        "time",
+        "weave"
+      ],
+      "documentationRoute": "/docs/components/Input",
+      "source": "import { Form, FormField, Input } from '../../../index'\n\nexport default function TimeSecondsDemo() {\n  return (\n    <Form viewProps={{ width: 352 }}>\n      <FormField label=\"Precise time\">\n        <Input\n          type=\"time\"\n          name=\"preciseTime\"\n          defaultValue=\"14:30:15\"\n          min=\"09:00:00\"\n          max=\"18:00:59\"\n          step={1}\n        />\n      </FormField>\n    </Form>\n  )\n}"
+    },
+    {
+      "id": "Input/week-input",
+      "component": "Input",
+      "title": "Week input",
+      "description": "Select an ISO week from the Weave calendar popover; form values remain YYYY-Www.",
+      "components": ["Form", "FormField", "Input"],
+      "concepts": [
+        "calendar",
+        "field",
+        "form",
+        "input",
+        "iso",
+        "popover",
+        "remain",
+        "select",
+        "values",
+        "weave",
+        "week",
+        "www",
+        "yyyy"
+      ],
+      "documentationRoute": "/docs/components/Input",
+      "source": "import { Form, FormField, Input } from '../../../index'\n\nexport default function WeekInputDemo() {\n  return (\n    <Form viewProps={{ width: 352 }}>\n      <FormField label=\"Planning week\">\n        <Input\n          type=\"week\"\n          name=\"planningWeek\"\n          defaultValue=\"2026-W41\"\n          min=\"2026-W01\"\n          max=\"2026-W53\"\n        />\n      </FormField>\n    </Form>\n  )\n}"
     },
     {
       "id": "Layout/absolute",
