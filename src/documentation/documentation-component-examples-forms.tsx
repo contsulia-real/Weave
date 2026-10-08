@@ -73,7 +73,7 @@ export const formsComponentExamples: Record<string, DocumentationComponentDocume
           id: 'color-input',
           title: 'Color input',
           description:
-            'Choose saturation and brightness in the color field, adjust hue using the Weave Slider, or edit the HEX value.',
+            'Choose saturation and brightness, adjust hue, convert HEX / RGB / HSL / HSV codes, and copy the selected format.',
           demo: 'Input/color-input',
         },
         {

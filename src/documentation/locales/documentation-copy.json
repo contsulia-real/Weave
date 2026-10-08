@@ -1734,14 +1734,14 @@
     "zh-TW": "使用 value 和 onChange 控制 #rrggbb 顏色值。",
     "fr": "Contrôlez la couleur #rrggbb avec value et onChange."
   },
-  "Choose saturation and brightness in the color field, adjust hue using the Weave Slider, or edit the HEX value.": {
-    "zh-CN": "在颜色平面中选择饱和度和亮度，通过 Weave Slider 调整色相，或编辑 HEX 值。",
-    "zh-TW": "在顏色平面中選擇飽和度和亮度，透過 Weave Slider 調整色相，或編輯 HEX 值。",
-    "fr": "Choisissez la saturation et la luminosité dans le sélecteur, réglez la teinte avec le Slider Weave ou modifiez la valeur HEX."
-  },
   "Adjust saturation and brightness on the color field, use the hue slider, or enter a HEX color.": {
     "zh-CN": "在颜色平面中调整饱和度和亮度，使用色相滑块，或输入 HEX 颜色。",
     "zh-TW": "在顏色平面中調整飽和度和亮度，使用色相滑桿，或輸入 HEX 顏色。",
     "fr": "Réglez la saturation et la luminosité, déplacez le curseur de teinte ou saisissez une couleur HEX."
+  },
+  "Choose saturation and brightness, adjust hue, convert HEX / RGB / HSL / HSV codes, and copy the selected format.": {
+    "zh-CN": "在颜色平面中选择饱和度和亮度、调整色相，转换 HEX / RGB / HSL / HSV 代码并复制所选格式。",
+    "zh-TW": "在顏色平面中選擇飽和度和亮度、調整色相，轉換 HEX / RGB / HSL / HSV 代碼並複製所選格式。",
+    "fr": "Choisissez la saturation et la luminosité, ajustez la teinte, convertissez les codes HEX / RGB / HSL / HSV et copiez le format choisi."
   }
 }

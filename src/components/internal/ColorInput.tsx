@@ -7,9 +7,17 @@ import { Column } from '../Column'
 import { Popover } from '../Popover'
 import { Row } from '../Row'
 import { Slider } from '../Slider'
-import { Text } from '../Text'
 import { View } from '../View'
 import { assignRef } from './assign-ref'
+import {
+  type ColorCodeFormat,
+  formatColorCode,
+  hsvToHex,
+  normalizeHex,
+  parseColorCode,
+  rgbToHsv,
+} from './color-code'
+import { chevronDownIcon } from './control-icons'
 import { useDateLocalization } from './date-localization'
 import { useFormReset } from './use-form-reset'
 
@@ -34,57 +42,21 @@ const eyedropperIcon = (
   </svg>
 )
 
+const copyIcon = (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <rect x="8" y="8" width="12" height="12" rx="2" />
+    <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" />
+  </svg>
+)
+
 function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value))
-}
-
-function normalizeHex(value: string | number | undefined): string {
-  const text = String(value ?? '#000000')
-    .trim()
-    .toLowerCase()
-  if (/^#[\da-f]{6}$/.test(text)) return text
-  if (/^#[\da-f]{3}$/.test(text)) {
-    return '#' + [...text.slice(1)].map((digit) => digit + digit).join('')
-  }
-  return '#000000'
-}
-
-function rgbToHsv(hex: string): [number, number, number] {
-  const [r, g, b] = [1, 3, 5].map((index) => Number.parseInt(hex.slice(index, index + 2), 16) / 255)
-  const max = Math.max(r, g, b)
-  const min = Math.min(r, g, b)
-  const delta = max - min
-  let hue = 0
-  if (delta !== 0) {
-    if (max === r) hue = ((g - b) / delta) % 6
-    else if (max === g) hue = (b - r) / delta + 2
-    else hue = (r - g) / delta + 4
-  }
-  return [Math.round((hue * 60 + 360) % 360), max === 0 ? 0 : delta / max, max]
-}
-
-function hsvToHex(hue: number, saturation: number, value: number): string {
-  const chroma = value * saturation
-  const segment = (((hue % 360) + 360) % 360) / 60
-  const x = chroma * (1 - Math.abs((segment % 2) - 1))
-  let rgb: number[]
-  if (segment < 1) rgb = [chroma, x, 0]
-  else if (segment < 2) rgb = [x, chroma, 0]
-  else if (segment < 3) rgb = [0, chroma, x]
-  else if (segment < 4) rgb = [0, x, chroma]
-  else if (segment < 5) rgb = [x, 0, chroma]
-  else rgb = [chroma, 0, x]
-  const offset = value - chroma
-  return (
-    '#' +
-    rgb
-      .map((part) =>
-        Math.round((part + offset) * 255)
-          .toString(16)
-          .padStart(2, '0'),
-      )
-      .join('')
-  )
 }
 
 export function ColorInput({
@@ -105,7 +77,9 @@ export function ColorInput({
   const [uncontrolledColor, setUncontrolledColor] = useState(defaultColor)
   const color = controlled ? normalizeHex(value) : uncontrolledColor
   const [open, setOpen] = useState(false)
+  const [format, setFormat] = useState<ColorCodeFormat>('hex')
   const [draft, setDraft] = useState(color)
+  const [copied, setCopied] = useState(false)
   const [storedHue, setStoredHue] = useState(() => rgbToHsv(normalizeHex(value ?? defaultValue))[0])
   const inputRef = useRef<HTMLInputElement>(null)
   const [derivedHue, saturation, brightness] = rgbToHsv(color)
@@ -114,21 +88,23 @@ export function ColorInput({
   const updateColor = (next: string, preserveHue = false) => {
     if (!preserveHue) setStoredHue(rgbToHsv(next)[0])
     if (!controlled) setUncontrolledColor(next)
-    setDraft(next)
+    setDraft(formatColorCode(next, format))
+    setCopied(false)
     if (next !== color) onChange?.(next)
   }
 
   const reset = useCallback(() => {
     if (!controlled) setUncontrolledColor(defaultColor)
     setStoredHue(rgbToHsv(controlled ? normalizeHex(value) : defaultColor)[0])
-    setDraft(controlled ? normalizeHex(value) : defaultColor)
+    setDraft(formatColorCode(controlled ? normalizeHex(value) : defaultColor, format))
+    setCopied(false)
     setOpen(false)
-  }, [controlled, defaultColor, value])
+  }, [controlled, defaultColor, format, value])
   useFormReset(inputRef, reset)
 
   const changeOpen = (next: boolean) => {
     if (next && (disabled || readOnly)) return
-    if (next) setDraft(color)
+    if (next) setDraft(formatColorCode(color, format))
     setOpen(next)
   }
 
@@ -243,21 +219,55 @@ export function ColorInput({
           />
         </View>
       </Row>
-      <Column gap={4} width="fill">
-        <InputHost
-          type="text"
-          value={draft}
-          clearable={false}
-          onChange={(next) => {
-            setDraft(next)
-            if (/^#[\da-f]{6}$/i.test(next)) updateColor(next.toLowerCase())
+      <Row align="center" gap={8} width="fill">
+        <View width="fill" minWidth={0}>
+          <InputHost
+            type="text"
+            value={draft}
+            clearable={false}
+            onChange={(next) => {
+              setDraft(next)
+              const parsed = parseColorCode(next, format)
+              if (parsed !== null) updateColor(parsed)
+            }}
+            trailingAction={
+              <Button
+                icon={copyIcon}
+                size="small"
+                variant="ghost"
+                viewProps={{
+                  label: copied ? messages.copiedColor : messages.copyColor,
+                  onClick: () => {
+                    void navigator.clipboard
+                      .writeText(formatColorCode(color, format))
+                      .then(() => setCopied(true))
+                      .catch(() => setCopied(false))
+                  },
+                }}
+              />
+            }
+            viewProps={{ width: 'fill', label: messages.colorCode }}
+          />
+        </View>
+        <Button
+          text={format.toUpperCase()}
+          icon={chevronDownIcon}
+          iconPosition="end"
+          size="small"
+          variant="ghost"
+          viewProps={{
+            label: messages.changeColorFormat,
+            onClick: () => {
+              const formats: ColorCodeFormat[] = ['hex', 'rgb', 'hsl', 'hsv']
+              const selected = formats[(formats.indexOf(format) + 1) % formats.length]
+              if (selected === undefined) return
+              setFormat(selected)
+              setDraft(formatColorCode(color, selected))
+              setCopied(false)
+            },
           }}
-          viewProps={{ width: 'fill', label: messages.hexColor }}
         />
-        <Text typo="label-small" color="secondary" viewProps={{ style: { textAlign: 'center' } }}>
-          {messages.hexColor}
-        </Text>
-      </Column>
+      </Row>
     </Column>
   )
 
