@@ -2871,7 +2871,7 @@ multi-select
 
 `Switch` 是开关组件。
 
-Switch 的视觉仍由 Weave ViewHost 样式变量体系驱动；语义宿主使用真实 labelable button，thumb 是 Switch 自己的内部视觉 DOM。默认 thumb 以 3px 内部 inset 加 1px track border，形成关闭态左侧、开启态右侧各 4px 的静止水平安全间距；三种 size 的 shift 分别匹配 track 宽度，确保切换及 drag 结束时不跳变：
+Switch 的视觉仍由 Weave ViewHost 样式变量体系驱动；语义宿主使用真实 labelable button，thumb 是 Switch 自己的内部视觉 DOM。默认 thumb 使用 1px 内部 inset 加 1px track border，使关闭态左侧、开启态右侧的水平间距与 thumb 的上下间距一致，均为 2px；small / medium / large 三档的 shift 分别为 14px / 16px / 20px，切换及 drag 结束时不得跳变：
 
 ```text
 Switch
