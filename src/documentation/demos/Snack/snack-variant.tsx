@@ -5,7 +5,7 @@ export default function SnackSnackVariantDemo() {
   const hostRef = useRef(null)
 
   return (
-    <Column ref={hostRef} width="fill" minHeight={8}>
+    <Column ref={hostRef} width="fill" minHeight={128}>
       <SnackProvider container={hostRef}>
         <Snack
           text="Could not save changes"

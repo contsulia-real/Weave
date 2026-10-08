@@ -5,7 +5,7 @@ export default function SegmentedButtonControlledSelectionDemo() {
   const [selected, setSelected] = useState<string | null>('day')
 
   return (
-    <Column gap={1} align="start">
+    <Column gap={16} align="start">
       <SegmentedButton
         variant="secondary"
         selection="single"

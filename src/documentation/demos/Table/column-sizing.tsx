@@ -5,18 +5,18 @@ export default function TableColumnSizingDemo() {
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead width={14}>Project</TableHead>
-          <TableHead minWidth={10} maxWidth={16} align="end">
+          <TableHead width={224}>Project</TableHead>
+          <TableHead minWidth={160} maxWidth={256} align="end">
             Owner
           </TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         <TableRow id="atlas">
-          <TableCell id="project" width={14}>
+          <TableCell id="project" width={224}>
             Atlas
           </TableCell>
-          <TableCell id="owner" minWidth={10} maxWidth={16} align="end">
+          <TableCell id="owner" minWidth={160} maxWidth={256} align="end">
             Mina
           </TableCell>
         </TableRow>

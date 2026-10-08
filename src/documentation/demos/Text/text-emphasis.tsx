@@ -2,7 +2,7 @@ import { Column, Text } from '../../../index'
 
 export default function TextTextEmphasisDemo() {
   return (
-    <Column gap={0.5}>
+    <Column gap={8}>
       <Text weight="bold" color="primary">
         Primary emphasis
       </Text>

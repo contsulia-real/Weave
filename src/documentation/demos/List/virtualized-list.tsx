@@ -13,7 +13,7 @@ export default function ListVirtualizedListDemo() {
       virtualized
       selection="single"
       defaultSelected="item-1"
-      viewProps={{ height: 12, width: 'fill', overflow: 'auto' }}
+      viewProps={{ height: 192, width: 'fill', overflow: 'auto' }}
     />
   )
 }

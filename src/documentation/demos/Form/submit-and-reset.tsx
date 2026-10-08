@@ -12,12 +12,12 @@ export default function FormSubmitAndResetDemo() {
         setStatus(`Submitted: ${project ?? ''}`)
       }}
       onReset={() => setStatus('Reset')}
-      viewProps={{ width: 24 }}
+      viewProps={{ width: 384 }}
     >
       <FormField label="Project name">
         <Input name="project" defaultValue="Atlas" required />
       </FormField>
-      <Row gap={1}>
+      <Row gap={16}>
         <Button type="submit" text="Save" />
         <Button type="reset" text="Reset" variant="secondary" />
       </Row>

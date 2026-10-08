@@ -5,7 +5,7 @@ export default function BadgeVisibilityDemo() {
   const [visible, setVisible] = useState(true)
 
   return (
-    <Column gap={1} align="start">
+    <Column gap={16} align="start">
       <Button
         text={visible ? 'Hide badge' : 'Show badge'}
         variant="secondary"

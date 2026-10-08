@@ -2,7 +2,7 @@ import { Form, FormDescription, FormError, FormField, FormLabel, Input } from '.
 
 export default function FormExplicitFieldPartsDemo() {
   return (
-    <Form viewProps={{ width: 24 }}>
+    <Form viewProps={{ width: 384 }}>
       <FormField>
         <FormLabel>Username</FormLabel>
         <Input name="username" defaultValue="alex" />

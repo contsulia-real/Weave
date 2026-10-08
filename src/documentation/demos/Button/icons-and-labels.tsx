@@ -9,7 +9,7 @@ const customSpark = (
 
 export default function ButtonIconsAndLabelsDemo() {
   return (
-    <Row gap={1} wrap>
+    <Row gap={16} wrap>
       <Button text="Favorite" icon={IconStar} />
       <Button text="Search" icon={IconSearch} variant="secondary" />
       <Button text="More" icon={IconDots} iconPosition="end" variant="tertiary" />

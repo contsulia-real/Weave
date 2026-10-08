@@ -5,7 +5,7 @@ export default function MenuSelectionDismissalDemo() {
   const [status, setStatus] = useState('No action selected')
 
   return (
-    <Column gap={1} align="start">
+    <Column gap={16} align="start">
       <Menu trigger={<Button text="Actions" />} defaultOpen closeOnSelect={false}>
         <MenuItem text="Keep open" onSelect={() => setStatus('Kept open')} />
         <MenuItem

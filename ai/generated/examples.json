@@ -69,7 +69,7 @@
         "without"
       ],
       "documentationRoute": "/docs/components/Accordion",
-      "source": "import {\n  Accordion,\n  AccordionItem,\n  AccordionPanel,\n  AccordionTrigger,\n  Column,\n  Text,\n} from '../../../index'\n\nexport default function AccordionDisabledStatesDemo() {\n  return (\n    <Column gap={2}>\n      <Column gap={0.5}>\n        <Text typo=\"label-medium\">Disabled item</Text>\n        <Accordion defaultValue=\"general\">\n          <AccordionItem value=\"general\">\n            <AccordionTrigger>General</AccordionTrigger>\n            <AccordionPanel>General settings</AccordionPanel>\n          </AccordionItem>\n          <AccordionItem value=\"security\" disabled>\n            <AccordionTrigger>Security</AccordionTrigger>\n            <AccordionPanel>Security settings</AccordionPanel>\n          </AccordionItem>\n        </Accordion>\n      </Column>\n\n      <Column gap={0.5}>\n        <Text typo=\"label-medium\">Disabled accordion</Text>\n        <Accordion defaultValue=\"billing\" disabled>\n          <AccordionItem value=\"billing\">\n            <AccordionTrigger>Billing</AccordionTrigger>\n            <AccordionPanel>Billing settings stay visible.</AccordionPanel>\n          </AccordionItem>\n          <AccordionItem value=\"team\">\n            <AccordionTrigger>Team</AccordionTrigger>\n            <AccordionPanel>Team settings</AccordionPanel>\n          </AccordionItem>\n        </Accordion>\n      </Column>\n    </Column>\n  )\n}"
+      "source": "import {\n  Accordion,\n  AccordionItem,\n  AccordionPanel,\n  AccordionTrigger,\n  Column,\n  Text,\n} from '../../../index'\n\nexport default function AccordionDisabledStatesDemo() {\n  return (\n    <Column gap={32}>\n      <Column gap={8}>\n        <Text typo=\"label-medium\">Disabled item</Text>\n        <Accordion defaultValue=\"general\">\n          <AccordionItem value=\"general\">\n            <AccordionTrigger>General</AccordionTrigger>\n            <AccordionPanel>General settings</AccordionPanel>\n          </AccordionItem>\n          <AccordionItem value=\"security\" disabled>\n            <AccordionTrigger>Security</AccordionTrigger>\n            <AccordionPanel>Security settings</AccordionPanel>\n          </AccordionItem>\n        </Accordion>\n      </Column>\n\n      <Column gap={8}>\n        <Text typo=\"label-medium\">Disabled accordion</Text>\n        <Accordion defaultValue=\"billing\" disabled>\n          <AccordionItem value=\"billing\">\n            <AccordionTrigger>Billing</AccordionTrigger>\n            <AccordionPanel>Billing settings stay visible.</AccordionPanel>\n          </AccordionItem>\n          <AccordionItem value=\"team\">\n            <AccordionTrigger>Team</AccordionTrigger>\n            <AccordionPanel>Team settings</AccordionPanel>\n          </AccordionItem>\n        </Accordion>\n      </Column>\n    </Column>\n  )\n}"
     },
     {
       "id": "Accordion/dividerless-accordion",
@@ -150,7 +150,7 @@
         "truncation"
       ],
       "documentationRoute": "/docs/components/Accordion",
-      "source": "import { Accordion, AccordionItem, AccordionPanel, AccordionTrigger } from '../../../index'\n\nconst expandIcon = (\n  <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\">\n    <path d=\"M6 12h12M12 6v12\" />\n  </svg>\n)\n\nconst collapseIcon = (\n  <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\">\n    <path d=\"M6 12h12\" />\n  </svg>\n)\n\nexport default function AccordionTriggerOptionsDemo() {\n  return (\n    <Accordion defaultValue=\"details\" viewProps={{ width: 20 }}>\n      <AccordionItem value=\"details\">\n        <AccordionTrigger singleLine expandIcon={expandIcon} collapseIcon={collapseIcon}>\n          A deliberately long trigger label that truncates within the available width\n        </AccordionTrigger>\n        <AccordionPanel>Custom trigger options keep the same accordion semantics.</AccordionPanel>\n      </AccordionItem>\n    </Accordion>\n  )\n}"
+      "source": "import { Accordion, AccordionItem, AccordionPanel, AccordionTrigger } from '../../../index'\n\nconst expandIcon = (\n  <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\">\n    <path d=\"M6 12h12M12 6v12\" />\n  </svg>\n)\n\nconst collapseIcon = (\n  <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\">\n    <path d=\"M6 12h12\" />\n  </svg>\n)\n\nexport default function AccordionTriggerOptionsDemo() {\n  return (\n    <Accordion defaultValue=\"details\" viewProps={{ width: 320 }}>\n      <AccordionItem value=\"details\">\n        <AccordionTrigger singleLine expandIcon={expandIcon} collapseIcon={collapseIcon}>\n          A deliberately long trigger label that truncates within the available width\n        </AccordionTrigger>\n        <AccordionPanel>Custom trigger options keep the same accordion semantics.</AccordionPanel>\n      </AccordionItem>\n    </Accordion>\n  )\n}"
     },
     {
       "id": "AppBar/basic-usage",
@@ -245,7 +245,7 @@
         "uses"
       ],
       "documentationRoute": "/docs/components/AppBar",
-      "source": "import { AppBar, Column, Text } from '../../../index'\n\nexport default function AppBarStickyAppBarDemo() {\n  return (\n    <Column height={14} overflowY=\"auto\" background=\"surfaceHover\" radius=\"medium\">\n      <AppBar sticky size=\"large\" titleAlign=\"end\" title={<Text>Sticky section</Text>} />\n      <Column gap={1} padding={1.5}>\n        {Array.from({ length: 10 }, (_, index) => (\n          <Text key={index}>Scrollable content row {index + 1}</Text>\n        ))}\n      </Column>\n    </Column>\n  )\n}"
+      "source": "import { AppBar, Column, Text } from '../../../index'\n\nexport default function AppBarStickyAppBarDemo() {\n  return (\n    <Column height={224} overflowY=\"auto\" background=\"surfaceHover\" radius=\"medium\">\n      <AppBar sticky size=\"large\" titleAlign=\"end\" title={<Text>Sticky section</Text>} />\n      <Column gap={16} padding={24}>\n        {Array.from({ length: 10 }, (_, index) => (\n          <Text key={index}>Scrollable content row {index + 1}</Text>\n        ))}\n      </Column>\n    </Column>\n  )\n}"
     },
     {
       "id": "Avatar/basic-usage",
@@ -285,7 +285,7 @@
         "when"
       ],
       "documentationRoute": "/docs/components/Avatar",
-      "source": "import { Avatar, Row, Text } from '../../../index'\n\nexport default function AvatarFallbackBehaviorDemo() {\n  return (\n    <Row gap={1.5} align=\"center\">\n      <Avatar\n        name=\"Custom fallback\"\n        fallback={<Text typo=\"label-small\">?</Text>}\n        viewProps={{ width: 4, height: 4 }}\n      />\n      <Avatar\n        src=\"data:image/png;base64,not-valid-image-data\"\n        name=\"Broken image\"\n        fallback=\"BI\"\n        viewProps={{ width: 4, height: 4 }}\n      />\n    </Row>\n  )\n}"
+      "source": "import { Avatar, Row, Text } from '../../../index'\n\nexport default function AvatarFallbackBehaviorDemo() {\n  return (\n    <Row gap={24} align=\"center\">\n      <Avatar\n        name=\"Custom fallback\"\n        fallback={<Text typo=\"label-small\">?</Text>}\n        viewProps={{ width: 64, height: 64 }}\n      />\n      <Avatar\n        src=\"data:image/png;base64,not-valid-image-data\"\n        name=\"Broken image\"\n        fallback=\"BI\"\n        viewProps={{ width: 64, height: 64 }}\n      />\n    </Row>\n  )\n}"
     },
     {
       "id": "Avatar/image-avatar",
@@ -310,7 +310,7 @@
         "when"
       ],
       "documentationRoute": "/docs/components/Avatar",
-      "source": "import { Avatar } from '../../../index'\nimport { documentationSampleImage as imageUrl } from '../../documentation-example-fixtures'\n\nexport default function AvatarImageAvatarDemo() {\n  return (\n    <Avatar\n      src={imageUrl}\n      name=\"Landscape account\"\n      fallback=\"LA\"\n      viewProps={{ width: 4, height: 4 }}\n    />\n  )\n}"
+      "source": "import { Avatar } from '../../../index'\nimport { documentationSampleImage as imageUrl } from '../../documentation-example-fixtures'\n\nexport default function AvatarImageAvatarDemo() {\n  return (\n    <Avatar\n      src={imageUrl}\n      name=\"Landscape account\"\n      fallback=\"LA\"\n      viewProps={{ width: 64, height: 64 }}\n    />\n  )\n}"
     },
     {
       "id": "Badge/badge-placement",
@@ -334,7 +334,7 @@
         "that"
       ],
       "documentationRoute": "/docs/components/Badge",
-      "source": "import { Badge, Button, Row } from '../../../index'\n\nexport default function BadgeBadgePlacementDemo() {\n  return (\n    <Row gap={2}>\n      <Badge text=\"1\" placement=\"top-left\" visible>\n        <Button text=\"Top left\" variant=\"secondary\" />\n      </Badge>\n      <Badge text=\"8\" placement=\"bottom-right\" visible>\n        <Button text=\"Bottom right\" variant=\"secondary\" />\n      </Badge>\n    </Row>\n  )\n}"
+      "source": "import { Badge, Button, Row } from '../../../index'\n\nexport default function BadgeBadgePlacementDemo() {\n  return (\n    <Row gap={32}>\n      <Badge text=\"1\" placement=\"top-left\" visible>\n        <Button text=\"Top left\" variant=\"secondary\" />\n      </Badge>\n      <Badge text=\"8\" placement=\"bottom-right\" visible>\n        <Button text=\"Bottom right\" variant=\"secondary\" />\n      </Badge>\n    </Row>\n  )\n}"
     },
     {
       "id": "Badge/basic-usage",
@@ -391,7 +391,7 @@
         "while"
       ],
       "documentationRoute": "/docs/components/Badge",
-      "source": "import { useState } from 'react'\nimport { Badge, Button, Column } from '../../../index'\n\nexport default function BadgeVisibilityDemo() {\n  const [visible, setVisible] = useState(true)\n\n  return (\n    <Column gap={1} align=\"start\">\n      <Button\n        text={visible ? 'Hide badge' : 'Show badge'}\n        variant=\"secondary\"\n        viewProps={{ onClick: () => setVisible((current) => !current) }}\n      />\n      <Badge text=\"3\" visible={visible}>\n        <Button text=\"Inbox remains mounted\" />\n      </Badge>\n    </Column>\n  )\n}"
+      "source": "import { useState } from 'react'\nimport { Badge, Button, Column } from '../../../index'\n\nexport default function BadgeVisibilityDemo() {\n  const [visible, setVisible] = useState(true)\n\n  return (\n    <Column gap={16} align=\"start\">\n      <Button\n        text={visible ? 'Hide badge' : 'Show badge'}\n        variant=\"secondary\"\n        viewProps={{ onClick: () => setVisible((current) => !current) }}\n      />\n      <Badge text=\"3\" visible={visible}>\n        <Button text=\"Inbox remains mounted\" />\n      </Badge>\n    </Column>\n  )\n}"
     },
     {
       "id": "Button/basic-button",
@@ -416,7 +416,7 @@
         "without"
       ],
       "documentationRoute": "/docs/components/Button",
-      "source": "import { Button, Column, Row } from '../../../index'\n\nexport default function ButtonBasicButtonDemo() {\n  return (\n    <Column gap={1}>\n      <Row gap={1} wrap>\n        <Button text=\"Primary\" />\n        <Button text=\"Secondary\" variant=\"secondary\" />\n        <Button text=\"Tertiary\" variant=\"tertiary\" />\n      </Row>\n      <Row gap={1} wrap align=\"center\">\n        <Button text=\"Small\" size=\"small\" />\n        <Button text=\"Medium\" size=\"medium\" />\n        <Button text=\"Large\" size=\"large\" />\n      </Row>\n    </Column>\n  )\n}"
+      "source": "import { Button, Column, Row } from '../../../index'\n\nexport default function ButtonBasicButtonDemo() {\n  return (\n    <Column gap={16}>\n      <Row gap={16} wrap>\n        <Button text=\"Primary\" />\n        <Button text=\"Secondary\" variant=\"secondary\" />\n        <Button text=\"Tertiary\" variant=\"tertiary\" />\n      </Row>\n      <Row gap={16} wrap align=\"center\">\n        <Button text=\"Small\" size=\"small\" />\n        <Button text=\"Medium\" size=\"medium\" />\n        <Button text=\"Large\" size=\"large\" />\n      </Row>\n    </Column>\n  )\n}"
     },
     {
       "id": "Button/custom-content",
@@ -443,7 +443,7 @@
         "when"
       ],
       "documentationRoute": "/docs/components/Button",
-      "source": "import { IconStar } from '@tabler/icons-react'\nimport { Button, Column, Icon, Row, Text } from '../../../index'\n\nexport default function ButtonCustomContentDemo() {\n  return (\n    <Button>\n      <Row gap={0.5} align=\"center\">\n        <Icon icon={IconStar} size=\"small\" />\n        <Column gap={0}>\n          <Text weight=\"semibold\">Save favorite</Text>\n          <Text typo=\"body-xsmall\">Available offline</Text>\n        </Column>\n      </Row>\n    </Button>\n  )\n}"
+      "source": "import { IconStar } from '@tabler/icons-react'\nimport { Button, Column, Icon, Row, Text } from '../../../index'\n\nexport default function ButtonCustomContentDemo() {\n  return (\n    <Button>\n      <Row gap={8} align=\"center\">\n        <Icon icon={IconStar} size=\"small\" />\n        <Column gap={0}>\n          <Text weight=\"semibold\">Save favorite</Text>\n          <Text typo=\"body-xsmall\">Available offline</Text>\n        </Column>\n      </Row>\n    </Button>\n  )\n}"
     },
     {
       "id": "Button/disabled-actions",
@@ -468,7 +468,7 @@
         "while"
       ],
       "documentationRoute": "/docs/components/Button",
-      "source": "import { Button, Row } from '../../../index'\n\nexport default function ButtonDisabledActionsDemo() {\n  return (\n    <Row gap={1} wrap>\n      <Button text=\"Unavailable\" disabled />\n      <Button text=\"Cannot delete\" variant=\"danger\" disabled />\n    </Row>\n  )\n}"
+      "source": "import { Button, Row } from '../../../index'\n\nexport default function ButtonDisabledActionsDemo() {\n  return (\n    <Row gap={16} wrap>\n      <Button text=\"Unavailable\" disabled />\n      <Button text=\"Cannot delete\" variant=\"danger\" disabled />\n    </Row>\n  )\n}"
     },
     {
       "id": "Button/form-actions",
@@ -494,7 +494,7 @@
         "types"
       ],
       "documentationRoute": "/docs/components/Button",
-      "source": "import { useState } from 'react'\nimport { Button, Column, Form, Input, Row, Text } from '../../../index'\n\nexport default function ButtonFormActionsDemo() {\n  const [status, setStatus] = useState('Waiting')\n\n  return (\n    <Form\n      onSubmit={(event) => {\n        event.preventDefault()\n        setStatus('Submitted')\n      }}\n      onReset={() => setStatus('Reset')}\n      viewProps={{ width: 20 }}\n    >\n      <Column gap={1}>\n        <Input placeholder=\"Message\" type=\"text\" />\n        <Row gap={1}>\n          <Button type=\"submit\" text=\"Submit\" />\n          <Button type=\"reset\" text=\"Reset\" variant=\"secondary\" />\n        </Row>\n        <Text typo=\"body-small\">{status}</Text>\n      </Column>\n    </Form>\n  )\n}"
+      "source": "import { useState } from 'react'\nimport { Button, Column, Form, Input, Row, Text } from '../../../index'\n\nexport default function ButtonFormActionsDemo() {\n  const [status, setStatus] = useState('Waiting')\n\n  return (\n    <Form\n      onSubmit={(event) => {\n        event.preventDefault()\n        setStatus('Submitted')\n      }}\n      onReset={() => setStatus('Reset')}\n      viewProps={{ width: 320 }}\n    >\n      <Column gap={16}>\n        <Input placeholder=\"Message\" type=\"text\" />\n        <Row gap={16}>\n          <Button type=\"submit\" text=\"Submit\" />\n          <Button type=\"reset\" text=\"Reset\" variant=\"secondary\" />\n        </Row>\n        <Text typo=\"body-small\">{status}</Text>\n      </Column>\n    </Form>\n  )\n}"
     },
     {
       "id": "Button/handling-clicks",
@@ -520,7 +520,7 @@
         "view"
       ],
       "documentationRoute": "/docs/components/Button",
-      "source": "import { useState } from 'react'\nimport { Button, Row, Text } from '../../../index'\n\nexport default function ButtonHandlingClicksDemo() {\n  const [clicks, setClicks] = useState(0)\n\n  return (\n    <Row gap={1} align=\"center\">\n      <Button text=\"Click me\" viewProps={{ onClick: () => setClicks((current) => current + 1) }} />\n      <Text>{clicks === 1 ? '1 click' : clicks + ' clicks'}</Text>\n    </Row>\n  )\n}"
+      "source": "import { useState } from 'react'\nimport { Button, Row, Text } from '../../../index'\n\nexport default function ButtonHandlingClicksDemo() {\n  const [clicks, setClicks] = useState(0)\n\n  return (\n    <Row gap={16} align=\"center\">\n      <Button text=\"Click me\" viewProps={{ onClick: () => setClicks((current) => current + 1) }} />\n      <Text>{clicks === 1 ? '1 click' : clicks + ' clicks'}</Text>\n    </Row>\n  )\n}"
     },
     {
       "id": "Button/icon-only-actions",
@@ -545,7 +545,7 @@
         "view"
       ],
       "documentationRoute": "/docs/components/Button",
-      "source": "import { IconDots, IconSearch, IconStar } from '@tabler/icons-react'\nimport { Button, Row } from '../../../index'\n\nexport default function ButtonIconOnlyActionsDemo() {\n  return (\n    <Row gap={1} align=\"center\">\n      <Button icon={IconSearch} viewProps={{ label: 'Search' }} />\n      <Button icon={IconStar} variant=\"secondary\" viewProps={{ label: 'Favorite' }} />\n      <Button icon={IconDots} variant=\"ghost\" viewProps={{ label: 'More actions' }} />\n    </Row>\n  )\n}"
+      "source": "import { IconDots, IconSearch, IconStar } from '@tabler/icons-react'\nimport { Button, Row } from '../../../index'\n\nexport default function ButtonIconOnlyActionsDemo() {\n  return (\n    <Row gap={16} align=\"center\">\n      <Button icon={IconSearch} viewProps={{ label: 'Search' }} />\n      <Button icon={IconStar} variant=\"secondary\" viewProps={{ label: 'Favorite' }} />\n      <Button icon={IconDots} variant=\"ghost\" viewProps={{ label: 'More actions' }} />\n    </Row>\n  )\n}"
     },
     {
       "id": "Button/icons-and-labels",
@@ -571,7 +571,7 @@
         "when"
       ],
       "documentationRoute": "/docs/components/Button",
-      "source": "import { IconDots, IconSearch, IconStar } from '@tabler/icons-react'\nimport { Button, Row } from '../../../index'\n\nconst customSpark = (\n  <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\">\n    <path d=\"M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z\" />\n  </svg>\n)\n\nexport default function ButtonIconsAndLabelsDemo() {\n  return (\n    <Row gap={1} wrap>\n      <Button text=\"Favorite\" icon={IconStar} />\n      <Button text=\"Search\" icon={IconSearch} variant=\"secondary\" />\n      <Button text=\"More\" icon={IconDots} iconPosition=\"end\" variant=\"tertiary\" />\n      <Button text=\"Custom SVG\" icon={customSpark} variant=\"ghost\" />\n    </Row>\n  )\n}"
+      "source": "import { IconDots, IconSearch, IconStar } from '@tabler/icons-react'\nimport { Button, Row } from '../../../index'\n\nconst customSpark = (\n  <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\">\n    <path d=\"M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z\" />\n  </svg>\n)\n\nexport default function ButtonIconsAndLabelsDemo() {\n  return (\n    <Row gap={16} wrap>\n      <Button text=\"Favorite\" icon={IconStar} />\n      <Button text=\"Search\" icon={IconSearch} variant=\"secondary\" />\n      <Button text=\"More\" icon={IconDots} iconPosition=\"end\" variant=\"tertiary\" />\n      <Button text=\"Custom SVG\" icon={customSpark} variant=\"ghost\" />\n    </Row>\n  )\n}"
     },
     {
       "id": "Button/pressed-state",
@@ -650,7 +650,7 @@
         "whole"
       ],
       "documentationRoute": "/docs/components/Card",
-      "source": "import { Card, Column, Text } from '../../../index'\n\nexport default function CardClickableCardDemo() {\n  return (\n    <Card clickable viewProps={{ width: 20, padding: 1.5, label: 'Open project Atlas' }}>\n      <Column gap={0.5}>\n        <Text typo=\"title-medium\">Open project</Text>\n        <Text color=\"secondary\">The whole surface is clickable.</Text>\n      </Column>\n    </Card>\n  )\n}"
+      "source": "import { Card, Column, Text } from '../../../index'\n\nexport default function CardClickableCardDemo() {\n  return (\n    <Card clickable viewProps={{ width: 320, padding: 24, label: 'Open project Atlas' }}>\n      <Column gap={8}>\n        <Text typo=\"title-medium\">Open project</Text>\n        <Text color=\"secondary\">The whole surface is clickable.</Text>\n      </Column>\n    </Card>\n  )\n}"
     },
     {
       "id": "Card/combined-interaction",
@@ -679,7 +679,7 @@
         "while"
       ],
       "documentationRoute": "/docs/components/Card",
-      "source": "import { useState } from 'react'\nimport { Button, Card, Column, Text } from '../../../index'\n\nexport default function CardCombinedInteractionDemo() {\n  const [selected, setSelected] = useState(false)\n  const [activations, setActivations] = useState(0)\n  const [innerClicks, setInnerClicks] = useState(0)\n\n  return (\n    <Column gap={1}>\n      <Card\n        clickable\n        selectable\n        selected={selected}\n        onSelectedChange={setSelected}\n        viewProps={{\n          width: 22,\n          padding: 1.5,\n          onClick: () => setActivations((count) => count + 1),\n        }}\n      >\n        <Column gap={1}>\n          <Text>{selected ? 'Selected card' : 'Available card'}</Text>\n          <Button\n            text=\"Inner action\"\n            variant=\"secondary\"\n            viewProps={{ onClick: () => setInnerClicks((count) => count + 1) }}\n          />\n        </Column>\n      </Card>\n\n      <Text typo=\"body-small\" color=\"secondary\">\n        Card activations: {activations} · inner clicks: {innerClicks}\n      </Text>\n    </Column>\n  )\n}"
+      "source": "import { useState } from 'react'\nimport { Button, Card, Column, Text } from '../../../index'\n\nexport default function CardCombinedInteractionDemo() {\n  const [selected, setSelected] = useState(false)\n  const [activations, setActivations] = useState(0)\n  const [innerClicks, setInnerClicks] = useState(0)\n\n  return (\n    <Column gap={16}>\n      <Card\n        clickable\n        selectable\n        selected={selected}\n        onSelectedChange={setSelected}\n        viewProps={{\n          width: 352,\n          padding: 24,\n          onClick: () => setActivations((count) => count + 1),\n        }}\n      >\n        <Column gap={16}>\n          <Text>{selected ? 'Selected card' : 'Available card'}</Text>\n          <Button\n            text=\"Inner action\"\n            variant=\"secondary\"\n            viewProps={{ onClick: () => setInnerClicks((count) => count + 1) }}\n          />\n        </Column>\n      </Card>\n\n      <Text typo=\"body-small\" color=\"secondary\">\n        Card activations: {activations} · inner clicks: {innerClicks}\n      </Text>\n    </Column>\n  )\n}"
     },
     {
       "id": "Card/selectable-card",
@@ -702,7 +702,7 @@
         "text"
       ],
       "documentationRoute": "/docs/components/Card",
-      "source": "import { Card, Row, Text } from '../../../index'\n\nexport default function CardSelectableCardDemo() {\n  return (\n    <Row gap={1}>\n      <Card selectable defaultSelected viewProps={{ width: 10, padding: 1.5 }}>\n        <Text>Selected</Text>\n      </Card>\n      <Card selectable viewProps={{ width: 10, padding: 1.5 }}>\n        <Text>Available</Text>\n      </Card>\n    </Row>\n  )\n}"
+      "source": "import { Card, Row, Text } from '../../../index'\n\nexport default function CardSelectableCardDemo() {\n  return (\n    <Row gap={16}>\n      <Card selectable defaultSelected viewProps={{ width: 160, padding: 24 }}>\n        <Text>Selected</Text>\n      </Card>\n      <Card selectable viewProps={{ width: 160, padding: 24 }}>\n        <Text>Available</Text>\n      </Card>\n    </Row>\n  )\n}"
     },
     {
       "id": "Checkbox/basic-usage",
@@ -711,7 +711,7 @@
       "components": ["Checkbox", "Column"],
       "concepts": ["basic", "checkbox", "column", "usage"],
       "documentationRoute": "/docs/components/Checkbox",
-      "source": "import { Checkbox, Column } from '../../../index'\n\nexport default function CheckboxBasicUsageDemo() {\n  return (\n    <Column gap={0.75}>\n      <Checkbox label=\"Small\" group=\"features\" value=\"small\" size=\"small\" defaultChecked />\n      <Checkbox label=\"Medium\" group=\"features\" value=\"medium\" size=\"medium\" defaultChecked />\n      <Checkbox label=\"Large\" group=\"features\" value=\"large\" size=\"large\" />\n    </Column>\n  )\n}"
+      "source": "import { Checkbox, Column } from '../../../index'\n\nexport default function CheckboxBasicUsageDemo() {\n  return (\n    <Column gap={12}>\n      <Checkbox label=\"Small\" group=\"features\" value=\"small\" size=\"small\" defaultChecked />\n      <Checkbox label=\"Medium\" group=\"features\" value=\"medium\" size=\"medium\" defaultChecked />\n      <Checkbox label=\"Large\" group=\"features\" value=\"large\" size=\"large\" />\n    </Column>\n  )\n}"
     },
     {
       "id": "Checkbox/indeterminate-parent",
@@ -734,7 +734,7 @@
         "when"
       ],
       "documentationRoute": "/docs/components/Checkbox",
-      "source": "import { Checkbox, Column } from '../../../index'\n\nexport default function CheckboxIndeterminateParentDemo() {\n  return (\n    <Column gap={0.75}>\n      <Checkbox label=\"All permissions\" indeterminate />\n      <Column gap={0.5} paddingLeft={2}>\n        <Checkbox label=\"Read\" defaultChecked size=\"small\" />\n        <Checkbox label=\"Write\" size=\"small\" />\n      </Column>\n    </Column>\n  )\n}"
+      "source": "import { Checkbox, Column } from '../../../index'\n\nexport default function CheckboxIndeterminateParentDemo() {\n  return (\n    <Column gap={12}>\n      <Checkbox label=\"All permissions\" indeterminate />\n      <Column gap={8} paddingLeft={32}>\n        <Checkbox label=\"Read\" defaultChecked size=\"small\" />\n        <Checkbox label=\"Write\" size=\"small\" />\n      </Column>\n    </Column>\n  )\n}"
     },
     {
       "id": "Checkbox/locked-selection",
@@ -814,7 +814,7 @@
         "view"
       ],
       "documentationRoute": "/docs/components/Code",
-      "source": "import { Code } from '../../../index'\n\nexport default function CodeScrollingCodeDemo() {\n  const source = `const first = 1\n  const second = 2\n  const third = 3\n  const fourth = 4\n  const fifth = 5\n  const sixth = 6`\n\n  return (\n    <Code language=\"typescript\" viewProps={{ maxHeight: 8, overflow: 'auto', width: 24 }}>\n      {source}\n    </Code>\n  )\n}"
+      "source": "import { Code } from '../../../index'\n\nexport default function CodeScrollingCodeDemo() {\n  const source = `const first = 1\n  const second = 2\n  const third = 3\n  const fourth = 4\n  const fifth = 5\n  const sixth = 6`\n\n  return (\n    <Code language=\"typescript\" viewProps={{ maxHeight: 128, overflow: 'auto', width: 384 }}>\n      {source}\n    </Code>\n  )\n}"
     },
     {
       "id": "Code/tsx-snippet",
@@ -877,7 +877,7 @@
         "when"
       ],
       "documentationRoute": "/docs/components/Combobox",
-      "source": "import { useState } from 'react'\nimport { Column, Combobox, ComboboxOption, Text } from '../../../index'\n\nexport default function ComboboxControlledValuesDemo() {\n  const [value, setValue] = useState<string | null>('atlas')\n  const [inputValue, setInputValue] = useState('Atlas')\n\n  return (\n    <Column gap={0.75} align=\"start\">\n      <Combobox\n        value={value}\n        onValueChange={setValue}\n        inputValue={inputValue}\n        onInputValueChange={setInputValue}\n        name=\"project\"\n        placeholder=\"Search projects\"\n      >\n        <ComboboxOption value=\"atlas\" text=\"Atlas\" />\n        <ComboboxOption value=\"borealis\" text=\"Borealis\" />\n        <ComboboxOption value=\"cascade\" text=\"Cascade\" />\n      </Combobox>\n      <Text typo=\"body-small\" color=\"secondary\">\n        Value: {value ?? 'none'} · input: {inputValue || 'empty'}\n      </Text>\n    </Column>\n  )\n}"
+      "source": "import { useState } from 'react'\nimport { Column, Combobox, ComboboxOption, Text } from '../../../index'\n\nexport default function ComboboxControlledValuesDemo() {\n  const [value, setValue] = useState<string | null>('atlas')\n  const [inputValue, setInputValue] = useState('Atlas')\n\n  return (\n    <Column gap={12} align=\"start\">\n      <Combobox\n        value={value}\n        onValueChange={setValue}\n        inputValue={inputValue}\n        onInputValueChange={setInputValue}\n        name=\"project\"\n        placeholder=\"Search projects\"\n      >\n        <ComboboxOption value=\"atlas\" text=\"Atlas\" />\n        <ComboboxOption value=\"borealis\" text=\"Borealis\" />\n        <ComboboxOption value=\"cascade\" text=\"Cascade\" />\n      </Combobox>\n      <Text typo=\"body-small\" color=\"secondary\">\n        Value: {value ?? 'none'} · input: {inputValue || 'empty'}\n      </Text>\n    </Column>\n  )\n}"
     },
     {
       "id": "Combobox/custom-filter",
@@ -966,7 +966,7 @@
       "components": ["DataGrid"],
       "concepts": ["basic", "data", "grid", "usage"],
       "documentationRoute": "/docs/components/DataGrid",
-      "source": "import { DataGrid, type DataGridColumn } from '../../../index'\n\ninterface PersonRow {\n  id: string\n  name: string\n  role: string\n  score: number\n}\n\nconst rows: readonly PersonRow[] = Array.from({ length: 200 }, (_, index) => ({\n  id: `person-${index + 1}`,\n  name: `Person ${index + 1}`,\n  role: ['Design', 'Engineering', 'Research'][index % 3] ?? 'Design',\n  score: 100 - (index % 73),\n}))\n\nconst columns: readonly DataGridColumn<PersonRow>[] = [\n  {\n    id: 'name',\n    header: 'Name',\n    cell: (row) => row.name,\n    sort: (left, right) => left.name.localeCompare(right.name, undefined, { numeric: true }),\n    minWidth: 140,\n    maxWidth: 320,\n    resizable: true,\n  },\n  {\n    id: 'role',\n    header: 'Role',\n    cell: (row) => row.role,\n    sort: (left, right) => left.role.localeCompare(right.role),\n    minWidth: 140,\n    maxWidth: 280,\n    resizable: true,\n  },\n  {\n    id: 'score',\n    header: 'Score',\n    cell: (row) => row.score,\n    sort: (left, right) => left.score - right.score,\n    minWidth: 96,\n    maxWidth: 180,\n    resizable: true,\n  },\n]\n\nexport default function DataGridBasicUsageDemo() {\n  return (\n    <DataGrid\n      columns={columns}\n      rows={rows}\n      defaultSort={{ columnId: 'score', direction: 'desc' }}\n      defaultColumnWidths={{ name: 180, role: 180, score: 120 }}\n      selectable\n      virtualized\n      stickyHeader\n      verticalBorders\n      viewProps={{ maxHeight: 28 }}\n    />\n  )\n}"
+      "source": "import { DataGrid, type DataGridColumn } from '../../../index'\n\ninterface PersonRow {\n  id: string\n  name: string\n  role: string\n  score: number\n}\n\nconst rows: readonly PersonRow[] = Array.from({ length: 200 }, (_, index) => ({\n  id: `person-${index + 1}`,\n  name: `Person ${index + 1}`,\n  role: ['Design', 'Engineering', 'Research'][index % 3] ?? 'Design',\n  score: 100 - (index % 73),\n}))\n\nconst columns: readonly DataGridColumn<PersonRow>[] = [\n  {\n    id: 'name',\n    header: 'Name',\n    cell: (row) => row.name,\n    sort: (left, right) => left.name.localeCompare(right.name, undefined, { numeric: true }),\n    minWidth: 140,\n    maxWidth: 320,\n    resizable: true,\n  },\n  {\n    id: 'role',\n    header: 'Role',\n    cell: (row) => row.role,\n    sort: (left, right) => left.role.localeCompare(right.role),\n    minWidth: 140,\n    maxWidth: 280,\n    resizable: true,\n  },\n  {\n    id: 'score',\n    header: 'Score',\n    cell: (row) => row.score,\n    sort: (left, right) => left.score - right.score,\n    minWidth: 96,\n    maxWidth: 180,\n    resizable: true,\n  },\n]\n\nexport default function DataGridBasicUsageDemo() {\n  return (\n    <DataGrid\n      columns={columns}\n      rows={rows}\n      defaultSort={{ columnId: 'score', direction: 'desc' }}\n      defaultColumnWidths={{ name: 180, role: 180, score: 120 }}\n      selectable\n      virtualized\n      stickyHeader\n      verticalBorders\n      viewProps={{ maxHeight: 448 }}\n    />\n  )\n}"
     },
     {
       "id": "DataGrid/controlled-state",
@@ -1002,7 +1002,7 @@
       "components": ["Button", "Dialog", "Text"],
       "concepts": ["basic", "button", "dialog", "text", "usage"],
       "documentationRoute": "/docs/components/Dialog",
-      "source": "import { Button, Dialog, Text } from '../../../index'\n\nexport default function DialogBasicUsageDemo() {\n  return (\n    <Dialog\n      modal={false}\n      trigger={<Button text=\"Dialog trigger\" />}\n      placement=\"bottom\"\n      offset={0.5}\n      viewportPadding={1}\n      autoFocus={false}\n      restoreFocus\n      defaultOpen\n    >\n      <Text>Dialog content</Text>\n    </Dialog>\n  )\n}"
+      "source": "import { Button, Dialog, Text } from '../../../index'\n\nexport default function DialogBasicUsageDemo() {\n  return (\n    <Dialog\n      modal={false}\n      trigger={<Button text=\"Dialog trigger\" />}\n      placement=\"bottom\"\n      offset={8}\n      viewportPadding={16}\n      autoFocus={false}\n      restoreFocus\n      defaultOpen\n    >\n      <Text>Dialog content</Text>\n    </Dialog>\n  )\n}"
     },
     {
       "id": "Dialog/modal-dialog",
@@ -1029,7 +1029,7 @@
         "while"
       ],
       "documentationRoute": "/docs/components/Dialog",
-      "source": "import { useRef, useState } from 'react'\nimport { Button, Column, Dialog, Row, Text } from '../../../index'\n\nexport default function DialogModalDialogDemo() {\n  const [open, setOpen] = useState(false)\n  const cancelRef = useRef<HTMLButtonElement>(null)\n\n  return (\n    <Column gap={1} align=\"start\">\n      <Button text=\"Open dialog\" viewProps={{ onClick: () => setOpen(true) }} />\n      <Dialog\n        modal\n        open={open}\n        onOpenChange={setOpen}\n        closeOnEscape={false}\n        closeOnBackdrop\n        initialFocus={cancelRef}\n      >\n        <Column gap={1}>\n          <Text typo=\"title-medium\">Delete project?</Text>\n          <Text typo=\"body-medium\">This action cannot be undone.</Text>\n          <Row gap={1}>\n            <Button\n              text=\"Cancel\"\n              variant=\"secondary\"\n              viewProps={{ ref: cancelRef, onClick: () => setOpen(false) }}\n            />\n            <Button text=\"Delete\" variant=\"danger\" />\n          </Row>\n        </Column>\n      </Dialog>\n    </Column>\n  )\n}"
+      "source": "import { useRef, useState } from 'react'\nimport { Button, Column, Dialog, Row, Text } from '../../../index'\n\nexport default function DialogModalDialogDemo() {\n  const [open, setOpen] = useState(false)\n  const cancelRef = useRef<HTMLButtonElement>(null)\n\n  return (\n    <Column gap={16} align=\"start\">\n      <Button text=\"Open dialog\" viewProps={{ onClick: () => setOpen(true) }} />\n      <Dialog\n        modal\n        open={open}\n        onOpenChange={setOpen}\n        closeOnEscape={false}\n        closeOnBackdrop\n        initialFocus={cancelRef}\n      >\n        <Column gap={16}>\n          <Text typo=\"title-medium\">Delete project?</Text>\n          <Text typo=\"body-medium\">This action cannot be undone.</Text>\n          <Row gap={16}>\n            <Button\n              text=\"Cancel\"\n              variant=\"secondary\"\n              viewProps={{ ref: cancelRef, onClick: () => setOpen(false) }}\n            />\n            <Button text=\"Delete\" variant=\"danger\" />\n          </Row>\n        </Column>\n      </Dialog>\n    </Column>\n  )\n}"
     },
     {
       "id": "Dialog/non-modal-dialog",
@@ -1053,7 +1053,7 @@
         "text"
       ],
       "documentationRoute": "/docs/components/Dialog",
-      "source": "import { Button, Column, Dialog, Text } from '../../../index'\n\nexport default function DialogNonModalDialogDemo() {\n  return (\n    <Dialog modal={false} trigger={<Button text=\"Open details\" />} placement=\"right\" restoreFocus>\n      <Column gap={0.5}>\n        <Text typo=\"label-medium\">Anchored details</Text>\n        <Text typo=\"body-small\">Background work remains available.</Text>\n      </Column>\n    </Dialog>\n  )\n}"
+      "source": "import { Button, Column, Dialog, Text } from '../../../index'\n\nexport default function DialogNonModalDialogDemo() {\n  return (\n    <Dialog modal={false} trigger={<Button text=\"Open details\" />} placement=\"right\" restoreFocus>\n      <Column gap={8}>\n        <Text typo=\"label-medium\">Anchored details</Text>\n        <Text typo=\"body-small\">Background work remains available.</Text>\n      </Column>\n    </Dialog>\n  )\n}"
     },
     {
       "id": "Divider/basic-usage",
@@ -1062,7 +1062,7 @@
       "components": ["Divider"],
       "concepts": ["basic", "divider", "usage"],
       "documentationRoute": "/docs/components/Divider",
-      "source": "import { Divider } from '../../../index'\n\nexport default function DividerBasicUsageDemo() {\n  return <Divider direction=\"horizontal\" gap={0} size={1} viewProps={{ width: 12, height: 6 }} />\n}"
+      "source": "import { Divider } from '../../../index'\n\nexport default function DividerBasicUsageDemo() {\n  return <Divider direction=\"horizontal\" gap={0} size={1} viewProps={{ width: 192, height: 96 }} />\n}"
     },
     {
       "id": "Divider/spaced-divider",
@@ -1088,7 +1088,7 @@
         "when"
       ],
       "documentationRoute": "/docs/components/Divider",
-      "source": "import { Column, Divider, Text } from '../../../index'\n\nexport default function DividerSpacedDividerDemo() {\n  return (\n    <Column width={20}>\n      <Text>First section</Text>\n      <Divider gap={1} size={2} />\n      <Text>Second section</Text>\n    </Column>\n  )\n}"
+      "source": "import { Column, Divider, Text } from '../../../index'\n\nexport default function DividerSpacedDividerDemo() {\n  return (\n    <Column width={320}>\n      <Text>First section</Text>\n      <Divider gap={16} size={2} />\n      <Text>Second section</Text>\n    </Column>\n  )\n}"
     },
     {
       "id": "Divider/vertical-divider",
@@ -1112,7 +1112,7 @@
         "without"
       ],
       "documentationRoute": "/docs/components/Divider",
-      "source": "import { Divider, Row, Text } from '../../../index'\n\nexport default function DividerVerticalDividerDemo() {\n  return (\n    <Row height={3} gap={1} align=\"center\">\n      <Text>Preview</Text>\n      <Divider direction=\"vertical\" />\n      <Text>Publish</Text>\n    </Row>\n  )\n}"
+      "source": "import { Divider, Row, Text } from '../../../index'\n\nexport default function DividerVerticalDividerDemo() {\n  return (\n    <Row height={48} gap={16} align=\"center\">\n      <Text>Preview</Text>\n      <Divider direction=\"vertical\" />\n      <Text>Publish</Text>\n    </Row>\n  )\n}"
     },
     {
       "id": "Divider/zero-gap-boundary",
@@ -1136,7 +1136,7 @@
         "zero"
       ],
       "documentationRoute": "/docs/components/Divider",
-      "source": "import { Column, Divider, Text } from '../../../index'\n\nexport default function DividerZeroGapBoundaryDemo() {\n  return (\n    <Column width={20}>\n      <Text>First row</Text>\n      <Divider gap={0} />\n      <Text>Second row</Text>\n      <Divider gap={0} size={2} />\n      <Text>Third row</Text>\n    </Column>\n  )\n}"
+      "source": "import { Column, Divider, Text } from '../../../index'\n\nexport default function DividerZeroGapBoundaryDemo() {\n  return (\n    <Column width={320}>\n      <Text>First row</Text>\n      <Divider gap={0} />\n      <Text>Second row</Text>\n      <Divider gap={0} size={2} />\n      <Text>Third row</Text>\n    </Column>\n  )\n}"
     },
     {
       "id": "Drawer/basic-usage",
@@ -1145,7 +1145,7 @@
       "components": ["Column", "Drawer", "Text"],
       "concepts": ["basic", "column", "drawer", "text", "usage"],
       "documentationRoute": "/docs/components/Drawer",
-      "source": "import { Column, Drawer, Text } from '../../../index'\n\nexport default function DrawerBasicUsageDemo() {\n  return (\n    <Drawer\n      side=\"left\"\n      mode=\"non-modal\"\n      defaultSize={16}\n      minSize={10}\n      collapseThreshold={2}\n      expandThreshold={4}\n      resizable\n      defaultOpen\n      drawer={\n        <Column gap={0.5}>\n          <Text typo=\"label-medium\">Navigation</Text>\n          <Text typo=\"body-small\">Drag the shared splitter to resize.</Text>\n        </Column>\n      }\n      viewProps={{ width: 'fill', height: 12 }}\n    >\n      <Column padding={1}>Main content</Column>\n    </Drawer>\n  )\n}"
+      "source": "import { Column, Drawer, Text } from '../../../index'\n\nexport default function DrawerBasicUsageDemo() {\n  return (\n    <Drawer\n      side=\"left\"\n      mode=\"non-modal\"\n      defaultSize={256}\n      minSize={160}\n      collapseThreshold={32}\n      expandThreshold={64}\n      resizable\n      defaultOpen\n      drawer={\n        <Column gap={8}>\n          <Text typo=\"label-medium\">Navigation</Text>\n          <Text typo=\"body-small\">Drag the shared splitter to resize.</Text>\n        </Column>\n      }\n      viewProps={{ width: 'fill', height: 192 }}\n    >\n      <Column padding={16}>Main content</Column>\n    </Drawer>\n  )\n}"
     },
     {
       "id": "Drawer/closed-drawer",
@@ -1169,7 +1169,7 @@
         "while"
       ],
       "documentationRoute": "/docs/components/Drawer",
-      "source": "import { Column, Drawer, Text } from '../../../index'\n\nexport default function DrawerClosedDrawerDemo() {\n  return (\n    <Drawer\n      side=\"left\"\n      mode=\"non-modal\"\n      defaultOpen={false}\n      drawer={<Text>Navigation</Text>}\n      viewProps={{ width: 'fill', height: 8 }}\n    >\n      <Column padding={1}>Main content</Column>\n    </Drawer>\n  )\n}"
+      "source": "import { Column, Drawer, Text } from '../../../index'\n\nexport default function DrawerClosedDrawerDemo() {\n  return (\n    <Drawer\n      side=\"left\"\n      mode=\"non-modal\"\n      defaultOpen={false}\n      drawer={<Text>Navigation</Text>}\n      viewProps={{ width: 'fill', height: 128 }}\n    >\n      <Column padding={16}>Main content</Column>\n    </Drawer>\n  )\n}"
     },
     {
       "id": "Drawer/controlled-drawer",
@@ -1197,7 +1197,7 @@
         "while"
       ],
       "documentationRoute": "/docs/components/Drawer",
-      "source": "import { useState } from 'react'\nimport { Button, Column, Drawer, Row, Text } from '../../../index'\n\nexport default function DrawerControlledDrawerDemo() {\n  const [open, setOpen] = useState(true)\n  const [size, setSize] = useState('16rem')\n\n  return (\n    <Drawer\n      side=\"left\"\n      mode=\"non-modal\"\n      open={open}\n      onOpenChange={setOpen}\n      size={size}\n      onSizeChange={setSize}\n      minSize={10}\n      drawer={\n        <Column gap={0.5}>\n          <Text typo=\"label-medium\">Controlled drawer</Text>\n          <Text typo=\"body-small\">Current size: {size}</Text>\n        </Column>\n      }\n      viewProps={{ width: 'fill', height: 12 }}\n    >\n      <Column padding={1} gap={1}>\n        <Text>Main content remains mounted.</Text>\n        <Row>\n          <Button\n            text={open ? 'Close drawer' : 'Open drawer'}\n            viewProps={{ onClick: () => setOpen(!open) }}\n          />\n        </Row>\n      </Column>\n    </Drawer>\n  )\n}"
+      "source": "import { useState } from 'react'\nimport { Button, Column, Drawer, Row, Text } from '../../../index'\n\nexport default function DrawerControlledDrawerDemo() {\n  const [open, setOpen] = useState(true)\n  const [size, setSize] = useState('256px')\n\n  return (\n    <Drawer\n      side=\"left\"\n      mode=\"non-modal\"\n      open={open}\n      onOpenChange={setOpen}\n      size={size}\n      onSizeChange={setSize}\n      minSize={160}\n      drawer={\n        <Column gap={8}>\n          <Text typo=\"label-medium\">Controlled drawer</Text>\n          <Text typo=\"body-small\">Current size: {size}</Text>\n        </Column>\n      }\n      viewProps={{ width: 'fill', height: 192 }}\n    >\n      <Column padding={16} gap={16}>\n        <Text>Main content remains mounted.</Text>\n        <Row>\n          <Button\n            text={open ? 'Close drawer' : 'Open drawer'}\n            viewProps={{ onClick: () => setOpen(!open) }}\n          />\n        </Row>\n      </Column>\n    </Drawer>\n  )\n}"
     },
     {
       "id": "Drawer/modal-drawer",
@@ -1223,7 +1223,7 @@
         "text"
       ],
       "documentationRoute": "/docs/components/Drawer",
-      "source": "import { useRef, useState } from 'react'\nimport { Button, Column, Drawer, Text } from '../../../index'\n\nexport default function DrawerModalDrawerDemo() {\n  const [open, setOpen] = useState(false)\n  const closeRef = useRef<HTMLButtonElement>(null)\n\n  return (\n    <Drawer\n      side=\"bottom\"\n      mode=\"modal\"\n      open={open}\n      onOpenChange={setOpen}\n      size={14}\n      closeThreshold={3}\n      closeOnEscape\n      closeOnBackdrop\n      initialFocus={closeRef}\n      restoreFocus\n      drawer={\n        <Column gap={1}>\n          <Text typo=\"title-medium\">Modal drawer</Text>\n          <Text typo=\"body-small\">The native Dialog branch owns modal behavior.</Text>\n          <Button\n            text=\"Close drawer\"\n            viewProps={{ ref: closeRef, onClick: () => setOpen(false) }}\n          />\n        </Column>\n      }\n      viewProps={{ width: 'fill', height: 14 }}\n    >\n      <Column padding={1} gap={1}>\n        <Text>Main content</Text>\n        <Button text=\"Open drawer\" viewProps={{ onClick: () => setOpen(true) }} />\n      </Column>\n    </Drawer>\n  )\n}"
+      "source": "import { useRef, useState } from 'react'\nimport { Button, Column, Drawer, Text } from '../../../index'\n\nexport default function DrawerModalDrawerDemo() {\n  const [open, setOpen] = useState(false)\n  const closeRef = useRef<HTMLButtonElement>(null)\n\n  return (\n    <Drawer\n      side=\"bottom\"\n      mode=\"modal\"\n      open={open}\n      onOpenChange={setOpen}\n      size={224}\n      closeThreshold={48}\n      closeOnEscape\n      closeOnBackdrop\n      initialFocus={closeRef}\n      restoreFocus\n      drawer={\n        <Column gap={16}>\n          <Text typo=\"title-medium\">Modal drawer</Text>\n          <Text typo=\"body-small\">The native Dialog branch owns modal behavior.</Text>\n          <Button\n            text=\"Close drawer\"\n            viewProps={{ ref: closeRef, onClick: () => setOpen(false) }}\n          />\n        </Column>\n      }\n      viewProps={{ width: 'fill', height: 224 }}\n    >\n      <Column padding={16} gap={16}>\n        <Text>Main content</Text>\n        <Button text=\"Open drawer\" viewProps={{ onClick: () => setOpen(true) }} />\n      </Column>\n    </Drawer>\n  )\n}"
     },
     {
       "id": "Drawer/responsive-mode",
@@ -1252,7 +1252,7 @@
         "without"
       ],
       "documentationRoute": "/docs/components/Drawer",
-      "source": "import { Column, Drawer, Text } from '../../../index'\n\nexport default function DrawerResponsiveModeDemo() {\n  return (\n    <Drawer\n      side=\"left\"\n      mode=\"auto\"\n      breakpoint=\"md\"\n      defaultOpen\n      defaultSize={16}\n      drawer={\n        <Column gap={0.5}>\n          <Text typo=\"label-medium\">Responsive navigation</Text>\n          <Text typo=\"body-small\">Modal below md, non-modal at md and above.</Text>\n        </Column>\n      }\n      viewProps={{ width: 'fill', height: 12 }}\n    >\n      <Column padding={1}>Main content</Column>\n    </Drawer>\n  )\n}"
+      "source": "import { Column, Drawer, Text } from '../../../index'\n\nexport default function DrawerResponsiveModeDemo() {\n  return (\n    <Drawer\n      side=\"left\"\n      mode=\"auto\"\n      breakpoint=\"md\"\n      defaultOpen\n      defaultSize={256}\n      drawer={\n        <Column gap={8}>\n          <Text typo=\"label-medium\">Responsive navigation</Text>\n          <Text typo=\"body-small\">Modal below md, non-modal at md and above.</Text>\n        </Column>\n      }\n      viewProps={{ width: 'fill', height: 192 }}\n    >\n      <Column padding={16}>Main content</Column>\n    </Drawer>\n  )\n}"
     },
     {
       "id": "Drawer/right-drawer",
@@ -1278,7 +1278,7 @@
         "without"
       ],
       "documentationRoute": "/docs/components/Drawer",
-      "source": "import { Column, Drawer, Text } from '../../../index'\n\nexport default function DrawerRightDrawerDemo() {\n  return (\n    <Drawer\n      side=\"right\"\n      mode=\"non-modal\"\n      defaultSize={16}\n      resizable={false}\n      defaultOpen\n      drawer={<Text>Fixed inspector</Text>}\n      viewProps={{ width: 'fill', height: 10 }}\n    >\n      <Column padding={1}>Canvas</Column>\n    </Drawer>\n  )\n}"
+      "source": "import { Column, Drawer, Text } from '../../../index'\n\nexport default function DrawerRightDrawerDemo() {\n  return (\n    <Drawer\n      side=\"right\"\n      mode=\"non-modal\"\n      defaultSize={256}\n      resizable={false}\n      defaultOpen\n      drawer={<Text>Fixed inspector</Text>}\n      viewProps={{ width: 'fill', height: 160 }}\n    >\n      <Column padding={16}>Canvas</Column>\n    </Drawer>\n  )\n}"
     },
     {
       "id": "Form/basic-usage",
@@ -1287,7 +1287,7 @@
       "components": ["Button", "Form", "FormField", "Input"],
       "concepts": ["basic", "button", "field", "form", "input", "usage"],
       "documentationRoute": "/docs/components/Form",
-      "source": "import { Button, Form, FormField, Input } from '../../../index'\n\nexport default function FormBasicUsageDemo() {\n  return (\n    <Form viewProps={{ width: 24 }}>\n      <FormField label=\"Email\" description=\"Used for account notifications.\" required>\n        <Input name=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n      </FormField>\n      <Button type=\"submit\" text=\"Save\" />\n    </Form>\n  )\n}"
+      "source": "import { Button, Form, FormField, Input } from '../../../index'\n\nexport default function FormBasicUsageDemo() {\n  return (\n    <Form viewProps={{ width: 384 }}>\n      <FormField label=\"Email\" description=\"Used for account notifications.\" required>\n        <Input name=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n      </FormField>\n      <Button type=\"submit\" text=\"Save\" />\n    </Form>\n  )\n}"
     },
     {
       "id": "Form/explicit-field-parts",
@@ -1312,7 +1312,7 @@
         "when"
       ],
       "documentationRoute": "/docs/components/Form",
-      "source": "import { Form, FormDescription, FormError, FormField, FormLabel, Input } from '../../../index'\n\nexport default function FormExplicitFieldPartsDemo() {\n  return (\n    <Form viewProps={{ width: 24 }}>\n      <FormField>\n        <FormLabel>Username</FormLabel>\n        <Input name=\"username\" defaultValue=\"alex\" />\n        <FormDescription>Shown publicly on your profile.</FormDescription>\n        <FormError>This username is unavailable.</FormError>\n      </FormField>\n    </Form>\n  )\n}"
+      "source": "import { Form, FormDescription, FormError, FormField, FormLabel, Input } from '../../../index'\n\nexport default function FormExplicitFieldPartsDemo() {\n  return (\n    <Form viewProps={{ width: 384 }}>\n      <FormField>\n        <FormLabel>Username</FormLabel>\n        <Input name=\"username\" defaultValue=\"alex\" />\n        <FormDescription>Shown publicly on your profile.</FormDescription>\n        <FormError>This username is unavailable.</FormError>\n      </FormField>\n    </Form>\n  )\n}"
     },
     {
       "id": "Form/field-metadata",
@@ -1339,7 +1339,7 @@
         "weave"
       ],
       "documentationRoute": "/docs/components/Form",
-      "source": "import { Form, FormField, Input } from '../../../index'\n\nexport default function FormFieldMetadataDemo() {\n  return (\n    <Form viewProps={{ width: 24 }}>\n      <FormField\n        label=\"Work email\"\n        description=\"Use the address associated with your organization.\"\n        error=\"This address is already in use.\"\n        required\n      >\n        <Input name=\"email\" defaultValue=\"alex@example.com\" />\n      </FormField>\n    </Form>\n  )\n}"
+      "source": "import { Form, FormField, Input } from '../../../index'\n\nexport default function FormFieldMetadataDemo() {\n  return (\n    <Form viewProps={{ width: 384 }}>\n      <FormField\n        label=\"Work email\"\n        description=\"Use the address associated with your organization.\"\n        error=\"This address is already in use.\"\n        required\n      >\n        <Input name=\"email\" defaultValue=\"alex@example.com\" />\n      </FormField>\n    </Form>\n  )\n}"
     },
     {
       "id": "Form/fieldset-and-legend",
@@ -1363,7 +1363,7 @@
         "without"
       ],
       "documentationRoute": "/docs/components/Form",
-      "source": "import { Form, FormFieldset, FormLegend, Radio } from '../../../index'\n\nexport default function FormFieldsetAndLegendDemo() {\n  return (\n    <Form viewProps={{ width: 24 }}>\n      <FormFieldset>\n        <FormLegend>Digest frequency</FormLegend>\n        <Radio label=\"Daily\" group=\"digest\" value=\"daily\" defaultChecked />\n        <Radio label=\"Weekly\" group=\"digest\" value=\"weekly\" />\n        <Radio label=\"Never\" group=\"digest\" value=\"never\" />\n      </FormFieldset>\n    </Form>\n  )\n}"
+      "source": "import { Form, FormFieldset, FormLegend, Radio } from '../../../index'\n\nexport default function FormFieldsetAndLegendDemo() {\n  return (\n    <Form viewProps={{ width: 384 }}>\n      <FormFieldset>\n        <FormLegend>Digest frequency</FormLegend>\n        <Radio label=\"Daily\" group=\"digest\" value=\"daily\" defaultChecked />\n        <Radio label=\"Weekly\" group=\"digest\" value=\"weekly\" />\n        <Radio label=\"Never\" group=\"digest\" value=\"never\" />\n      </FormFieldset>\n    </Form>\n  )\n}"
     },
     {
       "id": "Form/native-validation",
@@ -1388,7 +1388,7 @@
         "validation"
       ],
       "documentationRoute": "/docs/components/Form",
-      "source": "import { Button, Column, Form, Input } from '../../../index'\n\nexport default function FormNativeValidationDemo() {\n  return (\n    <Form>\n      <Column gap={1}>\n        <Input name=\"email\" type=\"email\" placeholder=\"Email\" required />\n        <Button type=\"submit\" text=\"Continue\" />\n      </Column>\n    </Form>\n  )\n}"
+      "source": "import { Button, Column, Form, Input } from '../../../index'\n\nexport default function FormNativeValidationDemo() {\n  return (\n    <Form>\n      <Column gap={16}>\n        <Input name=\"email\" type=\"email\" placeholder=\"Email\" required />\n        <Button type=\"submit\" text=\"Continue\" />\n      </Column>\n    </Form>\n  )\n}"
     },
     {
       "id": "Form/submit-and-reset",
@@ -1417,7 +1417,7 @@
         "while"
       ],
       "documentationRoute": "/docs/components/Form",
-      "source": "import { useState } from 'react'\nimport { Button, Form, FormField, Input, Row, Text } from '../../../index'\n\nexport default function FormSubmitAndResetDemo() {\n  const [status, setStatus] = useState('Waiting')\n\n  return (\n    <Form\n      onSubmit={(event) => {\n        event.preventDefault()\n        const project = new FormData(event.currentTarget).get('project')\n        setStatus(`Submitted: ${project ?? ''}`)\n      }}\n      onReset={() => setStatus('Reset')}\n      viewProps={{ width: 24 }}\n    >\n      <FormField label=\"Project name\">\n        <Input name=\"project\" defaultValue=\"Atlas\" required />\n      </FormField>\n      <Row gap={1}>\n        <Button type=\"submit\" text=\"Save\" />\n        <Button type=\"reset\" text=\"Reset\" variant=\"secondary\" />\n      </Row>\n      <Text typo=\"body-small\">{status}</Text>\n    </Form>\n  )\n}"
+      "source": "import { useState } from 'react'\nimport { Button, Form, FormField, Input, Row, Text } from '../../../index'\n\nexport default function FormSubmitAndResetDemo() {\n  const [status, setStatus] = useState('Waiting')\n\n  return (\n    <Form\n      onSubmit={(event) => {\n        event.preventDefault()\n        const project = new FormData(event.currentTarget).get('project')\n        setStatus(`Submitted: ${project ?? ''}`)\n      }}\n      onReset={() => setStatus('Reset')}\n      viewProps={{ width: 384 }}\n    >\n      <FormField label=\"Project name\">\n        <Input name=\"project\" defaultValue=\"Atlas\" required />\n      </FormField>\n      <Row gap={16}>\n        <Button type=\"submit\" text=\"Save\" />\n        <Button type=\"reset\" text=\"Reset\" variant=\"secondary\" />\n      </Row>\n      <Text typo=\"body-small\">{status}</Text>\n    </Form>\n  )\n}"
     },
     {
       "id": "Icon/basic-usage",
@@ -1454,7 +1454,7 @@
         "when"
       ],
       "documentationRoute": "/docs/components/Icon",
-      "source": "import { Icon, Row, Text } from '../../../index'\n\nconst customMark = (\n  <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\">\n    <circle cx=\"12\" cy=\"12\" r=\"8\" />\n    <path d=\"M8 12h8M12 8v8\" />\n  </svg>\n)\n\nexport default function IconCustomSvgDemo() {\n  return (\n    <Row gap={1} align=\"center\">\n      <Icon svg={customMark} size=\"large\" stroke=\"bold\" viewProps={{ label: 'Add item' }} />\n      <Text>Custom SVG with an accessible name</Text>\n    </Row>\n  )\n}"
+      "source": "import { Icon, Row, Text } from '../../../index'\n\nconst customMark = (\n  <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\">\n    <circle cx=\"12\" cy=\"12\" r=\"8\" />\n    <path d=\"M8 12h8M12 8v8\" />\n  </svg>\n)\n\nexport default function IconCustomSvgDemo() {\n  return (\n    <Row gap={16} align=\"center\">\n      <Icon svg={customMark} size=\"large\" stroke=\"bold\" viewProps={{ label: 'Add item' }} />\n      <Text>Custom SVG with an accessible name</Text>\n    </Row>\n  )\n}"
     },
     {
       "id": "Icon/semantic-icon-color",
@@ -1479,7 +1479,7 @@
         "view"
       ],
       "documentationRoute": "/docs/components/Icon",
-      "source": "import { IconStar } from '@tabler/icons-react'\nimport { Icon, Row } from '../../../index'\n\nexport default function IconSemanticIconColorDemo() {\n  return (\n    <Row gap={1.5}>\n      <Icon icon={IconStar} viewProps={{ color: 'primary' }} />\n      <Icon icon={IconStar} viewProps={{ color: 'success' }} />\n      <Icon icon={IconStar} viewProps={{ color: 'danger' }} />\n    </Row>\n  )\n}"
+      "source": "import { IconStar } from '@tabler/icons-react'\nimport { Icon, Row } from '../../../index'\n\nexport default function IconSemanticIconColorDemo() {\n  return (\n    <Row gap={24}>\n      <Icon icon={IconStar} viewProps={{ color: 'primary' }} />\n      <Icon icon={IconStar} viewProps={{ color: 'success' }} />\n      <Icon icon={IconStar} viewProps={{ color: 'danger' }} />\n    </Row>\n  )\n}"
     },
     {
       "id": "Icon/stroke-emphasis",
@@ -1504,7 +1504,7 @@
         "weight"
       ],
       "documentationRoute": "/docs/components/Icon",
-      "source": "import { IconSearch } from '@tabler/icons-react'\nimport { Icon, Row } from '../../../index'\n\nexport default function IconStrokeEmphasisDemo() {\n  return (\n    <Row gap={1.5} align=\"center\">\n      <Icon icon={IconSearch} stroke=\"thin\" />\n      <Icon icon={IconSearch} stroke=\"regular\" />\n      <Icon icon={IconSearch} stroke=\"bold\" />\n    </Row>\n  )\n}"
+      "source": "import { IconSearch } from '@tabler/icons-react'\nimport { Icon, Row } from '../../../index'\n\nexport default function IconStrokeEmphasisDemo() {\n  return (\n    <Row gap={24} align=\"center\">\n      <Icon icon={IconSearch} stroke=\"thin\" />\n      <Icon icon={IconSearch} stroke=\"regular\" />\n      <Icon icon={IconSearch} stroke=\"bold\" />\n    </Row>\n  )\n}"
     },
     {
       "id": "Image/basic-usage",
@@ -1513,7 +1513,7 @@
       "components": ["Image"],
       "concepts": ["basic", "image", "usage"],
       "documentationRoute": "/docs/components/Image",
-      "source": "import { Image } from '../../../index'\nimport { documentationSampleImage as imageUrl } from '../../documentation-example-fixtures'\n\nexport default function ImageBasicUsageDemo() {\n  return (\n    <Image\n      src={imageUrl}\n      alt=\"Example landscape\"\n      fit=\"cover\"\n      loading=\"lazy\"\n      viewProps={{ width: 20, height: 10, radius: 'medium' }}\n    />\n  )\n}"
+      "source": "import { Image } from '../../../index'\nimport { documentationSampleImage as imageUrl } from '../../documentation-example-fixtures'\n\nexport default function ImageBasicUsageDemo() {\n  return (\n    <Image\n      src={imageUrl}\n      alt=\"Example landscape\"\n      fit=\"cover\"\n      loading=\"lazy\"\n      viewProps={{ width: 320, height: 160, radius: 'medium' }}\n    />\n  )\n}"
     },
     {
       "id": "Image/blob-events",
@@ -1539,7 +1539,7 @@
         "text"
       ],
       "documentationRoute": "/docs/components/Image",
-      "source": "import { useMemo, useState } from 'react'\nimport { Column, Image, Row, Text } from '../../../index'\n\nexport default function ImageBlobEventsDemo() {\n  const validBlob = useMemo(\n    () =>\n      new Blob(\n        [\n          '<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"240\" height=\"120\"><rect width=\"240\" height=\"120\" rx=\"16\" fill=\"#c2185b\"/><circle cx=\"120\" cy=\"60\" r=\"28\" fill=\"white\"/></svg>',\n        ],\n        { type: 'image/svg+xml' },\n      ),\n    [],\n  )\n  const invalidBlob = useMemo(() => new Blob(['not an image'], { type: 'image/png' }), [])\n  const [loaded, setLoaded] = useState(false)\n  const [errored, setErrored] = useState(false)\n\n  return (\n    <Row gap={2} wrap>\n      <Column gap={0.5}>\n        <Image\n          src={validBlob}\n          alt=\"Blob source example\"\n          fit=\"cover\"\n          onLoad={() => setLoaded(true)}\n          viewProps={{ width: 12, height: 6, radius: 'medium' }}\n        />\n        <Text typo=\"body-small\" color=\"secondary\">\n          {loaded ? 'Blob loaded' : 'Loading Blob'}\n        </Text>\n      </Column>\n\n      <Column gap={0.5}>\n        <Image\n          src={invalidBlob}\n          alt=\"Invalid Blob source\"\n          onError={() => setErrored(true)}\n          viewProps={{ width: 12, height: 6, background: 'surfaceHover', radius: 'medium' }}\n        />\n        <Text typo=\"body-small\" color=\"secondary\">\n          {errored ? 'Load error received' : 'Waiting for error'}\n        </Text>\n      </Column>\n    </Row>\n  )\n}"
+      "source": "import { useMemo, useState } from 'react'\nimport { Column, Image, Row, Text } from '../../../index'\n\nexport default function ImageBlobEventsDemo() {\n  const validBlob = useMemo(\n    () =>\n      new Blob(\n        [\n          '<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"240\" height=\"120\"><rect width=\"240\" height=\"120\" rx=\"16\" fill=\"#c2185b\"/><circle cx=\"120\" cy=\"60\" r=\"28\" fill=\"white\"/></svg>',\n        ],\n        { type: 'image/svg+xml' },\n      ),\n    [],\n  )\n  const invalidBlob = useMemo(() => new Blob(['not an image'], { type: 'image/png' }), [])\n  const [loaded, setLoaded] = useState(false)\n  const [errored, setErrored] = useState(false)\n\n  return (\n    <Row gap={32} wrap>\n      <Column gap={8}>\n        <Image\n          src={validBlob}\n          alt=\"Blob source example\"\n          fit=\"cover\"\n          onLoad={() => setLoaded(true)}\n          viewProps={{ width: 192, height: 96, radius: 'medium' }}\n        />\n        <Text typo=\"body-small\" color=\"secondary\">\n          {loaded ? 'Blob loaded' : 'Loading Blob'}\n        </Text>\n      </Column>\n\n      <Column gap={8}>\n        <Image\n          src={invalidBlob}\n          alt=\"Invalid Blob source\"\n          onError={() => setErrored(true)}\n          viewProps={{ width: 192, height: 96, background: 'surfaceHover', radius: 'medium' }}\n        />\n        <Text typo=\"body-small\" color=\"secondary\">\n          {errored ? 'Load error received' : 'Waiting for error'}\n        </Text>\n      </Column>\n    </Row>\n  )\n}"
     },
     {
       "id": "Image/contained-image",
@@ -1564,7 +1564,7 @@
         "when"
       ],
       "documentationRoute": "/docs/components/Image",
-      "source": "import { Image } from '../../../index'\nimport { documentationSampleImage as imageUrl } from '../../documentation-example-fixtures'\n\nexport default function ImageContainedImageDemo() {\n  return (\n    <Image\n      src={imageUrl}\n      alt=\"Contained example landscape\"\n      fit=\"contain\"\n      viewProps={{ width: 20, height: 8, background: 'surfaceHover', radius: 'medium' }}\n    />\n  )\n}"
+      "source": "import { Image } from '../../../index'\nimport { documentationSampleImage as imageUrl } from '../../documentation-example-fixtures'\n\nexport default function ImageContainedImageDemo() {\n  return (\n    <Image\n      src={imageUrl}\n      alt=\"Contained example landscape\"\n      fit=\"contain\"\n      viewProps={{ width: 320, height: 128, background: 'surfaceHover', radius: 'medium' }}\n    />\n  )\n}"
     },
     {
       "id": "Image/focal-position",
@@ -1587,7 +1587,7 @@
         "when"
       ],
       "documentationRoute": "/docs/components/Image",
-      "source": "import { Image } from '../../../index'\nimport { documentationSampleImage as imageUrl } from '../../documentation-example-fixtures'\n\nexport default function ImageFocalPositionDemo() {\n  return (\n    <Image\n      src={imageUrl}\n      alt=\"Top-aligned example landscape\"\n      fit=\"cover\"\n      position=\"top\"\n      loading=\"eager\"\n      viewProps={{ width: 16, height: 6, radius: 'medium' }}\n    />\n  )\n}"
+      "source": "import { Image } from '../../../index'\nimport { documentationSampleImage as imageUrl } from '../../documentation-example-fixtures'\n\nexport default function ImageFocalPositionDemo() {\n  return (\n    <Image\n      src={imageUrl}\n      alt=\"Top-aligned example landscape\"\n      fit=\"cover\"\n      position=\"top\"\n      loading=\"eager\"\n      viewProps={{ width: 256, height: 96, radius: 'medium' }}\n    />\n  )\n}"
     },
     {
       "id": "Input/basic-usage",
@@ -1617,7 +1617,7 @@
         "yyyy"
       ],
       "documentationRoute": "/docs/components/Input",
-      "source": "import { useState } from 'react'\nimport { Column, Input, Text } from '../../../index'\n\nexport default function DateControlledDateDemo() {\n  const [value, setValue] = useState('2026-10-09')\n\n  return (\n    <Column gap={0.75} width={22}>\n      <Input type=\"date\" value={value} onChange={setValue} viewProps={{ label: 'Selected date' }} />\n      <Text typo=\"body-small\" color=\"secondary\">\n        Value: {value || 'empty'}\n      </Text>\n    </Column>\n  )\n}"
+      "source": "import { useState } from 'react'\nimport { Column, Input, Text } from '../../../index'\n\nexport default function DateControlledDateDemo() {\n  const [value, setValue] = useState('2026-10-09')\n\n  return (\n    <Column gap={12} width={352}>\n      <Input type=\"date\" value={value} onChange={setValue} viewProps={{ label: 'Selected date' }} />\n      <Text typo=\"body-small\" color=\"secondary\">\n        Value: {value || 'empty'}\n      </Text>\n    </Column>\n  )\n}"
     },
     {
       "id": "Input/controlled-input",
@@ -1643,7 +1643,7 @@
         "while"
       ],
       "documentationRoute": "/docs/components/Input",
-      "source": "import { useState } from 'react'\nimport { Column, Input, Text } from '../../../index'\n\nexport default function InputControlledInputDemo() {\n  const [value, setValue] = useState('Weave')\n\n  return (\n    <Column gap={0.75} width={20}>\n      <Input\n        value={value}\n        onChange={setValue}\n        name=\"project\"\n        autoComplete=\"off\"\n        maxLength={24}\n        placeholder=\"Project name\"\n      />\n      <Text typo=\"body-small\" color=\"secondary\">\n        Value: {value || 'empty'}\n      </Text>\n    </Column>\n  )\n}"
+      "source": "import { useState } from 'react'\nimport { Column, Input, Text } from '../../../index'\n\nexport default function InputControlledInputDemo() {\n  const [value, setValue] = useState('Weave')\n\n  return (\n    <Column gap={12} width={320}>\n      <Input\n        value={value}\n        onChange={setValue}\n        name=\"project\"\n        autoComplete=\"off\"\n        maxLength={24}\n        placeholder=\"Project name\"\n      />\n      <Text typo=\"body-small\" color=\"secondary\">\n        Value: {value || 'empty'}\n      </Text>\n    </Column>\n  )\n}"
     },
     {
       "id": "Input/date-input",
@@ -1667,7 +1667,7 @@
         "values"
       ],
       "documentationRoute": "/docs/components/Input",
-      "source": "import { Form, FormField, Input } from '../../../index'\n\nexport default function DateBasicUsageDemo() {\n  return (\n    <Form viewProps={{ width: 22 }}>\n      <FormField label=\"Appointment date\">\n        <Input\n          type=\"date\"\n          name=\"appointment\"\n          defaultValue=\"2026-10-09\"\n          min=\"2026-01-01\"\n          max=\"2026-12-31\"\n        />\n      </FormField>\n    </Form>\n  )\n}"
+      "source": "import { Form, FormField, Input } from '../../../index'\n\nexport default function DateBasicUsageDemo() {\n  return (\n    <Form viewProps={{ width: 352 }}>\n      <FormField label=\"Appointment date\">\n        <Input\n          type=\"date\"\n          name=\"appointment\"\n          defaultValue=\"2026-10-09\"\n          min=\"2026-01-01\"\n          max=\"2026-12-31\"\n        />\n      </FormField>\n    </Form>\n  )\n}"
     },
     {
       "id": "Input/forced-locale",
@@ -1693,7 +1693,7 @@
         "yyyy"
       ],
       "documentationRoute": "/docs/components/Input",
-      "source": "import { useState } from 'react'\nimport { Column, Input, SegmentedButton } from '../../../index'\n\nexport default function DateForcedLocaleDemo() {\n  const [locale, setLocale] = useState('fr')\n\n  return (\n    <Column gap={1} width={23}>\n      <SegmentedButton\n        selection=\"single\"\n        selected={locale}\n        onSelect={(next) => {\n          if (next !== null) setLocale(next)\n        }}\n        items={[\n          { id: 'en', children: 'English' },\n          { id: 'zh-CN', children: '简体中文' },\n          { id: 'zh-TW', children: '繁體中文' },\n          { id: 'fr', children: 'Français' },\n        ]}\n      />\n      <Input type=\"date\" locale={locale} defaultValue=\"2026-10-09\" viewProps={{ label: 'Date' }} />\n    </Column>\n  )\n}"
+      "source": "import { useState } from 'react'\nimport { Column, Input, SegmentedButton } from '../../../index'\n\nexport default function DateForcedLocaleDemo() {\n  const [locale, setLocale] = useState('fr')\n\n  return (\n    <Column gap={16} width={368}>\n      <SegmentedButton\n        selection=\"single\"\n        selected={locale}\n        onSelect={(next) => {\n          if (next !== null) setLocale(next)\n        }}\n        items={[\n          { id: 'en', children: 'English' },\n          { id: 'zh-CN', children: '简体中文' },\n          { id: 'zh-TW', children: '繁體中文' },\n          { id: 'fr', children: 'Français' },\n        ]}\n      />\n      <Input type=\"date\" locale={locale} defaultValue=\"2026-10-09\" viewProps={{ label: 'Date' }} />\n    </Column>\n  )\n}"
     },
     {
       "id": "Input/form-states",
@@ -1722,7 +1722,7 @@
         "while"
       ],
       "documentationRoute": "/docs/components/Input",
-      "source": "import { Column, Input } from '../../../index'\n\nexport default function InputFormStatesDemo() {\n  return (\n    <Column gap={1} width={20}>\n      <Input placeholder=\"Required value\" required />\n      <Input value=\"Read-only value\" readOnly />\n      <Input value=\"Unavailable value\" disabled />\n    </Column>\n  )\n}"
+      "source": "import { Column, Input } from '../../../index'\n\nexport default function InputFormStatesDemo() {\n  return (\n    <Column gap={16} width={320}>\n      <Input placeholder=\"Required value\" required />\n      <Input value=\"Read-only value\" readOnly />\n      <Input value=\"Unavailable value\" disabled />\n    </Column>\n  )\n}"
     },
     {
       "id": "Input/multiline-input",
@@ -1755,7 +1755,7 @@
       "components": ["Absolute", "Button", "Column", "Stack", "Text"],
       "concepts": ["absolute", "button", "column", "layout", "stack", "text"],
       "documentationRoute": "/docs/components/Layout",
-      "source": "import { Absolute, Button, Column, Stack, Text } from '../../../index'\n\nexport default function LayoutAbsoluteDemo() {\n  return (\n    <Stack position=\"relative\" width={18} height={8}>\n      <Column width=\"fill\" height=\"fill\" background=\"surfaceHover\" radius=\"medium\" padding={1}>\n        <Text>Positioning plane</Text>\n      </Column>\n      <Absolute top={1} left={2}>\n        <Button text=\"Absolute\" />\n      </Absolute>\n    </Stack>\n  )\n}"
+      "source": "import { Absolute, Button, Column, Stack, Text } from '../../../index'\n\nexport default function LayoutAbsoluteDemo() {\n  return (\n    <Stack position=\"relative\" width={288} height={128}>\n      <Column width=\"fill\" height=\"fill\" background=\"surfaceHover\" radius=\"medium\" padding={16}>\n        <Text>Positioning plane</Text>\n      </Column>\n      <Absolute top={16} left={32}>\n        <Button text=\"Absolute\" />\n      </Absolute>\n    </Stack>\n  )\n}"
     },
     {
       "id": "Layout/column",
@@ -1764,7 +1764,7 @@
       "components": ["Button", "Column"],
       "concepts": ["button", "column", "layout"],
       "documentationRoute": "/docs/components/Layout",
-      "source": "import { Button, Column } from '../../../index'\n\nexport default function LayoutColumnDemo() {\n  return (\n    <Column width={18} height={14} align=\"end\" justify=\"space-between\">\n      <Button text=\"One\" />\n      <Button text=\"Two\" />\n      <Button text=\"Three\" />\n    </Column>\n  )\n}"
+      "source": "import { Button, Column } from '../../../index'\n\nexport default function LayoutColumnDemo() {\n  return (\n    <Column width={288} height={224} align=\"end\" justify=\"space-between\">\n      <Button text=\"One\" />\n      <Button text=\"Two\" />\n      <Button text=\"Three\" />\n    </Column>\n  )\n}"
     },
     {
       "id": "Layout/flex",
@@ -1773,7 +1773,7 @@
       "components": ["Button", "Flex"],
       "concepts": ["button", "flex", "layout"],
       "documentationRoute": "/docs/components/Layout",
-      "source": "import { Button, Flex } from '../../../index'\n\nexport default function LayoutFlexDemo() {\n  return (\n    <Flex direction=\"row\" gap={1} wrap justify=\"start\" width={18}>\n      <Button text=\"One\" viewProps={{ width: 8 }} />\n      <Button text=\"Two\" viewProps={{ width: 8 }} />\n      <Button text=\"Three\" viewProps={{ width: 8 }} />\n    </Flex>\n  )\n}"
+      "source": "import { Button, Flex } from '../../../index'\n\nexport default function LayoutFlexDemo() {\n  return (\n    <Flex direction=\"row\" gap={16} wrap justify=\"start\" width={288}>\n      <Button text=\"One\" viewProps={{ width: 128 }} />\n      <Button text=\"Two\" viewProps={{ width: 128 }} />\n      <Button text=\"Three\" viewProps={{ width: 128 }} />\n    </Flex>\n  )\n}"
     },
     {
       "id": "Layout/grid",
@@ -1782,7 +1782,7 @@
       "components": ["Column", "Grid", "Text"],
       "concepts": ["column", "grid", "layout", "text"],
       "documentationRoute": "/docs/components/Layout",
-      "source": "import { Column, Grid, Text } from '../../../index'\n\nexport default function LayoutGridDemo() {\n  return (\n    <Grid columns={3} rows={2} gap={1} width=\"fill\">\n      <Column\n        column={1}\n        columnSpan={2}\n        row={1}\n        background=\"surfaceHover\"\n        padding={1.5}\n        radius=\"medium\"\n      >\n        <Text>A · spans two columns</Text>\n      </Column>\n      <Column\n        column={3}\n        row={1}\n        rowSpan={2}\n        background=\"surfaceHover\"\n        padding={1.5}\n        radius=\"medium\"\n      >\n        <Text>B · spans two rows</Text>\n      </Column>\n      <Column column={1} row={2} background=\"surfaceHover\" padding={1.5} radius=\"medium\">\n        <Text>C</Text>\n      </Column>\n      <Column column={2} row={2} background=\"surfaceHover\" padding={1.5} radius=\"medium\">\n        <Text>D</Text>\n      </Column>\n    </Grid>\n  )\n}"
+      "source": "import { Column, Grid, Text } from '../../../index'\n\nexport default function LayoutGridDemo() {\n  return (\n    <Grid columns={3} rows={2} gap={16} width=\"fill\">\n      <Column\n        column={1}\n        columnSpan={2}\n        row={1}\n        background=\"surfaceHover\"\n        padding={24}\n        radius=\"medium\"\n      >\n        <Text>A · spans two columns</Text>\n      </Column>\n      <Column column={3} row={1} rowSpan={2} background=\"surfaceHover\" padding={24} radius=\"medium\">\n        <Text>B · spans two rows</Text>\n      </Column>\n      <Column column={1} row={2} background=\"surfaceHover\" padding={24} radius=\"medium\">\n        <Text>C</Text>\n      </Column>\n      <Column column={2} row={2} background=\"surfaceHover\" padding={24} radius=\"medium\">\n        <Text>D</Text>\n      </Column>\n    </Grid>\n  )\n}"
     },
     {
       "id": "Layout/row",
@@ -1791,7 +1791,7 @@
       "components": ["Button", "Row"],
       "concepts": ["button", "layout", "row"],
       "documentationRoute": "/docs/components/Layout",
-      "source": "import { Button, Row } from '../../../index'\n\nexport default function LayoutRowDemo() {\n  return (\n    <Row gap={1} align=\"center\" justify=\"start\">\n      <Button text=\"One\" />\n      <Button text=\"Two\" />\n      <Button text=\"Three\" />\n    </Row>\n  )\n}"
+      "source": "import { Button, Row } from '../../../index'\n\nexport default function LayoutRowDemo() {\n  return (\n    <Row gap={16} align=\"center\" justify=\"start\">\n      <Button text=\"One\" />\n      <Button text=\"Two\" />\n      <Button text=\"Three\" />\n    </Row>\n  )\n}"
     },
     {
       "id": "Layout/splitbox",
@@ -1800,7 +1800,7 @@
       "components": ["Button", "Column", "Row", "SplitBox", "SplitBoxPane", "Text"],
       "concepts": ["box", "button", "column", "layout", "pane", "row", "split", "splitbox", "text"],
       "documentationRoute": "/docs/components/Layout",
-      "source": "import { useState } from 'react'\nimport {\n  Button,\n  Column,\n  Row,\n  SplitBox,\n  type SplitBoxCollapsed,\n  SplitBoxPane,\n  Text,\n} from '../../../index'\n\nfunction Pane({ children }: { children: string }) {\n  return (\n    <Column width=\"fill\" height=\"fill\" background=\"surfaceHover\" padding={1}>\n      <Text>{children}</Text>\n    </Column>\n  )\n}\n\nexport default function LayoutSplitboxDemo() {\n  const [size, setSize] = useState<string>('40%')\n  const [collapsed, setCollapsed] = useState<SplitBoxCollapsed>(false)\n\n  return (\n    <Column gap={2} width=\"fill\">\n      <Column gap={0.5}>\n        <Text typo=\"label-medium\">Uncontrolled horizontal split</Text>\n        <SplitBox\n          defaultSize=\"35%\"\n          minStart={8}\n          maxStart=\"70%\"\n          minEnd={10}\n          collapsible=\"both\"\n          collapseThreshold={2}\n          expandThreshold={4}\n          step={1}\n          thickness={0.125}\n          viewProps={{ width: 'fill', height: 10 }}\n        >\n          <SplitBoxPane>\n            <Pane>Start pane</Pane>\n          </SplitBoxPane>\n          <SplitBoxPane>\n            <Pane>End pane</Pane>\n          </SplitBoxPane>\n        </SplitBox>\n      </Column>\n\n      <Column gap={0.5}>\n        <Text typo=\"label-medium\">Vertical split with a disabled splitter</Text>\n        <SplitBox\n          direction=\"vertical\"\n          defaultSize={4}\n          minStart={3}\n          minEnd={3}\n          disabled\n          viewProps={{ width: 'fill', height: 10 }}\n        >\n          <SplitBoxPane>\n            <Pane>Top pane</Pane>\n          </SplitBoxPane>\n          <SplitBoxPane>\n            <Pane>Bottom pane</Pane>\n          </SplitBoxPane>\n        </SplitBox>\n      </Column>\n\n      <Column gap={0.5}>\n        <Row gap={0.5} align=\"center\" wrap>\n          <Text typo=\"label-medium\">Controlled split</Text>\n          <Button\n            text=\"Collapse start\"\n            size=\"small\"\n            variant=\"tertiary\"\n            viewProps={{ onClick: () => setCollapsed('start') }}\n          />\n          <Button\n            text=\"Expand\"\n            size=\"small\"\n            variant=\"tertiary\"\n            viewProps={{ onClick: () => setCollapsed(false) }}\n          />\n        </Row>\n        <Text typo=\"body-small\" color=\"secondary\">\n          Start size: {size} · collapsed: {collapsed === false ? 'false' : collapsed}\n        </Text>\n        <SplitBox\n          size={size}\n          onChange={setSize}\n          collapsed={collapsed}\n          onCollapsedChange={setCollapsed}\n          collapsible=\"both\"\n          viewProps={{ width: 'fill', height: 10 }}\n        >\n          <SplitBoxPane viewProps={{ scrollbar: { size: 'small' } }}>\n            <Column background=\"surfaceHover\" padding={1} gap={0.5}>\n              {Array.from({ length: 8 }, (_, index) => (\n                <Text key={index}>Scrollable item {index + 1}</Text>\n              ))}\n            </Column>\n          </SplitBoxPane>\n          <SplitBoxPane>\n            <Pane>Controlled end pane</Pane>\n          </SplitBoxPane>\n        </SplitBox>\n      </Column>\n    </Column>\n  )\n}"
+      "source": "import { useState } from 'react'\nimport {\n  Button,\n  Column,\n  Row,\n  SplitBox,\n  type SplitBoxCollapsed,\n  SplitBoxPane,\n  Text,\n} from '../../../index'\n\nfunction Pane({ children }: { children: string }) {\n  return (\n    <Column width=\"fill\" height=\"fill\" background=\"surfaceHover\" padding={16}>\n      <Text>{children}</Text>\n    </Column>\n  )\n}\n\nexport default function LayoutSplitboxDemo() {\n  const [size, setSize] = useState<string>('40%')\n  const [collapsed, setCollapsed] = useState<SplitBoxCollapsed>(false)\n\n  return (\n    <Column gap={32} width=\"fill\">\n      <Column gap={8}>\n        <Text typo=\"label-medium\">Uncontrolled horizontal split</Text>\n        <SplitBox\n          defaultSize=\"35%\"\n          minStart={128}\n          maxStart=\"70%\"\n          minEnd={160}\n          collapsible=\"both\"\n          collapseThreshold={32}\n          expandThreshold={64}\n          step={16}\n          thickness={2}\n          viewProps={{ width: 'fill', height: 160 }}\n        >\n          <SplitBoxPane>\n            <Pane>Start pane</Pane>\n          </SplitBoxPane>\n          <SplitBoxPane>\n            <Pane>End pane</Pane>\n          </SplitBoxPane>\n        </SplitBox>\n      </Column>\n\n      <Column gap={8}>\n        <Text typo=\"label-medium\">Vertical split with a disabled splitter</Text>\n        <SplitBox\n          direction=\"vertical\"\n          defaultSize={64}\n          minStart={48}\n          minEnd={48}\n          disabled\n          viewProps={{ width: 'fill', height: 160 }}\n        >\n          <SplitBoxPane>\n            <Pane>Top pane</Pane>\n          </SplitBoxPane>\n          <SplitBoxPane>\n            <Pane>Bottom pane</Pane>\n          </SplitBoxPane>\n        </SplitBox>\n      </Column>\n\n      <Column gap={8}>\n        <Row gap={8} align=\"center\" wrap>\n          <Text typo=\"label-medium\">Controlled split</Text>\n          <Button\n            text=\"Collapse start\"\n            size=\"small\"\n            variant=\"tertiary\"\n            viewProps={{ onClick: () => setCollapsed('start') }}\n          />\n          <Button\n            text=\"Expand\"\n            size=\"small\"\n            variant=\"tertiary\"\n            viewProps={{ onClick: () => setCollapsed(false) }}\n          />\n        </Row>\n        <Text typo=\"body-small\" color=\"secondary\">\n          Start size: {size} · collapsed: {collapsed === false ? 'false' : collapsed}\n        </Text>\n        <SplitBox\n          size={size}\n          onChange={setSize}\n          collapsed={collapsed}\n          onCollapsedChange={setCollapsed}\n          collapsible=\"both\"\n          viewProps={{ width: 'fill', height: 160 }}\n        >\n          <SplitBoxPane viewProps={{ scrollbar: { size: 'small' } }}>\n            <Column background=\"surfaceHover\" padding={16} gap={8}>\n              {Array.from({ length: 8 }, (_, index) => (\n                <Text key={index}>Scrollable item {index + 1}</Text>\n              ))}\n            </Column>\n          </SplitBoxPane>\n          <SplitBoxPane>\n            <Pane>Controlled end pane</Pane>\n          </SplitBoxPane>\n        </SplitBox>\n      </Column>\n    </Column>\n  )\n}"
     },
     {
       "id": "Layout/stack",
@@ -1809,7 +1809,7 @@
       "components": ["Column", "Stack", "Text"],
       "concepts": ["column", "layout", "stack", "text"],
       "documentationRoute": "/docs/components/Layout",
-      "source": "import { Column, Stack, Text } from '../../../index'\n\nexport default function LayoutStackDemo() {\n  return (\n    <Stack width={18} height={8}>\n      <Column\n        width=\"fill\"\n        height=\"fill\"\n        background=\"surfaceHover\"\n        radius=\"medium\"\n        align=\"center\"\n        justify=\"center\"\n      >\n        <Text>Base</Text>\n      </Column>\n      <Column\n        width={8}\n        height={4}\n        background=\"surface\"\n        radius=\"medium\"\n        align=\"center\"\n        justify=\"center\"\n        justifySelf=\"center\"\n        alignSelf=\"center\"\n      >\n        <Text>Middle</Text>\n      </Column>\n      <Text viewProps={{ justifySelf: 'center', alignSelf: 'center' }}>Top</Text>\n    </Stack>\n  )\n}"
+      "source": "import { Column, Stack, Text } from '../../../index'\n\nexport default function LayoutStackDemo() {\n  return (\n    <Stack width={288} height={128}>\n      <Column\n        width=\"fill\"\n        height=\"fill\"\n        background=\"surfaceHover\"\n        radius=\"medium\"\n        align=\"center\"\n        justify=\"center\"\n      >\n        <Text>Base</Text>\n      </Column>\n      <Column\n        width={128}\n        height={64}\n        background=\"surface\"\n        radius=\"medium\"\n        align=\"center\"\n        justify=\"center\"\n        justifySelf=\"center\"\n        alignSelf=\"center\"\n      >\n        <Text>Middle</Text>\n      </Column>\n      <Text viewProps={{ justifySelf: 'center', alignSelf: 'center' }}>Top</Text>\n    </Stack>\n  )\n}"
     },
     {
       "id": "Link/basic-usage",
@@ -1953,7 +1953,7 @@
         "single"
       ],
       "documentationRoute": "/docs/components/List",
-      "source": "import { List, ListItem } from '../../../index'\n\nexport default function ListHorizontalListDemo() {\n  return (\n    <List\n      orientation=\"horizontal\"\n      selection=\"single\"\n      defaultSelected=\"overview\"\n      gap={0.5}\n      noDividers\n      singleLine\n      viewProps={{ width: 'fill', overflow: 'auto' }}\n    >\n      <ListItem id=\"overview\">Overview</ListItem>\n      <ListItem id=\"activity\">Recent activity with a deliberately long label</ListItem>\n      <ListItem id=\"settings\">Settings</ListItem>\n    </List>\n  )\n}"
+      "source": "import { List, ListItem } from '../../../index'\n\nexport default function ListHorizontalListDemo() {\n  return (\n    <List\n      orientation=\"horizontal\"\n      selection=\"single\"\n      defaultSelected=\"overview\"\n      gap={8}\n      noDividers\n      singleLine\n      viewProps={{ width: 'fill', overflow: 'auto' }}\n    >\n      <ListItem id=\"overview\">Overview</ListItem>\n      <ListItem id=\"activity\">Recent activity with a deliberately long label</ListItem>\n      <ListItem id=\"settings\">Settings</ListItem>\n    </List>\n  )\n}"
     },
     {
       "id": "List/single-selection",
@@ -1998,7 +1998,7 @@
         "windows"
       ],
       "documentationRoute": "/docs/components/List",
-      "source": "import { List } from '../../../index'\n\nconst items = Array.from({ length: 100 }, (_, index) => ({\n  id: `item-${index + 1}`,\n  text: `Item ${index + 1}`,\n  secondaryText: `Row ${index + 1} of 100`,\n}))\n\nexport default function ListVirtualizedListDemo() {\n  return (\n    <List\n      items={items}\n      virtualized\n      selection=\"single\"\n      defaultSelected=\"item-1\"\n      viewProps={{ height: 12, width: 'fill', overflow: 'auto' }}\n    />\n  )\n}"
+      "source": "import { List } from '../../../index'\n\nconst items = Array.from({ length: 100 }, (_, index) => ({\n  id: `item-${index + 1}`,\n  text: `Item ${index + 1}`,\n  secondaryText: `Row ${index + 1} of 100`,\n}))\n\nexport default function ListVirtualizedListDemo() {\n  return (\n    <List\n      items={items}\n      virtualized\n      selection=\"single\"\n      defaultSelected=\"item-1\"\n      viewProps={{ height: 192, width: 'fill', overflow: 'auto' }}\n    />\n  )\n}"
     },
     {
       "id": "MarkSlider/basic-usage",
@@ -2064,7 +2064,7 @@
         "without"
       ],
       "documentationRoute": "/docs/components/MarkSlider",
-      "source": "import { useState } from 'react'\nimport { Column, MarkSlider, Text } from '../../../index'\n\nconst marks = [\n  { flag: 0, label: 'Minimum' },\n  { flag: 20, label: 'Low' },\n  { flag: 55, label: 'Medium' },\n  { flag: 100, label: 'Maximum' },\n] as const\n\nexport default function MarkSliderControlledRestrictedInverseDemo() {\n  const [value, setValue] = useState(55)\n\n  return (\n    <Column gap={0.75} align=\"start\">\n      <MarkSlider\n        marks={marks}\n        value={value}\n        onChange={setValue}\n        restricted\n        inverse\n        label=\"Priority\"\n        name=\"priority\"\n      />\n      <Text typo=\"body-small\" color=\"secondary\">\n        Value: {value}\n      </Text>\n    </Column>\n  )\n}"
+      "source": "import { useState } from 'react'\nimport { Column, MarkSlider, Text } from '../../../index'\n\nconst marks = [\n  { flag: 0, label: 'Minimum' },\n  { flag: 20, label: 'Low' },\n  { flag: 55, label: 'Medium' },\n  { flag: 100, label: 'Maximum' },\n] as const\n\nexport default function MarkSliderControlledRestrictedInverseDemo() {\n  const [value, setValue] = useState(55)\n\n  return (\n    <Column gap={12} align=\"start\">\n      <MarkSlider\n        marks={marks}\n        value={value}\n        onChange={setValue}\n        restricted\n        inverse\n        label=\"Priority\"\n        name=\"priority\"\n      />\n      <Text typo=\"body-small\" color=\"secondary\">\n        Value: {value}\n      </Text>\n    </Column>\n  )\n}"
     },
     {
       "id": "MarkSlider/vertical-marks",
@@ -2086,7 +2086,7 @@
         "when"
       ],
       "documentationRoute": "/docs/components/MarkSlider",
-      "source": "import { MarkSlider } from '../../../index'\n\nexport default function MarkSliderVerticalMarksDemo() {\n  return (\n    <MarkSlider\n      marks={[\n        { flag: 25, label: '25' },\n        { flag: 50, label: '50' },\n        { flag: 75, label: '75' },\n      ]}\n      defaultValue={50}\n      min={0}\n      max={100}\n      direction=\"vertical\"\n      viewProps={{ height: 12 }}\n    />\n  )\n}"
+      "source": "import { MarkSlider } from '../../../index'\n\nexport default function MarkSliderVerticalMarksDemo() {\n  return (\n    <MarkSlider\n      marks={[\n        { flag: 25, label: '25' },\n        { flag: 50, label: '50' },\n        { flag: 75, label: '75' },\n      ]}\n      defaultValue={50}\n      min={0}\n      max={100}\n      direction=\"vertical\"\n      viewProps={{ height: 192 }}\n    />\n  )\n}"
     },
     {
       "id": "Menu/basic-usage",
@@ -2095,7 +2095,7 @@
       "components": ["Button", "Menu", "MenuItem"],
       "concepts": ["basic", "button", "item", "menu", "usage"],
       "documentationRoute": "/docs/components/Menu",
-      "source": "import { Button, Menu, MenuItem } from '../../../index'\n\nexport default function MenuBasicUsageDemo() {\n  return (\n    <Menu\n      trigger={<Button text=\"Menu trigger\" />}\n      placement=\"bottom-left\"\n      offset={0.5}\n      closeOnSelect\n      defaultOpen\n    >\n      <MenuItem text=\"First action\" />\n      <MenuItem text=\"Second action\" />\n    </Menu>\n  )\n}"
+      "source": "import { Button, Menu, MenuItem } from '../../../index'\n\nexport default function MenuBasicUsageDemo() {\n  return (\n    <Menu\n      trigger={<Button text=\"Menu trigger\" />}\n      placement=\"bottom-left\"\n      offset={8}\n      closeOnSelect\n      defaultOpen\n    >\n      <MenuItem text=\"First action\" />\n      <MenuItem text=\"Second action\" />\n    </Menu>\n  )\n}"
     },
     {
       "id": "Menu/controlled-menu",
@@ -2121,7 +2121,7 @@
         "while"
       ],
       "documentationRoute": "/docs/components/Menu",
-      "source": "import { useState } from 'react'\nimport { Button, Menu, MenuItem } from '../../../index'\n\nexport default function MenuControlledMenuDemo() {\n  const [open, setOpen] = useState(false)\n\n  return (\n    <Menu\n      trigger={<Button text={open ? 'Close menu' : 'Open menu'} />}\n      open={open}\n      onOpenChange={setOpen}\n      placement=\"bottom-right\"\n      overlapTrigger\n      viewportPadding={1}\n    >\n      <MenuItem text=\"Rename\" />\n      <MenuItem text=\"Archive\" />\n    </Menu>\n  )\n}"
+      "source": "import { useState } from 'react'\nimport { Button, Menu, MenuItem } from '../../../index'\n\nexport default function MenuControlledMenuDemo() {\n  const [open, setOpen] = useState(false)\n\n  return (\n    <Menu\n      trigger={<Button text={open ? 'Close menu' : 'Open menu'} />}\n      open={open}\n      onOpenChange={setOpen}\n      placement=\"bottom-right\"\n      overlapTrigger\n      viewportPadding={16}\n    >\n      <MenuItem text=\"Rename\" />\n      <MenuItem text=\"Archive\" />\n    </Menu>\n  )\n}"
     },
     {
       "id": "Menu/menu-item-states",
@@ -2195,7 +2195,7 @@
         "text"
       ],
       "documentationRoute": "/docs/components/Menu",
-      "source": "import { useState } from 'react'\nimport { Button, Column, Menu, MenuItem, Text } from '../../../index'\n\nexport default function MenuSelectionDismissalDemo() {\n  const [status, setStatus] = useState('No action selected')\n\n  return (\n    <Column gap={1} align=\"start\">\n      <Menu trigger={<Button text=\"Actions\" />} defaultOpen closeOnSelect={false}>\n        <MenuItem text=\"Keep open\" onSelect={() => setStatus('Kept open')} />\n        <MenuItem\n          text=\"Select and close\"\n          closeOnSelect\n          onSelect={() => setStatus('Selected and closed')}\n        />\n      </Menu>\n      <Text typo=\"body-small\">{status}</Text>\n    </Column>\n  )\n}"
+      "source": "import { useState } from 'react'\nimport { Button, Column, Menu, MenuItem, Text } from '../../../index'\n\nexport default function MenuSelectionDismissalDemo() {\n  const [status, setStatus] = useState('No action selected')\n\n  return (\n    <Column gap={16} align=\"start\">\n      <Menu trigger={<Button text=\"Actions\" />} defaultOpen closeOnSelect={false}>\n        <MenuItem text=\"Keep open\" onSelect={() => setStatus('Kept open')} />\n        <MenuItem\n          text=\"Select and close\"\n          closeOnSelect\n          onSelect={() => setStatus('Selected and closed')}\n        />\n      </Menu>\n      <Text typo=\"body-small\">{status}</Text>\n    </Column>\n  )\n}"
     },
     {
       "id": "Menu/submenu",
@@ -2222,7 +2222,7 @@
         "that"
       ],
       "documentationRoute": "/docs/components/Menu",
-      "source": "import { Button, Menu, MenuItem } from '../../../index'\n\nexport default function MenuSubmenuDemo() {\n  return (\n    <Menu trigger={<Button text=\"Export\" />} defaultOpen submenuOffset={0.5} viewportPadding={1}>\n      <MenuItem text=\"Quick export\" />\n      <MenuItem\n        text=\"Export as\"\n        submenu={\n          <>\n            <MenuItem text=\"PDF\" />\n            <MenuItem text=\"PNG\" />\n            <MenuItem text=\"CSV\" />\n          </>\n        }\n      />\n    </Menu>\n  )\n}"
+      "source": "import { Button, Menu, MenuItem } from '../../../index'\n\nexport default function MenuSubmenuDemo() {\n  return (\n    <Menu trigger={<Button text=\"Export\" />} defaultOpen submenuOffset={8} viewportPadding={16}>\n      <MenuItem text=\"Quick export\" />\n      <MenuItem\n        text=\"Export as\"\n        submenu={\n          <>\n            <MenuItem text=\"PDF\" />\n            <MenuItem text=\"PNG\" />\n            <MenuItem text=\"CSV\" />\n          </>\n        }\n      />\n    </Menu>\n  )\n}"
     },
     {
       "id": "Popover/basic-usage",
@@ -2231,7 +2231,7 @@
       "components": ["Button", "Popover", "Text"],
       "concepts": ["basic", "button", "popover", "text", "usage"],
       "documentationRoute": "/docs/components/Popover",
-      "source": "import { Button, Popover, Text } from '../../../index'\n\nexport default function PopoverBasicUsageDemo() {\n  return (\n    <Popover\n      content={<Text>Popover content</Text>}\n      placement=\"bottom\"\n      offset={0.5}\n      viewportPadding={1}\n      autoFocus={false}\n      restoreFocus\n      defaultOpen\n    >\n      <Button text=\"Popover target\" />\n    </Popover>\n  )\n}"
+      "source": "import { Button, Popover, Text } from '../../../index'\n\nexport default function PopoverBasicUsageDemo() {\n  return (\n    <Popover\n      content={<Text>Popover content</Text>}\n      placement=\"bottom\"\n      offset={8}\n      viewportPadding={16}\n      autoFocus={false}\n      restoreFocus\n      defaultOpen\n    >\n      <Button text=\"Popover target\" />\n    </Popover>\n  )\n}"
     },
     {
       "id": "Popover/contextual-actions",
@@ -2258,7 +2258,7 @@
         "without"
       ],
       "documentationRoute": "/docs/components/Popover",
-      "source": "import { IconDots } from '@tabler/icons-react'\nimport { Button, Column, Popover } from '../../../index'\n\nexport default function PopoverContextualActionsDemo() {\n  return (\n    <Popover\n      content={\n        <Column gap={0.5}>\n          <Button text=\"Rename\" variant=\"ghost\" />\n          <Button text=\"Archive\" variant=\"ghost\" />\n        </Column>\n      }\n      placement=\"bottom-right\"\n    >\n      <Button icon={IconDots} viewProps={{ label: 'More actions' }} />\n    </Popover>\n  )\n}"
+      "source": "import { IconDots } from '@tabler/icons-react'\nimport { Button, Column, Popover } from '../../../index'\n\nexport default function PopoverContextualActionsDemo() {\n  return (\n    <Popover\n      content={\n        <Column gap={8}>\n          <Button text=\"Rename\" variant=\"ghost\" />\n          <Button text=\"Archive\" variant=\"ghost\" />\n        </Column>\n      }\n      placement=\"bottom-right\"\n    >\n      <Button icon={IconDots} viewProps={{ label: 'More actions' }} />\n    </Popover>\n  )\n}"
     },
     {
       "id": "Popover/controlled-popover",
@@ -2288,7 +2288,7 @@
         "while"
       ],
       "documentationRoute": "/docs/components/Popover",
-      "source": "import { useState } from 'react'\nimport { Button, Column, Popover, Text } from '../../../index'\n\nexport default function PopoverControlledPopoverDemo() {\n  const [open, setOpen] = useState(false)\n\n  return (\n    <Popover\n      open={open}\n      onOpenChange={setOpen}\n      content={\n        <Column gap={0.5}>\n          <Text typo=\"label-medium\">Project details</Text>\n          <Text typo=\"body-small\">Visibility is owned by the parent.</Text>\n        </Column>\n      }\n    >\n      <Button text={open ? 'Close details' : 'Open details'} />\n    </Popover>\n  )\n}"
+      "source": "import { useState } from 'react'\nimport { Button, Column, Popover, Text } from '../../../index'\n\nexport default function PopoverControlledPopoverDemo() {\n  const [open, setOpen] = useState(false)\n\n  return (\n    <Popover\n      open={open}\n      onOpenChange={setOpen}\n      content={\n        <Column gap={8}>\n          <Text typo=\"label-medium\">Project details</Text>\n          <Text typo=\"body-small\">Visibility is owned by the parent.</Text>\n        </Column>\n      }\n    >\n      <Button text={open ? 'Close details' : 'Open details'} />\n    </Popover>\n  )\n}"
     },
     {
       "id": "Popover/focused-popover",
@@ -2323,7 +2323,7 @@
       "components": ["Column", "Presence", "Text"],
       "concepts": ["basic", "column", "presence", "text", "usage"],
       "documentationRoute": "/docs/components/Presence",
-      "source": "import { Column, Presence, Text } from '../../../index'\n\nexport default function PresenceBasicUsageDemo() {\n  return (\n    <Presence present>\n      <Column background=\"surfaceHover\" padding={1.5} radius=\"medium\">\n        <Text>Presence content</Text>\n      </Column>\n    </Presence>\n  )\n}"
+      "source": "import { Column, Presence, Text } from '../../../index'\n\nexport default function PresenceBasicUsageDemo() {\n  return (\n    <Presence present>\n      <Column background=\"surfaceHover\" padding={24} radius=\"medium\">\n        <Text>Presence content</Text>\n      </Column>\n    </Presence>\n  )\n}"
     },
     {
       "id": "Presence/presence-layout",
@@ -2350,7 +2350,7 @@
         "wrapper"
       ],
       "documentationRoute": "/docs/components/Presence",
-      "source": "import { useState } from 'react'\nimport { Button, Column, Presence, Row, Text } from '../../../index'\n\nexport default function PresencePresenceLayoutDemo() {\n  const [visible, setVisible] = useState(true)\n\n  return (\n    <Column gap={1} align=\"start\">\n      <Button\n        text={visible ? 'Remove both' : 'Restore both'}\n        viewProps={{ onClick: () => setVisible((current) => !current) }}\n      />\n\n      <Presence present={visible}>\n        <Row gap={1} align=\"center\">\n          <Column\n            background=\"surfaceHover\"\n            padding={1.5}\n            radius=\"medium\"\n            enter={{ animation: 'fade-down', spring: 'gentle' }}\n            exit={{ animation: 'fade-up', spring: 'gentle' }}\n          >\n            <Text>First exiting host</Text>\n          </Column>\n          <Column\n            background=\"surfaceHover\"\n            padding={1.5}\n            radius=\"medium\"\n            enter={{ animation: 'fade-up', spring: 'gentle' }}\n            exit={{ animation: 'fade-down', spring: 'gentle' }}\n          >\n            <Text>Second exiting host</Text>\n          </Column>\n        </Row>\n      </Presence>\n    </Column>\n  )\n}"
+      "source": "import { useState } from 'react'\nimport { Button, Column, Presence, Row, Text } from '../../../index'\n\nexport default function PresencePresenceLayoutDemo() {\n  const [visible, setVisible] = useState(true)\n\n  return (\n    <Column gap={16} align=\"start\">\n      <Button\n        text={visible ? 'Remove both' : 'Restore both'}\n        viewProps={{ onClick: () => setVisible((current) => !current) }}\n      />\n\n      <Presence present={visible}>\n        <Row gap={16} align=\"center\">\n          <Column\n            background=\"surfaceHover\"\n            padding={24}\n            radius=\"medium\"\n            enter={{ animation: 'fade-down', spring: 'gentle' }}\n            exit={{ animation: 'fade-up', spring: 'gentle' }}\n          >\n            <Text>First exiting host</Text>\n          </Column>\n          <Column\n            background=\"surfaceHover\"\n            padding={24}\n            radius=\"medium\"\n            enter={{ animation: 'fade-up', spring: 'gentle' }}\n            exit={{ animation: 'fade-down', spring: 'gentle' }}\n          >\n            <Text>Second exiting host</Text>\n          </Column>\n        </Row>\n      </Presence>\n    </Column>\n  )\n}"
     },
     {
       "id": "Presence/toggle-presence",
@@ -2377,7 +2377,7 @@
         "view"
       ],
       "documentationRoute": "/docs/components/Presence",
-      "source": "import { useState } from 'react'\nimport { Button, Column, Presence, Text } from '../../../index'\n\nexport default function PresenceTogglePresenceDemo() {\n  const [visible, setVisible] = useState(true)\n  const [status, setStatus] = useState('Mounted')\n\n  const toggle = () => {\n    if (!visible) setStatus('Mounted')\n    setVisible((current) => !current)\n  }\n\n  return (\n    <Column gap={1} align=\"start\">\n      <Button text={visible ? 'Hide' : 'Show'} viewProps={{ onClick: toggle }} />\n      <Text typo=\"body-small\" color=\"secondary\">\n        Status: {status}\n      </Text>\n      <Presence present={visible} onExitComplete={() => setStatus('Exit complete')}>\n        <Column\n          background=\"surfaceHover\"\n          padding={1.5}\n          radius=\"medium\"\n          enter={{ animation: 'fade-down' }}\n          exit={{ animation: 'fade-up' }}\n        >\n          <Text>Animated content</Text>\n        </Column>\n      </Presence>\n    </Column>\n  )\n}"
+      "source": "import { useState } from 'react'\nimport { Button, Column, Presence, Text } from '../../../index'\n\nexport default function PresenceTogglePresenceDemo() {\n  const [visible, setVisible] = useState(true)\n  const [status, setStatus] = useState('Mounted')\n\n  const toggle = () => {\n    if (!visible) setStatus('Mounted')\n    setVisible((current) => !current)\n  }\n\n  return (\n    <Column gap={16} align=\"start\">\n      <Button text={visible ? 'Hide' : 'Show'} viewProps={{ onClick: toggle }} />\n      <Text typo=\"body-small\" color=\"secondary\">\n        Status: {status}\n      </Text>\n      <Presence present={visible} onExitComplete={() => setStatus('Exit complete')}>\n        <Column\n          background=\"surfaceHover\"\n          padding={24}\n          radius=\"medium\"\n          enter={{ animation: 'fade-down' }}\n          exit={{ animation: 'fade-up' }}\n        >\n          <Text>Animated content</Text>\n        </Column>\n      </Presence>\n    </Column>\n  )\n}"
     },
     {
       "id": "Progress/basic-usage",
@@ -2386,7 +2386,7 @@
       "components": ["Column", "Progress", "Text"],
       "concepts": ["basic", "column", "progress", "text", "usage"],
       "documentationRoute": "/docs/components/Progress",
-      "source": "import { Column, Progress, Text } from '../../../index'\n\nexport default function ProgressBasicUsageDemo() {\n  return (\n    <Column gap={0.75} width={20}>\n      <Text typo=\"body-small\">Uploading 65%</Text>\n      <Progress mode=\"linear\" progress={0.65} tracked />\n    </Column>\n  )\n}"
+      "source": "import { Column, Progress, Text } from '../../../index'\n\nexport default function ProgressBasicUsageDemo() {\n  return (\n    <Column gap={12} width={320}>\n      <Text typo=\"body-small\">Uploading 65%</Text>\n      <Progress mode=\"linear\" progress={0.65} tracked />\n    </Column>\n  )\n}"
     },
     {
       "id": "Progress/compact-spinner",
@@ -2412,7 +2412,7 @@
         "when"
       ],
       "documentationRoute": "/docs/components/Progress",
-      "source": "import { Progress, Row, Text } from '../../../index'\n\nexport default function ProgressCompactSpinnerDemo() {\n  return (\n    <Row gap={0.75} align=\"center\">\n      <Progress mode=\"spin\" indeterminate size=\"small\" />\n      <Text>Saving changes</Text>\n    </Row>\n  )\n}"
+      "source": "import { Progress, Row, Text } from '../../../index'\n\nexport default function ProgressCompactSpinnerDemo() {\n  return (\n    <Row gap={12} align=\"center\">\n      <Progress mode=\"spin\" indeterminate size=\"small\" />\n      <Text>Saving changes</Text>\n    </Row>\n  )\n}"
     },
     {
       "id": "Progress/indeterminate-loading",
@@ -2434,7 +2434,7 @@
         "work"
       ],
       "documentationRoute": "/docs/components/Progress",
-      "source": "import { Progress } from '../../../index'\n\nexport default function ProgressIndeterminateLoadingDemo() {\n  return <Progress mode=\"linear\" indeterminate tracked viewProps={{ width: 20 }} />\n}"
+      "source": "import { Progress } from '../../../index'\n\nexport default function ProgressIndeterminateLoadingDemo() {\n  return <Progress mode=\"linear\" indeterminate tracked viewProps={{ width: 320 }} />\n}"
     },
     {
       "id": "Progress/vertical-inverse",
@@ -2457,7 +2457,7 @@
         "while"
       ],
       "documentationRoute": "/docs/components/Progress",
-      "source": "import { Progress } from '../../../index'\n\nexport default function ProgressVerticalInverseDemo() {\n  return (\n    <Progress\n      mode=\"linear\"\n      progress={0.6}\n      direction=\"vertical\"\n      inverse\n      tracked\n      size=\"large\"\n      speed=\"fast\"\n      viewProps={{ height: 12 }}\n    />\n  )\n}"
+      "source": "import { Progress } from '../../../index'\n\nexport default function ProgressVerticalInverseDemo() {\n  return (\n    <Progress\n      mode=\"linear\"\n      progress={0.6}\n      direction=\"vertical\"\n      inverse\n      tracked\n      size=\"large\"\n      speed=\"fast\"\n      viewProps={{ height: 192 }}\n    />\n  )\n}"
     },
     {
       "id": "Radio/basic-usage",
@@ -2466,7 +2466,7 @@
       "components": ["Column", "Radio"],
       "concepts": ["basic", "column", "radio", "usage"],
       "documentationRoute": "/docs/components/Radio",
-      "source": "import { Column, Radio } from '../../../index'\n\nexport default function RadioBasicUsageDemo() {\n  return (\n    <Column gap={0.75}>\n      <Radio label=\"Daily\" group=\"digest\" value=\"daily\" defaultChecked />\n      <Radio label=\"Weekly\" group=\"digest\" value=\"weekly\" />\n      <Radio label=\"Never\" group=\"digest\" value=\"never\" />\n    </Column>\n  )\n}"
+      "source": "import { Column, Radio } from '../../../index'\n\nexport default function RadioBasicUsageDemo() {\n  return (\n    <Column gap={12}>\n      <Radio label=\"Daily\" group=\"digest\" value=\"daily\" defaultChecked />\n      <Radio label=\"Weekly\" group=\"digest\" value=\"weekly\" />\n      <Radio label=\"Never\" group=\"digest\" value=\"never\" />\n    </Column>\n  )\n}"
     },
     {
       "id": "Radio/compact-choice-group",
@@ -2498,7 +2498,7 @@
         "while"
       ],
       "documentationRoute": "/docs/components/Radio",
-      "source": "import { useState } from 'react'\nimport { Column, Radio, Text } from '../../../index'\n\nexport default function RadioCompactChoiceGroupDemo() {\n  const [choice, setChoice] = useState('medium')\n\n  return (\n    <Column gap={0.75} align=\"start\">\n      <Radio\n        label=\"Small\"\n        group=\"size\"\n        value=\"small\"\n        size=\"small\"\n        checked={choice === 'small'}\n        onChange={(checked) => {\n          if (checked) setChoice('small')\n        }}\n      />\n      <Radio\n        label=\"Medium\"\n        group=\"size\"\n        value=\"medium\"\n        size=\"medium\"\n        checked={choice === 'medium'}\n        onChange={(checked) => {\n          if (checked) setChoice('medium')\n        }}\n      />\n      <Radio\n        label=\"Large\"\n        group=\"size\"\n        value=\"large\"\n        size=\"large\"\n        checked={choice === 'large'}\n        onChange={(checked) => {\n          if (checked) setChoice('large')\n        }}\n      />\n      <Text typo=\"body-small\" color=\"secondary\">\n        Selected: {choice}\n      </Text>\n    </Column>\n  )\n}"
+      "source": "import { useState } from 'react'\nimport { Column, Radio, Text } from '../../../index'\n\nexport default function RadioCompactChoiceGroupDemo() {\n  const [choice, setChoice] = useState('medium')\n\n  return (\n    <Column gap={12} align=\"start\">\n      <Radio\n        label=\"Small\"\n        group=\"size\"\n        value=\"small\"\n        size=\"small\"\n        checked={choice === 'small'}\n        onChange={(checked) => {\n          if (checked) setChoice('small')\n        }}\n      />\n      <Radio\n        label=\"Medium\"\n        group=\"size\"\n        value=\"medium\"\n        size=\"medium\"\n        checked={choice === 'medium'}\n        onChange={(checked) => {\n          if (checked) setChoice('medium')\n        }}\n      />\n      <Radio\n        label=\"Large\"\n        group=\"size\"\n        value=\"large\"\n        size=\"large\"\n        checked={choice === 'large'}\n        onChange={(checked) => {\n          if (checked) setChoice('large')\n        }}\n      />\n      <Text typo=\"body-small\" color=\"secondary\">\n        Selected: {choice}\n      </Text>\n    </Column>\n  )\n}"
     },
     {
       "id": "Radio/unavailable-choice",
@@ -2522,7 +2522,7 @@
         "without"
       ],
       "documentationRoute": "/docs/components/Radio",
-      "source": "import { Column, Radio } from '../../../index'\n\nexport default function RadioUnavailableChoiceDemo() {\n  return (\n    <Column gap={0.75}>\n      <Radio label=\"Standard\" group=\"plan\" value=\"standard\" defaultChecked />\n      <Radio label=\"Enterprise — contact sales\" group=\"plan\" value=\"enterprise\" disabled />\n    </Column>\n  )\n}"
+      "source": "import { Column, Radio } from '../../../index'\n\nexport default function RadioUnavailableChoiceDemo() {\n  return (\n    <Column gap={12}>\n      <Radio label=\"Standard\" group=\"plan\" value=\"standard\" defaultChecked />\n      <Radio label=\"Enterprise — contact sales\" group=\"plan\" value=\"enterprise\" disabled />\n    </Column>\n  )\n}"
     },
     {
       "id": "RangeSlider/basic-usage",
@@ -2563,7 +2563,7 @@
         "when"
       ],
       "documentationRoute": "/docs/components/RangeSlider",
-      "source": "import { useState } from 'react'\nimport { Column, RangeSlider, Text } from '../../../index'\n\nexport default function RangeSliderControlledRangeDemo() {\n  const [value, setValue] = useState<[number, number]>([25, 75])\n\n  return (\n    <Column gap={0.75} align=\"start\">\n      <RangeSlider\n        value={value}\n        onChange={setValue}\n        startName=\"minimum\"\n        endName=\"maximum\"\n        startLabel=\"Minimum\"\n        endLabel=\"Maximum\"\n        label=\"Allowed range\"\n        min={0}\n        max={100}\n        step={5}\n      />\n      <Text typo=\"body-small\" color=\"secondary\">\n        Range: {value[0]}–{value[1]}\n      </Text>\n    </Column>\n  )\n}"
+      "source": "import { useState } from 'react'\nimport { Column, RangeSlider, Text } from '../../../index'\n\nexport default function RangeSliderControlledRangeDemo() {\n  const [value, setValue] = useState<[number, number]>([25, 75])\n\n  return (\n    <Column gap={12} align=\"start\">\n      <RangeSlider\n        value={value}\n        onChange={setValue}\n        startName=\"minimum\"\n        endName=\"maximum\"\n        startLabel=\"Minimum\"\n        endLabel=\"Maximum\"\n        label=\"Allowed range\"\n        min={0}\n        max={100}\n        step={5}\n      />\n      <Text typo=\"body-small\" color=\"secondary\">\n        Range: {value[0]}–{value[1]}\n      </Text>\n    </Column>\n  )\n}"
     },
     {
       "id": "RangeSlider/inverse-range",
@@ -2607,7 +2607,7 @@
         "without"
       ],
       "documentationRoute": "/docs/components/RangeSlider",
-      "source": "import { RangeSlider } from '../../../index'\n\nexport default function RangeSliderVerticalIntervalDemo() {\n  return (\n    <RangeSlider\n      defaultValue={[20, 80]}\n      min={0}\n      max={100}\n      step={10}\n      direction=\"vertical\"\n      viewProps={{ height: 12 }}\n    />\n  )\n}"
+      "source": "import { RangeSlider } from '../../../index'\n\nexport default function RangeSliderVerticalIntervalDemo() {\n  return (\n    <RangeSlider\n      defaultValue={[20, 80]}\n      min={0}\n      max={100}\n      step={10}\n      direction=\"vertical\"\n      viewProps={{ height: 192 }}\n    />\n  )\n}"
     },
     {
       "id": "SegmentedButton/action-group",
@@ -2631,7 +2631,7 @@
         "text"
       ],
       "documentationRoute": "/docs/components/SegmentedButton",
-      "source": "import { useState } from 'react'\nimport { Column, SegmentedButton, Text } from '../../../index'\n\nexport default function SegmentedButtonActionGroupDemo() {\n  const [action, setAction] = useState('No action yet')\n\n  return (\n    <Column gap={1} align=\"start\">\n      <SegmentedButton\n        variant=\"tertiary\"\n        size=\"small\"\n        items={[\n          {\n            id: 'copy',\n            children: 'Copy',\n            viewProps: { onClick: () => setAction('Copied') },\n          },\n          {\n            id: 'share',\n            children: 'Share',\n            viewProps: { onClick: () => setAction('Shared') },\n          },\n          {\n            id: 'archive',\n            children: 'Archive',\n            viewProps: { onClick: () => setAction('Archived') },\n          },\n        ]}\n      />\n      <Text typo=\"body-small\" color=\"secondary\">\n        {action}\n      </Text>\n    </Column>\n  )\n}"
+      "source": "import { useState } from 'react'\nimport { Column, SegmentedButton, Text } from '../../../index'\n\nexport default function SegmentedButtonActionGroupDemo() {\n  const [action, setAction] = useState('No action yet')\n\n  return (\n    <Column gap={16} align=\"start\">\n      <SegmentedButton\n        variant=\"tertiary\"\n        size=\"small\"\n        items={[\n          {\n            id: 'copy',\n            children: 'Copy',\n            viewProps: { onClick: () => setAction('Copied') },\n          },\n          {\n            id: 'share',\n            children: 'Share',\n            viewProps: { onClick: () => setAction('Shared') },\n          },\n          {\n            id: 'archive',\n            children: 'Archive',\n            viewProps: { onClick: () => setAction('Archived') },\n          },\n        ]}\n      />\n      <Text typo=\"body-small\" color=\"secondary\">\n        {action}\n      </Text>\n    </Column>\n  )\n}"
     },
     {
       "id": "SegmentedButton/controlled-selection",
@@ -2658,7 +2658,7 @@
         "when"
       ],
       "documentationRoute": "/docs/components/SegmentedButton",
-      "source": "import { useState } from 'react'\nimport { Column, SegmentedButton, Text } from '../../../index'\n\nexport default function SegmentedButtonControlledSelectionDemo() {\n  const [selected, setSelected] = useState<string | null>('day')\n\n  return (\n    <Column gap={1} align=\"start\">\n      <SegmentedButton\n        variant=\"secondary\"\n        selection=\"single\"\n        selected={selected}\n        onSelect={setSelected}\n        items={[\n          { id: 'day', children: 'Day' },\n          { id: 'week', children: 'Week' },\n          { id: 'month', children: 'Month', disabled: true },\n        ]}\n      />\n      <Text typo=\"body-small\" color=\"secondary\">\n        Selected: {selected ?? 'none'}\n      </Text>\n    </Column>\n  )\n}"
+      "source": "import { useState } from 'react'\nimport { Column, SegmentedButton, Text } from '../../../index'\n\nexport default function SegmentedButtonControlledSelectionDemo() {\n  const [selected, setSelected] = useState<string | null>('day')\n\n  return (\n    <Column gap={16} align=\"start\">\n      <SegmentedButton\n        variant=\"secondary\"\n        selection=\"single\"\n        selected={selected}\n        onSelect={setSelected}\n        items={[\n          { id: 'day', children: 'Day' },\n          { id: 'week', children: 'Week' },\n          { id: 'month', children: 'Month', disabled: true },\n        ]}\n      />\n      <Text typo=\"body-small\" color=\"secondary\">\n        Selected: {selected ?? 'none'}\n      </Text>\n    </Column>\n  )\n}"
     },
     {
       "id": "SegmentedButton/default-selection",
@@ -2741,7 +2741,7 @@
         "when"
       ],
       "documentationRoute": "/docs/components/Select",
-      "source": "import { useState } from 'react'\nimport { Column, Select, SelectOption, Text } from '../../../index'\n\nexport default function SelectControlledSelectDemo() {\n  const [value, setValue] = useState<string | null>('design')\n  const [open, setOpen] = useState(false)\n\n  return (\n    <Column gap={0.75} align=\"start\">\n      <Select\n        value={value}\n        onValueChange={setValue}\n        open={open}\n        onOpenChange={setOpen}\n        placeholder=\"Choose a workspace\"\n      >\n        <SelectOption value=\"design\" text=\"Design\" />\n        <SelectOption value=\"engineering\" text=\"Engineering\" />\n        <SelectOption value=\"research\" text=\"Research\" />\n      </Select>\n      <Text typo=\"body-small\" color=\"secondary\">\n        Value: {value ?? 'none'} · open: {open ? 'true' : 'false'}\n      </Text>\n    </Column>\n  )\n}"
+      "source": "import { useState } from 'react'\nimport { Column, Select, SelectOption, Text } from '../../../index'\n\nexport default function SelectControlledSelectDemo() {\n  const [value, setValue] = useState<string | null>('design')\n  const [open, setOpen] = useState(false)\n\n  return (\n    <Column gap={12} align=\"start\">\n      <Select\n        value={value}\n        onValueChange={setValue}\n        open={open}\n        onOpenChange={setOpen}\n        placeholder=\"Choose a workspace\"\n      >\n        <SelectOption value=\"design\" text=\"Design\" />\n        <SelectOption value=\"engineering\" text=\"Engineering\" />\n        <SelectOption value=\"research\" text=\"Research\" />\n      </Select>\n      <Text typo=\"body-small\" color=\"secondary\">\n        Value: {value ?? 'none'} · open: {open ? 'true' : 'false'}\n      </Text>\n    </Column>\n  )\n}"
     },
     {
       "id": "Select/overlay-placement",
@@ -2768,7 +2768,7 @@
         "viewport"
       ],
       "documentationRoute": "/docs/components/Select",
-      "source": "import { Column, Select, SelectOption, Text } from '../../../index'\n\nexport default function SelectOverlayPlacementDemo() {\n  return (\n    <Column gap={0.75} padding={3} align=\"center\">\n      <Text typo=\"body-small\" color=\"secondary\">\n        Open the select to see a right-placed listbox overlapping its trigger edge.\n      </Text>\n      <Select\n        placement=\"right\"\n        offset={0.5}\n        overlapTrigger\n        viewportPadding={1}\n        placeholder=\"Placement\"\n      >\n        <SelectOption value=\"one\" text=\"One\" />\n        <SelectOption value=\"two\" text=\"Two\" />\n        <SelectOption value=\"three\" text=\"Three\" />\n      </Select>\n    </Column>\n  )\n}"
+      "source": "import { Column, Select, SelectOption, Text } from '../../../index'\n\nexport default function SelectOverlayPlacementDemo() {\n  return (\n    <Column gap={12} padding={48} align=\"center\">\n      <Text typo=\"body-small\" color=\"secondary\">\n        Open the select to see a right-placed listbox overlapping its trigger edge.\n      </Text>\n      <Select\n        placement=\"right\"\n        offset={8}\n        overlapTrigger\n        viewportPadding={16}\n        placeholder=\"Placement\"\n      >\n        <SelectOption value=\"one\" text=\"One\" />\n        <SelectOption value=\"two\" text=\"Two\" />\n        <SelectOption value=\"three\" text=\"Three\" />\n      </Select>\n    </Column>\n  )\n}"
     },
     {
       "id": "Select/preselected-value",
@@ -2830,7 +2830,7 @@
       "components": ["Column", "Skeleton"],
       "concepts": ["basic", "column", "skeleton", "usage"],
       "documentationRoute": "/docs/components/Skeleton",
-      "source": "import { Column, Skeleton } from '../../../index'\n\nexport default function SkeletonBasicUsageDemo() {\n  return (\n    <Column gap={1} width={20}>\n      <Skeleton shape=\"rect\" viewProps={{ width: 'fill', height: 7 }} />\n      <Skeleton shape=\"text\" viewProps={{ width: 12 }} />\n      <Skeleton shape=\"text\" viewProps={{ width: 18 }} />\n    </Column>\n  )\n}"
+      "source": "import { Column, Skeleton } from '../../../index'\n\nexport default function SkeletonBasicUsageDemo() {\n  return (\n    <Column gap={16} width={320}>\n      <Skeleton shape=\"rect\" viewProps={{ width: 'fill', height: 112 }} />\n      <Skeleton shape=\"text\" viewProps={{ width: 192 }} />\n      <Skeleton shape=\"text\" viewProps={{ width: 288 }} />\n    </Column>\n  )\n}"
     },
     {
       "id": "Skeleton/feed-placeholder",
@@ -2856,7 +2856,7 @@
         "yet"
       ],
       "documentationRoute": "/docs/components/Skeleton",
-      "source": "import { Column, Skeleton } from '../../../index'\n\nexport default function SkeletonFeedPlaceholderDemo() {\n  return (\n    <Column gap={0.75} width={20}>\n      <Skeleton shape=\"text\" viewProps={{ width: 'fill' }} />\n      <Skeleton shape=\"text\" viewProps={{ width: 17 }} />\n      <Skeleton shape=\"text\" viewProps={{ width: 14 }} />\n    </Column>\n  )\n}"
+      "source": "import { Column, Skeleton } from '../../../index'\n\nexport default function SkeletonFeedPlaceholderDemo() {\n  return (\n    <Column gap={12} width={320}>\n      <Skeleton shape=\"text\" viewProps={{ width: 'fill' }} />\n      <Skeleton shape=\"text\" viewProps={{ width: 272 }} />\n      <Skeleton shape=\"text\" viewProps={{ width: 224 }} />\n    </Column>\n  )\n}"
     },
     {
       "id": "Skeleton/profile-placeholder",
@@ -2881,7 +2881,7 @@
         "without"
       ],
       "documentationRoute": "/docs/components/Skeleton",
-      "source": "import { Column, Row, Skeleton } from '../../../index'\n\nexport default function SkeletonProfilePlaceholderDemo() {\n  return (\n    <Row gap={1} align=\"center\">\n      <Skeleton shape=\"circle\" viewProps={{ width: 3 }} />\n      <Column gap={0.5}>\n        <Skeleton shape=\"text\" viewProps={{ width: 8 }} />\n        <Skeleton shape=\"text\" viewProps={{ width: 12 }} />\n      </Column>\n    </Row>\n  )\n}"
+      "source": "import { Column, Row, Skeleton } from '../../../index'\n\nexport default function SkeletonProfilePlaceholderDemo() {\n  return (\n    <Row gap={16} align=\"center\">\n      <Skeleton shape=\"circle\" viewProps={{ width: 48 }} />\n      <Column gap={8}>\n        <Skeleton shape=\"text\" viewProps={{ width: 128 }} />\n        <Skeleton shape=\"text\" viewProps={{ width: 192 }} />\n      </Column>\n    </Row>\n  )\n}"
     },
     {
       "id": "Slider/basic-usage",
@@ -2916,7 +2916,7 @@
         "without"
       ],
       "documentationRoute": "/docs/components/Slider",
-      "source": "import { useState } from 'react'\nimport { Column, Slider, Text } from '../../../index'\n\nexport default function SliderControlledContinuousDemo() {\n  const [value, setValue] = useState(42)\n\n  return (\n    <Column gap={0.75} align=\"start\">\n      <Slider\n        value={value}\n        onChange={setValue}\n        name=\"volume\"\n        label=\"Volume\"\n        size=\"large\"\n        min={0}\n        max={100}\n      />\n      <Text typo=\"body-small\" color=\"secondary\">\n        Value: {value}\n      </Text>\n    </Column>\n  )\n}"
+      "source": "import { useState } from 'react'\nimport { Column, Slider, Text } from '../../../index'\n\nexport default function SliderControlledContinuousDemo() {\n  const [value, setValue] = useState(42)\n\n  return (\n    <Column gap={12} align=\"start\">\n      <Slider\n        value={value}\n        onChange={setValue}\n        name=\"volume\"\n        label=\"Volume\"\n        size=\"large\"\n        min={0}\n        max={100}\n      />\n      <Text typo=\"body-small\" color=\"secondary\">\n        Value: {value}\n      </Text>\n    </Column>\n  )\n}"
     },
     {
       "id": "Slider/inverse-scale",
@@ -2963,7 +2963,7 @@
         "when"
       ],
       "documentationRoute": "/docs/components/Slider",
-      "source": "import { Slider } from '../../../index'\n\nexport default function SliderVerticalControlDemo() {\n  return (\n    <Slider\n      defaultValue={60}\n      min={0}\n      max={100}\n      step={10}\n      direction=\"vertical\"\n      viewProps={{ height: 12 }}\n    />\n  )\n}"
+      "source": "import { Slider } from '../../../index'\n\nexport default function SliderVerticalControlDemo() {\n  return (\n    <Slider\n      defaultValue={60}\n      min={0}\n      max={100}\n      step={10}\n      direction=\"vertical\"\n      viewProps={{ height: 192 }}\n    />\n  )\n}"
     },
     {
       "id": "Snack/basic-usage",
@@ -2972,7 +2972,7 @@
       "components": ["Column", "Snack", "SnackProvider"],
       "concepts": ["basic", "column", "provider", "snack", "usage"],
       "documentationRoute": "/docs/components/Snack",
-      "source": "import { useRef } from 'react'\nimport { Column, Snack, SnackProvider } from '../../../index'\n\nexport default function SnackBasicUsageDemo() {\n  const hostRef = useRef(null)\n\n  return (\n    <Column ref={hostRef} width=\"fill\" minHeight={8}>\n      <SnackProvider container={hostRef}>\n        <Snack\n          text=\"Saved successfully\"\n          variant=\"success\"\n          duration={4000}\n          persistent\n          placement=\"bottom-center\"\n          defaultOpen\n        />\n      </SnackProvider>\n    </Column>\n  )\n}"
+      "source": "import { useRef } from 'react'\nimport { Column, Snack, SnackProvider } from '../../../index'\n\nexport default function SnackBasicUsageDemo() {\n  const hostRef = useRef(null)\n\n  return (\n    <Column ref={hostRef} width=\"fill\" minHeight={128}>\n      <SnackProvider container={hostRef}>\n        <Snack\n          text=\"Saved successfully\"\n          variant=\"success\"\n          duration={4000}\n          persistent\n          placement=\"bottom-center\"\n          defaultOpen\n        />\n      </SnackProvider>\n    </Column>\n  )\n}"
     },
     {
       "id": "Snack/custom-content",
@@ -2997,7 +2997,7 @@
         "text"
       ],
       "documentationRoute": "/docs/components/Snack",
-      "source": "import { useRef } from 'react'\nimport { Column, Snack, SnackProvider, Text } from '../../../index'\n\nexport default function SnackCustomContentDemo() {\n  const hostRef = useRef<HTMLDivElement>(null)\n\n  return (\n    <Column ref={hostRef} width=\"fill\" minHeight={8}>\n      <SnackProvider container={hostRef}>\n        <Snack persistent placement=\"bottom-center\">\n          <Column gap={0.25}>\n            <Text typo=\"label-medium\">Background sync paused</Text>\n            <Text typo=\"body-small\">Custom children can compose the entire Snack body.</Text>\n          </Column>\n        </Snack>\n      </SnackProvider>\n    </Column>\n  )\n}"
+      "source": "import { useRef } from 'react'\nimport { Column, Snack, SnackProvider, Text } from '../../../index'\n\nexport default function SnackCustomContentDemo() {\n  const hostRef = useRef<HTMLDivElement>(null)\n\n  return (\n    <Column ref={hostRef} width=\"fill\" minHeight={128}>\n      <SnackProvider container={hostRef}>\n        <Snack persistent placement=\"bottom-center\">\n          <Column gap={4}>\n            <Text typo=\"label-medium\">Background sync paused</Text>\n            <Text typo=\"body-small\">Custom children can compose the entire Snack body.</Text>\n          </Column>\n        </Snack>\n      </SnackProvider>\n    </Column>\n  )\n}"
     },
     {
       "id": "Snack/lifetime-progress",
@@ -3027,7 +3027,7 @@
         "when"
       ],
       "documentationRoute": "/docs/components/Snack",
-      "source": "import { useRef, useState } from 'react'\nimport { Button, Column, Snack, SnackProvider, Text } from '../../../index'\n\nexport default function SnackLifetimeProgressDemo() {\n  const hostRef = useRef<HTMLDivElement>(null)\n  const [open, setOpen] = useState(true)\n  const [dismissed, setDismissed] = useState(0)\n\n  return (\n    <Column ref={hostRef} width=\"fill\" minHeight={10} gap={1} align=\"start\">\n      <SnackProvider container={hostRef}>\n        <Button text=\"Restart timed Snack\" viewProps={{ onClick: () => setOpen(true) }} />\n        <Text typo=\"body-small\">Completed dismissals: {dismissed}</Text>\n        <Snack\n          text=\"Uploading changes\"\n          variant=\"info\"\n          duration={5000}\n          progress\n          placement=\"top-right\"\n          open={open}\n          onOpenChange={setOpen}\n          onDismissed={() => setDismissed((count) => count + 1)}\n        />\n      </SnackProvider>\n    </Column>\n  )\n}"
+      "source": "import { useRef, useState } from 'react'\nimport { Button, Column, Snack, SnackProvider, Text } from '../../../index'\n\nexport default function SnackLifetimeProgressDemo() {\n  const hostRef = useRef<HTMLDivElement>(null)\n  const [open, setOpen] = useState(true)\n  const [dismissed, setDismissed] = useState(0)\n\n  return (\n    <Column ref={hostRef} width=\"fill\" minHeight={160} gap={16} align=\"start\">\n      <SnackProvider container={hostRef}>\n        <Button text=\"Restart timed Snack\" viewProps={{ onClick: () => setOpen(true) }} />\n        <Text typo=\"body-small\">Completed dismissals: {dismissed}</Text>\n        <Snack\n          text=\"Uploading changes\"\n          variant=\"info\"\n          duration={5000}\n          progress\n          placement=\"top-right\"\n          open={open}\n          onOpenChange={setOpen}\n          onDismissed={() => setDismissed((count) => count + 1)}\n        />\n      </SnackProvider>\n    </Column>\n  )\n}"
     },
     {
       "id": "Snack/provider-queue",
@@ -3054,7 +3054,7 @@
         "text"
       ],
       "documentationRoute": "/docs/components/Snack",
-      "source": "import { useRef } from 'react'\nimport { Button, Column, Row, SnackProvider, Text, useSnack } from '../../../index'\n\nfunction QueueControls() {\n  const snack = useSnack()\n\n  return (\n    <Column gap={1} align=\"start\">\n      <Text typo=\"body-small\">Each click creates a new queued Snack instance.</Text>\n      <Row gap={1}>\n        <Button\n          text=\"Show notification\"\n          viewProps={{\n            onClick: () => {\n              snack.show({\n                text: 'Saved from the queue',\n                variant: 'success',\n                persistent: true,\n                placement: 'bottom-right',\n              })\n            },\n          }}\n        />\n        <Button text=\"Dismiss all\" variant=\"secondary\" viewProps={{ onClick: snack.dismissAll }} />\n      </Row>\n    </Column>\n  )\n}\n\nexport default function SnackProviderQueueDemo() {\n  const hostRef = useRef<HTMLDivElement>(null)\n\n  return (\n    <Column ref={hostRef} width=\"fill\" minHeight={10}>\n      <SnackProvider container={hostRef}>\n        <QueueControls />\n      </SnackProvider>\n    </Column>\n  )\n}"
+      "source": "import { useRef } from 'react'\nimport { Button, Column, Row, SnackProvider, Text, useSnack } from '../../../index'\n\nfunction QueueControls() {\n  const snack = useSnack()\n\n  return (\n    <Column gap={16} align=\"start\">\n      <Text typo=\"body-small\">Each click creates a new queued Snack instance.</Text>\n      <Row gap={16}>\n        <Button\n          text=\"Show notification\"\n          viewProps={{\n            onClick: () => {\n              snack.show({\n                text: 'Saved from the queue',\n                variant: 'success',\n                persistent: true,\n                placement: 'bottom-right',\n              })\n            },\n          }}\n        />\n        <Button text=\"Dismiss all\" variant=\"secondary\" viewProps={{ onClick: snack.dismissAll }} />\n      </Row>\n    </Column>\n  )\n}\n\nexport default function SnackProviderQueueDemo() {\n  const hostRef = useRef<HTMLDivElement>(null)\n\n  return (\n    <Column ref={hostRef} width=\"fill\" minHeight={160}>\n      <SnackProvider container={hostRef}>\n        <QueueControls />\n      </SnackProvider>\n    </Column>\n  )\n}"
     },
     {
       "id": "Snack/snack-action",
@@ -3079,7 +3079,7 @@
         "without"
       ],
       "documentationRoute": "/docs/components/Snack",
-      "source": "import { useRef } from 'react'\nimport { Column, Snack, SnackProvider } from '../../../index'\n\nexport default function SnackSnackActionDemo() {\n  const hostRef = useRef(null)\n\n  return (\n    <Column ref={hostRef} width=\"fill\" minHeight={8}>\n      <SnackProvider container={hostRef}>\n        <Snack\n          text=\"Item archived\"\n          action=\"Undo\"\n          onAction={() => {}}\n          persistent\n          placement=\"bottom-center\"\n          defaultOpen\n        />\n      </SnackProvider>\n    </Column>\n  )\n}"
+      "source": "import { useRef } from 'react'\nimport { Column, Snack, SnackProvider } from '../../../index'\n\nexport default function SnackSnackActionDemo() {\n  const hostRef = useRef(null)\n\n  return (\n    <Column ref={hostRef} width=\"fill\" minHeight={128}>\n      <SnackProvider container={hostRef}>\n        <Snack\n          text=\"Item archived\"\n          action=\"Undo\"\n          onAction={() => {}}\n          persistent\n          placement=\"bottom-center\"\n          defaultOpen\n        />\n      </SnackProvider>\n    </Column>\n  )\n}"
     },
     {
       "id": "Snack/snack-variant",
@@ -3105,7 +3105,7 @@
         "warning"
       ],
       "documentationRoute": "/docs/components/Snack",
-      "source": "import { useRef } from 'react'\nimport { Column, Snack, SnackProvider } from '../../../index'\n\nexport default function SnackSnackVariantDemo() {\n  const hostRef = useRef(null)\n\n  return (\n    <Column ref={hostRef} width=\"fill\" minHeight={8}>\n      <SnackProvider container={hostRef}>\n        <Snack\n          text=\"Could not save changes\"\n          variant=\"danger\"\n          persistent\n          placement=\"bottom-center\"\n          defaultOpen\n        />\n      </SnackProvider>\n    </Column>\n  )\n}"
+      "source": "import { useRef } from 'react'\nimport { Column, Snack, SnackProvider } from '../../../index'\n\nexport default function SnackSnackVariantDemo() {\n  const hostRef = useRef(null)\n\n  return (\n    <Column ref={hostRef} width=\"fill\" minHeight={128}>\n      <SnackProvider container={hostRef}>\n        <Snack\n          text=\"Could not save changes\"\n          variant=\"danger\"\n          persistent\n          placement=\"bottom-center\"\n          defaultOpen\n        />\n      </SnackProvider>\n    </Column>\n  )\n}"
     },
     {
       "id": "Switch/basic-usage",
@@ -3114,7 +3114,7 @@
       "components": ["Column", "Switch"],
       "concepts": ["basic", "column", "switch", "usage"],
       "documentationRoute": "/docs/components/Switch",
-      "source": "import { Column, Switch } from '../../../index'\n\nexport default function SwitchBasicUsageDemo() {\n  return (\n    <Column gap={1}>\n      <Switch label=\"Notifications\" defaultChecked />\n      <Switch label=\"Background sync\" />\n    </Column>\n  )\n}"
+      "source": "import { Column, Switch } from '../../../index'\n\nexport default function SwitchBasicUsageDemo() {\n  return (\n    <Column gap={16}>\n      <Switch label=\"Notifications\" defaultChecked />\n      <Switch label=\"Background sync\" />\n    </Column>\n  )\n}"
     },
     {
       "id": "Switch/compact-settings",
@@ -3140,7 +3140,7 @@
         "work"
       ],
       "documentationRoute": "/docs/components/Switch",
-      "source": "import { Column, Switch } from '../../../index'\n\nexport default function SwitchCompactSettingsDemo() {\n  return (\n    <Column gap={0.75}>\n      <Switch label=\"Wi-Fi\" defaultChecked size=\"small\" />\n      <Switch label=\"Bluetooth\" size=\"small\" />\n      <Switch label=\"AirDrop\" defaultChecked size=\"small\" />\n    </Column>\n  )\n}"
+      "source": "import { Column, Switch } from '../../../index'\n\nexport default function SwitchCompactSettingsDemo() {\n  return (\n    <Column gap={12}>\n      <Switch label=\"Wi-Fi\" defaultChecked size=\"small\" />\n      <Switch label=\"Bluetooth\" size=\"small\" />\n      <Switch label=\"AirDrop\" defaultChecked size=\"small\" />\n    </Column>\n  )\n}"
     },
     {
       "id": "Switch/controlled-switch",
@@ -3167,7 +3167,7 @@
         "when"
       ],
       "documentationRoute": "/docs/components/Switch",
-      "source": "import { useState } from 'react'\nimport { Column, Switch, Text } from '../../../index'\n\nexport default function SwitchControlledSwitchDemo() {\n  const [checked, setChecked] = useState(true)\n\n  return (\n    <Column gap={0.75} align=\"start\">\n      <Switch\n        checked={checked}\n        onChange={setChecked}\n        name=\"updates\"\n        value=\"enabled\"\n        label=\"Product updates\"\n        size=\"large\"\n      />\n      <Text typo=\"body-small\" color=\"secondary\">\n        Checked: {checked ? 'true' : 'false'}\n      </Text>\n    </Column>\n  )\n}"
+      "source": "import { useState } from 'react'\nimport { Column, Switch, Text } from '../../../index'\n\nexport default function SwitchControlledSwitchDemo() {\n  const [checked, setChecked] = useState(true)\n\n  return (\n    <Column gap={12} align=\"start\">\n      <Switch\n        checked={checked}\n        onChange={setChecked}\n        name=\"updates\"\n        value=\"enabled\"\n        label=\"Product updates\"\n        size=\"large\"\n      />\n      <Text typo=\"body-small\" color=\"secondary\">\n        Checked: {checked ? 'true' : 'false'}\n      </Text>\n    </Column>\n  )\n}"
     },
     {
       "id": "Switch/disabled-preference",
@@ -3228,7 +3228,7 @@
         "width"
       ],
       "documentationRoute": "/docs/components/Table",
-      "source": "import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../../index'\n\nexport default function TableColumnSizingDemo() {\n  return (\n    <Table>\n      <TableHeader>\n        <TableRow>\n          <TableHead width={14}>Project</TableHead>\n          <TableHead minWidth={10} maxWidth={16} align=\"end\">\n            Owner\n          </TableHead>\n        </TableRow>\n      </TableHeader>\n      <TableBody>\n        <TableRow id=\"atlas\">\n          <TableCell id=\"project\" width={14}>\n            Atlas\n          </TableCell>\n          <TableCell id=\"owner\" minWidth={10} maxWidth={16} align=\"end\">\n            Mina\n          </TableCell>\n        </TableRow>\n      </TableBody>\n    </Table>\n  )\n}"
+      "source": "import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../../index'\n\nexport default function TableColumnSizingDemo() {\n  return (\n    <Table>\n      <TableHeader>\n        <TableRow>\n          <TableHead width={224}>Project</TableHead>\n          <TableHead minWidth={160} maxWidth={256} align=\"end\">\n            Owner\n          </TableHead>\n        </TableRow>\n      </TableHeader>\n      <TableBody>\n        <TableRow id=\"atlas\">\n          <TableCell id=\"project\" width={224}>\n            Atlas\n          </TableCell>\n          <TableCell id=\"owner\" minWidth={160} maxWidth={256} align=\"end\">\n            Mina\n          </TableCell>\n        </TableRow>\n      </TableBody>\n    </Table>\n  )\n}"
     },
     {
       "id": "Table/dense-table",
@@ -3314,7 +3314,7 @@
         "when"
       ],
       "documentationRoute": "/docs/components/Table",
-      "source": "import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../../index'\n\nconst rows = ['Alpha', 'Beta', 'Gamma', 'Delta', 'Epsilon', 'Zeta']\n\nexport default function TableStickyHeaderDemo() {\n  return (\n    <Table stickyHeader viewProps={{ maxHeight: 12, overflowY: 'auto' }}>\n      <TableHeader>\n        <TableRow>\n          <TableHead>Name</TableHead>\n          <TableHead align=\"end\">Value</TableHead>\n        </TableRow>\n      </TableHeader>\n      <TableBody>\n        {rows.map((name, index) => (\n          <TableRow key={name} id={name.toLowerCase()}>\n            <TableCell id=\"name\">{name}</TableCell>\n            <TableCell id=\"value\" align=\"end\">\n              {(index + 1) * 10}\n            </TableCell>\n          </TableRow>\n        ))}\n      </TableBody>\n    </Table>\n  )\n}"
+      "source": "import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../../index'\n\nconst rows = ['Alpha', 'Beta', 'Gamma', 'Delta', 'Epsilon', 'Zeta']\n\nexport default function TableStickyHeaderDemo() {\n  return (\n    <Table stickyHeader viewProps={{ maxHeight: 192, overflowY: 'auto' }}>\n      <TableHeader>\n        <TableRow>\n          <TableHead>Name</TableHead>\n          <TableHead align=\"end\">Value</TableHead>\n        </TableRow>\n      </TableHeader>\n      <TableBody>\n        {rows.map((name, index) => (\n          <TableRow key={name} id={name.toLowerCase()}>\n            <TableCell id=\"name\">{name}</TableCell>\n            <TableCell id=\"value\" align=\"end\">\n              {(index + 1) * 10}\n            </TableCell>\n          </TableRow>\n        ))}\n      </TableBody>\n    </Table>\n  )\n}"
     },
     {
       "id": "Tabs/basic-usage",
@@ -3493,7 +3493,7 @@
         "wrapping"
       ],
       "documentationRoute": "/docs/components/Text",
-      "source": "import { Text } from '../../../index'\n\nexport default function TextResponsiveTextDemo() {\n  return (\n    <Text\n      typo=\"body-small\"\n      align=\"start\"\n      wrap=\"balance\"\n      lineHeight={1.5}\n      viewProps={{ width: 'fill', maxWidth: 32 }}\n      md={{\n        typo: 'title-medium',\n        align: 'center',\n        weight: 'semibold',\n        case: 'capitalize',\n      }}\n    >\n      Text can change its own typography and alignment at framework breakpoints.\n    </Text>\n  )\n}"
+      "source": "import { Text } from '../../../index'\n\nexport default function TextResponsiveTextDemo() {\n  return (\n    <Text\n      typo=\"body-small\"\n      align=\"start\"\n      wrap=\"balance\"\n      lineHeight={1.5}\n      viewProps={{ width: 'fill', maxWidth: 512 }}\n      md={{\n        typo: 'title-medium',\n        align: 'center',\n        weight: 'semibold',\n        case: 'capitalize',\n      }}\n    >\n      Text can change its own typography and alignment at framework breakpoints.\n    </Text>\n  )\n}"
     },
     {
       "id": "Text/text-emphasis",
@@ -3516,7 +3516,7 @@
         "without"
       ],
       "documentationRoute": "/docs/components/Text",
-      "source": "import { Column, Text } from '../../../index'\n\nexport default function TextTextEmphasisDemo() {\n  return (\n    <Column gap={0.5}>\n      <Text weight=\"bold\" color=\"primary\">\n        Primary emphasis\n      </Text>\n      <Text italic underline color=\"secondary\">\n        Secondary note\n      </Text>\n      <Text strikethrough color=\"disabled\">\n        Deprecated value\n      </Text>\n      <Text overline case=\"uppercase\" typo=\"label-small\" letterSpacing={0.05}>\n        Metadata\n      </Text>\n    </Column>\n  )\n}"
+      "source": "import { Column, Text } from '../../../index'\n\nexport default function TextTextEmphasisDemo() {\n  return (\n    <Column gap={8}>\n      <Text weight=\"bold\" color=\"primary\">\n        Primary emphasis\n      </Text>\n      <Text italic underline color=\"secondary\">\n        Secondary note\n      </Text>\n      <Text strikethrough color=\"disabled\">\n        Deprecated value\n      </Text>\n      <Text overline case=\"uppercase\" typo=\"label-small\" letterSpacing={0.05}>\n        Metadata\n      </Text>\n    </Column>\n  )\n}"
     },
     {
       "id": "Text/truncated-copy",
@@ -3543,7 +3543,7 @@
         "when"
       ],
       "documentationRoute": "/docs/components/Text",
-      "source": "import { Column, Text } from '../../../index'\n\nexport default function TextTruncatedCopyDemo() {\n  return (\n    <Column gap={1} width={18}>\n      <Text singleLine>\n        Single-line text truncates with an ellipsis when its content exceeds the available width.\n      </Text>\n      <Text maxLines={2} overflow=\"ellipsis\">\n        Multi-line content can stay readable without forcing every item in the surrounding layout to\n        grow to the height of the longest piece of copy.\n      </Text>\n    </Column>\n  )\n}"
+      "source": "import { Column, Text } from '../../../index'\n\nexport default function TextTruncatedCopyDemo() {\n  return (\n    <Column gap={16} width={288}>\n      <Text singleLine>\n        Single-line text truncates with an ellipsis when its content exceeds the available width.\n      </Text>\n      <Text maxLines={2} overflow=\"ellipsis\">\n        Multi-line content can stay readable without forcing every item in the surrounding layout to\n        grow to the height of the longest piece of copy.\n      </Text>\n    </Column>\n  )\n}"
     },
     {
       "id": "ThemeProvider/basic-usage",
@@ -3628,7 +3628,7 @@
         "without"
       ],
       "documentationRoute": "/docs/components/ThemeProvider",
-      "source": "import { Button, Row, ThemeProvider } from '../../../index'\n\nexport default function ThemeProviderScopedColorModeDemo() {\n  return (\n    <Row gap={1}>\n      <ThemeProvider mode=\"light\">\n        <Button text=\"Light scope\" />\n      </ThemeProvider>\n      <ThemeProvider mode=\"dark\">\n        <Button text=\"Dark scope\" />\n      </ThemeProvider>\n    </Row>\n  )\n}"
+      "source": "import { Button, Row, ThemeProvider } from '../../../index'\n\nexport default function ThemeProviderScopedColorModeDemo() {\n  return (\n    <Row gap={16}>\n      <ThemeProvider mode=\"light\">\n        <Button text=\"Light scope\" />\n      </ThemeProvider>\n      <ThemeProvider mode=\"dark\">\n        <Button text=\"Dark scope\" />\n      </ThemeProvider>\n    </Row>\n  )\n}"
     },
     {
       "id": "ToolTip/basic-usage",
@@ -3637,7 +3637,7 @@
       "components": ["Button", "ToolTip"],
       "concepts": ["basic", "button", "tip", "tool", "usage"],
       "documentationRoute": "/docs/components/ToolTip",
-      "source": "import { Button, ToolTip } from '../../../index'\n\nexport default function ToolTipBasicUsageDemo() {\n  return (\n    <ToolTip content=\"Helpful tooltip\" placement=\"top\" delay={0} offset={0.5} defaultOpen>\n      <Button text=\"Tooltip target\" />\n    </ToolTip>\n  )\n}"
+      "source": "import { Button, ToolTip } from '../../../index'\n\nexport default function ToolTipBasicUsageDemo() {\n  return (\n    <ToolTip content=\"Helpful tooltip\" placement=\"top\" delay={0} offset={8} defaultOpen>\n      <Button text=\"Tooltip target\" />\n    </ToolTip>\n  )\n}"
     },
     {
       "id": "ToolTip/controlled-tooltip",
@@ -3721,7 +3721,7 @@
         "weave"
       ],
       "documentationRoute": "/docs/components/ToolTip",
-      "source": "import { Button, Column, Text, ToolTip } from '../../../index'\n\nexport default function ToolTipRichContentDemo() {\n  return (\n    <ToolTip\n      delay={0}\n      defaultOpen\n      content={\n        <Column gap={0.25}>\n          <Text typo=\"label-medium\">Keyboard shortcut</Text>\n          <Text typo=\"body-xsmall\">Press Command + K to open search.</Text>\n        </Column>\n      }\n    >\n      <Button text=\"Search help\" />\n    </ToolTip>\n  )\n}"
+      "source": "import { Button, Column, Text, ToolTip } from '../../../index'\n\nexport default function ToolTipRichContentDemo() {\n  return (\n    <ToolTip\n      delay={0}\n      defaultOpen\n      content={\n        <Column gap={4}>\n          <Text typo=\"label-medium\">Keyboard shortcut</Text>\n          <Text typo=\"body-xsmall\">Press Command + K to open search.</Text>\n        </Column>\n      }\n    >\n      <Button text=\"Search help\" />\n    </ToolTip>\n  )\n}"
     },
     {
       "id": "ToolTip/tooltip-placement",
@@ -3748,7 +3748,7 @@
         "trigger"
       ],
       "documentationRoute": "/docs/components/ToolTip",
-      "source": "import { IconStar } from '@tabler/icons-react'\nimport { Button, ToolTip } from '../../../index'\n\nexport default function ToolTipTooltipPlacementDemo() {\n  return (\n    <ToolTip content=\"Saved items\" placement=\"right\" offset={1} delay={0} defaultOpen>\n      <Button icon={IconStar} viewProps={{ label: 'Saved items' }} />\n    </ToolTip>\n  )\n}"
+      "source": "import { IconStar } from '@tabler/icons-react'\nimport { Button, ToolTip } from '../../../index'\n\nexport default function ToolTipTooltipPlacementDemo() {\n  return (\n    <ToolTip content=\"Saved items\" placement=\"right\" offset={16} delay={0} defaultOpen>\n      <Button icon={IconStar} viewProps={{ label: 'Saved items' }} />\n    </ToolTip>\n  )\n}"
     },
     {
       "id": "Typo/body",
@@ -3772,7 +3772,7 @@
         "typo"
       ],
       "documentationRoute": "/docs/components/Typo",
-      "source": "import { Column, Text } from '../../../index'\n\nexport default function TypoBodyDemo() {\n  return (\n    <Column gap={1}>\n      <Text typo=\"body-large\">Body large</Text>\n      <Text typo=\"body-medium\">Body medium</Text>\n      <Text typo=\"body-small\">Body small</Text>\n      <Text typo=\"body-xsmall\">Body xsmall</Text>\n    </Column>\n  )\n}"
+      "source": "import { Column, Text } from '../../../index'\n\nexport default function TypoBodyDemo() {\n  return (\n    <Column gap={16}>\n      <Text typo=\"body-large\">Body large</Text>\n      <Text typo=\"body-medium\">Body medium</Text>\n      <Text typo=\"body-small\">Body small</Text>\n      <Text typo=\"body-xsmall\">Body xsmall</Text>\n    </Column>\n  )\n}"
     },
     {
       "id": "Typo/display",
@@ -3796,7 +3796,7 @@
         "typography"
       ],
       "documentationRoute": "/docs/components/Typo",
-      "source": "import { Column, Text } from '../../../index'\n\nexport default function TypoDisplayDemo() {\n  return (\n    <Column gap={1}>\n      <Text typo=\"display-large\">Display large</Text>\n      <Text typo=\"display-medium\">Display medium</Text>\n      <Text typo=\"display-small\">Display small</Text>\n    </Column>\n  )\n}"
+      "source": "import { Column, Text } from '../../../index'\n\nexport default function TypoDisplayDemo() {\n  return (\n    <Column gap={16}>\n      <Text typo=\"display-large\">Display large</Text>\n      <Text typo=\"display-medium\">Display medium</Text>\n      <Text typo=\"display-small\">Display small</Text>\n    </Column>\n  )\n}"
     },
     {
       "id": "Typo/headline",
@@ -3818,7 +3818,7 @@
         "typo"
       ],
       "documentationRoute": "/docs/components/Typo",
-      "source": "import { Column, Text } from '../../../index'\n\nexport default function TypoHeadlineDemo() {\n  return (\n    <Column gap={1}>\n      <Text typo=\"headline-large\">Headline large</Text>\n      <Text typo=\"headline-medium\">Headline medium</Text>\n      <Text typo=\"headline-small\">Headline small</Text>\n    </Column>\n  )\n}"
+      "source": "import { Column, Text } from '../../../index'\n\nexport default function TypoHeadlineDemo() {\n  return (\n    <Column gap={16}>\n      <Text typo=\"headline-large\">Headline large</Text>\n      <Text typo=\"headline-medium\">Headline medium</Text>\n      <Text typo=\"headline-small\">Headline small</Text>\n    </Column>\n  )\n}"
     },
     {
       "id": "Typo/label",
@@ -3839,7 +3839,7 @@
         "typo"
       ],
       "documentationRoute": "/docs/components/Typo",
-      "source": "import { Column, Text } from '../../../index'\n\nexport default function TypoLabelDemo() {\n  return (\n    <Column gap={1}>\n      <Text typo=\"label-large\">Label large</Text>\n      <Text typo=\"label-medium\">Label medium</Text>\n      <Text typo=\"label-small\">Label small</Text>\n    </Column>\n  )\n}"
+      "source": "import { Column, Text } from '../../../index'\n\nexport default function TypoLabelDemo() {\n  return (\n    <Column gap={16}>\n      <Text typo=\"label-large\">Label large</Text>\n      <Text typo=\"label-medium\">Label medium</Text>\n      <Text typo=\"label-small\">Label small</Text>\n    </Column>\n  )\n}"
     },
     {
       "id": "Typo/title",
@@ -3861,7 +3861,7 @@
         "typo"
       ],
       "documentationRoute": "/docs/components/Typo",
-      "source": "import { Column, Text } from '../../../index'\n\nexport default function TypoTitleDemo() {\n  return (\n    <Column gap={1}>\n      <Text typo=\"title-large\">Title large</Text>\n      <Text typo=\"title-medium\">Title medium</Text>\n      <Text typo=\"title-small\">Title small</Text>\n    </Column>\n  )\n}"
+      "source": "import { Column, Text } from '../../../index'\n\nexport default function TypoTitleDemo() {\n  return (\n    <Column gap={16}>\n      <Text typo=\"title-large\">Title large</Text>\n      <Text typo=\"title-medium\">Title medium</Text>\n      <Text typo=\"title-small\">Title small</Text>\n    </Column>\n  )\n}"
     },
     {
       "id": "View/basic-usage",
@@ -3870,7 +3870,7 @@
       "components": ["View"],
       "concepts": ["basic", "usage", "view"],
       "documentationRoute": "/docs/components/View",
-      "source": "import { View } from '../../../index'\n\nexport default function ViewBasicUsageDemo() {\n  return (\n    <View background=\"surfaceHover\" padding={2} clickable opacity={1} radius=\"medium\">\n      View\n    </View>\n  )\n}"
+      "source": "import { View } from '../../../index'\n\nexport default function ViewBasicUsageDemo() {\n  return (\n    <View background=\"surfaceHover\" padding={32} clickable opacity={1} radius=\"medium\">\n      View\n    </View>\n  )\n}"
     },
     {
       "id": "View/container-responsive",
@@ -3890,7 +3890,7 @@
         "viewport"
       ],
       "documentationRoute": "/docs/components/View",
-      "source": "import { View } from '../../../index'\n\nexport default function ViewContainerResponsiveDemo() {\n  return (\n    <View container=\"view-demo\" width=\"fill\" maxWidth={48}>\n      <View\n        background=\"surface\"\n        padding={1}\n        radius=\"medium\"\n        containerSm={{ padding: 2, background: 'surfaceHover' }}\n        containerMd={{ padding: 3 }}\n      >\n        Resize the demo container\n      </View>\n    </View>\n  )\n}"
+      "source": "import { View } from '../../../index'\n\nexport default function ViewContainerResponsiveDemo() {\n  return (\n    <View container=\"view-demo\" width=\"fill\" maxWidth={768}>\n      <View\n        background=\"surface\"\n        padding={16}\n        radius=\"medium\"\n        containerSm={{ padding: 32, background: 'surfaceHover' }}\n        containerMd={{ padding: 48 }}\n      >\n        Resize the demo container\n      </View>\n    </View>\n  )\n}"
     },
     {
       "id": "View/layout-animation",
@@ -3914,7 +3914,7 @@
         "without"
       ],
       "documentationRoute": "/docs/components/View",
-      "source": "import { useState } from 'react'\nimport { Button, Column, View } from '../../../index'\n\nexport default function ViewLayoutAnimationDemo() {\n  const [expanded, setExpanded] = useState(false)\n\n  return (\n    <Column gap={1} align=\"start\">\n      <Button\n        text={expanded ? 'Shrink' : 'Expand'}\n        viewProps={{ onClick: () => setExpanded((current) => !current) }}\n      />\n\n      <View\n        width={expanded ? 20 : 10}\n        background=\"surfaceHover\"\n        padding={1.5}\n        radius=\"medium\"\n        layoutAnimation={{ spring: 'snappy' }}\n      >\n        Layout animation\n      </View>\n    </Column>\n  )\n}"
+      "source": "import { useState } from 'react'\nimport { Button, Column, View } from '../../../index'\n\nexport default function ViewLayoutAnimationDemo() {\n  const [expanded, setExpanded] = useState(false)\n\n  return (\n    <Column gap={16} align=\"start\">\n      <Button\n        text={expanded ? 'Shrink' : 'Expand'}\n        viewProps={{ onClick: () => setExpanded((current) => !current) }}\n      />\n\n      <View\n        width={expanded ? 20 : 10}\n        background=\"surfaceHover\"\n        padding={24}\n        radius=\"medium\"\n        layoutAnimation={{ spring: 'snappy' }}\n      >\n        Layout animation\n      </View>\n    </Column>\n  )\n}"
     },
     {
       "id": "View/motion",
@@ -3938,7 +3938,7 @@
         "view"
       ],
       "documentationRoute": "/docs/components/View",
-      "source": "import { useState } from 'react'\nimport { Button, Column, Presence, Row, View } from '../../../index'\n\nexport default function ViewMotionDemo() {\n  const [visible, setVisible] = useState(true)\n\n  return (\n    <Column gap={1} align=\"start\">\n      <Button\n        text={visible ? 'Hide' : 'Show'}\n        viewProps={{ onClick: () => setVisible((current) => !current) }}\n      />\n\n      <Row gap={1} align=\"center\">\n        <Presence present={visible}>\n          <View\n            background=\"surfaceHover\"\n            padding={1.5}\n            radius=\"medium\"\n            enter={{ animation: 'fade-up', spring: 'gentle' }}\n            exit={{ animation: 'fade-down', spring: 'gentle' }}\n          >\n            Enter and exit\n          </View>\n        </Presence>\n\n        <View\n          background=\"surfaceHover\"\n          padding={1.5}\n          radius=\"medium\"\n          animation={{\n            keyframes: [{ opacity: 0.55 }, { opacity: 1 }],\n            duration: 'slow',\n            repeat: 'infinite',\n            direction: 'alternate',\n          }}\n        >\n          Keyframes\n        </View>\n      </Row>\n    </Column>\n  )\n}"
+      "source": "import { useState } from 'react'\nimport { Button, Column, Presence, Row, View } from '../../../index'\n\nexport default function ViewMotionDemo() {\n  const [visible, setVisible] = useState(true)\n\n  return (\n    <Column gap={16} align=\"start\">\n      <Button\n        text={visible ? 'Hide' : 'Show'}\n        viewProps={{ onClick: () => setVisible((current) => !current) }}\n      />\n\n      <Row gap={16} align=\"center\">\n        <Presence present={visible}>\n          <View\n            background=\"surfaceHover\"\n            padding={24}\n            radius=\"medium\"\n            enter={{ animation: 'fade-up', spring: 'gentle' }}\n            exit={{ animation: 'fade-down', spring: 'gentle' }}\n          >\n            Enter and exit\n          </View>\n        </Presence>\n\n        <View\n          background=\"surfaceHover\"\n          padding={24}\n          radius=\"medium\"\n          animation={{\n            keyframes: [{ opacity: 0.55 }, { opacity: 1 }],\n            duration: 'slow',\n            repeat: 'infinite',\n            direction: 'alternate',\n          }}\n        >\n          Keyframes\n        </View>\n      </Row>\n    </Column>\n  )\n}"
     },
     {
       "id": "View/responsive-view",
@@ -3962,7 +3962,7 @@
         "wrapper"
       ],
       "documentationRoute": "/docs/components/View",
-      "source": "import { View } from '../../../index'\n\nexport default function ViewResponsiveViewDemo() {\n  return (\n    <View\n      background=\"surfaceHover\"\n      padding={1}\n      md={{ padding: 2 }}\n      lg={{ padding: 3 }}\n      radius=\"medium\"\n    >\n      Resize the viewport\n    </View>\n  )\n}"
+      "source": "import { View } from '../../../index'\n\nexport default function ViewResponsiveViewDemo() {\n  return (\n    <View\n      background=\"surfaceHover\"\n      padding={16}\n      md={{ padding: 32 }}\n      lg={{ padding: 48 }}\n      radius=\"medium\"\n    >\n      Resize the viewport\n    </View>\n  )\n}"
     },
     {
       "id": "View/scrolling",
@@ -3989,7 +3989,7 @@
         "while"
       ],
       "documentationRoute": "/docs/components/View",
-      "source": "import { Column, Text, View } from '../../../index'\n\nexport default function ViewScrollingDemo() {\n  return (\n    <View\n      width={24}\n      height={8}\n      overflowY=\"auto\"\n      scrollbar={{ size: 'medium', color: 'primary', radius: 'full', opacity: 0.8 }}\n      background=\"surfaceHover\"\n      radius=\"medium\"\n    >\n      <Column gap={1} padding={1.5}>\n        {Array.from({ length: 8 }, (_, index) => (\n          <Text key={index}>Scrollable row {index + 1}</Text>\n        ))}\n      </Column>\n    </View>\n  )\n}"
+      "source": "import { Column, Text, View } from '../../../index'\n\nexport default function ViewScrollingDemo() {\n  return (\n    <View\n      width={384}\n      height={128}\n      overflowY=\"auto\"\n      scrollbar={{ size: 'medium', color: 'primary', radius: 'full', opacity: 0.8 }}\n      background=\"surfaceHover\"\n      radius=\"medium\"\n    >\n      <Column gap={16} padding={24}>\n        {Array.from({ length: 8 }, (_, index) => (\n          <Text key={index}>Scrollable row {index + 1}</Text>\n        ))}\n      </Column>\n    </View>\n  )\n}"
     },
     {
       "id": "View/semantic-host",
@@ -4013,7 +4013,7 @@
         "while"
       ],
       "documentationRoute": "/docs/components/View",
-      "source": "import { useState } from 'react'\nimport { View } from '../../../index'\n\nexport default function ViewSemanticHostDemo() {\n  const [pressed, setPressed] = useState(false)\n\n  return (\n    <View\n      clickable\n      label=\"Toggle details\"\n      pressed={pressed}\n      background=\"surfaceHover\"\n      padding={1.5}\n      radius=\"medium\"\n      onClick={() => setPressed((current) => !current)}\n    >\n      {pressed ? 'Pressed semantic state' : 'Clickable semantic surface'}\n    </View>\n  )\n}"
+      "source": "import { useState } from 'react'\nimport { View } from '../../../index'\n\nexport default function ViewSemanticHostDemo() {\n  const [pressed, setPressed] = useState(false)\n\n  return (\n    <View\n      clickable\n      label=\"Toggle details\"\n      pressed={pressed}\n      background=\"surfaceHover\"\n      padding={24}\n      radius=\"medium\"\n      onClick={() => setPressed((current) => !current)}\n    >\n      {pressed ? 'Pressed semantic state' : 'Clickable semantic surface'}\n    </View>\n  )\n}"
     },
     {
       "id": "View/state-styles",
@@ -4041,7 +4041,7 @@
         "wrapper"
       ],
       "documentationRoute": "/docs/components/View",
-      "source": "import { Row, View } from '../../../index'\n\nexport default function ViewStateStylesDemo() {\n  return (\n    <Row gap={1} wrap>\n      <View\n        clickable\n        focusable\n        label=\"Interactive View\"\n        background=\"surfaceHover\"\n        padding={1.5}\n        radius=\"medium\"\n        transition={{ properties: ['background', 'color', 'transform'], duration: 'fast' }}\n        hover={{ background: 'primary', color: 'onPrimary', translateY: -1 }}\n        active={{ translateY: 1, scale: 0.98 }}\n        focusVisible={{\n          outlineWidth: 2,\n          outlineColor: 'primary',\n          outlineStyle: 'solid',\n          outlineOffset: 2,\n        }}\n      >\n        Hover, press, or focus\n      </View>\n\n      <View\n        disabled\n        background=\"surfaceHover\"\n        padding={1.5}\n        radius=\"medium\"\n        disabledStyle={{ opacity: 0.45 }}\n      >\n        Disabled style\n      </View>\n    </Row>\n  )\n}"
+      "source": "import { Row, View } from '../../../index'\n\nexport default function ViewStateStylesDemo() {\n  return (\n    <Row gap={16} wrap>\n      <View\n        clickable\n        focusable\n        label=\"Interactive View\"\n        background=\"surfaceHover\"\n        padding={24}\n        radius=\"medium\"\n        transition={{ properties: ['background', 'color', 'transform'], duration: 'fast' }}\n        hover={{ background: 'primary', color: 'onPrimary', translateY: -16 }}\n        active={{ translateY: 16, scale: 0.98 }}\n        focusVisible={{\n          outlineWidth: 32,\n          outlineColor: 'primary',\n          outlineStyle: 'solid',\n          outlineOffset: 32,\n        }}\n      >\n        Hover, press, or focus\n      </View>\n\n      <View\n        disabled\n        background=\"surfaceHover\"\n        padding={24}\n        radius=\"medium\"\n        disabledStyle={{ opacity: 0.45 }}\n      >\n        Disabled style\n      </View>\n    </Row>\n  )\n}"
     }
   ]
 }

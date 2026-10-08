@@ -5,7 +5,7 @@ export default function MenuBasicUsageDemo() {
     <Menu
       trigger={<Button text="Menu trigger" />}
       placement="bottom-left"
-      offset={0.5}
+      offset={8}
       closeOnSelect
       defaultOpen
     >

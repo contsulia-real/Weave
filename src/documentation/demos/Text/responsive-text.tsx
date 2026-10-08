@@ -7,7 +7,7 @@ export default function TextResponsiveTextDemo() {
       align="start"
       wrap="balance"
       lineHeight={1.5}
-      viewProps={{ width: 'fill', maxWidth: 32 }}
+      viewProps={{ width: 'fill', maxWidth: 512 }}
       md={{
         typo: 'title-medium',
         align: 'center',

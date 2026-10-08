@@ -5,7 +5,7 @@ export default function RadioCompactChoiceGroupDemo() {
   const [choice, setChoice] = useState('medium')
 
   return (
-    <Column gap={0.75} align="start">
+    <Column gap={12} align="start">
       <Radio
         label="Small"
         group="size"

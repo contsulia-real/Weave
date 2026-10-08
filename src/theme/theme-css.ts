@@ -5,7 +5,7 @@ import type { ResolvedTheme, ThemeTokens, ThemeTypographyStyle } from './theme-t
 
 type ThemeVariableStyle = CSSProperties & Record<`--weave-${string}`, string | number>
 
-const toRem = (value: number | string) => (typeof value === 'number' ? `${value}rem` : value)
+const toPx = (value: number | string) => (typeof value === 'number' ? `${value}px` : value)
 
 const toMs = (value: number | string) => (typeof value === 'number' ? `${value}ms` : value)
 
@@ -34,7 +34,7 @@ function typographyStyleVariables(
   style: ThemeTypographyStyle,
 ): void {
   if (style.fontSize !== undefined) {
-    output[typographyStyleVariableName(name, 'fontSize')] = toRem(style.fontSize)
+    output[typographyStyleVariableName(name, 'fontSize')] = toPx(style.fontSize)
   }
   if (style.fontWeight !== undefined) {
     output[typographyStyleVariableName(name, 'fontWeight')] = style.fontWeight
@@ -43,7 +43,7 @@ function typographyStyleVariables(
     output[typographyStyleVariableName(name, 'lineHeight')] = style.lineHeight
   }
   if (style.letterSpacing !== undefined) {
-    output[typographyStyleVariableName(name, 'letterSpacing')] = toRem(style.letterSpacing)
+    output[typographyStyleVariableName(name, 'letterSpacing')] = toPx(style.letterSpacing)
   }
 }
 
@@ -64,28 +64,28 @@ export function themeTokenVariables(tokens: ThemeTokens): ThemeVariableStyle {
   const output: ThemeVariableStyle = {}
 
   assignRecord(output, 'color', tokens.color)
-  assignRecord(output, 'size', tokens.size, toRem)
-  assignRecord(output, 'spacing', tokens.spacing, toRem)
-  assignRecord(output, 'radius', tokens.radius, toRem)
+  assignRecord(output, 'size', tokens.size, toPx)
+  assignRecord(output, 'spacing', tokens.spacing, toPx)
+  assignRecord(output, 'radius', tokens.radius, toPx)
   assignRecord(output, 'shadow', tokens.shadow)
 
   if (tokens.feedback !== undefined) {
     const feedback = tokens.feedback
 
     if (feedback.restDepth !== undefined) {
-      output['--weave-feedback-rest-depth'] = toRem(feedback.restDepth)
+      output['--weave-feedback-rest-depth'] = toPx(feedback.restDepth)
     }
     if (feedback.hoverDepth !== undefined) {
-      output['--weave-feedback-hover-depth'] = toRem(feedback.hoverDepth)
+      output['--weave-feedback-hover-depth'] = toPx(feedback.hoverDepth)
     }
     if (feedback.hoverLift !== undefined) {
-      output['--weave-feedback-hover-lift'] = toRem(feedback.hoverLift)
+      output['--weave-feedback-hover-lift'] = toPx(feedback.hoverLift)
     }
     if (feedback.pressDepth !== undefined) {
-      output['--weave-feedback-press-depth'] = toRem(feedback.pressDepth)
+      output['--weave-feedback-press-depth'] = toPx(feedback.pressDepth)
     }
     if (feedback.pressOffset !== undefined) {
-      output['--weave-feedback-press-offset'] = toRem(feedback.pressOffset)
+      output['--weave-feedback-press-offset'] = toPx(feedback.pressOffset)
     }
     if (feedback.hoverScale !== undefined) {
       output['--weave-feedback-hover-scale'] = feedback.hoverScale
@@ -99,10 +99,10 @@ export function themeTokenVariables(tokens: ThemeTokens): ThemeVariableStyle {
   }
 
   assignRecord(output, 'typography-family', tokens.typography?.family)
-  assignRecord(output, 'typography-size', tokens.typography?.size, toRem)
+  assignRecord(output, 'typography-size', tokens.typography?.size, toPx)
   assignRecord(output, 'typography-weight', tokens.typography?.weight)
   assignRecord(output, 'typography-line-height', tokens.typography?.lineHeight)
-  assignRecord(output, 'typography-letter-spacing', tokens.typography?.letterSpacing, toRem)
+  assignRecord(output, 'typography-letter-spacing', tokens.typography?.letterSpacing, toPx)
 
   for (const [name, style] of Object.entries(tokens.typography?.styles ?? {})) {
     typographyStyleVariables(output, name, style)

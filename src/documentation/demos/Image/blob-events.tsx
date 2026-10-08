@@ -17,26 +17,26 @@ export default function ImageBlobEventsDemo() {
   const [errored, setErrored] = useState(false)
 
   return (
-    <Row gap={2} wrap>
-      <Column gap={0.5}>
+    <Row gap={32} wrap>
+      <Column gap={8}>
         <Image
           src={validBlob}
           alt="Blob source example"
           fit="cover"
           onLoad={() => setLoaded(true)}
-          viewProps={{ width: 12, height: 6, radius: 'medium' }}
+          viewProps={{ width: 192, height: 96, radius: 'medium' }}
         />
         <Text typo="body-small" color="secondary">
           {loaded ? 'Blob loaded' : 'Loading Blob'}
         </Text>
       </Column>
 
-      <Column gap={0.5}>
+      <Column gap={8}>
         <Image
           src={invalidBlob}
           alt="Invalid Blob source"
           onError={() => setErrored(true)}
-          viewProps={{ width: 12, height: 6, background: 'surfaceHover', radius: 'medium' }}
+          viewProps={{ width: 192, height: 96, background: 'surfaceHover', radius: 'medium' }}
         />
         <Text typo="body-small" color="secondary">
           {errored ? 'Load error received' : 'Waiting for error'}

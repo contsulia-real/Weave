@@ -2,7 +2,7 @@ import { Button, Menu, MenuItem } from '../../../index'
 
 export default function MenuSubmenuDemo() {
   return (
-    <Menu trigger={<Button text="Export" />} defaultOpen submenuOffset={0.5} viewportPadding={1}>
+    <Menu trigger={<Button text="Export" />} defaultOpen submenuOffset={8} viewportPadding={16}>
       <MenuItem text="Quick export" />
       <MenuItem
         text="Export as"

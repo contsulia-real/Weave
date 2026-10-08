@@ -8,7 +8,7 @@ export default function ImageBasicUsageDemo() {
       alt="Example landscape"
       fit="cover"
       loading="lazy"
-      viewProps={{ width: 20, height: 10, radius: 'medium' }}
+      viewProps={{ width: 320, height: 160, radius: 'medium' }}
     />
   )
 }

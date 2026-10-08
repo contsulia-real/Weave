@@ -56,7 +56,7 @@ export function DocumentationControls({
         open={themePopoverOpen}
         onOpenChange={setThemePopoverOpen}
         content={
-          <Column gap={1} padding={0.5}>
+          <Column gap={16} padding={8}>
             <SegmentedButton
               variant="secondary"
               selection="single"
@@ -68,7 +68,7 @@ export function DocumentationControls({
                 { id: 'dark', children: t('docs.theme.dark') },
               ]}
             />
-            <Grid columns={3} gap={0.5}>
+            <Grid columns={3} gap={8}>
               {documentationThemeColors.map(({ id, labelKey, seed }) => (
                 <Button
                   key={id}
@@ -100,7 +100,7 @@ export function DocumentationControls({
         open={languagePopoverOpen}
         onOpenChange={setLanguagePopoverOpen}
         content={
-          <Column gap={0.5} padding={0.5}>
+          <Column gap={8} padding={8}>
             <Button
               text={t('docs.language.auto')}
               pressed={languagePreference === 'auto'}

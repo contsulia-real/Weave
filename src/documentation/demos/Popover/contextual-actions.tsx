@@ -5,7 +5,7 @@ export default function PopoverContextualActionsDemo() {
   return (
     <Popover
       content={
-        <Column gap={0.5}>
+        <Column gap={8}>
           <Button text="Rename" variant="ghost" />
           <Button text="Archive" variant="ghost" />
         </Column>

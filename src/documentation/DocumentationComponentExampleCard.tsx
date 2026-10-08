@@ -100,7 +100,7 @@ export function DocumentationComponentExampleCard({
       }}
     >
       <Column width="fill">
-        <Flex width="fill" padding={2} align="center" justify="center">
+        <Flex width="fill" padding={32} align="center" justify="center">
           {LivePreview === undefined ? (
             <Text color="danger">{preview.error}</Text>
           ) : (
@@ -110,7 +110,7 @@ export function DocumentationComponentExampleCard({
           )}
         </Flex>
 
-        <Row width="fill" paddingX={1} paddingY={0.5} gap={0.5} justify="end">
+        <Row width="fill" paddingX={16} paddingY={8} gap={8} justify="end">
           <ToolTip content={t(expanded ? 'docs.example.collapseCode' : 'docs.example.expandCode')}>
             <Button
               icon={IconCode}
@@ -169,16 +169,16 @@ export function DocumentationComponentExampleCard({
             exit={{ animation: 'fade-up', spring: 'gentle' }}
           >
             <Divider />
-            <Stack width="fill" maxHeight={16} background="surfaceHover">
+            <Stack width="fill" maxHeight={256} background="surfaceHover">
               <Code
                 language="tsx"
                 viewProps={{
                   ref: codeRef,
                   width: 'fill',
-                  maxHeight: 16,
+                  maxHeight: 256,
                   overflow: 'hidden',
-                  paddingX: 1,
-                  paddingY: 1,
+                  paddingX: 16,
+                  paddingY: 16,
                   pointerEvents: 'none',
                 }}
               >
@@ -191,10 +191,10 @@ export function DocumentationComponentExampleCard({
                 onChange={setSource}
                 viewProps={{
                   width: 'fill',
-                  maxHeight: 16,
+                  maxHeight: 256,
                   overflow: 'auto',
-                  paddingX: 1,
-                  paddingY: 1,
+                  paddingX: 16,
+                  paddingY: 16,
                   background: 'transparent',
                   color: 'transparent',
                   border: 0,

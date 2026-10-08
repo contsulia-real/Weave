@@ -128,7 +128,7 @@ const stylesheet = `
   --weave-component-flex-direction: column;
   --weave-component-gap: var(--weave-list-item-text-gap);
   --weave-component-flex-grow: 1;
-  --weave-component-min-width: 0rem;
+  --weave-component-min-width: 0px;
 }
 
 :where(.weave-list-item__secondary) {

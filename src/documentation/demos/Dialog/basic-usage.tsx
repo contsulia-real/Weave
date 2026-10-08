@@ -6,8 +6,8 @@ export default function DialogBasicUsageDemo() {
       modal={false}
       trigger={<Button text="Dialog trigger" />}
       placement="bottom"
-      offset={0.5}
-      viewportPadding={1}
+      offset={8}
+      viewportPadding={16}
       autoFocus={false}
       restoreFocus
       defaultOpen

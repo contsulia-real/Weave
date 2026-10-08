@@ -5,7 +5,7 @@ export default function SegmentedButtonActionGroupDemo() {
   const [action, setAction] = useState('No action yet')
 
   return (
-    <Column gap={1} align="start">
+    <Column gap={16} align="start">
       <SegmentedButton
         variant="tertiary"
         size="small"

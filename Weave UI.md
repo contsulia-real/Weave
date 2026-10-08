@@ -394,9 +394,11 @@ SSR 不要求 DOM 全局存在。组件可以通过 React server renderer 输出
 
 这是全框架统一规则。
 
-### 4.1 所有公开 API 中，不带单位的尺度数字默认统一按 `rem`
+### 4.1 所有公开 API 中，不带单位的尺度数字默认统一按 `px`
 
-`style` 除外。只有组件规范明确声明的像素单位例外不走这条规则；当前例外只有 `Divider.size` 与 `Tabs.indicatorThickness`，两者的裸数字固定按 `px`。
+仅无单位的尺寸数字采用 px；显式 `"1rem"` 等合法 CSS 长度字符串保持原样，不做单位替换。框架旧版的数值默认按 rem，新版按 px；迁移旧调用方的裸数字长度时应乘以 16（按原先 1rem = 16px 换算），以保持现有界面物理尺寸。内置默认主题、断点和 Documentation 示例均已作等值迁移，非尺度数字维持原有语义。
+
+`style` 是单位解析的例外，直接遵循 React / CSS 的原生规则。此前就按像素解释的 `Divider.size` 与 `Tabs.indicatorThickness` 保持原样；它们现在与统一的默认 `px` 规则一致，无需改变现有数值。
 
 例如：
 
@@ -412,10 +414,10 @@ SSR 不要求 DOM 全局存在。组件可以通过 React server renderer 输出
 解释为：
 
 ```text
-width   = 20rem
-padding = 1rem
-gap     = 0.5rem
-top     = 1rem
+width   = 20px
+padding = 1px
+gap     = 0.5px
+top     = 1px
 ```
 
 该规则适用于所有语义上表示：
@@ -430,7 +432,7 @@ top     = 1rem
 - 模糊半径
 - 其他视觉尺度
 
-### 4.2 非尺度数字不转成 `rem`
+### 4.2 非尺度数字不转成 `px`
 
 例如：
 
@@ -482,12 +484,12 @@ delay    = 120ms
 <View
   style={{
     width: 20,
-    padding: "1rem",
+    padding: "16px",
   }}
 />
 ```
 
-`style` 完全遵循 React / CSS 自身规则，不应用框架的“裸数字 → rem”转换。
+`style` 完全遵循 React / CSS 自身规则，不应用框架的“裸数字 → px”转换。
 
 ---
 
@@ -1128,7 +1130,7 @@ full
 />
 ```
 
-`x / y / blur / spread` 均属于尺度数字，按 `rem` 解释。
+`x / y / blur / spread` 均属于尺度数字，按 `px` 解释。
 
 ---
 
@@ -1385,7 +1387,7 @@ outlineStyle
 outlineOffset
 ```
 
-其中 `outlineWidth` / `outlineOffset` 的裸数字属于尺度，按 `rem` 解释。
+其中 `outlineWidth` / `outlineOffset` 的裸数字属于尺度，按 `px` 解释。
 
 ---
 
@@ -1462,10 +1464,10 @@ disabledStyle
 ```ts
 theme = {
   breakpoints: {
-    sm: 40,
-    md: 48,
-    lg: 64,
-    xl: 80,
+    sm: 640,
+    md: 768,
+    lg: 1024,
+    xl: 1280,
   },
 }
 ```
@@ -1473,16 +1475,16 @@ theme = {
 这些是尺度值：
 
 ```text
-40 → 40rem
-48 → 48rem
+640 → 640px
+768 → 768px
 ```
 
 支持自定义断点名称：
 
 ```ts
 breakpoints: {
-  compact: 36,
-  wide: 72,
+  compact: 576,
+  wide: 1152,
 }
 ```
 
@@ -1493,9 +1495,9 @@ breakpoint 遵循主题的正常继承与深合并规则。自定义名称会加
 ```ts
 createTheme({
   breakpoints: {
-    md: 52,      // 覆盖 defaultTheme.md = 48
-    compact: 36, // 新增
-    wide: 72,    // 新增
+    md: 832,       // 覆盖 defaultTheme.md = 768
+    compact: 576,  // 新增
+    wide: 1152,    // 新增
   },
 })
 ```
@@ -1734,7 +1736,7 @@ defaultTheme
 - 用户显式传入的 `style` 必须保留在真实 DOM `style=""` 属性上
 - 不转换为 `weave-props-*`、组件 props class 或主题 class
 - 不参与框架哈希 class 的生成
-- 不应用框架裸数字 `rem` 转换
+- 不应用框架裸数字 `px` 转换
 - 是最终原始 CSS 逃生口
 - 用于框架高层 API 未覆盖的精确控制
 
@@ -1824,9 +1826,9 @@ label-small
 默认 label scale 用于 Button 等紧凑控件，字号刻意低于正文层级，避免控件文字在视觉上压过内容：
 
 ```text
-label-small  = 0.75rem   // 12px
-label-medium = 0.8125rem // 13px
-label-large  = 0.875rem  // 14px
+label-small  = 12px   // 12px
+label-medium = 13px // 13px
+label-large  = 14px  // 14px
 ```
 
 Documentation 的普通说明文字使用 `body-medium`；`body-small` 保留给 caption / meta 信息；`body-xsmall` 用于 ToolTip 这类需要明显低于控件标签的紧凑辅助信息。
@@ -2167,10 +2169,10 @@ bold
 
 ```text
 size
-small   → 0.875rem
-medium  → 1rem
-large   → 1.25rem
-xlarge  → 1.5rem
+small   → 14px
+medium  → 16px
+large   → 20px
+xlarge  → 24px
 
 stroke
 thin    → 1.5
@@ -2424,15 +2426,15 @@ theme.components.Input
 默认 Input field surface：
 
 ```text
-minHeight   = 2.5rem
-minWidth    = 12rem
-paddingX    = 0.875rem
-radius      = 0.75rem
-border      = 0.0625rem solid outline
+minHeight   = 40px
+minWidth    = 192px
+paddingX    = 14px
+radius      = 12px
+border      = 1px solid outline
 background  = surface
 typo        = body-large
-focus       = 0.125rem focus outline
-focusOffset = 0.0625rem
+focus       = 2px focus outline
+focusOffset = 1px
 ```
 
 Input / Select / Combobox 默认使用完全相同的 Input field surface。默认 surface 的 background / shadow / border 全部由 `theme.components.Input.base` 自己定义；Input 不再借用 Switch track 的 background / trackShadow。Light / Dark 必须保持相同的 field-surface 几何。现有 Dark field surface 作为视觉基准保持不变；Light 必须使用同样的方向性凹陷几何与材质层次，只把阴影颜色 / 透明度调整为适合浅色 palette 的数值。默认不增加 hover 额外加深、thumb 式凸起、底边 extrusion 或外凸 drop shadow。Focus 只叠加既有 outline，不改变 field surface 本身。禁止为了实现 Select 或 Combobox 再复制一份“看起来差不多”的 input CSS，也禁止为了共享这些视觉再增加一个与 Input 平行的 Field Control 层。
@@ -2628,9 +2630,9 @@ trigger 聚焦时输入可打印字符会进行前缀匹配：
 Select 不实现第二套 popup 系统。listbox 复用 anchored-overlay infrastructure：
 
 - placement 支持与 Popover 相同的八向位置；默认 `bottom-left`；
-- 默认 `offset = 0.375rem`；
+- 默认 `offset = 6px`；
 - `overlapTrigger=false` 为默认；设为 `true` 时，popup 的主轴基准改为 trigger 自身，从而覆盖 trigger，而不是从 trigger 外侧再留出默认间距；未显式传 `offset` 时 overlap 模式使用 `0`；
-- 默认 `viewportPadding = 0.5rem`；
+- 默认 `viewportPadding = 8px`；
 - 使用实时 anchor rect + panel 尺寸执行 flip / shift；
 - scroll / resize / mutation 后重新定位；scroll callback 只调度下一动画帧，不在同步滚动回调中直接修改定位 / style，避免与 Firefox APZ 的异步平移产生 scroll-linked positioning；hover / press / transition / animation 产生的瞬时视觉 transform 不改变 overlay 锚点；
 - trigger 只要仍与 viewport 相交就保持打开；完全离开 viewport 后自动 dismiss；
@@ -2654,7 +2656,7 @@ disabled
 
 trigger 回显当前 selected option 的 `text` 与可选 `icon`；`secondaryText` 只属于 listbox option，不塞进 trigger。没有 selected option 时显示 `placeholder`。
 
-listbox option 默认保留 selected check affordance；selected 与 active 是不同状态，可以同时存在。Option 之间默认使用 `0.25rem` gap，Select 不在 option 之间插入 Divider。
+listbox option 默认保留 selected check affordance；selected 与 active 是不同状态，可以同时存在。Option 之间默认使用 `4px` gap，Select 不在 option 之间插入 Divider。
 
 ## 14A.7 Theme
 
@@ -2720,7 +2722,7 @@ gap = 0
 size = 1
 ```
 
-`size` 设置分割线厚度，类型为 number，**固定以 px 为单位**。例如 `size={1}` 表示 1px，`size={2}` 表示 2px。它不使用 Weave 常规数字 Length 的 rem 规则。未显式传 `size` 时，默认厚度来自 `theme.components.Divider.base.thickness`，默认主题为 1px；显式 `size` 始终覆盖 Theme 默认值。
+`size` 设置分割线厚度，类型为 number，**固定以 px 为单位**。例如 `size={1}` 表示 1px，`size={2}` 表示 2px。它与 Weave 的统一数字 Length 规则相同，均为 px。未显式传 `size` 时，默认厚度来自 `theme.components.Divider.base.thickness`，默认主题为 1px；显式 `size` 始终覆盖 Theme 默认值。
 
 `gap` 始终表示**分割线两侧的留白**：
 
@@ -2832,7 +2834,7 @@ Escape                → 关闭，不改变 value / inputValue
 
 Combobox 复用统一 anchored-overlay 基础设施：8 向 placement、flip / shift、scroll / resize / mutation 跟踪、anchor 完全离开 viewport 后 dismiss、outside pointer dismiss 与 exit presence。hover / press / transition / animation 产生的瞬时视觉 transform 不改变 listbox 锚点。
 
-listbox 默认至少和 input anchor 一样宽；input 宽度变化时会实时更新最小宽度。`offset` 默认 0.375rem，`viewportPadding` 默认 0.5rem。`overlapTrigger=false` 为默认；设为 `true` 时 listbox 以 input 自身作为主轴定位基准并覆盖 input，未显式传 `offset` 时使用 0。
+listbox 默认至少和 input anchor 一样宽；input 宽度变化时会实时更新最小宽度。`offset` 默认 6px，`viewportPadding` 默认 8px。`overlapTrigger=false` 为默认；设为 `true` 时 listbox 以 input 自身作为主轴定位基准并覆盖 input，未显式传 `offset` 时使用 0。
 
 focus 移出整个 Combobox root / listbox 时 popup 关闭；clear action 属于 root 内部交互。
 
@@ -2912,7 +2914,7 @@ size
 - Switch 的 thumb drag feedback 是所有切换路径共享的视觉语言：thumb 的纵向基准始终使用 `top: 50% + translateY(-50%)`，静止、checked、自动 drag、手动 drag 都只能改变水平位移和宽高，不能各自计算不同的纵向位置；pointer down 在 thumb 或 track 任意位置都立即进入 `thumbDragShrink` 形变；实际拖动时继续按距离实时拉长并跟手，释放时以轨道中点决定最终状态；普通点击、点击 label、Space / Enter 等没有手动拖动距离的切换，也必须自动播放同一套 shrink → stretch → 后半程连续收窄并恢复高度 → 以正常圆形到达另一端的完整轨迹。自动轨迹在终点前必须已经回到静止几何，不能在最后一帧靠清除 inline width / height / transform 产生可见跳变，也不能退化成普通圆点平移
 - 拖动完成后产生的兼容 click 不得再次反向切换
 - disabled 状态下点击、键盘与拖动都不能改变状态
-- `label` 是可见且可点击的真实绑定标签；Switch 宿主使用可 label 的原生 `<button type="button" role="switch">`，点击 label 与点击控件本体等价，同时 label 参与 accessible name；Switch 控件与可见 label 的间距来自 `theme.components.Switch.base.fieldGap`，默认 `0.5rem`（8px）
+- `label` 是可见且可点击的真实绑定标签；Switch 宿主使用可 label 的原生 `<button type="button" role="switch">`，点击 label 与点击控件本体等价，同时 label 参与 accessible name；Switch 控件与可见 label 的间距来自 `theme.components.Switch.base.fieldGap`，默认 `8px`（8px）
 
 拖动中的 thumb 位置属于组件内部交互几何，可由渲染后端直接同步；它不是用户显式 `style`，也不改变公开样式优先级。拖动期间不对 pointer movement 做缓动，保证直接跟手；松手后的归位才允许使用主题 motion curve。
 
@@ -2967,15 +2969,15 @@ viewProps
 - Checkbox 额外支持 `indeterminate?: boolean`。开启时同步原生 `input.indeterminate = true` 并暴露 `aria-checked="mixed"`；视觉使用水平短线而不是 checkmark。它不创建第四种 value，点击仍由原生 checkbox change 产生布尔 checked，调用方决定何时清除 indeterminate；
 - `disabled` 是组件自己的高层属性，并落到真实原生 input；
 - `label` 是可见的原生 `<label>` 绑定内容；点击 label 文本必须直接触发对应 Radio / Checkbox 状态变化，不能依赖调用方自己补 `onClick`；
-- `small / medium / large` 三档默认尺寸分别为 `1.125rem / 1.375rem / 1.625rem`（18 / 22 / 26px），由 `theme.components.Radio / Checkbox.sizes` 提供；press 位移 / 缩放与 state-layer 初始 scale 分别由各自 `base.pressOffset / pressScale / stateLayerRestScale` 提供，不得在 stylesheet 中写死；Documentation 必须同时展示三档，不能只展示默认 medium。
+- `small / medium / large` 三档默认尺寸分别为 `18px / 22px / 26px`（18 / 22 / 26px），由 `theme.components.Radio / Checkbox.sizes` 提供；press 位移 / 缩放与 state-layer 初始 scale 分别由各自 `base.pressOffset / pressScale / stateLayerRestScale` 提供，不得在 stylesheet 中写死；Documentation 必须同时展示三档，不能只展示默认 medium。
 
 默认视觉继续使用 Weave 的物理层级语言，但 Radio 与 Checkbox 的 checked 形态不同：
 
-- 未选中时，两者都有 `0.125rem` 实体边界与方向性 inset shadow，形成明确凹陷厚度；hover 加深凹槽，press 再下沉并缩放；
+- 未选中时，两者都有 `2px` 实体边界与方向性 inset shadow，形成明确凹陷厚度；hover 加深凹槽，press 再下沉并缩放；
 - Radio checked 后，外壳仍然是凹槽，内部 primary 圆点以 `scale(0) → scale(1)` + spring 方式长出来；unchecked 时同一 transition 反向执行 `scale(1) → scale(0)`。默认使用 slow motion token（当前 320ms），保证正反过渡肉眼明确可见；
 - Checkbox checked 后，**Checkbox 外壳本身整块铺满 primary**，不存在内部 primary 方块、padding 或第二层填充；
 - Checkbox 的 `onPrimary` 对号使用真实 SVG path，并通过 `pathLength + stroke-dasharray + stroke-dashoffset` 从起点到终点画出；unchecked 时同一 320ms path transition 反向把 `stroke-dashoffset` 从 `0` 推回 `1`，同时 checked background 平滑退回未选中 surface；press 时 checkbox 本体与 checkmark 视觉层必须使用完全相同的 `translateY + scale`，禁止再出现长按后勾与方框错位；
-- Radio / Checkbox 外围都有独立圆形 state layer。small / medium / large 的 halo 分别为 `2.125rem / 2.375rem / 2.625rem`（34 / 38 / 42px），相对 18 / 22 / 26px 控件本体**每一侧向外扩 8px**。**halo 自己就是 spacing**：shell 的布局尺寸等于 halo 直径，控件居中其中，field 的额外 `gap` 固定为 `0`，因此控件本体到 label 的可见距离只来自 halo 多出来的一侧（当前 8px），禁止再叠加第二份 label gap；
+- Radio / Checkbox 外围都有独立圆形 state layer。small / medium / large 的 halo 分别为 `34px / 38px / 42px`（34 / 38 / 42px），相对 18 / 22 / 26px 控件本体**每一侧向外扩 8px**。**halo 自己就是 spacing**：shell 的布局尺寸等于 halo 直径，控件居中其中，field 的额外 `gap` 固定为 `0`，因此控件本体到 label 的可见距离只来自 halo 多出来的一侧（当前 8px），禁止再叠加第二份 label gap；
 - halo 的 hover 命中属于整个 field：鼠标位于控件、halo 区域或可见 label 文字上时都保持同一个圆形 halo；focus-visible 与 press 继续提高 state layer 强度，checked 时 halo 颜色切到 primary；
 - `prefers-reduced-motion: reduce` 下取消 scale、state layer scale 与 path drawing transition，直接显示最终状态；
 - 深色模式保持完全相同的结构，只调整 surface、border 和阴影 token。
@@ -3472,15 +3474,15 @@ size 的高度、水平/垂直 padding、内容 gap 和 typo 由 `theme.componen
 
 ```text
 small
-minHeight = 1.75rem
+minHeight = 28px
 typo      = label-small
 
 medium
-minHeight = 2.125rem
+minHeight = 34px
 typo      = label-medium
 
 large
-minHeight = 2.5rem
+minHeight = 40px
 typo      = label-large
 ```
 
@@ -3638,7 +3640,7 @@ Button 的通用布局、视觉、状态、事件、响应式 View 能力继续�
     width: "fill",
     className: "save-button",
     style: {
-      minWidth: "12rem",
+      minWidth: "192px",
     },
   }}
 />
@@ -3787,7 +3789,7 @@ bottom-left  bottom  bottom-right
 - Badge 的动画**方向**由 `placement` 决定，而不是使用目标中心到 placement 的真实距离：popup 以“组件中心 → placement”为朝向，从最终位置内侧的一小段固定距离滑入并完成 opacity + scale；dismiss 沿相反方向退回同样的短距离后 fade + shrink。八个 placement 只决定方向，实际 motion 距离保持短且稳定，不随目标尺寸变化。`reducedMotion=reduce` 时跳过这两段动画。
 - Badge 不使用 ToolTip / Snack 的 portal 或 layer region；它仍在本地包装容器内做定位，但锚点坐标来自被包裹目标的实时视觉边界。
 
-默认主题来自 `theme.components.Badge.base`：正常 Badge 使用 `primary / onPrimary`，并用 `surface` 边界把角标与复杂背景分离；默认高度 `1.25rem`，dot 直径 `0.625rem`。背景、文字、边界、圆角、padding、dot 尺寸、shadow、typography，以及 `motionDistance / motionDiagonal / enterScale / overshootScale / exitScale` 均由主题提供。
+默认主题来自 `theme.components.Badge.base`：正常 Badge 使用 `primary / onPrimary`，并用 `surface` 边界把角标与复杂背景分离；默认高度 `20px`，dot 直径 `10px`。背景、文字、边界、圆角、padding、dot 尺寸、shadow、typography，以及 `motionDistance / motionDiagonal / enterScale / overshootScale / exitScale` 均由主题提供。
 
 ---
 
@@ -3862,9 +3864,9 @@ Underline 的 indicator **不得贴住 Tab item**。安全间距直接复用 Tab
 
 pill 只改变视觉，不改变选择、focus、ARIA 或键盘语义。整个 TabList **直接复用 Select/Input 的 field surface**：加载同一份 Input stylesheet，并使用同一个 `resolveInputTheme(theme)` runtime class；不得在 Tabs theme 内复制 background / border / shadow / radius。pill TabList 默认 `width="fit"`、`minWidth=0`，只包住自身 Tab，不允许因为 Tabs root 的 column stretch 而横向拉满。
 
-PillItem 之间必须有安全 gap，并直接使用现有 `listGap`；TabList 必须把它显式作为 View 的 `gap`，不能只依赖 component fallback。默认 `listGap=0.25rem`。
+PillItem 之间必须有安全 gap，并直接使用现有 `listGap`；TabList 必须把它显式作为 View 的 `gap`，不能只依赖 component fallback。默认 `listGap=4px`。
 
-Pill 槽内默认四边 padding 保持完全一致（默认 0.25rem），不得为了 active item 的突起效果改变整个 TabList 的 bottom padding，否则会把所有 non-active Tab 一起推偏。Button rest surface 的实体 depth 只向下延伸，因此只对 **selected pill Tab 自己**压缩 bottom padding：`tabPaddingY - feedback.restDepth`；non-active Tab 继续保持完整的 `tabPaddingY`。horizontal pill 的 TabList 必须使用 `align-items:start`，禁止 flex stretch 把 selected Tab 压缩后的 box 高度重新拉满。这样 active Tab 少掉的下 padding才会真正缩短 box，再由 Button rest depth 补回可见高度，使 active 与 non-active 的上下视觉位置一致。
+Pill 槽内默认四边 padding 保持完全一致（默认 4px），不得为了 active item 的突起效果改变整个 TabList 的 bottom padding，否则会把所有 non-active Tab 一起推偏。Button rest surface 的实体 depth 只向下延伸，因此只对 **selected pill Tab 自己**压缩 bottom padding：`tabPaddingY - feedback.restDepth`；non-active Tab 继续保持完整的 `tabPaddingY`。horizontal pill 的 TabList 必须使用 `align-items:start`，禁止 flex stretch 把 selected Tab 压缩后的 box 高度重新拉满。这样 active Tab 少掉的下 padding才会真正缩短 box，再由 Button rest depth 补回可见高度，使 active 与 non-active 的上下视觉位置一致。
 
 active / selected pill 不是给当前 Tab 自己加一套 shadow，而是与 underline 相同地只保留**一个共享 moving surface**。这个 surface 直接挂 Button 的真实 `weave-button + weave-button--primary + weave-button--medium + resolveButtonTheme(theme)` 配方，并关闭 pointer interaction；选择变化时仍使用同一套 `View.layoutAnimation` FLIP，从一个 Tab 连续位移/缩放到另一个 Tab。Tab 文本本身位于 moving Button surface 上方。不得在 Tabs 内复制 Button 的 background / border / depthColor / rest-depth 配方。
 
@@ -4085,11 +4087,11 @@ Card 无论是否可交互，都属于 Weave 的 raised / tactile surface，并�
 
 ```text
 background  = surface
-border      = outline / 0.0625rem
+border      = outline / 1px
 radius      = large
-padding     = 1rem
+padding     = 16px
 overflow    = auto
-restDepth   = 0.125rem   // 2px
+restDepth   = 2px   // 2px
 ```
 
 `overflow = auto` 必须作为 Card 内部传给 View 的真实默认 overflow 属性，使 Card 进入既有 scroll-host / AutoScrollbar 路径；不能只在 Card stylesheet 里写一个组件级 overflow 变量冒充滚动语义。
@@ -4107,9 +4109,9 @@ activeBackground = Button secondary active surface
 Card 自己拥有较弱的 depth 尺度：
 
 ```text
-restDepth  = 0.125rem    // 2px
-hoverDepth = 0.1875rem   // 3px
-pressDepth = 0.03125rem  // 0.5px
+restDepth  = 2px    // 2px
+hoverDepth = 3px   // 3px
+pressDepth = 0.5px  // 0.5px
 ```
 
 Button 默认仍为 3px / 4px / 1px，因此 Card 在 rest / hover / press 三个阶段都更弱。
@@ -4208,21 +4210,21 @@ elevated = false
 
 ```text
 small:
-  height = 3rem
-  marginX = 0.75rem
-  gap = 0.5rem
+  height = 48px
+  marginX = 12px
+  gap = 8px
   titleTypo = title-small
 
 medium:
-  height = 3.5rem
-  marginX = 1rem
-  gap = 0.75rem
+  height = 56px
+  marginX = 16px
+  gap = 12px
   titleTypo = title-medium
 
 large:
-  height = 4rem
-  marginX = 1.25rem
-  gap = 1rem
+  height = 64px
+  marginX = 20px
+  gap = 16px
   titleTypo = title-large
 ```
 
@@ -4261,11 +4263,11 @@ borderRadius = 0
 
 ```text
 width = available width minus both margins
-margin = 1rem
+margin = 16px
 borderRadius = theme.components.AppBar.base.radius
 ```
 
-默认 floating margin 为 1rem，并由 `theme.components.AppBar.base.floatingMargin` 控制。
+默认 floating margin 为 16px，并由 `theme.components.AppBar.base.floatingMargin` 控制。
 
 ## 18.12A.5 Surface / depth
 
@@ -4511,7 +4513,7 @@ type DataGridSort = {
 
 ## 18.12C.2 Column resizing
 
-只有 `resizable=true` 的列显示 resize hit target。DataGrid 必须把各数据列解析为独立的真实 column track；pointer drag 以当前 header 的实际 pixel 宽度为起点，只改变目标 column track，不得由浏览器重新分配其他数据列宽。`minWidth / maxWidth` 必须约束最终渲染 track，而不只是约束状态值。`columnWidths` 存在时为受控；否则由 `defaultColumnWidths` 初始化内部状态。未显式给宽度的列首次布局时从真实 header 宽度测量并锁定为 track。当数据列总宽度小于 viewport 时，DataGrid 使用一个无语义 presentation filler track 吸收剩余宽度，使 header 背景、row surface 与横向 divider 铺满 viewport，同时不拉伸任何数据列；filler 不得绘制纵向 divider、padding 或其他会让它看起来像真实数据列的视觉边界。当数据列总宽度超过 viewport 时 filler 收缩为 0，并只由真实数据列宽产生横向滚动。resize hit target 使用与 SplitBox splitter 相同的 1rem 交互宽度，可见 divider 仍由 Table theme 决定且不得随 hit target 变粗。resize 过程中通过 `onColumnWidthsChange` 连续发布完整宽度映射；resize hit target 必须完全位于 table scroll extent 内。DataGrid 只新增 resize interaction geometry，不复制 Table theme。
+只有 `resizable=true` 的列显示 resize hit target。DataGrid 必须把各数据列解析为独立的真实 column track；pointer drag 以当前 header 的实际 pixel 宽度为起点，只改变目标 column track，不得由浏览器重新分配其他数据列宽。`minWidth / maxWidth` 必须约束最终渲染 track，而不只是约束状态值。`columnWidths` 存在时为受控；否则由 `defaultColumnWidths` 初始化内部状态。未显式给宽度的列首次布局时从真实 header 宽度测量并锁定为 track。当数据列总宽度小于 viewport 时，DataGrid 使用一个无语义 presentation filler track 吸收剩余宽度，使 header 背景、row surface 与横向 divider 铺满 viewport，同时不拉伸任何数据列；filler 不得绘制纵向 divider、padding 或其他会让它看起来像真实数据列的视觉边界。当数据列总宽度超过 viewport 时 filler 收缩为 0，并只由真实数据列宽产生横向滚动。resize hit target 使用与 SplitBox splitter 相同的 16px 交互宽度，可见 divider 仍由 Table theme 决定且不得随 hit target 变粗。resize 过程中通过 `onColumnWidthsChange` 连续发布完整宽度映射；resize hit target 必须完全位于 table scroll extent 内。DataGrid 只新增 resize interaction geometry，不复制 Table theme。
 
 ## 18.12C.3 Selection
 
@@ -4647,8 +4649,8 @@ Avatar 固定使用圆形裁切。
 默认尺寸：
 
 ```text
-width  = 2.5rem
-height = 2.5rem
+width  = 40px
+height = 40px
 aspect-ratio = 1 / 1
 ```
 
@@ -4696,7 +4698,7 @@ fallback 优先级固定为：
 
 多词名称取首词与末词的第一个字符；单词名称取前两个字符；结果转为大写。
 
-initials / 文本 fallback 的字号按 Avatar 当前宽度同比例缩放。默认 2.5rem Avatar 对应 1rem fallback 字号。
+initials / 文本 fallback 的字号按 Avatar 当前宽度同比例缩放。默认 40px Avatar 对应 16px fallback 字号。
 
 ## 18.14.6 Theme
 
@@ -4709,11 +4711,11 @@ theme.components.Avatar.base
 字段：
 
 ```text
-defaultSize = 2.5rem
+defaultSize = 40px
 background = surfaceHover
 color      = tertiary
 borderColor = outline
-borderWidth = 0.0625rem
+borderWidth = 1px
 ```
 
 这套 neutral fallback surface 同时用于 initials、显式 fallback、空白 Avatar 和图片失败状态。图片成功时仍保留相同容器边框，图片覆盖容器背景。
@@ -4785,15 +4787,15 @@ pointer 的 click / drag 继续由统一的 Slider pointer interaction 处理，
 
 `label` 存在时，它只作为 Slider 旁边的普通可见文本，不使用原生 `<label>`、不建立 `htmlFor` 激活关系；点击这段文字不能聚焦、跳值或触发 Slider。组件仍通过 `aria-labelledby` 引用该文本，使它可以作为 range 的 accessible name。
 
-因此 Slider 的 `label` 语义与 Switch / Radio / Checkbox 不同：后者的可见 label 本身就是交互命中区域，而 Slider 的可见 label 不是交互控件的一部分。未提供高层 `label` 时，语义继续通过 `viewProps.label / labelledBy / description` 等 View 语义字段提供。Slider 本体与可见 label 之间必须保留安全 gap，直接使用现有 `theme.components.Slider.base.fieldGap`；默认值为 `0.5rem`（8px）。
+因此 Slider 的 `label` 语义与 Switch / Radio / Checkbox 不同：后者的可见 label 本身就是交互命中区域，而 Slider 的可见 label 不是交互控件的一部分。未提供高层 `label` 时，语义继续通过 `viewProps.label / labelledBy / description` 等 View 语义字段提供。Slider 本体与可见 label 之间必须保留安全 gap，直接使用现有 `theme.components.Slider.base.fieldGap`；默认值为 `8px`（8px）。
 
 ## 18.15.4 Geometry
 
 Slider 默认主轴长度：
 
 ```text
-horizontal -> width  = 16rem
-vertical   -> height = 16rem
+horizontal -> width  = 256px
+vertical   -> height = 256px
 ```
 
 交叉轴默认使用当前 size 的 thumb 尺寸。horizontal 可通过 `viewProps.width` 覆盖主轴长度；vertical 可通过 `viewProps.height` 覆盖主轴长度，普通 View 宽高覆盖规则仍然有效。Slider control 即使作为父布局中的 stretch item，也不得让承载 visual / input 的 grid track 独立拉伸；该 track 必须以真实 range input 的解析尺寸为准，因此 visual track、marks / step dots、thumb 与 pointer hit layer 始终共享同一实际主轴尺寸。
@@ -4803,9 +4805,9 @@ Slider 的基础几何采用 M3 Slider 的粗 track + 独立圆形 thumb + thumb
 track 厚度与 gap 保留 M3 的粗轨道比例；静止 thumb 使用 Weave Slider 已冻结的圆形尺寸：
 
 ```text
-small  = track 0.75rem / thumb 1rem    / gap 0.28125rem
-medium = track 1rem    / thumb 1.25rem / gap 0.375rem
-large  = track 1.25rem / thumb 1.5rem  / gap 0.46875rem
+small  = track 12px / thumb 16px    / gap 4.5px
+medium = track 16px    / thumb 20px / gap 6px
+large  = track 20px / thumb 24px  / gap 7.5px
 ```
 
 active / inactive track 必须是两段真实分离的 surface，不能再用一条连续轨道加渐变或覆盖色模拟。静止 thumb 必须是圆形并位于轨道断口中央；面向 thumb 的中断面保留方切，不使用 radius，只有轨道最外侧端点保持 full radius。
@@ -4822,7 +4824,7 @@ thumb dot      = thumb 中心常驻对比 dot，与 step 是否开启无关
 step dot       = 沿轨道明确标记每一个有效离散 step
 ```
 
-inactive track 复用 Switch 的 inset track shadow；active track 不使用 inset shadow，并在 Switch thumb 的 raised shadow 基础上叠加 0.125rem（2px）的实体 depth，使 active surface 高于凹槽但不达到 Button 的强突起。thumb 默认与 active track 使用同一 active color，并使用 raised shadow。因此 active / inactive 不是一条轨道上的两种颜色，而是两个不同 Z 层级的表面。active / inactive 在 thumb 两侧断开，中间 gap 由 thumb 的实体占位与 M3 gap 共同形成。
+inactive track 复用 Switch 的 inset track shadow；active track 不使用 inset shadow，并在 Switch thumb 的 raised shadow 基础上叠加 2px（2px）的实体 depth，使 active surface 高于凹槽但不达到 Button 的强突起。thumb 默认与 active track 使用同一 active color，并使用 raised shadow。因此 active / inactive 不是一条轨道上的两种颜色，而是两个不同 Z 层级的表面。active / inactive 在 thumb 两侧断开，中间 gap 由 thumb 的实体占位与 M3 gap 共同形成。
 
 Slider 的已选轨道由当前值计算：
 
@@ -5562,11 +5564,11 @@ horizontal -> ArrowLeft / ArrowRight
 vertical   -> ArrowUp / ArrowDown
 ```
 
-默认 `step = 0.5rem`，并允许通过 `step?: Length` 覆盖。
+默认 `step = 8px`，并允许通过 `step?: Length` 覆盖。
 
 Splitter 的视觉 thickness 与 pointer hit area 必须分离。`thickness?: Length` 控制 rest 状态的可见分隔线，并允许显式设为 `0`；thickness 为 0 时透明 hit area 仍存在且仍可拖动。`thickness = 0` 只表示 rest 状态不可见；hover / active / drag 时仍必须显示 Splitter Theme 的交互反馈线与对应 pointer 状态颜色，而且反馈线不得改变 Pane 的布局尺寸。
 
-默认视觉 thickness 为 1px。默认 hit area 复用现有 Scrollbar hit-size 量级，为 1rem。
+默认视觉 thickness 为 1px。默认 hit area 复用现有 Scrollbar hit-size 量级，为 16px。
 
 ## 18.18.3 Collapse
 
@@ -5719,7 +5721,7 @@ top-end
 <ToolTip offset={0.5} />
 ```
 
-表示 `0.5rem`。
+表示 `8px`。
 
 ### delay
 
@@ -5755,7 +5757,7 @@ top-end
 ```text
 placement = top
 delay = 500ms
-offset = 0.5rem
+offset = 8px
 layer = tooltip
 ```
 
@@ -5799,12 +5801,12 @@ ToolTip 的默认视觉必须遵循 Weave 已有的“材质 + 层级”语言�
 - 边界默认跟随 `primary`，避免在主题色气泡上额外引入冲突色；
 - 只使用 ambient shadow 表达浮层层级，不使用 Button 式实体厚度 / 底边 extrusion；
 - 使用 `small` 圆角，而不是与 Button 接近的较大圆角；
-- 默认水平 / 垂直 padding 分别为 `0.5rem / 0.25rem`；
+- 默认水平 / 垂直 padding 分别为 `8px / 4px`；
 - 默认文字使用 `body-xsmall`，尺寸和字重都低于 Button 的 label scale；
 - 使用指向目标的锚点箭头，明确 ToolTip 与目标之间的空间关系；
 - 进入时从锚点方向轻微位移并淡入，只保留几乎不可察觉的缩放；不使用 Button 式弹跳；
 - 退出时沿相反过程向锚点收回并淡出，完成过渡后才卸载 DOM，不允许瞬间消失；
-- 位移距离由 `theme.components.ToolTip.base.motionOffset` 控制；默认 `0.1875rem`；
+- 位移距离由 `theme.components.ToolTip.base.motionOffset` 控制；默认 `3px`；
 - 进入使用全局 `motion.duration.normal + motion.curve.emphasized`，透明度使用较短的 `fast + enter`；退出使用 `fast + exit`；
 - `prefers-reduced-motion: reduce` 下取消位移、缩放与退出等待。
 
@@ -5891,8 +5893,8 @@ left
 默认：
 
 ```text
-offset = 0.5rem
-viewportPadding = 0.5rem
+offset = 8px
+viewportPadding = 8px
 ```
 
 定位使用 trigger 的实时 `getBoundingClientRect()` 与 panel 实际尺寸；viewport resize、任意祖先 scroll、trigger resize / mutation / interaction transition，以及 panel ResizeObserver 都会触发重新定位。相同的 anchor tracker 同时提供 viewport-exit dismiss，因此定位与“anchor 是否仍可见”不是两套监听系统。业务代码不提供 left / top 坐标。
@@ -6071,10 +6073,10 @@ root Menu 使用和 Popover 相同的八向 placement / flip / shift 几何；�
 
 ```text
 placement = bottom-left
-offset = 0.375rem
+offset = 6px
 overlapTrigger = false
-submenuOffset = 0.25rem
-viewportPadding = 0.5rem
+submenuOffset = 4px
+viewportPadding = 8px
 ```
 
 root Menu 可选 `overlapTrigger=true`：此时主轴定位基准改为 trigger 自身，因此默认 `bottom-left` 会让 menu 从 trigger 左上角开始覆盖，而不是从 trigger 下方开始；未显式传 `offset` 时 overlap 模式使用 0。submenu 不受该 root 开关影响。
@@ -6336,7 +6338,7 @@ breakpoint = md
 side = right
 ```
 
-`auto` 使用当前 Theme breakpoint：viewport 小于 breakpoint 时为 modal，大于等于 breakpoint 时为 non-modal。默认主题下 `md = 48rem`。显式 `mode="modal"` 或 `mode="non-modal"` 时忽略 breakpoint。
+`auto` 使用当前 Theme breakpoint：viewport 小于 breakpoint 时为 modal，大于等于 breakpoint 时为 non-modal。默认主题下 `md = 768px`。显式 `mode="modal"` 或 `mode="non-modal"` 时忽略 breakpoint。
 
 SSR / 没有 `matchMedia` 时先按 modal 处理。`auto` 指定当前 Theme 中不存在的 breakpoint 时直接抛出明确错误，不静默 fallback。modal ↔ non-modal 切换不改变 `open`，也不触发 `onOpenChange`。
 
@@ -6355,7 +6357,7 @@ minSize?: Length
 
 `open` 使用标准受控 / 非受控模型。non-modal 下 `open=false` 等价于 Drawer 侧 Pane 折叠到 0；Drawer 内容保持 mounted 并 inert。重新打开时继续使用之前保存的 Drawer size。
 
-`size / defaultSize / onSizeChange` 控制 Drawer 自身沿 `side` 主轴的尺寸。都未提供时默认 `20rem`；`minSize` 默认 `12rem`。left/right 控制宽度，top/bottom 控制高度。auto 模式切换时保留当前 resize 后的尺寸；modal 下尺寸受 viewport 上限约束。
+`size / defaultSize / onSizeChange` 控制 Drawer 自身沿 `side` 主轴的尺寸。都未提供时默认 `320px`；`minSize` 默认 `192px`。left/right 控制宽度，top/bottom 控制高度。auto 模式切换时保留当前 resize 后的尺寸；modal 下尺寸受 viewport 上限约束。
 
 ## 19.8.3 Non-modal = SplitBox
 
@@ -6371,8 +6373,8 @@ expandThreshold?: Length
 
 ```text
 resizable = true
-collapseThreshold = 2rem
-expandThreshold = 4rem
+collapseThreshold = 32px
+expandThreshold = 64px
 ```
 
 Drawer 位于 left/top 时复用 start Pane，位于 right/bottom 时复用 end Pane。拖动进入 `collapseThreshold` 时立即吸附关闭并请求 `onOpenChange(false)`；从折叠状态向外拖过 `expandThreshold` 时立即吸附到 `minSize` 并请求 `onOpenChange(true)`，之后继续按正常 SplitBox resize。
@@ -6407,7 +6409,7 @@ modal Drawer 不提供独立 handle。用户直接在 Drawer surface 上起手�
 closeThreshold?: Length
 ```
 
-默认 `closeThreshold = 4rem`。mouse / pen / touch 统一使用 pointer gesture：
+默认 `closeThreshold = 64px`。mouse / pen / touch 统一使用 pointer gesture：
 
 - left 向左拖关闭；
 - right 向右拖关闭；
@@ -6441,7 +6443,7 @@ shadow
 backdropColor
 ```
 
-默认视觉与 modal Dialog 的 surface 色系一致：`surface / tertiary / outline / 1px / 1rem padding / large shadow / 0.48 backdrop`。`maxWidth` 默认 `360px`；left/right Drawer 在 modal 与 non-modal 两种模式下都不得超过该宽度，SplitBox 的真实 Pane 尺寸也必须受同一上限约束，不能只裁切 surface 后留下空白。large shadow 只作用于 modal；non-modal 不使用 backdrop 与 ambient shadow。
+默认视觉与 modal Dialog 的 surface 色系一致：`surface / tertiary / outline / 1px / 16px padding / large shadow / 0.48 backdrop`。`maxWidth` 默认 `360px`；left/right Drawer 在 modal 与 non-modal 两种模式下都不得超过该宽度，SplitBox 的真实 Pane 尺寸也必须受同一上限约束，不能只裁切 surface 后留下空白。large shadow 只作用于 modal；non-modal 不使用 backdrop 与 ambient shadow。
 
 Drawer 显示与隐藏必须有 opacity 淡入淡出。modal Drawer 在既有方向 translate enter/exit 上叠加 opacity `0 ↔ 1`；non-modal Drawer 关闭时必须先让 surface `opacity: 1 → 0`，fade 完成后才把 SplitBox Pane 进入最终 collapsed / `display:none` 状态，打开时则先恢复 Pane 再 `opacity: 0 → 1`。该过渡复用 Theme `motion.duration.fast` 与 enter/exit curve；reduced motion 时立即切换，不等待动画。
 
@@ -7098,7 +7100,7 @@ orientation
 <List gap={0.5} />
 ```
 
-`gap={0.5}` 表示 `0.5rem`。
+`gap={0.5}` 表示 `8px`。
 
 List 默认在相邻 item 之间插入通用 `Divider`，并固定使用 `gap={0}`，因此分割线不会额外撑开 item 间距；需要无分割线列表时使用：
 
@@ -8807,7 +8809,7 @@ CSS variables + runtime classes + framework stylesheet
 11. 不暴露 `as`、`asChild` 或底层 HTML 标签选择权。
 12. CSS 是内部实现与语义基础，但公开 API 应提供高层、语义化属性。
 13. `style` 保留为原始 CSS 逃生口。
-14. 除 `style` 与组件规范明确声明的像素单位例外外，所有表示尺度的无单位数字统一按 `rem`；当前像素例外只有 `Divider.size` 与 `Tabs.indicatorThickness`。
+14. 除 `style` 与组件规范明确声明的像素单位例外外，所有表示尺度的无单位数字统一按 `px`；当前像素例外只有 `Divider.size` 与 `Tabs.indicatorThickness`。
 15. 所有表示时间的裸数字统一按毫秒（`ms`）。
 16. 组件公开 `size` 只接受该组件定义的语义尺寸值，不接受数字。
 17. 样式最终优先级为 `style > className > 属性体系`。
@@ -8826,7 +8828,7 @@ CSS variables + runtime classes + framework stylesheet
 30. 浮层使用语义 layer，普通用户不需要手工管理 portal 或全局 z-index。
 31. 具体组件已经提供同义语义状态属性时，该状态不在其 `viewProps` 中重复暴露，组件属性作为唯一真值。
 32. Documentation 页面本身的全部可见 UI 必须 **100% dogfood Weave 公共组件与 Theme**：页面 shell、导航、搜索、主题切换、内容布局和后续示例都不得直接使用裸 `View`、裸 DOM 元素、Documentation 私有视觉 CSS 或第三方 UI 组件来替代已有 Weave 能力。React state、History router、i18n、数据处理等非视觉基础设施可以直接使用。框架组件自身仍按其实现边界复用 Weave 语义组件与内部基础设施，不再平行维护裸 DOM / 私有 CSS 的同义视觉实现。 Documentation AppBar 的 trailing 直接放置 Weave search Input、Theme Popover 与 Language Popover，不额外包 Row；三个真实控件直接由 AppBar trailing slot 的 flex `align-items: center` 与 `gap` 负责垂直居中和间距。Theme Popover 内的 System / Light / Dark 模式选择必须使用公开 `SegmentedButton selection="single"`；其下使用公开 `Grid columns={3}` 以 3 × 4 排列 12 个颜色 Button，通过现有 `createThemeFromColorSeed` 切换 Documentation Theme seed，不创建第二套主题系统。Documentation 默认颜色为 Pink `#c2185b`，其余固定 seed 为 Red `#d32f2f`、Deep orange `#e64a19`、Orange `#ef6c00`、Amber `#ff6f00`、Light green `#558b2f`、Green `#388e3c`、Teal `#00796b`、Cyan `#00838f`、Blue `#1976d2`、Indigo `#303f9f`、Purple `#7b1fa2`；此默认仅属于 Documentation，不修改框架 `defaultTheme`。语言选择必须包含 `Auto detect` 与当前实际注册的 English、简体中文、繁體中文、Français 四套语言资源。语言检测必须由 `i18next-browser-languagedetector` 通过 i18next 的 `supportedLngs` 与 fallback 机制完成；Documentation 业务代码不得自行读取、匹配或判定 `navigator.language` / `navigator.languages`。`Auto detect` 必须通过 i18next 重新触发 detector。Documentation shell、导航、页面说明、组件介绍、示例章节标题与说明、API 页面和操作 Tooltip 等可见文案必须进入 i18n；组件名、公开 API 标识符与代码示例源码保持原始代码语言，不随 Documentation 语言切换。 Drawer 导航项直接使用 `ListItem` 的点击事件触发 History 路由，不在 `ListItem` 内嵌 `Link`，并通过 `ListItem.viewProps.clickable=true` 复用 ViewHost 的通用 hover / active 变色反馈。Drawer 导航必须以当前 docs pathname 为唯一选中真值：进入某个导航路由时，对应 Accordion section 自动展开，对应 `ListItem` 通过 List 的受控 single selection 呈现 selected 高亮；不能在 Documentation 再维护一套与路由分离的“当前项”。 当该 section 内存在当前选中的 ListItem 时，对应 Accordion Trigger 必须直接复用 `theme.components.ListItem.base` 的 `selectedBackground / selectedColor / selectedHoverBackground / activeBackground`，使其选中反馈与该 ListItem 一致，不单独设计 Accordion selected 视觉。Drawer search 与同一份导航数据联动：有查询时只保留 section 标题或 item 文本包含该关键词的结果。若 section 标题本身命中，则保留并显示该 section 下全部 ListItem；若只有 item 命中，则只显示命中的 ListItem。所有命中 section 自动展开。命中的关键词片段直接使用 Weave `Text`，以 Theme `primary` 作为背景、`onPrimary` 作为文字颜色做明确背景高亮，不增加 Documentation 私有 CSS。页面真实文档加载期间在 AppBar 后、主内容前直接使用公开 `Progress mode="linear" indeterminate`；加载状态以 `document.readyState !== "complete"` 为真值，不为同步 SPA 路由制造假延迟。 Documentation 的 Drawer 当前由页面持有受控 `open` 真值，因此首屏默认打开必须直接把该受控真值初始化为 `true`；不得同时传 `open=false` 与 `defaultOpen=true` 并期待 uncontrolled default 覆盖 controlled value。 `/docs/components/<ComponentName>` 组件页的正文标题直接使用对应组件名，不再显示 `Documentation` / `Components` 泛化标题；组件页不渲染 `Documentation page framework` 占位文字和路由路径。
-33. `/docs/components/<ComponentName>` 的组件正文采用统一文档页面流：组件名标题下方立即显示该组件的简短介绍，介绍使用 Documentation 普通说明文字 `body-large`；其下按章节纵向排列真实组件示例，不再存在 `Playground`、参数编辑区、Documentation-only 参数状态、`viewProps / attributes` 编辑 Tab 或运行时 props 覆写系统。每个示例章节必须围绕一个独立的真实使用主题/场景组织，不得把单个 `variant / size / disabled` 等 prop 枚举机械拆成章节来凑数量；章节可包含简短说明文字。Button 页的 Basic button 示例必须同时展示 primary / secondary / tertiary 与 small / medium / large 三种 size。每个示例章节必须有独立 heading，并使用 Weave `Card` 承载：Card 上部真实渲染当前源码产生的组件结果，并在展示区域提供三个 icon-only Weave `Button`：代码展开/收起、复制当前代码、Reset 当前代码；三个按钮必须使用图标而不是文字 label，仍通过语义 label 提供可访问名称，并分别直接复用 Weave `ToolTip` 显示 Expand/Collapse code、Copy code、Reset code；Reset 必须恢复该示例初始源码。展开/收起必须复用 Weave `Presence` 与 View motion，不能瞬时出现/消失；收起时代码内容的 fade 与代码区域高度收缩必须同步进行，不得先留下空白区域再瞬间跳高。展开代码时，中间使用 Weave `Divider` 分隔，下部代码区继续以可编辑 Weave multiline `Input` 作为真实输入层，同时复用 Weave `Code language="tsx"` 作为与当前 source 同步的语法高亮显示层；编辑层保持透明文本并同步滚动，从而保留可编辑性、caret 与 Code 的 Shiki token 颜色；编辑层获得焦点时不得显示额外 focus outline。Code 在同一 language / syntax 的新高亮结果尚未完成时必须继续保留上一帧已高亮 HTML，不得短暂退回纯文本 fallback 造成颜色闪烁。代码区必须有明确左右 padding；代码区高度必须跟随当前源码内容自动变化，并以 16rem 为最大高度，超过后仅代码区内部滚动；示例展示区不得设置固定高度或最小高度，必须由实际渲染组件高度加既有 padding 自然撑开；每次编辑直接重新生成上方真实结果，代码语法或运行错误直接显示在上方结果区域，不得继续显示与当前代码脱节的旧 preview。示例区不得用与目标组件无关的视觉替身。布局组件不再分别建立 `Flex / Row / Column / Grid / Stack / Absolute / SplitBox` 示例页，也不建立 `Layout` Accordion；`Foundation` 导航中提供单一 `Layout` 组件页，页面标题为 `Layout`，正文依次以 `Flex / Row / Column / Grid / Stack / Absolute / SplitBox` 作为真实 section heading 展示各布局组件示例和对应源码。组件页最后提供 `API` 章节，仅使用 Weave `Link` 跳转到独立 API 页面；API 章节之后必须再放置两个 Weave `Card` 作为组件顺序导航，分别跳转到导航顺序中的上一个 component 与下一个 component；不存在相邻 component 时对应 Card 保留但禁用。`Layout` 页的 API 章节分别链接上述七个真实布局组件 API。Drawer 导航中的 `Components API` Accordion 继续包含 `src/index.ts` 中全部公开 React 组件 API（包括组合子件与 Provider）并按组件名排序。独立 API 页面标题为 `<ComponentName> API`，正文采用 `Demos → Import → Props` 页面流：`Demos` 使用 Weave `Link` 返回对应组件页；布局组件与 `SplitBoxPane` 返回 `Layout` 页，其他组合子件与 Provider 返回所属父组件页；`Import` 使用 Weave `Card + Code` 展示 `import { ComponentName } from "@contsulia/weave/components/ComponentName"`；`Props` 使用 Weave `Table` 展示公开 prop 的 Name / Type / Optional。组件存在公开 `viewProps` 属性时，Props 表只保留一行 `viewProps`，其 Type 使用 Weave `Link` 指向 `/docs/components-api/View#props` 的 `ViewProps`，不得在每个组件 API 页面重复展开整套 View props。像 `Flex / Row / Column / Grid / Stack / Absolute` 这类 props 表面直接复用 `ViewProps<HTMLDivElement>` 的布局原语，也不得再次展开整套 View props；API 只链接 `ViewProps`，并仅保留其相对 ViewProps 的真实类型差异。只有 `View API` 自身完整展示 View props。API 元数据继续以 `src/index.ts` 暴露的 TypeScript 公开类型为唯一真值，生成器从公开 value export 与同名 `XxxProps` 类型自动识别公开组件，并且对存在 `viewProps` 的组件只生成组件自身顶层 props（排除 `viewProps` 的展开内容），通过开发/构建阶段生成的派生元数据供 Documentation 使用，并通过验证阻止元数据与公开类型漂移。专门用于组成父组件的公开组合子件不得拥有独立组件示例页，但仍必须拥有独立 API 页面。组件页及独立 API 页改为基于 DocumentationContent 实际可用宽度的 container-responsive 正文布局，不得使用 viewport 宽度判断 Drawer 打开后的正文空间：小于 container lg 断点时正文与目录纵向排列，目录进入普通文档流且不使用 sticky；从 container lg 起恢复正文 + 右侧目录横向布局，目录 sticky 于正文右侧。组件页与独立 API 页的正文阅读列在宽屏下最大宽度固定为 52rem，示例 Card、标题、说明与 API 内容不得继续随超宽屏无限拉伸；窄于该宽度时继续使用 fill。宽屏横排时正文阅读列与右侧 CONTENTS 必须作为一个整体在 DocumentationContent 的可用区域内水平居中，不得贴左后把全部剩余空间堆到右侧。示例 Card 的可编辑 Code 区必须使用 Theme 现有 surfaceHover 作为独立背景层，与 Card 的 surface 表面形成区分，不得自定义 Documentation 私有颜色。Snack 文档示例使用 container-bound SnackProvider 时，作为 container 的真实 Column 必须 fill 示例展示区宽度，不能使用塌缩的 intrinsic-width 宿主导致 Snack 定位区域不可见。目录不再使用 MarkSlider、阅读进度轴、thumb、dot 或基于滚动比例的 section 位置计算，按正文 DOM 中 `data-weave-doc-section` 的实际顺序列出 section；每项直接复用 Weave `Link + Text` 指向对应 section id，页面主标题不进入目录。API Props 表在窄宽度下只允许自身横向滚动，不得撑破正文。组件页底部 Previous / Next Card 在窄宽度下纵向排列，从 container md 起恢复横向。每个 Documentation 示例必须以独立 `.tsx` demo 文件作为唯一源码真值：初始预览直接渲染该文件经过 Vite / TypeScript 构建后的默认导出，代码区直接展示同一文件的 raw source；示例 metadata 不得再保存独立的 preview JSX、code 字符串或 codeMode。Documentation demo registry 必须 lazy-load 当前页面实际使用的 demo module 与 raw source，不得在任意组件页首屏 eager import 全部 demo。只有用户编辑当前 source 后才进入 Documentation 的 live runtime 编译路径；Reset 恢复该 demo 文件的初始 raw source，并重新使用真实构建模块作为预览。示例源码必须以人为可读的格式书写并通过仓库 formatter / typecheck，不得为了运行方便展示未整理的转义字符串或挤成一行的 JSX；用户编辑过程中不得自动格式化。Documentation 的页面布局继续禁止直接使用 `View`；唯一例外是 `View` 自己的组件示例必须真实渲染 `View`。
+33. `/docs/components/<ComponentName>` 的组件正文采用统一文档页面流：组件名标题下方立即显示该组件的简短介绍，介绍使用 Documentation 普通说明文字 `body-large`；其下按章节纵向排列真实组件示例，不再存在 `Playground`、参数编辑区、Documentation-only 参数状态、`viewProps / attributes` 编辑 Tab 或运行时 props 覆写系统。每个示例章节必须围绕一个独立的真实使用主题/场景组织，不得把单个 `variant / size / disabled` 等 prop 枚举机械拆成章节来凑数量；章节可包含简短说明文字。Button 页的 Basic button 示例必须同时展示 primary / secondary / tertiary 与 small / medium / large 三种 size。每个示例章节必须有独立 heading，并使用 Weave `Card` 承载：Card 上部真实渲染当前源码产生的组件结果，并在展示区域提供三个 icon-only Weave `Button`：代码展开/收起、复制当前代码、Reset 当前代码；三个按钮必须使用图标而不是文字 label，仍通过语义 label 提供可访问名称，并分别直接复用 Weave `ToolTip` 显示 Expand/Collapse code、Copy code、Reset code；Reset 必须恢复该示例初始源码。展开/收起必须复用 Weave `Presence` 与 View motion，不能瞬时出现/消失；收起时代码内容的 fade 与代码区域高度收缩必须同步进行，不得先留下空白区域再瞬间跳高。展开代码时，中间使用 Weave `Divider` 分隔，下部代码区继续以可编辑 Weave multiline `Input` 作为真实输入层，同时复用 Weave `Code language="tsx"` 作为与当前 source 同步的语法高亮显示层；编辑层保持透明文本并同步滚动，从而保留可编辑性、caret 与 Code 的 Shiki token 颜色；编辑层获得焦点时不得显示额外 focus outline。Code 在同一 language / syntax 的新高亮结果尚未完成时必须继续保留上一帧已高亮 HTML，不得短暂退回纯文本 fallback 造成颜色闪烁。代码区必须有明确左右 padding；代码区高度必须跟随当前源码内容自动变化，并以 256px 为最大高度，超过后仅代码区内部滚动；示例展示区不得设置固定高度或最小高度，必须由实际渲染组件高度加既有 padding 自然撑开；每次编辑直接重新生成上方真实结果，代码语法或运行错误直接显示在上方结果区域，不得继续显示与当前代码脱节的旧 preview。示例区不得用与目标组件无关的视觉替身。布局组件不再分别建立 `Flex / Row / Column / Grid / Stack / Absolute / SplitBox` 示例页，也不建立 `Layout` Accordion；`Foundation` 导航中提供单一 `Layout` 组件页，页面标题为 `Layout`，正文依次以 `Flex / Row / Column / Grid / Stack / Absolute / SplitBox` 作为真实 section heading 展示各布局组件示例和对应源码。组件页最后提供 `API` 章节，仅使用 Weave `Link` 跳转到独立 API 页面；API 章节之后必须再放置两个 Weave `Card` 作为组件顺序导航，分别跳转到导航顺序中的上一个 component 与下一个 component；不存在相邻 component 时对应 Card 保留但禁用。`Layout` 页的 API 章节分别链接上述七个真实布局组件 API。Drawer 导航中的 `Components API` Accordion 继续包含 `src/index.ts` 中全部公开 React 组件 API（包括组合子件与 Provider）并按组件名排序。独立 API 页面标题为 `<ComponentName> API`，正文采用 `Demos → Import → Props` 页面流：`Demos` 使用 Weave `Link` 返回对应组件页；布局组件与 `SplitBoxPane` 返回 `Layout` 页，其他组合子件与 Provider 返回所属父组件页；`Import` 使用 Weave `Card + Code` 展示 `import { ComponentName } from "@contsulia/weave/components/ComponentName"`；`Props` 使用 Weave `Table` 展示公开 prop 的 Name / Type / Optional。组件存在公开 `viewProps` 属性时，Props 表只保留一行 `viewProps`，其 Type 使用 Weave `Link` 指向 `/docs/components-api/View#props` 的 `ViewProps`，不得在每个组件 API 页面重复展开整套 View props。像 `Flex / Row / Column / Grid / Stack / Absolute` 这类 props 表面直接复用 `ViewProps<HTMLDivElement>` 的布局原语，也不得再次展开整套 View props；API 只链接 `ViewProps`，并仅保留其相对 ViewProps 的真实类型差异。只有 `View API` 自身完整展示 View props。API 元数据继续以 `src/index.ts` 暴露的 TypeScript 公开类型为唯一真值，生成器从公开 value export 与同名 `XxxProps` 类型自动识别公开组件，并且对存在 `viewProps` 的组件只生成组件自身顶层 props（排除 `viewProps` 的展开内容），通过开发/构建阶段生成的派生元数据供 Documentation 使用，并通过验证阻止元数据与公开类型漂移。专门用于组成父组件的公开组合子件不得拥有独立组件示例页，但仍必须拥有独立 API 页面。组件页及独立 API 页改为基于 DocumentationContent 实际可用宽度的 container-responsive 正文布局，不得使用 viewport 宽度判断 Drawer 打开后的正文空间：小于 container lg 断点时正文与目录纵向排列，目录进入普通文档流且不使用 sticky；从 container lg 起恢复正文 + 右侧目录横向布局，目录 sticky 于正文右侧。组件页与独立 API 页的正文阅读列在宽屏下最大宽度固定为 832px，示例 Card、标题、说明与 API 内容不得继续随超宽屏无限拉伸；窄于该宽度时继续使用 fill。宽屏横排时正文阅读列与右侧 CONTENTS 必须作为一个整体在 DocumentationContent 的可用区域内水平居中，不得贴左后把全部剩余空间堆到右侧。示例 Card 的可编辑 Code 区必须使用 Theme 现有 surfaceHover 作为独立背景层，与 Card 的 surface 表面形成区分，不得自定义 Documentation 私有颜色。Snack 文档示例使用 container-bound SnackProvider 时，作为 container 的真实 Column 必须 fill 示例展示区宽度，不能使用塌缩的 intrinsic-width 宿主导致 Snack 定位区域不可见。目录不再使用 MarkSlider、阅读进度轴、thumb、dot 或基于滚动比例的 section 位置计算，按正文 DOM 中 `data-weave-doc-section` 的实际顺序列出 section；每项直接复用 Weave `Link + Text` 指向对应 section id，页面主标题不进入目录。API Props 表在窄宽度下只允许自身横向滚动，不得撑破正文。组件页底部 Previous / Next Card 在窄宽度下纵向排列，从 container md 起恢复横向。每个 Documentation 示例必须以独立 `.tsx` demo 文件作为唯一源码真值：初始预览直接渲染该文件经过 Vite / TypeScript 构建后的默认导出，代码区直接展示同一文件的 raw source；示例 metadata 不得再保存独立的 preview JSX、code 字符串或 codeMode。Documentation demo registry 必须 lazy-load 当前页面实际使用的 demo module 与 raw source，不得在任意组件页首屏 eager import 全部 demo。只有用户编辑当前 source 后才进入 Documentation 的 live runtime 编译路径；Reset 恢复该 demo 文件的初始 raw source，并重新使用真实构建模块作为预览。示例源码必须以人为可读的格式书写并通过仓库 formatter / typecheck，不得为了运行方便展示未整理的转义字符串或挤成一行的 JSX；用户编辑过程中不得自动格式化。Documentation 的页面布局继续禁止直接使用 `View`；唯一例外是 `View` 自己的组件示例必须真实渲染 `View`。
 34. 组件复用其他组件的视觉或交互能力时，外层组件仍承担自己的高层语义；不得因此重复暴露冲突的 ARIA 角色。
 35. `Text.typo` 必须来自主题中的完整 type scale；不能退回 renderer 内部的少量硬编码 preset。
 36. Scrollbar 只绘制 thumb，不提供 tracked / trackColor；带圆角宿主必须把圆角曲线区域排除出 thumb 的运动区。AutoScrollbar 的 portal axis 首次挂载后必须立即重新计算 geometry 与 thumb offset，初始位置不得依赖用户先滚动目标或页面；portal 后仍必须遵守目标元素真实祖先 overflow viewport 的裁剪边界，目标滚出祖先可视区域时 scrollbar 不得逃逸到该区域之外；目标或其祖先发生 transition、animation、Presence enter/exit 或 layoutAnimation 等视觉移动时，portal scrollbar 必须在动画期间逐帧同步目标 geometry、祖先裁剪与有效 opacity，不能停留在旧 viewport 坐标或脱离原视觉树。

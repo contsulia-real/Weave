@@ -2,7 +2,7 @@ import { Column, Text } from '../../../index'
 
 export default function TextTruncatedCopyDemo() {
   return (
-    <Column gap={1} width={18}>
+    <Column gap={16} width={288}>
       <Text singleLine>
         Single-line text truncates with an ellipsis when its content exceeds the available width.
       </Text>

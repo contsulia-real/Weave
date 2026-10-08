@@ -35,8 +35,8 @@ const stylesheet = `
 
   --weave-component-box-shadow: var(--weave-popover-shadow);
 
-  --weave-popover-motion-x: 0rem;
-  --weave-popover-motion-y: 0rem;
+  --weave-popover-motion-x: 0px;
+  --weave-popover-motion-y: 0px;
 
   opacity: 1;
   translate: 0 0;

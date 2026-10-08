@@ -77,7 +77,7 @@ export function DocumentationContent({ section, pathname }: DocumentationContent
       container="documentation-content"
     >
       <Column grow={1} width="fill">
-        <Column width="fill" padding={2} gap={0.75}>
+        <Column width="fill" padding={32} gap={12}>
           <Text typo="display-small">{routeTitle(section, t)}</Text>
         </Column>
       </Column>

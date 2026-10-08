@@ -3,7 +3,7 @@ import { Button, Column, Drawer, Row, Text } from '../../../index'
 
 export default function DrawerControlledDrawerDemo() {
   const [open, setOpen] = useState(true)
-  const [size, setSize] = useState('16rem')
+  const [size, setSize] = useState('256px')
 
   return (
     <Drawer
@@ -13,16 +13,16 @@ export default function DrawerControlledDrawerDemo() {
       onOpenChange={setOpen}
       size={size}
       onSizeChange={setSize}
-      minSize={10}
+      minSize={160}
       drawer={
-        <Column gap={0.5}>
+        <Column gap={8}>
           <Text typo="label-medium">Controlled drawer</Text>
           <Text typo="body-small">Current size: {size}</Text>
         </Column>
       }
-      viewProps={{ width: 'fill', height: 12 }}
+      viewProps={{ width: 'fill', height: 192 }}
     >
-      <Column padding={1} gap={1}>
+      <Column padding={16} gap={16}>
         <Text>Main content remains mounted.</Text>
         <Row>
           <Button

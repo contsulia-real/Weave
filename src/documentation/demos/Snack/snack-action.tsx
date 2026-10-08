@@ -5,7 +5,7 @@ export default function SnackSnackActionDemo() {
   const hostRef = useRef(null)
 
   return (
-    <Column ref={hostRef} width="fill" minHeight={8}>
+    <Column ref={hostRef} width="fill" minHeight={128}>
       <SnackProvider container={hostRef}>
         <Snack
           text="Item archived"

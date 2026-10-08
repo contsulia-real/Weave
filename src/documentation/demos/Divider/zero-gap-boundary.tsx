@@ -2,7 +2,7 @@ import { Column, Divider, Text } from '../../../index'
 
 export default function DividerZeroGapBoundaryDemo() {
   return (
-    <Column width={20}>
+    <Column width={320}>
       <Text>First row</Text>
       <Divider gap={0} />
       <Text>Second row</Text>

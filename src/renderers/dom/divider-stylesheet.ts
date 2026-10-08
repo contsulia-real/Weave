@@ -2,7 +2,7 @@ import { ensureStaticStylesheet } from './static-stylesheet'
 
 const stylesheet = `
 :where(.weave-divider) {
-  --weave-divider-gap: 0rem;
+  --weave-divider-gap: 0px;
   --weave-divider-thickness: var(--weave-divider-theme-thickness);
   --weave-divider-color: var(--weave-color-outline);
 

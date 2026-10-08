@@ -74,11 +74,11 @@ export function usePopoverPosition(
           height,
         },
         placement,
-        cssLengthPixels(panel, length(offset) ?? '0rem'),
+        cssLengthPixels(panel, length(offset) ?? '0px'),
         {
           width: view.innerWidth,
           height: view.innerHeight,
-          padding: cssLengthPixels(panel, length(viewportPadding) ?? '0rem'),
+          padding: cssLengthPixels(panel, length(viewportPadding) ?? '0px'),
         },
         crossAlignment,
         overlapTarget,

@@ -7,7 +7,7 @@ export default function AvatarImageAvatarDemo() {
       src={imageUrl}
       name="Landscape account"
       fallback="LA"
-      viewProps={{ width: 4, height: 4 }}
+      viewProps={{ width: 64, height: 64 }}
     />
   )
 }

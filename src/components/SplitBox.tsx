@@ -134,7 +134,7 @@ export function SplitBox(props: SplitBoxProps): import('react').JSX.Element {
     onCollapsedChange,
     collapseThreshold = 0,
     expandThreshold = collapseThreshold,
-    step = 0.5,
+    step = 8,
     thickness,
     disabled = false,
     onChange,

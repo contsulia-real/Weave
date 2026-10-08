@@ -10,7 +10,7 @@ export default function ProgressVerticalInverseDemo() {
       tracked
       size="large"
       speed="fast"
-      viewProps={{ height: 12 }}
+      viewProps={{ height: 192 }}
     />
   )
 }

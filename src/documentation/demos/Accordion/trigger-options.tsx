@@ -14,7 +14,7 @@ const collapseIcon = (
 
 export default function AccordionTriggerOptionsDemo() {
   return (
-    <Accordion defaultValue="details" viewProps={{ width: 20 }}>
+    <Accordion defaultValue="details" viewProps={{ width: 320 }}>
       <AccordionItem value="details">
         <AccordionTrigger singleLine expandIcon={expandIcon} collapseIcon={collapseIcon}>
           A deliberately long trigger label that truncates within the available width

@@ -12,7 +12,7 @@ export default function MarkSliderControlledRestrictedInverseDemo() {
   const [value, setValue] = useState(55)
 
   return (
-    <Column gap={0.75} align="start">
+    <Column gap={12} align="start">
       <MarkSlider
         marks={marks}
         value={value}

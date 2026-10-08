@@ -5,7 +5,7 @@ export default function InputControlledInputDemo() {
   const [value, setValue] = useState('Weave')
 
   return (
-    <Column gap={0.75} width={20}>
+    <Column gap={12} width={320}>
       <Input
         value={value}
         onChange={setValue}

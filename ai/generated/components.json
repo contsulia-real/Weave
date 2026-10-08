@@ -1402,13 +1402,13 @@
         },
         {
           "name": "closeThreshold",
-          "description": "Modal only below the Theme md breakpoint. Swipe distance required to request closing; the default is 4rem.",
+          "description": "Modal only below the Theme md breakpoint. Swipe distance required to request closing; the default is 64px.",
           "type": "Length | undefined",
           "optional": true
         },
         {
           "name": "collapseThreshold",
-          "description": "Non-modal only. SplitBox drag threshold where the Drawer snaps closed; the default is 2rem.",
+          "description": "Non-modal only. SplitBox drag threshold where the Drawer snaps closed; the default is 32px.",
           "type": "Length | undefined",
           "optional": true
         },
@@ -1420,7 +1420,7 @@
         },
         {
           "name": "defaultSize",
-          "description": "Initial uncontrolled Drawer size along its side axis. It is mutually exclusive with size; when neither is provided, the default is 20rem.",
+          "description": "Initial uncontrolled Drawer size along its side axis. It is mutually exclusive with size; when neither is provided, the default is 320px.",
           "type": "Length | undefined",
           "optional": true
         },
@@ -1438,7 +1438,7 @@
         },
         {
           "name": "expandThreshold",
-          "description": "Non-modal only. SplitBox drag distance required to reopen a collapsed Drawer to minSize; the default is 4rem.",
+          "description": "Non-modal only. SplitBox drag distance required to reopen a collapsed Drawer to minSize; the default is 64px.",
           "type": "Length | undefined",
           "optional": true
         },
@@ -1450,7 +1450,7 @@
         },
         {
           "name": "minSize",
-          "description": "Minimum Drawer size along its side axis; the default is 12rem.",
+          "description": "Minimum Drawer size along its side axis; the default is 192px.",
           "type": "Length | undefined",
           "optional": true
         },
@@ -2192,7 +2192,7 @@
         },
         {
           "name": "gap",
-          "description": "Gap between list entries using View spacing semantics; numeric values are rem units.",
+          "description": "Gap between list entries using View spacing semantics; numeric values are px units.",
           "type": "Length | undefined",
           "optional": true
         },
@@ -2446,7 +2446,7 @@
         },
         {
           "name": "offset",
-          "description": "Distance between the root menu and its trigger. The default is 0.375rem, or 0 when overlapTrigger is true and offset is omitted.",
+          "description": "Distance between the root menu and its trigger. The default is 6px, or 0 when overlapTrigger is true and offset is omitted.",
           "type": "Length | undefined",
           "optional": true
         },
@@ -2476,7 +2476,7 @@
         },
         {
           "name": "submenuOffset",
-          "description": "Distance between each submenu surface and its parent item. The default is 0.25rem.",
+          "description": "Distance between each submenu surface and its parent item. The default is 4px.",
           "type": "Length | undefined",
           "optional": true
         },
@@ -2488,7 +2488,7 @@
         },
         {
           "name": "viewportPadding",
-          "description": "Minimum collision padding kept between root/submenu surfaces and viewport edges. The default is 0.5rem.",
+          "description": "Minimum collision padding kept between root/submenu surfaces and viewport edges. The default is 8px.",
           "type": "Length | undefined",
           "optional": true
         }

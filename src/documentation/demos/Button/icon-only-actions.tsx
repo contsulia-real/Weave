@@ -3,7 +3,7 @@ import { Button, Row } from '../../../index'
 
 export default function ButtonIconOnlyActionsDemo() {
   return (
-    <Row gap={1} align="center">
+    <Row gap={16} align="center">
       <Button icon={IconSearch} viewProps={{ label: 'Search' }} />
       <Button icon={IconStar} variant="secondary" viewProps={{ label: 'Favorite' }} />
       <Button icon={IconDots} variant="ghost" viewProps={{ label: 'More actions' }} />

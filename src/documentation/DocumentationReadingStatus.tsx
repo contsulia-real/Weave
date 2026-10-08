@@ -44,16 +44,16 @@ export function DocumentationReadingStatus({ contentRef }: DocumentationReadingS
   return (
     <Column
       width="fill"
-      maxWidth={52}
+      maxWidth={832}
       alignSelf="start"
-      padding={1}
+      padding={16}
       position="relative"
       order={-1}
-      gap={0.75}
+      gap={12}
       containerLg={{
-        top: 2,
+        top: 32,
         shrink: 0,
-        padding: 1.5,
+        padding: 24,
         width: 'content',
         position: 'sticky',
         order: 0,
@@ -62,7 +62,7 @@ export function DocumentationReadingStatus({ contentRef }: DocumentationReadingS
       <Text bold typo="body-large">
         {t('docs.contents')}
       </Text>
-      <Column gap={0.75} width={12}>
+      <Column gap={12} width={192}>
         {items.map((item) => (
           <Link
             key={item.id}

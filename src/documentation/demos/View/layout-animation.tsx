@@ -5,7 +5,7 @@ export default function ViewLayoutAnimationDemo() {
   const [expanded, setExpanded] = useState(false)
 
   return (
-    <Column gap={1} align="start">
+    <Column gap={16} align="start">
       <Button
         text={expanded ? 'Shrink' : 'Expand'}
         viewProps={{ onClick: () => setExpanded((current) => !current) }}
@@ -14,7 +14,7 @@ export default function ViewLayoutAnimationDemo() {
       <View
         width={expanded ? 20 : 10}
         background="surfaceHover"
-        padding={1.5}
+        padding={24}
         radius="medium"
         layoutAnimation={{ spring: 'snappy' }}
       >

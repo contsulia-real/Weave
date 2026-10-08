@@ -17,10 +17,10 @@ export function DocumentationGettingStarted() {
   ] as const
 
   return (
-    <Column width="fill" padding={2} gap={3}>
+    <Column width="fill" padding={32} gap={48}>
       <Text typo="display-small">{t('docs.nav.gettingStarted')}</Text>
 
-      <Column gap={1.5}>
+      <Column gap={24}>
         <Text typo="headline-small">{t('docs.gettingStarted.sliderHorizontal')}</Text>
         <Slider defaultValue={35} step={25} />
         <MarkSlider
@@ -32,16 +32,16 @@ export function DocumentationGettingStarted() {
         <RangeSlider defaultValue={[25, 75]} step={25} />
       </Column>
 
-      <Column gap={1.5}>
+      <Column gap={24}>
         <Text typo="headline-small">{t('docs.gettingStarted.sliderHorizontalInverse')}</Text>
         <Slider defaultValue={35} step={25} inverse />
         <MarkSlider marks={markSliderExampleMarks} defaultValue={35} restricted inverse />
         <RangeSlider defaultValue={[25, 75]} step={25} inverse />
       </Column>
 
-      <Column gap={1.5}>
+      <Column gap={24}>
         <Text typo="headline-small">{t('docs.gettingStarted.sliderVertical')}</Text>
-        <Row gap={4} align="center">
+        <Row gap={64} align="center">
           <Slider defaultValue={35} step={25} direction="vertical" />
           <MarkSlider
             marks={overriddenEndpointMarks}
@@ -53,9 +53,9 @@ export function DocumentationGettingStarted() {
         </Row>
       </Column>
 
-      <Column gap={1.5}>
+      <Column gap={24}>
         <Text typo="headline-small">{t('docs.gettingStarted.sliderVerticalInverse')}</Text>
-        <Row gap={4} align="center">
+        <Row gap={64} align="center">
           <Slider defaultValue={35} step={25} direction="vertical" inverse />
           <MarkSlider
             marks={overriddenEndpointMarks}
@@ -68,7 +68,7 @@ export function DocumentationGettingStarted() {
         </Row>
       </Column>
 
-      <Column gap={1.5}>
+      <Column gap={24}>
         <Text typo="headline-small">{t('docs.gettingStarted.progressHorizontal')}</Text>
         <Progress mode="linear" progress={0.65} tracked direction="horizontal" />
         <Progress mode="linear" indeterminate tracked direction="horizontal" />
@@ -76,9 +76,9 @@ export function DocumentationGettingStarted() {
         <Progress mode="linear" indeterminate tracked direction="horizontal" inverse />
       </Column>
 
-      <Column gap={1.5}>
+      <Column gap={24}>
         <Text typo="headline-small">{t('docs.gettingStarted.progressVertical')}</Text>
-        <Row gap={4} align="center">
+        <Row gap={64} align="center">
           <Progress mode="linear" progress={0.65} tracked direction="vertical" />
           <Progress mode="linear" indeterminate tracked direction="vertical" />
           <Progress mode="linear" progress={0.65} tracked direction="vertical" inverse />

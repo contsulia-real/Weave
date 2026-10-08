@@ -21,15 +21,15 @@ export function DocumentationComponentApiPage({
   return (
     <Flex
       width="fill"
-      padding={1}
-      gap={2}
+      padding={16}
+      gap={32}
       align="start"
       direction="column"
-      containerMd={{ padding: 2 }}
+      containerMd={{ padding: 32 }}
       containerLg={{ direction: 'row', justify: 'center' }}
     >
-      <Column ref={contentRef} grow={1} minWidth={0} width="fill" maxWidth={52} gap={3}>
-        <Column width="fill" gap={0.75}>
+      <Column ref={contentRef} grow={1} minWidth={0} width="fill" maxWidth={832} gap={48}>
+        <Column width="fill" gap={12}>
           <Text typo="display-medium">{t('docs.api.pageTitle', { component: componentName })}</Text>
           <Text typo="body-large">
             {t('docs.api.pageDescription', { component: componentName })}
@@ -39,7 +39,7 @@ export function DocumentationComponentApiPage({
         <Column
           id="demos"
           data={{ 'weave-doc-section': '', 'weave-doc-section-label': t('docs.api.demos') }}
-          gap={1}
+          gap={16}
         >
           <Text typo="headline-small">{t('docs.api.demos')}</Text>
           <Text typo="body-medium">{t('docs.api.demosDescription')}</Text>
@@ -54,7 +54,7 @@ export function DocumentationComponentApiPage({
         <Column
           id="import"
           data={{ 'weave-doc-section': '', 'weave-doc-section-label': t('docs.api.import') }}
-          gap={1}
+          gap={16}
         >
           <Text typo="headline-small">{t('docs.api.import')}</Text>
           <Card viewProps={{ overflow: 'auto', align: 'center' }}>
@@ -67,7 +67,7 @@ export function DocumentationComponentApiPage({
         <Column
           id="props"
           data={{ 'weave-doc-section': '', 'weave-doc-section-label': t('docs.api.props') }}
-          gap={1}
+          gap={16}
         >
           <Text typo="headline-small">{t('docs.api.props')}</Text>
           <Text typo="body-medium">{t('docs.api.propsDescription')}</Text>

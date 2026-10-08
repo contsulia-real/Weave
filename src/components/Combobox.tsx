@@ -68,7 +68,7 @@ export function Combobox(props: ComboboxProps): import('react').JSX.Element {
     placement = 'bottom-left',
     offset,
     overlapTrigger = false,
-    viewportPadding = 0.5,
+    viewportPadding = 8,
     open,
     defaultOpen = false,
     onOpenChange,

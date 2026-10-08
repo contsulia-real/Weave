@@ -5,8 +5,8 @@ export default function PopoverBasicUsageDemo() {
     <Popover
       content={<Text>Popover content</Text>}
       placement="bottom"
-      offset={0.5}
-      viewportPadding={1}
+      offset={8}
+      viewportPadding={16}
       autoFocus={false}
       restoreFocus
       defaultOpen

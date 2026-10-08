@@ -6,7 +6,7 @@ export default function SelectControlledSelectDemo() {
   const [open, setOpen] = useState(false)
 
   return (
-    <Column gap={0.75} align="start">
+    <Column gap={12} align="start">
       <Select
         value={value}
         onValueChange={setValue}

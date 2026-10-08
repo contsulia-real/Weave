@@ -88,13 +88,13 @@ const stylesheet = `
 
 :where(.weave-scrollbar--vertical) > :where(.weave-scrollbar__thumb) {
   --weave-component-width: var(--weave-scrollbar-thickness);
-  --weave-component-right: var(--weave-scrollbar-edge-inset, 0.25rem);
+  --weave-component-right: var(--weave-scrollbar-edge-inset, 4px);
 }
 
 :where(.weave-scrollbar--vertical.weave-scrollbar--outside)
   > :where(.weave-scrollbar__thumb) {
   --weave-component-right: auto;
-  --weave-component-left: var(--weave-scrollbar-edge-inset, 0.25rem);
+  --weave-component-left: var(--weave-scrollbar-edge-inset, 4px);
 }
 
 :where(.weave-scrollbar--vertical:hover)
@@ -111,13 +111,13 @@ const stylesheet = `
 
 :where(.weave-scrollbar--horizontal) > :where(.weave-scrollbar__thumb) {
   --weave-component-height: var(--weave-scrollbar-thickness);
-  --weave-component-bottom: var(--weave-scrollbar-edge-inset, 0.25rem);
+  --weave-component-bottom: var(--weave-scrollbar-edge-inset, 4px);
 }
 
 :where(.weave-scrollbar--horizontal.weave-scrollbar--outside)
   > :where(.weave-scrollbar__thumb) {
   --weave-component-bottom: auto;
-  --weave-component-top: var(--weave-scrollbar-edge-inset, 0.25rem);
+  --weave-component-top: var(--weave-scrollbar-edge-inset, 4px);
 }
 
 :where(.weave-scrollbar--horizontal:hover)

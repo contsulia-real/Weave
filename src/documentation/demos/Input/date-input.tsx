@@ -2,7 +2,7 @@ import { Form, FormField, Input } from '../../../index'
 
 export default function DateBasicUsageDemo() {
   return (
-    <Form viewProps={{ width: 22 }}>
+    <Form viewProps={{ width: 352 }}>
       <FormField label="Appointment date">
         <Input
           type="date"

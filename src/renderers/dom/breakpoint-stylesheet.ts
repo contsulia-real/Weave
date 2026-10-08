@@ -119,7 +119,7 @@ function viewportBlocks(className: string, entries: readonly BreakpointEntry[]):
   return entries
     .map(
       (entry, index) => `
-@media (min-width: ${entry.minWidth}rem) {
+@media (min-width: ${entry.minWidth}px) {
   :where(.${className}[data-weave-view]) {
     ${viewAssignmentBlock(entries, index, 'viewport')}
   }
@@ -140,7 +140,7 @@ function containerBlocks(className: string, entries: readonly BreakpointEntry[])
   return entries
     .map(
       (entry, index) => `
-@container (min-width: ${entry.minWidth}rem) {
+@container (min-width: ${entry.minWidth}px) {
   :where(.${className}[data-weave-view]) {
     ${viewAssignmentBlock(entries, index, 'container')}
   }

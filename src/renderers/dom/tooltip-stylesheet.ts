@@ -33,8 +33,8 @@ const stylesheet = `
 
   --weave-component-box-shadow: var(--weave-tooltip-shadow);
 
-  --weave-tooltip-motion-x: 0rem;
-  --weave-tooltip-motion-y: 0rem;
+  --weave-tooltip-motion-x: 0px;
+  --weave-tooltip-motion-y: 0px;
 
   isolation: isolate;
   opacity: 1;

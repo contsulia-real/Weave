@@ -775,21 +775,21 @@ const componentPropDescriptions = {
     closeOnEscape:
       'Modal only. Allows Escape through the native Dialog cancel event to request closing. The default is true.',
     closeThreshold:
-      'Modal only below the Theme md breakpoint. Swipe distance required to request closing; the default is 4rem.',
+      'Modal only below the Theme md breakpoint. Swipe distance required to request closing; the default is 64px.',
     collapseThreshold:
-      'Non-modal only. SplitBox drag threshold where the Drawer snaps closed; the default is 2rem.',
+      'Non-modal only. SplitBox drag threshold where the Drawer snaps closed; the default is 32px.',
     defaultOpen: 'Initial open state when Drawer is uncontrolled.',
     defaultSize:
-      'Initial uncontrolled Drawer size along its side axis. It is mutually exclusive with size; when neither is provided, the default is 20rem.',
+      'Initial uncontrolled Drawer size along its side axis. It is mutually exclusive with size; when neither is provided, the default is 320px.',
     drawer:
       'Drawer content. The same React subtree is moved between modal and non-modal hosts so its internal state is preserved.',
     drawerViewProps:
       'Configures the Drawer surface itself, including explicit surface styling and its AutoScrollbar settings.',
     expandThreshold:
-      'Non-modal only. SplitBox drag distance required to reopen a collapsed Drawer to minSize; the default is 4rem.',
+      'Non-modal only. SplitBox drag distance required to reopen a collapsed Drawer to minSize; the default is 64px.',
     initialFocus:
       'Modal only. Focus target forwarded to the underlying modal Dialog after showModal().',
-    minSize: 'Minimum Drawer size along its side axis; the default is 12rem.',
+    minSize: 'Minimum Drawer size along its side axis; the default is 192px.',
     mode: 'Chooses auto, modal, or non-modal behavior. Auto is the default and switches at breakpoint.',
     onOpenChange:
       'Called when Drawer interaction requests an open-state change. Responsive mode changes do not call it.',
@@ -809,7 +809,7 @@ const componentPropDescriptions = {
       'Controls whether activating a normal item closes the entire menu tree by default. Individual MenuItem values can override it.',
     defaultOpen: 'Initial root-menu visibility when open state is uncontrolled.',
     offset:
-      'Distance between the root menu and its trigger. The default is 0.375rem, or 0 when overlapTrigger is true and offset is omitted.',
+      'Distance between the root menu and its trigger. The default is 6px, or 0 when overlapTrigger is true and offset is omitted.',
     onOpenChange:
       'Called when trigger interaction, outside dismissal, Escape, or anchor-hidden dismissal requests a visibility change.',
     open: 'Controlled root-menu visibility.',
@@ -817,12 +817,11 @@ const componentPropDescriptions = {
       'Changes root positioning so the menu may overlap the trigger instead of starting outside it. The default is false.',
     placement:
       'Preferred one of eight root-menu placements. Collision handling may flip or shift the resolved placement; the default is bottom-left.',
-    submenuOffset:
-      'Distance between each submenu surface and its parent item. The default is 0.25rem.',
+    submenuOffset: 'Distance between each submenu surface and its parent item. The default is 4px.',
     trigger:
       'Single element used as the menu anchor and trigger with menu-specific expanded/controls semantics.',
     viewportPadding:
-      'Minimum collision padding kept between root/submenu surfaces and viewport edges. The default is 0.5rem.',
+      'Minimum collision padding kept between root/submenu surfaces and viewport edges. The default is 8px.',
   },
   MenuItem: {
     closeOnSelect:
@@ -907,7 +906,7 @@ const componentPropDescriptions = {
       'Initial uncontrolled selection: string or null in single mode, or an array of ids in multiple mode.',
     disabled:
       'Disables the whole List for selection and roving focus, including all contained items.',
-    gap: 'Gap between list entries using View spacing semantics; numeric values are rem units.',
+    gap: 'Gap between list entries using View spacing semantics; numeric values are px units.',
     items:
       'Data-driven list content. Each item supplies a stable id plus text and optional icon, secondary text, trailing content, or disabled state; mutually exclusive with children.',
     noDividers:

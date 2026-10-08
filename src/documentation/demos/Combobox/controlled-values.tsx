@@ -6,7 +6,7 @@ export default function ComboboxControlledValuesDemo() {
   const [inputValue, setInputValue] = useState('Atlas')
 
   return (
-    <Column gap={0.75} align="start">
+    <Column gap={12} align="start">
       <Combobox
         value={value}
         onValueChange={setValue}

@@ -9,7 +9,7 @@ export default function PopoverControlledPopoverDemo() {
       open={open}
       onOpenChange={setOpen}
       content={
-        <Column gap={0.5}>
+        <Column gap={8}>
           <Text typo="label-medium">Project details</Text>
           <Text typo="body-small">Visibility is owned by the parent.</Text>
         </Column>

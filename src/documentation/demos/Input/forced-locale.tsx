@@ -5,7 +5,7 @@ export default function DateForcedLocaleDemo() {
   const [locale, setLocale] = useState('fr')
 
   return (
-    <Column gap={1} width={23}>
+    <Column gap={16} width={368}>
       <SegmentedButton
         selection="single"
         selected={locale}

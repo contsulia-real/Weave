@@ -10,7 +10,7 @@ export default function ViewSemanticHostDemo() {
       label="Toggle details"
       pressed={pressed}
       background="surfaceHover"
-      padding={1.5}
+      padding={24}
       radius="medium"
       onClick={() => setPressed((current) => !current)}
     >

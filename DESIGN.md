@@ -47,7 +47,7 @@ Root runtime exports: `ThemeProvider`, `createRoot`, `createTheme`, `createTheme
 11. 不暴露 `as`、`asChild` 或底层 HTML 标签选择权。
 12. CSS 是内部实现与语义基础，但公开 API 应提供高层、语义化属性。
 13. `style` 保留为原始 CSS 逃生口。
-14. 除 `style` 与组件规范明确声明的像素单位例外外，所有表示尺度的无单位数字统一按 `rem`；当前像素例外只有 `Divider.size` 与 `Tabs.indicatorThickness`。
+14. 除遵循原生 CSS 规则的 `style` 外，所有表示尺度的无单位数字统一按 `px`；`Divider.size` 与 `Tabs.indicatorThickness` 原本就是像素单位，保持不变；显式 `rem` 字符串仍按 CSS 原样使用。内置尺寸与断点由原有数值乘 16 等值迁移，保持默认视觉尺寸。
 15. 所有表示时间的裸数字统一按毫秒（`ms`）。
 17. 样式最终优先级为 `style > className > 属性体系`。
 18. 通用布局、视觉、状态样式、响应式、动画与通用事件能力属于 `ViewProps`；具体组件可以提供自身更自然的高层语义属性。

@@ -81,7 +81,7 @@ const stylesheet = `
   --weave-component-border-bottom-left-radius: var(--weave-drawer-radius);
   --weave-component-box-shadow:
     var(--weave-drawer-shadow),
-    calc(0rem - var(--weave-feedback-rest-depth)) 0 0 var(--weave-dialog-depth-color);
+    calc(0px - var(--weave-feedback-rest-depth)) 0 0 var(--weave-dialog-depth-color);
 }
 
 .weave-drawer-surface--modal[data-weave-drawer-side="top"] {
@@ -101,7 +101,7 @@ const stylesheet = `
   --weave-component-border-top-right-radius: var(--weave-drawer-radius);
   --weave-component-box-shadow:
     var(--weave-drawer-shadow),
-    0 calc(0rem - var(--weave-feedback-rest-depth)) 0 var(--weave-dialog-depth-color);
+    0 calc(0px - var(--weave-feedback-rest-depth)) 0 var(--weave-dialog-depth-color);
 }
 
 .weave-dialog.weave-drawer-surface--modal {

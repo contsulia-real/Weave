@@ -36,8 +36,8 @@ const stylesheet = `
   --weave-component-border-bottom-left-radius: var(--weave-option-listbox-radius);
   --weave-component-box-shadow: var(--weave-option-listbox-shadow);
 
-  --weave-option-listbox-motion-x: 0rem;
-  --weave-option-listbox-motion-y: 0rem;
+  --weave-option-listbox-motion-x: 0px;
+  --weave-option-listbox-motion-y: 0px;
 
   opacity: 1;
   translate: 0 0;
@@ -189,7 +189,7 @@ const stylesheet = `
   --weave-component-flex-direction: column;
   --weave-component-gap: var(--weave-option-text-gap);
   --weave-component-flex-grow: 1;
-  --weave-component-min-width: 0rem;
+  --weave-component-min-width: 0px;
 }
 
 :where(.weave-option__secondary) {

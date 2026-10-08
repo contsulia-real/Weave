@@ -11,8 +11,8 @@ const stylesheet = `
     var(--weave-input-min-height);
   --weave-component-min-width:
     var(--weave-input-min-width);
-  --weave-component-padding-top: 0rem;
-  --weave-component-padding-bottom: 0rem;
+  --weave-component-padding-top: 0px;
+  --weave-component-padding-bottom: 0px;
   --weave-component-padding-left:
     var(--weave-input-padding-x);
   --weave-component-padding-right:

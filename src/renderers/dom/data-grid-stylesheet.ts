@@ -35,8 +35,8 @@ const stylesheet = `
 :where(.weave-data-grid__resize-handle) {
   position: absolute;
   inset-block: 0;
-  inset-inline-end: -0.5rem;
-  width: 1rem;
+  inset-inline-end: -8px;
+  width: 16px;
   cursor: col-resize;
   touch-action: none;
   z-index: 2;

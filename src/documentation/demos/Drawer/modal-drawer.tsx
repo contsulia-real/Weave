@@ -11,14 +11,14 @@ export default function DrawerModalDrawerDemo() {
       mode="modal"
       open={open}
       onOpenChange={setOpen}
-      size={14}
-      closeThreshold={3}
+      size={224}
+      closeThreshold={48}
       closeOnEscape
       closeOnBackdrop
       initialFocus={closeRef}
       restoreFocus
       drawer={
-        <Column gap={1}>
+        <Column gap={16}>
           <Text typo="title-medium">Modal drawer</Text>
           <Text typo="body-small">The native Dialog branch owns modal behavior.</Text>
           <Button
@@ -27,9 +27,9 @@ export default function DrawerModalDrawerDemo() {
           />
         </Column>
       }
-      viewProps={{ width: 'fill', height: 14 }}
+      viewProps={{ width: 'fill', height: 224 }}
     >
-      <Column padding={1} gap={1}>
+      <Column padding={16} gap={16}>
         <Text>Main content</Text>
         <Button text="Open drawer" viewProps={{ onClick: () => setOpen(true) }} />
       </Column>

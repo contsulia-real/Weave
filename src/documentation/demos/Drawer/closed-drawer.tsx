@@ -7,9 +7,9 @@ export default function DrawerClosedDrawerDemo() {
       mode="non-modal"
       defaultOpen={false}
       drawer={<Text>Navigation</Text>}
-      viewProps={{ width: 'fill', height: 8 }}
+      viewProps={{ width: 'fill', height: 128 }}
     >
-      <Column padding={1}>Main content</Column>
+      <Column padding={16}>Main content</Column>
     </Drawer>
   )
 }

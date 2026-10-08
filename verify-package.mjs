@@ -267,7 +267,7 @@ assert(
   'Built DataGrid must fill unused viewport width without exposing a fake column divider',
 )
 assert(
-  runtimeSource.includes('width:1rem') &&
+  runtimeSource.includes('width:16px') &&
     runtimeSource.includes('background:var(--weave-table-row-hover-background)'),
   'Built DataGrid must use the larger resize hit target and Table-themed sortable header feedback',
 )

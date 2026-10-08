@@ -6,7 +6,7 @@ export default function DialogModalDialogDemo() {
   const cancelRef = useRef<HTMLButtonElement>(null)
 
   return (
-    <Column gap={1} align="start">
+    <Column gap={16} align="start">
       <Button text="Open dialog" viewProps={{ onClick: () => setOpen(true) }} />
       <Dialog
         modal
@@ -16,10 +16,10 @@ export default function DialogModalDialogDemo() {
         closeOnBackdrop
         initialFocus={cancelRef}
       >
-        <Column gap={1}>
+        <Column gap={16}>
           <Text typo="title-medium">Delete project?</Text>
           <Text typo="body-medium">This action cannot be undone.</Text>
-          <Row gap={1}>
+          <Row gap={16}>
             <Button
               text="Cancel"
               variant="secondary"

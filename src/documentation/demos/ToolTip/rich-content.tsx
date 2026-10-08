@@ -6,7 +6,7 @@ export default function ToolTipRichContentDemo() {
       delay={0}
       defaultOpen
       content={
-        <Column gap={0.25}>
+        <Column gap={4}>
           <Text typo="label-medium">Keyboard shortcut</Text>
           <Text typo="body-xsmall">Press Command + K to open search.</Text>
         </Column>

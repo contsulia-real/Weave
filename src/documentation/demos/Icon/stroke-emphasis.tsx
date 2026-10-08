@@ -3,7 +3,7 @@ import { Icon, Row } from '../../../index'
 
 export default function IconStrokeEmphasisDemo() {
   return (
-    <Row gap={1.5} align="center">
+    <Row gap={24} align="center">
       <Icon icon={IconSearch} stroke="thin" />
       <Icon icon={IconSearch} stroke="regular" />
       <Icon icon={IconSearch} stroke="bold" />

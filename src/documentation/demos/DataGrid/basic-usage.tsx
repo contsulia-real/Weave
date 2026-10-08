@@ -55,7 +55,7 @@ export default function DataGridBasicUsageDemo() {
       virtualized
       stickyHeader
       verticalBorders
-      viewProps={{ maxHeight: 28 }}
+      viewProps={{ maxHeight: 448 }}
     />
   )
 }

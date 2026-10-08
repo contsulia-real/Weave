@@ -73,8 +73,8 @@ const stylesheet = `
   --weave-component-position: relative;
   --weave-component-overflow: hidden;
 
-  --weave-snack-enter-y: 0rem;
-  --weave-snack-exit-y: 0rem;
+  --weave-snack-enter-y: 0px;
+  --weave-snack-exit-y: 0px;
 
   opacity: 1;
   --weave-component-transform: translateY(0);

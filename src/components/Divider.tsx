@@ -17,7 +17,7 @@ export function Divider(props: DividerProps): import('react').JSX.Element {
 
   const semanticDeclarations = useMemo(
     () => ({
-      '--weave-divider-gap': length(gap) ?? '0rem',
+      '--weave-divider-gap': length(gap) ?? '0px',
       '--weave-divider-thickness': size === undefined ? undefined : `${Math.max(0, size)}px`,
     }),
     [gap, size],

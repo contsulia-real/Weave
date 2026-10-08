@@ -155,7 +155,7 @@ export function DateInput({
 
   const header =
     panel === 'days' ? (
-      <Row align="center" gap={0.25}>
+      <Row align="center" gap={4}>
         <Button
           text={monthLabel(month)}
           variant="ghost"
@@ -205,8 +205,8 @@ export function DateInput({
           placement="bottom-left"
           viewProps={{ label: messages.chooseDate, lang: resolvedLocale }}
           content={
-            <Column gap={1} width={19}>
-              <Row align="center" justify="space-between" gap={0.25}>
+            <Column gap={16} width={304}>
+              <Row align="center" justify="space-between" gap={4}>
                 <Button
                   icon={chevronLeftIcon}
                   variant="ghost"
@@ -246,7 +246,7 @@ export function DateInput({
                 />
               </Row>
               {panel === 'days' ? (
-                <Grid columns={7} gap={0.25}>
+                <Grid columns={7} gap={4}>
                   {weekdays.map((weekday, index) => (
                     <Text
                       key={index}
@@ -285,7 +285,7 @@ export function DateInput({
                   })}
                 </Grid>
               ) : panel === 'months' ? (
-                <Grid columns={3} gap={0.25}>
+                <Grid columns={3} gap={4}>
                   {Array.from({ length: 12 }, (_, index) => {
                     const candidate = year * 12 + index
                     return (
@@ -309,7 +309,7 @@ export function DateInput({
                   })}
                 </Grid>
               ) : (
-                <Grid columns={3} gap={0.25}>
+                <Grid columns={3} gap={4}>
                   {Array.from({ length: 12 }, (_, index) => {
                     const candidate = yearPage + index
                     return (

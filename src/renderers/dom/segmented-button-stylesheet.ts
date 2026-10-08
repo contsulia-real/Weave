@@ -15,9 +15,9 @@ const stylesheet = `
 .weave-segmented-button > :where(.weave-button[aria-pressed="true"]:not([aria-disabled="true"])) {
   --weave-component-box-shadow:
     0 var(--weave-feedback-press-depth) 0 var(--weave-button-depth-color),
-    inset 0.125rem 0 0.1875rem
+    inset 2px 0 3px
       color-mix(in srgb, var(--weave-button-depth-color) 58%, transparent),
-    inset -0.0625rem 0 0
+    inset -1px 0 0
       color-mix(in srgb, white 12%, transparent);
 }
 

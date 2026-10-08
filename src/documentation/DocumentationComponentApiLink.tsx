@@ -19,9 +19,9 @@ export function DocumentationComponentApiLink({
         'weave-doc-section': '',
         'weave-doc-section-label': t('docs.api.heading'),
       }}
-      gap={1.5}
+      gap={24}
     >
-      <Column gap={0.5}>
+      <Column gap={8}>
         <Text typo="headline-small">{t('docs.api.heading')}</Text>
         <Text typo="body-medium">{t('docs.api.linkDescription')}</Text>
       </Column>
@@ -30,7 +30,7 @@ export function DocumentationComponentApiLink({
         const api = documentationComponentApi(componentName)
 
         return (
-          <Column key={componentName} gap={0.75} width="fill">
+          <Column key={componentName} gap={12} width="fill">
             <Link
               href={`/docs/components-api/${componentName}`}
               text={<Text typo="title-medium">{'<' + componentName + '/>'}</Text>}

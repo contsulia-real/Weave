@@ -11,7 +11,7 @@ export default function PresenceTogglePresenceDemo() {
   }
 
   return (
-    <Column gap={1} align="start">
+    <Column gap={16} align="start">
       <Button text={visible ? 'Hide' : 'Show'} viewProps={{ onClick: toggle }} />
       <Text typo="body-small" color="secondary">
         Status: {status}
@@ -19,7 +19,7 @@ export default function PresenceTogglePresenceDemo() {
       <Presence present={visible} onExitComplete={() => setStatus('Exit complete')}>
         <Column
           background="surfaceHover"
-          padding={1.5}
+          padding={24}
           radius="medium"
           enter={{ animation: 'fade-down' }}
           exit={{ animation: 'fade-up' }}

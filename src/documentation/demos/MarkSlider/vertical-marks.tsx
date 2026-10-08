@@ -12,7 +12,7 @@ export default function MarkSliderVerticalMarksDemo() {
       min={0}
       max={100}
       direction="vertical"
-      viewProps={{ height: 12 }}
+      viewProps={{ height: 192 }}
     />
   )
 }

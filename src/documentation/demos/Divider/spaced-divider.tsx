@@ -2,9 +2,9 @@ import { Column, Divider, Text } from '../../../index'
 
 export default function DividerSpacedDividerDemo() {
   return (
-    <Column width={20}>
+    <Column width={320}>
       <Text>First section</Text>
-      <Divider gap={1} size={2} />
+      <Divider gap={16} size={2} />
       <Text>Second section</Text>
     </Column>
   )

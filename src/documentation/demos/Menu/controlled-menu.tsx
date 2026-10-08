@@ -11,7 +11,7 @@ export default function MenuControlledMenuDemo() {
       onOpenChange={setOpen}
       placement="bottom-right"
       overlapTrigger
-      viewportPadding={1}
+      viewportPadding={16}
     >
       <MenuItem text="Rename" />
       <MenuItem text="Archive" />

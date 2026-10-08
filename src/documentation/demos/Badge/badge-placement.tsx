@@ -2,7 +2,7 @@ import { Badge, Button, Row } from '../../../index'
 
 export default function BadgeBadgePlacementDemo() {
   return (
-    <Row gap={2}>
+    <Row gap={32}>
       <Badge text="1" placement="top-left" visible>
         <Button text="Top left" variant="secondary" />
       </Badge>

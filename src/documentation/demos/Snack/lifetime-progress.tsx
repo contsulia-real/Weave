@@ -7,7 +7,7 @@ export default function SnackLifetimeProgressDemo() {
   const [dismissed, setDismissed] = useState(0)
 
   return (
-    <Column ref={hostRef} width="fill" minHeight={10} gap={1} align="start">
+    <Column ref={hostRef} width="fill" minHeight={160} gap={16} align="start">
       <SnackProvider container={hostRef}>
         <Button text="Restart timed Snack" viewProps={{ onClick: () => setOpen(true) }} />
         <Text typo="body-small">Completed dismissals: {dismissed}</Text>

@@ -8,7 +8,7 @@ export default function RangeSliderVerticalIntervalDemo() {
       max={100}
       step={10}
       direction="vertical"
-      viewProps={{ height: 12 }}
+      viewProps={{ height: 192 }}
     />
   )
 }

@@ -39,8 +39,8 @@ const stylesheet = `
 
   --weave-component-box-shadow: var(--weave-menu-shadow);
 
-  --weave-menu-motion-x: 0rem;
-  --weave-menu-motion-y: 0rem;
+  --weave-menu-motion-x: 0px;
+  --weave-menu-motion-y: 0px;
 
   opacity: 1;
   translate: 0 0;
@@ -208,7 +208,7 @@ const stylesheet = `
   --weave-component-flex-direction: column;
   --weave-component-gap: var(--weave-menu-item-text-gap);
   --weave-component-flex-grow: 1;
-  --weave-component-min-width: 0rem;
+  --weave-component-min-width: 0px;
 }
 
 :where(.weave-menu-item__secondary) {

@@ -22,7 +22,7 @@ export function ToolTip(props: ToolTipProps): import('react').JSX.Element {
     content,
     placement = 'top',
     delay = 500,
-    offset = 0.5,
+    offset = 8,
     open,
     defaultOpen = false,
     onOpenChange,
@@ -225,7 +225,7 @@ export function ToolTip(props: ToolTipProps): import('react').JSX.Element {
     viewProps.onTransitionEnd,
   )
 
-  const offsetValue = length(offset) ?? '0rem'
+  const offsetValue = length(offset) ?? '0px'
   const { positioned, placementStyle } = useToolTipPosition(
     targetRef,
     present,

@@ -2,7 +2,7 @@ import { Button, Form, FormField, Input } from '../../../index'
 
 export default function FormBasicUsageDemo() {
   return (
-    <Form viewProps={{ width: 24 }}>
+    <Form viewProps={{ width: 384 }}>
       <FormField label="Email" description="Used for account notifications." required>
         <Input name="email" type="email" placeholder="you@example.com" />
       </FormField>

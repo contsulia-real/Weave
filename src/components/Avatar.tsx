@@ -46,7 +46,7 @@ export function Avatar(props: AvatarProps): import('react').JSX.Element {
   const [failedSource, setFailedSource] = useState<ImageSource | undefined>(undefined)
   const rootRef = useRef<HTMLDivElement | null>(null)
   const fallbackTextRef = useRef<HTMLParagraphElement | null>(null)
-  const defaultSize = length(theme.components.Avatar?.base?.defaultSize) ?? '2.5rem'
+  const defaultSize = length(theme.components.Avatar?.base?.defaultSize) ?? '40px'
 
   useStaticStylesheet(ensureAvatarStylesheet)
 

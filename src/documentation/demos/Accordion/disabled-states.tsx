@@ -9,8 +9,8 @@ import {
 
 export default function AccordionDisabledStatesDemo() {
   return (
-    <Column gap={2}>
-      <Column gap={0.5}>
+    <Column gap={32}>
+      <Column gap={8}>
         <Text typo="label-medium">Disabled item</Text>
         <Accordion defaultValue="general">
           <AccordionItem value="general">
@@ -24,7 +24,7 @@ export default function AccordionDisabledStatesDemo() {
         </Accordion>
       </Column>
 
-      <Column gap={0.5}>
+      <Column gap={8}>
         <Text typo="label-medium">Disabled accordion</Text>
         <Accordion defaultValue="billing" disabled>
           <AccordionItem value="billing">

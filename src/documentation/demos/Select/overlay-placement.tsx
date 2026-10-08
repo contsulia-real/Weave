@@ -2,15 +2,15 @@ import { Column, Select, SelectOption, Text } from '../../../index'
 
 export default function SelectOverlayPlacementDemo() {
   return (
-    <Column gap={0.75} padding={3} align="center">
+    <Column gap={12} padding={48} align="center">
       <Text typo="body-small" color="secondary">
         Open the select to see a right-placed listbox overlapping its trigger edge.
       </Text>
       <Select
         placement="right"
-        offset={0.5}
+        offset={8}
         overlapTrigger
-        viewportPadding={1}
+        viewportPadding={16}
         placeholder="Placement"
       >
         <SelectOption value="one" text="One" />

@@ -5,17 +5,17 @@ export default function PresencePresenceLayoutDemo() {
   const [visible, setVisible] = useState(true)
 
   return (
-    <Column gap={1} align="start">
+    <Column gap={16} align="start">
       <Button
         text={visible ? 'Remove both' : 'Restore both'}
         viewProps={{ onClick: () => setVisible((current) => !current) }}
       />
 
       <Presence present={visible}>
-        <Row gap={1} align="center">
+        <Row gap={16} align="center">
           <Column
             background="surfaceHover"
-            padding={1.5}
+            padding={24}
             radius="medium"
             enter={{ animation: 'fade-down', spring: 'gentle' }}
             exit={{ animation: 'fade-up', spring: 'gentle' }}
@@ -24,7 +24,7 @@ export default function PresencePresenceLayoutDemo() {
           </Column>
           <Column
             background="surfaceHover"
-            padding={1.5}
+            padding={24}
             radius="medium"
             enter={{ animation: 'fade-up', spring: 'gentle' }}
             exit={{ animation: 'fade-down', spring: 'gentle' }}

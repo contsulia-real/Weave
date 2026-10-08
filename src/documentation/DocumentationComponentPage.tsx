@@ -26,15 +26,15 @@ export function DocumentationComponentPage({ componentName }: DocumentationCompo
   return (
     <Flex
       width="fill"
-      padding={1}
-      gap={2}
+      padding={16}
+      gap={32}
       align="start"
       direction="column"
-      containerMd={{ padding: 2 }}
+      containerMd={{ padding: 32 }}
       containerLg={{ direction: 'row', justify: 'center' }}
     >
-      <Column ref={contentRef} grow={1} minWidth={0} width="fill" maxWidth={52} gap={3}>
-        <Column width="fill" gap={0.75}>
+      <Column ref={contentRef} grow={1} minWidth={0} width="fill" maxWidth={832} gap={48}>
+        <Column width="fill" gap={12}>
           <Text typo="display-medium">{componentName}</Text>
           <Text typo="body-large">{documentationCopy(t, definition.description)}</Text>
         </Column>
@@ -57,7 +57,7 @@ export function DocumentationComponentPage({ componentName }: DocumentationCompo
               }}
               width="fill"
               minWidth={0}
-              gap={1}
+              gap={16}
             >
               <Text typo="headline-small">{title}</Text>
               {description === undefined ? null : <Text typo="body-medium">{description}</Text>}
@@ -72,13 +72,13 @@ export function DocumentationComponentPage({ componentName }: DocumentationCompo
           <DocumentationComponentApiLink componentNames={apiComponents} />
         ) : null}
 
-        <Flex width="fill" gap={1} direction="column" containerMd={{ direction: 'row' }}>
+        <Flex width="fill" gap={16} direction="column" containerMd={{ direction: 'row' }}>
           <Card
             clickable={adjacent.previous !== null}
             viewProps={{
               grow: 1,
               width: 'fill',
-              padding: 1.5,
+              padding: 24,
               disabled: adjacent.previous === null,
               onClick:
                 adjacent.previous === null
@@ -88,9 +88,9 @@ export function DocumentationComponentPage({ componentName }: DocumentationCompo
                     },
             }}
           >
-            <Row gap={1} align="center" justify="start">
+            <Row gap={16} align="center" justify="start">
               <Icon icon={IconArrowLeft} size="large" />
-              <Column gap={0.25}>
+              <Column gap={4}>
                 <Text typo="label-medium" color="secondary">
                   {t('docs.component.previous')}
                 </Text>
@@ -104,7 +104,7 @@ export function DocumentationComponentPage({ componentName }: DocumentationCompo
             viewProps={{
               grow: 1,
               width: 'fill',
-              padding: 1.5,
+              padding: 24,
               disabled: adjacent.next === null,
               onClick:
                 adjacent.next === null
@@ -114,8 +114,8 @@ export function DocumentationComponentPage({ componentName }: DocumentationCompo
                     },
             }}
           >
-            <Row gap={1} align="center" justify="end">
-              <Column gap={0.25} align="end">
+            <Row gap={16} align="center" justify="end">
+              <Column gap={4} align="end">
                 <Text typo="label-medium" color="secondary">
                   {t('docs.component.next')}
                 </Text>

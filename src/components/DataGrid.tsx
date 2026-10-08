@@ -645,7 +645,7 @@ export function DataGrid<TRow extends DataGridRow = DataGridRow>(
                       : undefined,
                   }}
                 >
-                  <Row gap={0.25} align="center">
+                  <Row gap={4} align="center">
                     {column.header}
                     {activeSort ? (
                       <Icon

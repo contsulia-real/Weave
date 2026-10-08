@@ -11,7 +11,7 @@ import {
 
 function Pane({ children }: { children: string }) {
   return (
-    <Column width="fill" height="fill" background="surfaceHover" padding={1}>
+    <Column width="fill" height="fill" background="surfaceHover" padding={16}>
       <Text>{children}</Text>
     </Column>
   )
@@ -22,20 +22,20 @@ export default function LayoutSplitboxDemo() {
   const [collapsed, setCollapsed] = useState<SplitBoxCollapsed>(false)
 
   return (
-    <Column gap={2} width="fill">
-      <Column gap={0.5}>
+    <Column gap={32} width="fill">
+      <Column gap={8}>
         <Text typo="label-medium">Uncontrolled horizontal split</Text>
         <SplitBox
           defaultSize="35%"
-          minStart={8}
+          minStart={128}
           maxStart="70%"
-          minEnd={10}
+          minEnd={160}
           collapsible="both"
-          collapseThreshold={2}
-          expandThreshold={4}
-          step={1}
-          thickness={0.125}
-          viewProps={{ width: 'fill', height: 10 }}
+          collapseThreshold={32}
+          expandThreshold={64}
+          step={16}
+          thickness={2}
+          viewProps={{ width: 'fill', height: 160 }}
         >
           <SplitBoxPane>
             <Pane>Start pane</Pane>
@@ -46,15 +46,15 @@ export default function LayoutSplitboxDemo() {
         </SplitBox>
       </Column>
 
-      <Column gap={0.5}>
+      <Column gap={8}>
         <Text typo="label-medium">Vertical split with a disabled splitter</Text>
         <SplitBox
           direction="vertical"
-          defaultSize={4}
-          minStart={3}
-          minEnd={3}
+          defaultSize={64}
+          minStart={48}
+          minEnd={48}
           disabled
-          viewProps={{ width: 'fill', height: 10 }}
+          viewProps={{ width: 'fill', height: 160 }}
         >
           <SplitBoxPane>
             <Pane>Top pane</Pane>
@@ -65,8 +65,8 @@ export default function LayoutSplitboxDemo() {
         </SplitBox>
       </Column>
 
-      <Column gap={0.5}>
-        <Row gap={0.5} align="center" wrap>
+      <Column gap={8}>
+        <Row gap={8} align="center" wrap>
           <Text typo="label-medium">Controlled split</Text>
           <Button
             text="Collapse start"
@@ -90,10 +90,10 @@ export default function LayoutSplitboxDemo() {
           collapsed={collapsed}
           onCollapsedChange={setCollapsed}
           collapsible="both"
-          viewProps={{ width: 'fill', height: 10 }}
+          viewProps={{ width: 'fill', height: 160 }}
         >
           <SplitBoxPane viewProps={{ scrollbar: { size: 'small' } }}>
-            <Column background="surfaceHover" padding={1} gap={0.5}>
+            <Column background="surfaceHover" padding={16} gap={8}>
               {Array.from({ length: 8 }, (_, index) => (
                 <Text key={index}>Scrollable item {index + 1}</Text>
               ))}

@@ -2,7 +2,7 @@ import { Column, Stack, Text } from '../../../index'
 
 export default function LayoutStackDemo() {
   return (
-    <Stack width={18} height={8}>
+    <Stack width={288} height={128}>
       <Column
         width="fill"
         height="fill"
@@ -14,8 +14,8 @@ export default function LayoutStackDemo() {
         <Text>Base</Text>
       </Column>
       <Column
-        width={8}
-        height={4}
+        width={128}
+        height={64}
         background="surface"
         radius="medium"
         align="center"

@@ -2,7 +2,7 @@ import { Button, Row, ThemeProvider } from '../../../index'
 
 export default function ThemeProviderScopedColorModeDemo() {
   return (
-    <Row gap={1}>
+    <Row gap={16}>
       <ThemeProvider mode="light">
         <Button text="Light scope" />
       </ThemeProvider>

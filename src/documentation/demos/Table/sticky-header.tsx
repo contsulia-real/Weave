@@ -4,7 +4,7 @@ const rows = ['Alpha', 'Beta', 'Gamma', 'Delta', 'Epsilon', 'Zeta']
 
 export default function TableStickyHeaderDemo() {
   return (
-    <Table stickyHeader viewProps={{ maxHeight: 12, overflowY: 'auto' }}>
+    <Table stickyHeader viewProps={{ maxHeight: 192, overflowY: 'auto' }}>
       <TableHeader>
         <TableRow>
           <TableHead>Name</TableHead>

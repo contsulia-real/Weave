@@ -18,7 +18,7 @@ const stylesheet = `
   --weave-component-align-items: center;
   --weave-component-gap: var(--weave-select-gap);
   --weave-component-flex-grow: 1;
-  --weave-component-min-width: 0rem;
+  --weave-component-min-width: 0px;
 }
 
 :where(.weave-select__placeholder) {

@@ -5,7 +5,7 @@ export default function SwitchControlledSwitchDemo() {
   const [checked, setChecked] = useState(true)
 
   return (
-    <Column gap={0.75} align="start">
+    <Column gap={12} align="start">
       <Switch
         checked={checked}
         onChange={setChecked}

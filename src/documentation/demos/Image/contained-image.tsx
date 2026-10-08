@@ -7,7 +7,7 @@ export default function ImageContainedImageDemo() {
       src={imageUrl}
       alt="Contained example landscape"
       fit="contain"
-      viewProps={{ width: 20, height: 8, background: 'surfaceHover', radius: 'medium' }}
+      viewProps={{ width: 320, height: 128, background: 'surfaceHover', radius: 'medium' }}
     />
   )
 }

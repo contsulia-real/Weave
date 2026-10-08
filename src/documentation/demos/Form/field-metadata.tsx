@@ -2,7 +2,7 @@ import { Form, FormField, Input } from '../../../index'
 
 export default function FormFieldMetadataDemo() {
   return (
-    <Form viewProps={{ width: 24 }}>
+    <Form viewProps={{ width: 384 }}>
       <FormField
         label="Work email"
         description="Use the address associated with your organization."

@@ -2,7 +2,7 @@ import { Form, FormFieldset, FormLegend, Radio } from '../../../index'
 
 export default function FormFieldsetAndLegendDemo() {
   return (
-    <Form viewProps={{ width: 24 }}>
+    <Form viewProps={{ width: 384 }}>
       <FormFieldset>
         <FormLegend>Digest frequency</FormLegend>
         <Radio label="Daily" group="digest" value="daily" defaultChecked />

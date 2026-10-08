@@ -9,7 +9,7 @@ export default function ImageFocalPositionDemo() {
       fit="cover"
       position="top"
       loading="eager"
-      viewProps={{ width: 16, height: 6, radius: 'medium' }}
+      viewProps={{ width: 256, height: 96, radius: 'medium' }}
     />
   )
 }

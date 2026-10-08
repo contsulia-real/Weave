@@ -17,7 +17,7 @@ const TOKEN_NAME = /^[A-Za-z][A-Za-z0-9_-]*$/
 
 export function length(value: Length | undefined): string | undefined {
   if (value === undefined) return undefined
-  return typeof value === 'number' ? `${value}rem` : value
+  return typeof value === 'number' ? `${value}px` : value
 }
 
 export function dimension(value: Dimension | undefined): string | undefined {

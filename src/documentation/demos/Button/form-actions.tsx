@@ -11,11 +11,11 @@ export default function ButtonFormActionsDemo() {
         setStatus('Submitted')
       }}
       onReset={() => setStatus('Reset')}
-      viewProps={{ width: 20 }}
+      viewProps={{ width: 320 }}
     >
-      <Column gap={1}>
+      <Column gap={16}>
         <Input placeholder="Message" type="text" />
-        <Row gap={1}>
+        <Row gap={16}>
           <Button type="submit" text="Submit" />
           <Button type="reset" text="Reset" variant="secondary" />
         </Row>

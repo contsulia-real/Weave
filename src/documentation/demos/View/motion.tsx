@@ -5,17 +5,17 @@ export default function ViewMotionDemo() {
   const [visible, setVisible] = useState(true)
 
   return (
-    <Column gap={1} align="start">
+    <Column gap={16} align="start">
       <Button
         text={visible ? 'Hide' : 'Show'}
         viewProps={{ onClick: () => setVisible((current) => !current) }}
       />
 
-      <Row gap={1} align="center">
+      <Row gap={16} align="center">
         <Presence present={visible}>
           <View
             background="surfaceHover"
-            padding={1.5}
+            padding={24}
             radius="medium"
             enter={{ animation: 'fade-up', spring: 'gentle' }}
             exit={{ animation: 'fade-down', spring: 'gentle' }}
@@ -26,7 +26,7 @@ export default function ViewMotionDemo() {
 
         <View
           background="surfaceHover"
-          padding={1.5}
+          padding={24}
           radius="medium"
           animation={{
             keyframes: [{ opacity: 0.55 }, { opacity: 1 }],

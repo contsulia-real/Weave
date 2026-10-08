@@ -7,16 +7,16 @@ export default function DrawerResponsiveModeDemo() {
       mode="auto"
       breakpoint="md"
       defaultOpen
-      defaultSize={16}
+      defaultSize={256}
       drawer={
-        <Column gap={0.5}>
+        <Column gap={8}>
           <Text typo="label-medium">Responsive navigation</Text>
           <Text typo="body-small">Modal below md, non-modal at md and above.</Text>
         </Column>
       }
-      viewProps={{ width: 'fill', height: 12 }}
+      viewProps={{ width: 'fill', height: 192 }}
     >
-      <Column padding={1}>Main content</Column>
+      <Column padding={16}>Main content</Column>
     </Drawer>
   )
 }

@@ -9,7 +9,7 @@ const customMark = (
 
 export default function IconCustomSvgDemo() {
   return (
-    <Row gap={1} align="center">
+    <Row gap={16} align="center">
       <Icon svg={customMark} size="large" stroke="bold" viewProps={{ label: 'Add item' }} />
       <Text>Custom SVG with an accessible name</Text>
     </Row>

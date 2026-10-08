@@ -5,9 +5,9 @@ function QueueControls() {
   const snack = useSnack()
 
   return (
-    <Column gap={1} align="start">
+    <Column gap={16} align="start">
       <Text typo="body-small">Each click creates a new queued Snack instance.</Text>
-      <Row gap={1}>
+      <Row gap={16}>
         <Button
           text="Show notification"
           viewProps={{
@@ -31,7 +31,7 @@ export default function SnackProviderQueueDemo() {
   const hostRef = useRef<HTMLDivElement>(null)
 
   return (
-    <Column ref={hostRef} width="fill" minHeight={10}>
+    <Column ref={hostRef} width="fill" minHeight={160}>
       <SnackProvider container={hostRef}>
         <QueueControls />
       </SnackProvider>

@@ -5,21 +5,21 @@ export default function DrawerBasicUsageDemo() {
     <Drawer
       side="left"
       mode="non-modal"
-      defaultSize={16}
-      minSize={10}
-      collapseThreshold={2}
-      expandThreshold={4}
+      defaultSize={256}
+      minSize={160}
+      collapseThreshold={32}
+      expandThreshold={64}
       resizable
       defaultOpen
       drawer={
-        <Column gap={0.5}>
+        <Column gap={8}>
           <Text typo="label-medium">Navigation</Text>
           <Text typo="body-small">Drag the shared splitter to resize.</Text>
         </Column>
       }
-      viewProps={{ width: 'fill', height: 12 }}
+      viewProps={{ width: 'fill', height: 192 }}
     >
-      <Column padding={1}>Main content</Column>
+      <Column padding={16}>Main content</Column>
     </Drawer>
   )
 }

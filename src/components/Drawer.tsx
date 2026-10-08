@@ -21,11 +21,11 @@ import { SplitBox } from './SplitBox'
 import { SplitBoxPane } from './SplitBoxPane'
 import { View } from './View'
 
-const DEFAULT_SIZE: Length = 20
-const DEFAULT_MIN_SIZE: Length = 12
-const DEFAULT_COLLAPSE_THRESHOLD: Length = 2
-const DEFAULT_EXPAND_THRESHOLD: Length = 4
-const DEFAULT_CLOSE_THRESHOLD: Length = 4
+const DEFAULT_SIZE: Length = 320
+const DEFAULT_MIN_SIZE: Length = 192
+const DEFAULT_COLLAPSE_THRESHOLD: Length = 32
+const DEFAULT_EXPAND_THRESHOLD: Length = 64
+const DEFAULT_CLOSE_THRESHOLD: Length = 64
 
 interface DrawerDragState {
   pointerId: number
@@ -86,7 +86,7 @@ function measureLength(root: HTMLElement, value: Length, direction: SplitBoxDire
 }
 
 function useWideBreakpoint(minWidth: number | undefined): boolean {
-  const query = minWidth === undefined ? null : `(min-width: ${minWidth}rem)`
+  const query = minWidth === undefined ? null : `(min-width: ${minWidth}px)`
   return useDocumentMediaQuery(query)
 }
 
@@ -304,7 +304,7 @@ export function Drawer(props: DrawerProps): import('react').JSX.Element {
   const position = drawerPosition(side)
   const drawerMaxWidth = theme.components.Drawer?.base?.maxWidth ?? '360px'
   const drawerStarts = position === 'start'
-  const drawerSizeCSS = length(resolvedSize) ?? length(DEFAULT_SIZE) ?? '20rem'
+  const drawerSizeCSS = length(resolvedSize) ?? length(DEFAULT_SIZE) ?? '320px'
   const splitSize = drawerStarts
     ? drawerSizeCSS
     : `calc(100% - var(--weave-splitbox-thickness) - ${drawerSizeCSS})`

@@ -5,7 +5,7 @@ export default function SliderControlledContinuousDemo() {
   const [value, setValue] = useState(42)
 
   return (
-    <Column gap={0.75} align="start">
+    <Column gap={12} align="start">
       <Slider
         value={value}
         onChange={setValue}

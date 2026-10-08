@@ -5,7 +5,7 @@ export default function RangeSliderControlledRangeDemo() {
   const [value, setValue] = useState<[number, number]>([25, 75])
 
   return (
-    <Column gap={0.75} align="start">
+    <Column gap={12} align="start">
       <RangeSlider
         value={value}
         onChange={setValue}

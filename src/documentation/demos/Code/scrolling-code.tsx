@@ -9,7 +9,7 @@ export default function CodeScrollingCodeDemo() {
   const sixth = 6`
 
   return (
-    <Code language="typescript" viewProps={{ maxHeight: 8, overflow: 'auto', width: 24 }}>
+    <Code language="typescript" viewProps={{ maxHeight: 128, overflow: 'auto', width: 384 }}>
       {source}
     </Code>
   )

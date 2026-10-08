@@ -5,13 +5,13 @@ export default function DrawerRightDrawerDemo() {
     <Drawer
       side="right"
       mode="non-modal"
-      defaultSize={16}
+      defaultSize={256}
       resizable={false}
       defaultOpen
       drawer={<Text>Fixed inspector</Text>}
-      viewProps={{ width: 'fill', height: 10 }}
+      viewProps={{ width: 'fill', height: 160 }}
     >
-      <Column padding={1}>Canvas</Column>
+      <Column padding={16}>Canvas</Column>
     </Drawer>
   )
 }

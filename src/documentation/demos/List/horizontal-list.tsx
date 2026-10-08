@@ -6,7 +6,7 @@ export default function ListHorizontalListDemo() {
       orientation="horizontal"
       selection="single"
       defaultSelected="overview"
-      gap={0.5}
+      gap={8}
       noDividers
       singleLine
       viewProps={{ width: 'fill', overflow: 'auto' }}

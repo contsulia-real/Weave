@@ -4,9 +4,9 @@ export default function ViewResponsiveViewDemo() {
   return (
     <View
       background="surfaceHover"
-      padding={1}
-      md={{ padding: 2 }}
-      lg={{ padding: 3 }}
+      padding={16}
+      md={{ padding: 32 }}
+      lg={{ padding: 48 }}
       radius="medium"
     >
       Resize the viewport

@@ -5,7 +5,7 @@ export default function DateControlledDateDemo() {
   const [value, setValue] = useState('2026-10-09')
 
   return (
-    <Column gap={0.75} width={22}>
+    <Column gap={12} width={352}>
       <Input type="date" value={value} onChange={setValue} viewProps={{ label: 'Selected date' }} />
       <Text typo="body-small" color="secondary">
         Value: {value || 'empty'}
