@@ -5,6 +5,9 @@ import { Column } from '../Column'
 import { Grid } from '../Grid'
 import { Popover } from '../Popover'
 import { Row } from '../Row'
+import { Tab } from '../Tab'
+import { TabList } from '../TabList'
+import { Tabs } from '../Tabs'
 import { Text } from '../Text'
 import { assignRef } from './assign-ref'
 import { calendarIcon, chevronLeftIcon, chevronRightIcon, clockIcon } from './control-icons'
@@ -312,7 +315,13 @@ export function DateInput({
     (short ? monthShortFormatter : monthNameFormatter).format(calendarDate(candidate, 1))
 
   const header =
-    panel === 'days' ? (
+    type === 'week' && panel === 'days' ? (
+      <Text typo="title-medium">
+        {monthLabel(month)} {yearFormatter.format(firstDay)}
+      </Text>
+    ) : type === 'week' && panel === 'months' ? (
+      <Text typo="title-medium">{yearFormatter.format(firstDay)}</Text>
+    ) : panel === 'days' ? (
       <Row align="center" gap={4}>
         <Button
           text={monthLabel(month)}
@@ -364,37 +373,30 @@ export function DateInput({
 
   const pickerContent = (
     <Column gap={16} width={304}>
-      {includesTime ? (
-        <Row align="center" justify="center" gap={4}>
-          {type === 'datetime-local' ? (
-            <Button
-              text={messages.chooseDate}
-              size="small"
-              variant={!isTimePanel ? 'primary' : 'ghost'}
-              viewProps={{ onClick: () => setPanel('days') }}
-            />
-          ) : null}
-          <Button
-            text={messages.chooseHour}
-            size="small"
-            variant={panel === 'hours' ? 'primary' : 'ghost'}
-            viewProps={{ onClick: () => setPanel('hours') }}
-          />
-          <Button
-            text={messages.chooseMinute}
-            size="small"
-            variant={panel === 'minutes' ? 'primary' : 'ghost'}
-            viewProps={{ onClick: () => setPanel('minutes') }}
-          />
-          {includesSeconds ? (
-            <Button
-              text={messages.chooseSecond}
-              size="small"
-              variant={panel === 'seconds' ? 'primary' : 'ghost'}
-              viewProps={{ onClick: () => setPanel('seconds') }}
-            />
-          ) : null}
-        </Row>
+      {includesTime || type === 'week' ? (
+        <Tabs
+          value={panel}
+          onValueChange={(next) => setPanel(next as Panel)}
+          variant="pill"
+          viewProps={{ align: 'center' }}
+        >
+          <TabList>
+            {type === 'week' ? (
+              <>
+                <Tab value="days">{messages.chooseWeek}</Tab>
+                <Tab value="months">{messages.chooseMonth}</Tab>
+                <Tab value="years">{messages.chooseYear}</Tab>
+              </>
+            ) : (
+              <>
+                {type === 'datetime-local' ? <Tab value="days">{messages.chooseDate}</Tab> : null}
+                <Tab value="hours">{messages.chooseHour}</Tab>
+                <Tab value="minutes">{messages.chooseMinute}</Tab>
+                {includesSeconds ? <Tab value="seconds">{messages.chooseSecond}</Tab> : null}
+              </>
+            )}
+          </TabList>
+        </Tabs>
       ) : null}
       {!isTimePanel ? (
         <>

@@ -15,6 +15,7 @@ import { useStaticStylesheet } from '../renderers/dom/static-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { Button } from './Button'
 import { AutoScrollbar } from './internal/AutoScrollbar'
+import { ColorInput } from './internal/ColorInput'
 import { closeIcon } from './internal/control-icons'
 import { DateInput } from './internal/DateInput'
 import { formFieldAssociationOverrides, useFormFieldContext } from './internal/form-field-context'
@@ -367,6 +368,10 @@ export function Input(props: InputProps): import('react').JSX.Element {
     props.type === 'week'
   ) {
     return <DateInput {...props} type={props.type} InputHost={SingleLineInput} />
+  }
+
+  if (props.type === 'color') {
+    return <ColorInput {...props} InputHost={SingleLineInput} />
   }
 
   return (

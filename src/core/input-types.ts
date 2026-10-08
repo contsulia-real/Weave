@@ -15,6 +15,7 @@ export type InputType =
   | 'datetime-local'
   | 'month'
   | 'week'
+  | 'color'
 
 export type InputValue = string | number
 export type InputIcon = IconComponent | IconSvg
@@ -50,7 +51,7 @@ export type InputProps =
       min?: string
       max?: string
       step?: number | 'any'
-      /** BCP 47 language tag for custom calendar and clock pickers on temporal inputs. */
+      /** BCP 47 language tag for custom color, calendar and clock pickers. */
       locale?: string
       clearable?: boolean
       clearLabel?: string

@@ -187,6 +187,19 @@ const stylesheet = `
   display: none;
 }
 
+:where(.weave-color-input) {
+  cursor: pointer;
+  padding: 0;
+}
+:where(.weave-color-input)::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+:where(.weave-color-input)::-webkit-color-swatch,
+:where(.weave-color-input)::-moz-color-swatch {
+  border: 0;
+  border-radius: var(--weave-input-radius);
+}
+
 :where(.weave-input__leading-icon),
 :where(.weave-input__trailing-icon) {
   position: absolute;

@@ -1718,5 +1718,25 @@
     "zh-CN": "使用 Weave 时钟弹窗选择小时、分钟和秒。",
     "zh-TW": "使用 Weave 時鐘彈窗選擇小時、分鐘和秒。",
     "fr": "Choisissez les heures, minutes et secondes dans la fenêtre horaire Weave."
+  },
+  "Color input": {
+    "zh-CN": "颜色输入",
+    "zh-TW": "顏色輸入",
+    "fr": "Saisie de couleur"
+  },
+  "Pick a color using the Weave palette, HSL sliders or HEX editor.": {
+    "zh-CN": "通过 Weave 色板、HSL 滑块或 HEX 编辑器选择颜色。",
+    "zh-TW": "透過 Weave 色板、HSL 滑桿或 HEX 編輯器選擇顏色。",
+    "fr": "Choisissez une couleur avec la palette Weave, les curseurs HSL ou le champ HEX."
+  },
+  "Controlled color": {
+    "zh-CN": "受控颜色",
+    "zh-TW": "受控顏色",
+    "fr": "Couleur contrôlée"
+  },
+  "Control the selected #rrggbb color with value and onChange.": {
+    "zh-CN": "使用 value 和 onChange 控制 #rrggbb 颜色值。",
+    "zh-TW": "使用 value 和 onChange 控制 #rrggbb 顏色值。",
+    "fr": "Contrôlez la couleur #rrggbb avec value et onChange."
   }
 }

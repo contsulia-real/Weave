@@ -70,6 +70,18 @@ export const formsComponentExamples: Record<string, DocumentationComponentDocume
           demo: 'Input/controlled-time',
         },
         {
+          id: 'color-input',
+          title: 'Color input',
+          description: 'Pick a color using the Weave palette, HSL sliders or HEX editor.',
+          demo: 'Input/color-input',
+        },
+        {
+          id: 'controlled-color',
+          title: 'Controlled color',
+          description: 'Control the selected #rrggbb color with value and onChange.',
+          demo: 'Input/controlled-color',
+        },
+        {
           id: 'controlled-input',
           title: 'Controlled input',
           description:

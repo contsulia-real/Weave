@@ -353,7 +353,7 @@ const componentPropDescriptions = {
   },
   Input: {
     locale:
-      'BCP 47 language tag overriding the document language for Weave calendar and clock pickers when type is date, time, datetime-local, month, or week.',
+      'BCP 47 language tag overriding the document language for Weave color, calendar, and clock picker labels.',
     autoComplete: 'Passes the native autocomplete hint to the input or textarea host.',
     clearable:
       'Controls the built-in clear action for single-line Input. It defaults to true and is unavailable in multiline mode.',
@@ -384,7 +384,7 @@ const componentPropDescriptions = {
       'Non-interactive trailing icon for single-line Input. When clear is also visible, this icon remains the rightmost adornment.',
     trailingAction:
       'Interactive content rendered inside the trailing edge of a single-line Input, e.g. a calendar Popover trigger.',
-    type: 'Sets the native single-line input type, including date, time, datetime-local, month, and week. Temporal types use the Weave calendar or clock Popover while preserving native segment editing and form values.',
+    type: 'Sets the native single-line input type, including color and temporal types. Color uses the Weave color/HEX Popover; temporal types use Weave calendar or clock Popovers.',
     value:
       'Controlled field value. When provided, the parent owns the rendered value and must update it from onChange.',
   },

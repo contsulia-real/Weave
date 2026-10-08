@@ -216,7 +216,7 @@
       "nativeProps": false,
       "hasViewProps": true,
       "usesViewProps": false,
-      "props": "reeee25867ae2"
+      "props": "r838064f0c4f4"
     },
     "Link": {
       "importPath": "@contsulia/weave/components/Link",
@@ -662,14 +662,14 @@
       "pdb938e985939",
       "p56b319ce7534"
     ],
-    "reeee25867ae2": [
+    "r838064f0c4f4": [
       "p09dfda480597",
       "p1991f3528ab9",
       "p2541cc34f243",
       "pacfbc3a0393d",
       "peca00c66d21e",
       "p84e214bf1fec",
-      "pca7a3bfc740f",
+      "p0d725969a39d",
       "p5a18a4ef7ce3",
       "pe86b218f8316",
       "p072781055457",
@@ -685,7 +685,7 @@
       "pb43445793700",
       "p997eede96271",
       "p1b61d78dec8b",
-      "p4db563326315",
+      "p43af99c51c49",
       "pebdbfdb46a40"
     ],
     "rcf9e50bc3992": [
@@ -2214,9 +2214,9 @@
       "type": "InputIcon | undefined",
       "optional": true
     },
-    "pca7a3bfc740f": {
+    "p0d725969a39d": {
       "name": "locale",
-      "description": "BCP 47 language tag for custom calendar and clock pickers on temporal inputs.",
+      "description": "BCP 47 language tag for custom color, calendar and clock pickers.",
       "type": "string | undefined",
       "optional": true
     },
@@ -2310,9 +2310,9 @@
       "type": "InputIcon | undefined",
       "optional": true
     },
-    "p4db563326315": {
+    "p43af99c51c49": {
       "name": "type",
-      "description": "Sets the native single-line input type, including date, time, datetime-local, month, and week. Temporal types use the Weave calendar or clock Popover while preserving native segment editing and form values.",
+      "description": "Sets the native single-line input type, including color and temporal types. Color uses the Weave color/HEX Popover; temporal types use Weave calendar or clock Popovers.",
       "type": "InputType | undefined",
       "optional": true
     },

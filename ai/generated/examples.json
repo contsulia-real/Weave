@@ -1599,6 +1599,51 @@
       "source": "import { IconSearch, IconSparkles } from '@tabler/icons-react'\nimport { Input } from '../../../index'\n\nexport default function InputBasicUsageDemo() {\n  return (\n    <Input\n      type=\"search\"\n      defaultValue=\"Weave\"\n      placeholder=\"Search notes\"\n      leadingIcon={IconSearch}\n      trailingIcon={IconSparkles}\n      clearLabel=\"Clear search\"\n    />\n  )\n}"
     },
     {
+      "id": "Input/color-input",
+      "component": "Input",
+      "title": "Color input",
+      "description": "Pick a color using the Weave palette, HSL sliders or HEX editor.",
+      "components": ["Column", "Form", "FormField", "Input", "Text"],
+      "concepts": [
+        "color",
+        "column",
+        "editor",
+        "field",
+        "form",
+        "hex",
+        "hsl",
+        "input",
+        "palette",
+        "pick",
+        "sliders",
+        "text",
+        "weave"
+      ],
+      "documentationRoute": "/docs/components/Input",
+      "source": "import { Column, Form, FormField, Input, Text } from '../../../index'\n\nexport default function ColorInputDemo() {\n  return (\n    <Form viewProps={{ width: 352 }}>\n      <Column gap={12}>\n        <FormField label=\"Accent color\">\n          <Input type=\"color\" name=\"accentColor\" defaultValue=\"#e76b94\" />\n        </FormField>\n        <Text typo=\"body-small\" color=\"secondary\">\n          Choose a swatch, adjust hue, saturation or lightness, or enter a HEX color.\n        </Text>\n      </Column>\n    </Form>\n  )\n}"
+    },
+    {
+      "id": "Input/controlled-color",
+      "component": "Input",
+      "title": "Controlled color",
+      "description": "Control the selected #rrggbb color with value and onChange.",
+      "components": ["Column", "Input", "Text"],
+      "concepts": [
+        "change",
+        "color",
+        "column",
+        "control",
+        "controlled",
+        "input",
+        "rrggbb",
+        "selected",
+        "text",
+        "value"
+      ],
+      "documentationRoute": "/docs/components/Input",
+      "source": "import { useState } from 'react'\nimport { Column, Input, Text } from '../../../index'\n\nexport default function ControlledColorDemo() {\n  const [value, setValue] = useState('#3b82f6')\n\n  return (\n    <Column width={352} gap={12}>\n      <Input\n        type=\"color\"\n        value={value}\n        onChange={setValue}\n        viewProps={{ label: 'Selected color' }}\n      />\n      <Text typo=\"body-small\" color=\"secondary\">\n        Value: {value}\n      </Text>\n    </Column>\n  )\n}"
+    },
+    {
       "id": "Input/controlled-date",
       "component": "Input",
       "title": "Controlled date",

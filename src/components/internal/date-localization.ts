@@ -3,6 +3,11 @@ import { useMemo, useSyncExternalStore } from 'react'
 const messages = {
   en: {
     chooseDate: 'Choose date',
+    chooseColor: 'Choose color',
+    hexColor: 'Hex color',
+    hue: 'Hue',
+    saturation: 'Saturation',
+    lightness: 'Lightness',
     chooseDateTime: 'Choose date and time',
     chooseTime: 'Choose time',
     chooseWeek: 'Choose week',
@@ -22,6 +27,11 @@ const messages = {
   },
   'zh-CN': {
     chooseDate: '选择日期',
+    chooseColor: '选择颜色',
+    hexColor: '十六进制颜色',
+    hue: '色相',
+    saturation: '饱和度',
+    lightness: '明度',
     chooseDateTime: '选择日期和时间',
     chooseTime: '选择时间',
     chooseWeek: '选择周次',
@@ -41,6 +51,11 @@ const messages = {
   },
   'zh-TW': {
     chooseDate: '選擇日期',
+    chooseColor: '選擇顏色',
+    hexColor: '十六進位顏色',
+    hue: '色相',
+    saturation: '飽和度',
+    lightness: '明度',
     chooseDateTime: '選擇日期和時間',
     chooseTime: '選擇時間',
     chooseWeek: '選擇週次',
@@ -60,6 +75,11 @@ const messages = {
   },
   fr: {
     chooseDate: 'Choisir une date',
+    chooseColor: 'Choisir une couleur',
+    hexColor: 'Couleur hexadécimale',
+    hue: 'Teinte',
+    saturation: 'Saturation',
+    lightness: 'Luminosité',
     chooseDateTime: 'Choisir une date et une heure',
     chooseTime: 'Choisir une heure',
     chooseWeek: 'Choisir une semaine',
