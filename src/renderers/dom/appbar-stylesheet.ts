@@ -88,8 +88,10 @@ const stylesheet = `
   gap: var(--weave-appbar-theme-medium-gap);
 }
 
-:where(.weave-appbar__leading, .weave-appbar__trailing) > :where(.weave-button),
-:where(.weave-appbar__leading, .weave-appbar__trailing) >
+:where(.weave-appbar[data-weave-depth-compensation="true"])
+  :where(.weave-appbar__leading, .weave-appbar__trailing) > :where(.weave-button),
+:where(.weave-appbar[data-weave-depth-compensation="true"])
+  :where(.weave-appbar__leading, .weave-appbar__trailing) >
   :where([data-weave-popover-anchor], [data-weave-menu-anchor], [data-weave-tooltip-anchor]) >
   :where(.weave-button) {
   --weave-component-margin-bottom: var(--weave-feedback-rest-depth);

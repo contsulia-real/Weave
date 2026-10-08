@@ -36,6 +36,8 @@ const viewPropDescriptions = {
   columns: 'Defines grid column tracks; a number creates that many equal columns.',
   columnSpan: 'Sets how many grid columns this item spans.',
   container: 'Names this element as a responsive container for descendant container breakpoints.',
+  depthCompensation:
+    'Opts in to component-specific depth spacing or alignment compensation; defaults to false.',
   contrast: 'Applies a contrast filter multiplier.',
   controls: 'References the element controlled by this element through aria-controls.',
   cursor: 'Sets the pointer cursor shown over the element.',

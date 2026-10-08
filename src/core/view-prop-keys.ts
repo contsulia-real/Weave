@@ -157,6 +157,7 @@ const VIEW_CONTROL_PROP_KEYS = [
   'disabledStyle',
   'container',
   'scrollbar',
+  'depthCompensation',
   'transition',
   'enter',
   'exit',

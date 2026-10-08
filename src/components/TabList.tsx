@@ -130,7 +130,7 @@ export function TabList(props: TabListProps): import('react').JSX.Element {
       gap={viewProps.gap ?? (pill ? 'var(--weave-tabs-list-gap)' : undefined)}
       width={viewProps.width ?? (pill ? 'fit' : undefined)}
       minWidth={viewProps.minWidth ?? (pill ? 0 : undefined)}
-      padding={viewProps.padding ?? (pill ? 0.25 : undefined)}
+      padding={viewProps.padding ?? (pill ? 4 : undefined)}
       className={[
         'weave-tab-list',
         pill ? 'weave-select' : undefined,

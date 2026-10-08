@@ -20,6 +20,10 @@ const stylesheet = `
     0 var(--weave-table-rest-depth) 0 var(--weave-table-depth-color);
 }
 
+:where(.weave-table[data-weave-depth-compensation="true"]) {
+  --weave-component-margin-bottom: var(--weave-table-rest-depth);
+}
+
 :where(.weave-table__table) {
   width: max-content;
   min-width: 100%;

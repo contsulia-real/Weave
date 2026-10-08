@@ -475,7 +475,7 @@
       "nativeProps": true,
       "hasViewProps": false,
       "usesViewProps": false,
-      "props": "r5b028ed8e04f"
+      "props": "ree4bf2004894"
     }
   },
   "profiles": {
@@ -975,7 +975,7 @@
       "p441e4141f0f1",
       "pf3af2d5a521c"
     ],
-    "r5b028ed8e04f": [
+    "ree4bf2004894": [
       "pd5229cb7ca12",
       "p3890df1a1088",
       "p4386d6fdb550",
@@ -1020,6 +1020,7 @@
       "pf640bc82b8f4",
       "pb9dc5083f864",
       "p616103e28868",
+      "pc13c82acc623",
       "pe287903fef9c",
       "p94db2ad1d194",
       "p2add7a49ebf2",
@@ -4077,6 +4078,12 @@
       "name": "data",
       "description": "Adds data-* attributes from a key-value object.",
       "type": "Readonly<Record<string, ViewDataValue>> | undefined",
+      "optional": true
+    },
+    "pc13c82acc623": {
+      "name": "depthCompensation",
+      "description": "Opt in to built-in physical depth alignment/spacing for this component.",
+      "type": "boolean | undefined",
       "optional": true
     },
     "pe287903fef9c": {

@@ -250,9 +250,9 @@ assert(
 assert(
   dataGridMarkup.includes('width:180px') &&
     dataGridMarkup.includes('width:280px') &&
-    dataGridMarkup.includes('width:120px') &&
+    !dataGridMarkup.includes('width:120px') &&
     !dataGridMarkup.includes('width:500px'),
-  'Built DataGrid column tracks must clamp rendered widths to min/max constraints',
+  'Built DataGrid must clamp fixed tracks while keeping the final track flexible',
 )
 assert(
   runtimeSource.includes('data-weave-data-grid-last-column') &&
@@ -260,11 +260,11 @@ assert(
   'Built DataGrid final resize handle must stay inside the table scroll extent',
 )
 assert(
-  dataGridMarkup.includes('weave-data-grid__filler-column') &&
-    dataGridMarkup.includes('weave-data-grid__filler-cell') &&
+  !dataGridMarkup.includes('weave-data-grid__filler-column') &&
+    !dataGridMarkup.includes('weave-data-grid__filler-cell') &&
     runtimeSource.includes('width:max(100%, var(--weave-data-grid-table-width))') &&
-    runtimeSource.includes('border-left:0!important'),
-  'Built DataGrid must fill unused viewport width without exposing a fake column divider',
+    runtimeSource.includes('table-layout:fixed'),
+  'Built DataGrid must fill remaining viewport width with the final real column',
 )
 assert(
   runtimeSource.includes('width:16px') &&

@@ -48,7 +48,7 @@ const sizeDeclarations: Readonly<Record<ButtonSize, string>> = {
     --weave-button-min-height: var(--weave-button-theme-small-min-height);
     --weave-component-min-height: var(--weave-button-min-height);
     --weave-component-padding-top: var(--weave-button-theme-small-padding-y);
-    --weave-component-padding-bottom: calc(var(--weave-button-theme-small-padding-y) - var(--weave-feedback-rest-depth));
+    --weave-component-padding-bottom: var(--weave-button-theme-small-padding-y);
     --weave-component-padding-left: var(--weave-button-theme-small-padding-x);
     --weave-component-padding-right: var(--weave-button-theme-small-padding-x);
     --weave-button-gap: var(--weave-button-theme-small-gap);
@@ -61,7 +61,7 @@ const sizeDeclarations: Readonly<Record<ButtonSize, string>> = {
     --weave-button-min-height: var(--weave-button-theme-medium-min-height);
     --weave-component-min-height: var(--weave-button-min-height);
     --weave-component-padding-top: var(--weave-button-theme-medium-padding-y);
-    --weave-component-padding-bottom: calc(var(--weave-button-theme-medium-padding-y) - var(--weave-feedback-rest-depth));
+    --weave-component-padding-bottom: var(--weave-button-theme-medium-padding-y);
     --weave-component-padding-left: var(--weave-button-theme-medium-padding-x);
     --weave-component-padding-right: var(--weave-button-theme-medium-padding-x);
     --weave-button-gap: var(--weave-button-theme-medium-gap);
@@ -74,7 +74,7 @@ const sizeDeclarations: Readonly<Record<ButtonSize, string>> = {
     --weave-button-min-height: var(--weave-button-theme-large-min-height);
     --weave-component-min-height: var(--weave-button-min-height);
     --weave-component-padding-top: var(--weave-button-theme-large-padding-y);
-    --weave-component-padding-bottom: calc(var(--weave-button-theme-large-padding-y) - var(--weave-feedback-rest-depth));
+    --weave-component-padding-bottom: var(--weave-button-theme-large-padding-y);
     --weave-component-padding-left: var(--weave-button-theme-large-padding-x);
     --weave-component-padding-right: var(--weave-button-theme-large-padding-x);
     --weave-button-gap: var(--weave-button-theme-large-gap);
@@ -213,6 +213,10 @@ const stylesheet = `
 
 :where(.weave-button--large) {
   ${sizeDeclarations.large}
+}
+
+:where(.weave-button[data-weave-depth-compensation="true"], .weave-segmented-button[data-weave-depth-compensation="true"] > .weave-button) {
+  --weave-component-padding-bottom: calc(var(--weave-component-padding-top) - var(--weave-feedback-rest-depth));
 }
 
 :where(.weave-button--icon-only) {

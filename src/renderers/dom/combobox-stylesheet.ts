@@ -2,6 +2,9 @@ import { ensureOptionListboxStylesheet } from './option-listbox-stylesheet'
 import { ensureStaticStylesheet } from './static-stylesheet'
 
 const stylesheet = `
+:where(.weave-combobox[data-weave-depth-compensation="true"]) ~ .weave-combobox__actions .weave-combobox__chevron {
+  translate: 0 calc(var(--weave-feedback-rest-depth) / 2);
+}
 :where(.weave-combobox-root) {
   position: relative;
   display: inline-block;
@@ -51,7 +54,6 @@ const stylesheet = `
 :where(.weave-combobox__chevron) {
   width: var(--weave-combobox-icon-size);
   height: var(--weave-combobox-icon-size);
-  translate: 0 calc(var(--weave-feedback-rest-depth) / 2);
   pointer-events: none;
   transition:
     transform

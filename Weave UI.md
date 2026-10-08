@@ -2849,7 +2849,7 @@ theme.components.Combobox.listbox
 theme.components.Combobox.option
 ```
 
-Combobox 的真实输入直接是公开 `Input`，所以 field surface 与 typography 只由 `theme.components.Input` 控制。Combobox 关闭 Input 自身的 clear action，因为 Combobox clear 还必须同步清理 committed value；`Combobox.base` 控制 Combobox 自己新增的 chevron / action 尺寸、`actionGap / actionInset` 与空状态 `emptyPaddingX / emptyPaddingY`。clear 与 chevron 之间必须有显式 gap，chevron 到 field 右边缘必须有显式 inset，不能依赖 SVG 自身空白或偶然 padding。clear action 继续使用真实 Button 的物理深度与非对称内容盒；同一 action rail 内的 chevron 必须按 Button 内容中心补偿半个 restDepth，使 clear icon 与 chevron 的视觉中心处于同一水平线。`listbox` 控制 popup surface / gap / size / shadow / motion，包括 `enterScale / exitScale`；`option` 控制 active / selected / disabled、icon、check、`textGap` 和 typography。
+Combobox 的真实输入直接是公开 `Input`，所以 field surface 与 typography 只由 `theme.components.Input` 控制。Combobox 关闭 Input 自身的 clear action，因为 Combobox clear 还必须同步清理 committed value；`Combobox.base` 控制 Combobox 自己新增的 chevron / action 尺寸、`actionGap / actionInset` 与空状态 `emptyPaddingX / emptyPaddingY`。clear 与 chevron 之间必须有显式 gap，chevron 到 field 右边缘必须有显式 inset，不能依赖 SVG 自身空白或偶然 padding。clear action 继续使用真实 Button 的物理深度；默认不为了 depth 对 chevron 进行位移补偿。仅当 Combobox 的 viewProps.depthCompensation=true 时，chevron 才按 Button 内容中心补偿半个 restDepth。`listbox` 控制 popup surface / gap / size / shadow / motion，包括 `enterScale / exitScale`；`option` 控制 active / selected / disabled、icon、check、`textGap` 和 typography。
 
 `viewProps` 作用于真实 input；`listboxViewProps` 作用于 popup listbox。
 
@@ -3560,7 +3560,7 @@ release
 
 这套反馈模拟“可按下实体”，与 Button 的行为语义一致。
 
-Button 的实体 depth 只向下延伸，因此三档 size 的内容盒都必须用 `feedback.restDepth` 做静态视觉补偿：`paddingBottom = paddingY - feedback.restDepth`。`paddingTop` 保持原始 `paddingY`。该补偿只使用 rest depth，不随 hover / press 的动态 depth 改变，避免交互状态触发布局跳动；hover / press 仍只通过现有 transform 与 box-shadow 表达深度变化。
+Button 的实体 depth 只向下延伸，但三档 size 默认不进行几何补偿，`paddingTop = paddingBottom = paddingY`。仅当 Button 的 `viewProps.depthCompensation=true` 时，使用 `paddingBottom = paddingY - feedback.restDepth`；hover / press 仍只通过已有 transform 与 box-shadow 表达深度变化，不动态改变 padding。
 
 具体动力学不写死在 Button 私有常量中，而读取：
 
@@ -3681,7 +3681,7 @@ viewProps
 
 选择状态直接映射到每个真实 Button 的 `pressed`，完整复用 Button 的 `aria-pressed`、activeBackground、pressOffset、pressScale、pressDepth、focus 与 reduced-motion 行为；选中项保持 Button 原有的按压位移与缩放，且其底部视觉基线必须与未选中项一致。外层只使用 `role="group"` 表达一组相关按钮，不另造 radio / checkbox DOM。
 
-SegmentedButton 只增加连接几何：相邻 Button 共用边界，中间 segment 去除内部圆角；选中项保留 Button 原本的 pressDepth 外阴影，并额外使用 Input 式左右方向 inset 凹陷阴影，不得出现顶部或底部 inset 阴影；其余颜色、边框、hover、typography 与 icon 全部继续来自 Button。
+SegmentedButton 只增加连接几何：相邻 Button 共用边界，中间 segment 去除内部圆角；选中项保留 Button 原本的 pressDepth 外阴影，并额外使用 Input 式左右方向 inset 凹陷阴影，不得出现顶部或底部 inset 阴影；其余颜色、边框、hover、typography 与 icon 全部继续来自 Button。 Segment 内部 Button 默认不扣减 `padding-bottom`，保持与 `padding-top` 相同的原始 `paddingY`。仅当 SegmentedButton 本身或单个 segment Button 的 `viewProps.depthCompensation=true` 时，显式使用 Button 的静态 depth 补偿；已有视觉深度仍来自 box-shadow。
 
 ---
 
@@ -3868,7 +3868,7 @@ pill 只改变视觉，不改变选择、focus、ARIA 或键盘语义。整个 T
 
 PillItem 之间必须有安全 gap，并直接使用现有 `listGap`；TabList 必须把它显式作为 View 的 `gap`，不能只依赖 component fallback。默认 `listGap=4px`。
 
-Pill 槽内默认四边 padding 保持完全一致（默认 4px），不得为了 active item 的突起效果改变整个 TabList 的 bottom padding，否则会把所有 non-active Tab 一起推偏。Button rest surface 的实体 depth 只向下延伸，因此只对 **selected pill Tab 自己**压缩 bottom padding：`tabPaddingY - feedback.restDepth`；non-active Tab 继续保持完整的 `tabPaddingY`。horizontal pill 的 TabList 必须使用 `align-items:start`，禁止 flex stretch 把 selected Tab 压缩后的 box 高度重新拉满。这样 active Tab 少掉的下 padding才会真正缩短 box，再由 Button rest depth 补回可见高度，使 active 与 non-active 的上下视觉位置一致。
+Pill 槽内默认四边 padding 保持完全一致（默认 4px），不得为了 active item 的突起效果改变整个 TabList 的 bottom padding，否则会把所有 non-active Tab 一起推偏。Button rest surface 的实体 depth 只向下延伸，但 selected pill Tab 默认不进行 depth 几何补偿，上下 padding 都是原始 `tabPaddingY`；仅当 Tabs / TabList 或选中的 Tab 自己的 `viewProps.depthCompensation=true` 时才使用 `tabPaddingY - feedback.restDepth` 作为其 bottom padding。horizontal pill 的 TabList 继续使用 `align-items:start`。
 
 active / selected pill 不是给当前 Tab 自己加一套 shadow，而是与 underline 相同地只保留**一个共享 moving surface**。这个 surface 直接挂 Button 的真实 `weave-button + weave-button--primary + weave-button--medium + resolveButtonTheme(theme)` 配方，并关闭 pointer interaction；选择变化时仍使用同一套 `View.layoutAnimation` FLIP，从一个 Tab 连续位移/缩放到另一个 Tab。Tab 文本本身位于 moving Button surface 上方。不得在 Tabs 内复制 Button 的 background / border / depthColor / rest-depth 配方。
 
@@ -4202,7 +4202,7 @@ sticky = false
 elevated = false
 ```
 
-`leading` 与 `trailing` 接受任意 ReactNode。两侧区域按水平 flex 排列并垂直居中。直接放置的 Button，以及通过 Popover / Menu / ToolTip 的透明 anchor 放置的 Button，必须以包含向下 rest depth 的可见轮廓居中：使用 `feedback.restDepth` 作为静态 bottom margin 参与 flex 布局，与 Button 已有的 bottom padding 补偿配合，使按钮轮廓和内容与 Input 等控件共用垂直中心。该占位不随 hover / press 改变，也不作用于 Input 内部的 clear Button。
+`leading` 与 `trailing` 接受任意 ReactNode。两侧区域按水平 flex 排列并垂直居中。直接放置的 Button，以及通过 Popover / Menu / ToolTip 的透明 anchor 放置的 Button，默认不因 restDepth 增加 bottom margin。仅当 AppBar 的 `viewProps.depthCompensation=true` 时，使用 `feedback.restDepth` 作为它们的静态 bottom margin；该占位不随 hover / press 改变，也不作用于 Input 内部的 clear Button。
 
 `title` 只允许直接传入 Weave `<Text>` 元素；其他元素无效。AppBar 会按当前 size 提供默认 typo，但调用方显式传给 Text 的 `typo` 优先。
 
@@ -4515,7 +4515,9 @@ type DataGridSort = {
 
 ## 18.12C.2 Column resizing
 
-只有 `resizable=true` 的列显示 resize hit target。DataGrid 必须把各数据列解析为独立的真实 column track；pointer drag 以当前 header 的实际 pixel 宽度为起点，只改变目标 column track，不得由浏览器重新分配其他数据列宽。`minWidth / maxWidth` 必须约束最终渲染 track，而不只是约束状态值。`columnWidths` 存在时为受控；否则由 `defaultColumnWidths` 初始化内部状态。未显式给宽度的列首次布局时从真实 header 宽度测量并锁定为 track。当数据列总宽度小于 viewport 时，DataGrid 使用一个无语义 presentation filler track 吸收剩余宽度，使 header 背景、row surface 与横向 divider 铺满 viewport，同时不拉伸任何数据列；filler 不得绘制纵向 divider、padding 或其他会让它看起来像真实数据列的视觉边界。当数据列总宽度超过 viewport 时 filler 收缩为 0，并只由真实数据列宽产生横向滚动。resize hit target 使用与 SplitBox splitter 相同的 16px 交互宽度，可见 divider 仍由 Table theme 决定且不得随 hit target 变粗。resize 过程中通过 `onColumnWidthsChange` 连续发布完整宽度映射；resize hit target 必须完全位于 table scroll extent 内。DataGrid 只新增 resize interaction geometry，不复制 Table theme。
+只有 `resizable=true` 的列显示 resize hit target。DataGrid 必须把各数据列解析为独立的真实 column track；pointer drag 以当前 header 的实际 pixel 宽度为起点，只改变目标 column track，不得由浏览器重新分配其他数据列宽。除用于吸收剩余空间的最后一个真实列以外，`minWidth / maxWidth` 必须约束最终渲染 track，而不只是约束状态值；最后一列不低于其测量/指定宽度与 minWidth，但可以为填满容器超过 maxWidth。`columnWidths` 存在时为受控；否则由 `defaultColumnWidths` 初始化内部状态。未显式给宽度的列首次布局时从真实 header 宽度测量并锁定为 track。当数据列总宽度小于 viewport 时，最后一个真实数据列作为自适应轨道吸收剩余宽度，使 header、row surface 和分隔线铺满 viewport；其他数据列保持各自宽度，不再创建 filler 列。最后一列在剩余宽度不足时保持其测量或指定的最小宽度，并通过真实数据列产生横向滚动。resize hit target 使用与 SplitBox splitter 相同的 16px 交互宽度，可见 divider 仍由 Table theme 决定且不得随 hit target 变粗。resize 过程中通过 `onColumnWidthsChange` 连续发布完整宽度映射；resize hit target 必须完全位于 table scroll extent 内。DataGrid 只新增 resize interaction geometry，不复制 Table theme。
+
+`ViewProps.depthCompensation?: boolean` 是所有公开 ViewProps 共有的可选显式开关，默认 `false`，不对 depth 做任何额外的 padding、margin 或位移补偿。组件本身的 box-shadow / restDepth 视觉仍保持。当前需要该开关的组件：Button（bottom padding）、SegmentedButton（所含 Button）、Tabs pill 的 Tabs / TabList / Tab（选中项 bottom padding）、AppBar（leading/trailing Button bottom margin）、Combobox（chevron 垂直位移）、Table（底部实体 depth 的占位 margin）。API 文档的 props 表格通过 `Table.viewProps.depthCompensation=true` 显式预留底部实体深度，避免被 overflow 容器裁切。
 
 ## 18.12C.3 Selection
 

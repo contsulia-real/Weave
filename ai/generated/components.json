@@ -4984,6 +4984,12 @@
           "optional": true
         },
         {
+          "name": "depthCompensation",
+          "description": "Opt in to built-in physical depth alignment/spacing for this component.",
+          "type": "boolean | undefined",
+          "optional": true
+        },
+        {
           "name": "describedBy",
           "description": "References the element that supplies the accessible description through aria-describedby.",
           "type": "SemanticReference | undefined",

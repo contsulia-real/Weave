@@ -311,6 +311,8 @@ export type ViewCoreProps<TElement extends HTMLElement = HTMLDivElement> =
 
       container?: string
       scrollbar?: ScrollbarConfig
+      /** Opt in to built-in physical depth alignment/spacing for this component. */
+      depthCompensation?: boolean
 
       hover?: ViewStateStyle
       active?: ViewStateStyle

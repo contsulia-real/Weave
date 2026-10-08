@@ -47,12 +47,6 @@ const stylesheet = `
   inset-inline-end: 0;
 }
 
-:where(.weave-data-grid__filler-cell) {
-  padding-inline: 0 !important;
-  border-left: 0 !important;
-  pointer-events: none;
-}
-
 :where(.weave-data-grid__spacer-row) {
   background: transparent !important;
 }

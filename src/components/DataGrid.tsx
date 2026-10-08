@@ -118,8 +118,11 @@ function dataGridCells<TRow extends DataGridRow>(
   columns: readonly DataGridColumn<TRow>[],
   columnWidths: DataGridColumnWidths,
 ) {
-  return columns.map((column) => {
-    const width = pixelWidth(resolvedColumnWidth(column, columnWidths))
+  return columns.map((column, index) => {
+    const width =
+      index === columns.length - 1
+        ? undefined
+        : pixelWidth(resolvedColumnWidth(column, columnWidths))
     return (
       <TableCell
         key={column.id}
@@ -179,7 +182,6 @@ function DataGridMeasuredRow<TRow extends DataGridRow>({
   return (
     <TableRow id={row.id} viewProps={{ ref: rowRef }}>
       {dataGridCells(row, columns, columnWidths)}
-      <td aria-hidden="true" className="weave-table__cell weave-data-grid__filler-cell" />
     </TableRow>
   )
 }
@@ -293,7 +295,7 @@ function DataGridVirtualBody<TRow extends DataGridRow>({
   const visibleEnd =
     lastIndex === undefined ? 0 : (layout.offsets[lastIndex] ?? 0) + (layout.sizes[lastIndex] ?? 0)
   const bottomSpacer = Math.max(0, layout.total - visibleEnd)
-  const colSpan = columns.length + (selectable ? 1 : 0) + 1
+  const colSpan = columns.length + (selectable ? 1 : 0)
 
   return (
     <TableBody viewProps={{ ref: bodyRef }}>
@@ -590,10 +592,14 @@ export function DataGrid<TRow extends DataGridRow = DataGridRow>(
         {tracksReady ? (
           <colgroup>
             {selectable ? <col style={{ width: effectiveSelectionColumnWidth }} /> : null}
-            {columns.map((column) => (
-              <col key={column.id} style={{ width: trackColumnWidths[column.id] }} />
+            {columns.map((column, index) => (
+              <col
+                key={column.id}
+                style={{
+                  width: index === columns.length - 1 ? undefined : trackColumnWidths[column.id],
+                }}
+              />
             ))}
-            <col className="weave-data-grid__filler-column" />
           </colgroup>
         ) : null}
 
@@ -601,7 +607,10 @@ export function DataGrid<TRow extends DataGridRow = DataGridRow>(
           <TableRow>
             {columns.map((column) => {
               const activeSort = resolvedSort?.columnId === column.id
-              const width = pixelWidth(trackColumnWidths[column.id])
+              const width =
+                column.id === columns.at(-1)?.id
+                  ? undefined
+                  : pixelWidth(trackColumnWidths[column.id])
               const sortable = column.sort !== undefined
 
               const activateSort = (
@@ -681,10 +690,6 @@ export function DataGrid<TRow extends DataGridRow = DataGridRow>(
                 </TableHead>
               )
             })}
-            <th
-              aria-hidden="true"
-              className="weave-table__head-cell weave-data-grid__filler-cell"
-            />
           </TableRow>
         </TableHeader>
 
@@ -701,7 +706,6 @@ export function DataGrid<TRow extends DataGridRow = DataGridRow>(
             {sortedRows.map((row) => (
               <TableRow key={row.id} id={row.id}>
                 {dataGridCells(row, columns, trackColumnWidths)}
-                <td aria-hidden="true" className="weave-table__cell weave-data-grid__filler-cell" />
               </TableRow>
             ))}
           </TableBody>

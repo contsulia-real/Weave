@@ -590,19 +590,19 @@
           "width": 32,
           "height": 18,
           "thumbSize": 14,
-          "shift": 14
+          "shift": 12
         },
         "medium": {
           "width": 40,
           "height": 24,
           "thumbSize": 20,
-          "shift": 16
+          "shift": 14
         },
         "large": {
           "width": 48,
           "height": 28,
           "thumbSize": 24,
-          "shift": 20
+          "shift": 18
         }
       },
       "states": {

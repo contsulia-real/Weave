@@ -360,6 +360,9 @@ export function resolveDOMView<TElement extends HTMLElement>(
   }
 
   Object.assign(writableDOMProps, dataAttributes(props.data))
+  if (props.depthCompensation === true) {
+    writableDOMProps['data-weave-depth-compensation'] = 'true'
+  }
 
   if (props.role !== undefined) domProps.role = props.role
   if (props.label !== undefined) domProps['aria-label'] = props.label

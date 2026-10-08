@@ -32,7 +32,7 @@ export function DocumentationPropsTable({ props, includeViewProps }: Documentati
   rows.sort((left, right) => left.name.localeCompare(right.name))
 
   return (
-    <Table>
+    <Table viewProps={{ depthCompensation: true }}>
       <TableHeader>
         <TableRow>
           <TableHead align="start">{t('docs.api.name')}</TableHead>

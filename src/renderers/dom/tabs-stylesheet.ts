@@ -74,6 +74,17 @@ const stylesheet = `
 ) {
   --weave-component-background: transparent;
   --weave-component-color: var(--weave-button-theme-primary-color);
+}
+
+:where(
+  .weave-tabs[data-weave-tabs-variant="pill"][data-weave-depth-compensation="true"]
+    .weave-tab[data-weave-tab-selected="true"],
+  .weave-tabs[data-weave-tabs-variant="pill"]
+    .weave-tab-list[data-weave-depth-compensation="true"]
+    .weave-tab[data-weave-tab-selected="true"],
+  .weave-tabs[data-weave-tabs-variant="pill"]
+    .weave-tab[data-weave-tab-selected="true"][data-weave-depth-compensation="true"]
+) {
   --weave-component-padding-bottom:
     calc(var(--weave-tabs-tab-padding-y) - var(--weave-feedback-rest-depth));
 }
