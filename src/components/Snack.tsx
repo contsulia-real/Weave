@@ -190,7 +190,7 @@ export function Snack(props: SnackProps): import('react').JSX.Element | null {
                 right: 'var(--weave-snack-padding-x)',
                 width: 'auto',
                 height: 'var(--weave-snack-progress-height)',
-                bottom: 'var(--weave-snack-padding-y)',
+                bottom: 0,
                 pointerEvents: 'none',
                 data: {
                   'weave-snack-lifetime-progress': lifetimeProgress.toFixed(4),

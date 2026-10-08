@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState, useSyncExternalStore } from 'react'
+import { useEffect, useLayoutEffect, useState, useSyncExternalStore } from 'react'
 import type { SnackContainer, SnackPlacement } from '../../core/snack-types'
 import { useWeaveDocument } from '../../renderers/dom/document-context'
 import { resolveSnackHost } from './snack-host-context'
@@ -24,7 +24,7 @@ export function useSnackRegion(
   // The shared portal region is external DOM state. React
   // needs one synchronization render after retaining it.
   /* oxlint-disable react/set-state-in-effect */
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!present || ownerDocument === null) {
       setRegion(null)
       return
