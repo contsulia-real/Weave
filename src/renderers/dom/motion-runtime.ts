@@ -232,7 +232,7 @@ export function captureComputedMotionKeyframe(
   element: HTMLElement,
   properties: ReadonlySet<string>,
 ): Keyframe {
-  const style = getComputedStyle(element)
+  const style = element.ownerDocument.defaultView?.getComputedStyle(element) ?? element.style
   const frame: Keyframe = { offset: 0 }
 
   if (properties.has('opacity')) frame.opacity = style.opacity

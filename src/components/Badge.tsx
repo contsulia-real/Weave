@@ -1,9 +1,9 @@
-import { useInsertionEffect } from 'react'
 import type { BadgeProps } from '../core/badge-types'
 import type { ViewProps } from '../core/view-types'
 import { ensureBadgeStylesheet } from '../renderers/dom/badge-stylesheet'
 import { resolveBadgeTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
+import { useStaticStylesheet } from '../renderers/dom/static-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { durationMilliseconds } from './internal/motion-duration'
 import { useBadgeAnchor } from './internal/use-badge-anchor'
@@ -22,7 +22,7 @@ export function Badge(props: BadgeProps): import('react').JSX.Element {
   const { present, visualState, finishExit } = useExitPresence(visible, reducedMotion, exitDuration)
 
   useBadgeAnchor(elementRef, children)
-  useInsertionEffect(ensureBadgeStylesheet, [])
+  useStaticStylesheet(ensureBadgeStylesheet)
 
   return (
     <div

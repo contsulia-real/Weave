@@ -1,6 +1,7 @@
-import { type MouseEvent, useInsertionEffect, useMemo } from 'react'
+import { type MouseEvent, useMemo } from 'react'
 import type { SegmentedButtonItem, SegmentedButtonProps } from '../core/segmented-button-types'
 import { ensureSegmentedButtonStylesheet } from '../renderers/dom/segmented-button-stylesheet'
+import { useStaticStylesheet } from '../renderers/dom/static-stylesheet'
 import { Button } from './Button'
 import { useSelection } from './internal/use-selection'
 import { Row } from './Row'
@@ -43,7 +44,7 @@ export function SegmentedButton(props: SegmentedButtonProps): import('react').JS
   )
   const { selection, selectedIds, selectItem } = useSelection(props, enabledIds)
 
-  useInsertionEffect(ensureSegmentedButtonStylesheet, [])
+  useStaticStylesheet(ensureSegmentedButtonStylesheet)
 
   return (
     <Row

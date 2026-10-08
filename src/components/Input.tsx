@@ -1,5 +1,5 @@
 import type { ChangeEvent, CSSProperties } from 'react'
-import { useCallback, useInsertionEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import type {
   InputIcon,
   InputProps,
@@ -11,6 +11,7 @@ import type { ViewProps } from '../core/view-types'
 import { ensureInputStylesheet } from '../renderers/dom/input-stylesheet'
 import { resolveInputTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
+import { useStaticStylesheet } from '../renderers/dom/static-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { Button } from './Button'
 import { AutoScrollbar } from './internal/AutoScrollbar'
@@ -315,7 +316,7 @@ function MultilineInput({
 }
 
 export function Input(props: InputProps): import('react').JSX.Element {
-  useInsertionEffect(ensureInputStylesheet, [])
+  useStaticStylesheet(ensureInputStylesheet)
 
   if (props.multiline) {
     return (

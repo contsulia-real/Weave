@@ -5,14 +5,15 @@ import {
   type PointerEvent,
   useCallback,
   useContext,
+  useEffect,
   useId,
-  useInsertionEffect,
   useRef,
 } from 'react'
 import type { MenuItemIcon, MenuItemProps } from '../core/menu-types'
 import { ensureMenuStylesheet } from '../renderers/dom/menu-stylesheet'
 import { resolveMenuTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
+import { useStaticStylesheet } from '../renderers/dom/static-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { Icon } from './Icon'
 import { chevronRightIcon } from './internal/control-icons'
@@ -59,6 +60,7 @@ export function MenuItem(props: MenuItemProps): import('react').JSX.Element {
 
   const itemRef = useRef<HTMLDivElement>(null)
   const submenuPanelRef = useRef<HTMLDivElement>(null)
+  const focusSubmenuOnOpenRef = useRef(false)
   const reactId = useId()
   const itemId = 'weave-menu-item-' + reactId
   const submenuId = 'weave-submenu-' + reactId
@@ -76,7 +78,7 @@ export function MenuItem(props: MenuItemProps): import('react').JSX.Element {
     exitDuration,
   )
 
-  useInsertionEffect(ensureMenuStylesheet, [])
+  useStaticStylesheet(ensureMenuStylesheet)
 
   const offsetValue = root.submenuOffset
   const viewportPaddingValue = root.viewportPadding
@@ -101,13 +103,30 @@ export function MenuItem(props: MenuItemProps): import('react').JSX.Element {
         return
       }
 
-      level.setOpenSubmenuId(itemId)
+      focusSubmenuOnOpenRef.current = focusFirst
 
-      if (focusFirst) {
-        queueMicrotask(() => {
-          focusMenuItem(submenuPanelRef.current, submenuLevelId, 'first')
-        })
+      if (level.openSubmenuId === itemId) {
+        const panel = submenuPanelRef.current
+
+        if (focusFirst && panel !== null) {
+          queueMicrotask(() => {
+            if (
+              submenuPanelRef.current !== panel ||
+              !panel.isConnected ||
+              itemRef.current?.getAttribute('aria-expanded') !== 'true'
+            ) {
+              return
+            }
+
+            focusSubmenuOnOpenRef.current = false
+            focusMenuItem(panel, submenuLevelId, 'first')
+          })
+        }
+
+        return
       }
+
+      level.setOpenSubmenuId(itemId)
     },
     [disabled, hasSubmenu, itemId, level, submenuLevelId],
   )
@@ -117,6 +136,30 @@ export function MenuItem(props: MenuItemProps): import('react').JSX.Element {
       level.setOpenSubmenuId(null)
     }
   }, [itemId, level])
+
+  useEffect(() => {
+    if (!submenuOpen || !present || !focusSubmenuOnOpenRef.current) {
+      return
+    }
+
+    const panel = submenuPanelRef.current
+    if (panel === null) {
+      return
+    }
+
+    queueMicrotask(() => {
+      if (
+        submenuPanelRef.current !== panel ||
+        !panel.isConnected ||
+        itemRef.current?.getAttribute('aria-expanded') !== 'true'
+      ) {
+        return
+      }
+
+      focusSubmenuOnOpenRef.current = false
+      focusMenuItem(panel, submenuLevelId, 'first')
+    })
+  }, [present, submenuLevelId, submenuOpen])
 
   const activate = () => {
     if (disabled) {

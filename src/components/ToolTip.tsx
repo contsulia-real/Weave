@@ -1,10 +1,13 @@
-import { useCallback, useEffect, useId, useInsertionEffect, useLayoutEffect, useRef } from 'react'
+import { useCallback, useEffect, useId, useLayoutEffect, useRef } from 'react'
 import type { ToolTipProps } from '../core/tooltip-types'
 import { length } from '../core/values'
+import { useWeaveWindow } from '../renderers/dom/document-context'
 import { resolveToolTipTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
+import { useStaticStylesheet } from '../renderers/dom/static-stylesheet'
 import { ensureToolTipStylesheet } from '../renderers/dom/tooltip-stylesheet'
 import { useTheme } from '../theme/theme-context'
+import { isHTMLElement, isNode } from './internal/dom-realm'
 import { durationMilliseconds } from './internal/motion-duration'
 import { ThemedPortal } from './internal/ThemedPortal'
 import { useControllableBoolean } from './internal/use-controllable-boolean'
@@ -31,6 +34,7 @@ export function ToolTip(props: ToolTipProps): import('react').JSX.Element {
     onOpenChange,
   )
 
+  const ownerWindow = useWeaveWindow()
   const wrapperRef = useRef<HTMLDivElement>(null)
   const targetRef = useRef<HTMLElement | null>(null)
   const openTimerRef = useRef<number | undefined>(undefined)
@@ -51,16 +55,16 @@ export function ToolTip(props: ToolTipProps): import('react').JSX.Element {
   )
   const themeClassName = useRuntimeStyleClass('tooltip-theme', resolveToolTipTheme(theme))
 
-  useInsertionEffect(ensureToolTipStylesheet, [])
+  useStaticStylesheet(ensureToolTipStylesheet)
 
   const clearOpenTimer = useCallback(() => {
     if (openTimerRef.current === undefined) {
       return
     }
 
-    window.clearTimeout(openTimerRef.current)
+    ownerWindow?.clearTimeout(openTimerRef.current)
     openTimerRef.current = undefined
-  }, [])
+  }, [ownerWindow])
 
   const scheduleOpen = useCallback(() => {
     clearOpenTimer()
@@ -72,11 +76,16 @@ export function ToolTip(props: ToolTipProps): import('react').JSX.Element {
       return
     }
 
-    openTimerRef.current = window.setTimeout(() => {
+    if (ownerWindow === null) {
+      requestOpen(true)
+      return
+    }
+
+    openTimerRef.current = ownerWindow.setTimeout(() => {
       openTimerRef.current = undefined
       requestOpen(true)
     }, wait)
-  }, [clearOpenTimer, delay, requestOpen])
+  }, [clearOpenTimer, delay, ownerWindow, requestOpen])
 
   const closeIfInactive = useCallback(() => {
     if (pointerInsideRef.current || focusInsideRef.current) {
@@ -91,7 +100,7 @@ export function ToolTip(props: ToolTipProps): import('react').JSX.Element {
     const wrapper = wrapperRef.current
     const target = wrapper?.firstElementChild
 
-    if (!(target instanceof HTMLElement)) {
+    if (wrapper === null || !isHTMLElement(target, wrapper.ownerDocument)) {
       targetRef.current = null
       return
     }
@@ -128,7 +137,7 @@ export function ToolTip(props: ToolTipProps): import('react').JSX.Element {
     const handleFocusOut = (event: FocusEvent) => {
       const nextTarget = event.relatedTarget
 
-      if (nextTarget instanceof Node && target.contains(nextTarget)) {
+      if (isNode(nextTarget, target.ownerDocument) && target.contains(nextTarget)) {
         return
       }
 
@@ -139,7 +148,7 @@ export function ToolTip(props: ToolTipProps): import('react').JSX.Element {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (
         event.key !== 'Escape' ||
-        !(event.target instanceof Node) ||
+        !isNode(event.target, target.ownerDocument) ||
         !target.contains(event.target) ||
         event.defaultPrevented
       ) {

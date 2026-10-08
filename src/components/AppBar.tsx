@@ -1,8 +1,9 @@
-import { cloneElement, isValidElement, useInsertionEffect, useMemo } from 'react'
+import { cloneElement, isValidElement, useMemo } from 'react'
 import type { AppBarProps } from '../core/appbar-types'
 import { ensureAppBarStylesheet } from '../renderers/dom/appbar-stylesheet'
 import { resolveAppBarTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
+import { useStaticStylesheet } from '../renderers/dom/static-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { useViewHost } from './internal/use-view-host'
 import { Text } from './Text'
@@ -24,7 +25,7 @@ export function AppBar(props: AppBarProps): import('react').JSX.Element {
   const themeClassName = useRuntimeStyleClass('appbar-theme', themeDeclarations)
   const { elementRef, className, inlineStyle, resolved } = useViewHost(viewProps)
 
-  useInsertionEffect(ensureAppBarStylesheet, [])
+  useStaticStylesheet(ensureAppBarStylesheet)
 
   if (!isValidElement(title) || title.type !== Text) {
     throw new TypeError('AppBar title must be a Text component')

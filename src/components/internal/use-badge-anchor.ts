@@ -1,4 +1,5 @@
 import { type ReactNode, type RefObject, useLayoutEffect } from 'react'
+import { isHTMLElement } from './dom-realm'
 import { trackVisualAnchor, visualAnchorInteractionEvents } from './visual-anchor-tracker'
 
 interface VisualRect {
@@ -36,7 +37,7 @@ export function useBadgeAnchor(
     const wrapper = wrapperRef.current
     const target = wrapper?.firstElementChild
 
-    if (wrapper === null || wrapper === undefined || !(target instanceof HTMLElement)) {
+    if (wrapper === null || !isHTMLElement(target, wrapper.ownerDocument)) {
       return
     }
 

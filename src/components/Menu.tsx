@@ -1,16 +1,9 @@
-import {
-  type KeyboardEvent,
-  useCallback,
-  useEffect,
-  useId,
-  useInsertionEffect,
-  useMemo,
-  useRef,
-} from 'react'
+import { type KeyboardEvent, useCallback, useEffect, useId, useMemo, useRef } from 'react'
 import type { MenuProps } from '../core/menu-types'
 import { ensureMenuStylesheet } from '../renderers/dom/menu-stylesheet'
 import { resolveMenuTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
+import { useStaticStylesheet } from '../renderers/dom/static-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { MenuSurface } from './internal/MenuSurface'
 import { focusMenuItem } from './internal/menu-navigation'
@@ -60,7 +53,7 @@ export function Menu(props: MenuProps): import('react').JSX.Element {
   )
   const themeClassName = useRuntimeStyleClass('menu-theme', resolveMenuTheme(theme))
 
-  useInsertionEffect(ensureMenuStylesheet, [])
+  useStaticStylesheet(ensureMenuStylesheet)
 
   const requestOpen = useCallback(
     (next: boolean, focus: MenuInitialFocus = 'first') => {
@@ -69,9 +62,7 @@ export function Menu(props: MenuProps): import('react').JSX.Element {
       const changed = requestOpenState(next)
 
       if (!changed && next) {
-        queueMicrotask(() => {
-          focusMenuItem(panelRef.current, levelId, focus)
-        })
+        focusMenuItem(panelRef.current, levelId, focus)
       }
     },
     [levelId, requestOpenState],
@@ -93,12 +84,23 @@ export function Menu(props: MenuProps): import('react').JSX.Element {
   )
 
   useEffect(() => {
-    if (!resolvedOpen) return
+    if (!resolvedOpen || !present) return
+
+    const panel = panelRef.current
+    if (panel === null) return
 
     queueMicrotask(() => {
-      focusMenuItem(panelRef.current, levelId, pendingFocusRef.current)
+      if (
+        panelRef.current !== panel ||
+        !panel.isConnected ||
+        targetRef.current?.getAttribute('aria-expanded') !== 'true'
+      ) {
+        return
+      }
+
+      focusMenuItem(panel, levelId, pendingFocusRef.current)
     })
-  }, [levelId, resolvedOpen])
+  }, [levelId, present, resolvedOpen])
 
   const resolvedOffset = offset ?? (overlapTrigger ? 0 : 0.375)
   const {

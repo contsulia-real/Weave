@@ -1,9 +1,10 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { createContext, useContext, useMemo } from 'react'
 import type { ReducedMotionPreference } from '../core/motion-types'
 import { defaultTheme } from './default-theme'
 import { useResolvedReducedMotion } from './reduced-motion'
 import { resolveTheme } from './theme-merge'
 import type { ResolvedTheme, ThemeDefinition, ThemeMode } from './theme-types'
+import { useDocumentMediaQuery } from './use-media-query'
 
 interface ThemeContextValue {
   provided: boolean
@@ -14,34 +15,8 @@ interface ThemeContextValue {
   requestedReducedMotion: ReducedMotionPreference
 }
 
-function getSystemMode(): 'light' | 'dark' {
-  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
-    return 'light'
-  }
-
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-}
-
 export function useResolvedThemeMode(mode: ThemeMode): 'light' | 'dark' {
-  const [systemMode, setSystemMode] = useState(getSystemMode)
-
-  useEffect(() => {
-    if (
-      mode !== 'system' ||
-      typeof window === 'undefined' ||
-      typeof window.matchMedia !== 'function'
-    ) {
-      return
-    }
-
-    const media = window.matchMedia('(prefers-color-scheme: dark)')
-    const update = () => setSystemMode(media.matches ? 'dark' : 'light')
-
-    update()
-    media.addEventListener('change', update)
-    return () => media.removeEventListener('change', update)
-  }, [mode])
-
+  const systemMode = useDocumentMediaQuery('(prefers-color-scheme: dark)') ? 'dark' : 'light'
   return mode === 'system' ? systemMode : mode
 }
 

@@ -1,10 +1,11 @@
-import { useCallback, useInsertionEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useCallback, useLayoutEffect, useRef, useState } from 'react'
 import type { AvatarProps } from '../core/avatar-types'
 import type { ImageSource } from '../core/image-types'
 import { length } from '../core/values'
 import { ensureAvatarStylesheet } from '../renderers/dom/avatar-stylesheet'
 import { resolveAvatarTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
+import { useStaticStylesheet } from '../renderers/dom/static-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { Image } from './Image'
 import { assignRef } from './internal/assign-ref'
@@ -47,7 +48,7 @@ export function Avatar(props: AvatarProps): import('react').JSX.Element {
   const fallbackTextRef = useRef<HTMLParagraphElement | null>(null)
   const defaultSize = length(theme.components.Avatar?.base?.defaultSize) ?? '2.5rem'
 
-  useInsertionEffect(ensureAvatarStylesheet, [])
+  useStaticStylesheet(ensureAvatarStylesheet)
 
   const showImage = src !== undefined && failedSource !== src
   const fallbackContent = fallback !== undefined ? fallback : initials(name)
@@ -76,7 +77,9 @@ export function Avatar(props: AvatarProps): import('react').JSX.Element {
     }
 
     update()
-    const observer = typeof ResizeObserver === 'undefined' ? undefined : new ResizeObserver(update)
+    const ResizeObserverConstructor = root.ownerDocument.defaultView?.ResizeObserver
+    const observer =
+      ResizeObserverConstructor === undefined ? undefined : new ResizeObserverConstructor(update)
     observer?.observe(root)
 
     return () => observer?.disconnect()

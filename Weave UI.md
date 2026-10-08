@@ -54,6 +54,7 @@ Web
 
 ```text
 createRoot
+hydrateRoot
 ThemeProvider
 useTheme
 createTheme
@@ -342,16 +343,34 @@ Button   → button
 - scrolling 与原生控件行为由浏览器负责；
 - ARIA / accessibility tree 由真实 DOM 负责。
 
-### 3.3 `createRoot` 直接创建 React DOM root
+### 3.3 React DOM root、hydration 与多 Document
 
-公开入口：
+客户端挂载入口：
 
 ```tsx
 const root = createRoot(container)
 root.render(<App />)
 ```
 
-内部直接使用 `react-dom/client.createRoot(container)`。业务不需要选择 renderer，也没有 feature detect、renderer fallback 或渲染模式切换。
+服务端已经生成匹配 HTML 时使用 hydration 入口：
+
+```tsx
+const root = hydrateRoot(container, <App />)
+```
+
+`createRoot` 与 `hydrateRoot` 都直接建立 React DOM root；没有 custom renderer、renderer fallback 或渲染模式切换。`hydrateRoot` 保留容器中的服务端 markup，并使用 React DOM hydration 绑定现有 DOM；服务端输出与首次客户端树必须满足 React 的 hydration 一致性要求。
+
+Weave 正式支持同一页面中的多个可访问 `Document`，包括 same-origin iframe。每个 root 以其 container 的 `ownerDocument` 作为 DOM 运行时边界：
+
+- static stylesheet、runtime class stylesheet 与 breakpoint stylesheet 注入对应 `Document.head`；
+- portal 以目标节点的 `ownerDocument` 继续传播 Document 边界；
+- color scheme、reduced motion 与 responsive media query 使用对应 `Document.defaultView`；
+- DOM observer、RAF、viewport、computed style、focus 与事件 realm 判断使用实际元素的 `ownerDocument/defaultView`；
+- 不同 Document 的样式保留计数、media-query 订阅和 DOM 生命周期彼此独立。
+
+跨域 iframe 不改变浏览器同源安全模型：只有调用方本身可以访问并传入的 DOM container 才属于 Weave 的支持范围。
+
+SSR 不要求 DOM 全局存在。组件可以通过 React server renderer 输出 HTML；客户端通过 `hydrateRoot` 在目标 Document 中接管。
 
 ### 3.4 禁止重新实现浏览器
 
@@ -8678,7 +8697,8 @@ React
 Weave 公开 API
 │
 ├─ 应用挂载
-│  └─ createRoot
+│  ├─ createRoot
+│  └─ hydrateRoot
 │
 ├─ View
 │  ├─ 面向用户的唯一基础原语

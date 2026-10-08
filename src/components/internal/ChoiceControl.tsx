@@ -1,10 +1,11 @@
 import type { ChangeEvent } from 'react'
-import { useCallback, useId, useInsertionEffect, useLayoutEffect } from 'react'
+import { useCallback, useId, useLayoutEffect } from 'react'
 import type { CheckboxProps, ChoiceControlKind, RadioProps } from '../../core/choice-types'
 import type { ViewProps } from '../../core/view-types'
 import { ensureChoiceControlStylesheet } from '../../renderers/dom/choice-control-stylesheet'
 import { resolveChoiceControlTheme } from '../../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../../renderers/dom/runtime-class'
+import { useStaticStylesheet } from '../../renderers/dom/static-stylesheet'
 import { useTheme } from '../../theme/theme-context'
 import { formFieldAssociationOverrides, useFormFieldContext } from './form-field-context'
 import { useFormReset } from './use-form-reset'
@@ -69,7 +70,7 @@ export function ChoiceControl(props: ChoiceControlProps) {
       elementRef.current.indeterminate = indeterminate
     }
   }, [elementRef, indeterminate, kind])
-  useInsertionEffect(ensureChoiceControlStylesheet, [])
+  useStaticStylesheet(ensureChoiceControlStylesheet)
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (kind === 'checkbox') {

@@ -145,9 +145,9 @@ export function useViewLayoutAnimation<TElement extends HTMLElement>(
     const sample = () => {
       if (animation.current !== current) return
       visualRect.current = snapshot(element)
-      cancelSample.current = scheduleAnimationFrame(sample)
+      cancelSample.current = scheduleAnimationFrame(sample, element.ownerDocument.defaultView)
     }
-    cancelSample.current = scheduleAnimationFrame(sample)
+    cancelSample.current = scheduleAnimationFrame(sample, element.ownerDocument.defaultView)
 
     current.onfinish = () => {
       if (animation.current !== current) return
@@ -183,14 +183,17 @@ export function useViewLayoutAnimation<TElement extends HTMLElement>(
         const currentRect = snapshot(current)
         targetRect.current = currentRect
         visualRect.current = currentRect
-      })
+      }, view)
     }
 
     document.addEventListener('scroll', syncBaseline, true)
     view?.addEventListener('resize', syncBaseline)
 
+    const ResizeObserverConstructor = view?.ResizeObserver
     const observer =
-      typeof ResizeObserver === 'function' ? new ResizeObserver(syncBaseline) : undefined
+      ResizeObserverConstructor === undefined
+        ? undefined
+        : new ResizeObserverConstructor(syncBaseline)
     observer?.observe(element)
 
     return () => {

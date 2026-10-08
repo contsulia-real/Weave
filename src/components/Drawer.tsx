@@ -1,22 +1,17 @@
-import {
-  type PointerEvent,
-  useCallback,
-  useEffect,
-  useInsertionEffect,
-  useRef,
-  useState,
-  useSyncExternalStore,
-} from 'react'
+import { type PointerEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import type { ModalDialogViewProps } from '../core/dialog-types'
 import type { DrawerMode, DrawerProps, DrawerSide } from '../core/drawer-types'
 import type { SplitBoxCollapsed, SplitBoxDirection } from '../core/splitbox-types'
 import { length } from '../core/values'
 import type { Length, ViewProps } from '../core/view-types'
+import { useWeaveDocument, useWeaveWindow } from '../renderers/dom/document-context'
 import { ensureDrawerStylesheet } from '../renderers/dom/drawer-stylesheet'
 import { resolveDrawerTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
+import { useStaticStylesheet } from '../renderers/dom/static-stylesheet'
 import { useTheme } from '../theme/theme-context'
+import { useDocumentMediaQuery } from '../theme/use-media-query'
 import { Dialog } from './Dialog'
 import { AutoScrollbar } from './internal/AutoScrollbar'
 import { assignRef } from './internal/assign-ref'
@@ -92,33 +87,7 @@ function measureLength(root: HTMLElement, value: Length, direction: SplitBoxDire
 
 function useWideBreakpoint(minWidth: number | undefined): boolean {
   const query = minWidth === undefined ? null : `(min-width: ${minWidth}rem)`
-
-  return useSyncExternalStore(
-    (notify) => {
-      if (
-        query === null ||
-        typeof window === 'undefined' ||
-        typeof window.matchMedia !== 'function'
-      ) {
-        return () => undefined
-      }
-
-      const media = window.matchMedia(query)
-      media.addEventListener('change', notify)
-      return () => media.removeEventListener('change', notify)
-    },
-    () => {
-      if (
-        query === null ||
-        typeof window === 'undefined' ||
-        typeof window.matchMedia !== 'function'
-      ) {
-        return false
-      }
-      return window.matchMedia(query).matches
-    },
-    () => false,
-  )
+  return useDocumentMediaQuery(query)
 }
 
 function modalGeometry(
@@ -218,6 +187,8 @@ export function Drawer(props: DrawerProps): import('react').JSX.Element {
   } = props
 
   const { theme, reducedMotion } = useTheme()
+  const ownerDocument = useWeaveDocument()
+  const ownerWindow = useWeaveWindow()
   const breakpointWidth = mode === 'auto' ? theme.breakpoints[breakpoint] : undefined
   const mdWidth = theme.breakpoints.md
   const fadeDurationMs = motionDurationMilliseconds(theme.tokens.motion?.duration?.fast)
@@ -270,8 +241,13 @@ export function Drawer(props: DrawerProps): import('react').JSX.Element {
       }
 
       setNonModalVisibility('opening')
-      const frame = requestAnimationFrame(() => setNonModalVisibility('open'))
-      return () => cancelAnimationFrame(frame)
+      const view = ownerWindow
+      const frame = view?.requestAnimationFrame(() => setNonModalVisibility('open'))
+      if (frame === undefined || view === null) {
+        setNonModalVisibility('open')
+        return
+      }
+      return () => view.cancelAnimationFrame(frame)
     }
 
     if (!nonModalPresent) {
@@ -286,11 +262,17 @@ export function Drawer(props: DrawerProps): import('react').JSX.Element {
     }
 
     setNonModalVisibility('closing')
-    const timeout = window.setTimeout(() => {
+    if (ownerWindow === null) {
+      setNonModalVisibility('closed')
+      setNonModalPresent(false)
+      return
+    }
+
+    const timeout = ownerWindow.setTimeout(() => {
       setNonModalVisibility('closed')
       setNonModalPresent(false)
     }, fadeDurationMs)
-    return () => window.clearTimeout(timeout)
+    return () => ownerWindow.clearTimeout(timeout)
   }, [
     effectiveMode,
     fadeDurationMs,
@@ -298,6 +280,7 @@ export function Drawer(props: DrawerProps): import('react').JSX.Element {
     previousEffectiveMode,
     reducedMotion,
     resolvedOpen,
+    ownerWindow,
   ])
   /* oxlint-enable react/set-state-in-effect */
 
@@ -332,16 +315,16 @@ export function Drawer(props: DrawerProps): import('react').JSX.Element {
   const modalMountRef = useRef<HTMLDivElement | null>(null)
   const dragRef = useRef<DrawerDragState | null>(null)
   const [dragging, setDragging] = useState(false)
-  const [contentHost] = useState<HTMLDivElement | null>(() => {
-    if (typeof document === 'undefined') return null
-    const host = document.createElement('div')
+  const contentHost = useMemo(() => {
+    if (ownerDocument === null) return null
+    const host = ownerDocument.createElement('div')
     host.className = 'weave-drawer-content-host'
     host.dataset.weaveDrawerContentHost = ''
     return host
-  })
+  }, [ownerDocument])
 
   const themeClassName = useRuntimeStyleClass('drawer-theme', resolveDrawerTheme(theme))
-  useInsertionEffect(ensureDrawerStylesheet, [])
+  useStaticStylesheet(ensureDrawerStylesheet)
 
   const { ref: rootUserRef, ...restRootViewProps } = viewProps
   const setRootRef = useCallback(

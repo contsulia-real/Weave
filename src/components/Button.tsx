@@ -1,10 +1,10 @@
-import { useInsertionEffect } from 'react'
 import type { ButtonIcon, ButtonProps, ButtonResponsiveProps } from '../core/button-types'
 import type { ViewProps } from '../core/view-types'
 import { breakpointEntries } from '../renderers/dom/breakpoint-utils'
 import { ensureButtonStylesheet } from '../renderers/dom/button-stylesheet'
 import { resolveButtonTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
+import { useStaticStylesheet } from '../renderers/dom/static-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { renderIconSource } from './internal/render-icon-source'
 import { useViewHost } from './internal/use-view-host'
@@ -63,7 +63,7 @@ export function Button(props: ButtonProps): import('react').JSX.Element {
 
   const { elementRef, className, inlineStyle, resolved } = useViewHost(hostProps)
 
-  useInsertionEffect(ensureButtonStylesheet, [])
+  useStaticStylesheet(ensureButtonStylesheet)
 
   const responsiveAttributes: Record<string, string> = {}
   const propsRecord = props as unknown as Record<string, unknown>

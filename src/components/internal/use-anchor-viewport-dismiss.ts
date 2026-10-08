@@ -1,4 +1,5 @@
 import { type RefObject, useEffect } from 'react'
+import { isNode } from './dom-realm'
 import { trackVisualAnchor, visualAnchorInteractionEvents } from './visual-anchor-tracker'
 
 function anchorFullyOutsideViewport(target: HTMLElement): boolean {
@@ -43,7 +44,7 @@ export function useOutsideInteractionDismiss(
     const document = anchor.ownerDocument
 
     const inside = (target: EventTarget | null) => {
-      if (!(target instanceof Node)) {
+      if (!isNode(target, document)) {
         return false
       }
 

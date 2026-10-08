@@ -7,6 +7,7 @@ import {
   useRef,
 } from 'react'
 import type { ViewProps } from '../../core/view-types'
+import { useWeaveWindow } from '../../renderers/dom/document-context'
 import {
   applySwitchAutoDragShape,
   applySwitchDragShape,
@@ -50,6 +51,7 @@ export function useSwitchInteraction({
   callbacks,
   onCommit,
 }: UseSwitchInteractionProps) {
+  const ownerWindow = useWeaveWindow()
   const dragRef = useRef<SwitchDragState | null>(null)
   const nativeDragCleanupRef = useRef<(() => void) | null>(null)
   const autoDragFrameRef = useRef<number | null>(null)
@@ -60,8 +62,8 @@ export function useSwitchInteraction({
     const root = rootRef.current
     const thumb = thumbRef.current
 
-    if (autoDragFrameRef.current !== null && typeof window !== 'undefined') {
-      window.cancelAnimationFrame(autoDragFrameRef.current)
+    if (autoDragFrameRef.current !== null && ownerWindow !== null) {
+      ownerWindow.cancelAnimationFrame(autoDragFrameRef.current)
       autoDragFrameRef.current = null
     }
 
@@ -78,15 +80,15 @@ export function useSwitchInteraction({
     () => () => {
       nativeDragCleanupRef.current?.()
 
-      if (autoDragFrameRef.current !== null && typeof window !== 'undefined') {
-        window.cancelAnimationFrame(autoDragFrameRef.current)
+      if (autoDragFrameRef.current !== null && ownerWindow !== null) {
+        ownerWindow.cancelAnimationFrame(autoDragFrameRef.current)
       }
 
-      if (suppressClickTimerRef.current !== null && typeof window !== 'undefined') {
-        window.clearTimeout(suppressClickTimerRef.current)
+      if (suppressClickTimerRef.current !== null && ownerWindow !== null) {
+        ownerWindow.clearTimeout(suppressClickTimerRef.current)
       }
     },
-    [],
+    [ownerWindow],
   )
 
   const playAutoDrag = (nextChecked: boolean) => {
@@ -98,12 +100,7 @@ export function useSwitchInteraction({
       return
     }
 
-    if (
-      root === null ||
-      thumb === null ||
-      dragRef.current !== null ||
-      typeof window === 'undefined'
-    ) {
+    if (root === null || thumb === null || dragRef.current !== null || ownerWindow === null) {
       return
     }
 
@@ -141,7 +138,7 @@ export function useSwitchInteraction({
       applySwitchAutoDragShape(thumb, drag, offset, linear, dragShrink, dragMaxWidth)
 
       if (linear < 1) {
-        autoDragFrameRef.current = window.requestAnimationFrame(frame)
+        autoDragFrameRef.current = ownerWindow.requestAnimationFrame(frame)
         return
       }
 
@@ -152,7 +149,7 @@ export function useSwitchInteraction({
       }
     }
 
-    autoDragFrameRef.current = window.requestAnimationFrame(frame)
+    autoDragFrameRef.current = ownerWindow.requestAnimationFrame(frame)
   }
 
   const toggle = () => {
@@ -166,12 +163,12 @@ export function useSwitchInteraction({
   const suppressFollowUpClick = () => {
     suppressClickRef.current = true
 
-    if (suppressClickTimerRef.current !== null && typeof window !== 'undefined') {
-      window.clearTimeout(suppressClickTimerRef.current)
+    if (suppressClickTimerRef.current !== null && ownerWindow !== null) {
+      ownerWindow.clearTimeout(suppressClickTimerRef.current)
     }
 
-    if (typeof window !== 'undefined') {
-      suppressClickTimerRef.current = window.setTimeout(() => {
+    if (ownerWindow !== null) {
+      suppressClickTimerRef.current = ownerWindow.setTimeout(() => {
         suppressClickRef.current = false
         suppressClickTimerRef.current = null
       }, 0)

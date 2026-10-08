@@ -1,9 +1,10 @@
 import type { ReactElement } from 'react'
-import { createElement, useInsertionEffect } from 'react'
+import { createElement } from 'react'
 import type { TextHostElement, TextProps, TextResponsiveProps, TextTypo } from '../core/text-types'
 import type { ViewProps, ViewResponsiveStyle } from '../core/view-types'
 import { breakpointEntries } from '../renderers/dom/breakpoint-utils'
 import { resolveTextResponsiveStyle } from '../renderers/dom/resolve-text'
+import { useStaticStylesheet } from '../renderers/dom/static-stylesheet'
 import { ensureTextStylesheet } from '../renderers/dom/text-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { useViewHost } from './internal/use-view-host'
@@ -138,7 +139,7 @@ export function Text(props: TextProps): ReactElement {
     'text',
   )
 
-  useInsertionEffect(ensureTextStylesheet, [])
+  useStaticStylesheet(ensureTextStylesheet)
 
   return createElement(
     textTagForTypo(typo),

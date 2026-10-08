@@ -6,7 +6,6 @@ import {
   useCallback,
   useEffect,
   useId,
-  useInsertionEffect,
   useMemo,
   useRef,
   useState,
@@ -15,6 +14,7 @@ import type { ComboboxProps, ComboboxValue } from '../core/combobox-types'
 import { ensureComboboxStylesheet } from '../renderers/dom/combobox-stylesheet'
 import { resolveComboboxTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
+import { useStaticStylesheet } from '../renderers/dom/static-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { Button } from './Button'
 import { Icon } from './Icon'
@@ -135,7 +135,7 @@ export function Combobox(props: ComboboxProps): import('react').JSX.Element {
     exitDuration,
   )
 
-  useInsertionEffect(ensureComboboxStylesheet, [])
+  useStaticStylesheet(ensureComboboxStylesheet)
 
   const close = useCallback(() => {
     setOpenState(false)

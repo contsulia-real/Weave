@@ -5,7 +5,6 @@ import {
   type ReactNode,
   useCallback,
   useId,
-  useInsertionEffect,
   useMemo,
   useState,
 } from 'react'
@@ -18,6 +17,7 @@ import type {
 import { ensureAccordionStylesheet } from '../renderers/dom/accordion-stylesheet'
 import { resolveAccordionTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
+import { useStaticStylesheet } from '../renderers/dom/static-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { AccordionItem } from './AccordionItem'
 import { Column } from './Column'
@@ -106,7 +106,7 @@ function SingleAccordion({
   const { theme } = useTheme()
   const themeClassName = useRuntimeStyleClass('accordion-theme', resolveAccordionTheme(theme))
 
-  useInsertionEffect(ensureAccordionStylesheet, [])
+  useStaticStylesheet(ensureAccordionStylesheet)
 
   const requestToggle = useCallback(
     (nextValue: string) => {
@@ -180,7 +180,7 @@ function MultipleAccordion({
   const { theme } = useTheme()
   const themeClassName = useRuntimeStyleClass('accordion-theme', resolveAccordionTheme(theme))
 
-  useInsertionEffect(ensureAccordionStylesheet, [])
+  useStaticStylesheet(ensureAccordionStylesheet)
 
   const requestToggle = useCallback(
     (nextValue: string) => {

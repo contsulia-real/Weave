@@ -2,7 +2,6 @@ import {
   type MouseEvent,
   type SyntheticEvent,
   useCallback,
-  useInsertionEffect,
   useLayoutEffect,
   useRef,
   useState,
@@ -12,6 +11,7 @@ import type { ViewProps } from '../core/view-types'
 import { ensureDialogStylesheet } from '../renderers/dom/dialog-stylesheet'
 import { resolveDialogTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
+import { useStaticStylesheet } from '../renderers/dom/static-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { durationMilliseconds } from './internal/motion-duration'
 import { ThemedPortal } from './internal/ThemedPortal'
@@ -90,7 +90,7 @@ function ModalDialog({
   const [nativeRevision, setNativeRevision] = useState(0)
   const [modalPortalHost, setModalPortalHost] = useState<HTMLDivElement | null>(null)
 
-  useInsertionEffect(ensureDialogStylesheet, [])
+  useStaticStylesheet(ensureDialogStylesheet)
 
   const finishNativeClose = useCallback(() => {
     const dialog = elementRef.current
@@ -129,8 +129,13 @@ function ModalDialog({
 
     if (!openedRef.current) {
       const active = dialog.ownerDocument.activeElement
+      const HTMLElementConstructor = dialog.ownerDocument.defaultView?.HTMLElement
       previousFocusRef.current =
-        active instanceof HTMLElement && !dialog.contains(active) ? active : null
+        HTMLElementConstructor !== undefined &&
+        active instanceof HTMLElementConstructor &&
+        !dialog.contains(active)
+          ? active
+          : null
       openedRef.current = true
     }
 

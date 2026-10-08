@@ -6,7 +6,7 @@ The authoritative framework design specification is [Weave UI.md](./Weave%20UI.m
 
 ## Status
 
-Weave is currently an **alpha public package targeting JSR**. npm publication remains intentionally disabled with `private: true`; the current version is `0.1.0-alpha.1`.
+Weave is currently an **alpha public package targeting JSR**. npm publication remains intentionally disabled with `private: true`; the current version is `0.1.0-alpha.2`.
 
 Weave is licensed under the MIT License. See [LICENSE](./LICENSE).
 
@@ -46,7 +46,7 @@ The main layers are:
 
 ## Public API
 
-Runtime components are published through component subpaths such as `@contsulia/weave/components/Button` and `@contsulia/weave/components/Column`. The package root `@contsulia/weave` exposes application/theme runtime APIs (`createRoot`, `ThemeProvider`, `useTheme`, `createTheme`, `createThemeFromColorSeed`, `defaultTheme`) plus the public type surface.
+Runtime components are published through component subpaths such as `@contsulia/weave/components/Button` and `@contsulia/weave/components/Column`. The package root `@contsulia/weave` exposes application/theme runtime APIs (`createRoot`, `hydrateRoot`, `ThemeProvider`, `useTheme`, `createTheme`, `createThemeFromColorSeed`, `defaultTheme`) plus the public type surface.
 
 ### Foundation and layout
 
@@ -66,7 +66,7 @@ Runtime components are published through component subpaths such as `@contsulia/
 
 ### Theme and application
 
-`ThemeProvider`, `useTheme`, `createTheme`, `createThemeFromColorSeed`, `defaultTheme`, `createRoot`.
+`ThemeProvider`, `useTheme`, `createTheme`, `createThemeFromColorSeed`, `defaultTheme`, `createRoot`, `hydrateRoot`.
 
 The root package also exports the public prop, motion and theme customization types, including component-level theme interfaces such as `ButtonTheme`, `CardTheme`, `AppBarTheme`, `TableTheme`, `AvatarTheme`, `DividerTheme`, `IconTheme`, `SkeletonTheme`, `SelectTheme`, `ComboboxTheme`, `SliderTheme`, `SwitchTheme`, `SplitBoxTheme`, `DrawerTheme`, `FormTheme`, `AccordionTheme`, `ToolTipTheme`, `PopoverTheme`, `MenuTheme`, `SnackTheme` and `ThemeComponents`.
 
@@ -98,7 +98,7 @@ root.render(
 )
 ```
 
-`createRoot(container)` is a thin wrapper around the normal React DOM root. Weave does not maintain a Canvas renderer or alternate rendering fallback.
+`createRoot(container)` is a thin wrapper around the normal React DOM root. `hydrateRoot(container, node)` hydrates server-rendered Weave markup in place using React DOM hydration. Both APIs bind Weave runtime DOM work to the container's own `Document`, so accessible secondary documents such as same-origin iframes receive their own stylesheets, media-query subscriptions, portals, observers, and viewport behavior. Weave does not maintain a Canvas renderer or alternate rendering fallback.
 
 ## Theme customization
 

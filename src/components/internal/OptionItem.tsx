@@ -1,5 +1,6 @@
-import { type MouseEvent, type PointerEvent, type ReactNode, useInsertionEffect } from 'react'
+import { type MouseEvent, type PointerEvent, type ReactNode } from 'react'
 import type { SelectIcon, SelectOptionViewProps } from '../../core/select-types'
+import { useStaticStylesheet } from '../../renderers/dom/static-stylesheet'
 import type { SelectThemeOption } from '../../theme/theme-types'
 import { Icon } from '../Icon'
 import { Text } from '../Text'
@@ -34,7 +35,7 @@ export function OptionItem({
   optionTheme,
   ensureStylesheet,
 }: OptionItemProps) {
-  useInsertionEffect(ensureStylesheet, [ensureStylesheet])
+  useStaticStylesheet(ensureStylesheet)
 
   const selected = context.selectedValue === value
   const active = context.activeValue === value

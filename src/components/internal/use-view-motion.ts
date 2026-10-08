@@ -1,5 +1,6 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 import type { ViewProps } from '../../core/view-types'
+import { useWeaveWindow } from '../../renderers/dom/document-context'
 import {
   resolveViewEnterExit,
   resolveViewTransition,
@@ -19,13 +20,13 @@ function definitionKey(value: unknown): string {
   return JSON.stringify(value ?? null)
 }
 
-function scheduleAfterPaint(callback: () => void): () => void {
+function scheduleAfterPaint(callback: () => void, view: Window | null): () => void {
   let cancelSecond: (() => void) | undefined
   const cancelFirst = scheduleAnimationFrame(() => {
     cancelSecond = scheduleAnimationFrame(() => {
       callback()
-    })
-  })
+    }, view)
+  }, view)
 
   return () => {
     cancelFirst()
@@ -39,6 +40,7 @@ export function useViewMotion<TElement extends HTMLElement>(
   reducedMotion: boolean,
 ): ViewMotionHostResult {
   const presence = useContext(PresenceContext)
+  const ownerWindow = useWeaveWindow()
   const [exitId] = useState(() => Symbol('weave-motion-exit'))
   const enterCommitted = useRef(false)
   const exitKey = definitionKey(props.exit)
@@ -179,7 +181,7 @@ export function useViewMotion<TElement extends HTMLElement>(
         stateRef.current = undefined
         setState(undefined)
       }, enterMilliseconds + 20)
-    })
+    }, ownerWindow)
 
     return () => {
       cancelled = true
@@ -194,6 +196,7 @@ export function useViewMotion<TElement extends HTMLElement>(
     exiting,
     hasEnterMotion,
     hasExitMotion,
+    ownerWindow,
     reducedMotion,
   ])
   /* oxlint-enable react/set-state-in-effect */

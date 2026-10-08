@@ -1,8 +1,9 @@
-import { useCallback, useId, useInsertionEffect, useRef } from 'react'
+import { useCallback, useId, useRef } from 'react'
 import type { PopoverProps } from '../core/popover-types'
 import { ensurePopoverStylesheet } from '../renderers/dom/popover-stylesheet'
 import { resolvePopoverTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
+import { useStaticStylesheet } from '../renderers/dom/static-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { assignRef } from './internal/assign-ref'
 import { durationMilliseconds } from './internal/motion-duration'
@@ -47,7 +48,7 @@ export function Popover(props: PopoverProps): import('react').JSX.Element {
   )
   const themeClassName = useRuntimeStyleClass('popover-theme', resolvePopoverTheme(theme))
 
-  useInsertionEffect(ensurePopoverStylesheet, [])
+  useStaticStylesheet(ensurePopoverStylesheet)
 
   const toggleOpen = useCallback(() => {
     requestOpen(!resolvedOpen)
@@ -63,6 +64,7 @@ export function Popover(props: PopoverProps): import('react').JSX.Element {
     panelRef,
     popoverId,
     resolvedOpen,
+    present,
     autoFocus,
     restoreFocus,
     toggleOpen,

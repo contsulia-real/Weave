@@ -4,13 +4,13 @@ import {
   type ReactNode,
   useCallback,
   useId,
-  useInsertionEffect,
   useMemo,
   useState,
 } from 'react'
 import type { TabProps, TabsProps } from '../core/tabs-types'
 import { resolveTabsTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
+import { useStaticStylesheet } from '../renderers/dom/static-stylesheet'
 import { ensureTabsStylesheet } from '../renderers/dom/tabs-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { Flex } from './Flex'
@@ -82,7 +82,7 @@ export function Tabs(props: TabsProps): import('react').JSX.Element {
     indicatorThickness,
     viewProps = {},
   } = props
-  useInsertionEffect(ensureTabsStylesheet, [])
+  useStaticStylesheet(ensureTabsStylesheet)
 
   const descriptors = useMemo(() => {
     const collected = collectTabDescriptors(children)

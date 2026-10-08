@@ -1,8 +1,9 @@
-import { useInsertionEffect, useLayoutEffect } from 'react'
+import { useLayoutEffect } from 'react'
 import type { ImageProps } from '../core/image-types'
 import type { ViewProps } from '../core/view-types'
 import { ensureImageStylesheet } from '../renderers/dom/image-stylesheet'
 import { resolveImageStyle } from '../renderers/dom/resolve-image'
+import { useStaticStylesheet } from '../renderers/dom/static-stylesheet'
 import { useViewHost } from './internal/use-view-host'
 
 export function Image(props: ImageProps): import('react').JSX.Element {
@@ -19,7 +20,7 @@ export function Image(props: ImageProps): import('react').JSX.Element {
     'image',
   )
 
-  useInsertionEffect(ensureImageStylesheet, [])
+  useStaticStylesheet(ensureImageStylesheet)
 
   useLayoutEffect(() => {
     if (typeof src === 'string') return

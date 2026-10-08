@@ -2,6 +2,7 @@ import { useInsertionEffect } from 'react'
 import type { ButtonSize, ButtonVariant } from '../../core/button-types'
 import { type BreakpointEntry, breakpointEntries } from './breakpoint-utils'
 import { buttonSizeDeclarations, buttonVariantDeclarations } from './button-stylesheet'
+import { useWeaveDocument } from './document-context'
 import { createRetainedStylesheetRegistry } from './retained-stylesheet'
 import { hashRuntimeValue } from './runtime-class'
 import type { TextStyleProperty } from './text-stylesheet'
@@ -183,33 +184,44 @@ ${containerBlocks(className, entries)}
   return rule
 }
 
-function createStyleElement(rule: BreakpointRule): HTMLStyleElement {
-  const element = document.createElement('style')
-  element.dataset.weaveBreakpointStyles = rule.className
-  element.textContent = rule.stylesheet
-  document.head.append(element)
-  return element
-}
+type RetainBreakpointRule = (rule: BreakpointRule) => () => void
 
-const retainBreakpointRule = createRetainedStylesheetRegistry(
-  (rule: BreakpointRule) => rule.className,
-  (rule) =>
-    document.querySelector<HTMLStyleElement>(
-      `style[data-weave-breakpoint-styles="${rule.className}"]`,
-    ),
-  createStyleElement,
-)
+const breakpointRegistries = new WeakMap<Document, RetainBreakpointRule>()
+
+function registryFor(ownerDocument: Document): RetainBreakpointRule {
+  const existing = breakpointRegistries.get(ownerDocument)
+  if (existing !== undefined) return existing
+
+  const registry = createRetainedStylesheetRegistry(
+    (rule: BreakpointRule) => rule.className,
+    (rule) =>
+      ownerDocument.querySelector<HTMLStyleElement>(
+        `style[data-weave-breakpoint-styles="${rule.className}"]`,
+      ),
+    (rule) => {
+      const element = ownerDocument.createElement('style')
+      element.dataset.weaveBreakpointStyles = rule.className
+      element.textContent = rule.stylesheet
+      ownerDocument.head.append(element)
+      return element
+    },
+    (rule) => rule.signature,
+  )
+  breakpointRegistries.set(ownerDocument, registry)
+  return registry
+}
 
 export function useBreakpointStylesheet(
   breakpoints: Readonly<Record<string, number>>,
 ): string | undefined {
   const rule = createBreakpointRule(breakpoints)
+  const ownerDocument = useWeaveDocument()
 
   useInsertionEffect(() => {
-    if (rule === undefined || typeof document === 'undefined') return
+    if (rule === undefined || ownerDocument === null) return
 
-    return retainBreakpointRule(rule)
-  }, [rule?.className, rule?.signature])
+    return registryFor(ownerDocument)(rule)
+  }, [ownerDocument, rule?.className, rule?.signature])
 
   return rule?.className
 }

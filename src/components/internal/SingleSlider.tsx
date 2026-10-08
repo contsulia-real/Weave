@@ -1,10 +1,11 @@
 import type { ChangeEvent, CSSProperties, KeyboardEvent, ReactNode } from 'react'
-import { useCallback, useId, useInsertionEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useId, useMemo, useRef, useState } from 'react'
 import type { SliderProps } from '../../core/slider-types'
 import type { ViewProps } from '../../core/view-types'
 import { resolveSliderTheme } from '../../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../../renderers/dom/runtime-class'
 import { ensureSliderStylesheet } from '../../renderers/dom/slider-stylesheet'
+import { useStaticStylesheet } from '../../renderers/dom/static-stylesheet'
 import { useTheme } from '../../theme/theme-context'
 import { formFieldAssociationOverrides, useFormFieldContext } from './form-field-context'
 import { sliderValueFromPointerPosition } from './slider-axis'
@@ -68,7 +69,7 @@ export function SingleSlider({
   stepped = points.length > 0,
   markSlider = false,
 }: SingleSliderProps) {
-  useInsertionEffect(ensureSliderStylesheet, [])
+  useStaticStylesheet(ensureSliderStylesheet)
 
   const { theme, reducedMotion } = useTheme()
   const themeDeclarations = useMemo(() => resolveSliderTheme(theme, size), [size, theme])

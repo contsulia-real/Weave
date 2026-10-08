@@ -1,3 +1,5 @@
+import { isElement } from './dom-realm'
+
 const interactiveSelector = [
   'a[href]',
   'button',
@@ -19,7 +21,7 @@ export function fromInteractiveDescendant(
   eventTarget: EventTarget | null,
   currentTarget: HTMLElement,
 ): boolean {
-  if (!(eventTarget instanceof Element) || eventTarget === currentTarget) {
+  if (!isElement(eventTarget, currentTarget.ownerDocument) || eventTarget === currentTarget) {
     return false
   }
 

@@ -1,16 +1,11 @@
-import {
-  type RefObject,
-  useInsertionEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-  useSyncExternalStore,
-} from 'react'
+import { type RefObject, useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { createPortal } from 'react-dom'
 import type { ScrollbarConfig, ScrollbarSize } from '../../core/view-types'
+import { useWeaveDocument } from '../../renderers/dom/document-context'
 import { resolveScrollbarTheme } from '../../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../../renderers/dom/runtime-class'
 import { ensureScrollbarStylesheet } from '../../renderers/dom/scrollbar-stylesheet'
+import { useStaticStylesheet } from '../../renderers/dom/static-stylesheet'
 import { useTheme } from '../../theme/theme-context'
 import { themeVariables } from '../../theme/theme-css'
 import { ScrollbarAxis } from './ScrollbarAxis'
@@ -34,8 +29,9 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
   config,
   overflowIntent,
 }: AutoScrollbarProps<TTarget>) {
-  useInsertionEffect(ensureScrollbarStylesheet, [])
+  useStaticStylesheet(ensureScrollbarStylesheet)
 
+  const ownerDocument = useWeaveDocument()
   const verticalHitRegionRef = useRef<HTMLDivElement>(null)
   const horizontalHitRegionRef = useRef<HTMLDivElement>(null)
   const verticalThumbRef = useRef<HTMLDivElement>(null)
@@ -57,9 +53,9 @@ export function AutoScrollbar<TTarget extends HTMLElement>({
 
   /* oxlint-disable react/set-state-in-effect */
   useLayoutEffect(() => {
-    if (typeof document === 'undefined') return
-    setPortalTarget(modalPortalHostForElement(targetRef.current) ?? document.body)
-  }, [targetRef, topLayerRevision])
+    if (ownerDocument === null) return
+    setPortalTarget(modalPortalHostForElement(targetRef.current) ?? ownerDocument.body)
+  }, [ownerDocument, targetRef, topLayerRevision])
   /* oxlint-enable react/set-state-in-effect */
 
   const { syncThumbOffsets, updateGeometry } = useAutoScrollbarSync({

@@ -7,7 +7,6 @@ import {
   type ReactElement,
   useCallback,
   useEffect,
-  useInsertionEffect,
   useMemo,
   useRef,
   useState,
@@ -23,6 +22,7 @@ import type { Length, ViewProps } from '../core/view-types'
 import { resolveSplitBoxTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { ensureSplitBoxStylesheet } from '../renderers/dom/splitbox-stylesheet'
+import { useStaticStylesheet } from '../renderers/dom/static-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { cssLengthPixels } from './internal/css-length-pixels'
 import { SplitBoxPaneContext } from './internal/splitbox-context'
@@ -167,7 +167,7 @@ export function SplitBox(props: SplitBoxProps): import('react').JSX.Element {
   }
   const { elementRef, className, inlineStyle, resolved } = useViewHost(hostProps)
 
-  useInsertionEffect(ensureSplitBoxStylesheet, [])
+  useStaticStylesheet(ensureSplitBoxStylesheet)
 
   const readGeometry = useCallback((): MeasuredGeometry | null => {
     const root = elementRef.current
@@ -251,14 +251,18 @@ export function SplitBox(props: SplitBoxProps): import('react').JSX.Element {
     const root = elementRef.current
     if (root === null) return
 
-    const frame = requestAnimationFrame(syncValuePercent)
+    const view = root.ownerDocument.defaultView
+    const frame = view?.requestAnimationFrame(syncValuePercent)
+    const ResizeObserverConstructor = view?.ResizeObserver
     const observer =
-      typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(syncValuePercent)
+      ResizeObserverConstructor === undefined
+        ? null
+        : new ResizeObserverConstructor(syncValuePercent)
 
     observer?.observe(root)
 
     return () => {
-      cancelAnimationFrame(frame)
+      if (frame !== undefined) view?.cancelAnimationFrame(frame)
       observer?.disconnect()
     }
   }, [effectiveCollapsed, elementRef, resolvedSize, syncValuePercent])

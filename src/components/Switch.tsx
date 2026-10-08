@@ -1,8 +1,9 @@
-import { useCallback, useId, useInsertionEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useId, useMemo, useRef, useState } from 'react'
 import type { SwitchProps } from '../core/switch-types'
 import type { ViewProps } from '../core/view-types'
 import { resolveSwitchTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
+import { useStaticStylesheet } from '../renderers/dom/static-stylesheet'
 import { ensureSwitchStylesheet } from '../renderers/dom/switch-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { formFieldAssociationOverrides, useFormFieldContext } from './internal/form-field-context'
@@ -25,7 +26,7 @@ export function Switch(props: SwitchProps): import('react').JSX.Element {
     size = 'medium',
     viewProps = {},
   } = props
-  useInsertionEffect(ensureSwitchStylesheet, [])
+  useStaticStylesheet(ensureSwitchStylesheet)
 
   const { theme, reducedMotion } = useTheme()
   const themeDeclarations = useMemo(() => resolveSwitchTheme(theme, size), [size, theme])

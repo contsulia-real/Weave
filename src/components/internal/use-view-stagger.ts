@@ -32,9 +32,12 @@ function staggerIndex(index: number, count: number, from: MotionStaggerConfig['f
 }
 
 function directViewChildren(element: HTMLElement): HTMLElement[] {
+  const HTMLElementConstructor = element.ownerDocument.defaultView?.HTMLElement
+  if (HTMLElementConstructor === undefined) return []
+
   return Array.from(element.children).filter(
     (child): child is HTMLElement =>
-      child instanceof HTMLElement && child.hasAttribute('data-weave-view'),
+      child instanceof HTMLElementConstructor && child.hasAttribute('data-weave-view'),
   )
 }
 

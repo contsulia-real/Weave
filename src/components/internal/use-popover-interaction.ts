@@ -1,4 +1,4 @@
-import { type RefObject, useCallback, useEffect, useLayoutEffect, useRef } from 'react'
+import { type RefObject, useCallback, useEffect, useRef } from 'react'
 import {
   useAnchorViewportDismiss,
   useOutsideInteractionDismiss,
@@ -21,6 +21,7 @@ export function usePopoverInteraction(
   panelRef: RefObject<HTMLDivElement | null>,
   popoverId: string,
   open: boolean,
+  present: boolean,
   autoFocus: boolean,
   restoreFocus: boolean,
   toggleOpen: () => void,
@@ -29,6 +30,7 @@ export function usePopoverInteraction(
 ): void {
   const skipRestoreRef = useRef(false)
   const previousOpenRef = useRef(false)
+  const pendingAutoFocusRef = useRef(false)
 
   const dismissForAnchorExit = useCallback(() => {
     skipRestoreRef.current = true
@@ -102,28 +104,41 @@ export function usePopoverInteraction(
     }
   }, [close, open, targetRef])
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const wasOpen = previousOpenRef.current
-
     previousOpenRef.current = open
 
-    if (open && !wasOpen && autoFocus) {
-      queueMicrotask(() => {
+    if (open) {
+      if (!wasOpen && autoFocus) {
+        pendingAutoFocusRef.current = true
+      }
+
+      if (present && pendingAutoFocusRef.current) {
         const panel = panelRef.current
 
-        if (panel === null || !panel.isConnected) {
-          return
+        if (panel !== null && panel.isConnected) {
+          queueMicrotask(() => {
+            if (
+              panelRef.current !== panel ||
+              !panel.isConnected ||
+              targetRef.current?.getAttribute('aria-expanded') !== 'true'
+            ) {
+              return
+            }
+
+            pendingAutoFocusRef.current = false
+            const focusable = panel.querySelector<HTMLElement>(FOCUSABLE_SELECTOR)
+            ;(focusable ?? panel).focus()
+          })
         }
-
-        const focusable = panel.querySelector<HTMLElement>(FOCUSABLE_SELECTOR)
-
-        ;(focusable ?? panel).focus()
-      })
+      }
 
       return
     }
 
-    if (!open && wasOpen) {
+    pendingAutoFocusRef.current = false
+
+    if (wasOpen) {
       const skipRestore = skipRestoreRef.current
 
       skipRestoreRef.current = false
@@ -152,5 +167,5 @@ export function usePopoverInteraction(
         }
       })
     }
-  }, [autoFocus, open, panelRef, restoreFocus, targetRef])
+  }, [autoFocus, open, panelRef, present, restoreFocus, targetRef])
 }

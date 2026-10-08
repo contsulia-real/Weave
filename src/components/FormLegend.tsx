@@ -1,9 +1,9 @@
-import { useInsertionEffect } from 'react'
 import type { FormLegendProps } from '../core/form-types'
 import type { ViewProps } from '../core/view-types'
 import { ensureFormStylesheet } from '../renderers/dom/form-stylesheet'
 import { resolveFormTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
+import { useStaticStylesheet } from '../renderers/dom/static-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { useViewHost } from './internal/use-view-host'
 
@@ -16,7 +16,7 @@ export function FormLegend(props: FormLegendProps): import('react').JSX.Element 
   }
   const { elementRef, className, inlineStyle, resolved } = useViewHost(hostProps)
 
-  useInsertionEffect(ensureFormStylesheet, [])
+  useStaticStylesheet(ensureFormStylesheet)
 
   return (
     <legend

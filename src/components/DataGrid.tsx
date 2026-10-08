@@ -5,7 +5,6 @@ import {
   type PointerEvent,
   useCallback,
   useEffect,
-  useInsertionEffect,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -20,6 +19,7 @@ import type {
 } from '../core/data-grid-types'
 import type { TableViewProps } from '../core/table-types'
 import { ensureDataGridStylesheet } from '../renderers/dom/data-grid-stylesheet'
+import { useStaticStylesheet } from '../renderers/dom/static-stylesheet'
 import { Icon } from './Icon'
 import { assignRef } from './internal/assign-ref'
 import { chevronDownIcon } from './internal/control-icons'
@@ -164,7 +164,9 @@ function DataGridMeasuredRow<TRow extends DataGridRow>({
 
     const view = element.ownerDocument.defaultView
     const frame = view?.requestAnimationFrame(measure)
-    const observer = typeof ResizeObserver === 'undefined' ? undefined : new ResizeObserver(measure)
+    const ResizeObserverConstructor = view?.ResizeObserver
+    const observer =
+      ResizeObserverConstructor === undefined ? undefined : new ResizeObserverConstructor(measure)
 
     observer?.observe(element)
 
@@ -262,8 +264,11 @@ function DataGridVirtualBody<TRow extends DataGridRow>({
     scheduleRead()
     root.addEventListener('scroll', scheduleRead, { passive: true })
 
+    const ResizeObserverConstructor = view?.ResizeObserver
     const observer =
-      typeof ResizeObserver === 'undefined' ? undefined : new ResizeObserver(scheduleRead)
+      ResizeObserverConstructor === undefined
+        ? undefined
+        : new ResizeObserverConstructor(scheduleRead)
     observer?.observe(root)
     observer?.observe(body)
 
@@ -386,7 +391,7 @@ export function DataGrid<TRow extends DataGridRow = DataGridRow>(
   const rootRef = useRef<HTMLDivElement>(null)
   const resizeDragRef = useRef<ResizeDrag | null>(null)
 
-  useInsertionEffect(ensureDataGridStylesheet, [])
+  useStaticStylesheet(ensureDataGridStylesheet)
 
   /* oxlint-disable react/set-state-in-effect -- DOM column tracks must be measured before paint. */
   useLayoutEffect(() => {
@@ -479,7 +484,7 @@ export function DataGrid<TRow extends DataGridRow = DataGridRow>(
       if (event.button !== 0 || column.resizable !== true) return
 
       const header = event.currentTarget.closest('th')
-      if (!(header instanceof HTMLTableCellElement)) return
+      if (header === null) return
 
       event.preventDefault()
       event.stopPropagation()

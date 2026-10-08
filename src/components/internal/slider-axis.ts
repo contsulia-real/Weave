@@ -35,7 +35,7 @@ export function sliderAxisGeometry(
   direction: SliderDirection,
 ): SliderAxisGeometry {
   const rect = input.getBoundingClientRect()
-  const computed = getComputedStyle(input)
+  const computed = input.ownerDocument.defaultView?.getComputedStyle(input) ?? input.style
   const thumbSize = cssLengthPixels(input, computed.getPropertyValue('--weave-slider-thumb-size'))
   const inputExtent = Math.max(0, direction === 'horizontal' ? rect.width : rect.height)
   const length = Math.max(0, inputExtent - thumbSize)

@@ -1,4 +1,5 @@
 import { useInsertionEffect } from 'react'
+import { useWeaveDocument } from './document-context'
 import { createRetainedStylesheetRegistry } from './retained-stylesheet'
 
 export type RuntimeStyleValue = string | number | null | undefined
@@ -27,18 +28,21 @@ function entries(declarations: Readonly<object> | undefined): readonly RuntimeEn
     .filter(
       (entry): entry is [string, string | number] => entry[1] !== undefined && entry[1] !== null,
     )
-    .sort(([left], [right]) => left.localeCompare(right))
+    .sort(([left], [right]) => (left < right ? -1 : left > right ? 1 : 0))
 }
 
 export function hashRuntimeValue(value: string): string {
-  let output = 2166136261
+  let fnv = 2166136261
+  let djb = 5381
 
   for (let index = 0; index < value.length; index += 1) {
-    output ^= value.charCodeAt(index)
-    output = Math.imul(output, 16777619)
+    const code = value.charCodeAt(index)
+    fnv ^= code
+    fnv = Math.imul(fnv, 16777619)
+    djb = Math.imul(djb, 33) ^ code
   }
 
-  return (output >>> 0).toString(36)
+  return `${(fnv >>> 0).toString(36)}-${(djb >>> 0).toString(36)}`
 }
 
 function createRuntimeStyleClass(
@@ -78,47 +82,58 @@ function createRuntimeStyleClass(
   return rule
 }
 
-function createStyleElement(rule: RuntimeClassRule): HTMLStyleElement {
-  const element = document.createElement('style')
-  element.dataset.weaveRuntimeClass = rule.className
-  element.textContent = ':where(.' + rule.className + '){}'
-  document.head.append(element)
+type RetainRuntimeClass = (rule: RuntimeClassRule) => () => void
 
-  const cssRule = element.sheet?.cssRules.item(0) as CSSStyleRule | null
+const runtimeRegistries = new WeakMap<Document, RetainRuntimeClass>()
 
-  if (cssRule !== null) {
-    for (const [name, value] of rule.declarations) {
-      cssRule.style.setProperty(cssPropertyName(name), String(value))
-    }
+function registryFor(ownerDocument: Document): RetainRuntimeClass {
+  const existing = runtimeRegistries.get(ownerDocument)
+  if (existing !== undefined) return existing
 
-    // Serialize through CSSOM so arbitrary public string values can never
-    // escape the declaration block and become new CSS rules.
-    element.textContent = cssRule.cssText
-  }
+  const registry = createRetainedStylesheetRegistry(
+    (rule: RuntimeClassRule) => rule.className,
+    (rule) =>
+      ownerDocument.querySelector<HTMLStyleElement>(
+        'style[data-weave-runtime-class="' + rule.className + '"]',
+      ),
+    (rule) => {
+      const element = ownerDocument.createElement('style')
+      element.dataset.weaveRuntimeClass = rule.className
+      element.textContent = ':where(.' + rule.className + '){}'
+      ownerDocument.head.append(element)
 
-  return element
+      const cssRule = element.sheet?.cssRules.item(0) as CSSStyleRule | null
+
+      if (cssRule !== null) {
+        for (const [name, value] of rule.declarations) {
+          cssRule.style.setProperty(cssPropertyName(name), String(value))
+        }
+
+        // Serialize through CSSOM so arbitrary public string values can never
+        // escape the declaration block and become new CSS rules.
+        element.textContent = cssRule.cssText
+      }
+
+      return element
+    },
+    (rule) => rule.signature,
+  )
+  runtimeRegistries.set(ownerDocument, registry)
+  return registry
 }
-
-const retainRuntimeClass = createRetainedStylesheetRegistry(
-  (rule: RuntimeClassRule) => rule.className,
-  (rule) =>
-    document.querySelector<HTMLStyleElement>(
-      'style[data-weave-runtime-class="' + rule.className + '"]',
-    ),
-  createStyleElement,
-)
 
 export function useRuntimeStyleClass(
   prefix: string,
   declarations: Readonly<object> | undefined,
 ): string | undefined {
   const rule = createRuntimeStyleClass(prefix, declarations)
+  const ownerDocument = useWeaveDocument()
 
   useInsertionEffect(() => {
-    if (rule === undefined || typeof document === 'undefined') return
+    if (rule === undefined || ownerDocument === null) return
 
-    return retainRuntimeClass(rule)
-  }, [rule?.className, rule?.signature])
+    return registryFor(ownerDocument)(rule)
+  }, [ownerDocument, rule?.className, rule?.signature])
 
   return rule?.className
 }

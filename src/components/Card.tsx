@@ -1,9 +1,9 @@
 import type { KeyboardEvent, MouseEvent } from 'react'
-import { useInsertionEffect } from 'react'
 import type { CardProps } from '../core/card-types'
 import { ensureCardStylesheet } from '../renderers/dom/card-stylesheet'
 import { resolveCardTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
+import { useStaticStylesheet } from '../renderers/dom/static-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { fromInteractiveDescendant } from './internal/interactive-descendant'
 import { useControllableBoolean } from './internal/use-controllable-boolean'
@@ -29,7 +29,7 @@ export function Card(props: CardProps): import('react').JSX.Element {
   const interactive = clickable || selectable
   const disabled = viewProps.disabled === true
 
-  useInsertionEffect(ensureCardStylesheet, [])
+  useStaticStylesheet(ensureCardStylesheet)
 
   const handleClick = (event: MouseEvent<HTMLDivElement>) => {
     if (disabled) {

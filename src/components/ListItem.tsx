@@ -1,17 +1,11 @@
 import type { FocusEvent, KeyboardEvent, MouseEvent, ReactElement, ReactNode } from 'react'
-import {
-  Children,
-  cloneElement,
-  Fragment,
-  isValidElement,
-  useContext,
-  useInsertionEffect,
-} from 'react'
+import { Children, cloneElement, Fragment, isValidElement, useContext } from 'react'
 import type { ListItemProps } from '../core/list-types'
 import type { TextProps } from '../core/text-types'
 import { ensureListStylesheet } from '../renderers/dom/list-stylesheet'
 import { resolveListItemTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
+import { useStaticStylesheet } from '../renderers/dom/static-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { fromInteractiveDescendant } from './internal/interactive-descendant'
 import { ListContext } from './internal/list-context'
@@ -60,7 +54,7 @@ export function ListItem(props: ListItemProps): import('react').JSX.Element {
   const context = useContext(ListContext)
   const { theme } = useTheme()
 
-  useInsertionEffect(ensureListStylesheet, [])
+  useStaticStylesheet(ensureListStylesheet)
 
   const themeClassName = useRuntimeStyleClass('list-item-theme', resolveListItemTheme(theme))
 

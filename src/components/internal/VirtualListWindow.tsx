@@ -75,7 +75,9 @@ function VirtualItem({
       queueMicrotask(measure)
     }
 
-    const observer = typeof ResizeObserver === 'undefined' ? undefined : new ResizeObserver(measure)
+    const ResizeObserverConstructor = view?.ResizeObserver
+    const observer =
+      ResizeObserverConstructor === undefined ? undefined : new ResizeObserverConstructor(measure)
 
     observer?.observe(element)
 
@@ -166,8 +168,11 @@ export function VirtualListWindow({
       passive: true,
     })
 
+    const ResizeObserverConstructor = view?.ResizeObserver
     const observer =
-      typeof ResizeObserver === 'undefined' ? undefined : new ResizeObserver(scheduleRead)
+      ResizeObserverConstructor === undefined
+        ? undefined
+        : new ResizeObserverConstructor(scheduleRead)
 
     observer?.observe(root)
 

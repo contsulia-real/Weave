@@ -29,6 +29,12 @@ interface ClipRect {
   left: number
 }
 
+function computedStyle(element: Element): CSSStyleDeclaration {
+  return (
+    element.ownerDocument.defaultView?.getComputedStyle(element) ?? (element as HTMLElement).style
+  )
+}
+
 function isAutoScrolling(value: string): boolean {
   return value === 'auto' || value === 'overlay'
 }
@@ -38,17 +44,23 @@ function clipsOverflow(value: string): boolean {
 }
 
 function clippingRectForTarget(target: HTMLElement): ClipRect {
+  const ownerDocument = target.ownerDocument
+  const view = ownerDocument.defaultView
   const clip: ClipRect = {
     top: 0,
-    right: window.innerWidth,
-    bottom: window.innerHeight,
+    right: view?.innerWidth ?? 0,
+    bottom: view?.innerHeight ?? 0,
     left: 0,
   }
 
   let ancestor = target.parentElement
 
-  while (ancestor !== null && ancestor !== document.body && ancestor !== document.documentElement) {
-    const computed = getComputedStyle(ancestor)
+  while (
+    ancestor !== null &&
+    ancestor !== ownerDocument.body &&
+    ancestor !== ownerDocument.documentElement
+  ) {
+    const computed = computedStyle(ancestor)
     const rect = ancestor.getBoundingClientRect()
     const left = rect.left + ancestor.clientLeft
     const top = rect.top + ancestor.clientTop
@@ -97,7 +109,7 @@ function visualOpacityForTarget(target: HTMLElement, portalElement: HTMLElement)
   let node: HTMLElement | null = target
 
   while (node !== null && !node.contains(portalElement)) {
-    const value = Number.parseFloat(getComputedStyle(node).opacity)
+    const value = Number.parseFloat(computedStyle(node).opacity)
     if (Number.isFinite(value)) {
       opacity *= value
     }
@@ -109,7 +121,7 @@ function visualOpacityForTarget(target: HTMLElement, portalElement: HTMLElement)
 
 function syncScrollbarVisualOpacity(hitRegion: HTMLElement, target: HTMLElement): void {
   const themeOpacity = Number.parseFloat(
-    getComputedStyle(hitRegion).getPropertyValue('--weave-scrollbar-opacity'),
+    computedStyle(hitRegion).getPropertyValue('--weave-scrollbar-opacity'),
   )
   const baseOpacity = Number.isFinite(themeOpacity) ? themeOpacity : 1
 
@@ -179,7 +191,7 @@ function syncScrollbarLayer(hitRegion: HTMLElement, target: HTMLElement): void {
   let layer: number | null = null
 
   while (node !== null) {
-    const value = getComputedStyle(node).zIndex
+    const value = computedStyle(node).zIndex
     const numeric = Number(value)
 
     if (Number.isFinite(numeric)) {
@@ -222,7 +234,7 @@ export function updateScrollbarGeometry(
 ): ScrollMetrics {
   const { verticalHitRegion, horizontalHitRegion, verticalThumb, horizontalThumb } = elements
 
-  const computed = getComputedStyle(target)
+  const computed = computedStyle(target)
   const rect = target.getBoundingClientRect()
   const borderTop = parseFloat(computed.borderTopWidth) || 0
   const borderRight = parseFloat(computed.borderRightWidth) || 0
@@ -259,10 +271,10 @@ export function updateScrollbarGeometry(
   horizontalHitRegion.dataset.weaveScrollbarVisible = String(horizontalVisible)
 
   const verticalThickness = verticalVisible
-    ? parseFloat(getComputedStyle(verticalThumb).width) || 0
+    ? parseFloat(computedStyle(verticalThumb).width) || 0
     : 0
   const horizontalThickness = horizontalVisible
-    ? parseFloat(getComputedStyle(horizontalThumb).height) || 0
+    ? parseFloat(computedStyle(horizontalThumb).height) || 0
     : 0
 
   const verticalStartInset = Math.max(borderTop + inset, radii.topRight.y)

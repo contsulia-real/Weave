@@ -1,18 +1,11 @@
 import type { ChangeEvent, CSSProperties } from 'react'
-import {
-  useCallback,
-  useId,
-  useInsertionEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import { useCallback, useId, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { RangeSliderProps, RangeSliderValue } from '../core/slider-types'
 import type { ViewProps } from '../core/view-types'
 import { resolveSliderTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { ensureSliderStylesheet } from '../renderers/dom/slider-stylesheet'
+import { useStaticStylesheet } from '../renderers/dom/static-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { formFieldAssociationOverrides, useFormFieldContext } from './internal/form-field-context'
 import {
@@ -49,7 +42,7 @@ export function RangeSlider(props: RangeSliderProps): import('react').JSX.Elemen
     inverse = false,
     viewProps = {},
   } = props
-  useInsertionEffect(ensureSliderStylesheet, [])
+  useStaticStylesheet(ensureSliderStylesheet)
 
   const { theme, reducedMotion } = useTheme()
   const themeDeclarations = useMemo(() => resolveSliderTheme(theme, size), [size, theme])
@@ -244,8 +237,11 @@ export function RangeSlider(props: RangeSliderProps): import('react').JSX.Elemen
     }
 
     updateHitSplit()
+    const ResizeObserverConstructor = input.ownerDocument.defaultView?.ResizeObserver
     const observer =
-      typeof ResizeObserver === 'undefined' ? undefined : new ResizeObserver(updateHitSplit)
+      ResizeObserverConstructor === undefined
+        ? undefined
+        : new ResizeObserverConstructor(updateHitSplit)
     observer?.observe(input)
 
     return () => observer?.disconnect()

@@ -1,9 +1,11 @@
-import { type ReactNode, useContext, useInsertionEffect } from 'react'
+import { type ReactNode, useContext } from 'react'
 import type { SnackProps, SnackVariant, SnackViewProps } from '../core/snack-types'
 import { resolveSnackTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { ensureSnackStylesheet } from '../renderers/dom/snack-stylesheet'
+import { useStaticStylesheet } from '../renderers/dom/static-stylesheet'
 import { useTheme } from '../theme/theme-context'
+import { isNode } from './internal/dom-realm'
 import { durationMilliseconds } from './internal/motion-duration'
 import { SnackBody } from './internal/SnackBody'
 import { SnackHostContext } from './internal/snack-host-context'
@@ -56,7 +58,7 @@ export function Snack(props: SnackProps): import('react').JSX.Element | null {
     onDismissed,
   )
 
-  useInsertionEffect(ensureSnackStylesheet, [])
+  useStaticStylesheet(ensureSnackStylesheet)
 
   const { paused, setPaused, lifetimeProgress } = useSnackLifetime(
     resolvedOpen,
@@ -86,7 +88,10 @@ export function Snack(props: SnackProps): import('react').JSX.Element | null {
   const handleBlur: NonNullable<SnackViewProps['onBlur']> = (event) => {
     const related = event.relatedTarget
 
-    if (related instanceof Node && event.currentTarget.contains(related)) {
+    if (
+      isNode(related, event.currentTarget.ownerDocument) &&
+      event.currentTarget.contains(related)
+    ) {
       viewProps.onBlur?.(event)
       return
     }

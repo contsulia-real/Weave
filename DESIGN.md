@@ -14,6 +14,7 @@ Weave is a browser-native React UI framework. React DOM + real DOM + CSS is the 
 
 ```text
 createRoot
+hydrateRoot
 ThemeProvider
 useTheme
 createTheme
@@ -31,7 +32,7 @@ import { Text } from "@contsulia/weave/components/Text"
 
 根包继续导出公开 prop、motion、theme 等 TypeScript 类型。`src/package.ts` 是根运行时入口；`src/index.ts` 继续作为公开组件与公共类型的源码索引，并作为 Documentation API 元数据的组件真值；每个组件运行时从对应 `src/components/<ComponentName>` 入口独立构建。`src/components/internal/*` 不属于公开包子路径。公开发布目标为 JSR 的 `@contsulia/weave`；`package.json` 保持 `private: true` 仅用于阻止 npm registry 误发布，不阻止 JSR 发布。
 
-Root runtime exports: `ThemeProvider`, `createRoot`, `createTheme`, `createThemeFromColorSeed`, `defaultTheme`, `useTheme`.
+Root runtime exports: `ThemeProvider`, `createRoot`, `createTheme`, `createThemeFromColorSeed`, `defaultTheme`, `hydrateRoot`, `useTheme`.
 
 ## High-value hard constraints
 

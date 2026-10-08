@@ -1,8 +1,30 @@
+import { useInsertionEffect } from 'react'
+import { useWeaveDocument } from './document-context'
+
+let activeDocument: Document | null = null
+
+export function useStaticStylesheet(ensure: () => void, enabled = true): void {
+  const ownerDocument = useWeaveDocument()
+
+  useInsertionEffect(() => {
+    if (!enabled || ownerDocument === null) return
+
+    const previousDocument = activeDocument
+    activeDocument = ownerDocument
+    try {
+      ensure()
+    } finally {
+      activeDocument = previousDocument
+    }
+  }, [enabled, ensure, ownerDocument])
+}
+
 export function ensureStaticStylesheet(name: string, stylesheet: string): void {
-  if (typeof document === 'undefined') return
+  const ownerDocument = activeDocument ?? (typeof document === 'undefined' ? null : document)
+  if (ownerDocument === null) return
 
   const attribute = `data-weave-${name}-styles`
-  const existing = document.querySelector<HTMLStyleElement>(`style[${attribute}]`)
+  const existing = ownerDocument.querySelector<HTMLStyleElement>(`style[${attribute}]`)
 
   if (existing !== null) {
     if (existing.textContent !== stylesheet) {
@@ -11,8 +33,8 @@ export function ensureStaticStylesheet(name: string, stylesheet: string): void {
     return
   }
 
-  const element = document.createElement('style')
+  const element = ownerDocument.createElement('style')
   element.setAttribute(attribute, '')
   element.textContent = stylesheet
-  document.head.append(element)
+  ownerDocument.head.append(element)
 }

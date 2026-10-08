@@ -1,8 +1,9 @@
-import { useCallback, useInsertionEffect, useMemo, useRef } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 import type { ListProps } from '../core/list-types'
 import { ensureListStylesheet } from '../renderers/dom/list-stylesheet'
 import { resolveListTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
+import { useStaticStylesheet } from '../renderers/dom/static-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { Divider } from './Divider'
 import { Flex } from './Flex'
@@ -31,7 +32,7 @@ export function List(props: ListProps): import('react').JSX.Element {
   const rootRef = useRef<HTMLDivElement>(null)
   const { theme } = useTheme()
 
-  useInsertionEffect(ensureListStylesheet, [])
+  useStaticStylesheet(ensureListStylesheet)
 
   const themeClassName = useRuntimeStyleClass('list-theme', resolveListTheme(theme))
 

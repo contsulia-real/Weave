@@ -1,16 +1,10 @@
-import {
-  type CSSProperties,
-  useCallback,
-  useInsertionEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react'
+import { type CSSProperties, useCallback, useLayoutEffect, useRef, useState } from 'react'
 import type { TabListProps } from '../core/tabs-types'
 import { ensureButtonStylesheet } from '../renderers/dom/button-stylesheet'
 import { ensureInputStylesheet } from '../renderers/dom/input-stylesheet'
 import { resolveButtonTheme, resolveInputTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
+import { useStaticStylesheet } from '../renderers/dom/static-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { Flex } from './Flex'
 import { assignRef } from './internal/assign-ref'
@@ -45,11 +39,8 @@ export function TabList(props: TabListProps): import('react').JSX.Element {
   const [indicatorRect, setIndicatorRect] = useState<IndicatorRect | null>(null)
   const pill = context.variant === 'pill'
 
-  useInsertionEffect(() => {
-    if (!pill) return
-    ensureInputStylesheet()
-    ensureButtonStylesheet()
-  }, [pill])
+  useStaticStylesheet(ensureInputStylesheet, pill)
+  useStaticStylesheet(ensureButtonStylesheet, pill)
 
   const setListRef = useCallback(
     (element: HTMLDivElement | null) => {
@@ -86,12 +77,14 @@ export function TabList(props: TabListProps): import('react').JSX.Element {
 
     update()
 
-    if (typeof ResizeObserver === 'undefined') {
-      window.addEventListener('resize', update)
-      return () => window.removeEventListener('resize', update)
+    const view = list.ownerDocument.defaultView
+    const ResizeObserverConstructor = view?.ResizeObserver
+    if (ResizeObserverConstructor === undefined) {
+      view?.addEventListener('resize', update)
+      return () => view?.removeEventListener('resize', update)
     }
 
-    const observer = new ResizeObserver(update)
+    const observer = new ResizeObserverConstructor(update)
     observer.observe(list)
     for (const tab of list.querySelectorAll<HTMLElement>('[data-weave-tab]')) {
       observer.observe(tab)

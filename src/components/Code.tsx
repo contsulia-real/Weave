@@ -1,7 +1,8 @@
-import { useEffect, useInsertionEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { LanguageRegistration } from 'shiki'
 import type { CodeLanguage, CodeProps } from '../core/code-types'
 import { ensureCodeStylesheet } from '../renderers/dom/code-stylesheet'
+import { useStaticStylesheet } from '../renderers/dom/static-stylesheet'
 import { AutoScrollbar } from './internal/AutoScrollbar'
 import { useViewHost } from './internal/use-view-host'
 
@@ -89,7 +90,7 @@ export function Code(props: CodeProps): import('react').JSX.Element {
   const [highlighted, setHighlighted] = useState<HighlightResult | null>(null)
   const { elementRef, className, inlineStyle, resolved } = useViewHost(viewProps)
 
-  useInsertionEffect(ensureCodeStylesheet, [])
+  useStaticStylesheet(ensureCodeStylesheet)
 
   useEffect(() => {
     let active = true

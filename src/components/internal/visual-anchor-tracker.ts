@@ -103,16 +103,19 @@ export function trackVisualAnchor(
     }
   }
 
-  const resizeObserver = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(schedule)
+  const ResizeObserverConstructor = view?.ResizeObserver
+  const resizeObserver =
+    ResizeObserverConstructor === undefined ? null : new ResizeObserverConstructor(schedule)
 
   for (const element of resizeTargets) {
     resizeObserver?.observe(element)
   }
 
+  const MutationObserverConstructor = view?.MutationObserver
   const mutationObserver =
-    options.trackMutations !== true || typeof MutationObserver === 'undefined'
+    options.trackMutations !== true || MutationObserverConstructor === undefined
       ? null
-      : new MutationObserver(schedule)
+      : new MutationObserverConstructor(schedule)
 
   mutationObserver?.observe(target, {
     attributes: true,

@@ -1,5 +1,6 @@
 import { useLayoutEffect, useState, useSyncExternalStore } from 'react'
 import type { SnackContainer, SnackPlacement } from '../../core/snack-types'
+import { useWeaveDocument } from '../../renderers/dom/document-context'
 import { resolveSnackHost } from './snack-host-context'
 import { retainSnackRegion, syncSnackRegion } from './snack-region'
 import { subscribeTopLayerHost, topLayerHostRevision } from './top-layer-host'
@@ -12,6 +13,7 @@ export function useSnackRegion(
   placement: SnackPlacement,
   visualState: ExitPresenceState,
 ) {
+  const ownerDocument = useWeaveDocument()
   const [region, setRegion] = useState<HTMLDivElement | null>(null)
   const topLayerRevision = useSyncExternalStore(
     subscribeTopLayerHost,
@@ -23,12 +25,12 @@ export function useSnackRegion(
   // needs one synchronization render after retaining it.
   /* oxlint-disable react/set-state-in-effect */
   useLayoutEffect(() => {
-    if (!present || typeof document === 'undefined') {
+    if (!present || ownerDocument === null) {
       setRegion(null)
       return
     }
 
-    const host = resolveSnackHost(target, document)
+    const host = resolveSnackHost(target, ownerDocument)
 
     if (host === null) {
       setRegion(null)
@@ -42,7 +44,7 @@ export function useSnackRegion(
     return () => {
       handle.release()
     }
-  }, [placement, present, scopeId, target, topLayerRevision])
+  }, [ownerDocument, placement, present, scopeId, target, topLayerRevision])
   /* oxlint-enable react/set-state-in-effect */
 
   useLayoutEffect(() => {

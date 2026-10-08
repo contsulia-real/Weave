@@ -115,6 +115,8 @@ export function useAutoScrollbarSync<TTarget extends HTMLElement>({
     const target = targetRef.current
     if (target === null) return
 
+    const ownerDocument = target.ownerDocument
+    const view = ownerDocument.defaultView
     updateGeometry()
 
     let cancelThumbFrame: (() => void) | undefined
@@ -125,7 +127,7 @@ export function useAutoScrollbarSync<TTarget extends HTMLElement>({
       cancelThumbFrame = scheduleAnimationFrame(() => {
         cancelThumbFrame = undefined
         syncThumbOffsets()
-      })
+      }, view)
     }
 
     const scheduleGeometrySync = () => {
@@ -133,7 +135,7 @@ export function useAutoScrollbarSync<TTarget extends HTMLElement>({
       cancelGeometryFrame = scheduleAnimationFrame(() => {
         cancelGeometryFrame = undefined
         updateGeometry()
-      })
+      }, view)
     }
 
     // Native scroll state remains the source of truth. Scroll listeners only
@@ -148,8 +150,8 @@ export function useAutoScrollbarSync<TTarget extends HTMLElement>({
 
     target.addEventListener('scroll', onScroll, { passive: true })
     target.addEventListener('input', scheduleGeometrySync)
-    window.addEventListener('resize', onWindowResize)
-    document.addEventListener('scroll', onDocumentScroll, true)
+    view?.addEventListener('resize', onWindowResize)
+    ownerDocument.addEventListener('scroll', onDocumentScroll, true)
 
     const stopVisualTracking = trackVisualAnchor(target, updateGeometry, {
       additionalTargets: visualAncestors(target),
@@ -157,18 +159,27 @@ export function useAutoScrollbarSync<TTarget extends HTMLElement>({
       continuousAnimations: true,
     })
 
+    const ResizeObserverConstructor = view?.ResizeObserver
     const resizeObserver =
-      typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(updateGeometry)
+      ResizeObserverConstructor === undefined ? null : new ResizeObserverConstructor(updateGeometry)
 
+    const ElementConstructor = view?.Element
+    const HTMLElementConstructor = view?.HTMLElement
     const isIgnoredPortalMutation = (node: Node) =>
-      node instanceof Element && node.closest('[data-weave-modal-portal-host]') !== null
+      ElementConstructor !== undefined &&
+      node instanceof ElementConstructor &&
+      node.closest('[data-weave-modal-portal-host]') !== null
 
     const observeTargetAndChildren = () => {
       resizeObserver?.disconnect()
       resizeObserver?.observe(target)
 
       for (const child of target.children) {
-        if (child instanceof HTMLElement && child.dataset.weaveModalPortalHost === undefined) {
+        if (
+          HTMLElementConstructor !== undefined &&
+          child instanceof HTMLElementConstructor &&
+          child.dataset.weaveModalPortalHost === undefined
+        ) {
           resizeObserver?.observe(child)
         }
       }
@@ -176,10 +187,11 @@ export function useAutoScrollbarSync<TTarget extends HTMLElement>({
 
     observeTargetAndChildren()
 
+    const MutationObserverConstructor = view?.MutationObserver
     const mutationObserver =
-      typeof MutationObserver === 'undefined'
+      MutationObserverConstructor === undefined
         ? null
-        : new MutationObserver((records) => {
+        : new MutationObserverConstructor((records) => {
             if (records.every((record) => isIgnoredPortalMutation(record.target))) {
               return
             }
@@ -197,8 +209,8 @@ export function useAutoScrollbarSync<TTarget extends HTMLElement>({
     return () => {
       target.removeEventListener('scroll', onScroll)
       target.removeEventListener('input', scheduleGeometrySync)
-      window.removeEventListener('resize', onWindowResize)
-      document.removeEventListener('scroll', onDocumentScroll, true)
+      view?.removeEventListener('resize', onWindowResize)
+      ownerDocument.removeEventListener('scroll', onDocumentScroll, true)
       stopVisualTracking()
       cancelThumbFrame?.()
       cancelGeometryFrame?.()

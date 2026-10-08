@@ -179,6 +179,7 @@ const expectedRuntimeExports = [
   'createTheme',
   'createThemeFromColorSeed',
   'defaultTheme',
+  'hydrateRoot',
   'useTheme',
 ]
 
@@ -289,6 +290,8 @@ assert(
   JSON.stringify(actualRuntimeExports) === JSON.stringify(sortedExpectedRuntimeExports),
   `Built package runtime exports changed unexpectedly: ${actualRuntimeExports.join(', ')}`,
 )
+
+assert(typeSource.includes('hydrateRoot'), 'Built declarations are missing the hydrateRoot export')
 
 assert(
   /export\s*\{\s*List\s*\}\s*from\s*['"]\.\/components\/List['"]/.test(typeSource),

@@ -4,7 +4,6 @@ import {
   useCallback,
   useEffect,
   useId,
-  useInsertionEffect,
   useMemo,
   useRef,
   useState,
@@ -14,6 +13,7 @@ import type { ViewProps } from '../core/view-types'
 import { resolveInputTheme, resolveSelectTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { ensureSelectStylesheet } from '../renderers/dom/select-stylesheet'
+import { useStaticStylesheet } from '../renderers/dom/static-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { Icon } from './Icon'
 import { assignRef } from './internal/assign-ref'
@@ -98,7 +98,7 @@ export function Select(props: SelectProps): import('react').JSX.Element {
     exitDuration,
   )
 
-  useInsertionEffect(ensureSelectStylesheet, [])
+  useStaticStylesheet(ensureSelectStylesheet)
 
   const selected = selectedDescriptor(options, selectedValue)
   const resolvedActiveValue = resolvedOpen

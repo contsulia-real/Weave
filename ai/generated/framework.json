@@ -17,6 +17,7 @@
     "createTheme",
     "createThemeFromColorSeed",
     "defaultTheme",
+    "hydrateRoot",
     "useTheme"
   ],
   "componentImportPattern": "@contsulia/weave/components/<ComponentName>",

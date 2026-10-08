@@ -1,9 +1,10 @@
-import { cloneElement, useInsertionEffect } from 'react'
+import { cloneElement } from 'react'
 import type { IconProps, IconStroke } from '../core/icon-types'
 import type { ViewProps } from '../core/view-types'
 import { ensureIconStylesheet } from '../renderers/dom/icon-stylesheet'
 import { resolveIconTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
+import { useStaticStylesheet } from '../renderers/dom/static-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { useViewHost } from './internal/use-view-host'
 
@@ -25,7 +26,7 @@ export function Icon(props: IconProps): import('react').JSX.Element {
 
   const { elementRef, className, inlineStyle, resolved } = useViewHost(hostProps)
 
-  useInsertionEffect(ensureIconStylesheet, [])
+  useStaticStylesheet(ensureIconStylesheet)
 
   const strokeWidth = STROKE_WIDTH[stroke]
   const content =

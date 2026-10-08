@@ -1,4 +1,5 @@
 import { type RefObject, useLayoutEffect } from 'react'
+import { isHTMLElement, isNode } from './dom-realm'
 
 function restoreAttribute(target: HTMLElement, name: string, value: string | null): void {
   if (value === null) {
@@ -31,9 +32,10 @@ export function useAnchoredTrigger({
   onKeyDown,
 }: AnchoredTriggerOptions): void {
   useLayoutEffect(() => {
-    const target = wrapperRef.current?.firstElementChild
+    const wrapper = wrapperRef.current
+    const target = wrapper?.firstElementChild
 
-    if (!(target instanceof HTMLElement)) {
+    if (wrapper === null || !isHTMLElement(target, wrapper.ownerDocument)) {
       targetRef.current = null
       return
     }
@@ -50,7 +52,7 @@ export function useAnchoredTrigger({
     target.setAttribute('aria-expanded', 'false')
 
     const eventBelongsToTarget = (event: Event) =>
-      event.target instanceof Node && target.contains(event.target)
+      isNode(event.target, document) && target.contains(event.target)
 
     const handleClick = (event: MouseEvent) => {
       if (eventBelongsToTarget(event)) {

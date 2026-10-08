@@ -1,4 +1,3 @@
-import { useInsertionEffect } from 'react'
 import type {
   ProgressDirection,
   ProgressMode,
@@ -11,6 +10,7 @@ import { ensureProgressStylesheet } from '../renderers/dom/progress-stylesheet'
 import { resolveProgressTheme } from '../renderers/dom/resolve-component-theme'
 import { resolveProgressStyle, resolveProgressValueStyle } from '../renderers/dom/resolve-progress'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
+import { useStaticStylesheet } from '../renderers/dom/static-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { useViewHost } from './internal/use-view-host'
 
@@ -39,7 +39,7 @@ function ProgressVisual({
   inverse = false,
   viewProps = {},
 }: ProgressVisualProps) {
-  useInsertionEffect(ensureProgressStylesheet, [])
+  useStaticStylesheet(ensureProgressStylesheet)
 
   const normalizedProgress = indeterminate ? undefined : Math.min(1, Math.max(0, progress ?? 0))
 

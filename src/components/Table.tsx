@@ -1,7 +1,8 @@
-import { useInsertionEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import type { TableProps } from '../core/table-types'
 import { resolveTableTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
+import { useStaticStylesheet } from '../renderers/dom/static-stylesheet'
 import { ensureTableStylesheet } from '../renderers/dom/table-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { TableContext } from './internal/table-context'
@@ -21,7 +22,7 @@ export function Table(props: TableProps): import('react').JSX.Element {
   const themeClassName = useRuntimeStyleClass('table-theme', themeDeclarations)
   const selection = useTableSelection(props)
 
-  useInsertionEffect(ensureTableStylesheet, [])
+  useStaticStylesheet(ensureTableStylesheet)
 
   const className = [
     'weave-table',

@@ -1,11 +1,13 @@
 import type { CSSProperties, RefObject } from 'react'
-import { useId, useImperativeHandle, useInsertionEffect, useLayoutEffect, useRef } from 'react'
+import { useId, useImperativeHandle, useLayoutEffect, useRef } from 'react'
 import type { SemanticReference, ViewProps } from '../../core/view-types'
 import { useBreakpointStylesheet } from '../../renderers/dom/breakpoint-stylesheet'
 import { type ResolvedDOMView, resolveDOMView } from '../../renderers/dom/resolve-view'
 import { useRuntimeStyleClass } from '../../renderers/dom/runtime-class'
+import { useStaticStylesheet } from '../../renderers/dom/static-stylesheet'
 import { ensureViewStylesheet } from '../../renderers/dom/view-stylesheet'
 import { useTheme } from '../../theme/theme-context'
+import { observeSemanticReferences } from './semantic-reference-observer'
 import { useViewAnimation } from './use-view-animation'
 import { useViewLayoutAnimation } from './use-view-layout-animation'
 import { useViewMotion } from './use-view-motion'
@@ -53,7 +55,7 @@ export function useViewHost<TElement extends HTMLElement>(
   componentName?: string,
   semanticOverrides?: SemanticAssociationOverrides,
 ): ViewHostResult<TElement> {
-  useInsertionEffect(ensureViewStylesheet, [])
+  useStaticStylesheet(ensureViewStylesheet)
 
   const { autoFocus, ref, className, style } = props
 
@@ -114,26 +116,17 @@ export function useViewHost<TElement extends HTMLElement>(
 
     sync()
 
-    const hasRefAssociation = Object.values(references).some((associationReferences) =>
-      associationReferences?.some(
-        (reference) => reference !== undefined && typeof reference !== 'string',
-      ),
+    const objectReferences = Object.values(references).flatMap(
+      (associationReferences) =>
+        associationReferences?.filter(
+          (reference): reference is RefObject<HTMLElement | null> =>
+            reference !== undefined && typeof reference !== 'string',
+        ) ?? [],
     )
 
-    if (!hasRefAssociation || typeof MutationObserver === 'undefined') return
+    if (objectReferences.length === 0) return
 
-    const root = host.ownerDocument.documentElement
-    if (root === null) return
-
-    const observer = new MutationObserver(sync)
-    observer.observe(root, {
-      subtree: true,
-      childList: true,
-      attributes: true,
-      attributeFilter: ['id'],
-    })
-
-    return () => observer.disconnect()
+    return observeSemanticReferences(host.ownerDocument, objectReferences, sync)
   }, [controls, describedBy, labelledBy, owns, semanticId, semanticOverrides])
 
   const { theme, reducedMotion } = useTheme()

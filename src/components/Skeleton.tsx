@@ -1,8 +1,8 @@
-import { useInsertionEffect } from 'react'
 import type { SkeletonProps } from '../core/skeleton-types'
 import { resolveSkeletonTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { ensureSkeletonStylesheet } from '../renderers/dom/skeleton-stylesheet'
+import { useStaticStylesheet } from '../renderers/dom/static-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { View } from './View'
 
@@ -11,7 +11,7 @@ export function Skeleton(props: SkeletonProps): import('react').JSX.Element {
   const { theme, reducedMotion } = useTheme()
   const themeClassName = useRuntimeStyleClass('skeleton-theme', resolveSkeletonTheme(theme))
 
-  useInsertionEffect(ensureSkeletonStylesheet, [])
+  useStaticStylesheet(ensureSkeletonStylesheet)
 
   return (
     <View

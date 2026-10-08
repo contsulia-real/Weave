@@ -1,9 +1,10 @@
-import { useInsertionEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import type { DividerProps } from '../core/divider-types'
 import { length } from '../core/values'
 import { ensureDividerStylesheet } from '../renderers/dom/divider-stylesheet'
 import { resolveDividerTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
+import { useStaticStylesheet } from '../renderers/dom/static-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { View } from './View'
 
@@ -12,7 +13,7 @@ export function Divider(props: DividerProps): import('react').JSX.Element {
   const { theme } = useTheme()
   const themeClassName = useRuntimeStyleClass('divider-theme', resolveDividerTheme(theme))
 
-  useInsertionEffect(ensureDividerStylesheet, [])
+  useStaticStylesheet(ensureDividerStylesheet)
 
   const semanticDeclarations = useMemo(
     () => ({

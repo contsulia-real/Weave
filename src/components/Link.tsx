@@ -1,9 +1,9 @@
-import { useInsertionEffect } from 'react'
 import type { LinkProps } from '../core/link-types'
 import type { ViewProps } from '../core/view-types'
 import { ensureLinkStylesheet } from '../renderers/dom/link-stylesheet'
 import { resolveLinkTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
+import { useStaticStylesheet } from '../renderers/dom/static-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { Icon } from './Icon'
 import { useViewHost } from './internal/use-view-host'
@@ -29,7 +29,7 @@ export function Link(props: LinkProps): import('react').JSX.Element {
   const hostProps: ViewProps<HTMLAnchorElement> = viewProps
   const { elementRef, className, inlineStyle, resolved } = useViewHost(hostProps)
 
-  useInsertionEffect(ensureLinkStylesheet, [])
+  useStaticStylesheet(ensureLinkStylesheet)
 
   return (
     <a
