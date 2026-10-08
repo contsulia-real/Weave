@@ -72,7 +72,8 @@ export const formsComponentExamples: Record<string, DocumentationComponentDocume
         {
           id: 'color-input',
           title: 'Color input',
-          description: 'Pick a color using the Weave palette, HSL sliders or HEX editor.',
+          description:
+            'Choose saturation and brightness in the color field, adjust hue using the Weave Slider, or edit the HEX value.',
           demo: 'Input/color-input',
         },
         {

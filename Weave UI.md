@@ -2387,7 +2387,7 @@ color
 
 不重新发明同义名称。
 
-`Input type="color"` 保留真实 `<input type="color">` 的原生 `name/FormData` 字段和标准 `#rrggbb` 值、受控/非受控与 form reset。点击真实输入框弹出 Weave 自定义 `Popover`，不调用浏览器原生选择器；弹窗复用 `Button` 色板、`Slider` 色相/饱和度/明度和 `Input` HEX 编辑器。更改颜色同步字段值和 `onChange`；disabled/readOnly 禁止交互，locale 与已有选择器相同。
+`Input type="color"` 保留真实 `<input type="color">` 的原生 `name/FormData` 字段和标准 `#rrggbb` 值、受控/非受控与 form reset。点击真实输入框弹出 Weave 自定义 `Popover`，不调用浏览器原生选择器；弹窗参照二维调色板：上方饱和度/亮度平面，下方使用 **无刻度点** 的默认 Weave `Slider` 作为彩虹色相条，配有颜色预览与 HEX 输入；可用时可通过浏览器原生 `EyeDropper` 吸取屏幕颜色。不显示会横向溢出的 Slider 文本标签，不给 Slider 传逐点 step，不复刻独立 Slider 外观。由于标准原生 `type=color` 的 `#rrggbb` 值不包含透明度，不呈现无法写入表单值的虚假 alpha 滑块。更改颜色同步字段值和 `onChange`；disabled/readOnly 禁止交互，locale 与已有选择器相同。
 
 `Input type="date"` 保持原生 Weave `Input type="date"` 日期分段编辑、原生 `min / max / required` 校验和 Input 原有的 `onChange` 语义；受控按 `value`、非受控按 `defaultValue` 交给真实 Input 处理，不添加只接受完整文本、延迟提交或草稿缓冲规则。自定义 `Popover` 仅由 Input 尾部的日历图标 `Button` 触发；点击输入区保留原生日期编辑，隐藏重复的原生日期 picker 图标。日历图标按钮直接复用 Input clear 按钮的 `weave-input__clear` 布局与 Weave `Button` 样式，不创建自己的定位。月份、年份可点击选择，支持按月、年和 12 年范围导航，翻页复用 Weave SVG 图标按钮。日历继续复用 `Popover` 的定位、portal、退出动效、点击外部关闭、Escape 与焦点恢复，以及 `Button`、`Grid`、`Text` 的既有主题。`onChange` 与表单值仍使用 `YYYY-MM-DD`；日历选择结果同步给 Input，`name` 由真实 Input 提交，非受控状态随原生 form reset 恢复，`disabled / readOnly` 禁止编辑与弹窗操作。日期类型的 Input 关闭内置清除按钮，日历仅在非必填时提供清除操作。
 

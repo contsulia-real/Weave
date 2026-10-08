@@ -8,7 +8,8 @@ export default function ColorInputDemo() {
           <Input type="color" name="accentColor" defaultValue="#e76b94" />
         </FormField>
         <Text typo="body-small" color="secondary">
-          Choose a swatch, adjust hue, saturation or lightness, or enter a HEX color.
+          Adjust saturation and brightness on the color field, use the hue slider, or enter a HEX
+          color.
         </Text>
       </Column>
     </Form>

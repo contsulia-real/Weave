@@ -1724,11 +1724,6 @@
     "zh-TW": "顏色輸入",
     "fr": "Saisie de couleur"
   },
-  "Pick a color using the Weave palette, HSL sliders or HEX editor.": {
-    "zh-CN": "通过 Weave 色板、HSL 滑块或 HEX 编辑器选择颜色。",
-    "zh-TW": "透過 Weave 色板、HSL 滑桿或 HEX 編輯器選擇顏色。",
-    "fr": "Choisissez une couleur avec la palette Weave, les curseurs HSL ou le champ HEX."
-  },
   "Controlled color": {
     "zh-CN": "受控颜色",
     "zh-TW": "受控顏色",
@@ -1738,5 +1733,15 @@
     "zh-CN": "使用 value 和 onChange 控制 #rrggbb 颜色值。",
     "zh-TW": "使用 value 和 onChange 控制 #rrggbb 顏色值。",
     "fr": "Contrôlez la couleur #rrggbb avec value et onChange."
+  },
+  "Choose saturation and brightness in the color field, adjust hue using the Weave Slider, or edit the HEX value.": {
+    "zh-CN": "在颜色平面中选择饱和度和亮度，通过 Weave Slider 调整色相，或编辑 HEX 值。",
+    "zh-TW": "在顏色平面中選擇飽和度和亮度，透過 Weave Slider 調整色相，或編輯 HEX 值。",
+    "fr": "Choisissez la saturation et la luminosité dans le sélecteur, réglez la teinte avec le Slider Weave ou modifiez la valeur HEX."
+  },
+  "Adjust saturation and brightness on the color field, use the hue slider, or enter a HEX color.": {
+    "zh-CN": "在颜色平面中调整饱和度和亮度，使用色相滑块，或输入 HEX 颜色。",
+    "zh-TW": "在顏色平面中調整飽和度和亮度，使用色相滑桿，或輸入 HEX 顏色。",
+    "fr": "Réglez la saturation et la luminosité, déplacez le curseur de teinte ou saisissez une couleur HEX."
   }
 }

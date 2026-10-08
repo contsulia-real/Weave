@@ -200,6 +200,71 @@ const stylesheet = `
   border-radius: var(--weave-input-radius);
 }
 
+.weave-color-picker__area {
+  overflow: hidden;
+  border: 1px solid var(--weave-input-border-color);
+  border-radius: var(--weave-input-radius);
+  cursor: crosshair;
+}
+
+.weave-color-picker__area:focus-visible {
+  outline: var(--weave-input-focus-outline-width, 2px) solid var(--weave-input-focus-outline-color, currentColor);
+  outline-offset: 2px;
+}
+
+.weave-color-picker__cursor {
+  width: 16px;
+  height: 16px;
+  border: 2px solid white;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.weave-color-picker__hue {
+  --weave-slider-width: 100%;
+  min-width: 0;
+}
+
+.weave-color-picker__hue .weave-slider-field {
+  width: 100%;
+}
+
+.weave-color-picker__hue .weave-slider__label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  white-space: nowrap;
+  border: 0;
+  clip-path: inset(50%);
+}
+
+.weave-color-picker__hue .weave-slider-control {
+  width: 100%;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.weave-color-picker__hue .weave-slider__range::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 0;
+  height: var(--weave-slider-track-height);
+  border-radius: var(--weave-radius-full);
+  background: linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
+  transform: translateY(-50%);
+}
+
+.weave-color-picker__hue .weave-slider__track {
+  background: transparent;
+  box-shadow: none;
+}
+
 :where(.weave-input__leading-icon),
 :where(.weave-input__trailing-icon) {
   position: absolute;
