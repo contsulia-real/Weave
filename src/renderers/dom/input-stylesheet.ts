@@ -148,6 +148,7 @@ const stylesheet = `
   translate: 0 -50%;
 }
 
+:where(.weave-input-root[data-weave-input-has-trailing-icon="true"] > .weave-input__clear),
 :where(.weave-input-root[data-weave-input-has-trailing-icon="true"] .weave-input__trailing-action .weave-input__clear),
 :where(.weave-input-root[data-weave-input-has-trailing-action="true"] > .weave-input__clear) {
   right:
