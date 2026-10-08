@@ -91,6 +91,7 @@ export function DocumentationControls({
           icon={themeIcon}
           viewProps={{
             label: t('docs.theme'),
+            depthCompensation: true,
           }}
         />
       </Popover>
@@ -121,6 +122,7 @@ export function DocumentationControls({
           icon={IconLanguage}
           viewProps={{
             label: t('docs.language'),
+            depthCompensation: true,
           }}
         />
       </Popover>

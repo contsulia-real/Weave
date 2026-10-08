@@ -575,7 +575,7 @@
         "trackShadow": "inset 0 1px 2px rgb(58 48 40 / 0.10), inset 0 0 0 1px rgb(58 48 40 / 0.05)",
         "thumbBackground": "surface",
         "thumbRadius": "full",
-        "thumbInset": 2,
+        "thumbInset": 3,
         "thumbShadow": "0 1px 2px rgb(58 48 40 / 0.18), 0 2px 4px rgb(58 48 40 / 0.08)",
         "thumbHoverShadow": "0 1px 2px rgb(58 48 40 / 0.22), 0 3px 6px rgb(58 48 40 / 0.12)",
         "thumbDragShrink": 0.68,
@@ -590,19 +590,19 @@
           "width": 32,
           "height": 18,
           "thumbSize": 14,
-          "shift": 12
+          "shift": 10
         },
         "medium": {
           "width": 40,
           "height": 24,
           "thumbSize": 20,
-          "shift": 14
+          "shift": 12
         },
         "large": {
           "width": 48,
           "height": 28,
           "thumbSize": 24,
-          "shift": 18
+          "shift": 16
         }
       },
       "states": {
