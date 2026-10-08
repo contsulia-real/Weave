@@ -23,7 +23,7 @@
   "componentImportPattern": "@contsulia/weave/components/<ComponentName>",
   "internalImportPattern": "@contsulia/weave/components/internal/*",
   "internalImportsPublic": false,
-  "publicComponentCount": 69,
+  "publicComponentCount": 68,
   "realExampleCount": 185,
   "rules": [
     {

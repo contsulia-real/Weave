@@ -349,18 +349,9 @@ const componentPropDescriptions = {
       'Aligns the title within the real middle grid region; it does not force absolute centering against the viewport.',
     trailing: 'Content rendered in the trailing action region.',
   },
-  Date: {
-    locale:
-      'BCP 47 language tag that overrides the document language for the calendar, weekday order, accessible date labels, and actions.',
-    value: 'Controlled date value in YYYY-MM-DD format.',
-    defaultValue: 'Initial uncontrolled date value in YYYY-MM-DD format.',
-    onChange: 'Receives the selected YYYY-MM-DD date string, or an empty string.',
-    min: 'Earliest allowed date in YYYY-MM-DD format.',
-    max: 'Latest allowed date in YYYY-MM-DD format.',
-    viewProps:
-      'Applies layout, style, accessibility, and the input ref to the calendar trigger field.',
-  },
   Input: {
+    locale:
+      'BCP 47 language tag overriding the document language for the calendar when type is date.',
     autoComplete: 'Passes the native autocomplete hint to the input or textarea host.',
     clearable:
       'Controls the built-in clear action for single-line Input. It defaults to true and is unavailable in multiline mode.',
@@ -390,7 +381,7 @@ const componentPropDescriptions = {
       'Non-interactive trailing icon for single-line Input. When clear is also visible, this icon remains the rightmost adornment.',
     trailingAction:
       'Interactive content rendered inside the trailing edge of a single-line Input, e.g. a calendar Popover trigger.',
-    type: 'Sets the native single-line input type. It is unavailable in multiline mode.',
+    type: 'Sets the native single-line input type. Date uses the Weave calendar popover while preserving native date editing.',
     value:
       'Controlled field value. When provided, the parent owns the rendered value and must update it from onChange.',
   },

@@ -16,6 +16,7 @@ import { useTheme } from '../theme/theme-context'
 import { Button } from './Button'
 import { AutoScrollbar } from './internal/AutoScrollbar'
 import { closeIcon } from './internal/control-icons'
+import { DateInput } from './internal/DateInput'
 import { formFieldAssociationOverrides, useFormFieldContext } from './internal/form-field-context'
 import { renderIconSource } from './internal/render-icon-source'
 import { useFormReset } from './internal/use-form-reset'
@@ -353,6 +354,10 @@ export function Input(props: InputProps): import('react').JSX.Element {
         viewProps={props.viewProps}
       />
     )
+  }
+
+  if (props.type === 'date') {
+    return <DateInput {...props} InputHost={SingleLineInput} />
   }
 
   return (

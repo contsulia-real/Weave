@@ -1,4 +1,9 @@
 {
+  "Date input": {
+    "zh-CN": "日期输入",
+    "zh-TW": "日期輸入",
+    "fr": "Saisie de date"
+  },
   "Controlled date": { "zh-CN": "受控日期", "zh-TW": "受控日期", "fr": "Date contrôlée" },
   "Use value and onChange to own the selected YYYY-MM-DD date.": {
     "zh-CN": "使用 value 和 onChange 管理所选的 YYYY-MM-DD 日期。",

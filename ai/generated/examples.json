@@ -996,61 +996,6 @@
       "source": "import { useState } from 'react'\nimport {\n  DataGrid,\n  type DataGridColumn,\n  type DataGridColumnWidths,\n  type DataGridSort,\n  type TableSelectedCell,\n} from '../../../index'\n\ninterface ProjectRow {\n  id: string\n  name: string\n  owner: string\n  score: number\n}\n\nconst rows: readonly ProjectRow[] = [\n  { id: 'atlas', name: 'Atlas', owner: 'Mina', score: 92 },\n  { id: 'borealis', name: 'Borealis', owner: 'Noah', score: 84 },\n  { id: 'cirrus', name: 'Cirrus', owner: 'Iris', score: 88 },\n]\n\nconst columns: readonly DataGridColumn<ProjectRow>[] = [\n  {\n    id: 'name',\n    header: 'Project',\n    cell: (row) => row.name,\n    sort: (left, right) => left.name.localeCompare(right.name),\n    minWidth: 120,\n    maxWidth: 240,\n    resizable: true,\n  },\n  {\n    id: 'owner',\n    header: 'Owner',\n    cell: (row) => row.owner,\n    sort: (left, right) => left.owner.localeCompare(right.owner),\n    minWidth: 120,\n    maxWidth: 220,\n    resizable: true,\n  },\n  {\n    id: 'score',\n    header: 'Score',\n    cell: (row) => row.score,\n    sort: (left, right) => left.score - right.score,\n    minWidth: 88,\n    maxWidth: 140,\n    resizable: true,\n  },\n]\n\nexport default function DataGridControlledStateDemo() {\n  const [sort, setSort] = useState<DataGridSort | null>({\n    columnId: 'score',\n    direction: 'desc',\n  })\n  const [columnWidths, setColumnWidths] = useState<DataGridColumnWidths>({\n    name: 160,\n    owner: 140,\n    score: 96,\n  })\n  const [selected, setSelected] = useState<readonly TableSelectedCell[]>([\n    { rowId: 'atlas', cellId: 'name' },\n  ])\n\n  return (\n    <DataGrid\n      columns={columns}\n      rows={rows}\n      dense\n      selectable\n      sort={sort}\n      onSortChange={setSort}\n      columnWidths={columnWidths}\n      onColumnWidthsChange={setColumnWidths}\n      selected={selected}\n      onSelect={setSelected}\n    />\n  )\n}"
     },
     {
-      "id": "Date/basic-usage",
-      "component": "Date",
-      "title": "Basic usage",
-      "components": ["Date", "Form", "FormField"],
-      "concepts": ["basic", "date", "field", "form", "usage"],
-      "documentationRoute": "/docs/components/Date",
-      "source": "import { Date, Form, FormField } from '../../../index'\n\nexport default function DateBasicUsageDemo() {\n  return (\n    <Form viewProps={{ width: 22 }}>\n      <FormField label=\"Appointment date\">\n        <Date name=\"appointment\" defaultValue=\"2026-10-09\" min=\"2026-01-01\" max=\"2026-12-31\" />\n      </FormField>\n    </Form>\n  )\n}"
-    },
-    {
-      "id": "Date/controlled-date",
-      "component": "Date",
-      "title": "Controlled date",
-      "description": "Use value and onChange to own the selected YYYY-MM-DD date.",
-      "components": ["Column", "Date", "Text"],
-      "concepts": [
-        "change",
-        "column",
-        "controlled",
-        "date",
-        "own",
-        "selected",
-        "text",
-        "value",
-        "yyyy"
-      ],
-      "documentationRoute": "/docs/components/Date",
-      "source": "import { useState } from 'react'\nimport { Column, Date, Text } from '../../../index'\n\nexport default function DateControlledDateDemo() {\n  const [value, setValue] = useState('2026-10-09')\n\n  return (\n    <Column gap={0.75} width={22}>\n      <Date value={value} onChange={setValue} viewProps={{ label: 'Selected date' }} />\n      <Text typo=\"body-small\" color=\"secondary\">\n        Value: {value || 'empty'}\n      </Text>\n    </Column>\n  )\n}"
-    },
-    {
-      "id": "Date/forced-locale",
-      "component": "Date",
-      "title": "Forced locale",
-      "description": "Override the document language for this calendar with locale, without changing the YYYY-MM-DD value.",
-      "components": ["Column", "Date", "SegmentedButton"],
-      "concepts": [
-        "button",
-        "calendar",
-        "changing",
-        "column",
-        "date",
-        "document",
-        "forced",
-        "language",
-        "locale",
-        "override",
-        "segmented",
-        "this",
-        "value",
-        "without",
-        "yyyy"
-      ],
-      "documentationRoute": "/docs/components/Date",
-      "source": "import { useState } from 'react'\nimport { Column, Date, SegmentedButton } from '../../../index'\n\nexport default function DateForcedLocaleDemo() {\n  const [locale, setLocale] = useState('fr')\n\n  return (\n    <Column gap={1} width={23}>\n      <SegmentedButton\n        selection=\"single\"\n        selected={locale}\n        onSelect={(next) => {\n          if (next !== null) setLocale(next)\n        }}\n        items={[\n          { id: 'en', children: 'English' },\n          { id: 'zh-CN', children: '简体中文' },\n          { id: 'zh-TW', children: '繁體中文' },\n          { id: 'fr', children: 'Français' },\n        ]}\n      />\n      <Date locale={locale} defaultValue=\"2026-10-09\" viewProps={{ label: 'Date' }} />\n    </Column>\n  )\n}"
-    },
-    {
       "id": "Dialog/basic-usage",
       "component": "Dialog",
       "title": "Basic usage",
@@ -1654,6 +1599,27 @@
       "source": "import { IconSearch, IconSparkles } from '@tabler/icons-react'\nimport { Input } from '../../../index'\n\nexport default function InputBasicUsageDemo() {\n  return (\n    <Input\n      type=\"search\"\n      defaultValue=\"Weave\"\n      placeholder=\"Search notes\"\n      leadingIcon={IconSearch}\n      trailingIcon={IconSparkles}\n      clearLabel=\"Clear search\"\n    />\n  )\n}"
     },
     {
+      "id": "Input/controlled-date",
+      "component": "Input",
+      "title": "Controlled date",
+      "description": "Use value and onChange to own the selected YYYY-MM-DD date.",
+      "components": ["Column", "Input", "Text"],
+      "concepts": [
+        "change",
+        "column",
+        "controlled",
+        "date",
+        "input",
+        "own",
+        "selected",
+        "text",
+        "value",
+        "yyyy"
+      ],
+      "documentationRoute": "/docs/components/Input",
+      "source": "import { useState } from 'react'\nimport { Column, Input, Text } from '../../../index'\n\nexport default function DateControlledDateDemo() {\n  const [value, setValue] = useState('2026-10-09')\n\n  return (\n    <Column gap={0.75} width={22}>\n      <Input type=\"date\" value={value} onChange={setValue} viewProps={{ label: 'Selected date' }} />\n      <Text typo=\"body-small\" color=\"secondary\">\n        Value: {value || 'empty'}\n      </Text>\n    </Column>\n  )\n}"
+    },
+    {
       "id": "Input/controlled-input",
       "component": "Input",
       "title": "Controlled input",
@@ -1678,6 +1644,56 @@
       ],
       "documentationRoute": "/docs/components/Input",
       "source": "import { useState } from 'react'\nimport { Column, Input, Text } from '../../../index'\n\nexport default function InputControlledInputDemo() {\n  const [value, setValue] = useState('Weave')\n\n  return (\n    <Column gap={0.75} width={20}>\n      <Input\n        value={value}\n        onChange={setValue}\n        name=\"project\"\n        autoComplete=\"off\"\n        maxLength={24}\n        placeholder=\"Project name\"\n      />\n      <Text typo=\"body-small\" color=\"secondary\">\n        Value: {value || 'empty'}\n      </Text>\n    </Column>\n  )\n}"
+    },
+    {
+      "id": "Input/date-input",
+      "component": "Input",
+      "title": "Date input",
+      "description": "A localized calendar popover with ISO date values, optional date limits and a locale override.",
+      "components": ["Form", "FormField", "Input"],
+      "concepts": [
+        "calendar",
+        "date",
+        "field",
+        "form",
+        "input",
+        "iso",
+        "limits",
+        "locale",
+        "localized",
+        "optional",
+        "override",
+        "popover",
+        "values"
+      ],
+      "documentationRoute": "/docs/components/Input",
+      "source": "import { Form, FormField, Input } from '../../../index'\n\nexport default function DateBasicUsageDemo() {\n  return (\n    <Form viewProps={{ width: 22 }}>\n      <FormField label=\"Appointment date\">\n        <Input\n          type=\"date\"\n          name=\"appointment\"\n          defaultValue=\"2026-10-09\"\n          min=\"2026-01-01\"\n          max=\"2026-12-31\"\n        />\n      </FormField>\n    </Form>\n  )\n}"
+    },
+    {
+      "id": "Input/forced-locale",
+      "component": "Input",
+      "title": "Forced locale",
+      "description": "Override the document language for this calendar with locale, without changing the YYYY-MM-DD value.",
+      "components": ["Column", "Input", "SegmentedButton"],
+      "concepts": [
+        "button",
+        "calendar",
+        "changing",
+        "column",
+        "document",
+        "forced",
+        "input",
+        "language",
+        "locale",
+        "override",
+        "segmented",
+        "this",
+        "value",
+        "without",
+        "yyyy"
+      ],
+      "documentationRoute": "/docs/components/Input",
+      "source": "import { useState } from 'react'\nimport { Column, Input, SegmentedButton } from '../../../index'\n\nexport default function DateForcedLocaleDemo() {\n  const [locale, setLocale] = useState('fr')\n\n  return (\n    <Column gap={1} width={23}>\n      <SegmentedButton\n        selection=\"single\"\n        selected={locale}\n        onSelect={(next) => {\n          if (next !== null) setLocale(next)\n        }}\n        items={[\n          { id: 'en', children: 'English' },\n          { id: 'zh-CN', children: '简体中文' },\n          { id: 'zh-TW', children: '繁體中文' },\n          { id: 'fr', children: 'Français' },\n        ]}\n      />\n      <Input type=\"date\" locale={locale} defaultValue=\"2026-10-09\" viewProps={{ label: 'Date' }} />\n    </Column>\n  )\n}"
     },
     {
       "id": "Input/form-states",

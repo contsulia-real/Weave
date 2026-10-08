@@ -37,6 +37,8 @@ export type InputProps =
       type?: InputType
       min?: string
       max?: string
+      /** BCP 47 language tag for the calendar when type is date; otherwise ignored. */
+      locale?: string
       clearable?: boolean
       clearLabel?: string
       leadingIcon?: InputIcon

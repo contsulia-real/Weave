@@ -780,8 +780,6 @@
         "Checkbox/basic-usage",
         "Checkbox/indeterminate-parent",
         "Combobox/controlled-values",
-        "Date/controlled-date",
-        "Date/forced-locale",
         "Dialog/modal-dialog",
         "Dialog/non-modal-dialog",
         "Divider/spaced-divider",
@@ -794,7 +792,9 @@
         "Drawer/right-drawer",
         "Form/native-validation",
         "Image/blob-events",
+        "Input/controlled-date",
         "Input/controlled-input",
+        "Input/forced-locale",
         "Input/form-states",
         "Layout/absolute",
         "Layout/column",
@@ -1201,93 +1201,6 @@
         }
       ]
     },
-    "Date": {
-      "name": "Date",
-      "import": "import { Date } from '@contsulia/weave/components/Date'",
-      "importPath": "@contsulia/weave/components/Date",
-      "category": "forms-status",
-      "intent": "A localized calendar popover with ISO date values, optional date limits and a locale override.",
-      "preferWhen": [],
-      "avoidWhen": [],
-      "alternatives": [],
-      "relationship": {
-        "demoParent": null,
-        "standaloneDocumentationPage": true
-      },
-      "viewPropsMode": "nested",
-      "nativeProps": false,
-      "documentationRoute": "/docs/components/Date",
-      "apiRoute": "/docs/components-api/Date",
-      "examples": ["Date/basic-usage", "Date/controlled-date", "Date/forced-locale"],
-      "props": [
-        {
-          "name": "autoComplete",
-          "description": "",
-          "type": "string | undefined",
-          "optional": true
-        },
-        {
-          "name": "defaultValue",
-          "description": "Initial uncontrolled date value in YYYY-MM-DD format.",
-          "type": "string | undefined",
-          "optional": true
-        },
-        {
-          "name": "disabled",
-          "description": "",
-          "type": "boolean | undefined",
-          "optional": true
-        },
-        {
-          "name": "locale",
-          "description": "BCP 47 language tag. Overrides the current document language for this Date.",
-          "type": "string | undefined",
-          "optional": true
-        },
-        {
-          "name": "max",
-          "description": "Latest allowed date in YYYY-MM-DD format.",
-          "type": "string | undefined",
-          "optional": true
-        },
-        {
-          "name": "min",
-          "description": "Earliest allowed date in YYYY-MM-DD format.",
-          "type": "string | undefined",
-          "optional": true
-        },
-        {
-          "name": "name",
-          "description": "",
-          "type": "string | undefined",
-          "optional": true
-        },
-        {
-          "name": "onChange",
-          "description": "Receives the selected YYYY-MM-DD date string, or an empty string.",
-          "type": "((value: string) => void) | undefined",
-          "optional": true
-        },
-        {
-          "name": "readOnly",
-          "description": "",
-          "type": "boolean | undefined",
-          "optional": true
-        },
-        {
-          "name": "required",
-          "description": "",
-          "type": "boolean | undefined",
-          "optional": true
-        },
-        {
-          "name": "value",
-          "description": "Controlled date value in YYYY-MM-DD format.",
-          "type": "string | undefined",
-          "optional": true
-        }
-      ]
-    },
     "Dialog": {
       "name": "Dialog",
       "import": "import { Dialog } from '@contsulia/weave/components/Dialog'",
@@ -1640,13 +1553,13 @@
       "apiRoute": "/docs/components-api/Form",
       "examples": [
         "Button/form-actions",
-        "Date/basic-usage",
         "Form/basic-usage",
         "Form/explicit-field-parts",
         "Form/field-metadata",
         "Form/fieldset-and-legend",
         "Form/native-validation",
-        "Form/submit-and-reset"
+        "Form/submit-and-reset",
+        "Input/date-input"
       ],
       "props": [
         {
@@ -1741,11 +1654,11 @@
       "documentationRoute": "/docs/components/Form",
       "apiRoute": "/docs/components-api/FormField",
       "examples": [
-        "Date/basic-usage",
         "Form/basic-usage",
         "Form/explicit-field-parts",
         "Form/field-metadata",
-        "Form/submit-and-reset"
+        "Form/submit-and-reset",
+        "Input/date-input"
       ],
       "props": [
         {
@@ -2033,7 +1946,10 @@
         "Form/native-validation",
         "Form/submit-and-reset",
         "Input/basic-usage",
+        "Input/controlled-date",
         "Input/controlled-input",
+        "Input/date-input",
+        "Input/forced-locale",
         "Input/form-states",
         "Input/multiline-input",
         "Popover/focused-popover"
@@ -2073,6 +1989,12 @@
           "name": "leadingIcon",
           "description": "Non-interactive leading icon for single-line Input. It is unavailable in multiline mode.",
           "type": "InputIcon | undefined",
+          "optional": true
+        },
+        {
+          "name": "locale",
+          "description": "BCP 47 language tag for the calendar when type is date; otherwise ignored.",
+          "type": "string | undefined",
           "optional": true
         },
         {
@@ -2161,7 +2083,7 @@
         },
         {
           "name": "type",
-          "description": "Sets the native single-line input type. It is unavailable in multiline mode.",
+          "description": "Sets the native single-line input type. Date uses the Weave calendar popover while preserving native date editing.",
           "type": "InputType | undefined",
           "optional": true
         },
@@ -3127,7 +3049,7 @@
       "documentationRoute": "/docs/components/SegmentedButton",
       "apiRoute": "/docs/components-api/SegmentedButton",
       "examples": [
-        "Date/forced-locale",
+        "Input/forced-locale",
         "SegmentedButton/action-group",
         "SegmentedButton/controlled-selection",
         "SegmentedButton/default-selection",
@@ -4424,7 +4346,6 @@
         "Combobox/controlled-values",
         "Combobox/empty-search-state",
         "Combobox/searchable-rich-options",
-        "Date/controlled-date",
         "Dialog/basic-usage",
         "Dialog/modal-dialog",
         "Dialog/non-modal-dialog",
@@ -4440,6 +4361,7 @@
         "Form/submit-and-reset",
         "Icon/custom-svg",
         "Image/blob-events",
+        "Input/controlled-date",
         "Input/controlled-input",
         "Layout/absolute",
         "Layout/grid",

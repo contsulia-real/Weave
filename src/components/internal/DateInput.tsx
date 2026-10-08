@@ -1,17 +1,21 @@
 import { useCallback, useRef, useState } from 'react'
-import type { DateProps } from '../core/date-types'
-import { Button } from './Button'
-import { Column } from './Column'
-import { Grid } from './Grid'
-import { Input } from './Input'
-import { assignRef } from './internal/assign-ref'
-import { calendarIcon, chevronLeftIcon, chevronRightIcon } from './internal/control-icons'
-import { useDateLocalization } from './internal/date-localization'
-import { useFormFieldContext } from './internal/form-field-context'
-import { useFormReset } from './internal/use-form-reset'
-import { Popover } from './Popover'
-import { Row } from './Row'
-import { Text } from './Text'
+import type { InputProps } from '../../core/input-types'
+import { Button } from '../Button'
+import { Column } from '../Column'
+import { Grid } from '../Grid'
+import { Popover } from '../Popover'
+import { Row } from '../Row'
+import { Text } from '../Text'
+import { assignRef } from './assign-ref'
+import { calendarIcon, chevronLeftIcon, chevronRightIcon } from './control-icons'
+import { useDateLocalization } from './date-localization'
+import { useFormFieldContext } from './form-field-context'
+import { useFormReset } from './use-form-reset'
+
+type SingleLineProps = Extract<InputProps, { multiline?: false }>
+type DateInputProps = SingleLineProps & {
+  InputHost: (props: SingleLineProps) => import('react').JSX.Element
+}
 
 type CalendarPanel = 'days' | 'months' | 'years'
 
@@ -37,7 +41,8 @@ function monthOf(value: string): number {
   return date.getUTCFullYear() * 12 + date.getUTCMonth()
 }
 
-export function Date({
+export function DateInput({
+  InputHost,
   value,
   defaultValue = '',
   onChange,
@@ -50,7 +55,8 @@ export function Date({
   autoComplete,
   locale,
   viewProps = {},
-}: DateProps): import('react').JSX.Element {
+  ...inputProps
+}: DateInputProps): import('react').JSX.Element {
   const {
     locale: resolvedLocale,
     messages,
@@ -62,10 +68,10 @@ export function Date({
     dayFormatter,
   } = useDateLocalization(locale)
   const controlled = value !== undefined
-  const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue)
-  const currentValue = controlled ? value : uncontrolledValue
+  const [uncontrolledValue, setUncontrolledValue] = useState(String(defaultValue ?? ''))
+  const currentValue = controlled ? String(value ?? '') : uncontrolledValue
   const [open, setOpen] = useState(false)
-  const [month, setMonth] = useState(() => monthOf(value ?? defaultValue))
+  const [month, setMonth] = useState(() => monthOf(String(value ?? defaultValue ?? '')))
   const [panel, setPanel] = useState<CalendarPanel>('days')
   const inputRef = useRef<HTMLInputElement>(null)
   const minValue = min !== undefined && parseDate(min) !== null ? min : undefined
@@ -82,8 +88,8 @@ export function Date({
   }
 
   const reset = useCallback(() => {
-    if (!controlled) setUncontrolledValue(defaultValue)
-    setMonth(monthOf(controlled ? value : defaultValue))
+    if (!controlled) setUncontrolledValue(String(defaultValue ?? ''))
+    setMonth(monthOf(String(controlled ? value : (defaultValue ?? ''))))
     setPanel('days')
     setOpen(false)
   }, [controlled, defaultValue, value])
@@ -178,7 +184,8 @@ export function Date({
     )
 
   return (
-    <Input
+    <InputHost
+      {...inputProps}
       type="date"
       value={value}
       defaultValue={controlled ? undefined : defaultValue}

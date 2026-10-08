@@ -14,7 +14,6 @@ export { Column } from './components/Column'
 export { Combobox } from './components/Combobox'
 export { ComboboxOption } from './components/ComboboxOption'
 export { DataGrid } from './components/DataGrid'
-export { Date } from './components/Date'
 export { Dialog } from './components/Dialog'
 export { Divider } from './components/Divider'
 export { Drawer } from './components/Drawer'
@@ -148,7 +147,6 @@ export type {
   DataGridSort,
   DataGridSortDirection,
 } from './core/data-grid-types'
-export type { DateProps } from './core/date-types'
 export type {
   DialogProps,
   DialogViewProps,

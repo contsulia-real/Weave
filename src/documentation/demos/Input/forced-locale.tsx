@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Column, Date, SegmentedButton } from '../../../index'
+import { Column, Input, SegmentedButton } from '../../../index'
 
 export default function DateForcedLocaleDemo() {
   const [locale, setLocale] = useState('fr')
@@ -19,7 +19,7 @@ export default function DateForcedLocaleDemo() {
           { id: 'fr', children: 'Français' },
         ]}
       />
-      <Date locale={locale} defaultValue="2026-10-09" viewProps={{ label: 'Date' }} />
+      <Input type="date" locale={locale} defaultValue="2026-10-09" viewProps={{ label: 'Date' }} />
     </Column>
   )
 }

@@ -11,6 +11,26 @@ export const formsComponentExamples: Record<string, DocumentationComponentDocume
       examples: [
         basicExample('Input/basic-usage'),
         {
+          id: 'date-input',
+          title: 'Date input',
+          description:
+            'A localized calendar popover with ISO date values, optional date limits and a locale override.',
+          demo: 'Input/date-input',
+        },
+        {
+          id: 'controlled-date',
+          title: 'Controlled date',
+          description: 'Use value and onChange to own the selected YYYY-MM-DD date.',
+          demo: 'Input/controlled-date',
+        },
+        {
+          id: 'forced-locale',
+          title: 'Forced locale',
+          description:
+            'Override the document language for this calendar with locale, without changing the YYYY-MM-DD value.',
+          demo: 'Input/forced-locale',
+        },
+        {
           id: 'controlled-input',
           title: 'Controlled input',
           description:
@@ -30,26 +50,6 @@ export const formsComponentExamples: Record<string, DocumentationComponentDocume
           description:
             'Required, read-only, and disabled fields keep their native semantics while sharing the same field styling.',
           demo: 'Input/form-states',
-        },
-      ],
-    },
-    Date: {
-      description:
-        'A localized calendar popover with ISO date values, optional date limits and a locale override.',
-      examples: [
-        basicExample('Date/basic-usage'),
-        {
-          id: 'controlled-date',
-          title: 'Controlled date',
-          description: 'Use value and onChange to own the selected YYYY-MM-DD date.',
-          demo: 'Date/controlled-date',
-        },
-        {
-          id: 'forced-locale',
-          title: 'Forced locale',
-          description:
-            'Override the document language for this calendar with locale, without changing the YYYY-MM-DD value.',
-          demo: 'Date/forced-locale',
         },
       ],
     },

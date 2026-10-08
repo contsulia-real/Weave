@@ -113,13 +113,6 @@
       "usesViewProps": false,
       "props": "r388c50238306"
     },
-    "Date": {
-      "importPath": "@contsulia/weave/components/Date",
-      "nativeProps": false,
-      "hasViewProps": true,
-      "usesViewProps": false,
-      "props": "re3102e54ae32"
-    },
     "Dialog": {
       "importPath": "@contsulia/weave/components/Dialog",
       "nativeProps": false,
@@ -223,7 +216,7 @@
       "nativeProps": false,
       "hasViewProps": true,
       "usesViewProps": false,
-      "props": "rc7c6980cea09"
+      "props": "r4bcbde17cd6a"
     },
     "Link": {
       "importPath": "@contsulia/weave/components/Link",
@@ -604,19 +597,6 @@
       "p0e219698bb16",
       "pc70c374b423f"
     ],
-    "re3102e54ae32": [
-      "pcb880df2e36d",
-      "p88f3a8cf4624",
-      "p531a9289d2ce",
-      "pb25f3edb6c33",
-      "p0bac469946de",
-      "p79b846b8c1a4",
-      "p787fdeeaf18c",
-      "pdbe70e973631",
-      "pf627c6537a40",
-      "pe7277831d031",
-      "pa103a179fe92"
-    ],
     "r656bb76abd36": [
       "p9228bbb6f974",
       "pa964554c8e8c",
@@ -682,13 +662,14 @@
       "pdb938e985939",
       "p56b319ce7534"
     ],
-    "rc7c6980cea09": [
+    "r4bcbde17cd6a": [
       "p09dfda480597",
       "p1991f3528ab9",
       "p2541cc34f243",
       "pacfbc3a0393d",
       "peca00c66d21e",
       "p84e214bf1fec",
+      "pbaa02d958d53",
       "p5a18a4ef7ce3",
       "pe86b218f8316",
       "p072781055457",
@@ -703,7 +684,7 @@
       "p9a2bb9672e5c",
       "p997eede96271",
       "p1b61d78dec8b",
-      "pb3c5568d4edf",
+      "pac0e13b5f75d",
       "pebdbfdb46a40"
     ],
     "rcf9e50bc3992": [
@@ -1811,72 +1792,6 @@
       "type": "boolean | undefined",
       "optional": true
     },
-    "pcb880df2e36d": {
-      "name": "autoComplete",
-      "description": "",
-      "type": "string | undefined",
-      "optional": true
-    },
-    "p88f3a8cf4624": {
-      "name": "defaultValue",
-      "description": "Initial uncontrolled date value in YYYY-MM-DD format.",
-      "type": "string | undefined",
-      "optional": true
-    },
-    "p531a9289d2ce": {
-      "name": "disabled",
-      "description": "",
-      "type": "boolean | undefined",
-      "optional": true
-    },
-    "pb25f3edb6c33": {
-      "name": "locale",
-      "description": "BCP 47 language tag. Overrides the current document language for this Date.",
-      "type": "string | undefined",
-      "optional": true
-    },
-    "p0bac469946de": {
-      "name": "max",
-      "description": "Latest allowed date in YYYY-MM-DD format.",
-      "type": "string | undefined",
-      "optional": true
-    },
-    "p79b846b8c1a4": {
-      "name": "min",
-      "description": "Earliest allowed date in YYYY-MM-DD format.",
-      "type": "string | undefined",
-      "optional": true
-    },
-    "p787fdeeaf18c": {
-      "name": "name",
-      "description": "",
-      "type": "string | undefined",
-      "optional": true
-    },
-    "pdbe70e973631": {
-      "name": "onChange",
-      "description": "Receives the selected YYYY-MM-DD date string, or an empty string.",
-      "type": "((value: string) => void) | undefined",
-      "optional": true
-    },
-    "pf627c6537a40": {
-      "name": "readOnly",
-      "description": "",
-      "type": "boolean | undefined",
-      "optional": true
-    },
-    "pe7277831d031": {
-      "name": "required",
-      "description": "",
-      "type": "boolean | undefined",
-      "optional": true
-    },
-    "pa103a179fe92": {
-      "name": "value",
-      "description": "Controlled date value in YYYY-MM-DD format.",
-      "type": "string | undefined",
-      "optional": true
-    },
     "p9228bbb6f974": {
       "name": "autoFocus",
       "description": "Non-modal only. Forwards to Popover and controls whether opening moves focus into the dialog content.",
@@ -2297,6 +2212,12 @@
       "type": "InputIcon | undefined",
       "optional": true
     },
+    "pbaa02d958d53": {
+      "name": "locale",
+      "description": "BCP 47 language tag for the calendar when type is date; otherwise ignored.",
+      "type": "string | undefined",
+      "optional": true
+    },
     "p5a18a4ef7ce3": {
       "name": "max",
       "description": "Sets the native upper value constraint on supported single-line input types.",
@@ -2381,9 +2302,9 @@
       "type": "InputIcon | undefined",
       "optional": true
     },
-    "pb3c5568d4edf": {
+    "pac0e13b5f75d": {
       "name": "type",
-      "description": "Sets the native single-line input type. It is unavailable in multiline mode.",
+      "description": "Sets the native single-line input type. Date uses the Weave calendar popover while preserving native date editing.",
       "type": "InputType | undefined",
       "optional": true
     },

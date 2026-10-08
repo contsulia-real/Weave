@@ -44,7 +44,6 @@ const componentNavigationSections: readonly DocumentationNavigationSectionDefini
   ]),
   componentSection('forms-status', 'docs.nav.formsStatus', [
     'Input',
-    'Date',
     'Select',
     'Combobox',
     'Slider',
