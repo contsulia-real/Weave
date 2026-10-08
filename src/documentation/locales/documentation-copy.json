@@ -1,4 +1,21 @@
 {
+  "Controlled date": { "zh-CN": "受控日期", "zh-TW": "受控日期", "fr": "Date contrôlée" },
+  "Use value and onChange to own the selected YYYY-MM-DD date.": {
+    "zh-CN": "使用 value 和 onChange 管理所选的 YYYY-MM-DD 日期。",
+    "zh-TW": "使用 value 和 onChange 管理選取的 YYYY-MM-DD 日期。",
+    "fr": "Utilisez value et onChange pour gérer la date sélectionnée au format YYYY-MM-DD."
+  },
+  "Forced locale": { "zh-CN": "指定语言", "zh-TW": "指定語言", "fr": "Langue imposée" },
+  "Override the document language for this calendar with locale, without changing the YYYY-MM-DD value.": {
+    "zh-CN": "通过 locale 为日历指定语言，不改变 YYYY-MM-DD 日期值。",
+    "zh-TW": "透過 locale 為日曆指定語言，不改變 YYYY-MM-DD 日期值。",
+    "fr": "Définissez la langue du calendrier avec locale sans modifier la valeur YYYY-MM-DD."
+  },
+  "A localized calendar popover with ISO date values, optional date limits and a locale override.": {
+    "zh-CN": "支持国际化的日历弹窗，使用 ISO 日期值，支持日期范围限制和语言覆盖。",
+    "zh-TW": "支援國際化的日曆彈窗，使用 ISO 日期值，支援日期範圍限制及語言覆寫。",
+    "fr": "Calendrier contextuel localisé utilisant des dates ISO, avec limites facultatives et langue configurable."
+  },
   "Basic usage": {
     "zh-CN": "基本用法",
     "zh-TW": "基本用法",

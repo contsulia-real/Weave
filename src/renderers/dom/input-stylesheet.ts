@@ -117,18 +117,26 @@ const stylesheet = `
 
 :where(
   .weave-input[data-weave-input-has-clear="true"],
-  .weave-input[data-weave-input-has-trailing-icon="true"]
+  .weave-input[data-weave-input-has-trailing-icon="true"],
+  .weave-input[data-weave-input-has-trailing-action="true"]
 ) {
   --weave-component-padding-right: var(--weave-input-min-height);
 }
 
 :where(
-  .weave-input[data-weave-input-has-clear="true"][data-weave-input-has-trailing-icon="true"]
+  .weave-input[data-weave-input-has-clear="true"][data-weave-input-has-trailing-icon="true"],
+  .weave-input[data-weave-input-has-clear="true"][data-weave-input-has-trailing-action="true"],
+  .weave-input[data-weave-input-has-trailing-icon="true"][data-weave-input-has-trailing-action="true"]
 ) {
   --weave-component-padding-right: calc(var(--weave-input-min-height) * 2);
 }
 
-:where(.weave-input__clear) {
+:where(.weave-input[data-weave-input-has-clear="true"][data-weave-input-has-trailing-icon="true"][data-weave-input-has-trailing-action="true"]) {
+  --weave-component-padding-right: calc(var(--weave-input-min-height) * 3);
+}
+
+:where(.weave-input__clear),
+:where(.weave-input__trailing-action) {
   position: absolute;
   top: 50%;
   right:
@@ -141,7 +149,8 @@ const stylesheet = `
   translate: 0 -50%;
 }
 
-:where(.weave-input-root[data-weave-input-has-trailing-icon="true"] .weave-input__clear) {
+:where(.weave-input-root[data-weave-input-has-trailing-icon="true"] .weave-input__trailing-action),
+:where(.weave-input-root[data-weave-input-has-trailing-action="true"] .weave-input__clear) {
   right:
     calc(
       var(--weave-input-min-height) +
@@ -150,6 +159,13 @@ const stylesheet = `
         var(--weave-button-min-height)
       ) / 2
     );
+}
+
+:where(.weave-input-root[data-weave-input-has-trailing-icon="true"][data-weave-input-has-trailing-action="true"] .weave-input__clear) {
+  right: calc(
+    var(--weave-input-min-height) * 2 +
+    (var(--weave-input-min-height) - var(--weave-button-min-height)) / 2
+  );
 }
 
 :where(.weave-input__leading-icon),

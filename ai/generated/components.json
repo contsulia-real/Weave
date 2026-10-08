@@ -2148,6 +2148,12 @@
           "optional": true
         },
         {
+          "name": "trailingAction",
+          "description": "A focusable action displayed inside the trailing edge of a single-line Input.",
+          "type": "ReactNode",
+          "optional": true
+        },
+        {
           "name": "trailingIcon",
           "description": "Non-interactive trailing icon for single-line Input. When clear is also visible, this icon remains the rightmost adornment.",
           "type": "InputIcon | undefined",

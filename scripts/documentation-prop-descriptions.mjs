@@ -388,6 +388,8 @@ const componentPropDescriptions = {
     rows: 'Sets the visible textarea row count in multiline mode.',
     trailingIcon:
       'Non-interactive trailing icon for single-line Input. When clear is also visible, this icon remains the rightmost adornment.',
+    trailingAction:
+      'Interactive content rendered inside the trailing edge of a single-line Input, e.g. a calendar Popover trigger.',
     type: 'Sets the native single-line input type. It is unavailable in multiline mode.',
     value:
       'Controlled field value. When provided, the parent owns the rendered value and must update it from onChange.',

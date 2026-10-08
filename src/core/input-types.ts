@@ -1,4 +1,4 @@
-import type { Ref } from 'react'
+import type { ReactNode, Ref } from 'react'
 import type { IconComponent, IconSvg } from './icon-types'
 import type { ViewCoreProps, ViewDynamicBreakpointProps } from './view-types'
 
@@ -41,6 +41,8 @@ export type InputProps =
       clearLabel?: string
       leadingIcon?: InputIcon
       trailingIcon?: InputIcon
+      /** A focusable action displayed inside the trailing edge of a single-line Input. */
+      trailingAction?: ReactNode
       viewProps?: InputViewProps<HTMLInputElement>
     })
   | (InputCommonProps & {
@@ -51,6 +53,7 @@ export type InputProps =
       clearLabel?: never
       leadingIcon?: never
       trailingIcon?: never
+      trailingAction?: never
       viewProps?: InputViewProps<HTMLTextAreaElement>
     })
 

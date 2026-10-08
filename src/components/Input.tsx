@@ -1,4 +1,4 @@
-import type { ChangeEvent, CSSProperties } from 'react'
+import type { ChangeEvent, CSSProperties, ReactNode } from 'react'
 import { useCallback, useState } from 'react'
 import type {
   InputIcon,
@@ -59,6 +59,7 @@ interface SingleLineInputHostProps {
   clearLabel?: string
   leadingIcon?: InputIcon
   trailingIcon?: InputIcon
+  trailingAction?: ReactNode
   viewProps?: SingleLineInputViewProps
 }
 
@@ -82,6 +83,7 @@ function SingleLineInput({
   clearLabel = 'Clear input',
   leadingIcon,
   trailingIcon,
+  trailingAction,
   viewProps = {},
 }: SingleLineInputHostProps) {
   const field = useFormFieldContext()
@@ -106,7 +108,8 @@ function SingleLineInput({
   const hasClear = clearable && !disabled && !readOnly && currentText.length > 0
   const hasLeadingIcon = leadingIcon !== undefined
   const hasTrailingIcon = trailingIcon !== undefined
-  const usesAdornmentRoot = clearable || hasLeadingIcon || hasTrailingIcon
+  const hasTrailingAction = trailingAction !== undefined
+  const usesAdornmentRoot = clearable || hasLeadingIcon || hasTrailingIcon || hasTrailingAction
   const reset = useCallback(() => {
     const next = String(controlled ? (value ?? '') : (defaultValue ?? ''))
 
@@ -168,6 +171,7 @@ function SingleLineInput({
       data-weave-input-has-clear={hasClear ? 'true' : undefined}
       data-weave-input-has-leading-icon={hasLeadingIcon ? 'true' : undefined}
       data-weave-input-has-trailing-icon={hasTrailingIcon ? 'true' : undefined}
+      data-weave-input-has-trailing-action={hasTrailingAction ? 'true' : undefined}
       data-weave-layout={resolved.layout}
       className={['weave-input', themeClassName, className].filter(Boolean).join(' ')}
       style={inlineStyle}
@@ -178,14 +182,17 @@ function SingleLineInput({
     return input
   }
 
+  const AdornmentRoot = hasTrailingAction ? 'div' : 'span'
+
   return (
-    <span
+    <AdornmentRoot
       className={['weave-input-root', themeClassName].filter(Boolean).join(' ')}
       data-weave-input-root=""
       data-weave-input-root-fill={viewProps.width === 'fill' ? 'true' : undefined}
       data-weave-input-has-clear={hasClear ? 'true' : 'false'}
       data-weave-input-has-leading-icon={hasLeadingIcon ? 'true' : 'false'}
       data-weave-input-has-trailing-icon={hasTrailingIcon ? 'true' : 'false'}
+      data-weave-input-has-trailing-action={hasTrailingAction ? 'true' : 'false'}
     >
       {leadingIcon === undefined ? null : (
         <span className="weave-input__leading-icon" aria-hidden="true">
@@ -211,12 +218,16 @@ function SingleLineInput({
         />
       ) : null}
 
+      {trailingAction === undefined ? null : (
+        <div className="weave-input__trailing-action">{trailingAction}</div>
+      )}
+
       {trailingIcon === undefined ? null : (
         <span className="weave-input__trailing-icon" aria-hidden="true">
           {renderIconSource(trailingIcon, { size: 'small' })}
         </span>
       )}
-    </span>
+    </AdornmentRoot>
   )
 }
 
@@ -365,6 +376,7 @@ export function Input(props: InputProps): import('react').JSX.Element {
       clearLabel={props.clearLabel}
       leadingIcon={props.leadingIcon}
       trailingIcon={props.trailingIcon}
+      trailingAction={props.trailingAction}
       viewProps={props.viewProps}
     />
   )

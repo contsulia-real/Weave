@@ -2380,7 +2380,7 @@ date
 
 不重新发明同义名称。
 
-`Date` 通过阻止直接文本编辑的 `Input type="text"` 宿主触发 Weave `Popover` 自定义日历弹窗，不使用浏览器原生日期选择器。弹窗直接复用 `Popover` 的定位、portal、退出动效、点击外部关闭、Escape 与焦点恢复，以及 `Button`、`Grid`、`Text` 的既有主题和交互。月份可以向前／后导航，日期按周排列，选中日期后关闭弹窗并调用 `onChange`。`value / defaultValue / onChange` 继续使用 `YYYY-MM-DD` 字符串；`min / max` 在日历中限制可选日期和月份；`name / required` 通过真实文本 Input 参与表单提交和原生必填校验，非法日期和超出 min/max 范围的值使用原生 custom validity，非受控状态随原生 form reset 恢复，`disabled / readOnly` 禁止弹出和选择。Date 不显示 Input 自定义清除按钮，日历在非必填时提供清除操作。
+`Date` 使用可手动编辑的 Weave `Input type="text"`，并通过 Input 内的 `trailingAction` 挂载 Weave 日历图标 `Button` 作为 `Popover` 唯一触发器；点击输入区只编辑文字，不弹出日历。手动键入时保留尚未完成的文本，只有完整且符合 `min/max` 的 `YYYY-MM-DD` 或清空文本才更新选中值并调用 `onChange`，不完整或越界内容使用原生 custom validity 提示。日历标题的月份和年份分别可点击，进入月份与年份选择网格，可按年或 12 年分组翻页；导航使用 Weave 图标按钮而不是字符。日历继续复用 `Popover` 的定位、portal、退出动效、点击外部关闭、Escape 与焦点恢复，以及 `Button`、`Grid`、`Text` 的既有主题和交互。`value / defaultValue / onChange` 与 `FormData` 的已提交日期继续使用 `YYYY-MM-DD`；`name / required` 由真实文本 Input 参与表单提交和原生必填校验，非受控状态随原生 form reset 恢复，`disabled / readOnly` 禁止编辑、弹出和选择。Date 关闭 Input 的内置清除按钮，日历在非必填时提供清除操作。
 
 `Date.locale?: string` 接受 BCP 47 语言标签（例如 `zh-CN`、`zh-TW`、`en`、`fr`），显式值优先于页面语言；不传时读取 `<html lang>`，并响应其运行时变化（Documentation 的 i18next 会同步该属性）。月份标题、星期标题、每周起始日、完整日期辅助标签、弹窗操作和日期校验提示使用有效语言；四种 Documentation 语言均有完整内置操作文案，其他有效语言的日期使用 `Intl`，操作文案回退到英文。`value / defaultValue / onChange / FormData` 始终保持 `YYYY-MM-DD`，语言切换不改变实际值。
 
@@ -2389,6 +2389,8 @@ date
 Input 的 clear action 直接复用公开 `Button`，不维护私有 button DOM / hover / focus / pressed 视觉；clear button 在 Input 高度内使用上下左右一致的 inset，文本右侧也保留同等间距；`viewProps.ref` 仍然指向真实 `<input>`，不会改指 clear wrapper。
 
 单行 Input 支持 `leadingIcon / trailingIcon`，类型与公开 Icon source 一致，直接复用 Weave `Icon` 渲染。图标是非交互 adornment，不创建第二套 button 语义。布局顺序固定为 `leadingIcon → 输入文字 → clear → trailingIcon`；当 `trailingIcon` 与 clear 同时存在时，**trailingIcon 始终保持最右，clear 位于它左侧**。multiline Input 不提供 leading/trailing icon。
+
+单行 Input 的 `trailingAction` 接受可交互 React 节点，内嵌于输入框尾部，并复用现有 adornment 布局与主题；可直接传入带 `Button` trigger 的 Weave `Popover`。它不同于不可交互的 `trailingIcon`。布局优先级为 `输入文字 → clear → trailingAction → trailingIcon`，各部分同时存在时保留各自间距。multiline Input 不提供此插槽。
 
 `type="search"` 时必须屏蔽浏览器原生 search cancel affordance（例如 Chromium/WebKit 的 `::-webkit-search-cancel-button`）；是否显示 clear 只由 Weave `clearable` 决定，禁止同时出现浏览器 clear 与 Weave clear。
 

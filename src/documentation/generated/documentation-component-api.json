@@ -223,7 +223,7 @@
       "nativeProps": false,
       "hasViewProps": true,
       "usesViewProps": false,
-      "props": "r7e78d9708a1a"
+      "props": "rc7c6980cea09"
     },
     "Link": {
       "importPath": "@contsulia/weave/components/Link",
@@ -682,7 +682,7 @@
       "pdb938e985939",
       "p56b319ce7534"
     ],
-    "r7e78d9708a1a": [
+    "rc7c6980cea09": [
       "p09dfda480597",
       "p1991f3528ab9",
       "p2541cc34f243",
@@ -701,6 +701,7 @@
       "p7777d18e7c8f",
       "pb4180f0628bc",
       "p9a2bb9672e5c",
+      "p997eede96271",
       "p1b61d78dec8b",
       "pb3c5568d4edf",
       "pebdbfdb46a40"
@@ -2366,6 +2367,12 @@
       "name": "rows",
       "description": "Sets the visible textarea row count in multiline mode.",
       "type": "number | undefined",
+      "optional": true
+    },
+    "p997eede96271": {
+      "name": "trailingAction",
+      "description": "A focusable action displayed inside the trailing edge of a single-line Input.",
+      "type": "ReactNode",
       "optional": true
     },
     "p1b61d78dec8b": {
