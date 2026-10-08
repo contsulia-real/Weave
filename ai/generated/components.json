@@ -1205,7 +1205,7 @@
       "import": "import { Date } from '@contsulia/weave/components/Date'",
       "importPath": "@contsulia/weave/components/Date",
       "category": "forms-status",
-      "intent": "A native date picker with Weave Input styling, ISO date values, and optional date limits.",
+      "intent": "A calendar popover built from Weave Input, Popover and Button, with ISO date values and optional date limits.",
       "preferWhen": [],
       "avoidWhen": [],
       "alternatives": [],

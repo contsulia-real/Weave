@@ -355,7 +355,8 @@ const componentPropDescriptions = {
     onChange: 'Receives the selected YYYY-MM-DD date string, or an empty string.',
     min: 'Earliest allowed date in YYYY-MM-DD format.',
     max: 'Latest allowed date in YYYY-MM-DD format.',
-    viewProps: 'Applies layout, style, accessibility, and the input ref to the native date field.',
+    viewProps:
+      'Applies layout, style, accessibility, and the input ref to the calendar trigger field.',
   },
   Input: {
     autoComplete: 'Passes the native autocomplete hint to the input or textarea host.',

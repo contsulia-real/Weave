@@ -35,7 +35,7 @@ export const formsComponentExamples: Record<string, DocumentationComponentDocume
     },
     Date: {
       description:
-        'A native date picker with Weave Input styling, ISO date values, and optional date limits.',
+        'A calendar popover built from Weave Input, Popover and Button, with ISO date values and optional date limits.',
       examples: [
         basicExample('Date/basic-usage'),
         {
