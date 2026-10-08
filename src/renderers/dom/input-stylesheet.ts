@@ -135,8 +135,7 @@ const stylesheet = `
   --weave-component-padding-right: calc(var(--weave-input-min-height) * 3);
 }
 
-:where(.weave-input__clear),
-:where(.weave-input__trailing-action) {
+:where(.weave-input__clear) {
   position: absolute;
   top: 50%;
   right:
@@ -149,8 +148,8 @@ const stylesheet = `
   translate: 0 -50%;
 }
 
-:where(.weave-input-root[data-weave-input-has-trailing-icon="true"] .weave-input__trailing-action),
-:where(.weave-input-root[data-weave-input-has-trailing-action="true"] .weave-input__clear) {
+:where(.weave-input-root[data-weave-input-has-trailing-icon="true"] .weave-input__trailing-action .weave-input__clear),
+:where(.weave-input-root[data-weave-input-has-trailing-action="true"] > .weave-input__clear) {
   right:
     calc(
       var(--weave-input-min-height) +
@@ -161,11 +160,19 @@ const stylesheet = `
     );
 }
 
-:where(.weave-input-root[data-weave-input-has-trailing-icon="true"][data-weave-input-has-trailing-action="true"] .weave-input__clear) {
+:where(.weave-input-root[data-weave-input-has-trailing-icon="true"][data-weave-input-has-trailing-action="true"] > .weave-input__clear) {
   right: calc(
     var(--weave-input-min-height) * 2 +
     (var(--weave-input-min-height) - var(--weave-button-min-height)) / 2
   );
+}
+
+:where(.weave-input__trailing-action) {
+  display: contents;
+}
+
+:where(.weave-date-input)::-webkit-calendar-picker-indicator {
+  display: none;
 }
 
 :where(.weave-input__leading-icon),

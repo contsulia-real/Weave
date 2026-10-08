@@ -2380,9 +2380,9 @@ date
 
 不重新发明同义名称。
 
-`Date` 使用可手动编辑的 Weave `Input type="text"`，并通过 Input 内的 `trailingAction` 挂载 Weave 日历图标 `Button` 作为 `Popover` 唯一触发器；点击输入区只编辑文字，不弹出日历。手动键入时保留尚未完成的文本，只有完整且符合 `min/max` 的 `YYYY-MM-DD` 或清空文本才更新选中值并调用 `onChange`，不完整或越界内容使用原生 custom validity 提示。日历标题的月份和年份分别可点击，进入月份与年份选择网格，可按年或 12 年分组翻页；导航使用 Weave 图标按钮而不是字符。日历继续复用 `Popover` 的定位、portal、退出动效、点击外部关闭、Escape 与焦点恢复，以及 `Button`、`Grid`、`Text` 的既有主题和交互。`value / defaultValue / onChange` 与 `FormData` 的已提交日期继续使用 `YYYY-MM-DD`；`name / required` 由真实文本 Input 参与表单提交和原生必填校验，非受控状态随原生 form reset 恢复，`disabled / readOnly` 禁止编辑、弹出和选择。Date 关闭 Input 的内置清除按钮，日历在非必填时提供清除操作。
+`Date` 保持原生 Weave `Input type="date"` 日期分段编辑、原生 `min / max / required` 校验和 Input 原有的 `onChange` 语义；受控按 `value`、非受控按 `defaultValue` 交给真实 Input 处理，不添加只接受完整文本、延迟提交或草稿缓冲规则。自定义 `Popover` 仅由 Input 尾部的日历图标 `Button` 触发；点击输入区保留原生日期编辑，隐藏重复的原生日期 picker 图标。日历图标按钮直接复用 Input clear 按钮的 `weave-input__clear` 布局与 Weave `Button` 样式，不创建自己的定位。月份、年份可点击选择，支持按月、年和 12 年范围导航，翻页复用 Weave SVG 图标按钮。日历继续复用 `Popover` 的定位、portal、退出动效、点击外部关闭、Escape 与焦点恢复，以及 `Button`、`Grid`、`Text` 的既有主题。`onChange` 与表单值仍使用 `YYYY-MM-DD`；日历选择结果同步给 Input，`name` 由真实 Input 提交，非受控状态随原生 form reset 恢复，`disabled / readOnly` 禁止编辑与弹窗操作。Date 关闭 Input 内置清除按钮，日历仅在非必填时提供清除操作。
 
-`Date.locale?: string` 接受 BCP 47 语言标签（例如 `zh-CN`、`zh-TW`、`en`、`fr`），显式值优先于页面语言；不传时读取 `<html lang>`，并响应其运行时变化（Documentation 的 i18next 会同步该属性）。月份标题、星期标题、每周起始日、完整日期辅助标签、弹窗操作和日期校验提示使用有效语言；四种 Documentation 语言均有完整内置操作文案，其他有效语言的日期使用 `Intl`，操作文案回退到英文。`value / defaultValue / onChange / FormData` 始终保持 `YYYY-MM-DD`，语言切换不改变实际值。
+`Date.locale?: string` 接受 BCP 47 语言标签（例如 `zh-CN`、`zh-TW`、`en`、`fr`），显式值优先于页面语言；不传时读取 `<html lang>`，并响应其运行时变化（Documentation 的 i18next 会同步该属性）。月份标题、星期标题、每周起始日、完整日期辅助标签和弹窗操作使用有效语言；四种 Documentation 语言均有完整内置操作文案，其他有效语言的日期使用 `Intl`，操作文案回退到英文。`value / defaultValue / onChange / FormData` 始终保持 `YYYY-MM-DD`，语言切换不改变实际值。
 
 单行 Input 默认 `clearable=true`。当前实际输入文字非空，且 Input 不是 disabled / readOnly 时显示 clear action；`clearable={false}` 可完全隐藏该 action，`clearLabel` 控制 accessible name，默认 `Clear input`。clear 会把非受控 input 直接清空、调用 `onChange("")` 并把 focus 保持 / 恢复到真实 input；受控 Input 只发出 `onChange("")`，最终 value 仍由调用方决定。multiline Input 不提供 clear action。
 

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import type { DateProps } from '../core/date-types'
 import { Button } from './Button'
 import { Column } from './Column'
@@ -64,8 +64,6 @@ export function Date({
   const controlled = value !== undefined
   const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue)
   const currentValue = controlled ? value : uncontrolledValue
-  const [draft, setDraft] = useState<{ base: string; text: string } | null>(null)
-  const inputValue = draft?.base === currentValue ? draft.text : currentValue
   const [open, setOpen] = useState(false)
   const [month, setMonth] = useState(() => monthOf(value ?? defaultValue))
   const [panel, setPanel] = useState<CalendarPanel>('days')
@@ -75,20 +73,16 @@ export function Date({
   const field = useFormFieldContext()
   const fieldRequired = required === true || field?.required === true
 
-  const validDate = (next: string) =>
-    parseDate(next) !== null &&
-    (minValue === undefined || next >= minValue) &&
-    (maxValue === undefined || next <= maxValue)
-
   const commitDate = (next: string) => {
-    setDraft(null)
-    if (!controlled) setUncontrolledValue(next)
+    if (!controlled) {
+      setUncontrolledValue(next)
+      if (inputRef.current !== null) inputRef.current.value = next
+    }
     if (next !== currentValue) onChange?.(next)
   }
 
   const reset = useCallback(() => {
     if (!controlled) setUncontrolledValue(defaultValue)
-    setDraft(null)
     setMonth(monthOf(controlled ? value : defaultValue))
     setPanel('days')
     setOpen(false)
@@ -96,22 +90,10 @@ export function Date({
 
   useFormReset(inputRef, reset)
 
-  useEffect(() => {
-    const input = inputRef.current
-    if (input === null) return
-
-    const invalid =
-      inputValue !== '' &&
-      (parseDate(inputValue) === null ||
-        (minValue !== undefined && inputValue < minValue) ||
-        (maxValue !== undefined && inputValue > maxValue))
-    input.setCustomValidity(invalid ? messages.invalidDate : '')
-  }, [inputValue, maxValue, minValue, messages.invalidDate])
-
   const changeOpen = (next: boolean) => {
     if (next && (disabled || readOnly)) return
     if (next) {
-      setMonth(monthOf(validDate(inputValue) ? inputValue : currentValue))
+      setMonth(monthOf(currentValue))
       setPanel('days')
     }
     setOpen(next)
@@ -123,11 +105,8 @@ export function Date({
   }
 
   const handleInputChange = (next: string) => {
-    if (next === '' || validDate(next)) {
-      commitDate(next)
-    } else {
-      setDraft({ base: currentValue, text: next })
-    }
+    if (!controlled) setUncontrolledValue(next)
+    onChange?.(next)
   }
 
   const firstDay = calendarDate(month, 1)
@@ -200,8 +179,11 @@ export function Date({
 
   return (
     <Input
-      type="text"
-      value={inputValue}
+      type="date"
+      value={value}
+      defaultValue={controlled ? undefined : defaultValue}
+      min={min}
+      max={max}
       onChange={handleInputChange}
       clearable={false}
       readOnly={readOnly}
@@ -343,7 +325,7 @@ export function Date({
                   })}
                 </Grid>
               )}
-              {!fieldRequired && inputValue !== '' ? (
+              {!fieldRequired && currentValue !== '' ? (
                 <Row justify="end">
                   <Button
                     text={messages.clear}
@@ -361,12 +343,13 @@ export function Date({
             size="small"
             variant="ghost"
             disabled={disabled || readOnly}
-            viewProps={{ label: messages.chooseDate }}
+            viewProps={{ className: 'weave-input__clear', label: messages.chooseDate }}
           />
         </Popover>
       }
       viewProps={{
         ...viewProps,
+        className: ['weave-date-input', viewProps.className].filter(Boolean).join(' '),
         lang: resolvedLocale,
         ref: (node) => {
           inputRef.current = node
