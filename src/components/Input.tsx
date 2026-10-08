@@ -46,6 +46,8 @@ interface SingleLineInputHostProps {
   placeholder?: string
   disabled?: boolean
   type?: InputType
+  min?: string
+  max?: string
   readOnly?: boolean
   required?: boolean
   name?: string
@@ -67,6 +69,8 @@ function SingleLineInput({
   placeholder,
   disabled,
   type,
+  min,
+  max,
   readOnly,
   required,
   name,
@@ -150,6 +154,8 @@ function SingleLineInput({
       placeholder={placeholder}
       disabled={disabled}
       type={type}
+      min={min}
+      max={max}
       readOnly={readOnly}
       required={nativeRequired}
       name={name}
@@ -346,6 +352,8 @@ export function Input(props: InputProps): import('react').JSX.Element {
       placeholder={props.placeholder}
       disabled={props.disabled}
       type={props.type}
+      min={props.min}
+      max={props.max}
       readOnly={props.readOnly}
       required={props.required}
       name={props.name}

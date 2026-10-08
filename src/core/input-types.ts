@@ -2,7 +2,7 @@ import type { Ref } from 'react'
 import type { IconComponent, IconSvg } from './icon-types'
 import type { ViewCoreProps, ViewDynamicBreakpointProps } from './view-types'
 
-export type InputType = 'text' | 'password' | 'email' | 'number' | 'search' | 'tel' | 'url'
+export type InputType = 'text' | 'password' | 'email' | 'number' | 'search' | 'tel' | 'url' | 'date'
 
 export type InputValue = string | number
 export type InputIcon = IconComponent | IconSvg
@@ -35,6 +35,8 @@ export type InputProps =
       multiline?: false
       rows?: never
       type?: InputType
+      min?: string
+      max?: string
       clearable?: boolean
       clearLabel?: string
       leadingIcon?: InputIcon

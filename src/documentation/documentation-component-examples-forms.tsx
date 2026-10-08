@@ -33,6 +33,19 @@ export const formsComponentExamples: Record<string, DocumentationComponentDocume
         },
       ],
     },
+    Date: {
+      description:
+        'A native date picker with Weave Input styling, ISO date values, and optional date limits.',
+      examples: [
+        basicExample('Date/basic-usage'),
+        {
+          id: 'controlled-date',
+          title: 'Controlled date',
+          description: 'Use value and onChange to own the selected YYYY-MM-DD date.',
+          demo: 'Date/controlled-date',
+        },
+      ],
+    },
     Select: {
       description:
         'A single-value listbox select with keyboard navigation, placement, and native form value.',

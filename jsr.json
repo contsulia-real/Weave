@@ -22,6 +22,7 @@
     "./components/Combobox": "./dist/components/Combobox.js",
     "./components/ComboboxOption": "./dist/components/ComboboxOption.js",
     "./components/DataGrid": "./dist/components/DataGrid.js",
+    "./components/Date": "./dist/components/Date.js",
     "./components/Dialog": "./dist/components/Dialog.js",
     "./components/Divider": "./dist/components/Divider.js",
     "./components/Drawer": "./dist/components/Drawer.js",

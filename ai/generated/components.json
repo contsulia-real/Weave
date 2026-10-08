@@ -780,6 +780,7 @@
         "Checkbox/basic-usage",
         "Checkbox/indeterminate-parent",
         "Combobox/controlled-values",
+        "Date/controlled-date",
         "Dialog/modal-dialog",
         "Dialog/non-modal-dialog",
         "Divider/spaced-divider",
@@ -1199,6 +1200,87 @@
         }
       ]
     },
+    "Date": {
+      "name": "Date",
+      "import": "import { Date } from '@contsulia/weave/components/Date'",
+      "importPath": "@contsulia/weave/components/Date",
+      "category": "forms-status",
+      "intent": "A native date picker with Weave Input styling, ISO date values, and optional date limits.",
+      "preferWhen": [],
+      "avoidWhen": [],
+      "alternatives": [],
+      "relationship": {
+        "demoParent": null,
+        "standaloneDocumentationPage": true
+      },
+      "viewPropsMode": "nested",
+      "nativeProps": false,
+      "documentationRoute": "/docs/components/Date",
+      "apiRoute": "/docs/components-api/Date",
+      "examples": ["Date/basic-usage", "Date/controlled-date"],
+      "props": [
+        {
+          "name": "autoComplete",
+          "description": "",
+          "type": "string | undefined",
+          "optional": true
+        },
+        {
+          "name": "defaultValue",
+          "description": "Initial uncontrolled date value in YYYY-MM-DD format.",
+          "type": "string | undefined",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "description": "",
+          "type": "boolean | undefined",
+          "optional": true
+        },
+        {
+          "name": "max",
+          "description": "Latest allowed date in YYYY-MM-DD format.",
+          "type": "string | undefined",
+          "optional": true
+        },
+        {
+          "name": "min",
+          "description": "Earliest allowed date in YYYY-MM-DD format.",
+          "type": "string | undefined",
+          "optional": true
+        },
+        {
+          "name": "name",
+          "description": "",
+          "type": "string | undefined",
+          "optional": true
+        },
+        {
+          "name": "onChange",
+          "description": "Receives the selected YYYY-MM-DD date string, or an empty string.",
+          "type": "((value: string) => void) | undefined",
+          "optional": true
+        },
+        {
+          "name": "readOnly",
+          "description": "",
+          "type": "boolean | undefined",
+          "optional": true
+        },
+        {
+          "name": "required",
+          "description": "",
+          "type": "boolean | undefined",
+          "optional": true
+        },
+        {
+          "name": "value",
+          "description": "Controlled date value in YYYY-MM-DD format.",
+          "type": "string | undefined",
+          "optional": true
+        }
+      ]
+    },
     "Dialog": {
       "name": "Dialog",
       "import": "import { Dialog } from '@contsulia/weave/components/Dialog'",
@@ -1551,6 +1633,7 @@
       "apiRoute": "/docs/components-api/Form",
       "examples": [
         "Button/form-actions",
+        "Date/basic-usage",
         "Form/basic-usage",
         "Form/explicit-field-parts",
         "Form/field-metadata",
@@ -1651,6 +1734,7 @@
       "documentationRoute": "/docs/components/Form",
       "apiRoute": "/docs/components-api/FormField",
       "examples": [
+        "Date/basic-usage",
         "Form/basic-usage",
         "Form/explicit-field-parts",
         "Form/field-metadata",
@@ -1985,9 +2069,21 @@
           "optional": true
         },
         {
+          "name": "max",
+          "description": "Sets the native upper value constraint on supported single-line input types.",
+          "type": "string | undefined",
+          "optional": true
+        },
+        {
           "name": "maxLength",
           "description": "Passes the native maximum text length constraint to the input or textarea.",
           "type": "number | undefined",
+          "optional": true
+        },
+        {
+          "name": "min",
+          "description": "Sets the native lower value constraint on supported single-line input types.",
+          "type": "string | undefined",
           "optional": true
         },
         {
@@ -4314,6 +4410,7 @@
         "Combobox/controlled-values",
         "Combobox/empty-search-state",
         "Combobox/searchable-rich-options",
+        "Date/controlled-date",
         "Dialog/basic-usage",
         "Dialog/modal-dialog",
         "Dialog/non-modal-dialog",

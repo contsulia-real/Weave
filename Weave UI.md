@@ -2375,9 +2375,12 @@ number
 search
 tel
 url
+date
 ```
 
 不重新发明同义名称。
+
+`Date` 是面向原生 `type="date"` 的独立公开组件，直接复用 `Input` 的单行宿主、主题、表单状态和 `viewProps`。日期 `value / defaultValue / onChange` 使用浏览器原生 `YYYY-MM-DD` 字符串；`min / max` 直接传递给原生日期输入。`Date` 默认关闭 Input 的自定义 clear action，保留浏览器原生日期选择器入口。
 
 单行 Input 默认 `clearable=true`。当前实际输入文字非空，且 Input 不是 disabled / readOnly 时显示 clear action；`clearable={false}` 可完全隐藏该 action，`clearLabel` 控制 accessible name，默认 `Clear input`。clear 会把非受控 input 直接清空、调用 `onChange("")` 并把 focus 保持 / 恢复到真实 input；受控 Input 只发出 `onChange("")`，最终 value 仍由调用方决定。multiline Input 不提供 clear action。
 

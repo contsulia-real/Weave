@@ -349,6 +349,14 @@ const componentPropDescriptions = {
       'Aligns the title within the real middle grid region; it does not force absolute centering against the viewport.',
     trailing: 'Content rendered in the trailing action region.',
   },
+  Date: {
+    value: 'Controlled date value in YYYY-MM-DD format.',
+    defaultValue: 'Initial uncontrolled date value in YYYY-MM-DD format.',
+    onChange: 'Receives the selected YYYY-MM-DD date string, or an empty string.',
+    min: 'Earliest allowed date in YYYY-MM-DD format.',
+    max: 'Latest allowed date in YYYY-MM-DD format.',
+    viewProps: 'Applies layout, style, accessibility, and the input ref to the native date field.',
+  },
   Input: {
     autoComplete: 'Passes the native autocomplete hint to the input or textarea host.',
     clearable:
@@ -362,6 +370,8 @@ const componentPropDescriptions = {
       'Non-interactive leading icon for single-line Input. It is unavailable in multiline mode.',
     maxLength: 'Passes the native maximum text length constraint to the input or textarea.',
     minLength: 'Passes the native minimum text length constraint to the input or textarea.',
+    min: 'Sets the native lower value constraint on supported single-line input types.',
+    max: 'Sets the native upper value constraint on supported single-line input types.',
     multiline:
       'Switches the native host from input to textarea. Multiline mode disables type, clear action, and leading/trailing icons.',
     name: 'Sets the native form field name used for form submission.',
