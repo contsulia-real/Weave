@@ -118,7 +118,7 @@
       "nativeProps": false,
       "hasViewProps": true,
       "usesViewProps": false,
-      "props": "r0a3a8e30079c"
+      "props": "re3102e54ae32"
     },
     "Dialog": {
       "importPath": "@contsulia/weave/components/Dialog",
@@ -604,10 +604,11 @@
       "p0e219698bb16",
       "pc70c374b423f"
     ],
-    "r0a3a8e30079c": [
+    "re3102e54ae32": [
       "pcb880df2e36d",
       "p88f3a8cf4624",
       "p531a9289d2ce",
+      "pb25f3edb6c33",
       "p0bac469946de",
       "p79b846b8c1a4",
       "p787fdeeaf18c",
@@ -1825,6 +1826,12 @@
       "name": "disabled",
       "description": "",
       "type": "boolean | undefined",
+      "optional": true
+    },
+    "pb25f3edb6c33": {
+      "name": "locale",
+      "description": "BCP 47 language tag. Overrides the current document language for this Date.",
+      "type": "string | undefined",
       "optional": true
     },
     "p0bac469946de": {

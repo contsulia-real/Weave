@@ -781,6 +781,7 @@
         "Checkbox/indeterminate-parent",
         "Combobox/controlled-values",
         "Date/controlled-date",
+        "Date/forced-locale",
         "Dialog/modal-dialog",
         "Dialog/non-modal-dialog",
         "Divider/spaced-divider",
@@ -1205,7 +1206,7 @@
       "import": "import { Date } from '@contsulia/weave/components/Date'",
       "importPath": "@contsulia/weave/components/Date",
       "category": "forms-status",
-      "intent": "A calendar popover built from Weave Input, Popover and Button, with ISO date values and optional date limits.",
+      "intent": "A localized calendar popover with ISO date values, optional date limits and a locale override.",
       "preferWhen": [],
       "avoidWhen": [],
       "alternatives": [],
@@ -1217,7 +1218,7 @@
       "nativeProps": false,
       "documentationRoute": "/docs/components/Date",
       "apiRoute": "/docs/components-api/Date",
-      "examples": ["Date/basic-usage", "Date/controlled-date"],
+      "examples": ["Date/basic-usage", "Date/controlled-date", "Date/forced-locale"],
       "props": [
         {
           "name": "autoComplete",
@@ -1235,6 +1236,12 @@
           "name": "disabled",
           "description": "",
           "type": "boolean | undefined",
+          "optional": true
+        },
+        {
+          "name": "locale",
+          "description": "BCP 47 language tag. Overrides the current document language for this Date.",
+          "type": "string | undefined",
           "optional": true
         },
         {
@@ -3114,6 +3121,7 @@
       "documentationRoute": "/docs/components/SegmentedButton",
       "apiRoute": "/docs/components-api/SegmentedButton",
       "examples": [
+        "Date/forced-locale",
         "SegmentedButton/action-group",
         "SegmentedButton/controlled-selection",
         "SegmentedButton/default-selection",

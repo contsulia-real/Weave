@@ -35,7 +35,7 @@ export const formsComponentExamples: Record<string, DocumentationComponentDocume
     },
     Date: {
       description:
-        'A calendar popover built from Weave Input, Popover and Button, with ISO date values and optional date limits.',
+        'A localized calendar popover with ISO date values, optional date limits and a locale override.',
       examples: [
         basicExample('Date/basic-usage'),
         {
@@ -43,6 +43,13 @@ export const formsComponentExamples: Record<string, DocumentationComponentDocume
           title: 'Controlled date',
           description: 'Use value and onChange to own the selected YYYY-MM-DD date.',
           demo: 'Date/controlled-date',
+        },
+        {
+          id: 'forced-locale',
+          title: 'Forced locale',
+          description:
+            'Override the document language for this calendar with locale, without changing the YYYY-MM-DD value.',
+          demo: 'Date/forced-locale',
         },
       ],
     },

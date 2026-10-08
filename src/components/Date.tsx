@@ -5,6 +5,7 @@ import { Column } from './Column'
 import { Grid } from './Grid'
 import { Input } from './Input'
 import { assignRef } from './internal/assign-ref'
+import { useDateLocalization } from './internal/date-localization'
 import { useFormFieldContext } from './internal/form-field-context'
 import { useFormReset } from './internal/use-form-reset'
 import { Popover } from './Popover'
@@ -34,24 +35,6 @@ function monthOf(value: string): number {
   return date.getUTCFullYear() * 12 + date.getUTCMonth()
 }
 
-const weekdayFormatter = new Intl.DateTimeFormat(undefined, {
-  weekday: 'short',
-  timeZone: 'UTC',
-})
-const monthFormatter = new Intl.DateTimeFormat(undefined, {
-  year: 'numeric',
-  month: 'long',
-  timeZone: 'UTC',
-})
-const dayFormatter = new Intl.DateTimeFormat(undefined, {
-  dateStyle: 'full',
-  timeZone: 'UTC',
-})
-
-const weekdays = Array.from({ length: 7 }, (_, index) =>
-  weekdayFormatter.format(calendarDate(2024 * 12, index + 1)),
-)
-
 export function Date({
   value,
   defaultValue = '',
@@ -63,8 +46,17 @@ export function Date({
   required,
   name,
   autoComplete,
+  locale,
   viewProps = {},
 }: DateProps): import('react').JSX.Element {
+  const {
+    locale: resolvedLocale,
+    messages,
+    firstWeekday,
+    weekdays,
+    monthFormatter,
+    dayFormatter,
+  } = useDateLocalization(locale)
   const controlled = value !== undefined
   const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue)
   const currentValue = controlled ? value : uncontrolledValue
@@ -93,8 +85,8 @@ export function Date({
       (parseDate(currentValue) === null ||
         (minValue !== undefined && currentValue < minValue) ||
         (maxValue !== undefined && currentValue > maxValue))
-    input.setCustomValidity(invalid ? 'Invalid date' : '')
-  }, [currentValue, maxValue, minValue])
+    input.setCustomValidity(invalid ? messages.invalidDate : '')
+  }, [currentValue, maxValue, minValue, messages.invalidDate])
 
   const changeOpen = (next: boolean) => {
     if (next && (disabled || readOnly)) return
@@ -126,7 +118,7 @@ export function Date({
   }
 
   const firstDay = calendarDate(month, 1)
-  const leadingDays = (firstDay.getUTCDay() + 6) % 7
+  const leadingDays = (firstDay.getUTCDay() - firstWeekday + 7) % 7
   const daysInMonth = calendarDate(month + 1, 0).getUTCDate()
   const canGoPrevious =
     month > 0 && (minValue === undefined || dateString(calendarDate(month, 0)) >= minValue)
@@ -139,7 +131,7 @@ export function Date({
       open={open && !disabled && !readOnly}
       onOpenChange={changeOpen}
       placement="bottom-left"
-      viewProps={{ label: 'Choose date' }}
+      viewProps={{ label: messages.chooseDate, lang: resolvedLocale }}
       content={
         <Column gap={1} width={19}>
           <Row align="center" justify="space-between" gap={0.5}>
@@ -149,7 +141,7 @@ export function Date({
               size="small"
               disabled={!canGoPrevious}
               viewProps={{
-                label: 'Previous month',
+                label: messages.previousMonth,
                 onClick: () => setMonth((current) => current - 1),
               }}
             />
@@ -159,7 +151,10 @@ export function Date({
               variant="ghost"
               size="small"
               disabled={!canGoNext}
-              viewProps={{ label: 'Next month', onClick: () => setMonth((current) => current + 1) }}
+              viewProps={{
+                label: messages.nextMonth,
+                onClick: () => setMonth((current) => current + 1),
+              }}
             />
           </Row>
           <Grid columns={7} gap={0.25}>
@@ -203,7 +198,7 @@ export function Date({
           {!fieldRequired && currentValue !== '' ? (
             <Row justify="end">
               <Button
-                text="Clear"
+                text={messages.clear}
                 size="small"
                 variant="ghost"
                 viewProps={{ onClick: () => selectDate('') }}
@@ -224,6 +219,7 @@ export function Date({
         autoComplete={autoComplete}
         viewProps={{
           ...viewProps,
+          lang: resolvedLocale,
           cursor: disabled || readOnly ? undefined : 'pointer',
           inputMode: 'none',
           'aria-readonly': true,

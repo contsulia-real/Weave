@@ -11,5 +11,7 @@ export interface DateProps {
   required?: boolean
   name?: string
   autoComplete?: string
+  /** BCP 47 language tag. Overrides the current document language for this Date. */
+  locale?: string
   viewProps?: SingleLineInputViewProps
 }

@@ -1025,6 +1025,32 @@
       "source": "import { useState } from 'react'\nimport { Column, Date, Text } from '../../../index'\n\nexport default function DateControlledDateDemo() {\n  const [value, setValue] = useState('2026-10-09')\n\n  return (\n    <Column gap={0.75} width={22}>\n      <Date value={value} onChange={setValue} viewProps={{ label: 'Selected date' }} />\n      <Text typo=\"body-small\" color=\"secondary\">\n        Value: {value || 'empty'}\n      </Text>\n    </Column>\n  )\n}"
     },
     {
+      "id": "Date/forced-locale",
+      "component": "Date",
+      "title": "Forced locale",
+      "description": "Override the document language for this calendar with locale, without changing the YYYY-MM-DD value.",
+      "components": ["Column", "Date", "SegmentedButton"],
+      "concepts": [
+        "button",
+        "calendar",
+        "changing",
+        "column",
+        "date",
+        "document",
+        "forced",
+        "language",
+        "locale",
+        "override",
+        "segmented",
+        "this",
+        "value",
+        "without",
+        "yyyy"
+      ],
+      "documentationRoute": "/docs/components/Date",
+      "source": "import { useState } from 'react'\nimport { Column, Date, SegmentedButton } from '../../../index'\n\nexport default function DateForcedLocaleDemo() {\n  const [locale, setLocale] = useState('fr')\n\n  return (\n    <Column gap={1} width={23}>\n      <SegmentedButton\n        selection=\"single\"\n        selected={locale}\n        onSelect={(next) => {\n          if (next !== null) setLocale(next)\n        }}\n        items={[\n          { id: 'en', children: 'English' },\n          { id: 'zh-CN', children: '简体中文' },\n          { id: 'zh-TW', children: '繁體中文' },\n          { id: 'fr', children: 'Français' },\n        ]}\n      />\n      <Date locale={locale} defaultValue=\"2026-10-09\" viewProps={{ label: 'Date' }} />\n    </Column>\n  )\n}"
+    },
+    {
       "id": "Dialog/basic-usage",
       "component": "Dialog",
       "title": "Basic usage",

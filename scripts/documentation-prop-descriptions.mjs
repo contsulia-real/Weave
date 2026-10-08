@@ -350,6 +350,8 @@ const componentPropDescriptions = {
     trailing: 'Content rendered in the trailing action region.',
   },
   Date: {
+    locale:
+      'BCP 47 language tag that overrides the document language for the calendar, weekday order, accessible date labels, and actions.',
     value: 'Controlled date value in YYYY-MM-DD format.',
     defaultValue: 'Initial uncontrolled date value in YYYY-MM-DD format.',
     onChange: 'Receives the selected YYYY-MM-DD date string, or an empty string.',
