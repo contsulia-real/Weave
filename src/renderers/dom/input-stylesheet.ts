@@ -135,6 +135,10 @@ const stylesheet = `
   --weave-component-padding-right: calc(var(--weave-input-min-height) * 3);
 }
 
+:where(.weave-input[data-weave-input-has-clear="true"][data-weave-input-has-trailing-icon="true"]:not([data-weave-input-has-trailing-action="true"])) {
+  --weave-component-padding-right: calc(var(--weave-input-min-height) + var(--weave-input-padding-x) * 2);
+}
+
 :where(.weave-input__clear) {
   position: absolute;
   top: 50%;
@@ -164,6 +168,13 @@ const stylesheet = `
 :where(.weave-input-root[data-weave-input-has-trailing-icon="true"][data-weave-input-has-trailing-action="true"] > .weave-input__clear) {
   right: calc(
     var(--weave-input-min-height) * 2 +
+    (var(--weave-input-min-height) - var(--weave-button-min-height)) / 2
+  );
+}
+
+:where(.weave-input-root[data-weave-input-has-trailing-icon="true"][data-weave-input-has-trailing-action="false"] > .weave-input__clear) {
+  right: calc(
+    var(--weave-button-min-height) +
     (var(--weave-input-min-height) - var(--weave-button-min-height)) / 2
   );
 }
