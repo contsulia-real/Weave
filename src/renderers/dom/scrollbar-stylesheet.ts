@@ -1,11 +1,13 @@
 import { ensureStaticStylesheet } from './static-stylesheet'
 
 const stylesheet = `
-:where(.weave-scroll-host) {
+:where(.weave-scroll-host),
+:where([data-weave-global-scroll-host]) {
   scrollbar-width: none;
 }
 
-:where(.weave-scroll-host)::-webkit-scrollbar {
+:where(.weave-scroll-host)::-webkit-scrollbar,
+:where([data-weave-global-scroll-host])::-webkit-scrollbar {
   display: none;
   width: 0;
   height: 0;

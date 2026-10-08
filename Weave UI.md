@@ -3243,6 +3243,8 @@ style
 
 框架自动创建并挂载对应的 `Scrollbar`。
 
+自动接管不是按 Weave 组件白名单判断：在 `createRoot / hydrateRoot` 管理的文档中，框架必须识别任何实际产生可见滚动条的 DOM 元素，包括普通 HTML、第三方生成的节点、Select / Combobox 的列表、Dialog 和页面的根滚动容器。根据浏览器的 computed overflow 与实际滚动尺寸判断；对 DOM 增删、class / style / stylesheet 变化和窗口尺寸变化持续更新。复用已有 AutoScrollbar 的滚动、拖动、几何、主题和浮层机制，自动隐藏受管元素的原生滚动条，原本已经挂载 AutoScrollbar 的滚动宿主不得重复创建。支持可访问的开放 Shadow DOM 和同源 iframe，浏览器隔离的 closed Shadow DOM、跨域 iframe 和原生控件不可访问的内部区域不在可接管范围。
+
 概念结构：
 
 ```text

@@ -1,9 +1,10 @@
-import { createElement, type ReactNode } from 'react'
+import { createElement, Fragment, type ReactNode } from 'react'
 import {
   createRoot as createDOMRoot,
   type Root as DOMRoot,
   hydrateRoot as hydrateDOMRoot,
 } from 'react-dom/client'
+import { DocumentScrollbars } from './components/internal/DocumentScrollbars'
 import { WeaveDocumentProvider } from './renderers/dom/DocumentProvider'
 
 export interface Root {
@@ -19,7 +20,11 @@ function assertContainer(container: HTMLElement, operation: 'createRoot' | 'hydr
 }
 
 function rootNode(container: HTMLElement, node: ReactNode): ReactNode {
-  return createElement(WeaveDocumentProvider, { ownerDocument: container.ownerDocument }, node)
+  return createElement(
+    WeaveDocumentProvider,
+    { ownerDocument: container.ownerDocument },
+    createElement(Fragment, null, node, createElement(DocumentScrollbars)),
+  )
 }
 
 function rootHandle(container: HTMLElement, root: DOMRoot): Root {

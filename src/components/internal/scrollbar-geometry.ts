@@ -235,7 +235,12 @@ export function updateScrollbarGeometry(
   const { verticalHitRegion, horizontalHitRegion, verticalThumb, horizontalThumb } = elements
 
   const computed = computedStyle(target)
-  const rect = target.getBoundingClientRect()
+  const viewport = target.ownerDocument.scrollingElement === target
+  const window = target.ownerDocument.defaultView
+  const rect =
+    viewport && window !== null
+      ? DOMRect.fromRect({ x: 0, y: 0, width: window.innerWidth, height: window.innerHeight })
+      : target.getBoundingClientRect()
   const borderTop = parseFloat(computed.borderTopWidth) || 0
   const borderRight = parseFloat(computed.borderRightWidth) || 0
   const borderBottom = parseFloat(computed.borderBottomWidth) || 0
