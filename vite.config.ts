@@ -54,6 +54,16 @@ export default defineConfig({
       output: {
         entryFileNames: '[name].js',
         chunkFileNames: '_chunks/[name]-[hash].js',
+        banner: (chunk) => {
+          if (chunk.fileName === 'weave.js') {
+            return '/* @ts-self-types="./package.d.ts" */'
+          }
+          if (chunk.fileName.startsWith('components/') && chunk.fileName.endsWith('.js')) {
+            const name = chunk.fileName.slice('components/'.length, -3)
+            return `/* @ts-self-types="./${name}.d.ts" */`
+          }
+          return ''
+        },
       },
       experimental: {
         attachDebugInfo: 'none',

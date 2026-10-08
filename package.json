@@ -1,7 +1,7 @@
 {
   "name": "@contsulia/weave",
   "private": true,
-  "version": "0.1.0-alpha.2",
+  "version": "0.1.0-alpha.3",
   "description": "A browser-native React UI framework built on semantic components, DOM and CSS.",
   "license": "MIT",
   "repository": {
@@ -64,8 +64,8 @@
     "ai:benchmark": "node scripts/ai-benchmark.mjs",
     "ai:benchmark:check": "node scripts/ai-benchmark.mjs --check",
     "ai:check:verify": "node scripts/verify-ai-check.mjs",
-    "verify:jsr": "pnpm dlx jsr publish --dry-run --allow-dirty",
-    "publish:jsr": "pnpm dlx jsr publish"
+    "verify:jsr": "pnpm build && pnpm dlx jsr publish --dry-run --allow-dirty",
+    "publish:jsr": "pnpm build && pnpm dlx jsr publish"
   },
   "peerDependencies": {
     "react": "^19.3.0",

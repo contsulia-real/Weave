@@ -41,7 +41,7 @@ assert(licenseText.startsWith('MIT License'), 'LICENSE must contain the MIT lice
 assert(jsrJson.name === packageJson.name, 'JSR package name must match package.json')
 assert(jsrJson.version === packageJson.version, 'JSR package version must match package.json')
 assert(jsrJson.license === packageJson.license, 'JSR license must match package.json')
-assert(jsrJson.exports?.['.'] === './src/package.ts', 'JSR root export must use src/package.ts')
+assert(jsrJson.exports?.['.'] === './dist/weave.js', 'JSR root export must use built JavaScript')
 assert(
   jsrJson.exports?.['./registry'] === './src/core/registry-types.ts',
   'JSR registry export must use src/core/registry-types.ts',
@@ -68,18 +68,35 @@ assert(
 for (const entry of sourceComponentEntries) {
   const name = entry.name.replace(/\.(?:ts|tsx)$/, '')
   assert(
-    jsrJson.exports?.[`./components/${name}`] === `./src/components/${entry.name}`,
+    jsrJson.exports?.[`./components/${name}`] === `./dist/components/${name}.js`,
     `JSR export is missing or stale for components/${name}`,
   )
+  const jsEntry = await readFile(join(repositoryRoot, 'dist', 'components', `${name}.js`), 'utf8')
+  assert(
+    jsEntry.startsWith(`/* @ts-self-types="./${name}.d.ts" */`),
+    `JSR component entry must reference its published types: ${name}`,
+  )
+  await readFile(join(repositoryRoot, 'dist', 'components', `${name}.d.ts`), 'utf8')
 }
 
 assert(
   !jsrExportNames.some((name) => name.startsWith('./components/internal/')),
   'JSR exports must not expose internal component modules',
 )
-for (const required of ['LICENSE', 'README.md', 'package.json', 'src/package.ts', 'src/index.ts']) {
+for (const required of [
+  'LICENSE',
+  'README.md',
+  'package.json',
+  'dist/**/*.js',
+  'dist/**/*.d.ts',
+  'src/core/registry-types.ts',
+]) {
   assert(jsrJson.publish?.include?.includes(required), `JSR publish include is missing ${required}`)
 }
+assert(
+  jsrJson.publish?.exclude?.includes('!dist'),
+  'JSR publish must un-ignore the built dist directory',
+)
 
 assert(
   packageJson.devDependencies?.i18next !== undefined &&
@@ -124,6 +141,10 @@ assert(
 )
 
 const runtimeEntry = new URL(packageEntry.import, import.meta.url)
+assert(
+  (await readFile(runtimeEntry, 'utf8')).startsWith('/* @ts-self-types="./package.d.ts" */'),
+  'JSR root entry must reference built package declarations',
+)
 const typeEntry = new URL(packageEntry.types, import.meta.url)
 const runtimeFiles = await listFiles(join(repositoryRoot, 'dist'), '.js')
 const runtimeSource = (await Promise.all(runtimeFiles.map((file) => readFile(file, 'utf8')))).join(

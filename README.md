@@ -6,7 +6,7 @@ The authoritative framework design specification is [Weave UI.md](./Weave%20UI.m
 
 ## Status
 
-Weave is currently an **alpha public package targeting JSR**. npm publication remains intentionally disabled with `private: true`; the current version is `0.1.0-alpha.2`.
+Weave is currently an **alpha public package targeting JSR**. npm publication remains intentionally disabled with `private: true`; the current version is `0.1.0-alpha.3`.
 
 Weave is licensed under the MIT License. See [LICENSE](./LICENSE).
 
