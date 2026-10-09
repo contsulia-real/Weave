@@ -1,4 +1,4 @@
-import { type PointerEvent, useCallback, useRef, useState } from 'react'
+import { type CSSProperties, type PointerEvent, useCallback, useRef, useState } from 'react'
 import type { InputProps } from '../../core/input-types'
 import { ensureInputStylesheet } from '../../renderers/dom/input-stylesheet'
 import { useStaticStylesheet } from '../../renderers/dom/static-stylesheet'
@@ -11,11 +11,13 @@ import { View } from '../View'
 import { assignRef } from './assign-ref'
 import {
   type ColorCodeFormat,
+  colorAlpha,
   formatColorCode,
   hsvToHex,
   normalizeHex,
   parseColorCode,
   rgbToHsv,
+  withAlpha,
 } from './color-code'
 import { chevronDownIcon } from './control-icons'
 import { useDateLocalization } from './date-localization'
@@ -84,6 +86,8 @@ export function ColorInput({
   const inputRef = useRef<HTMLInputElement>(null)
   const [derivedHue, saturation, brightness] = rgbToHsv(color)
   const hue = saturation === 0 || brightness === 0 ? storedHue : derivedHue
+  const alpha = colorAlpha(color)
+  const baseColor = color.slice(0, 7)
 
   const updateColor = (next: string, preserveHue = false) => {
     if (!preserveHue) setStoredHue(rgbToHsv(next)[0])
@@ -112,7 +116,7 @@ export function ColorInput({
     const bounds = event.currentTarget.getBoundingClientRect()
     const nextSaturation = clamp((event.clientX - bounds.left) / bounds.width, 0, 1)
     const nextBrightness = 1 - clamp((event.clientY - bounds.top) / bounds.height, 0, 1)
-    updateColor(hsvToHex(hue, nextSaturation, nextBrightness), true)
+    updateColor(withAlpha(hsvToHex(hue, nextSaturation, nextBrightness), alpha), true)
   }
 
   const EyeDropper = (globalThis as typeof globalThis & { EyeDropper?: EyeDropperConstructor })
@@ -169,7 +173,13 @@ export function ColorInput({
                 : brightness
           if (nextSaturation === saturation && nextBrightness === brightness) return
           event.preventDefault()
-          updateColor(hsvToHex(hue, clamp(nextSaturation, 0, 1), clamp(nextBrightness, 0, 1)), true)
+          updateColor(
+            withAlpha(
+              hsvToHex(hue, clamp(nextSaturation, 0, 1), clamp(nextBrightness, 0, 1)),
+              alpha,
+            ),
+            true,
+          )
         }}
       >
         <View
@@ -192,7 +202,7 @@ export function ColorInput({
               onClick: () => {
                 void new EyeDropper()
                   .open()
-                  .then((result) => updateColor(normalizeHex(result.sRGBHex)))
+                  .then((result) => updateColor(withAlpha(normalizeHex(result.sRGBHex), alpha)))
                   .catch(() => {})
               },
             }}
@@ -203,24 +213,76 @@ export function ColorInput({
           height={36}
           minWidth={36}
           radius="full"
-          style={{ backgroundColor: color, border: '1px solid var(--weave-input-border-color)' }}
+          className="weave-color-picker__preview"
+          style={
+            {
+              '--weave-color-picker-preview': color,
+              border: '1px solid var(--weave-input-border-color)',
+            } as CSSProperties
+          }
         />
-        <View className="weave-color-picker__hue" width="fill" minWidth={0}>
-          <Slider
-            label={messages.hue}
-            value={hue}
-            min={0}
-            max={359}
-            onChange={(next) => {
-              setStoredHue(next)
-              updateColor(hsvToHex(next, saturation, brightness), true)
-            }}
-            viewProps={{ label: messages.hue, width: 'fill' }}
-          />
-        </View>
+        <Column gap={8} width="fill" minWidth={0}>
+          <View
+            className="weave-color-picker__hue"
+            width="fill"
+            minWidth={0}
+            style={{ '--weave-color-picker-hue-thumb': hsvToHex(hue, 1, 1) } as CSSProperties}
+          >
+            <Slider
+              label={messages.hue}
+              value={hue}
+              min={0}
+              max={359}
+              onChange={(next) => {
+                setStoredHue(next)
+                updateColor(withAlpha(hsvToHex(next, saturation, brightness), alpha), true)
+              }}
+              viewProps={{ label: messages.hue, width: 'fill' }}
+            />
+          </View>
+          <View
+            className="weave-color-picker__alpha"
+            width="fill"
+            minWidth={0}
+            style={
+              {
+                '--weave-color-picker-alpha-start': baseColor + '00',
+                '--weave-color-picker-alpha-end': baseColor,
+                '--weave-color-picker-alpha-thumb': color,
+              } as CSSProperties
+            }
+          >
+            <Slider
+              label={messages.alpha}
+              value={alpha}
+              min={0}
+              max={255}
+              onChange={(next) => updateColor(withAlpha(baseColor, next), true)}
+              viewProps={{ label: messages.alpha, width: 'fill' }}
+            />
+          </View>
+        </Column>
       </Row>
       <Row align="center" gap={8} width="fill">
-        <View width="fill" minWidth={0}>
+        <Button
+          text={format.toUpperCase()}
+          icon={chevronDownIcon}
+          iconPosition="end"
+          size="small"
+          variant="ghost"
+          viewProps={{
+            label: messages.changeColorFormat,
+            onClick: () => {
+              const formats: ColorCodeFormat[] = ['hex', 'rgb', 'hsl', 'hsv']
+              const selected = formats[(formats.indexOf(format) + 1) % formats.length]
+              if (selected === undefined) return
+              setFormat(selected)
+              setDraft(formatColorCode(color, selected))
+              setCopied(false)
+            },
+          }}
+        />
+        <View className="weave-color-picker__code" width="fill" minWidth={0}>
           <InputHost
             type="text"
             value={draft}
@@ -255,24 +317,6 @@ export function ColorInput({
             viewProps={{ width: 'fill', label: messages.colorCode }}
           />
         </View>
-        <Button
-          text={format.toUpperCase()}
-          icon={chevronDownIcon}
-          iconPosition="end"
-          size="small"
-          variant="ghost"
-          viewProps={{
-            label: messages.changeColorFormat,
-            onClick: () => {
-              const formats: ColorCodeFormat[] = ['hex', 'rgb', 'hsl', 'hsv']
-              const selected = formats[(formats.indexOf(format) + 1) % formats.length]
-              if (selected === undefined) return
-              setFormat(selected)
-              setDraft(formatColorCode(color, selected))
-              setCopied(false)
-            },
-          }}
-        />
       </Row>
     </Column>
   )
@@ -285,43 +329,51 @@ export function ColorInput({
       viewProps={{ label: messages.chooseColor, lang: resolvedLocale }}
       content={content}
     >
-      <InputHost
-        {...inputProps}
-        type="color"
-        value={color}
-        onChange={updateColor}
-        disabled={disabled}
-        readOnly={readOnly}
-        clearable={false}
-        viewProps={{
-          ...viewProps,
-          className: ['weave-color-input', viewProps.className].filter(Boolean).join(' '),
-          label: viewProps.label ?? messages.chooseColor,
-          lang: resolvedLocale,
-          onPointerDown: (event) => {
-            viewProps.onPointerDown?.(event)
-            event.preventDefault()
-          },
-          onClick: (event) => {
-            viewProps.onClick?.(event)
-            if (event.defaultPrevented) return
-            event.preventDefault()
-            changeOpen(!open)
-          },
-          onKeyDown: (event) => {
-            viewProps.onKeyDown?.(event)
-            if (event.defaultPrevented) return
-            if (event.key === 'Enter' || event.key === ' ') {
+      <>
+        <InputHost
+          {...inputProps}
+          name={undefined}
+          type="color"
+          value={baseColor}
+          onChange={(next) => updateColor(withAlpha(normalizeHex(next), alpha))}
+          disabled={disabled}
+          readOnly={readOnly}
+          clearable={false}
+          viewProps={{
+            ...viewProps,
+            className: ['weave-color-input', viewProps.className].filter(Boolean).join(' '),
+            style: {
+              ...viewProps.style,
+              '--weave-color-picker-preview': color,
+            } as CSSProperties,
+            label: viewProps.label ?? messages.chooseColor,
+            lang: resolvedLocale,
+            onPointerDown: (event) => {
+              viewProps.onPointerDown?.(event)
+              event.preventDefault()
+            },
+            onClick: (event) => {
+              viewProps.onClick?.(event)
+              if (event.defaultPrevented) return
               event.preventDefault()
               changeOpen(!open)
-            }
-          },
-          ref: (node) => {
-            inputRef.current = node
-            assignRef(viewProps.ref, node)
-          },
-        }}
-      />
+            },
+            onKeyDown: (event) => {
+              viewProps.onKeyDown?.(event)
+              if (event.defaultPrevented) return
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault()
+                changeOpen(!open)
+              }
+            },
+            ref: (node) => {
+              inputRef.current = node
+              assignRef(viewProps.ref, node)
+            },
+          }}
+        />
+        <input type="hidden" name={inputProps.name} value={color} disabled={disabled} />
+      </>
     </Popover>
   )
 }

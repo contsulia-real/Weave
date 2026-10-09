@@ -190,6 +190,9 @@ const stylesheet = `
 :where(.weave-color-input) {
   cursor: pointer;
   padding: 0;
+  --weave-component-background:
+    linear-gradient(var(--weave-color-picker-preview), var(--weave-color-picker-preview)),
+    repeating-conic-gradient(#aaa 0% 25%, #eee 0% 50%) 0 0 / 12px 12px;
 }
 :where(.weave-color-input)::-webkit-color-swatch-wrapper {
   padding: 0;
@@ -198,6 +201,7 @@ const stylesheet = `
 :where(.weave-color-input)::-moz-color-swatch {
   border: 0;
   border-radius: var(--weave-input-radius);
+  opacity: 0;
 }
 
 .weave-color-picker__area {
@@ -222,16 +226,25 @@ const stylesheet = `
   pointer-events: none;
 }
 
-.weave-color-picker__hue {
+.weave-color-picker__preview {
+  background:
+    linear-gradient(var(--weave-color-picker-preview), var(--weave-color-picker-preview)),
+    repeating-conic-gradient(#aaa 0% 25%, #eee 0% 50%) 0 0 / 10px 10px;
+}
+
+.weave-color-picker__hue,
+.weave-color-picker__alpha {
   --weave-slider-width: 100%;
   min-width: 0;
 }
 
-.weave-color-picker__hue .weave-slider-field {
+.weave-color-picker__hue .weave-slider-field,
+.weave-color-picker__alpha .weave-slider-field {
   width: 100%;
 }
 
-.weave-color-picker__hue .weave-slider__label {
+.weave-color-picker__hue .weave-slider__label,
+.weave-color-picker__alpha .weave-slider__label {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -243,7 +256,8 @@ const stylesheet = `
   clip-path: inset(50%);
 }
 
-.weave-color-picker__hue .weave-slider-control {
+.weave-color-picker__hue .weave-slider-control,
+.weave-color-picker__alpha .weave-slider-control {
   width: 100%;
   grid-template-columns: minmax(0, 1fr);
 }
@@ -260,9 +274,42 @@ const stylesheet = `
   transform: translateY(-50%);
 }
 
-.weave-color-picker__hue .weave-slider__track {
+.weave-color-picker__hue .weave-slider__track,
+.weave-color-picker__alpha .weave-slider__track {
   background: transparent;
   box-shadow: none;
+}
+
+.weave-color-picker__hue .weave-slider__thumb {
+  background: var(--weave-color-picker-hue-thumb);
+}
+
+.weave-color-picker__alpha .weave-slider__range::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 0;
+  height: var(--weave-slider-track-height);
+  border-radius: var(--weave-radius-full);
+  background:
+    linear-gradient(to right, var(--weave-color-picker-alpha-start), var(--weave-color-picker-alpha-end)),
+    repeating-conic-gradient(#aaa 0% 25%, #eee 0% 50%) 0 0 / 10px 10px;
+  transform: translateY(-50%);
+}
+
+.weave-color-picker__alpha .weave-slider__thumb {
+  background:
+    linear-gradient(var(--weave-color-picker-alpha-thumb), var(--weave-color-picker-alpha-thumb)),
+    repeating-conic-gradient(#aaa 0% 25%, #eee 0% 50%) 0 0 / 10px 10px;
+}
+
+.weave-color-picker__code .weave-input__trailing-action {
+  display: block;
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
 }
 
 :where(.weave-input__leading-icon),

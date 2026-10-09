@@ -4,11 +4,23 @@ export function normalizeHex(value: string | number | undefined): string {
   const text = String(value ?? '#000000')
     .trim()
     .toLowerCase()
-  if (/^#[\da-f]{6}$/.test(text)) return text
-  if (/^#[\da-f]{3}$/.test(text)) {
-    return '#' + [...text.slice(1)].map((digit) => digit + digit).join('')
+  const expanded = /^#[\da-f]{3}(?:[\da-f])?$/.test(text)
+    ? '#' + [...text.slice(1)].map((digit) => digit + digit).join('')
+    : text
+  if (/^#[\da-f]{6}$/.test(expanded)) return expanded
+  if (/^#[\da-f]{8}$/.test(expanded)) {
+    return expanded.endsWith('ff') ? expanded.slice(0, 7) : expanded
   }
   return '#000000'
+}
+
+export function colorAlpha(hex: string): number {
+  return hex.length === 9 ? Number.parseInt(hex.slice(7), 16) : 255
+}
+
+export function withAlpha(hex: string, alpha: number): string {
+  const code = Math.round(Math.max(0, Math.min(255, alpha)))
+  return hex.slice(0, 7) + (code === 255 ? '' : code.toString(16).padStart(2, '0'))
 }
 
 function channels(hex: string): [number, number, number] {
@@ -68,26 +80,47 @@ function rgbToHsl(hex: string): [number, number, number] {
 }
 
 export function formatColorCode(hex: string, format: ColorCodeFormat): string {
+  const alpha = colorAlpha(hex)
   if (format === 'hex') return hex
-  if (format === 'rgb') return 'rgb(' + channels(hex).join(', ') + ')'
+  const suffix = alpha === 255 ? '' : ', ' + String(Math.round((alpha / 255) * 1000) / 1000)
+  if (format === 'rgb') {
+    return (suffix ? 'rgba(' : 'rgb(') + channels(hex).join(', ') + suffix + ')'
+  }
   const [hue, saturation, last] = format === 'hsl' ? rgbToHsl(hex) : rgbToHsv(hex)
   const percent = (value: number) => String(Math.round(value * 1000) / 10)
-  return format + '(' + hue + ', ' + percent(saturation) + '%, ' + percent(last) + '%)'
+  return (
+    format +
+    (suffix ? 'a(' : '(') +
+    hue +
+    ', ' +
+    percent(saturation) +
+    '%, ' +
+    percent(last) +
+    '%' +
+    suffix +
+    ')'
+  )
 }
 
 export function parseColorCode(text: string, format: ColorCodeFormat): string | null {
   const value = text.trim()
   if (format === 'hex') {
-    return /^#[\da-f]{3}(?:[\da-f]{3})?$/i.test(value) ? normalizeHex(value) : null
+    return /^#[\da-f]{3,4}$|^#[\da-f]{6}(?:[\da-f]{2})?$/i.test(value) ? normalizeHex(value) : null
   }
   const match =
-    /^(rgb|hsl|hsv)\(\s*(\d+(?:\.\d+)?)\s*,\s*(\d+(?:\.\d+)?)\s*(%)?\s*,\s*(\d+(?:\.\d+)?)\s*(%)?\s*\)$/i.exec(
+    /^(rgba?|hsla?|hsva?)\(\s*(\d+(?:\.\d+)?)\s*,\s*(\d+(?:\.\d+)?)\s*(%)?\s*,\s*(\d+(?:\.\d+)?)\s*(%)?\s*(?:,\s*(\d+(?:\.\d+)?)\s*)?\)$/i.exec(
       value,
     )
-  if (match === null || match[1]?.toLowerCase() !== format) return null
+  if (match === null) return null
+  const mode = match[1]?.toLowerCase()
+  const hasAlpha = match[7] !== undefined
+  if (mode !== format + (hasAlpha ? 'a' : '')) return null
   const first = Number(match[2])
   const second = Number(match[3])
   const third = Number(match[5])
+  const parsedAlpha = hasAlpha ? Number(match[7]) : 1
+  if (parsedAlpha < 0 || parsedAlpha > 1) return null
+  const applyAlpha = (base: string) => withAlpha(base, Math.round(parsedAlpha * 255))
   if (format === 'rgb') {
     if (
       match[4] ||
@@ -95,12 +128,14 @@ export function parseColorCode(text: string, format: ColorCodeFormat): string | 
       ![first, second, third].every((n) => Number.isInteger(n) && n >= 0 && n <= 255)
     )
       return null
-    return '#' + [first, second, third].map((n) => n.toString(16).padStart(2, '0')).join('')
+    return applyAlpha(
+      '#' + [first, second, third].map((n) => n.toString(16).padStart(2, '0')).join(''),
+    )
   }
   if (!match[4] || !match[6] || first > 360 || second > 100 || third > 100) return null
-  if (format === 'hsv') return hsvToHex(first, second / 100, third / 100)
+  if (format === 'hsv') return applyAlpha(hsvToHex(first, second / 100, third / 100))
   const lightness = third / 100
   const chroma = ((1 - Math.abs(2 * lightness - 1)) * second) / 100
   const brightness = lightness + chroma / 2
-  return hsvToHex(first, brightness === 0 ? 0 : chroma / brightness, brightness)
+  return applyAlpha(hsvToHex(first, brightness === 0 ? 0 : chroma / brightness, brightness))
 }
