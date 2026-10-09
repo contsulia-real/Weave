@@ -37,6 +37,7 @@ const componentNavigationSections: readonly DocumentationNavigationSectionDefini
     'Divider',
     'Link',
     'Badge',
+    'Breadcrumb',
     'Button',
     'SegmentedButton',
     'Card',

@@ -6,6 +6,7 @@ export { AccordionTrigger } from './components/AccordionTrigger'
 export { AppBar } from './components/AppBar'
 export { Avatar } from './components/Avatar'
 export { Badge } from './components/Badge'
+export { Breadcrumb } from './components/Breadcrumb'
 export { Button } from './components/Button'
 export { Card } from './components/Card'
 export { Checkbox } from './components/Checkbox'
@@ -99,6 +100,7 @@ export type {
   BadgeProps,
   BadgeViewProps,
 } from './core/badge-types'
+export type { BreadcrumbItem, BreadcrumbProps } from './core/breadcrumb-types'
 export type {
   ButtonBreakpointProps,
   ButtonIcon,

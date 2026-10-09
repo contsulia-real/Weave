@@ -57,6 +57,13 @@
       "usesViewProps": false,
       "props": "r504eeb997caa"
     },
+    "Breadcrumb": {
+      "importPath": "@contsulia/weave/components/Breadcrumb",
+      "nativeProps": false,
+      "hasViewProps": true,
+      "usesViewProps": false,
+      "props": "rcca14a45d1ae"
+    },
     "Button": {
       "importPath": "@contsulia/weave/components/Button",
       "nativeProps": false,
@@ -518,6 +525,7 @@
       "p9a2be629702f",
       "p5da11e0d22e6"
     ],
+    "rcca14a45d1ae": ["pcc0df214809b", "p23919f55f20e"],
     "rd49985a43be6": [
       "pd075476d4a22",
       "p4f78ff5fa2ad",
@@ -1349,6 +1357,18 @@
       "name": "visible",
       "description": "Shows or hides only the badge indicator while keeping the wrapped children mounted and visible.",
       "type": "boolean | undefined",
+      "optional": true
+    },
+    "pcc0df214809b": {
+      "name": "items",
+      "description": "Ordered levels, from the root to the current page.",
+      "type": "readonly BreadcrumbItem[]",
+      "optional": false
+    },
+    "p23919f55f20e": {
+      "name": "label",
+      "description": "Accessible name of the navigation landmark.",
+      "type": "string | undefined",
       "optional": true
     },
     "pd075476d4a22": {

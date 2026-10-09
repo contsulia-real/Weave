@@ -79,6 +79,19 @@ export const contentComponentExamples: Record<
       'A semantic anchor with Weave link styling and optional external-link affordances.',
     examples: [basicExample('Link/basic-usage')],
   },
+  Breadcrumb: {
+    description:
+      'A hierarchy of page links ending with the current page, using native navigation semantics.',
+    examples: [
+      basicExample('Breadcrumb/basic-usage'),
+      {
+        id: 'single-level',
+        title: 'Single level',
+        description: 'Use one item when the current page has no parent trail.',
+        demo: 'Breadcrumb/single-level',
+      },
+    ],
+  },
   Badge: {
     description: 'Anchors a compact text or dot indicator to another piece of content.',
     examples: [basicExample('Badge/basic-usage')],

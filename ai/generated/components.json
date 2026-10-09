@@ -410,6 +410,39 @@
         }
       ]
     },
+    "Breadcrumb": {
+      "name": "Breadcrumb",
+      "import": "import { Breadcrumb } from '@contsulia/weave/components/Breadcrumb'",
+      "importPath": "@contsulia/weave/components/Breadcrumb",
+      "category": "content-actions",
+      "intent": "A hierarchy of page links ending with the current page, using native navigation semantics.",
+      "preferWhen": [],
+      "avoidWhen": [],
+      "alternatives": [],
+      "relationship": {
+        "demoParent": null,
+        "standaloneDocumentationPage": true
+      },
+      "viewPropsMode": "nested",
+      "nativeProps": false,
+      "documentationRoute": "/docs/components/Breadcrumb",
+      "apiRoute": "/docs/components-api/Breadcrumb",
+      "examples": ["Breadcrumb/basic-usage", "Breadcrumb/single-level"],
+      "props": [
+        {
+          "name": "items",
+          "description": "Ordered levels, from the root to the current page.",
+          "type": "readonly BreadcrumbItem[]",
+          "optional": false
+        },
+        {
+          "name": "label",
+          "description": "Accessible name of the navigation landmark.",
+          "type": "string | undefined",
+          "optional": true
+        }
+      ]
+    },
     "Button": {
       "name": "Button",
       "import": "import { Button } from '@contsulia/weave/components/Button'",

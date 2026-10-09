@@ -2018,5 +2018,35 @@
     "zh-CN": "第 {{page}} 页，共 {{count}} 页",
     "zh-TW": "第 {{page}} 頁，共 {{count}} 頁",
     "fr": "Page {{page}} sur {{count}}"
+  },
+  "Home": {
+    "zh-CN": "首页",
+    "zh-TW": "首頁",
+    "fr": "Accueil"
+  },
+  "Components": {
+    "zh-CN": "组件",
+    "zh-TW": "元件",
+    "fr": "Composants"
+  },
+  "Current location": {
+    "zh-CN": "当前位置",
+    "zh-TW": "目前位置",
+    "fr": "Emplacement actuel"
+  },
+  "Single level": {
+    "zh-CN": "单层导航",
+    "zh-TW": "單層導覽",
+    "fr": "Un seul niveau"
+  },
+  "Use one item when the current page has no parent trail.": {
+    "zh-CN": "当前页面没有父级路径时，只显示一个导航项。",
+    "zh-TW": "目前頁面沒有上層路徑時，只顯示一個導覽項。",
+    "fr": "Utilisez un seul élément lorsque la page actuelle n’a pas de chemin parent."
+  },
+  "A hierarchy of page links ending with the current page, using native navigation semantics.": {
+    "zh-CN": "使用原生导航语义，展示以当前页面结尾的多级页面链接。",
+    "zh-TW": "使用原生導覽語意，展示以目前頁面結尾的多層頁面連結。",
+    "fr": "Une hiérarchie de liens de pages se terminant par la page actuelle, avec une navigation native."
   }
 }

@@ -15,6 +15,7 @@
     "./components/Avatar": "./dist/components/Avatar.js",
     "./components/Badge": "./dist/components/Badge.js",
     "./components/Button": "./dist/components/Button.js",
+    "./components/Breadcrumb": "./dist/components/Breadcrumb.js",
     "./components/Card": "./dist/components/Card.js",
     "./components/Checkbox": "./dist/components/Checkbox.js",
     "./components/Code": "./dist/components/Code.js",

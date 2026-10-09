@@ -394,6 +394,37 @@
       "source": "import { useState } from 'react'\nimport { Badge, Button, Column } from '../../../index'\n\nexport default function BadgeVisibilityDemo() {\n  const [visible, setVisible] = useState(true)\n\n  return (\n    <Column gap={16} align=\"start\">\n      <Button\n        text={visible ? 'Hide badge' : 'Show badge'}\n        variant=\"secondary\"\n        viewProps={{ onClick: () => setVisible((current) => !current) }}\n      />\n      <Badge text=\"3\" visible={visible}>\n        <Button text=\"Inbox remains mounted\" />\n      </Badge>\n    </Column>\n  )\n}"
     },
     {
+      "id": "Breadcrumb/basic-usage",
+      "component": "Breadcrumb",
+      "title": "Basic usage",
+      "components": ["Breadcrumb"],
+      "concepts": ["basic", "breadcrumb", "usage"],
+      "documentationRoute": "/docs/components/Breadcrumb",
+      "source": "import { useTranslation } from 'react-i18next'\nimport { Breadcrumb } from '../../../index'\n\nexport default function BreadcrumbBasicUsageDemo() {\n  const { t } = useTranslation('copy')\n\n  return (\n    <Breadcrumb\n      items={[\n        { text: t('Home'), href: '/docs' },\n        { text: t('Components'), href: '/docs/components/Link' },\n        { text: 'Breadcrumb' },\n      ]}\n    />\n  )\n}"
+    },
+    {
+      "id": "Breadcrumb/single-level",
+      "component": "Breadcrumb",
+      "title": "Single level",
+      "description": "Use one item when the current page has no parent trail.",
+      "components": ["Breadcrumb"],
+      "concepts": [
+        "breadcrumb",
+        "current",
+        "has",
+        "item",
+        "level",
+        "one",
+        "page",
+        "parent",
+        "single",
+        "trail",
+        "when"
+      ],
+      "documentationRoute": "/docs/components/Breadcrumb",
+      "source": "import { useTranslation } from 'react-i18next'\nimport { Breadcrumb } from '../../../index'\n\nexport default function BreadcrumbSingleLevelDemo() {\n  const { t } = useTranslation('copy')\n\n  return <Breadcrumb items={[{ text: t('Current location') }]} />\n}"
+    },
+    {
       "id": "Button/basic-button",
       "component": "Button",
       "title": "Basic button",

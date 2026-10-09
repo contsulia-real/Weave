@@ -3773,6 +3773,18 @@ active  80%
 
 ---
 
+## 18A.1 `Breadcrumb`
+
+`Breadcrumb` 用于展示从根层级到当前页面的层级导航。它直接组合公开 `Row`、`Link`、`Text`、`Icon`，沿用既有 Theme 和各组件的样式、键盘与点击行为，不引入私有样式或新的导航系统。
+
+- `items: readonly BreadcrumbItem[]` 按父级到当前页的顺序提供 `{ text: ReactNode, href?: string }`；非末级有 `href` 时直接使用真实 `Link`，隐藏 Link 默认装饰性尾部 link icon，仍保留 Link 本身的底边线样式。
+- 最末项始终代表当前页面，使用 `Text` 与 `aria-current="page"`，不生成链接，即使该项含有 `href` 也不能跳转；单项时没有分隔符，空项不生成链接和当前项。
+- 各层级之间以既有右箭头 `Icon` 分隔，标记 `aria-hidden`；布局与换行由 `Row` 负责。
+- 外层使用真实 `<nav>` 及随 `document.lang` 切换的四语言 `aria-label`；`label?: string` 可覆盖默认可访问名称，`viewProps` 作用于内部 Row。
+- 不处理应用路由状态、历史记录、截断菜单或动态数据加载。
+
+---
+
 # 18B. `Badge`
 
 `Badge` 是附着在任意内容边界上的组合角标，不创建 viewport overlay，也不要求调用方手写 absolute 坐标。
