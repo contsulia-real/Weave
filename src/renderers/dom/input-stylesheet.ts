@@ -133,7 +133,10 @@ const stylesheet = `
   box-sizing: border-box;
   gap: 12px;
   width: 100%;
+  height: 100%;
   min-width: 0;
+  cursor: pointer;
+  pointer-events: auto;
   padding: var(--weave-input-padding-y) var(--weave-input-padding-x);
   color: var(--weave-input-color);
   font-size: var(--weave-input-font-size);

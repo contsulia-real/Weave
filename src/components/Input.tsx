@@ -175,18 +175,19 @@ function SingleLineInput({
     elementRef.current?.focus()
   }
 
-  const handleFileDragOver = (event: DragEvent<HTMLInputElement>) => {
+  const handleFileDragOver = (event: DragEvent<HTMLElement>) => {
     if (!acceptsDrop || !event.dataTransfer.types.includes('Files')) return
     event.preventDefault()
     event.dataTransfer.dropEffect = 'copy'
     setDraggingFile(true)
   }
 
-  const handleFileDrop = (event: DragEvent<HTMLInputElement>) => {
+  const handleFileDrop = (event: DragEvent<HTMLElement>) => {
     if (!acceptsDrop || !event.dataTransfer.types.includes('Files')) return
+    const input = elementRef.current
+    if (input === null) return
     event.preventDefault()
     setDraggingFile(false)
-    const input = event.currentTarget
     const incoming = Array.from(event.dataTransfer.files).filter((file) =>
       acceptsDroppedFile(file, accept),
     )
@@ -217,9 +218,6 @@ function SingleLineInput({
       required={nativeRequired}
       name={name}
       data-weave-file-drop-active={acceptsDrop && draggingFile ? 'true' : undefined}
-      onDragOver={acceptsDrop ? handleFileDragOver : undefined}
-      onDragLeave={acceptsDrop ? () => setDraggingFile(false) : undefined}
-      onDrop={acceptsDrop ? handleFileDrop : undefined}
       autoComplete={autoComplete}
       minLength={minLength}
       maxLength={maxLength}
@@ -245,6 +243,9 @@ function SingleLineInput({
   return (
     <AdornmentRoot
       className={['weave-input-root', themeClassName].filter(Boolean).join(' ')}
+      onDragOver={acceptsDrop ? handleFileDragOver : undefined}
+      onDragLeave={acceptsDrop ? () => setDraggingFile(false) : undefined}
+      onDrop={acceptsDrop ? handleFileDrop : undefined}
       data-weave-input-root=""
       data-weave-input-root-fill={viewProps.width === 'fill' ? 'true' : undefined}
       data-weave-input-has-clear={hasClear ? 'true' : 'false'}
