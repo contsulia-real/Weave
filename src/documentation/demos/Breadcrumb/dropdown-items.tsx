@@ -20,7 +20,7 @@ export default function BreadcrumbDropdownItemsDemo() {
               </>
             ),
           },
-          { text: 'Breadcrumb' },
+          { text: selected || 'Breadcrumb' },
         ]}
       />
       <Text typo="body-small" color="secondary">

@@ -74,7 +74,7 @@ export function Breadcrumb({
         {items.map((item, index) => (
           <Fragment key={index}>
             {index > 0 ? (
-              <span aria-hidden="true">
+              <span aria-hidden="true" style={{ display: 'inline-flex', alignItems: 'center' }}>
                 {separator === undefined ? <Icon svg={chevronRightIcon} size="small" /> : separator}
               </span>
             ) : null}
