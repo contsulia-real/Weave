@@ -1,20 +1,7 @@
 import { IconArrowLeft, IconArrowRight } from '@tabler/icons-react'
 import { Suspense, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-  Accordion,
-  AccordionItem,
-  AccordionPanel,
-  AccordionTrigger,
-  Breadcrumb,
-  Card,
-  Column,
-  Flex,
-  Icon,
-  MenuItem,
-  Row,
-  Text,
-} from '../index'
+import { Breadcrumb, Card, Column, Flex, Icon, MenuItem, Row, Text } from '../index'
 import { DocumentationComponentApiLink } from './DocumentationComponentApiLink'
 import { DocumentationComponentExample } from './DocumentationComponentExampleCard'
 import { DocumentationReadingStatus } from './DocumentationReadingStatus'
@@ -40,6 +27,7 @@ export function DocumentationComponentPage({ componentName }: DocumentationCompo
   const { navigate } = useDocsRoute()
   const adjacent = documentationAdjacentComponentNames(componentName)
   const activeSection = documentationNavigationSectionForPath(`/docs/components/${componentName}`)
+  const activeGroup = componentNavigationSections.find((group) => group.value === activeSection)
 
   return (
     <Flex
@@ -56,31 +44,30 @@ export function DocumentationComponentPage({ componentName }: DocumentationCompo
           <Breadcrumb
             items={[
               { text: t('copy:Home'), href: '/docs' },
-              { text: t('copy:Components') },
+              {
+                text: t(activeGroup?.labelKey ?? 'copy:Components'),
+                menu: componentNavigationSections.map((group) => (
+                  <MenuItem
+                    key={group.value}
+                    text={t(group.labelKey)}
+                    onSelect={() => {
+                      const first = group.items[0]
+                      if (first !== undefined) navigate(first.path)
+                    }}
+                  />
+                )),
+              },
               {
                 text: componentName,
                 menu: (
                   <Column maxHeight={320} overflow="auto">
-                    <Accordion
-                      noDividers
-                      defaultValue={activeSection}
-                      viewProps={{ width: 'fill' }}
-                    >
-                      {componentNavigationSections.map((section) => (
-                        <AccordionItem key={section.value} value={section.value}>
-                          <AccordionTrigger singleLine>{t(section.labelKey)}</AccordionTrigger>
-                          <AccordionPanel>
-                            {section.items.map((item) => (
-                              <MenuItem
-                                key={item.path}
-                                text={item.label}
-                                onSelect={() => navigate(item.path)}
-                              />
-                            ))}
-                          </AccordionPanel>
-                        </AccordionItem>
-                      ))}
-                    </Accordion>
+                    {activeGroup?.items.map((item) => (
+                      <MenuItem
+                        key={item.path}
+                        text={item.label}
+                        onSelect={() => navigate(item.path)}
+                      />
+                    ))}
                   </Column>
                 ),
               },

@@ -93,8 +93,7 @@ export const contentComponentExamples: Record<
       {
         id: 'dropdown-items',
         title: 'Dropdown items',
-        description:
-          'Group sibling component pages using the existing Documentation accordion categories.',
+        description: 'Choose one of the five Documentation groups, then a component in that group.',
         demo: 'Breadcrumb/dropdown-items',
       },
       {

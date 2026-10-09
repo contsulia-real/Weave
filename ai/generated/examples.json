@@ -427,36 +427,27 @@
       "id": "Breadcrumb/dropdown-items",
       "component": "Breadcrumb",
       "title": "Dropdown items",
-      "description": "Group sibling component pages using the existing Documentation accordion categories.",
-      "components": [
-        "Accordion",
-        "AccordionItem",
-        "AccordionPanel",
-        "AccordionTrigger",
-        "Breadcrumb",
-        "Column",
-        "MenuItem"
-      ],
+      "description": "Choose one of the five Documentation groups, then a component in that group.",
+      "components": ["Breadcrumb", "Column", "MenuItem"],
       "concepts": [
-        "accordion",
         "breadcrumb",
-        "categories",
+        "choose",
         "column",
         "component",
         "documentation",
         "dropdown",
-        "existing",
+        "five",
         "group",
+        "groups",
         "item",
         "items",
         "menu",
-        "pages",
-        "panel",
-        "sibling",
-        "trigger"
+        "one",
+        "that",
+        "then"
       ],
       "documentationRoute": "/docs/components/Breadcrumb",
-      "source": "import { useTranslation } from 'react-i18next'\nimport {\n  Accordion,\n  AccordionItem,\n  AccordionPanel,\n  AccordionTrigger,\n  Breadcrumb,\n  Column,\n  MenuItem,\n} from '../../../index'\nimport {\n  componentNavigationSections,\n  documentationNavigationSectionForPath,\n} from '../../documentation-navigation-data'\nimport { useDocsRoute } from '../../router'\n\nexport default function BreadcrumbDropdownItemsDemo() {\n  const { t } = useTranslation(['translation', 'copy'])\n  const { pathname, navigate } = useDocsRoute()\n  const activeSection = documentationNavigationSectionForPath(pathname)\n  const current = pathname.startsWith('/docs/components/')\n    ? pathname.slice('/docs/components/'.length)\n    : 'Breadcrumb'\n\n  return (\n    <Breadcrumb\n      items={[\n        { text: t('copy:Home'), href: '/docs' },\n        { text: t('copy:Components') },\n        {\n          text: current,\n          menu: (\n            <Column maxHeight={320} overflow=\"auto\">\n              <Accordion noDividers defaultValue={activeSection} viewProps={{ width: 'fill' }}>\n                {componentNavigationSections.map((section) => (\n                  <AccordionItem key={section.value} value={section.value}>\n                    <AccordionTrigger singleLine>{t(section.labelKey)}</AccordionTrigger>\n                    <AccordionPanel>\n                      {section.items.map((item) => (\n                        <MenuItem\n                          key={item.path}\n                          text={item.label}\n                          onSelect={() => navigate(item.path)}\n                        />\n                      ))}\n                    </AccordionPanel>\n                  </AccordionItem>\n                ))}\n              </Accordion>\n            </Column>\n          ),\n        },\n      ]}\n    />\n  )\n}"
+      "source": "import { useTranslation } from 'react-i18next'\nimport { Breadcrumb, Column, MenuItem } from '../../../index'\nimport {\n  componentNavigationSections,\n  documentationNavigationSectionForPath,\n} from '../../documentation-navigation-data'\nimport { useDocsRoute } from '../../router'\n\nexport default function BreadcrumbDropdownItemsDemo() {\n  const { t } = useTranslation(['translation', 'copy'])\n  const { pathname, navigate } = useDocsRoute()\n  const activeSection = documentationNavigationSectionForPath(pathname)\n  const activeGroup = componentNavigationSections.find((group) => group.value === activeSection)\n  const current = pathname.startsWith('/docs/components/')\n    ? pathname.slice('/docs/components/'.length)\n    : 'Breadcrumb'\n\n  return (\n    <Breadcrumb\n      items={[\n        { text: t('copy:Home'), href: '/docs' },\n        {\n          text: t(activeGroup?.labelKey ?? 'copy:Components'),\n          menu: componentNavigationSections.map((group) => (\n            <MenuItem\n              key={group.value}\n              text={t(group.labelKey)}\n              onSelect={() => {\n                const first = group.items[0]\n                if (first !== undefined) navigate(first.path)\n              }}\n            />\n          )),\n        },\n        {\n          text: current,\n          menu: (\n            <Column maxHeight={320} overflow=\"auto\">\n              {activeGroup?.items.map((item) => (\n                <MenuItem key={item.path} text={item.label} onSelect={() => navigate(item.path)} />\n              ))}\n            </Column>\n          ),\n        },\n      ]}\n    />\n  )\n}"
     },
     {
       "id": "Breadcrumb/single-level",

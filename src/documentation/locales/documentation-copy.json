@@ -2064,10 +2064,10 @@
     "zh-TW": "下拉選單項",
     "fr": "Éléments déroulants"
   },
-  "Group sibling component pages using the existing Documentation accordion categories.": {
-    "zh-CN": "使用 Documentation 现有的手风琴分类组织同级组件页面。",
-    "zh-TW": "使用 Documentation 現有的手風琴分類組織同層元件頁面。",
-    "fr": "Regroupez les pages de composants de même niveau avec les catégories d’accordéon de Documentation."
+  "Choose one of the five Documentation groups, then a component in that group.": {
+    "zh-CN": "先从 Documentation 的五个分类中选择分组，再选择该分组的组件。",
+    "zh-TW": "先從 Documentation 的五個分類中選擇分組，再選擇該分組的元件。",
+    "fr": "Choisissez l’un des cinq groupes de Documentation, puis un composant de ce groupe."
   },
   "Selected: {{item}}": {
     "zh-CN": "已选择：{{item}}",
