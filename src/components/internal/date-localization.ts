@@ -1,4 +1,5 @@
-import { useMemo, useSyncExternalStore } from 'react'
+import { useCallback, useMemo, useSyncExternalStore } from 'react'
+import { useWeaveDocument } from '../../renderers/dom/document-context'
 
 const messages = {
   en: {
@@ -123,18 +124,19 @@ const messages = {
   },
 } as const
 
-function documentLocale(): string {
-  return (
-    (typeof document === 'undefined' ? undefined : document.documentElement.lang) ||
-    Intl.DateTimeFormat().resolvedOptions().locale
-  )
+function documentLocale(ownerDocument: Document | null): string {
+  return ownerDocument?.documentElement.lang || Intl.DateTimeFormat().resolvedOptions().locale
 }
 
-function subscribeToDocumentLocale(onChange: () => void): () => void {
-  if (typeof document === 'undefined') return () => {}
+function subscribeToDocumentLocale(
+  ownerDocument: Document | null,
+  onChange: () => void,
+): () => void {
+  const Observer = ownerDocument?.defaultView?.MutationObserver
+  if (ownerDocument === null || Observer === undefined) return () => {}
 
-  const observer = new MutationObserver(onChange)
-  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] })
+  const observer = new Observer(onChange)
+  observer.observe(ownerDocument.documentElement, { attributes: true, attributeFilter: ['lang'] })
   return () => observer.disconnect()
 }
 
@@ -148,9 +150,10 @@ function languageMessages(locale: string) {
 }
 
 export function useDateLocalization(override?: string) {
+  const ownerDocument = useWeaveDocument()
   const inheritedLocale = useSyncExternalStore(
-    subscribeToDocumentLocale,
-    documentLocale,
+    useCallback((onChange) => subscribeToDocumentLocale(ownerDocument, onChange), [ownerDocument]),
+    useCallback(() => documentLocale(ownerDocument), [ownerDocument]),
     () => 'en',
   )
   const locale = override ?? inheritedLocale

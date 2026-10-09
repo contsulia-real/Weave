@@ -238,8 +238,14 @@ export function ColorInput({
                 viewProps={{
                   label: copied ? messages.copiedColor : messages.copyColor,
                   onClick: () => {
-                    void navigator.clipboard
-                      .writeText(formatColorCode(color, format))
+                    const clipboard =
+                      inputRef.current?.ownerDocument.defaultView?.navigator.clipboard
+                    if (!clipboard?.writeText) {
+                      setCopied(false)
+                      return
+                    }
+                    void Promise.resolve()
+                      .then(() => clipboard.writeText(formatColorCode(color, format)))
                       .then(() => setCopied(true))
                       .catch(() => setCopied(false))
                   },

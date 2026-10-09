@@ -38,6 +38,10 @@ function pad(value: number): string {
   return String(value).padStart(2, '0')
 }
 
+function localDateString(date: globalThis.Date): string {
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
+}
+
 function weekStart(value: string): globalThis.Date | null {
   const match = /^(\d{4})-W(\d{2})$/.exec(value)
   if (!match) return null
@@ -69,7 +73,7 @@ function monthOf(value: string, type: TemporalType): number {
     return Number(yearMonth[1]) * 12 + Number(yearMonth[2]) - 1
   }
   const today = new globalThis.Date()
-  return today.getUTCFullYear() * 12 + today.getUTCMonth()
+  return today.getFullYear() * 12 + today.getMonth()
 }
 
 function timeOf(value: string, type: TemporalType): [number, number, number] {
@@ -184,7 +188,7 @@ export function DateInput({
     const input = String(value ?? defaultValue ?? '')
     return /^\d{4}-\d{2}-\d{2}$/.test(input.slice(0, 10))
       ? input.slice(0, 10)
-      : dateString(new globalThis.Date())
+      : localDateString(new globalThis.Date())
   })
   const [hour, setHour] = useState(() => timeOf(String(value ?? defaultValue ?? ''), type)[0])
   const [minute, setMinute] = useState(() => timeOf(String(value ?? defaultValue ?? ''), type)[1])

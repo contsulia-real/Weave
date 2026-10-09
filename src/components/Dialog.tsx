@@ -92,6 +92,19 @@ function ModalDialog({
 
   useStaticStylesheet(ensureDialogStylesheet)
 
+  const setDialogRef = useCallback(
+    (node: HTMLDialogElement | null) => {
+      if (node === null && elementRef.current !== null) {
+        const detachedDialog = elementRef.current
+        queueMicrotask(() => {
+          if (!detachedDialog.isConnected) deactivateModalHost(detachedDialog)
+        })
+      }
+      elementRef.current = node
+    },
+    [elementRef],
+  )
+
   const finishNativeClose = useCallback(() => {
     const dialog = elementRef.current
 
@@ -194,7 +207,7 @@ function ModalDialog({
     <ThemedPortal preferTopLayerHost={false}>
       <dialog
         {...resolved.domProps}
-        ref={elementRef}
+        ref={setDialogRef}
         onCancel={handleCancel}
         onClose={handleClose}
         onClick={handleClick}
