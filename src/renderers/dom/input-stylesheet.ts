@@ -100,13 +100,20 @@ const stylesheet = `
 
 :where(.weave-input[type="file"])::file-selector-button {
   font: inherit;
-  color: inherit;
+  color: var(--weave-input-color);
   cursor: inherit;
-  background: var(--weave-input-background);
-  border: var(--weave-input-border-width) solid var(--weave-input-border-color);
-  border-radius: var(--weave-input-radius);
-  padding: var(--weave-input-padding-y) var(--weave-input-padding-x);
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
   margin-inline-end: var(--weave-input-padding-x);
+}
+
+:where(.weave-input[type="file"][data-weave-file-drop-active="true"]) {
+  --weave-component-border-top-color: var(--weave-input-focus-outline-color);
+  --weave-component-border-right-color: var(--weave-input-focus-outline-color);
+  --weave-component-border-bottom-color: var(--weave-input-focus-outline-color);
+  --weave-component-border-left-color: var(--weave-input-focus-outline-color);
 }
 
 :where(.weave-input[type="file"]:disabled)::file-selector-button {

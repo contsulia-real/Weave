@@ -2407,6 +2407,8 @@ Input 的 clear action 直接复用公开 `Button`，不维护私有 button DOM 
 
 `type="file"` 使用真实 `<input type="file">`，保留浏览器文件选择、文件名与 `FileList`，并通过 `::file-selector-button` 复用 Input 主题样式。支持 `accept`、`multiple`、`name/FormData`、`required`、`disabled`、`viewProps.ref` 和原生表单 reset。文件输入不接受非空 `value` / `defaultValue`，不显示通用 clear 按钮。
 
+`Input type="file" dropzone` 为可选拖放能力；默认关闭。开启时 Input 本身作为拖放命中区域，拖入文件以现有 Input 主题描边反馈；放下后更新同一个原生 `FileList`、`onChange` 和 `FormData`，并遵守 `accept`、`multiple`、`disabled`、`readOnly`。普通输入保持单层 Input 表面，原生文件选择按钮不另起带边框的圆角子控件。
+
 ## 14.2 多行输入仍然使用 Input
 
 ```tsx

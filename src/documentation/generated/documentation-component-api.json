@@ -216,7 +216,7 @@
       "nativeProps": false,
       "hasViewProps": true,
       "usesViewProps": false,
-      "props": "re79b696e0f5c"
+      "props": "r94f12eb1963e"
     },
     "Link": {
       "importPath": "@contsulia/weave/components/Link",
@@ -662,13 +662,14 @@
       "pdb938e985939",
       "p56b319ce7534"
     ],
-    "re79b696e0f5c": [
+    "r94f12eb1963e": [
       "pe63a602952c4",
       "p09dfda480597",
       "p1991f3528ab9",
       "p2541cc34f243",
       "pacfbc3a0393d",
       "peca00c66d21e",
+      "pede5c13bbbbc",
       "p84e214bf1fec",
       "p0d725969a39d",
       "p5a18a4ef7ce3",
@@ -2213,6 +2214,12 @@
     "peca00c66d21e": {
       "name": "disabled",
       "description": "Disables the native input or textarea and prevents editing and clear interaction.",
+      "type": "boolean | undefined",
+      "optional": true
+    },
+    "pede5c13bbbbc": {
+      "name": "dropzone",
+      "description": "Accept files dragged onto type=\"file\"; disabled by default.",
       "type": "boolean | undefined",
       "optional": true
     },

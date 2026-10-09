@@ -1,4 +1,4 @@
-import type { ChangeEvent, CSSProperties, ReactNode } from 'react'
+import type { ChangeEvent, CSSProperties, DragEvent, ReactNode } from 'react'
 import { useCallback, useState } from 'react'
 import type {
   InputIcon,
@@ -35,6 +35,20 @@ function inputOverflowIntent(style: CSSProperties | undefined) {
   }
 }
 
+function acceptsDroppedFile(file: File, accept?: string): boolean {
+  if (!accept?.trim()) return true
+  const rules = accept
+    .split(',')
+    .map((part) => part.trim().toLowerCase())
+    .filter(Boolean)
+  if (rules.length === 0) return true
+  return rules.some((rule) => {
+    if (rule.startsWith('.')) return file.name.toLowerCase().endsWith(rule)
+    if (rule.endsWith('/*')) return file.type.toLowerCase().startsWith(rule.slice(0, -1))
+    return file.type.toLowerCase() === rule
+  })
+}
+
 function useInputThemeClassName(): string | undefined {
   const { theme } = useTheme()
 
@@ -53,6 +67,7 @@ interface SingleLineInputHostProps {
   step?: number | 'any'
   accept?: string
   multiple?: boolean
+  dropzone?: boolean
   readOnly?: boolean
   required?: boolean
   name?: string
@@ -80,6 +95,7 @@ function SingleLineInput({
   step,
   accept,
   multiple,
+  dropzone,
   readOnly,
   required,
   name,
@@ -112,6 +128,8 @@ function SingleLineInput({
   )
   const controlled = value !== undefined
   const [uncontrolledText, setUncontrolledText] = useState(String(defaultValue ?? ''))
+  const [draggingFile, setDraggingFile] = useState(false)
+  const acceptsDrop = type === 'file' && dropzone === true && !disabled && !readOnly
   const currentText = controlled ? String(value ?? '') : uncontrolledText
   const hasClear = type !== 'file' && clearable && !disabled && !readOnly && currentText.length > 0
   const hasLeadingIcon = leadingIcon !== undefined
@@ -156,6 +174,29 @@ function SingleLineInput({
     elementRef.current?.focus()
   }
 
+  const handleFileDragOver = (event: DragEvent<HTMLInputElement>) => {
+    if (!acceptsDrop || !event.dataTransfer.types.includes('Files')) return
+    event.preventDefault()
+    event.dataTransfer.dropEffect = 'copy'
+    setDraggingFile(true)
+  }
+
+  const handleFileDrop = (event: DragEvent<HTMLInputElement>) => {
+    if (!acceptsDrop || !event.dataTransfer.types.includes('Files')) return
+    event.preventDefault()
+    setDraggingFile(false)
+    const input = event.currentTarget
+    const incoming = Array.from(event.dataTransfer.files).filter((file) =>
+      acceptsDroppedFile(file, accept),
+    )
+    if (incoming.length === 0) return
+    const data = new DataTransfer()
+    for (const file of multiple ? incoming : incoming.slice(0, 1)) data.items.add(file)
+    input.files = data.files
+    const ChangeEvent = input.ownerDocument.defaultView?.Event ?? Event
+    input.dispatchEvent(new ChangeEvent('change', { bubbles: true }))
+  }
+
   const input = (
     <input
       {...resolved.domProps}
@@ -174,6 +215,10 @@ function SingleLineInput({
       readOnly={readOnly}
       required={nativeRequired}
       name={name}
+      data-weave-file-drop-active={acceptsDrop && draggingFile ? 'true' : undefined}
+      onDragOver={acceptsDrop ? handleFileDragOver : undefined}
+      onDragLeave={acceptsDrop ? () => setDraggingFile(false) : undefined}
+      onDrop={acceptsDrop ? handleFileDrop : undefined}
       autoComplete={autoComplete}
       minLength={minLength}
       maxLength={maxLength}
@@ -394,6 +439,7 @@ export function Input(props: InputProps): import('react').JSX.Element {
       step={props.step}
       accept={props.accept}
       multiple={props.multiple}
+      dropzone={props.dropzone}
       readOnly={props.readOnly}
       required={props.required}
       name={props.name}

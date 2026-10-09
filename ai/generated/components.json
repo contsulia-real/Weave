@@ -2020,6 +2020,12 @@
           "optional": true
         },
         {
+          "name": "dropzone",
+          "description": "Accept files dragged onto type=\"file\"; disabled by default.",
+          "type": "boolean | undefined",
+          "optional": true
+        },
+        {
           "name": "leadingIcon",
           "description": "Non-interactive leading icon for single-line Input. It is unavailable in multiline mode.",
           "type": "InputIcon | undefined",

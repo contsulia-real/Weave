@@ -56,6 +56,8 @@ export type InputProps =
       accept?: string
       /** Allow selecting several files when type="file". */
       multiple?: boolean
+      /** Accept files dragged onto type="file"; disabled by default. */
+      dropzone?: boolean
       /** BCP 47 language tag for custom color, calendar and clock pickers. */
       locale?: string
       clearable?: boolean
