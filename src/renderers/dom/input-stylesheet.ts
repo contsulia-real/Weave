@@ -120,6 +120,11 @@ const stylesheet = `
   user-select: none;
 }
 
+.weave-number-input__scrub .weave-number-input__icon {
+  --weave-component-width: var(--weave-select-icon-size);
+  --weave-component-height: var(--weave-select-icon-size);
+}
+
 .weave-number-input__scrub svg {
   pointer-events: none;
 }

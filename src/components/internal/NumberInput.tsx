@@ -1,6 +1,9 @@
 import { IconSelector } from '@tabler/icons-react'
 import { type KeyboardEvent, type PointerEvent, useEffect, useRef } from 'react'
 import type { InputProps } from '../../core/input-types'
+import { resolveSelectTheme } from '../../renderers/dom/resolve-component-theme'
+import { useRuntimeStyleClass } from '../../renderers/dom/runtime-class'
+import { useTheme } from '../../theme/theme-context'
 import { Icon } from '../Icon'
 import { assignRef } from './assign-ref'
 
@@ -21,6 +24,8 @@ export function NumberInput({
   viewProps = {},
   ...inputProps
 }: NumberInputProps): import('react').JSX.Element {
+  const { theme } = useTheme()
+  const selectThemeClassName = useRuntimeStyleClass('select-theme', resolveSelectTheme(theme))
   const inputRef = useRef<HTMLInputElement>(null)
   const scrubRef = useRef<HTMLSpanElement>(null)
   const dragRef = useRef<{ pointerId: number; lastX: number; remaining: number } | null>(null)
@@ -119,21 +124,29 @@ export function NumberInput({
       readOnly={readOnly}
       clearable={false}
       trailingAction={
-        <Icon
-          icon={IconSelector}
-          size="small"
-          viewProps={{
-            ref: scrubRef,
-            className: 'weave-number-input__scrub',
-            label: 'Drag horizontally to adjust number',
-            role: 'button',
-            tabIndex: disabled || readOnly ? -1 : 0,
-            onPointerDown: startDrag,
-            onPointerMove: moveDrag,
-            onPointerCancel: endDrag,
-            onKeyDown: handleKeyDown,
-          }}
-        />
+        <span
+          ref={scrubRef}
+          className="weave-number-input__scrub"
+          role="button"
+          aria-label="Drag horizontally to adjust number"
+          tabIndex={disabled || readOnly ? -1 : 0}
+          onPointerDown={startDrag}
+          onPointerMove={moveDrag}
+          onPointerCancel={endDrag}
+          onKeyDown={handleKeyDown}
+        >
+          <Icon
+            icon={IconSelector}
+            size="small"
+            stroke="regular"
+            viewProps={{
+              'aria-hidden': true,
+              className: ['weave-number-input__icon', selectThemeClassName]
+                .filter(Boolean)
+                .join(' '),
+            }}
+          />
+        </span>
       }
       viewProps={{
         ...viewProps,
