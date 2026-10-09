@@ -11,6 +11,13 @@ export const formsComponentExamples: Record<string, DocumentationComponentDocume
       examples: [
         basicExample('Input/basic-usage'),
         {
+          id: 'file-input',
+          title: 'File input',
+          description:
+            'Choose one or multiple files with the native file picker, accept filtering and FormData support.',
+          demo: 'Input/file-input',
+        },
+        {
           id: 'date-input',
           title: 'Date input',
           description:

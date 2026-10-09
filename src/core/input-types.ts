@@ -16,6 +16,7 @@ export type InputType =
   | 'month'
   | 'week'
   | 'color'
+  | 'file'
 
 export type InputValue = string | number
 export type InputIcon = IconComponent | IconSvg
@@ -51,6 +52,10 @@ export type InputProps =
       min?: string
       max?: string
       step?: number | 'any'
+      /** Accepted file extensions or MIME types for type="file". */
+      accept?: string
+      /** Allow selecting several files when type="file". */
+      multiple?: boolean
       /** BCP 47 language tag for custom color, calendar and clock pickers. */
       locale?: string
       clearable?: boolean

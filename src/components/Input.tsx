@@ -51,6 +51,8 @@ interface SingleLineInputHostProps {
   min?: string
   max?: string
   step?: number | 'any'
+  accept?: string
+  multiple?: boolean
   readOnly?: boolean
   required?: boolean
   name?: string
@@ -76,6 +78,8 @@ function SingleLineInput({
   min,
   max,
   step,
+  accept,
+  multiple,
   readOnly,
   required,
   name,
@@ -109,13 +113,14 @@ function SingleLineInput({
   const controlled = value !== undefined
   const [uncontrolledText, setUncontrolledText] = useState(String(defaultValue ?? ''))
   const currentText = controlled ? String(value ?? '') : uncontrolledText
-  const hasClear = clearable && !disabled && !readOnly && currentText.length > 0
+  const hasClear = type !== 'file' && clearable && !disabled && !readOnly && currentText.length > 0
   const hasLeadingIcon = leadingIcon !== undefined
   const hasTrailingIcon = trailingIcon !== undefined
   const hasTrailingAction = trailingAction !== undefined
-  const usesAdornmentRoot = clearable || hasLeadingIcon || hasTrailingIcon || hasTrailingAction
+  const usesAdornmentRoot =
+    (type !== 'file' && clearable) || hasLeadingIcon || hasTrailingIcon || hasTrailingAction
   const reset = useCallback(() => {
-    const next = String(controlled ? (value ?? '') : (defaultValue ?? ''))
+    const next = type === 'file' ? '' : String(controlled ? (value ?? '') : (defaultValue ?? ''))
 
     if (!controlled) {
       setUncontrolledText(next)
@@ -124,7 +129,7 @@ function SingleLineInput({
     if (elementRef.current !== null) {
       elementRef.current.value = next
     }
-  }, [controlled, defaultValue, elementRef, value])
+  }, [controlled, defaultValue, elementRef, type, value])
 
   useFormReset(elementRef, reset)
 
@@ -155,8 +160,8 @@ function SingleLineInput({
     <input
       {...resolved.domProps}
       ref={elementRef}
-      value={value}
-      defaultValue={defaultValue}
+      value={type === 'file' ? undefined : value}
+      defaultValue={type === 'file' ? undefined : defaultValue}
       onChange={handleChange}
       placeholder={placeholder}
       disabled={disabled}
@@ -164,6 +169,8 @@ function SingleLineInput({
       min={min}
       max={max}
       step={step}
+      accept={accept}
+      multiple={multiple}
       readOnly={readOnly}
       required={nativeRequired}
       name={name}
@@ -385,6 +392,8 @@ export function Input(props: InputProps): import('react').JSX.Element {
       min={props.min}
       max={props.max}
       step={props.step}
+      accept={props.accept}
+      multiple={props.multiple}
       readOnly={props.readOnly}
       required={props.required}
       name={props.name}

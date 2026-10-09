@@ -216,7 +216,7 @@
       "nativeProps": false,
       "hasViewProps": true,
       "usesViewProps": false,
-      "props": "r838064f0c4f4"
+      "props": "re79b696e0f5c"
     },
     "Link": {
       "importPath": "@contsulia/weave/components/Link",
@@ -230,7 +230,7 @@
       "nativeProps": false,
       "hasViewProps": true,
       "usesViewProps": false,
-      "props": "r490a824cc536"
+      "props": "rd8a6750d0a9d"
     },
     "ListItem": {
       "importPath": "@contsulia/weave/components/ListItem",
@@ -307,7 +307,7 @@
       "nativeProps": false,
       "hasViewProps": true,
       "usesViewProps": false,
-      "props": "r77ef523697b2"
+      "props": "r9de115c48252"
     },
     "Select": {
       "importPath": "@contsulia/weave/components/Select",
@@ -662,7 +662,8 @@
       "pdb938e985939",
       "p56b319ce7534"
     ],
-    "r838064f0c4f4": [
+    "re79b696e0f5c": [
+      "pe63a602952c4",
       "p09dfda480597",
       "p1991f3528ab9",
       "p2541cc34f243",
@@ -675,6 +676,7 @@
       "p072781055457",
       "p3644e5f7785c",
       "pe68901b38bc9",
+      "p54eded9e69ac",
       "p3dd5760a98dc",
       "p7e4459eb4104",
       "p29467af59bb2",
@@ -695,7 +697,7 @@
       "pefc660b75cf4",
       "p30142f7f7029"
     ],
-    "r490a824cc536": [
+    "rd8a6750d0a9d": [
       "pd856d634c3fa",
       "p9d87baefb262",
       "p30d9e5a8ee3c",
@@ -705,7 +707,7 @@
       "p42cb44598dff",
       "p2129aeaf1e35",
       "pa2c261707637",
-      "pe9e766dd51d0",
+      "p8dce69731923",
       "p685af6a66644",
       "p48a90ed080a6"
     ],
@@ -801,12 +803,12 @@
       "paf9fe5b5b9a8"
     ],
     "rfe7560fcc01c": ["p49dd32229dd9", "pfe2101a6cdae"],
-    "r77ef523697b2": [
+    "r9de115c48252": [
       "p79715e96789b",
       "p0a5bae8af511",
       "paa034e154c64",
       "p693a6495afde",
-      "paa9a5b0f7401",
+      "p634e904e0404",
       "p51eae9c0c645",
       "peb01c5560593"
     ],
@@ -2178,6 +2180,12 @@
       "type": "ImageSource",
       "optional": false
     },
+    "pe63a602952c4": {
+      "name": "accept",
+      "description": "Accepted file extensions or MIME types for type=\"file\".",
+      "type": "string | undefined",
+      "optional": true
+    },
     "p09dfda480597": {
       "name": "autoComplete",
       "description": "Passes the native autocomplete hint to the input or textarea host.",
@@ -2247,6 +2255,12 @@
     "pe68901b38bc9": {
       "name": "multiline",
       "description": "Switches the native host from input to textarea. Multiline mode disables type, clear action, and leading/trailing icons.",
+      "type": "boolean | undefined",
+      "optional": true
+    },
+    "p54eded9e69ac": {
+      "name": "multiple",
+      "description": "Allow selecting several files when type=\"file\".",
       "type": "boolean | undefined",
       "optional": true
     },
@@ -2406,10 +2420,10 @@
       "type": "string | readonly string[] | null | undefined",
       "optional": true
     },
-    "pe9e766dd51d0": {
+    "p8dce69731923": {
       "name": "selection",
       "description": "Chooses none, single, or multiple selection semantics. The default is none; selection props are unavailable in none mode.",
-      "type": "\"none\" | \"single\" | \"multiple\" | undefined",
+      "type": "\"none\" | \"multiple\" | \"single\" | undefined",
       "optional": true
     },
     "p685af6a66644": {
@@ -2940,10 +2954,10 @@
       "type": "string | readonly string[] | null | undefined",
       "optional": true
     },
-    "paa9a5b0f7401": {
+    "p634e904e0404": {
       "name": "selection",
       "description": "Chooses no selection, single selection, or multiple selection behavior. The default is none.",
-      "type": "\"none\" | \"single\" | \"multiple\" | undefined",
+      "type": "\"none\" | \"multiple\" | \"single\" | undefined",
       "optional": true
     },
     "p51eae9c0c645": {

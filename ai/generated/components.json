@@ -797,6 +797,7 @@
         "Input/controlled-date",
         "Input/controlled-input",
         "Input/controlled-time",
+        "Input/file-input",
         "Input/forced-locale",
         "Input/form-states",
         "Input/time-input",
@@ -1566,6 +1567,7 @@
         "Input/color-input",
         "Input/date-input",
         "Input/datetime-local-input",
+        "Input/file-input",
         "Input/month-input",
         "Input/time-input",
         "Input/time-seconds",
@@ -1671,6 +1673,7 @@
         "Input/color-input",
         "Input/date-input",
         "Input/datetime-local-input",
+        "Input/file-input",
         "Input/month-input",
         "Input/time-input",
         "Input/time-seconds",
@@ -1969,6 +1972,7 @@
         "Input/controlled-time",
         "Input/date-input",
         "Input/datetime-local-input",
+        "Input/file-input",
         "Input/forced-locale",
         "Input/form-states",
         "Input/month-input",
@@ -1979,6 +1983,12 @@
         "Popover/focused-popover"
       ],
       "props": [
+        {
+          "name": "accept",
+          "description": "Accepted file extensions or MIME types for type=\"file\".",
+          "type": "string | undefined",
+          "optional": true
+        },
         {
           "name": "autoComplete",
           "description": "Passes the native autocomplete hint to the input or textarea host.",
@@ -2048,6 +2058,12 @@
         {
           "name": "multiline",
           "description": "Switches the native host from input to textarea. Multiline mode disables type, clear action, and leading/trailing icons.",
+          "type": "boolean | undefined",
+          "optional": true
+        },
+        {
+          "name": "multiple",
+          "description": "Allow selecting several files when type=\"file\".",
           "type": "boolean | undefined",
           "optional": true
         },
@@ -2259,7 +2275,7 @@
         {
           "name": "selection",
           "description": "Chooses none, single, or multiple selection semantics. The default is none; selection props are unavailable in none mode.",
-          "type": "\"none\" | \"single\" | \"multiple\" | undefined",
+          "type": "\"none\" | \"multiple\" | \"single\" | undefined",
           "optional": true
         },
         {
@@ -3113,7 +3129,7 @@
         {
           "name": "selection",
           "description": "Chooses no selection, single selection, or multiple selection behavior. The default is none.",
-          "type": "\"none\" | \"single\" | \"multiple\" | undefined",
+          "type": "\"none\" | \"multiple\" | \"single\" | undefined",
           "optional": true
         },
         {
@@ -4396,6 +4412,7 @@
         "Input/controlled-date",
         "Input/controlled-input",
         "Input/controlled-time",
+        "Input/file-input",
         "Layout/absolute",
         "Layout/grid",
         "Layout/splitbox",

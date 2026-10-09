@@ -2405,6 +2405,8 @@ Input 的 clear action 直接复用公开 `Button`，不维护私有 button DOM 
 
 `type="search"` 时必须屏蔽浏览器原生 search cancel affordance（例如 Chromium/WebKit 的 `::-webkit-search-cancel-button`）；是否显示 clear 只由 Weave `clearable` 决定，禁止同时出现浏览器 clear 与 Weave clear。
 
+`type="file"` 使用真实 `<input type="file">`，保留浏览器文件选择、文件名与 `FileList`，并通过 `::file-selector-button` 复用 Input 主题样式。支持 `accept`、`multiple`、`name/FormData`、`required`、`disabled`、`viewProps.ref` 和原生表单 reset。文件输入不接受非空 `value` / `defaultValue`，不显示通用 clear 按钮。
+
 ## 14.2 多行输入仍然使用 Input
 
 ```tsx

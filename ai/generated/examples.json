@@ -1766,6 +1766,33 @@
       "source": "import { Form, FormField, Input } from '../../../index'\n\nexport default function DateTimeLocalInputDemo() {\n  return (\n    <Form viewProps={{ width: 352 }}>\n      <FormField label=\"Appointment date and time\">\n        <Input\n          type=\"datetime-local\"\n          name=\"appointmentAt\"\n          defaultValue=\"2026-10-09T14:30\"\n          min=\"2026-10-01T09:00\"\n          max=\"2026-10-31T18:00\"\n          step={900}\n        />\n      </FormField>\n    </Form>\n  )\n}"
     },
     {
+      "id": "Input/file-input",
+      "component": "Input",
+      "title": "File input",
+      "description": "Choose one or multiple files with the native file picker, accept filtering and FormData support.",
+      "components": ["Column", "Form", "FormField", "Input", "Text"],
+      "concepts": [
+        "accept",
+        "choose",
+        "column",
+        "data",
+        "field",
+        "file",
+        "files",
+        "filtering",
+        "form",
+        "input",
+        "multiple",
+        "native",
+        "one",
+        "picker",
+        "support",
+        "text"
+      ],
+      "documentationRoute": "/docs/components/Input",
+      "source": "import { useRef, useState } from 'react'\nimport { Column, Form, FormField, Input, Text } from '../../../index'\n\nexport default function InputFileInputDemo() {\n  const inputRef = useRef<HTMLInputElement>(null)\n  const [selected, setSelected] = useState<string[]>([])\n\n  return (\n    <Form onReset={() => setSelected([])} viewProps={{ width: 352 }}>\n      <Column gap={12}>\n        <FormField label=\"Attachments\">\n          <Input\n            type=\"file\"\n            name=\"attachments\"\n            accept=\".pdf,image/*\"\n            multiple\n            onChange={() =>\n              setSelected(Array.from(inputRef.current?.files ?? [], (file) => file.name))\n            }\n            viewProps={{ ref: inputRef, width: 'fill' }}\n          />\n        </FormField>\n        <Text typo=\"body-small\" color=\"secondary\">\n          {selected.length ? selected.join(', ') : 'No files selected'}\n        </Text>\n      </Column>\n    </Form>\n  )\n}"
+    },
+    {
       "id": "Input/forced-locale",
       "component": "Input",
       "title": "Forced locale",

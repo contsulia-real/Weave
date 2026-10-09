@@ -94,6 +94,25 @@ const stylesheet = `
   margin: 0;
 }
 
+:where(.weave-input[type="file"]) {
+  cursor: pointer;
+}
+
+:where(.weave-input[type="file"])::file-selector-button {
+  font: inherit;
+  color: inherit;
+  cursor: inherit;
+  background: var(--weave-input-background);
+  border: var(--weave-input-border-width) solid var(--weave-input-border-color);
+  border-radius: var(--weave-input-radius);
+  padding: var(--weave-input-padding-y) var(--weave-input-padding-x);
+  margin-inline-end: var(--weave-input-padding-x);
+}
+
+:where(.weave-input[type="file"]:disabled)::file-selector-button {
+  cursor: not-allowed;
+}
+
 :where(.weave-input-root) {
   position: relative;
   display: inline-block;
