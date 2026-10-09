@@ -85,6 +85,18 @@ export const contentComponentExamples: Record<
     examples: [
       basicExample('Breadcrumb/basic-usage'),
       {
+        id: 'custom-separator',
+        title: 'Custom separator',
+        description: 'Provide separator to replace the default chevron between levels.',
+        demo: 'Breadcrumb/custom-separator',
+      },
+      {
+        id: 'dropdown-items',
+        title: 'Dropdown items',
+        description: 'Use menu with Weave MenuItem elements to open a dropdown from a breadcrumb.',
+        demo: 'Breadcrumb/dropdown-items',
+      },
+      {
         id: 'single-level',
         title: 'Single level',
         description: 'Use one item when the current page has no parent trail.',

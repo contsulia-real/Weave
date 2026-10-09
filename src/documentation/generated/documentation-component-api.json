@@ -62,7 +62,7 @@
       "nativeProps": false,
       "hasViewProps": true,
       "usesViewProps": false,
-      "props": "rcca14a45d1ae"
+      "props": "ra29c095b5685"
     },
     "Button": {
       "importPath": "@contsulia/weave/components/Button",
@@ -525,7 +525,7 @@
       "p9a2be629702f",
       "p5da11e0d22e6"
     ],
-    "rcca14a45d1ae": ["pcc0df214809b", "p23919f55f20e"],
+    "ra29c095b5685": ["pcc0df214809b", "p23919f55f20e", "p820ca55718e7"],
     "rd49985a43be6": [
       "pd075476d4a22",
       "p4f78ff5fa2ad",
@@ -1369,6 +1369,12 @@
       "name": "label",
       "description": "Accessible name of the navigation landmark.",
       "type": "string | undefined",
+      "optional": true
+    },
+    "p820ca55718e7": {
+      "name": "separator",
+      "description": "Decorative separator between levels; defaults to a right-chevron Icon.",
+      "type": "ReactNode",
       "optional": true
     },
     "pd075476d4a22": {

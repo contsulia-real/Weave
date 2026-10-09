@@ -427,7 +427,12 @@
       "nativeProps": false,
       "documentationRoute": "/docs/components/Breadcrumb",
       "apiRoute": "/docs/components-api/Breadcrumb",
-      "examples": ["Breadcrumb/basic-usage", "Breadcrumb/single-level"],
+      "examples": [
+        "Breadcrumb/basic-usage",
+        "Breadcrumb/custom-separator",
+        "Breadcrumb/dropdown-items",
+        "Breadcrumb/single-level"
+      ],
       "props": [
         {
           "name": "items",
@@ -439,6 +444,12 @@
           "name": "label",
           "description": "Accessible name of the navigation landmark.",
           "type": "string | undefined",
+          "optional": true
+        },
+        {
+          "name": "separator",
+          "description": "Decorative separator between levels; defaults to a right-chevron Icon.",
+          "type": "ReactNode",
           "optional": true
         }
       ]
@@ -805,6 +816,7 @@
         "Accordion/disabled-states",
         "AppBar/sticky-app-bar",
         "Badge/visibility",
+        "Breadcrumb/dropdown-items",
         "Button/basic-button",
         "Button/custom-content",
         "Button/form-actions",
@@ -2624,6 +2636,7 @@
       "documentationRoute": "/docs/components/Menu",
       "apiRoute": "/docs/components-api/MenuItem",
       "examples": [
+        "Breadcrumb/dropdown-items",
         "Menu/basic-usage",
         "Menu/controlled-menu",
         "Menu/menu-item-states",
@@ -4506,6 +4519,8 @@
         "AppBar/floating-app-bar",
         "AppBar/sticky-app-bar",
         "Avatar/fallback-behavior",
+        "Breadcrumb/custom-separator",
+        "Breadcrumb/dropdown-items",
         "Button/custom-content",
         "Button/form-actions",
         "Button/handling-clicks",
