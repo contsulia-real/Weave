@@ -1833,5 +1833,80 @@
     "zh-CN": "清除搜索内容",
     "zh-TW": "清除搜尋內容",
     "fr": "Effacer la recherche"
+  },
+  "Email input": {
+    "zh-CN": "邮箱输入",
+    "zh-TW": "電子郵件輸入",
+    "fr": "Champ d’adresse e-mail"
+  },
+  "Use native email validation, autocomplete, and an error message after editing.": {
+    "zh-CN": "使用原生邮箱格式校验、自动填充，并在编辑后显示错误提示。",
+    "zh-TW": "使用原生電子郵件格式驗證、自動填寫，並在編輯後顯示錯誤提示。",
+    "fr": "Utilisez la validation native des e-mails, la saisie automatique et un message d’erreur après modification."
+  },
+  "Telephone input": {
+    "zh-CN": "电话输入",
+    "zh-TW": "電話輸入",
+    "fr": "Champ de téléphone"
+  },
+  "Use the telephone keyboard and autocomplete without imposing a regional number format.": {
+    "zh-CN": "使用电话键盘和自动填充，不强制特定地区的号码格式。",
+    "zh-TW": "使用電話鍵盤和自動填寫，不強制特定地區的號碼格式。",
+    "fr": "Utilisez le clavier téléphonique et la saisie automatique sans imposer un format régional."
+  },
+  "URL input": {
+    "zh-CN": "网址输入",
+    "zh-TW": "網址輸入",
+    "fr": "Champ d’URL"
+  },
+  "Use native URL validation and autocomplete with a controlled website value.": {
+    "zh-CN": "使用原生 URL 格式校验和自动填充，受控管理网址值。",
+    "zh-TW": "使用原生 URL 格式驗證和自動填寫，受控管理網址值。",
+    "fr": "Utilisez la validation native des URL et la saisie automatique avec une valeur contrôlée."
+  },
+  "Email address": {
+    "zh-CN": "邮箱地址",
+    "zh-TW": "電子郵件地址",
+    "fr": "Adresse e-mail"
+  },
+  "Enter a valid email address.": {
+    "zh-CN": "请输入有效的邮箱地址。",
+    "zh-TW": "請輸入有效的電子郵件地址。",
+    "fr": "Saisissez une adresse e-mail valide."
+  },
+  "Enter an email address": {
+    "zh-CN": "输入邮箱地址",
+    "zh-TW": "輸入電子郵件地址",
+    "fr": "Saisir une adresse e-mail"
+  },
+  "Phone number": {
+    "zh-CN": "电话号码",
+    "zh-TW": "電話號碼",
+    "fr": "Numéro de téléphone"
+  },
+  "Telephone input does not validate number formats automatically.": {
+    "zh-CN": "电话输入不会自动验证号码格式。",
+    "zh-TW": "電話輸入不會自動驗證號碼格式。",
+    "fr": "Le champ téléphonique ne valide pas automatiquement le format du numéro."
+  },
+  "Enter a phone number": {
+    "zh-CN": "输入电话号码",
+    "zh-TW": "輸入電話號碼",
+    "fr": "Saisir un numéro de téléphone"
+  },
+  "Website URL": {
+    "zh-CN": "网站网址",
+    "zh-TW": "網站網址",
+    "fr": "URL du site web"
+  },
+  "Enter a valid URL.": {
+    "zh-CN": "请输入有效的网址。",
+    "zh-TW": "請輸入有效的網址。",
+    "fr": "Saisissez une URL valide."
+  },
+  "Enter a website URL": {
+    "zh-CN": "输入网站网址",
+    "zh-TW": "輸入網站網址",
+    "fr": "Saisir l’URL d’un site web"
   }
 }

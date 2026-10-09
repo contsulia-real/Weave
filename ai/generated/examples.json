@@ -1766,6 +1766,28 @@
       "source": "import { Form, FormField, Input } from '../../../index'\n\nexport default function DateTimeLocalInputDemo() {\n  return (\n    <Form viewProps={{ width: 352 }}>\n      <FormField label=\"Appointment date and time\">\n        <Input\n          type=\"datetime-local\"\n          name=\"appointmentAt\"\n          defaultValue=\"2026-10-09T14:30\"\n          min=\"2026-10-01T09:00\"\n          max=\"2026-10-31T18:00\"\n          step={900}\n        />\n      </FormField>\n    </Form>\n  )\n}"
     },
     {
+      "id": "Input/email-input",
+      "component": "Input",
+      "title": "Email input",
+      "description": "Use native email validation, autocomplete, and an error message after editing.",
+      "components": ["Form", "FormField", "Input"],
+      "concepts": [
+        "after",
+        "autocomplete",
+        "editing",
+        "email",
+        "error",
+        "field",
+        "form",
+        "input",
+        "message",
+        "native",
+        "validation"
+      ],
+      "documentationRoute": "/docs/components/Input",
+      "source": "import { useRef, useState } from 'react'\nimport { useTranslation } from 'react-i18next'\nimport { Form, FormField, Input } from '../../../index'\n\nexport default function InputEmailInputDemo() {\n  const { t } = useTranslation('copy')\n  const [email, setEmail] = useState('contact@example.com')\n  const [touched, setTouched] = useState(false)\n  const [invalid, setInvalid] = useState(false)\n  const inputRef = useRef<HTMLInputElement>(null)\n\n  return (\n    <Form viewProps={{ width: 320 }}>\n      <FormField\n        label={t('Email address')}\n        required\n        error={touched && invalid ? t('Enter a valid email address.') : undefined}\n      >\n        <Input\n          type=\"email\"\n          name=\"email\"\n          required\n          autoComplete=\"email\"\n          placeholder={t('Enter an email address')}\n          value={email}\n          onChange={(next) => {\n            setEmail(next)\n            if (touched) setInvalid(!inputRef.current?.validity.valid)\n          }}\n          viewProps={{\n            width: 'fill',\n            ref: inputRef,\n            onBlur: () => {\n              setTouched(true)\n              setInvalid(!inputRef.current?.validity.valid)\n            },\n          }}\n        />\n      </FormField>\n    </Form>\n  )\n}"
+    },
+    {
       "id": "Input/file-input",
       "component": "Input",
       "title": "File input",
@@ -1965,6 +1987,29 @@
       "source": "import { useState } from 'react'\nimport { useTranslation } from 'react-i18next'\nimport { Column, Form, FormField, Input, Text } from '../../../index'\n\nexport default function InputSearchInputDemo() {\n  const { t } = useTranslation('copy')\n  const [query, setQuery] = useState('Weave')\n\n  return (\n    <Form viewProps={{ width: 320 }}>\n      <Column gap={8}>\n        <FormField label={t('Search')}>\n          <Input\n            type=\"search\"\n            name=\"query\"\n            value={query}\n            onChange={setQuery}\n            placeholder={t('Search notes')}\n            viewProps={{ width: 'fill' }}\n          />\n        </FormField>\n        <Text typo=\"body-small\" color=\"secondary\">\n          {t('Query: {{value}}', { value: query || t('Empty') })}\n        </Text>\n      </Column>\n    </Form>\n  )\n}"
     },
     {
+      "id": "Input/tel-input",
+      "component": "Input",
+      "title": "Telephone input",
+      "description": "Use the telephone keyboard and autocomplete without imposing a regional number format.",
+      "components": ["Form", "FormField", "Input"],
+      "concepts": [
+        "autocomplete",
+        "field",
+        "form",
+        "format",
+        "imposing",
+        "input",
+        "keyboard",
+        "number",
+        "regional",
+        "tel",
+        "telephone",
+        "without"
+      ],
+      "documentationRoute": "/docs/components/Input",
+      "source": "import { useState } from 'react'\nimport { useTranslation } from 'react-i18next'\nimport { Form, FormField, Input } from '../../../index'\n\nexport default function InputTelInputDemo() {\n  const { t } = useTranslation('copy')\n  const [phone, setPhone] = useState('')\n\n  return (\n    <Form viewProps={{ width: 320 }}>\n      <FormField\n        label={t('Phone number')}\n        description={t('Telephone input does not validate number formats automatically.')}\n      >\n        <Input\n          type=\"tel\"\n          name=\"phone\"\n          autoComplete=\"tel\"\n          placeholder={t('Enter a phone number')}\n          value={phone}\n          onChange={setPhone}\n          viewProps={{ width: 'fill', inputMode: 'tel' }}\n        />\n      </FormField>\n    </Form>\n  )\n}"
+    },
+    {
       "id": "Input/time-input",
       "component": "Input",
       "title": "Time input",
@@ -2010,6 +2055,27 @@
       ],
       "documentationRoute": "/docs/components/Input",
       "source": "import { Form, FormField, Input } from '../../../index'\n\nexport default function TimeSecondsDemo() {\n  return (\n    <Form viewProps={{ width: 352 }}>\n      <FormField label=\"Precise time\">\n        <Input\n          type=\"time\"\n          name=\"preciseTime\"\n          defaultValue=\"14:30:15\"\n          min=\"09:00:00\"\n          max=\"18:00:59\"\n          step={1}\n        />\n      </FormField>\n    </Form>\n  )\n}"
+    },
+    {
+      "id": "Input/url-input",
+      "component": "Input",
+      "title": "URL input",
+      "description": "Use native URL validation and autocomplete with a controlled website value.",
+      "components": ["Form", "FormField", "Input"],
+      "concepts": [
+        "autocomplete",
+        "controlled",
+        "field",
+        "form",
+        "input",
+        "native",
+        "url",
+        "validation",
+        "value",
+        "website"
+      ],
+      "documentationRoute": "/docs/components/Input",
+      "source": "import { useRef, useState } from 'react'\nimport { useTranslation } from 'react-i18next'\nimport { Form, FormField, Input } from '../../../index'\n\nexport default function InputUrlInputDemo() {\n  const { t } = useTranslation('copy')\n  const [url, setUrl] = useState('https://example.com')\n  const [touched, setTouched] = useState(false)\n  const [invalid, setInvalid] = useState(false)\n  const inputRef = useRef<HTMLInputElement>(null)\n\n  return (\n    <Form viewProps={{ width: 320 }}>\n      <FormField\n        label={t('Website URL')}\n        required\n        error={touched && invalid ? t('Enter a valid URL.') : undefined}\n      >\n        <Input\n          type=\"url\"\n          name=\"website\"\n          required\n          autoComplete=\"url\"\n          placeholder={t('Enter a website URL')}\n          value={url}\n          onChange={(next) => {\n            setUrl(next)\n            if (touched) setInvalid(!inputRef.current?.validity.valid)\n          }}\n          viewProps={{\n            width: 'fill',\n            ref: inputRef,\n            onBlur: () => {\n              setTouched(true)\n              setInvalid(!inputRef.current?.validity.valid)\n            },\n          }}\n        />\n      </FormField>\n    </Form>\n  )\n}"
     },
     {
       "id": "Input/week-input",

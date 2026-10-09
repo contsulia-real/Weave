@@ -11,6 +11,27 @@ export const formsComponentExamples: Record<string, DocumentationComponentDocume
       examples: [
         basicExample('Input/basic-usage'),
         {
+          id: 'email-input',
+          title: 'Email input',
+          description:
+            'Use native email validation, autocomplete, and an error message after editing.',
+          demo: 'Input/email-input',
+        },
+        {
+          id: 'tel-input',
+          title: 'Telephone input',
+          description:
+            'Use the telephone keyboard and autocomplete without imposing a regional number format.',
+          demo: 'Input/tel-input',
+        },
+        {
+          id: 'url-input',
+          title: 'URL input',
+          description:
+            'Use native URL validation and autocomplete with a controlled website value.',
+          demo: 'Input/url-input',
+        },
+        {
           id: 'search-input',
           title: 'Search input',
           description:
