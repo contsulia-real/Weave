@@ -10,6 +10,7 @@ export interface TableSelectionState {
 export interface TableDeclaredCells {
   rowIds: readonly string[]
   cellIds: readonly string[]
+  rowCount?: number
 }
 
 interface TableContextValue {

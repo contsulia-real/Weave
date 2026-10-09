@@ -142,11 +142,13 @@ function DataGridMeasuredRow<TRow extends DataGridRow>({
   columns,
   columnWidths,
   onMeasure,
+  rowIndex,
 }: {
   row: TRow
   columns: readonly DataGridColumn<TRow>[]
   columnWidths: DataGridColumnWidths
   onMeasure(id: string, measurement: VirtualMeasurement): void
+  rowIndex: number
 }) {
   const rowRef = useRef<HTMLTableRowElement>(null)
 
@@ -180,7 +182,7 @@ function DataGridMeasuredRow<TRow extends DataGridRow>({
   }, [onMeasure, row.id])
 
   return (
-    <TableRow id={row.id} viewProps={{ ref: rowRef }}>
+    <TableRow id={row.id} viewProps={{ ref: rowRef, 'aria-rowindex': rowIndex }}>
       {dataGridCells(row, columns, columnWidths)}
     </TableRow>
   )
@@ -318,6 +320,7 @@ function DataGridVirtualBody<TRow extends DataGridRow>({
             columns={columns}
             columnWidths={columnWidths}
             onMeasure={onMeasure}
+            rowIndex={index + 2}
           />
         )
       })}
@@ -481,6 +484,31 @@ export function DataGrid<TRow extends DataGridRow = DataGridRow>(
     [columnWidths, onColumnWidthsChange],
   )
 
+  const resizeWithKeyboard = useCallback(
+    (column: DataGridColumn<TRow>, event: KeyboardEvent<HTMLDivElement>) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.stopPropagation()
+        return
+      }
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return
+      event.preventDefault()
+      event.stopPropagation()
+
+      const current =
+        trackColumnWidths[column.id] ??
+        event.currentTarget.closest('th')?.getBoundingClientRect().width
+      if (current === undefined) return
+
+      const next = clampWidth(
+        current + (event.key === 'ArrowRight' ? 8 : -8),
+        column.minWidth,
+        column.maxWidth,
+      )
+      commitColumnWidths({ ...trackColumnWidths, [column.id]: next })
+    },
+    [commitColumnWidths, trackColumnWidths],
+  )
+
   const startResize = useCallback(
     (column: DataGridColumn<TRow>, event: PointerEvent<HTMLDivElement>) => {
       if (event.button !== 0 || column.resizable !== true) return
@@ -565,8 +593,9 @@ export function DataGrid<TRow extends DataGridRow = DataGridRow>(
     () => ({
       rowIds: rows.map(({ id }) => id),
       cellIds: columns.map(({ id }) => id),
+      rowCount: virtualized ? rows.length + 1 : undefined,
     }),
-    [columns, rows],
+    [columns, rows, virtualized],
   )
 
   const tableSelectionProps = selectable
@@ -677,6 +706,20 @@ export function DataGrid<TRow extends DataGridRow = DataGridRow>(
                       className="weave-data-grid__resize-handle"
                       role="separator"
                       aria-orientation="vertical"
+                      tabIndex={0}
+                      aria-label={`Resize ${column.id} column`}
+                      aria-valuemin={column.minWidth ?? 0}
+                      aria-valuemax={
+                        column.maxWidth ??
+                        Math.max(100, column.minWidth ?? 0, trackColumnWidths[column.id] ?? 0)
+                      }
+                      aria-valuenow={trackColumnWidths[column.id]}
+                      aria-valuetext={
+                        trackColumnWidths[column.id] === undefined
+                          ? undefined
+                          : `${trackColumnWidths[column.id]}px`
+                      }
+                      onKeyDown={(event) => resizeWithKeyboard(column, event)}
                       onPointerDown={(event) => startResize(column, event)}
                       onPointerMove={moveResize}
                       onPointerUp={endResize}

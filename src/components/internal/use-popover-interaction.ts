@@ -15,6 +15,13 @@ const FOCUSABLE_SELECTOR = [
   '[tabindex]:not([tabindex="-1"])',
 ].join(',')
 
+interface OpenPopoverEscapeHandler {
+  handler: (event: KeyboardEvent) => void
+  target: HTMLElement
+}
+
+const escapeHandlers = new WeakMap<Document, OpenPopoverEscapeHandler[]>()
+
 export function usePopoverInteraction(
   wrapperRef: RefObject<HTMLElement | null>,
   targetRef: RefObject<HTMLElement | null>,
@@ -91,18 +98,29 @@ export function usePopoverInteraction(
       if (event.key !== 'Escape') {
         return
       }
+      if (escapeHandlers.get(document)?.at(-1)?.handler !== handleKeyDown) return
 
       event.preventDefault()
       skipRestoreRef.current = false
       close()
     }
 
+    const handlers = escapeHandlers.get(document) ?? []
+    const entry = { handler: handleKeyDown, target }
+    const panel = panelRef.current
+    const parentIndex = handlers.findIndex(({ target: childTarget }) =>
+      panel?.contains(childTarget),
+    )
+    handlers.splice(parentIndex < 0 ? handlers.length : parentIndex, 0, entry)
+    escapeHandlers.set(document, handlers)
     document.addEventListener('keydown', handleKeyDown)
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown)
+      handlers.splice(handlers.indexOf(entry), 1)
+      if (handlers.length === 0) escapeHandlers.delete(document)
     }
-  }, [close, open, targetRef])
+  }, [close, open, panelRef, targetRef])
 
   useEffect(() => {
     const wasOpen = previousOpenRef.current
