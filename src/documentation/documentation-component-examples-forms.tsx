@@ -376,6 +376,18 @@ export const formsComponentExamples: Record<string, DocumentationComponentDocume
         },
       ],
     },
+    Pagination: {
+      description: 'Page navigation with numbered buttons, ellipses, and previous/next controls.',
+      examples: [
+        basicExample('Pagination/basic-usage'),
+        {
+          id: 'controlled-pagination',
+          title: 'Controlled pagination',
+          description: 'Use page and onPageChange to control the current page.',
+          demo: 'Pagination/controlled-pagination',
+        },
+      ],
+    },
     Progress: {
       description:
         'A spin or linear progress indicator supporting determinate and indeterminate states.',

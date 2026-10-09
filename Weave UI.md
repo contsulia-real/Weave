@@ -3009,6 +3009,18 @@ viewProps
 
 ---
 
+## 15.3 Pagination
+
+`Pagination` 是独立页码导航组件，不内嵌于 Table 或 DataGrid。它直接组合公开 `Row`、`Button` 与现有左右箭头图标，不建立第二套按钮外观、主题或浮层。
+
+- `pageCount: number` 指定总页数，页码从 1 开始；`page?: number`、`defaultPage?: number`、`onPageChange?: (page: number) => void` 延续 Weave 的受控／非受控模型。
+- `disabled?: boolean`、`size?: ButtonSize` 与 `viewProps` 透传既有 Button / Row 能力；页数为 0 时所有导航按钮禁用。
+- 默认展示首页、末页、当前页及相邻页，间隔以不可交互省略号表示；上一页和下一页在边界禁用，不产生越界页码。
+- 分页外层使用 navigation 语义，选中页使用 `aria-current="page"`，所有按钮提供随 document.lang 更新的英／简中／繁中／法文无障碍标签。
+- 组件只通知页码变化，不处理数据切片、路由或表格状态。
+
+---
+
 # 16. `Progress`
 
 `Progress` 是进度组件。

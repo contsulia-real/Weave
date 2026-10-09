@@ -809,6 +809,8 @@
         "Layout/stack",
         "MarkSlider/controlled-restricted-inverse",
         "Menu/selection-dismissal",
+        "Pagination/basic-usage",
+        "Pagination/controlled-pagination",
         "Popover/contextual-actions",
         "Popover/controlled-popover",
         "Presence/basic-usage",
@@ -2647,6 +2649,63 @@
         }
       ]
     },
+    "Pagination": {
+      "name": "Pagination",
+      "import": "import { Pagination } from '@contsulia/weave/components/Pagination'",
+      "importPath": "@contsulia/weave/components/Pagination",
+      "category": "forms-status",
+      "intent": "Page navigation with numbered buttons, ellipses, and previous/next controls.",
+      "preferWhen": [],
+      "avoidWhen": [],
+      "alternatives": [],
+      "relationship": {
+        "demoParent": null,
+        "standaloneDocumentationPage": true
+      },
+      "viewPropsMode": "nested",
+      "nativeProps": false,
+      "documentationRoute": "/docs/components/Pagination",
+      "apiRoute": "/docs/components-api/Pagination",
+      "examples": ["Pagination/basic-usage", "Pagination/controlled-pagination"],
+      "props": [
+        {
+          "name": "defaultPage",
+          "description": "Initial page when uncontrolled; defaults to 1.",
+          "type": "number | undefined",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "description": "",
+          "type": "boolean | undefined",
+          "optional": true
+        },
+        {
+          "name": "onPageChange",
+          "description": "",
+          "type": "((page: number) => void) | undefined",
+          "optional": true
+        },
+        {
+          "name": "page",
+          "description": "Controlled current page, numbered from 1.",
+          "type": "number | undefined",
+          "optional": true
+        },
+        {
+          "name": "pageCount",
+          "description": "Number of available pages. Zero disables page navigation.",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "size",
+          "description": "",
+          "type": "ButtonSize | undefined",
+          "optional": true
+        }
+      ]
+    },
     "Popover": {
       "name": "Popover",
       "import": "import { Popover } from '@contsulia/weave/components/Popover'",
@@ -4452,6 +4511,8 @@
         "List/controlled-multiple-selection",
         "MarkSlider/controlled-restricted-inverse",
         "Menu/selection-dismissal",
+        "Pagination/basic-usage",
+        "Pagination/controlled-pagination",
         "Popover/basic-usage",
         "Popover/controlled-popover",
         "Presence/basic-usage",

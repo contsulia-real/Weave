@@ -1998,5 +1998,25 @@
     "zh-CN": "输入网站网址",
     "zh-TW": "輸入網站網址",
     "fr": "Saisir l’URL d’un site web"
+  },
+  "Page navigation with numbered buttons, ellipses, and previous/next controls.": {
+    "zh-CN": "使用页码按钮、省略号和上一页／下一页按钮进行分页导航。",
+    "zh-TW": "使用頁碼按鈕、省略號和上一頁／下一頁按鈕進行分頁導覽。",
+    "fr": "Navigation entre les pages avec boutons numérotés, points de suspension et boutons précédent/suivant."
+  },
+  "Controlled pagination": {
+    "zh-CN": "受控分页",
+    "zh-TW": "受控分頁",
+    "fr": "Pagination contrôlée"
+  },
+  "Use page and onPageChange to control the current page.": {
+    "zh-CN": "使用 page 和 onPageChange 控制当前页码。",
+    "zh-TW": "使用 page 和 onPageChange 控制目前頁碼。",
+    "fr": "Utilisez page et onPageChange pour contrôler la page active."
+  },
+  "Current page: {{page}} of {{count}}": {
+    "zh-CN": "第 {{page}} 页，共 {{count}} 页",
+    "zh-TW": "第 {{page}} 頁，共 {{count}} 頁",
+    "fr": "Page {{page}} sur {{count}}"
   }
 }

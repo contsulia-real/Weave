@@ -2578,6 +2578,34 @@
       "source": "import { Button, Menu, MenuItem } from '../../../index'\n\nexport default function MenuSubmenuDemo() {\n  return (\n    <Menu trigger={<Button text=\"Export\" />} defaultOpen submenuOffset={8} viewportPadding={16}>\n      <MenuItem text=\"Quick export\" />\n      <MenuItem\n        text=\"Export as\"\n        submenu={\n          <>\n            <MenuItem text=\"PDF\" />\n            <MenuItem text=\"PNG\" />\n            <MenuItem text=\"CSV\" />\n          </>\n        }\n      />\n    </Menu>\n  )\n}"
     },
     {
+      "id": "Pagination/basic-usage",
+      "component": "Pagination",
+      "title": "Basic usage",
+      "components": ["Column", "Pagination", "Text"],
+      "concepts": ["basic", "column", "pagination", "text", "usage"],
+      "documentationRoute": "/docs/components/Pagination",
+      "source": "import { useState } from 'react'\nimport { useTranslation } from 'react-i18next'\nimport { Column, Pagination, Text } from '../../../index'\n\nexport default function PaginationBasicUsageDemo() {\n  const { t } = useTranslation('copy')\n  const [page, setPage] = useState(1)\n\n  return (\n    <Column gap={12}>\n      <Pagination pageCount={12} onPageChange={setPage} />\n      <Text typo=\"body-small\" color=\"secondary\">\n        {t('Current page: {{page}} of {{count}}', { page, count: 12 })}\n      </Text>\n    </Column>\n  )\n}"
+    },
+    {
+      "id": "Pagination/controlled-pagination",
+      "component": "Pagination",
+      "title": "Controlled pagination",
+      "description": "Use page and onPageChange to control the current page.",
+      "components": ["Column", "Pagination", "Text"],
+      "concepts": [
+        "change",
+        "column",
+        "control",
+        "controlled",
+        "current",
+        "page",
+        "pagination",
+        "text"
+      ],
+      "documentationRoute": "/docs/components/Pagination",
+      "source": "import { useState } from 'react'\nimport { useTranslation } from 'react-i18next'\nimport { Column, Pagination, Text } from '../../../index'\n\nexport default function ControlledPaginationDemo() {\n  const { t } = useTranslation('copy')\n  const [page, setPage] = useState(6)\n\n  return (\n    <Column gap={12}>\n      <Pagination pageCount={20} page={page} onPageChange={setPage} />\n      <Text typo=\"body-small\" color=\"secondary\">\n        {t('Current page: {{page}} of {{count}}', { page, count: 20 })}\n      </Text>\n    </Column>\n  )\n}"
+    },
+    {
       "id": "Popover/basic-usage",
       "component": "Popover",
       "title": "Basic usage",

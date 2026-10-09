@@ -53,6 +53,7 @@ const componentNavigationSections: readonly DocumentationNavigationSectionDefini
     'Radio',
     'Checkbox',
     'Progress',
+    'Pagination',
     'Skeleton',
   ]),
   componentSection('composite-ui', 'docs.nav.compositeUI', [

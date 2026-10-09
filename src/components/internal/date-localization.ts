@@ -43,6 +43,10 @@ const messages = {
     nextYears: 'Next 12 years',
     clear: 'Clear',
     invalidDate: 'Invalid date',
+    pagination: 'Pagination',
+    previousPage: 'Previous page',
+    nextPage: 'Next page',
+    pageNumber: 'Page {page}',
   },
   'zh-CN': {
     chooseDate: '选择日期',
@@ -85,6 +89,10 @@ const messages = {
     nextYears: '后12年',
     clear: '清除',
     invalidDate: '无效日期',
+    pagination: '分页',
+    previousPage: '上一页',
+    nextPage: '下一页',
+    pageNumber: '第 {page} 页',
   },
   'zh-TW': {
     chooseDate: '選擇日期',
@@ -127,6 +135,10 @@ const messages = {
     nextYears: '後12年',
     clear: '清除',
     invalidDate: '無效日期',
+    pagination: '分頁',
+    previousPage: '上一頁',
+    nextPage: '下一頁',
+    pageNumber: '第 {page} 頁',
   },
   fr: {
     chooseDate: 'Choisir une date',
@@ -169,6 +181,10 @@ const messages = {
     nextYears: '12 années suivantes',
     clear: 'Effacer',
     invalidDate: 'Date invalide',
+    pagination: 'Pagination',
+    previousPage: 'Page précédente',
+    nextPage: 'Page suivante',
+    pageNumber: 'Page {page}',
   },
 } as const
 

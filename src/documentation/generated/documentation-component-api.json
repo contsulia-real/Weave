@@ -260,6 +260,13 @@
       "usesViewProps": false,
       "props": "r67710e7390f2"
     },
+    "Pagination": {
+      "importPath": "@contsulia/weave/components/Pagination",
+      "nativeProps": false,
+      "hasViewProps": true,
+      "usesViewProps": false,
+      "props": "ra386e6e235b8"
+    },
     "Popover": {
       "importPath": "@contsulia/weave/components/Popover",
       "nativeProps": false,
@@ -752,6 +759,14 @@
       "p74ed009369fe",
       "p7d209b798d28",
       "p63ec3621ff0a"
+    ],
+    "ra386e6e235b8": [
+      "p3e62b2390827",
+      "p531a9289d2ce",
+      "p47d5f97af079",
+      "p4aea5190f30c",
+      "p5ba6498405fe",
+      "p04c720e7ab97"
     ],
     "ra912ad7790d1": [
       "p50b8339d71de",
@@ -2666,6 +2681,42 @@
       "name": "text",
       "description": "Primary visible command label for the menu item.",
       "type": "ReactNode",
+      "optional": true
+    },
+    "p3e62b2390827": {
+      "name": "defaultPage",
+      "description": "Initial page when uncontrolled; defaults to 1.",
+      "type": "number | undefined",
+      "optional": true
+    },
+    "p531a9289d2ce": {
+      "name": "disabled",
+      "description": "",
+      "type": "boolean | undefined",
+      "optional": true
+    },
+    "p47d5f97af079": {
+      "name": "onPageChange",
+      "description": "",
+      "type": "((page: number) => void) | undefined",
+      "optional": true
+    },
+    "p4aea5190f30c": {
+      "name": "page",
+      "description": "Controlled current page, numbered from 1.",
+      "type": "number | undefined",
+      "optional": true
+    },
+    "p5ba6498405fe": {
+      "name": "pageCount",
+      "description": "Number of available pages. Zero disables page navigation.",
+      "type": "number",
+      "optional": false
+    },
+    "p04c720e7ab97": {
+      "name": "size",
+      "description": "",
+      "type": "ButtonSize | undefined",
       "optional": true
     },
     "p50b8339d71de": {
