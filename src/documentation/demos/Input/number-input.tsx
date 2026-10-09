@@ -1,13 +1,15 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Column, Form, FormField, Input, Text } from '../../../index'
 
 export default function InputNumberInputDemo() {
+  const { t } = useTranslation('copy')
   const [value, setValue] = useState('2.5')
 
   return (
     <Form viewProps={{ width: 320 }}>
       <Column gap={12}>
-        <FormField label="Quantity">
+        <FormField label={t('Quantity')}>
           <Input
             type="number"
             name="quantity"
@@ -20,7 +22,7 @@ export default function InputNumberInputDemo() {
           />
         </FormField>
         <Text typo="body-small" color="secondary">
-          Drag the selector icon left or right to adjust. Value: {value}
+          {t('Drag the selector icon left or right to adjust. Value: {{value}}', { value })}
         </Text>
       </Column>
     </Form>

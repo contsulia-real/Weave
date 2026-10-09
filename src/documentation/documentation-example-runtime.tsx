@@ -2,6 +2,7 @@ import { IconDots, IconSearch, IconStar } from '@tabler/icons-react'
 import type { ComponentType } from 'react'
 import * as React from 'react'
 import * as ReactJsxRuntime from 'react/jsx-runtime'
+import { useTranslation } from 'react-i18next'
 import ts from 'typescript'
 import * as Weave from '../index'
 import { documentationSampleImage } from './documentation-example-fixtures'
@@ -18,6 +19,7 @@ const runtimeModules: Readonly<Record<string, unknown>> = {
   },
   react: React,
   'react/jsx-runtime': ReactJsxRuntime,
+  'react-i18next': { useTranslation },
 }
 
 function diagnosticText(diagnostic: ts.Diagnostic): string {

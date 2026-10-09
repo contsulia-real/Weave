@@ -16,6 +16,7 @@ const metadataFiles = [
 const liveRuntimeImports = new Set([
   '@tabler/icons-react',
   'react',
+  'react-i18next',
   '../../../index',
   '../../documentation-example-fixtures',
 ])

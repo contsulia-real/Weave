@@ -1,14 +1,17 @@
 import { IconSparkles } from '@tabler/icons-react'
+import { useTranslation } from 'react-i18next'
 import { Input } from '../../../index'
 
 export default function InputBasicUsageDemo() {
+  const { t } = useTranslation('copy')
+
   return (
     <Input
       type="search"
       defaultValue="Weave"
-      placeholder="Search notes"
+      placeholder={t('Search notes')}
       trailingIcon={IconSparkles}
-      clearLabel="Clear search"
+      clearLabel={t('Clear search')}
     />
   )
 }

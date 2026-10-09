@@ -2407,7 +2407,7 @@ Input 的 clear action 直接复用公开 `Button`，不维护私有 button DOM 
 
 `type="search"` 默认使用 Tabler `IconSearch` 作为 Weave Input 的 `leadingIcon`，显示尺寸与现有 Select 的图标保持一致；显式传入 `leadingIcon` 时优先使用调用方图标，不重复增加搜索图标。搜索框继续使用原生 Enter、Escape 和表单语义。必须屏蔽浏览器原生 search cancel affordance（例如 Chromium/WebKit 的 `::-webkit-search-cancel-button`）；是否显示 clear 只由 Weave `clearable` 决定，禁止同时出现浏览器 clear 与 Weave clear。
 
-Input 内置文本与无障碍标签（包括 search/普通输入的默认 clear、password 显隐、number 拖拽说明、file 状态等）必须复用现有 document.lang 感知的 en / zh-CN / zh-TW / fr 消息表；运行时语言切换即时更新，不重置输入值，用户显式设置的 clearLabel 优先。不允许新组件再次写死英文标签。
+Input 内置文本与无障碍标签（包括 search/普通输入的默认 clear、password 显隐、number 拖拽说明、file 状态等）必须复用现有 document.lang 感知的 en / zh-CN / zh-TW / fr 消息表；运行时语言切换即时更新，不重置输入值，用户显式设置的 clearLabel 优先。不允许新组件再次写死英文标签。 Input 文档新增示例的小节标题、描述、预览中的可见文案及占位符，也必须同步加入文档现有 documentation-copy.json 三语译文（英文为原文），运行时语言切换必须与文档语言选择器保持同步；可编辑 demo runtime 与校验器应支持已有 react-i18next 导入。
 
 `Input type="password"` 复用现有 InputHost，默认掩码，右侧使用公开 Weave Button（ghost/small）承载 Tabler 眼睛显隐图标，图标本体尺寸复用 Select 的图标主题 token；点击在真实 `password`/`text` 类型之间切换但不重新挂载输入框，不引入 Popover，原有 `value`、`defaultValue`、`onChange`、FormData、reset 和键盘行为均不改变。 可选 `mask` 字符串指定隐藏状态的自定义显示字符，例如 `mask="*"`；仅替换可见掩码，不替换真实输入值，底层继续使用原生 `type="password"`，显示／隐藏切换和原有表单语义不变；未指定 mask 时仍使用浏览器默认掩码。
 
