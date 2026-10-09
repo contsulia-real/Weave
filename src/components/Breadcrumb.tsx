@@ -1,13 +1,64 @@
-import { Fragment } from 'react'
+import { Fragment, type ReactNode } from 'react'
 import type { BreadcrumbProps } from '../core/breadcrumb-types'
-import { Button } from './Button'
+import { ensureLinkStylesheet } from '../renderers/dom/link-stylesheet'
+import { resolveLinkTheme } from '../renderers/dom/resolve-component-theme'
+import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
+import { useStaticStylesheet } from '../renderers/dom/static-stylesheet'
+import { useTheme } from '../theme/theme-context'
 import { Icon } from './Icon'
 import { chevronDownIcon, chevronRightIcon } from './internal/control-icons'
 import { useDateLocalization } from './internal/date-localization'
+import { useViewHost } from './internal/use-view-host'
 import { Link } from './Link'
 import { Menu } from './Menu'
 import { Row } from './Row'
 import { Text } from './Text'
+
+function BreadcrumbMenuTrigger({
+  text,
+  current,
+}: {
+  text: ReactNode
+  current: boolean
+}): import('react').JSX.Element {
+  const { theme } = useTheme()
+  const themeClassName = useRuntimeStyleClass('link-theme', resolveLinkTheme(theme))
+  const { elementRef, className, inlineStyle, resolved } = useViewHost<HTMLButtonElement>({})
+
+  useStaticStylesheet(ensureLinkStylesheet)
+
+  return (
+    <button
+      {...resolved.domProps}
+      ref={elementRef}
+      type="button"
+      aria-current={current ? 'page' : undefined}
+      data-weave-view=""
+      data-weave-link-underline="visible"
+      data-weave-layout={resolved.layout}
+      className={['weave-link', themeClassName, className].filter(Boolean).join(' ')}
+      style={{
+        ...inlineStyle,
+        appearance: 'none',
+        background: 'transparent',
+        border: 0,
+        padding: 0,
+        font: 'inherit',
+      }}
+    >
+      <Text viewProps={{ className: 'weave-link__text' }}>{text}</Text>
+      <Icon
+        svg={chevronDownIcon}
+        size="small"
+        viewProps={{
+          width: 'var(--weave-link-theme-icon-size)',
+          height: 'var(--weave-link-theme-icon-size)',
+          pointerEvents: 'none',
+        }}
+      />
+    </button>
+  )
+}
 
 export function Breadcrumb({
   items,
@@ -30,16 +81,7 @@ export function Breadcrumb({
             {item.menu !== undefined ? (
               <Menu
                 trigger={
-                  <Button
-                    text={item.text}
-                    icon={chevronDownIcon}
-                    iconPosition="end"
-                    variant="ghost"
-                    size="small"
-                    viewProps={{
-                      'aria-current': index === items.length - 1 ? 'page' : undefined,
-                    }}
-                  />
+                  <BreadcrumbMenuTrigger text={item.text} current={index === items.length - 1} />
                 }
               >
                 {item.menu}

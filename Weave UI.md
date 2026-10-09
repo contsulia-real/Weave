@@ -3775,11 +3775,11 @@ active  80%
 
 ## 18A.1 `Breadcrumb`
 
-`Breadcrumb` 用于展示从根层级到当前页面的层级导航。它直接组合公开 `Row`、`Link`、`Text`、`Icon`，菜单项额外复用公开 `Menu` 与 `Button`，沿用既有 Theme 和交互，不引入私有样式或新的导航系统。
+`Breadcrumb` 用于展示从根层级到当前页面的层级导航。它直接组合公开 `Row`、`Link`、`Text`、`Icon`，菜单项额外复用公开 `Menu`，并以原生 `<button>` 触发，直接复用 `Link` 现有主题与样式，确保链接和菜单触发器保持相同的字号、字重、行高与交互颜色；不引入新的主题或导航系统。
 
 - `items: readonly BreadcrumbItem[]` 按父级到当前页的顺序提供带 `text: ReactNode` 的项。普通项可设置 `href?: string`：非末级的 href 使用真实 `Link`，隐藏 Link 默认装饰性尾部 link icon，仍保留 Link 本身的底边线样式。
-- 可选 `menu: ReactNode` 表示菜单型项，传入已有 `MenuItem` 内容，由 `Menu` 处理浮层定位、关闭与键盘行为，使用真实 `Button` 作为触发器；`href` 与 `menu` 在同一个项上互斥。菜单型项可处于任意层级（包括末级）。菜单项选择行为由提供的 `MenuItem.onSelect` 决定。
-- 最末项始终代表当前页面：普通末项用 `Text` 和 `aria-current="page"`，不生成链接，即使传了 href 也不跳转；菜单型末项则在触发 Button 上设置 `aria-current="page"`，点击打开菜单而不是跳转。单项时没有分隔符，空项不生成链接和当前项。
+- 可选 `menu: ReactNode` 表示菜单型项，传入已有 `MenuItem` 内容，由 `Menu` 处理浮层定位、关闭与键盘行为，使用原生 `<button>` 并沿用 `Link` 的视觉样式作为触发器；`href` 与 `menu` 在同一个项上互斥。菜单型项可处于任意层级（包括末级）。菜单项选择行为由提供的 `MenuItem.onSelect` 决定。
+- 最末项始终代表当前页面：普通末项用 `Text` 和 `aria-current="page"`，不生成链接，即使传了 href 也不跳转；菜单型末项则在触发按钮上设置 `aria-current="page"`，点击打开菜单而不是跳转。单项时没有分隔符，空项不生成链接和当前项。
 - `separator?: ReactNode` 可选，决定所有相邻层级之间的装饰性分隔元素；缺省仍使用现有右箭头 `Icon`。每个分隔元素的外层设置 `aria-hidden`，布局与换行由 `Row` 负责。
 - 外层使用真实 `<nav>` 及随 `document.lang` 切换的四语言 `aria-label`；`label?: string` 可覆盖默认可访问名称，`viewProps` 作用于内部 Row。
 - 不处理应用路由状态、历史记录、截断菜单或动态数据加载。
