@@ -339,15 +339,17 @@ export function ColorInput({
           disabled={disabled}
           readOnly={readOnly}
           trailingIcon={chevronDownIcon}
+          trailingAction={
+            <span
+              className="weave-color-input__preview"
+              style={{ '--weave-color-picker-preview': color } as CSSProperties}
+              aria-hidden="true"
+            />
+          }
           clearable={false}
           viewProps={{
             ...viewProps,
             className: ['weave-color-input', viewProps.className].filter(Boolean).join(' '),
-            style: {
-              ...viewProps.style,
-              '--weave-color-picker-preview': color,
-              backgroundColor: color,
-            } as CSSProperties,
             label: viewProps.label ?? messages.chooseColor,
             lang: resolvedLocale,
             onPointerDown: (event) => {

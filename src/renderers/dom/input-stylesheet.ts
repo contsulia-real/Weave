@@ -190,9 +190,19 @@ const stylesheet = `
 :where(.weave-color-input) {
   cursor: pointer;
   padding: 6px var(--weave-input-min-height) 6px 8px;
-  --weave-component-background:
+}
+
+.weave-color-input__preview {
+  position: absolute;
+  top: 6px;
+  right: var(--weave-input-min-height);
+  bottom: 6px;
+  left: 8px;
+  border-radius: var(--weave-input-radius);
+  background:
     linear-gradient(var(--weave-color-picker-preview), var(--weave-color-picker-preview)),
     repeating-conic-gradient(#aaa 0% 25%, #eee 0% 50%) 0 0 / 12px 12px;
+  pointer-events: none;
 }
 :where(.weave-color-input)::-webkit-color-swatch-wrapper {
   display: none;
