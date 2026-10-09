@@ -2409,7 +2409,7 @@ Input 的 clear action 直接复用公开 `Button`，不维护私有 button DOM 
 
 Input 内置文本与无障碍标签（包括 search/普通输入的默认 clear、password 显隐、number 拖拽说明、file 状态等）必须复用现有 document.lang 感知的 en / zh-CN / zh-TW / fr 消息表；运行时语言切换即时更新，不重置输入值，用户显式设置的 clearLabel 优先。不允许新组件再次写死英文标签。 Input 文档新增示例的小节标题、描述、预览中的可见文案及占位符，也必须同步加入文档现有 documentation-copy.json 三语译文（英文为原文），运行时语言切换必须与文档语言选择器保持同步；可编辑 demo runtime 与校验器应支持已有 react-i18next 导入。
 
-`Input type="password"` 复用现有 InputHost，默认掩码，右侧完全复用 Input clear 按钮的 Weave Button（ghost/small、icon 属性与 icon-only 正方形样式）承载 Tabler 眼睛显隐图标，不另设 Button 或图标尺寸；点击在真实 `password`/`text` 类型之间切换但不重新挂载输入框，不引入 Popover，原有 `value`、`defaultValue`、`onChange`、FormData、reset 和键盘行为均不改变。 可选 `mask` 字符串指定隐藏状态的自定义显示字符，例如 `mask="*"`；仅替换可见掩码，不替换真实输入值，底层继续使用原生 `type="password"`，显示／隐藏切换和原有表单语义不变；未指定 mask 时仍使用浏览器默认掩码。
+`Input type="password"` 复用现有 InputHost，默认掩码，右侧完全复用 Input clear 按钮的 Weave Button（ghost/small、icon 属性与 icon-only 正方形样式）承载 Tabler 眼睛显隐图标，不另设 Button 或图标尺寸；点击在真实 `password`/`text` 类型之间切换但不重新挂载输入框，不引入 Popover，原有 `value`、`defaultValue`、`onChange`、FormData、reset 和键盘行为均不改变。 可选 `mask` 字符串指定隐藏状态的自定义显示字符，例如 `mask="*"`；仅替换可见掩码，不替换真实输入值，底层继续使用原生 `type="password"`，显示／隐藏切换和原有表单语义不变；未指定 mask 时仍使用浏览器默认掩码。 当 Input 同时显示 clear 与眼睛按钮时，两个 icon-only Button 使用现有 Button small gap token 排列，保持独立点击区域，禁止直接按两个 Input 槽位宽度留出过大间距。
 
 `Input type="number"` 保留真实原生数值输入、键盘操作和 `name/FormData`，但隐藏浏览器默认 spin 控件与所有 clear 按钮，不使用 Popover。在输入框尾部复用 Weave `Icon`（Tabler `IconSelector`），该 Icon 的鼠标光标为 `ew-resize`。按住图标水平拖动，向右增大、向左减小；启用 Pointer Lock 让拖动距离不受屏幕边缘中断，`step`（默认 1）调整步进，`min/max` 限制实际数值但不停止拖动，到边界后反向立即调整。受控／非受控值、`onChange`、表单重置、disabled/readOnly 均保留。
 

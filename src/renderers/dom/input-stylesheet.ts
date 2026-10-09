@@ -337,6 +337,13 @@ const stylesheet = `
   translate: 0 -50%;
 }
 
+.weave-input-root:has(> .weave-password-input) > .weave-input__clear {
+  right: calc(
+    (var(--weave-input-min-height) - var(--weave-button-min-height)) / 2 +
+    var(--weave-button-min-height) + var(--weave-button-gap)
+  );
+}
+
 :where(.weave-input-root[data-weave-input-has-trailing-icon="true"] > .weave-input__clear),
 :where(.weave-input-root[data-weave-input-has-trailing-icon="true"] .weave-input__trailing-action .weave-input__clear),
 :where(.weave-input-root[data-weave-input-has-trailing-action="true"] > .weave-input__clear) {
