@@ -1570,6 +1570,7 @@
         "Input/file-input",
         "Input/month-input",
         "Input/number-input",
+        "Input/password-input",
         "Input/time-input",
         "Input/time-seconds",
         "Input/week-input"
@@ -1677,6 +1678,7 @@
         "Input/file-input",
         "Input/month-input",
         "Input/number-input",
+        "Input/password-input",
         "Input/time-input",
         "Input/time-seconds",
         "Input/week-input"
@@ -1980,6 +1982,7 @@
         "Input/month-input",
         "Input/multiline-input",
         "Input/number-input",
+        "Input/password-input",
         "Input/time-input",
         "Input/time-seconds",
         "Input/week-input",

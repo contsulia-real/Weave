@@ -11,6 +11,12 @@ export const formsComponentExamples: Record<string, DocumentationComponentDocume
       examples: [
         basicExample('Input/basic-usage'),
         {
+          id: 'password-input',
+          title: 'Password input',
+          description: 'Toggle password visibility without changing its value or form semantics.',
+          demo: 'Input/password-input',
+        },
+        {
           id: 'number-input',
           title: 'Number input',
           description:

@@ -1918,6 +1918,28 @@
       "source": "import { useState } from 'react'\nimport { Column, Form, FormField, Input, Text } from '../../../index'\n\nexport default function InputNumberInputDemo() {\n  const [value, setValue] = useState('2.5')\n\n  return (\n    <Form viewProps={{ width: 320 }}>\n      <Column gap={12}>\n        <FormField label=\"Quantity\">\n          <Input\n            type=\"number\"\n            name=\"quantity\"\n            min={0}\n            max={5}\n            step={0.25}\n            value={value}\n            onChange={setValue}\n            viewProps={{ width: 'fill' }}\n          />\n        </FormField>\n        <Text typo=\"body-small\" color=\"secondary\">\n          Drag the selector icon left or right to adjust. Value: {value}\n        </Text>\n      </Column>\n    </Form>\n  )\n}"
     },
     {
+      "id": "Input/password-input",
+      "component": "Input",
+      "title": "Password input",
+      "description": "Toggle password visibility without changing its value or form semantics.",
+      "components": ["Form", "FormField", "Input"],
+      "concepts": [
+        "changing",
+        "field",
+        "form",
+        "input",
+        "its",
+        "password",
+        "semantics",
+        "toggle",
+        "value",
+        "visibility",
+        "without"
+      ],
+      "documentationRoute": "/docs/components/Input",
+      "source": "import { useState } from 'react'\nimport { Form, FormField, Input } from '../../../index'\n\nexport default function InputPasswordInputDemo() {\n  const [password, setPassword] = useState('')\n\n  return (\n    <Form viewProps={{ width: 320 }}>\n      <FormField label=\"Password\">\n        <Input\n          type=\"password\"\n          name=\"password\"\n          autoComplete=\"current-password\"\n          placeholder=\"Enter password\"\n          value={password}\n          onChange={setPassword}\n          viewProps={{ width: 'fill' }}\n        />\n      </FormField>\n    </Form>\n  )\n}"
+    },
+    {
       "id": "Input/time-input",
       "component": "Input",
       "title": "Time input",

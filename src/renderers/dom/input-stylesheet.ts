@@ -94,6 +94,25 @@ const stylesheet = `
   margin: 0;
 }
 
+:where(.weave-password-input)::-ms-reveal,
+:where(.weave-password-input)::-ms-clear {
+  display: none;
+}
+
+.weave-input-root .weave-password-input__toggle {
+  position: absolute;
+  top: 50%;
+  right: calc(
+    (var(--weave-input-min-height) - var(--weave-button-min-height)) / 2
+  );
+  translate: 0 -50%;
+}
+
+.weave-password-input__toggle .weave-icon {
+  --weave-component-width: var(--weave-select-icon-size);
+  --weave-component-height: var(--weave-select-icon-size);
+}
+
 :where(.weave-number-input) {
   appearance: textfield;
   -moz-appearance: textfield;

@@ -21,6 +21,7 @@ import { DateInput } from './internal/DateInput'
 import { FileInput } from './internal/FileInput'
 import { formFieldAssociationOverrides, useFormFieldContext } from './internal/form-field-context'
 import { NumberInput } from './internal/NumberInput'
+import { PasswordInput } from './internal/PasswordInput'
 import { renderIconSource } from './internal/render-icon-source'
 import { useFormReset } from './internal/use-form-reset'
 import { useViewHost } from './internal/use-view-host'
@@ -435,6 +436,10 @@ export function Input(props: InputProps): import('react').JSX.Element {
 
   if (props.type === 'number') {
     return <NumberInput {...props} InputHost={SingleLineInput} />
+  }
+
+  if (props.type === 'password') {
+    return <PasswordInput {...props} InputHost={SingleLineInput} />
   }
 
   return (
