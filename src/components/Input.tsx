@@ -20,6 +20,7 @@ import { closeIcon } from './internal/control-icons'
 import { DateInput } from './internal/DateInput'
 import { FileInput } from './internal/FileInput'
 import { formFieldAssociationOverrides, useFormFieldContext } from './internal/form-field-context'
+import { NumberInput } from './internal/NumberInput'
 import { renderIconSource } from './internal/render-icon-source'
 import { useFormReset } from './internal/use-form-reset'
 import { useViewHost } from './internal/use-view-host'
@@ -63,8 +64,8 @@ interface SingleLineInputHostProps {
   placeholder?: string
   disabled?: boolean
   type?: InputType
-  min?: string
-  max?: string
+  min?: string | number
+  max?: string | number
   step?: number | 'any'
   accept?: string
   multiple?: boolean
@@ -430,6 +431,10 @@ export function Input(props: InputProps): import('react').JSX.Element {
 
   if (props.type === 'file') {
     return <FileInput {...props} InputHost={SingleLineInput} />
+  }
+
+  if (props.type === 'number') {
+    return <NumberInput {...props} InputHost={SingleLineInput} />
   }
 
   return (

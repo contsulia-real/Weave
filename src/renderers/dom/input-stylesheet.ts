@@ -94,6 +94,36 @@ const stylesheet = `
   margin: 0;
 }
 
+:where(.weave-number-input) {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+:where(.weave-number-input)::-webkit-inner-spin-button,
+:where(.weave-number-input)::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+.weave-input-root .weave-number-input__scrub {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--weave-input-min-height);
+  height: 100%;
+  cursor: ew-resize;
+  touch-action: none;
+  user-select: none;
+}
+
+.weave-number-input__scrub svg {
+  pointer-events: none;
+}
+
 :where(.weave-file-input__native) {
   cursor: pointer;
   color: transparent;

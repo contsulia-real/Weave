@@ -1892,6 +1892,32 @@
       "source": "import { Input } from '../../../index'\n\nexport default function InputMultilineInputDemo() {\n  return <Input multiline rows={4} placeholder=\"Write a short note…\" />\n}"
     },
     {
+      "id": "Input/number-input",
+      "component": "Input",
+      "title": "Number input",
+      "description": "Drag the selector icon horizontally to adjust a number with optional min, max and step.",
+      "components": ["Column", "Form", "FormField", "Input", "Text"],
+      "concepts": [
+        "adjust",
+        "column",
+        "drag",
+        "field",
+        "form",
+        "horizontally",
+        "icon",
+        "input",
+        "max",
+        "min",
+        "number",
+        "optional",
+        "selector",
+        "step",
+        "text"
+      ],
+      "documentationRoute": "/docs/components/Input",
+      "source": "import { useState } from 'react'\nimport { Column, Form, FormField, Input, Text } from '../../../index'\n\nexport default function InputNumberInputDemo() {\n  const [value, setValue] = useState('2.5')\n\n  return (\n    <Form viewProps={{ width: 320 }}>\n      <Column gap={12}>\n        <FormField label=\"Quantity\">\n          <Input\n            type=\"number\"\n            name=\"quantity\"\n            min={0}\n            max={5}\n            step={0.25}\n            value={value}\n            onChange={setValue}\n            viewProps={{ width: 'fill' }}\n          />\n        </FormField>\n        <Text typo=\"body-small\" color=\"secondary\">\n          Drag the selector icon left or right to adjust. Value: {value}\n        </Text>\n      </Column>\n    </Form>\n  )\n}"
+    },
+    {
       "id": "Input/time-input",
       "component": "Input",
       "title": "Time input",

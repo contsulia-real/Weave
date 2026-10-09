@@ -799,6 +799,7 @@
         "Input/controlled-time",
         "Input/forced-locale",
         "Input/form-states",
+        "Input/number-input",
         "Input/time-input",
         "Layout/absolute",
         "Layout/column",
@@ -1568,6 +1569,7 @@
         "Input/datetime-local-input",
         "Input/file-input",
         "Input/month-input",
+        "Input/number-input",
         "Input/time-input",
         "Input/time-seconds",
         "Input/week-input"
@@ -1674,6 +1676,7 @@
         "Input/datetime-local-input",
         "Input/file-input",
         "Input/month-input",
+        "Input/number-input",
         "Input/time-input",
         "Input/time-seconds",
         "Input/week-input"
@@ -1976,6 +1979,7 @@
         "Input/form-states",
         "Input/month-input",
         "Input/multiline-input",
+        "Input/number-input",
         "Input/time-input",
         "Input/time-seconds",
         "Input/week-input",
@@ -2039,7 +2043,7 @@
         {
           "name": "max",
           "description": "Sets the native upper value constraint on supported single-line input types.",
-          "type": "string | undefined",
+          "type": "string | number | undefined",
           "optional": true
         },
         {
@@ -2051,7 +2055,7 @@
         {
           "name": "min",
           "description": "Sets the native lower value constraint on supported single-line input types.",
-          "type": "string | undefined",
+          "type": "string | number | undefined",
           "optional": true
         },
         {
@@ -4417,6 +4421,7 @@
         "Input/controlled-date",
         "Input/controlled-input",
         "Input/controlled-time",
+        "Input/number-input",
         "Layout/absolute",
         "Layout/grid",
         "Layout/splitbox",

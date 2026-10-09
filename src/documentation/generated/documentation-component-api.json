@@ -216,7 +216,7 @@
       "nativeProps": false,
       "hasViewProps": true,
       "usesViewProps": false,
-      "props": "r94f12eb1963e"
+      "props": "re97c70cd5952"
     },
     "Link": {
       "importPath": "@contsulia/weave/components/Link",
@@ -662,7 +662,7 @@
       "pdb938e985939",
       "p56b319ce7534"
     ],
-    "r94f12eb1963e": [
+    "re97c70cd5952": [
       "pe63a602952c4",
       "p09dfda480597",
       "p1991f3528ab9",
@@ -672,9 +672,9 @@
       "pede5c13bbbbc",
       "p84e214bf1fec",
       "p0d725969a39d",
-      "p5a18a4ef7ce3",
+      "p06d093b8c4ee",
       "pe86b218f8316",
-      "p072781055457",
+      "p1ad6e6165501",
       "p3644e5f7785c",
       "pe68901b38bc9",
       "p54eded9e69ac",
@@ -2235,10 +2235,10 @@
       "type": "string | undefined",
       "optional": true
     },
-    "p5a18a4ef7ce3": {
+    "p06d093b8c4ee": {
       "name": "max",
       "description": "Sets the native upper value constraint on supported single-line input types.",
-      "type": "string | undefined",
+      "type": "string | number | undefined",
       "optional": true
     },
     "pe86b218f8316": {
@@ -2247,10 +2247,10 @@
       "type": "number | undefined",
       "optional": true
     },
-    "p072781055457": {
+    "p1ad6e6165501": {
       "name": "min",
       "description": "Sets the native lower value constraint on supported single-line input types.",
-      "type": "string | undefined",
+      "type": "string | number | undefined",
       "optional": true
     },
     "p3644e5f7785c": {

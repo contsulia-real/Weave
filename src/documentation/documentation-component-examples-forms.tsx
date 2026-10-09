@@ -11,6 +11,13 @@ export const formsComponentExamples: Record<string, DocumentationComponentDocume
       examples: [
         basicExample('Input/basic-usage'),
         {
+          id: 'number-input',
+          title: 'Number input',
+          description:
+            'Drag the selector icon horizontally to adjust a number with optional min, max and step.',
+          demo: 'Input/number-input',
+        },
+        {
           id: 'file-input',
           title: 'File input',
           description:

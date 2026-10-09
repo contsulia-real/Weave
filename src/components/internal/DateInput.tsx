@@ -156,8 +156,8 @@ export function DateInput({
   value,
   defaultValue = '',
   onChange,
-  min,
-  max,
+  min: minimum,
+  max: maximum,
   step,
   disabled = false,
   readOnly = false,
@@ -168,6 +168,8 @@ export function DateInput({
   viewProps = {},
   ...inputProps
 }: TemporalInputProps): import('react').JSX.Element {
+  const min = minimum === undefined ? undefined : String(minimum)
+  const max = maximum === undefined ? undefined : String(maximum)
   const {
     locale: resolvedLocale,
     messages,

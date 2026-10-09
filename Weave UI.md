@@ -2407,6 +2407,8 @@ Input 的 clear action 直接复用公开 `Button`，不维护私有 button DOM 
 
 `type="search"` 时必须屏蔽浏览器原生 search cancel affordance（例如 Chromium/WebKit 的 `::-webkit-search-cancel-button`）；是否显示 clear 只由 Weave `clearable` 决定，禁止同时出现浏览器 clear 与 Weave clear。
 
+`Input type="number"` 保留真实原生数值输入、键盘操作和 `name/FormData`，但隐藏浏览器默认 spin 控件与所有 clear 按钮，不使用 Popover。在输入框尾部复用 Weave `Icon`（Tabler `IconSelector`），该 Icon 的鼠标光标为 `ew-resize`。按住图标水平拖动，向右增大、向左减小；启用 Pointer Lock 让拖动距离不受屏幕边缘中断，`step`（默认 1）调整步进，`min/max` 限制实际数值但不停止拖动，到边界后反向立即调整。受控／非受控值、`onChange`、表单重置、disabled/readOnly 均保留。
+
 `type="file"` 采用与 Date / Color Input 一致的 `InputHost` 组合模式。底层保留真实 `<input type="file">` 的 Weave 输入框主题、边框、焦点、文件选择、`FileList` 和表单语义；原生按钮和文件名视觉隐藏，通过已有 `trailingAction` 在同一输入框内展示上传图标与所选文件名，不另建第二套输入框主题；选择文件后使用公开 `ToolTip` 显示完整文件名列表，鼠标命中关联原生 input 的自定义 label 区域，避免触发浏览器原生文件提示。支持 `accept`、`multiple`、`name/FormData`、`required`、`disabled`、`viewProps.ref` 和原生表单 reset。文件输入不接受非空 `value` / `defaultValue`，不显示通用 clear 按钮。
 
 `Input type="file" dropzone` 为可选拖放能力；默认关闭。开启时同一个 Input 以虚线边框、上传图标及内嵌说明呈现拖放区域，拖入文件使用现有 Input 主题描边反馈；放下后更新原生 `FileList`、`onChange`、内嵌文件名和 `FormData`，并遵守 `accept`、`multiple`、`disabled`、`readOnly`。未开启时直接沿用普通 Input 的高度和单层表面。
