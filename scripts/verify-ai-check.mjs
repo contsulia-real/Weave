@@ -31,6 +31,13 @@ assert(
 export const Demo = () => <View />`).includes('WEAVE_VIEW_001'),
 )
 
+assert.deepEqual(
+  codes(`import { View } from 'react-native'
+import { Input } from 'some-ui-library'
+export const Demo = () => <><View /><Input multiline clearable /></>`),
+  [],
+)
+
 assert(
   codes(`import { Input } from '@contsulia/weave/components/Input'
 export const Demo = () => <Input multiline clearable />`).includes('WEAVE_INPUT_001'),

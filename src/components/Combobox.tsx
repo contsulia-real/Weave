@@ -250,7 +250,7 @@ export function Combobox(props: ComboboxProps): import('react').JSX.Element {
 
   useActiveOptionScrollIntoView(inputRef, listboxId, resolvedActiveValue, resolvedOpen)
 
-  const resolvedOffset = offset ?? (overlapTrigger ? 0 : 0.375)
+  const resolvedOffset = offset ?? (overlapTrigger ? 0 : 6)
   const {
     positioned,
     placement: resolvedPlacement,

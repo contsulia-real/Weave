@@ -102,7 +102,7 @@ export function Menu(props: MenuProps): import('react').JSX.Element {
     })
   }, [levelId, present, resolvedOpen])
 
-  const resolvedOffset = offset ?? (overlapTrigger ? 0 : 0.375)
+  const resolvedOffset = offset ?? (overlapTrigger ? 0 : 6)
   const {
     positioned,
     placement: resolvedPlacement,

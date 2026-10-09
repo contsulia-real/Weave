@@ -5729,7 +5729,7 @@ top-end
 尺度值：
 
 ```tsx
-<ToolTip offset={0.5} />
+<ToolTip offset={8} />
 ```
 
 表示 `8px`。
@@ -7108,10 +7108,10 @@ orientation
 ```
 
 ```tsx
-<List gap={0.5} />
+<List gap={8} />
 ```
 
-`gap={0.5}` 表示 `8px`。
+`gap={8}` 表示 `8px`。
 
 List 默认在相邻 item 之间插入通用 `Divider`，并固定使用 `gap={0}`，因此分割线不会额外撑开 item 间距；需要无分割线列表时使用：
 

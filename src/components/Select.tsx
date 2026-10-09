@@ -211,7 +211,7 @@ export function Select(props: SelectProps): import('react').JSX.Element {
   }, [activeValue, resolvedOpen])
   /* oxlint-enable react/set-state-in-effect */
 
-  const resolvedOffset = offset ?? (overlapTrigger ? 0 : 0.375)
+  const resolvedOffset = offset ?? (overlapTrigger ? 0 : 6)
   const {
     positioned,
     placement: resolvedPlacement,

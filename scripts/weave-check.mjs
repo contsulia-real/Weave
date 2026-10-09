@@ -84,6 +84,10 @@ function importedWeaveComponents(source, metadata, diagnostics) {
       continue
     }
 
+    if (moduleName !== packageName && !moduleName.startsWith(`${packageName}/components/`)) {
+      continue
+    }
+
     const bindings = statement.importClause?.namedBindings
     if (bindings === undefined || !ts.isNamedImports(bindings)) continue
 
