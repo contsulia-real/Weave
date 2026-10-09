@@ -11,6 +11,13 @@ export const formsComponentExamples: Record<string, DocumentationComponentDocume
       examples: [
         basicExample('Input/basic-usage'),
         {
+          id: 'search-input',
+          title: 'Search input',
+          description:
+            'Use the default search icon and the single Weave clear action with a controlled query.',
+          demo: 'Input/search-input',
+        },
+        {
           id: 'password-input',
           title: 'Password input',
           description: 'Toggle password visibility without changing its value or form semantics.',

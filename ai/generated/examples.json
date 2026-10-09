@@ -1596,7 +1596,7 @@
       "components": ["Input"],
       "concepts": ["basic", "input", "usage"],
       "documentationRoute": "/docs/components/Input",
-      "source": "import { IconSearch, IconSparkles } from '@tabler/icons-react'\nimport { Input } from '../../../index'\n\nexport default function InputBasicUsageDemo() {\n  return (\n    <Input\n      type=\"search\"\n      defaultValue=\"Weave\"\n      placeholder=\"Search notes\"\n      leadingIcon={IconSearch}\n      trailingIcon={IconSparkles}\n      clearLabel=\"Clear search\"\n    />\n  )\n}"
+      "source": "import { IconSparkles } from '@tabler/icons-react'\nimport { Input } from '../../../index'\n\nexport default function InputBasicUsageDemo() {\n  return (\n    <Input\n      type=\"search\"\n      defaultValue=\"Weave\"\n      placeholder=\"Search notes\"\n      trailingIcon={IconSparkles}\n      clearLabel=\"Clear search\"\n    />\n  )\n}"
     },
     {
       "id": "Input/color-input",
@@ -1938,6 +1938,31 @@
       ],
       "documentationRoute": "/docs/components/Input",
       "source": "import { useState } from 'react'\nimport { Form, FormField, Input } from '../../../index'\n\nexport default function InputPasswordInputDemo() {\n  const [password, setPassword] = useState('')\n\n  return (\n    <Form viewProps={{ width: 320 }}>\n      <FormField label=\"Password\">\n        <Input\n          type=\"password\"\n          mask=\"*\"\n          name=\"password\"\n          autoComplete=\"current-password\"\n          placeholder=\"Enter password\"\n          value={password}\n          onChange={setPassword}\n          viewProps={{ width: 'fill' }}\n        />\n      </FormField>\n    </Form>\n  )\n}"
+    },
+    {
+      "id": "Input/search-input",
+      "component": "Input",
+      "title": "Search input",
+      "description": "Use the default search icon and the single Weave clear action with a controlled query.",
+      "components": ["Column", "Form", "FormField", "Input", "Text"],
+      "concepts": [
+        "action",
+        "clear",
+        "column",
+        "controlled",
+        "default",
+        "field",
+        "form",
+        "icon",
+        "input",
+        "query",
+        "search",
+        "single",
+        "text",
+        "weave"
+      ],
+      "documentationRoute": "/docs/components/Input",
+      "source": "import { useState } from 'react'\nimport { Column, Form, FormField, Input, Text } from '../../../index'\n\nexport default function InputSearchInputDemo() {\n  const [query, setQuery] = useState('Weave')\n\n  return (\n    <Form viewProps={{ width: 320 }}>\n      <Column gap={8}>\n        <FormField label=\"Search\">\n          <Input\n            type=\"search\"\n            name=\"query\"\n            value={query}\n            onChange={setQuery}\n            placeholder=\"Search notes\"\n            clearLabel=\"Clear search\"\n            viewProps={{ width: 'fill' }}\n          />\n        </FormField>\n        <Text typo=\"body-small\" color=\"secondary\">\n          Query: {query || 'Empty'}\n        </Text>\n      </Column>\n    </Form>\n  )\n}"
     },
     {
       "id": "Input/time-input",

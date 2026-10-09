@@ -94,6 +94,11 @@ const stylesheet = `
   margin: 0;
 }
 
+.weave-input-root:has(> .weave-input[type="search"]) .weave-input__leading-icon .weave-icon {
+  --weave-component-width: var(--weave-select-icon-size, 16px);
+  --weave-component-height: var(--weave-select-icon-size, 16px);
+}
+
 :where(.weave-password-input)::-ms-reveal,
 :where(.weave-password-input)::-ms-clear {
   display: none;

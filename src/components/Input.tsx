@@ -1,3 +1,4 @@
+import { IconSearch } from '@tabler/icons-react'
 import type { ChangeEvent, CSSProperties, DragEvent, ReactNode } from 'react'
 import { useCallback, useState } from 'react'
 import type {
@@ -465,7 +466,7 @@ export function Input(props: InputProps): import('react').JSX.Element {
       pattern={props.pattern}
       clearable={props.clearable}
       clearLabel={props.clearLabel}
-      leadingIcon={props.leadingIcon}
+      leadingIcon={props.leadingIcon ?? (props.type === 'search' ? IconSearch : undefined)}
       trailingIcon={props.trailingIcon}
       trailingAction={props.trailingAction}
       viewProps={props.viewProps}
