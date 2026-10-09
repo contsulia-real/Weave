@@ -1,7 +1,7 @@
 import { IconArrowLeft, IconArrowRight } from '@tabler/icons-react'
 import { Suspense, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Card, Column, Flex, Icon, Row, Text } from '../index'
+import { Breadcrumb, Card, Column, Flex, Icon, MenuItem, Row, Text } from '../index'
 import { DocumentationComponentApiLink } from './DocumentationComponentApiLink'
 import { DocumentationComponentExample } from './DocumentationComponentExampleCard'
 import { DocumentationReadingStatus } from './DocumentationReadingStatus'
@@ -35,6 +35,28 @@ export function DocumentationComponentPage({ componentName }: DocumentationCompo
     >
       <Column ref={contentRef} grow={1} minWidth={0} width="fill" maxWidth={832} gap={48}>
         <Column width="fill" gap={12}>
+          <Breadcrumb
+            items={[
+              { text: t('copy:Home'), href: '/docs' },
+              {
+                text: t('copy:Components'),
+                menu: (
+                  <>
+                    <MenuItem
+                      text="Breadcrumb"
+                      onSelect={() => navigate('/docs/components/Breadcrumb')}
+                    />
+                    <MenuItem text="Link" onSelect={() => navigate('/docs/components/Link')} />
+                    <MenuItem
+                      text="Pagination"
+                      onSelect={() => navigate('/docs/components/Pagination')}
+                    />
+                  </>
+                ),
+              },
+              { text: componentName },
+            ]}
+          />
           <Text typo="display-medium">{componentName}</Text>
           <Text typo="body-large">{documentationCopy(t, definition.description)}</Text>
         </Column>

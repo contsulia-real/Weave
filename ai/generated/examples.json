@@ -428,21 +428,10 @@
       "component": "Breadcrumb",
       "title": "Dropdown items",
       "description": "Use menu with Weave MenuItem elements to open a dropdown from a breadcrumb.",
-      "components": ["Breadcrumb", "Column", "MenuItem", "Text"],
-      "concepts": [
-        "breadcrumb",
-        "column",
-        "dropdown",
-        "elements",
-        "item",
-        "items",
-        "menu",
-        "open",
-        "text",
-        "weave"
-      ],
+      "components": ["Breadcrumb", "MenuItem"],
+      "concepts": ["breadcrumb", "dropdown", "elements", "item", "items", "menu", "open", "weave"],
       "documentationRoute": "/docs/components/Breadcrumb",
-      "source": "import { useState } from 'react'\nimport { useTranslation } from 'react-i18next'\nimport { Breadcrumb, Column, MenuItem, Text } from '../../../index'\n\nexport default function BreadcrumbDropdownItemsDemo() {\n  const { t } = useTranslation('copy')\n  const [selected, setSelected] = useState('')\n\n  return (\n    <Column gap={12}>\n      <Breadcrumb\n        items={[\n          { text: t('Home'), href: '/docs' },\n          {\n            text: t('Components'),\n            menu: (\n              <>\n                <MenuItem text=\"Link\" onSelect={() => setSelected('Link')} />\n                <MenuItem text=\"Pagination\" onSelect={() => setSelected('Pagination')} />\n              </>\n            ),\n          },\n          { text: selected || 'Breadcrumb' },\n        ]}\n      />\n      <Text typo=\"body-small\" color=\"secondary\">\n        {t('Selected: {{item}}', { item: selected || t('None') })}\n      </Text>\n    </Column>\n  )\n}"
+      "source": "import { useTranslation } from 'react-i18next'\nimport { Breadcrumb, MenuItem } from '../../../index'\nimport { useDocsRoute } from '../../router'\n\nexport default function BreadcrumbDropdownItemsDemo() {\n  const { t } = useTranslation('copy')\n  const { pathname, navigate } = useDocsRoute()\n  const current = pathname.startsWith('/docs/components/')\n    ? pathname.slice('/docs/components/'.length)\n    : 'Breadcrumb'\n\n  return (\n    <Breadcrumb\n      items={[\n        { text: t('Home'), href: '/docs' },\n        {\n          text: t('Components'),\n          menu: (\n            <>\n              <MenuItem text=\"Link\" onSelect={() => navigate('/docs/components/Link')} />\n              <MenuItem\n                text=\"Pagination\"\n                onSelect={() => navigate('/docs/components/Pagination')}\n              />\n            </>\n          ),\n        },\n        { text: current },\n      ]}\n    />\n  )\n}"
     },
     {
       "id": "Breadcrumb/single-level",

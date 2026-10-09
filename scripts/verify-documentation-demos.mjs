@@ -19,6 +19,7 @@ const liveRuntimeImports = new Set([
   'react-i18next',
   '../../../index',
   '../../documentation-example-fixtures',
+  '../../router',
 ])
 const forbiddenMetadataFields = new Set(['preview', 'code', 'codeMode'])
 
