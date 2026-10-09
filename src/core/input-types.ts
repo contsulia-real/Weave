@@ -52,6 +52,8 @@ export type InputProps =
       min?: string | number
       max?: string | number
       step?: number | 'any'
+      /** Optional character(s) to display instead of the native password mask. */
+      mask?: string
       /** Accepted file extensions or MIME types for type="file". */
       accept?: string
       /** Allow selecting several files when type="file". */

@@ -2044,6 +2044,12 @@
           "optional": true
         },
         {
+          "name": "mask",
+          "description": "Optional character(s) to display instead of the native password mask.",
+          "type": "string | undefined",
+          "optional": true
+        },
+        {
           "name": "max",
           "description": "Sets the native upper value constraint on supported single-line input types.",
           "type": "string | number | undefined",

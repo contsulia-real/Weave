@@ -1937,7 +1937,7 @@
         "without"
       ],
       "documentationRoute": "/docs/components/Input",
-      "source": "import { useState } from 'react'\nimport { Form, FormField, Input } from '../../../index'\n\nexport default function InputPasswordInputDemo() {\n  const [password, setPassword] = useState('')\n\n  return (\n    <Form viewProps={{ width: 320 }}>\n      <FormField label=\"Password\">\n        <Input\n          type=\"password\"\n          name=\"password\"\n          autoComplete=\"current-password\"\n          placeholder=\"Enter password\"\n          value={password}\n          onChange={setPassword}\n          viewProps={{ width: 'fill' }}\n        />\n      </FormField>\n    </Form>\n  )\n}"
+      "source": "import { useState } from 'react'\nimport { Form, FormField, Input } from '../../../index'\n\nexport default function InputPasswordInputDemo() {\n  const [password, setPassword] = useState('')\n\n  return (\n    <Form viewProps={{ width: 320 }}>\n      <FormField label=\"Password\">\n        <Input\n          type=\"password\"\n          mask=\"*\"\n          name=\"password\"\n          autoComplete=\"current-password\"\n          placeholder=\"Enter password\"\n          value={password}\n          onChange={setPassword}\n          viewProps={{ width: 'fill' }}\n        />\n      </FormField>\n    </Form>\n  )\n}"
     },
     {
       "id": "Input/time-input",

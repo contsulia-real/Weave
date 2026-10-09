@@ -9,6 +9,7 @@ export default function InputPasswordInputDemo() {
       <FormField label="Password">
         <Input
           type="password"
+          mask="*"
           name="password"
           autoComplete="current-password"
           placeholder="Enter password"

@@ -216,7 +216,7 @@
       "nativeProps": false,
       "hasViewProps": true,
       "usesViewProps": false,
-      "props": "re97c70cd5952"
+      "props": "ra1c3a9cbe32c"
     },
     "Link": {
       "importPath": "@contsulia/weave/components/Link",
@@ -662,7 +662,7 @@
       "pdb938e985939",
       "p56b319ce7534"
     ],
-    "re97c70cd5952": [
+    "ra1c3a9cbe32c": [
       "pe63a602952c4",
       "p09dfda480597",
       "p1991f3528ab9",
@@ -672,6 +672,7 @@
       "pede5c13bbbbc",
       "p84e214bf1fec",
       "p0d725969a39d",
+      "pd360f0ad43bd",
       "p06d093b8c4ee",
       "pe86b218f8316",
       "p1ad6e6165501",
@@ -2232,6 +2233,12 @@
     "p0d725969a39d": {
       "name": "locale",
       "description": "BCP 47 language tag for custom color, calendar and clock pickers.",
+      "type": "string | undefined",
+      "optional": true
+    },
+    "pd360f0ad43bd": {
+      "name": "mask",
+      "description": "Optional character(s) to display instead of the native password mask.",
       "type": "string | undefined",
       "optional": true
     },

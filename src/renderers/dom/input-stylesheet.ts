@@ -113,6 +113,36 @@ const stylesheet = `
   --weave-component-height: var(--weave-select-icon-size);
 }
 
+.weave-password-input--masked {
+  color: transparent;
+  caret-color: var(--weave-input-focus-outline-color);
+}
+
+.weave-password-input__mask {
+  position: absolute;
+  inset-block: 0;
+  left: var(--weave-input-padding-x);
+  right: var(--weave-input-min-height);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  color: var(--weave-input-color);
+  font-size: var(--weave-input-font-size);
+  font-weight: var(--weave-input-font-weight);
+  line-height: var(--weave-input-line-height);
+  letter-spacing: var(--weave-input-letter-spacing);
+  white-space: pre;
+  pointer-events: none;
+}
+
+.weave-input-root:has(> .weave-password-input--masked[data-weave-input-has-leading-icon="true"]) .weave-password-input__mask {
+  left: var(--weave-input-min-height);
+}
+
+.weave-input-root[data-weave-input-has-clear="true"] .weave-password-input__mask {
+  right: calc(var(--weave-input-min-height) * 2);
+}
+
 :where(.weave-number-input) {
   appearance: textfield;
   -moz-appearance: textfield;
