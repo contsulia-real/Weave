@@ -338,6 +338,7 @@ export function ColorInput({
           onChange={(next) => updateColor(withAlpha(normalizeHex(next), alpha))}
           disabled={disabled}
           readOnly={readOnly}
+          trailingIcon={chevronDownIcon}
           clearable={false}
           viewProps={{
             ...viewProps,
@@ -345,6 +346,7 @@ export function ColorInput({
             style: {
               ...viewProps.style,
               '--weave-color-picker-preview': color,
+              backgroundColor: color,
             } as CSSProperties,
             label: viewProps.label ?? messages.chooseColor,
             lang: resolvedLocale,

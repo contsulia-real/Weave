@@ -189,19 +189,19 @@ const stylesheet = `
 
 :where(.weave-color-input) {
   cursor: pointer;
-  padding: 0;
+  padding: 6px var(--weave-input-min-height) 6px 8px;
   --weave-component-background:
     linear-gradient(var(--weave-color-picker-preview), var(--weave-color-picker-preview)),
     repeating-conic-gradient(#aaa 0% 25%, #eee 0% 50%) 0 0 / 12px 12px;
 }
 :where(.weave-color-input)::-webkit-color-swatch-wrapper {
-  padding: 0;
+  display: none;
 }
-:where(.weave-color-input)::-webkit-color-swatch,
+:where(.weave-color-input)::-webkit-color-swatch {
+  display: none;
+}
 :where(.weave-color-input)::-moz-color-swatch {
-  border: 0;
-  border-radius: var(--weave-input-radius);
-  opacity: 0;
+  display: none;
 }
 
 .weave-color-picker__area {
