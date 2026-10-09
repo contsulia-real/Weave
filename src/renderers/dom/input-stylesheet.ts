@@ -113,11 +113,6 @@ const stylesheet = `
   translate: 0 -50%;
 }
 
-.weave-password-input__toggle .weave-icon {
-  --weave-component-width: var(--weave-select-icon-size);
-  --weave-component-height: var(--weave-select-icon-size);
-}
-
 .weave-password-input--masked {
   color: transparent;
   caret-color: var(--weave-input-focus-outline-color);
