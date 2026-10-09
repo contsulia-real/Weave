@@ -101,6 +101,7 @@ export function usePopoverInteraction(
       if (escapeHandlers.get(document)?.at(-1)?.handler !== handleKeyDown) return
 
       event.preventDefault()
+      event.stopImmediatePropagation()
       skipRestoreRef.current = false
       close()
     }
