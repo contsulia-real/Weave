@@ -382,7 +382,7 @@ export function DateInput({
           value={panel}
           onValueChange={(next) => setPanel(next as Panel)}
           variant="pill"
-          viewProps={{ align: 'center' }}
+          viewProps={{ align: 'center', className: 'weave-input-picker-tabs' }}
         >
           <TabList>
             {type === 'week' ? (

@@ -288,6 +288,10 @@ const stylesheet = `
   display: none;
 }
 
+:where(.weave-input-picker-tabs .weave-tab-list) {
+  --weave-tabs-tab-padding-y: var(--weave-button-theme-small-padding-y);
+}
+
 :where(.weave-color-input) {
   cursor: pointer;
   padding: 6px var(--weave-input-min-height) 6px 8px;

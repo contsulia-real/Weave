@@ -2393,6 +2393,8 @@ color
 
 `Input.type` 同时支持标准 HTML 时间类型 `time`、`datetime-local`、`month`、`week`，继续使用公开 `Input`，不增加独立 Time/DateTime/Month/Week 组件。它们与 `date` 一样全部使用 Weave 自定义 `Popover` 选择器，复用现有月份/年份网格、`Grid`、`Button`、`Icon`、`Popover`、定位、主题和本地化：`time` 提供小时、分钟及必要时秒的选择；`datetime-local` 组合日期与时间；`month` 直接选择年月；`week` 选择 ISO 周。输入宿主仍是真实的原生 `<input type=...>`，保留分段手动编辑、`value/defaultValue/onChange`、`name/FormData`、`min/max/required/step` 等浏览器表单语义；不使用浏览器自带 picker 作为弹窗，不另造文本输入或主题。 时间（含 datetime-local）用真正的 Weave `Tabs variant="pill"` 切换日期/小时/分钟/秒；周次用 pill Tabs 切换周次/月份/年份，而非一排独立 Button。原生 `step` 时间类型按秒，月份按月，周次按周。标准值为 `HH:mm[:ss]`、`YYYY-MM-DDTHH:mm[:ss]`（无时区）、`YYYY-MM`、ISO `YYYY-Www`。`locale` 影响 Popover 文案和日期标签，不改变标准化字段值。
 
+仅 Input 的 time / datetime-local / week Popover 内使用的 Pill Tabs 将 Tab 上下 padding 收紧至 Weave 小号 Button 的垂直 padding token；选中 pill 指示器仍跟随 Tab 尺寸。独立 Pill Tabs 的默认 padding、主题及交互均不改变。
+
 `Input.locale?: string`（适用于 `color/date/time/datetime-local/month/week` 的 Weave 选择器） 接受 BCP 47 语言标签（例如 `zh-CN`、`zh-TW`、`en`、`fr`），显式值优先于页面语言；不传时读取 `<html lang>`，并响应其运行时变化（Documentation 的 i18next 会同步该属性）。月份标题、星期标题、每周起始日、完整日期辅助标签和弹窗操作使用有效语言；四种 Documentation 语言均有完整内置操作文案，其他有效语言的日期使用 `Intl`，操作文案回退到英文。`date` 的 `value / defaultValue / onChange / FormData` 保持 `YYYY-MM-DD`，其余时间类型保持上述各自的标准格式；语言切换不改变实际提交值。
 
 单行 Input 默认 `clearable=true`。当前实际输入文字非空，且 Input 不是 disabled / readOnly 时显示 clear action；`clearable={false}` 可完全隐藏该 action，`clearLabel` 控制 accessible name，默认 `Clear input`。clear 会把非受控 input 直接清空、调用 `onChange("")` 并把 focus 保持 / 恢复到真实 input；受控 Input 只发出 `onChange("")`，最终 value 仍由调用方决定。multiline Input 不提供 clear action。
