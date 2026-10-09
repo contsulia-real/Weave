@@ -19,6 +19,7 @@ import { AutoScrollbar } from './internal/AutoScrollbar'
 import { ColorInput } from './internal/ColorInput'
 import { closeIcon } from './internal/control-icons'
 import { DateInput } from './internal/DateInput'
+import { useDateLocalization } from './internal/date-localization'
 import { FileInput } from './internal/FileInput'
 import { formFieldAssociationOverrides, useFormFieldContext } from './internal/form-field-context'
 import { NumberInput } from './internal/NumberInput'
@@ -108,12 +109,13 @@ function SingleLineInput({
   maxLength,
   pattern,
   clearable = true,
-  clearLabel = 'Clear input',
+  clearLabel,
   leadingIcon,
   trailingIcon,
   trailingAction,
   viewProps = {},
 }: SingleLineInputHostProps) {
+  const { messages } = useDateLocalization()
   const field = useFormFieldContext()
   const fieldRequired = field?.required === true
   const nativeRequired = required === true || (fieldRequired && viewProps.role !== 'combobox')
@@ -271,7 +273,7 @@ function SingleLineInput({
           size="small"
           viewProps={{
             className: 'weave-input__clear',
-            label: clearLabel,
+            label: clearLabel ?? (type === 'search' ? messages.clearSearch : messages.clearInput),
             onPointerDown: (event) => {
               event.preventDefault()
             },

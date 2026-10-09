@@ -7,6 +7,7 @@ import { useTheme } from '../../theme/theme-context'
 import { Button } from '../Button'
 import { Icon } from '../Icon'
 import { assignRef } from './assign-ref'
+import { useDateLocalization } from './date-localization'
 import { useFormReset } from './use-form-reset'
 
 type SingleLineProps = Extract<InputProps, { multiline?: false }>
@@ -20,6 +21,7 @@ export function PasswordInput({
   mask,
   ...props
 }: PasswordInputProps): import('react').JSX.Element {
+  const { messages } = useDateLocalization()
   const [revealed, setRevealed] = useState(false)
   const [uncontrolledValue, setUncontrolledValue] = useState(String(props.defaultValue ?? ''))
   const inputRef = useRef<HTMLInputElement>(null)
@@ -59,7 +61,7 @@ export function PasswordInput({
               className: ['weave-password-input__toggle', selectThemeClassName]
                 .filter(Boolean)
                 .join(' '),
-              label: revealed ? 'Hide password' : 'Show password',
+              label: revealed ? messages.hidePassword : messages.showPassword,
               onPointerDown: (event) => event.preventDefault(),
               onClick: () => setRevealed((current) => !current),
             }}

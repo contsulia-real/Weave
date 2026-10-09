@@ -14,7 +14,6 @@ export default function InputSearchInputDemo() {
             value={query}
             onChange={setQuery}
             placeholder="Search notes"
-            clearLabel="Clear search"
             viewProps={{ width: 'fill' }}
           />
         </FormField>

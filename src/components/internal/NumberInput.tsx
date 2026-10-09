@@ -6,6 +6,7 @@ import { useRuntimeStyleClass } from '../../renderers/dom/runtime-class'
 import { useTheme } from '../../theme/theme-context'
 import { Icon } from '../Icon'
 import { assignRef } from './assign-ref'
+import { useDateLocalization } from './date-localization'
 
 type SingleLineProps = Extract<InputProps, { multiline?: false }>
 type NumberInputProps = SingleLineProps & {
@@ -24,6 +25,7 @@ export function NumberInput({
   viewProps = {},
   ...inputProps
 }: NumberInputProps): import('react').JSX.Element {
+  const { messages } = useDateLocalization()
   const { theme } = useTheme()
   const selectThemeClassName = useRuntimeStyleClass('select-theme', resolveSelectTheme(theme))
   const inputRef = useRef<HTMLInputElement>(null)
@@ -128,7 +130,7 @@ export function NumberInput({
           ref={scrubRef}
           className="weave-number-input__scrub"
           role="button"
-          aria-label="Drag horizontally to adjust number"
+          aria-label={messages.dragToAdjustNumber}
           tabIndex={disabled || readOnly ? -1 : 0}
           onPointerDown={startDrag}
           onPointerMove={moveDrag}
