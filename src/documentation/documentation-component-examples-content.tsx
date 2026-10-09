@@ -93,7 +93,8 @@ export const contentComponentExamples: Record<
       {
         id: 'dropdown-items',
         title: 'Dropdown items',
-        description: 'Use menu with Weave MenuItem elements to open a dropdown from a breadcrumb.',
+        description:
+          'Open a menu on the current breadcrumb to navigate between sibling component pages.',
         demo: 'Breadcrumb/dropdown-items',
       },
       {

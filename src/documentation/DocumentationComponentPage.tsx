@@ -8,7 +8,10 @@ import { DocumentationReadingStatus } from './DocumentationReadingStatus'
 import { documentationComponentDocumentation } from './documentation-component-examples'
 import { documentationCopy } from './documentation-copy'
 import { documentationDemo } from './documentation-demo-registry'
-import { documentationAdjacentComponentNames } from './documentation-navigation-data'
+import {
+  documentationAdjacentComponentNames,
+  documentationComponentNavigationItems,
+} from './documentation-navigation-data'
 import { useDocsRoute } from './router'
 
 export interface DocumentationComponentPageProps {
@@ -38,23 +41,21 @@ export function DocumentationComponentPage({ componentName }: DocumentationCompo
           <Breadcrumb
             items={[
               { text: t('copy:Home'), href: '/docs' },
+              { text: t('copy:Components') },
               {
-                text: t('copy:Components'),
+                text: componentName,
                 menu: (
-                  <>
-                    <MenuItem
-                      text="Breadcrumb"
-                      onSelect={() => navigate('/docs/components/Breadcrumb')}
-                    />
-                    <MenuItem text="Link" onSelect={() => navigate('/docs/components/Link')} />
-                    <MenuItem
-                      text="Pagination"
-                      onSelect={() => navigate('/docs/components/Pagination')}
-                    />
-                  </>
+                  <Column maxHeight={320} overflow="auto">
+                    {documentationComponentNavigationItems.map((item) => (
+                      <MenuItem
+                        key={item.path}
+                        text={item.name}
+                        onSelect={() => navigate(item.path)}
+                      />
+                    ))}
+                  </Column>
                 ),
               },
-              { text: componentName },
             ]}
           />
           <Text typo="display-medium">{componentName}</Text>

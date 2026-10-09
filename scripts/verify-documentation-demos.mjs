@@ -20,6 +20,7 @@ const liveRuntimeImports = new Set([
   '../../../index',
   '../../documentation-example-fixtures',
   '../../router',
+  '../../documentation-navigation-data',
 ])
 const forbiddenMetadataFields = new Set(['preview', 'code', 'codeMode'])
 

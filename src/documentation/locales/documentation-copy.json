@@ -2064,10 +2064,10 @@
     "zh-TW": "下拉選單項",
     "fr": "Éléments déroulants"
   },
-  "Use menu with Weave MenuItem elements to open a dropdown from a breadcrumb.": {
-    "zh-CN": "通过 menu 搭配 Weave MenuItem，让面包屑导航项打开下拉菜单。",
-    "zh-TW": "透過 menu 搭配 Weave MenuItem，讓麵包屑導覽項開啟下拉選單。",
-    "fr": "Utilisez menu avec des éléments Weave MenuItem pour ouvrir une liste déroulante depuis un fil d’Ariane."
+  "Open a menu on the current breadcrumb to navigate between sibling component pages.": {
+    "zh-CN": "在当前面包屑上打开菜单，在同级组件页面之间导航。",
+    "zh-TW": "在目前麵包屑上開啟選單，在同層元件頁面之間導覽。",
+    "fr": "Ouvrez le menu du fil d’Ariane actuel pour naviguer entre les pages de composants de même niveau."
   },
   "Selected: {{item}}": {
     "zh-CN": "已选择：{{item}}",

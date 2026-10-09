@@ -74,6 +74,10 @@ const componentNavigationSections: readonly DocumentationNavigationSectionDefini
   componentSection('theme-application', 'docs.nav.themeApplication', ['ThemeProvider']),
 ]
 
+export const documentationComponentNavigationItems = componentNavigationSections.flatMap(
+  (section) => section.items.map((item) => ({ name: item.label ?? item.path, path: item.path })),
+)
+
 const componentApiNames = Object.keys(apiData.components).sort((left, right) =>
   left.localeCompare(right),
 )
@@ -174,9 +178,7 @@ export function documentationComponentDemoNameForApi(componentName: string): str
   return apiDemoParents[componentName] ?? componentName
 }
 
-const documentedComponentNames = componentNavigationSections.flatMap((section) =>
-  section.items.flatMap((item) => (item.label === undefined ? [] : [item.label])),
-)
+const documentedComponentNames = documentationComponentNavigationItems.map((item) => item.name)
 
 export function documentationAdjacentComponentNames(componentName: string): {
   previous: string | null

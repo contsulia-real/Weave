@@ -816,6 +816,7 @@
         "Accordion/disabled-states",
         "AppBar/sticky-app-bar",
         "Badge/visibility",
+        "Breadcrumb/dropdown-items",
         "Button/basic-button",
         "Button/custom-content",
         "Button/form-actions",

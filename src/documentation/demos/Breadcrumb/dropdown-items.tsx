@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { Breadcrumb, MenuItem } from '../../../index'
+import { Breadcrumb, Column, MenuItem } from '../../../index'
+import { documentationComponentNavigationItems } from '../../documentation-navigation-data'
 import { useDocsRoute } from '../../router'
 
 export default function BreadcrumbDropdownItemsDemo() {
@@ -13,19 +14,17 @@ export default function BreadcrumbDropdownItemsDemo() {
     <Breadcrumb
       items={[
         { text: t('Home'), href: '/docs' },
+        { text: t('Components') },
         {
-          text: t('Components'),
+          text: current,
           menu: (
-            <>
-              <MenuItem text="Link" onSelect={() => navigate('/docs/components/Link')} />
-              <MenuItem
-                text="Pagination"
-                onSelect={() => navigate('/docs/components/Pagination')}
-              />
-            </>
+            <Column maxHeight={320} overflow="auto">
+              {documentationComponentNavigationItems.map((item) => (
+                <MenuItem key={item.path} text={item.name} onSelect={() => navigate(item.path)} />
+              ))}
+            </Column>
           ),
         },
-        { text: current },
       ]}
     />
   )
