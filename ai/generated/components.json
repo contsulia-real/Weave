@@ -2005,7 +2005,7 @@
         {
           "name": "accept",
           "description": "Accepted file extensions or MIME types for type=\"file\".",
-          "type": "string | undefined",
+          "type": "undefined | string | undefined",
           "optional": true
         },
         {
@@ -2041,7 +2041,7 @@
         {
           "name": "dropzone",
           "description": "Accept files dragged onto type=\"file\"; disabled by default.",
-          "type": "boolean | undefined",
+          "type": "undefined | boolean | undefined",
           "optional": true
         },
         {
@@ -2053,19 +2053,19 @@
         {
           "name": "locale",
           "description": "BCP 47 language tag for custom color, calendar and clock pickers.",
-          "type": "string | undefined",
+          "type": "undefined | string | undefined",
           "optional": true
         },
         {
           "name": "mask",
           "description": "Optional character(s) to display instead of the native password mask.",
-          "type": "string | undefined",
+          "type": "undefined | string | undefined",
           "optional": true
         },
         {
           "name": "max",
           "description": "Sets the native upper value constraint on supported single-line input types.",
-          "type": "string | number | undefined",
+          "type": "undefined | string | number | undefined",
           "optional": true
         },
         {
@@ -2077,7 +2077,7 @@
         {
           "name": "min",
           "description": "Sets the native lower value constraint on supported single-line input types.",
-          "type": "string | number | undefined",
+          "type": "undefined | string | number | undefined",
           "optional": true
         },
         {
@@ -2095,7 +2095,7 @@
         {
           "name": "multiple",
           "description": "Allow selecting several files when type=\"file\".",
-          "type": "boolean | undefined",
+          "type": "undefined | boolean | undefined",
           "optional": true
         },
         {
@@ -2143,7 +2143,7 @@
         {
           "name": "step",
           "description": "Passes the native step constraint to number and temporal input types; time and datetime-local steps use seconds, month uses months, week uses weeks.",
-          "type": "number | \"any\" | undefined",
+          "type": "undefined | number | \"any\" | undefined",
           "optional": true
         },
         {
@@ -2161,7 +2161,7 @@
         {
           "name": "type",
           "description": "Sets the native single-line input type, including color and temporal types. Color uses the Weave color/HEX Popover; temporal types use Weave calendar or clock Popovers.",
-          "type": "InputType | undefined",
+          "type": "\"number\" | \"color\" | \"search\" | \"text\" | \"tel\" | \"url\" | \"email\" | \"date\" | \"time\" | \"password\" | \"datetime-local\" | \"month\" | \"week\" | \"file\" | undefined",
           "optional": true
         },
         {

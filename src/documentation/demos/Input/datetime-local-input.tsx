@@ -1,9 +1,11 @@
+import { useTranslation } from 'react-i18next'
 import { Form, FormField, Input } from '../../../index'
 
 export default function DateTimeLocalInputDemo() {
+  const { t } = useTranslation('copy')
   return (
     <Form viewProps={{ width: 352 }}>
-      <FormField label="Appointment date and time">
+      <FormField label={t('Appointment date and time')}>
         <Input
           type="datetime-local"
           name="appointmentAt"

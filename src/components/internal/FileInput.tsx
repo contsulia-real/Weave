@@ -1,5 +1,5 @@
 import { useCallback, useId, useRef, useState } from 'react'
-import type { InputProps } from '../../core/input-types'
+import type { SingleLineInputProps } from '../../core/input-types'
 import { Column } from '../Column'
 import { Text } from '../Text'
 import { ToolTip } from '../ToolTip'
@@ -9,7 +9,7 @@ import { useDateLocalization } from './date-localization'
 import { renderIconSource } from './render-icon-source'
 import { useFormReset } from './use-form-reset'
 
-type SingleLineProps = Extract<InputProps, { multiline?: false }>
+type SingleLineProps = SingleLineInputProps
 type FileInputProps = SingleLineProps & {
   InputHost: (props: SingleLineProps) => import('react').JSX.Element
 }

@@ -1,9 +1,11 @@
+import { useTranslation } from 'react-i18next'
 import { Form, FormField, Input } from '../../../index'
 
 export default function WeekInputDemo() {
+  const { t } = useTranslation('copy')
   return (
     <Form viewProps={{ width: 352 }}>
-      <FormField label="Planning week">
+      <FormField label={t('Planning week')}>
         <Input
           type="week"
           name="planningWeek"

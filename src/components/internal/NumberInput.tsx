@@ -1,6 +1,6 @@
 import { IconSelector } from '@tabler/icons-react'
 import { type KeyboardEvent, type PointerEvent, useEffect, useRef } from 'react'
-import type { InputProps } from '../../core/input-types'
+import type { SingleLineInputProps } from '../../core/input-types'
 import { resolveSelectTheme } from '../../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../../renderers/dom/runtime-class'
 import { useTheme } from '../../theme/theme-context'
@@ -8,7 +8,7 @@ import { Icon } from '../Icon'
 import { assignRef } from './assign-ref'
 import { useDateLocalization } from './date-localization'
 
-type SingleLineProps = Extract<InputProps, { multiline?: false }>
+type SingleLineProps = SingleLineInputProps
 type NumberInputProps = SingleLineProps & {
   InputHost: (props: SingleLineProps) => import('react').JSX.Element
 }

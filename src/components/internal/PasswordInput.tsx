@@ -1,12 +1,12 @@
 import { IconEye, IconEyeOff } from '@tabler/icons-react'
 import { useCallback, useRef, useState } from 'react'
-import type { InputProps } from '../../core/input-types'
+import type { SingleLineInputProps } from '../../core/input-types'
 import { Button } from '../Button'
 import { assignRef } from './assign-ref'
 import { useDateLocalization } from './date-localization'
 import { useFormReset } from './use-form-reset'
 
-type SingleLineProps = Extract<InputProps, { multiline?: false }>
+type SingleLineProps = SingleLineInputProps
 type PasswordInputProps = SingleLineProps & {
   InputHost: (props: SingleLineProps) => import('react').JSX.Element
 }

@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from 'react'
-import type { InputProps, InputType } from '../../core/input-types'
+import type { InputType, SingleLineInputProps } from '../../core/input-types'
 import { Button } from '../Button'
 import { Column } from '../Column'
 import { Grid } from '../Grid'
@@ -15,7 +15,7 @@ import { useDateLocalization } from './date-localization'
 import { useFormFieldContext } from './form-field-context'
 import { useFormReset } from './use-form-reset'
 
-type SingleLineProps = Extract<InputProps, { multiline?: false }>
+type SingleLineProps = SingleLineInputProps
 type TemporalType = Extract<InputType, 'date' | 'time' | 'datetime-local' | 'month' | 'week'>
 type TemporalInputProps = SingleLineProps & {
   type: TemporalType

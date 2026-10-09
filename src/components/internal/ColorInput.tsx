@@ -1,5 +1,5 @@
 import { type CSSProperties, type PointerEvent, useCallback, useRef, useState } from 'react'
-import type { InputProps } from '../../core/input-types'
+import type { SingleLineInputProps } from '../../core/input-types'
 import { ensureInputStylesheet } from '../../renderers/dom/input-stylesheet'
 import { useStaticStylesheet } from '../../renderers/dom/static-stylesheet'
 import { Button } from '../Button'
@@ -23,7 +23,7 @@ import { chevronDownIcon } from './control-icons'
 import { useDateLocalization } from './date-localization'
 import { useFormReset } from './use-form-reset'
 
-type SingleLineProps = Extract<InputProps, { multiline?: false }>
+type SingleLineProps = SingleLineInputProps
 type ColorInputProps = SingleLineProps & {
   InputHost: (props: SingleLineProps) => import('react').JSX.Element
 }

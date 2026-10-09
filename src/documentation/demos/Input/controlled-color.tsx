@@ -1,7 +1,9 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Column, Input, Text } from '../../../index'
 
 export default function ControlledColorDemo() {
+  const { t } = useTranslation('copy')
   const [value, setValue] = useState('#3b82f6')
 
   return (
@@ -10,10 +12,10 @@ export default function ControlledColorDemo() {
         type="color"
         value={value}
         onChange={setValue}
-        viewProps={{ label: 'Selected color' }}
+        viewProps={{ label: t('Selected color') }}
       />
       <Text typo="body-small" color="secondary">
-        Value: {value}
+        {t('Value: {{value}}', { value })}
       </Text>
     </Column>
   )

@@ -113,6 +113,13 @@ const stylesheet = `
   translate: 0 -50%;
 }
 
+.weave-input-root[data-weave-input-has-trailing-icon="true"] .weave-password-input__toggle {
+  right: calc(
+    var(--weave-input-min-height) +
+    (var(--weave-input-min-height) - var(--weave-button-min-height)) / 2
+  );
+}
+
 .weave-password-input--masked {
   color: transparent;
   caret-color: var(--weave-input-focus-outline-color);
@@ -143,6 +150,14 @@ const stylesheet = `
   right: calc(var(--weave-input-min-height) * 2);
 }
 
+.weave-input-root[data-weave-input-has-trailing-icon="true"] .weave-password-input__mask {
+  right: calc(var(--weave-input-min-height) * 2);
+}
+
+.weave-input-root[data-weave-input-has-clear="true"][data-weave-input-has-trailing-icon="true"] .weave-password-input__mask {
+  right: calc(var(--weave-input-min-height) * 3);
+}
+
 :where(.weave-number-input) {
   appearance: textfield;
   -moz-appearance: textfield;
@@ -167,6 +182,10 @@ const stylesheet = `
   cursor: ew-resize;
   touch-action: none;
   user-select: none;
+}
+
+.weave-input-root[data-weave-input-has-trailing-icon="true"] .weave-number-input__scrub {
+  right: var(--weave-input-min-height);
 }
 
 .weave-number-input__scrub .weave-number-input__icon {
@@ -339,6 +358,14 @@ const stylesheet = `
 
 .weave-input-root:has(> .weave-password-input) > .weave-input__clear {
   right: calc(
+    (var(--weave-input-min-height) - var(--weave-button-min-height)) / 2 +
+    var(--weave-button-min-height) + var(--weave-button-gap)
+  );
+}
+
+.weave-input-root[data-weave-input-has-trailing-icon="true"]:has(> .weave-password-input) > .weave-input__clear {
+  right: calc(
+    var(--weave-input-min-height) +
     (var(--weave-input-min-height) - var(--weave-button-min-height)) / 2 +
     var(--weave-button-min-height) + var(--weave-button-gap)
   );

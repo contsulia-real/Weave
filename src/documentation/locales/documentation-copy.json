@@ -1,4 +1,94 @@
 {
+  "Accent color": {
+    "zh-CN": "强调色",
+    "zh-TW": "強調色",
+    "fr": "Couleur d’accentuation"
+  },
+  "Adjust saturation and brightness on the color field, use the hue slider, or enter a HEX color.": {
+    "zh-CN": "在颜色区域调整饱和度和亮度，使用色相滑块，或输入 HEX 颜色值。",
+    "zh-TW": "在色彩區域調整飽和度與亮度，使用色相滑桿，或輸入 HEX 色碼。",
+    "fr": "Ajustez la saturation et la luminosité dans le champ de couleur, utilisez le curseur de teinte ou saisissez un code HEX."
+  },
+  "Selected color": {
+    "zh-CN": "选中的颜色",
+    "zh-TW": "選取的顏色",
+    "fr": "Couleur sélectionnée"
+  },
+  "Value: {{value}}": {
+    "zh-CN": "值：{{value}}",
+    "zh-TW": "值：{{value}}",
+    "fr": "Valeur : {{value}}"
+  },
+  "Selected date": {
+    "zh-CN": "选中的日期",
+    "zh-TW": "選取的日期",
+    "fr": "Date sélectionnée"
+  },
+  "Project name": {
+    "zh-CN": "项目名称",
+    "zh-TW": "專案名稱",
+    "fr": "Nom du projet"
+  },
+  "Selected time": {
+    "zh-CN": "选中的时间",
+    "zh-TW": "選取的時間",
+    "fr": "Heure sélectionnée"
+  },
+  "Appointment date": {
+    "zh-CN": "预约日期",
+    "zh-TW": "預約日期",
+    "fr": "Date du rendez-vous"
+  },
+  "Appointment date and time": {
+    "zh-CN": "预约日期和时间",
+    "zh-TW": "預約日期及時間",
+    "fr": "Date et heure du rendez-vous"
+  },
+  "Date": {
+    "zh-CN": "日期",
+    "zh-TW": "日期",
+    "fr": "Date"
+  },
+  "Required value": {
+    "zh-CN": "必填内容",
+    "zh-TW": "必填內容",
+    "fr": "Valeur obligatoire"
+  },
+  "Read-only value": {
+    "zh-CN": "只读内容",
+    "zh-TW": "唯讀內容",
+    "fr": "Valeur en lecture seule"
+  },
+  "Unavailable value": {
+    "zh-CN": "不可用内容",
+    "zh-TW": "無法使用的內容",
+    "fr": "Valeur indisponible"
+  },
+  "Billing month": {
+    "zh-CN": "账单月份",
+    "zh-TW": "帳單月份",
+    "fr": "Mois de facturation"
+  },
+  "Write a short note…": {
+    "zh-CN": "写一段简短备注…",
+    "zh-TW": "寫一段簡短備註…",
+    "fr": "Rédigez une courte note…"
+  },
+  "Meeting time": {
+    "zh-CN": "会议时间",
+    "zh-TW": "會議時間",
+    "fr": "Heure de la réunion"
+  },
+  "Precise time": {
+    "zh-CN": "精确时间",
+    "zh-TW": "精確時間",
+    "fr": "Heure précise"
+  },
+  "Planning week": {
+    "zh-CN": "计划周",
+    "zh-TW": "計畫週",
+    "fr": "Semaine de planification"
+  },
   "Date input": {
     "zh-CN": "日期输入",
     "zh-TW": "日期輸入",

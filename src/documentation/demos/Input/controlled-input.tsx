@@ -1,7 +1,9 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Column, Input, Text } from '../../../index'
 
 export default function InputControlledInputDemo() {
+  const { t } = useTranslation('copy')
   const [value, setValue] = useState('Weave')
 
   return (
@@ -12,10 +14,10 @@ export default function InputControlledInputDemo() {
         name="project"
         autoComplete="off"
         maxLength={24}
-        placeholder="Project name"
+        placeholder={t('Project name')}
       />
       <Text typo="body-small" color="secondary">
-        Value: {value || 'empty'}
+        {t('Value: {{value}}', { value: value || t('Empty') })}
       </Text>
     </Column>
   )

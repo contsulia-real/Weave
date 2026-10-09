@@ -1627,7 +1627,7 @@
         "text"
       ],
       "documentationRoute": "/docs/components/Input",
-      "source": "import { Column, Form, FormField, Input, Text } from '../../../index'\n\nexport default function ColorInputDemo() {\n  return (\n    <Form viewProps={{ width: 352 }}>\n      <Column gap={12}>\n        <FormField label=\"Accent color\">\n          <Input type=\"color\" name=\"accentColor\" defaultValue=\"#e76b94\" />\n        </FormField>\n        <Text typo=\"body-small\" color=\"secondary\">\n          Adjust saturation and brightness on the color field, use the hue slider, or enter a HEX\n          color.\n        </Text>\n      </Column>\n    </Form>\n  )\n}"
+      "source": "import { useTranslation } from 'react-i18next'\nimport { Column, Form, FormField, Input, Text } from '../../../index'\n\nexport default function ColorInputDemo() {\n  const { t } = useTranslation('copy')\n  return (\n    <Form viewProps={{ width: 352 }}>\n      <Column gap={12}>\n        <FormField label={t('Accent color')}>\n          <Input type=\"color\" name=\"accentColor\" defaultValue=\"#e76b94\" />\n        </FormField>\n        <Text typo=\"body-small\" color=\"secondary\">\n          {t(\n            'Adjust saturation and brightness on the color field, use the hue slider, or enter a HEX color.',\n          )}\n        </Text>\n      </Column>\n    </Form>\n  )\n}"
     },
     {
       "id": "Input/controlled-color",
@@ -1648,7 +1648,7 @@
         "value"
       ],
       "documentationRoute": "/docs/components/Input",
-      "source": "import { useState } from 'react'\nimport { Column, Input, Text } from '../../../index'\n\nexport default function ControlledColorDemo() {\n  const [value, setValue] = useState('#3b82f6')\n\n  return (\n    <Column width={352} gap={12}>\n      <Input\n        type=\"color\"\n        value={value}\n        onChange={setValue}\n        viewProps={{ label: 'Selected color' }}\n      />\n      <Text typo=\"body-small\" color=\"secondary\">\n        Value: {value}\n      </Text>\n    </Column>\n  )\n}"
+      "source": "import { useState } from 'react'\nimport { useTranslation } from 'react-i18next'\nimport { Column, Input, Text } from '../../../index'\n\nexport default function ControlledColorDemo() {\n  const { t } = useTranslation('copy')\n  const [value, setValue] = useState('#3b82f6')\n\n  return (\n    <Column width={352} gap={12}>\n      <Input\n        type=\"color\"\n        value={value}\n        onChange={setValue}\n        viewProps={{ label: t('Selected color') }}\n      />\n      <Text typo=\"body-small\" color=\"secondary\">\n        {t('Value: {{value}}', { value })}\n      </Text>\n    </Column>\n  )\n}"
     },
     {
       "id": "Input/controlled-date",
@@ -1669,7 +1669,7 @@
         "yyyy"
       ],
       "documentationRoute": "/docs/components/Input",
-      "source": "import { useState } from 'react'\nimport { Column, Input, Text } from '../../../index'\n\nexport default function DateControlledDateDemo() {\n  const [value, setValue] = useState('2026-10-09')\n\n  return (\n    <Column gap={12} width={352}>\n      <Input type=\"date\" value={value} onChange={setValue} viewProps={{ label: 'Selected date' }} />\n      <Text typo=\"body-small\" color=\"secondary\">\n        Value: {value || 'empty'}\n      </Text>\n    </Column>\n  )\n}"
+      "source": "import { useState } from 'react'\nimport { useTranslation } from 'react-i18next'\nimport { Column, Input, Text } from '../../../index'\n\nexport default function DateControlledDateDemo() {\n  const { t } = useTranslation('copy')\n  const [value, setValue] = useState('2026-10-09')\n\n  return (\n    <Column gap={12} width={352}>\n      <Input\n        type=\"date\"\n        value={value}\n        onChange={setValue}\n        viewProps={{ label: t('Selected date') }}\n      />\n      <Text typo=\"body-small\" color=\"secondary\">\n        {t('Value: {{value}}', { value: value || t('Empty') })}\n      </Text>\n    </Column>\n  )\n}"
     },
     {
       "id": "Input/controlled-input",
@@ -1695,7 +1695,7 @@
         "while"
       ],
       "documentationRoute": "/docs/components/Input",
-      "source": "import { useState } from 'react'\nimport { Column, Input, Text } from '../../../index'\n\nexport default function InputControlledInputDemo() {\n  const [value, setValue] = useState('Weave')\n\n  return (\n    <Column gap={12} width={320}>\n      <Input\n        value={value}\n        onChange={setValue}\n        name=\"project\"\n        autoComplete=\"off\"\n        maxLength={24}\n        placeholder=\"Project name\"\n      />\n      <Text typo=\"body-small\" color=\"secondary\">\n        Value: {value || 'empty'}\n      </Text>\n    </Column>\n  )\n}"
+      "source": "import { useState } from 'react'\nimport { useTranslation } from 'react-i18next'\nimport { Column, Input, Text } from '../../../index'\n\nexport default function InputControlledInputDemo() {\n  const { t } = useTranslation('copy')\n  const [value, setValue] = useState('Weave')\n\n  return (\n    <Column gap={12} width={320}>\n      <Input\n        value={value}\n        onChange={setValue}\n        name=\"project\"\n        autoComplete=\"off\"\n        maxLength={24}\n        placeholder={t('Project name')}\n      />\n      <Text typo=\"body-small\" color=\"secondary\">\n        {t('Value: {{value}}', { value: value || t('Empty') })}\n      </Text>\n    </Column>\n  )\n}"
     },
     {
       "id": "Input/controlled-time",
@@ -1716,7 +1716,7 @@
         "weave"
       ],
       "documentationRoute": "/docs/components/Input",
-      "source": "import { useState } from 'react'\nimport { Column, Input, Text } from '../../../index'\n\nexport default function ControlledTimeDemo() {\n  const [value, setValue] = useState('14:30')\n\n  return (\n    <Column width={352} gap={12}>\n      <Input\n        type=\"time\"\n        value={value}\n        onChange={setValue}\n        min=\"09:00\"\n        max=\"18:00\"\n        step={60}\n        viewProps={{ label: 'Selected time' }}\n      />\n      <Text typo=\"body-small\" color=\"secondary\">\n        Value: {value || 'empty'}\n      </Text>\n    </Column>\n  )\n}"
+      "source": "import { useState } from 'react'\nimport { useTranslation } from 'react-i18next'\nimport { Column, Input, Text } from '../../../index'\n\nexport default function ControlledTimeDemo() {\n  const { t } = useTranslation('copy')\n  const [value, setValue] = useState('14:30')\n\n  return (\n    <Column width={352} gap={12}>\n      <Input\n        type=\"time\"\n        value={value}\n        onChange={setValue}\n        min=\"09:00\"\n        max=\"18:00\"\n        step={60}\n        viewProps={{ label: t('Selected time') }}\n      />\n      <Text typo=\"body-small\" color=\"secondary\">\n        {t('Value: {{value}}', { value: value || t('Empty') })}\n      </Text>\n    </Column>\n  )\n}"
     },
     {
       "id": "Input/date-input",
@@ -1740,7 +1740,7 @@
         "values"
       ],
       "documentationRoute": "/docs/components/Input",
-      "source": "import { Form, FormField, Input } from '../../../index'\n\nexport default function DateBasicUsageDemo() {\n  return (\n    <Form viewProps={{ width: 352 }}>\n      <FormField label=\"Appointment date\">\n        <Input\n          type=\"date\"\n          name=\"appointment\"\n          defaultValue=\"2026-10-09\"\n          min=\"2026-01-01\"\n          max=\"2026-12-31\"\n        />\n      </FormField>\n    </Form>\n  )\n}"
+      "source": "import { useTranslation } from 'react-i18next'\nimport { Form, FormField, Input } from '../../../index'\n\nexport default function DateBasicUsageDemo() {\n  const { t } = useTranslation('copy')\n  return (\n    <Form viewProps={{ width: 352 }}>\n      <FormField label={t('Appointment date')}>\n        <Input\n          type=\"date\"\n          name=\"appointment\"\n          defaultValue=\"2026-10-09\"\n          min=\"2026-01-01\"\n          max=\"2026-12-31\"\n        />\n      </FormField>\n    </Form>\n  )\n}"
     },
     {
       "id": "Input/datetime-local-input",
@@ -1763,7 +1763,7 @@
         "without"
       ],
       "documentationRoute": "/docs/components/Input",
-      "source": "import { Form, FormField, Input } from '../../../index'\n\nexport default function DateTimeLocalInputDemo() {\n  return (\n    <Form viewProps={{ width: 352 }}>\n      <FormField label=\"Appointment date and time\">\n        <Input\n          type=\"datetime-local\"\n          name=\"appointmentAt\"\n          defaultValue=\"2026-10-09T14:30\"\n          min=\"2026-10-01T09:00\"\n          max=\"2026-10-31T18:00\"\n          step={900}\n        />\n      </FormField>\n    </Form>\n  )\n}"
+      "source": "import { useTranslation } from 'react-i18next'\nimport { Form, FormField, Input } from '../../../index'\n\nexport default function DateTimeLocalInputDemo() {\n  const { t } = useTranslation('copy')\n  return (\n    <Form viewProps={{ width: 352 }}>\n      <FormField label={t('Appointment date and time')}>\n        <Input\n          type=\"datetime-local\"\n          name=\"appointmentAt\"\n          defaultValue=\"2026-10-09T14:30\"\n          min=\"2026-10-01T09:00\"\n          max=\"2026-10-31T18:00\"\n          step={900}\n        />\n      </FormField>\n    </Form>\n  )\n}"
     },
     {
       "id": "Input/email-input",
@@ -1836,7 +1836,7 @@
         "yyyy"
       ],
       "documentationRoute": "/docs/components/Input",
-      "source": "import { useState } from 'react'\nimport { Column, Input, SegmentedButton } from '../../../index'\n\nexport default function DateForcedLocaleDemo() {\n  const [locale, setLocale] = useState('fr')\n\n  return (\n    <Column gap={16} width={368}>\n      <SegmentedButton\n        selection=\"single\"\n        selected={locale}\n        onSelect={(next) => {\n          if (next !== null) setLocale(next)\n        }}\n        items={[\n          { id: 'en', children: 'English' },\n          { id: 'zh-CN', children: '简体中文' },\n          { id: 'zh-TW', children: '繁體中文' },\n          { id: 'fr', children: 'Français' },\n        ]}\n      />\n      <Input type=\"date\" locale={locale} defaultValue=\"2026-10-09\" viewProps={{ label: 'Date' }} />\n    </Column>\n  )\n}"
+      "source": "import { useState } from 'react'\nimport { useTranslation } from 'react-i18next'\nimport { Column, Input, SegmentedButton } from '../../../index'\n\nexport default function DateForcedLocaleDemo() {\n  const { t } = useTranslation('copy')\n  const [locale, setLocale] = useState('fr')\n\n  return (\n    <Column gap={16} width={368}>\n      <SegmentedButton\n        selection=\"single\"\n        selected={locale}\n        onSelect={(next) => {\n          if (next !== null) setLocale(next)\n        }}\n        items={[\n          { id: 'en', children: 'English' },\n          { id: 'zh-CN', children: '简体中文' },\n          { id: 'zh-TW', children: '繁體中文' },\n          { id: 'fr', children: 'Français' },\n        ]}\n      />\n      <Input\n        type=\"date\"\n        locale={locale}\n        defaultValue=\"2026-10-09\"\n        viewProps={{ label: t('Date') }}\n      />\n    </Column>\n  )\n}"
     },
     {
       "id": "Input/form-states",
@@ -1865,7 +1865,7 @@
         "while"
       ],
       "documentationRoute": "/docs/components/Input",
-      "source": "import { Column, Input } from '../../../index'\n\nexport default function InputFormStatesDemo() {\n  return (\n    <Column gap={16} width={320}>\n      <Input placeholder=\"Required value\" required />\n      <Input value=\"Read-only value\" readOnly />\n      <Input value=\"Unavailable value\" disabled />\n    </Column>\n  )\n}"
+      "source": "import { useTranslation } from 'react-i18next'\nimport { Column, Input } from '../../../index'\n\nexport default function InputFormStatesDemo() {\n  const { t } = useTranslation('copy')\n  return (\n    <Column gap={16} width={320}>\n      <Input placeholder={t('Required value')} required />\n      <Input value={t('Read-only value')} readOnly />\n      <Input value={t('Unavailable value')} disabled />\n    </Column>\n  )\n}"
     },
     {
       "id": "Input/month-input",
@@ -1887,7 +1887,7 @@
         "yyyy"
       ],
       "documentationRoute": "/docs/components/Input",
-      "source": "import { Form, FormField, Input } from '../../../index'\n\nexport default function MonthInputDemo() {\n  return (\n    <Form viewProps={{ width: 352 }}>\n      <FormField label=\"Billing month\">\n        <Input\n          type=\"month\"\n          name=\"billingMonth\"\n          defaultValue=\"2026-10\"\n          min=\"2026-01\"\n          max=\"2026-12\"\n        />\n      </FormField>\n    </Form>\n  )\n}"
+      "source": "import { useTranslation } from 'react-i18next'\nimport { Form, FormField, Input } from '../../../index'\n\nexport default function MonthInputDemo() {\n  const { t } = useTranslation('copy')\n  return (\n    <Form viewProps={{ width: 352 }}>\n      <FormField label={t('Billing month')}>\n        <Input\n          type=\"month\"\n          name=\"billingMonth\"\n          defaultValue=\"2026-10\"\n          min=\"2026-01\"\n          max=\"2026-12\"\n        />\n      </FormField>\n    </Form>\n  )\n}"
     },
     {
       "id": "Input/multiline-input",
@@ -1911,7 +1911,7 @@
         "while"
       ],
       "documentationRoute": "/docs/components/Input",
-      "source": "import { Input } from '../../../index'\n\nexport default function InputMultilineInputDemo() {\n  return <Input multiline rows={4} placeholder=\"Write a short note…\" />\n}"
+      "source": "import { useTranslation } from 'react-i18next'\nimport { Input } from '../../../index'\n\nexport default function InputMultilineInputDemo() {\n  const { t } = useTranslation('copy')\n  return <Input multiline rows={4} placeholder={t('Write a short note…')} />\n}"
     },
     {
       "id": "Input/number-input",
@@ -2032,7 +2032,7 @@
         "weave"
       ],
       "documentationRoute": "/docs/components/Input",
-      "source": "import { Column, Form, FormField, Input } from '../../../index'\n\nexport default function TimeInputDemo() {\n  return (\n    <Form viewProps={{ width: 352 }}>\n      <Column gap={16}>\n        <FormField label=\"Meeting time\">\n          <Input\n            type=\"time\"\n            name=\"meetingTime\"\n            defaultValue=\"14:30\"\n            min=\"09:00\"\n            max=\"18:00\"\n            step={900}\n            required\n          />\n        </FormField>\n      </Column>\n    </Form>\n  )\n}"
+      "source": "import { useTranslation } from 'react-i18next'\nimport { Column, Form, FormField, Input } from '../../../index'\n\nexport default function TimeInputDemo() {\n  const { t } = useTranslation('copy')\n  return (\n    <Form viewProps={{ width: 352 }}>\n      <Column gap={16}>\n        <FormField label={t('Meeting time')}>\n          <Input\n            type=\"time\"\n            name=\"meetingTime\"\n            defaultValue=\"14:30\"\n            min=\"09:00\"\n            max=\"18:00\"\n            step={900}\n            required\n          />\n        </FormField>\n      </Column>\n    </Form>\n  )\n}"
     },
     {
       "id": "Input/time-seconds",
@@ -2054,7 +2054,7 @@
         "weave"
       ],
       "documentationRoute": "/docs/components/Input",
-      "source": "import { Form, FormField, Input } from '../../../index'\n\nexport default function TimeSecondsDemo() {\n  return (\n    <Form viewProps={{ width: 352 }}>\n      <FormField label=\"Precise time\">\n        <Input\n          type=\"time\"\n          name=\"preciseTime\"\n          defaultValue=\"14:30:15\"\n          min=\"09:00:00\"\n          max=\"18:00:59\"\n          step={1}\n        />\n      </FormField>\n    </Form>\n  )\n}"
+      "source": "import { useTranslation } from 'react-i18next'\nimport { Form, FormField, Input } from '../../../index'\n\nexport default function TimeSecondsDemo() {\n  const { t } = useTranslation('copy')\n  return (\n    <Form viewProps={{ width: 352 }}>\n      <FormField label={t('Precise time')}>\n        <Input\n          type=\"time\"\n          name=\"preciseTime\"\n          defaultValue=\"14:30:15\"\n          min=\"09:00:00\"\n          max=\"18:00:59\"\n          step={1}\n        />\n      </FormField>\n    </Form>\n  )\n}"
     },
     {
       "id": "Input/url-input",
@@ -2099,7 +2099,7 @@
         "yyyy"
       ],
       "documentationRoute": "/docs/components/Input",
-      "source": "import { Form, FormField, Input } from '../../../index'\n\nexport default function WeekInputDemo() {\n  return (\n    <Form viewProps={{ width: 352 }}>\n      <FormField label=\"Planning week\">\n        <Input\n          type=\"week\"\n          name=\"planningWeek\"\n          defaultValue=\"2026-W41\"\n          min=\"2026-W01\"\n          max=\"2026-W53\"\n        />\n      </FormField>\n    </Form>\n  )\n}"
+      "source": "import { useTranslation } from 'react-i18next'\nimport { Form, FormField, Input } from '../../../index'\n\nexport default function WeekInputDemo() {\n  const { t } = useTranslation('copy')\n  return (\n    <Form viewProps={{ width: 352 }}>\n      <FormField label={t('Planning week')}>\n        <Input\n          type=\"week\"\n          name=\"planningWeek\"\n          defaultValue=\"2026-W41\"\n          min=\"2026-W01\"\n          max=\"2026-W53\"\n        />\n      </FormField>\n    </Form>\n  )\n}"
     },
     {
       "id": "Layout/absolute",
