@@ -34,7 +34,7 @@ function BreadcrumbMenuTrigger({
       type="button"
       aria-current={current ? 'page' : undefined}
       data-weave-view=""
-      data-weave-link-underline="visible"
+      data-weave-link-underline="hidden"
       data-weave-layout={resolved.layout}
       className={['weave-link', themeClassName, className].filter(Boolean).join(' ')}
       style={{
@@ -89,7 +89,7 @@ export function Breadcrumb({
             ) : index === items.length - 1 ? (
               <Text viewProps={{ 'aria-current': 'page' }}>{item.text}</Text>
             ) : item.href !== undefined ? (
-              <Link href={item.href} text={item.text} hideIcon />
+              <Link href={item.href} text={item.text} hideIcon hideUnderline />
             ) : (
               <Text>{item.text}</Text>
             )}
