@@ -6,7 +6,11 @@ import { useTranslation } from 'react-i18next'
 import ts from 'typescript'
 import * as Weave from '../index'
 import { documentationSampleImage } from './documentation-example-fixtures'
-import { documentationComponentNavigationItems } from './documentation-navigation-data'
+import {
+  componentNavigationSections,
+  documentationComponentNavigationItems,
+  documentationNavigationSectionForPath,
+} from './documentation-navigation-data'
 import { useDocsRoute } from './router'
 
 const runtimeModules: Readonly<Record<string, unknown>> = {
@@ -16,7 +20,11 @@ const runtimeModules: Readonly<Record<string, unknown>> = {
     IconStar,
   },
   '../../../index': Weave,
-  '../../documentation-navigation-data': { documentationComponentNavigationItems },
+  '../../documentation-navigation-data': {
+    componentNavigationSections,
+    documentationComponentNavigationItems,
+    documentationNavigationSectionForPath,
+  },
   '../../documentation-example-fixtures': {
     documentationSampleImage,
   },

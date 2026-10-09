@@ -51,7 +51,8 @@
         "Accordion/disabled-states",
         "Accordion/dividerless-accordion",
         "Accordion/multiple-panels",
-        "Accordion/trigger-options"
+        "Accordion/trigger-options",
+        "Breadcrumb/dropdown-items"
       ],
       "props": [
         {
@@ -127,7 +128,8 @@
         "Accordion/disabled-states",
         "Accordion/dividerless-accordion",
         "Accordion/multiple-panels",
-        "Accordion/trigger-options"
+        "Accordion/trigger-options",
+        "Breadcrumb/dropdown-items"
       ],
       "props": [
         {
@@ -173,7 +175,8 @@
         "Accordion/disabled-states",
         "Accordion/dividerless-accordion",
         "Accordion/multiple-panels",
-        "Accordion/trigger-options"
+        "Accordion/trigger-options",
+        "Breadcrumb/dropdown-items"
       ],
       "props": [
         {
@@ -207,7 +210,8 @@
         "Accordion/disabled-states",
         "Accordion/dividerless-accordion",
         "Accordion/multiple-panels",
-        "Accordion/trigger-options"
+        "Accordion/trigger-options",
+        "Breadcrumb/dropdown-items"
       ],
       "props": [
         {

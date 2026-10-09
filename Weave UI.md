@@ -3778,7 +3778,7 @@ active  80%
 `Breadcrumb` 用于展示从根层级到当前页面的层级导航。它直接组合公开 `Row`、`Link`、`Text`、`Icon`，菜单项额外复用公开 `Menu`，并以原生 `<button>` 触发，直接复用 `Link` 现有主题与样式，确保链接和菜单触发器保持相同的字号、字重、行高与交互颜色；不引入新的主题或导航系统。
 
 - `items: readonly BreadcrumbItem[]` 按父级到当前页的顺序提供带 `text: ReactNode` 的项。普通项可设置 `href?: string`：非末级的 href 使用真实 `Link`，默认 `hideIcon` 与 `hideUnderline`，不显示装饰性尾部 link icon 或底边线；独立 Link 的默认值不变。
-- 可选 `menu: ReactNode` 表示菜单型项，传入已有 `MenuItem` 内容，由 `Menu` 处理浮层定位、关闭与键盘行为，使用原生 `<button>` 并沿用 `Link` 的视觉样式作为触发器，默认同样隐藏底边线；`href` 与 `menu` 在同一个项上互斥。菜单型项可处于任意层级（包括末级），下拉选项只表示该层级的同级页面，不表示下一层级。菜单项选择行为由提供的 `MenuItem.onSelect` 决定；需要更新后续层级时，调用方更新传入的 `items`。Documentation 使用完整组件导航清单生成同级选项，将菜单绑定到当前组件所在的末级；沿用 `useDocsRoute().navigate`，前进/后退同步更新。只有 Docs 的实例用现有 `Column maxHeight={320} overflow="auto"` 限制长列表，不修改 Breadcrumb/Menu 默认值或公开 API。公开组件不隐式管理路由。
+- 可选 `menu: ReactNode` 表示菜单型项，传入已有 `MenuItem` 内容，由 `Menu` 处理浮层定位、关闭与键盘行为，使用原生 `<button>` 并沿用 `Link` 的视觉样式作为触发器，默认同样隐藏底边线；`href` 与 `menu` 在同一个项上互斥。菜单型项可处于任意层级（包括末级），下拉选项只表示该层级的同级页面，不表示下一层级。菜单项选择行为由提供的 `MenuItem.onSelect` 决定；需要更新后续层级时，调用方更新传入的 `items`。Documentation 使用现有五组组件导航分类生成 `Accordion`、`AccordionItem`、`AccordionTrigger`、`AccordionPanel` 与同级 `MenuItem`，当前组件所属分组默认展开，菜单绑定当前组件末级；沿用 `useDocsRoute().navigate`，前进/后退同步更新。只有 Docs 的实例用现有 `Column maxHeight={320} overflow="auto"` 限制长列表，不修改 Breadcrumb/Menu 默认值或公开 API。公开组件不隐式管理路由。
 - 最末项始终代表当前页面：普通末项用 `Text` 和 `aria-current="page"`，不生成链接，即使传了 href 也不跳转；菜单型末项则在触发按钮上设置 `aria-current="page"`，点击打开菜单而不是跳转。单项时没有分隔符，空项不生成链接和当前项。
 - `separator?: ReactNode` 可选，决定所有相邻层级之间的装饰性分隔元素；缺省仍使用现有右箭头 `Icon`。每个分隔元素的外层设置 `aria-hidden` 并用 inline-flex 居中对齐图标，布局与换行由 `Row` 负责。
 - 外层使用真实 `<nav>` 及随 `document.lang` 切换的四语言 `aria-label`；`label?: string` 可覆盖默认可访问名称，`viewProps` 作用于内部 Row。

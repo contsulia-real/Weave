@@ -2064,10 +2064,10 @@
     "zh-TW": "下拉選單項",
     "fr": "Éléments déroulants"
   },
-  "Open a menu on the current breadcrumb to navigate between sibling component pages.": {
-    "zh-CN": "在当前面包屑上打开菜单，在同级组件页面之间导航。",
-    "zh-TW": "在目前麵包屑上開啟選單，在同層元件頁面之間導覽。",
-    "fr": "Ouvrez le menu du fil d’Ariane actuel pour naviguer entre les pages de composants de même niveau."
+  "Group sibling component pages using the existing Documentation accordion categories.": {
+    "zh-CN": "使用 Documentation 现有的手风琴分类组织同级组件页面。",
+    "zh-TW": "使用 Documentation 現有的手風琴分類組織同層元件頁面。",
+    "fr": "Regroupez les pages de composants de même niveau avec les catégories d’accordéon de Documentation."
   },
   "Selected: {{item}}": {
     "zh-CN": "已选择：{{item}}",

@@ -94,7 +94,7 @@ export const contentComponentExamples: Record<
         id: 'dropdown-items',
         title: 'Dropdown items',
         description:
-          'Open a menu on the current breadcrumb to navigate between sibling component pages.',
+          'Group sibling component pages using the existing Documentation accordion categories.',
         demo: 'Breadcrumb/dropdown-items',
       },
       {

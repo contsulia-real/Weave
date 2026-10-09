@@ -427,25 +427,36 @@
       "id": "Breadcrumb/dropdown-items",
       "component": "Breadcrumb",
       "title": "Dropdown items",
-      "description": "Open a menu on the current breadcrumb to navigate between sibling component pages.",
-      "components": ["Breadcrumb", "Column", "MenuItem"],
+      "description": "Group sibling component pages using the existing Documentation accordion categories.",
+      "components": [
+        "Accordion",
+        "AccordionItem",
+        "AccordionPanel",
+        "AccordionTrigger",
+        "Breadcrumb",
+        "Column",
+        "MenuItem"
+      ],
       "concepts": [
-        "between",
+        "accordion",
         "breadcrumb",
+        "categories",
         "column",
         "component",
-        "current",
+        "documentation",
         "dropdown",
+        "existing",
+        "group",
         "item",
         "items",
         "menu",
-        "navigate",
-        "open",
         "pages",
-        "sibling"
+        "panel",
+        "sibling",
+        "trigger"
       ],
       "documentationRoute": "/docs/components/Breadcrumb",
-      "source": "import { useTranslation } from 'react-i18next'\nimport { Breadcrumb, Column, MenuItem } from '../../../index'\nimport { documentationComponentNavigationItems } from '../../documentation-navigation-data'\nimport { useDocsRoute } from '../../router'\n\nexport default function BreadcrumbDropdownItemsDemo() {\n  const { t } = useTranslation('copy')\n  const { pathname, navigate } = useDocsRoute()\n  const current = pathname.startsWith('/docs/components/')\n    ? pathname.slice('/docs/components/'.length)\n    : 'Breadcrumb'\n\n  return (\n    <Breadcrumb\n      items={[\n        { text: t('Home'), href: '/docs' },\n        { text: t('Components') },\n        {\n          text: current,\n          menu: (\n            <Column maxHeight={320} overflow=\"auto\">\n              {documentationComponentNavigationItems.map((item) => (\n                <MenuItem key={item.path} text={item.name} onSelect={() => navigate(item.path)} />\n              ))}\n            </Column>\n          ),\n        },\n      ]}\n    />\n  )\n}"
+      "source": "import { useTranslation } from 'react-i18next'\nimport {\n  Accordion,\n  AccordionItem,\n  AccordionPanel,\n  AccordionTrigger,\n  Breadcrumb,\n  Column,\n  MenuItem,\n} from '../../../index'\nimport {\n  componentNavigationSections,\n  documentationNavigationSectionForPath,\n} from '../../documentation-navigation-data'\nimport { useDocsRoute } from '../../router'\n\nexport default function BreadcrumbDropdownItemsDemo() {\n  const { t } = useTranslation(['translation', 'copy'])\n  const { pathname, navigate } = useDocsRoute()\n  const activeSection = documentationNavigationSectionForPath(pathname)\n  const current = pathname.startsWith('/docs/components/')\n    ? pathname.slice('/docs/components/'.length)\n    : 'Breadcrumb'\n\n  return (\n    <Breadcrumb\n      items={[\n        { text: t('copy:Home'), href: '/docs' },\n        { text: t('copy:Components') },\n        {\n          text: current,\n          menu: (\n            <Column maxHeight={320} overflow=\"auto\">\n              <Accordion noDividers defaultValue={activeSection} viewProps={{ width: 'fill' }}>\n                {componentNavigationSections.map((section) => (\n                  <AccordionItem key={section.value} value={section.value}>\n                    <AccordionTrigger singleLine>{t(section.labelKey)}</AccordionTrigger>\n                    <AccordionPanel>\n                      {section.items.map((item) => (\n                        <MenuItem\n                          key={item.path}\n                          text={item.label}\n                          onSelect={() => navigate(item.path)}\n                        />\n                      ))}\n                    </AccordionPanel>\n                  </AccordionItem>\n                ))}\n              </Accordion>\n            </Column>\n          ),\n        },\n      ]}\n    />\n  )\n}"
     },
     {
       "id": "Breadcrumb/single-level",
