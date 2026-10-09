@@ -94,30 +94,102 @@ const stylesheet = `
   margin: 0;
 }
 
-:where(.weave-input[type="file"]) {
+:where(.weave-file-input__native) {
   cursor: pointer;
+  color: transparent;
+  --weave-component-padding-left: 0px;
+  --weave-component-padding-right: 0px;
 }
 
-:where(.weave-input[type="file"])::file-selector-button {
-  font: inherit;
-  color: var(--weave-input-color);
-  cursor: inherit;
-  background: transparent;
-  border: 0;
-  border-radius: 0;
-  padding: 0;
-  margin-inline-end: var(--weave-input-padding-x);
+:where(.weave-file-input__native)::file-selector-button {
+  opacity: 0;
 }
 
-:where(.weave-input[type="file"][data-weave-file-drop-active="true"]) {
+:where(.weave-file-input__native--dropzone) {
+  --weave-component-min-height: 144px;
+  --weave-component-border-style: dashed;
+}
+
+:where(.weave-file-input__native[data-weave-file-drop-active="true"]) {
   --weave-component-border-top-color: var(--weave-input-focus-outline-color);
   --weave-component-border-right-color: var(--weave-input-focus-outline-color);
   --weave-component-border-bottom-color: var(--weave-input-focus-outline-color);
   --weave-component-border-left-color: var(--weave-input-focus-outline-color);
 }
 
-:where(.weave-input[type="file"]:disabled)::file-selector-button {
-  cursor: not-allowed;
+.weave-input-root:has(> .weave-file-input__native) > .weave-input__trailing-action {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  padding: 0;
+  pointer-events: none;
+}
+
+:where(.weave-file-input__content) {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  padding: var(--weave-input-padding-y) var(--weave-input-padding-x);
+  color: var(--weave-input-color);
+  font-size: var(--weave-input-font-size);
+  line-height: var(--weave-input-line-height);
+}
+
+:where(.weave-file-input__icon) {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  color: var(--weave-input-focus-outline-color);
+}
+
+:where(.weave-file-input__copy) {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+:where(.weave-file-input__title) {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: var(--weave-input-font-weight);
+}
+
+:where(.weave-file-input__subtitle) {
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--weave-input-placeholder-color);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+:where(.weave-input-root:has(> .weave-file-input__native:disabled) > .weave-input__trailing-action) {
+  opacity: var(--weave-input-disabled-opacity);
+}
+
+:where(.weave-file-input__native:not(.weave-file-input__native--dropzone) ~ .weave-input__trailing-action .weave-file-input__subtitle) {
+  display: none;
+}
+
+:where(.weave-file-input__native--dropzone ~ .weave-input__trailing-action .weave-file-input__content) {
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+}
+
+:where(.weave-file-input__native--dropzone ~ .weave-input__trailing-action .weave-file-input__copy) {
+  align-items: center;
+  width: 100%;
 }
 
 :where(.weave-input-root) {

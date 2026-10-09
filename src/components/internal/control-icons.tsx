@@ -85,3 +85,16 @@ export const clockIcon: IconSvg = (
     <path d="M12 7v5l3 2" />
   </svg>
 )
+
+export const uploadIcon: IconSvg = (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M12 16V4m-4 4 4-4 4 4" />
+    <path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3" />
+  </svg>
+)

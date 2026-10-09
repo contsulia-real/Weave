@@ -1770,11 +1770,10 @@
       "component": "Input",
       "title": "File input",
       "description": "Choose one or multiple files with the native file picker, accept filtering and FormData support.",
-      "components": ["Column", "Form", "FormField", "Input", "Text"],
+      "components": ["Form", "FormField", "Input"],
       "concepts": [
         "accept",
         "choose",
-        "column",
         "data",
         "field",
         "file",
@@ -1786,11 +1785,10 @@
         "native",
         "one",
         "picker",
-        "support",
-        "text"
+        "support"
       ],
       "documentationRoute": "/docs/components/Input",
-      "source": "import { Column, Form, FormField, Input, Text } from '../../../index'\n\nexport default function InputFileInputDemo() {\n  return (\n    <Form viewProps={{ width: 352 }}>\n      <Column gap={8}>\n        <FormField label=\"Attachments\">\n          <Input\n            type=\"file\"\n            name=\"attachments\"\n            accept=\".pdf,image/*\"\n            multiple\n            dropzone\n            viewProps={{ width: 'fill' }}\n          />\n        </FormField>\n        <Text typo=\"body-small\" color=\"secondary\">\n          Drop PDF or image files here, or click to browse.\n        </Text>\n      </Column>\n    </Form>\n  )\n}"
+      "source": "import { Form, FormField, Input } from '../../../index'\n\nexport default function InputFileInputDemo() {\n  return (\n    <Form viewProps={{ width: 352 }}>\n      <FormField label=\"Attachments\">\n        <Input\n          type=\"file\"\n          name=\"attachments\"\n          accept=\".pdf,image/*\"\n          multiple\n          dropzone\n          viewProps={{ width: 'fill' }}\n        />\n      </FormField>\n    </Form>\n  )\n}"
     },
     {
       "id": "Input/forced-locale",

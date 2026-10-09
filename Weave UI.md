@@ -2405,9 +2405,9 @@ Input 的 clear action 直接复用公开 `Button`，不维护私有 button DOM 
 
 `type="search"` 时必须屏蔽浏览器原生 search cancel affordance（例如 Chromium/WebKit 的 `::-webkit-search-cancel-button`）；是否显示 clear 只由 Weave `clearable` 决定，禁止同时出现浏览器 clear 与 Weave clear。
 
-`type="file"` 使用真实 `<input type="file">`，保留浏览器文件选择、文件名与 `FileList`，并通过 `::file-selector-button` 复用 Input 主题样式。支持 `accept`、`multiple`、`name/FormData`、`required`、`disabled`、`viewProps.ref` 和原生表单 reset。文件输入不接受非空 `value` / `defaultValue`，不显示通用 clear 按钮。
+`type="file"` 采用与 Date / Color Input 一致的 `InputHost` 组合模式。底层保留真实 `<input type="file">` 的 Weave 输入框主题、边框、焦点、文件选择、`FileList` 和表单语义；原生按钮和文件名视觉隐藏，通过已有 `trailingAction` 在同一输入框内展示上传图标与所选文件名，不另建第二套输入框主题。支持 `accept`、`multiple`、`name/FormData`、`required`、`disabled`、`viewProps.ref` 和原生表单 reset。文件输入不接受非空 `value` / `defaultValue`，不显示通用 clear 按钮。
 
-`Input type="file" dropzone` 为可选拖放能力；默认关闭。开启时 Input 本身作为拖放命中区域，拖入文件以现有 Input 主题描边反馈；放下后更新同一个原生 `FileList`、`onChange` 和 `FormData`，并遵守 `accept`、`multiple`、`disabled`、`readOnly`。普通输入保持单层 Input 表面，原生文件选择按钮不另起带边框的圆角子控件。
+`Input type="file" dropzone` 为可选拖放能力；默认关闭。开启时同一个 Input 以虚线边框、上传图标及内嵌说明呈现拖放区域，拖入文件使用现有 Input 主题描边反馈；放下后更新原生 `FileList`、`onChange`、内嵌文件名和 `FormData`，并遵守 `accept`、`multiple`、`disabled`、`readOnly`。未开启时直接沿用普通 Input 的高度和单层表面。
 
 ## 14.2 多行输入仍然使用 Input
 
