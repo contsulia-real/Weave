@@ -183,6 +183,21 @@ assert(
 const weave = await import(runtimeEntry.href)
 const componentButton = await import(`${packageJson.name}/components/Button`)
 const componentDataGrid = await import(`${packageJson.name}/components/DataGrid`)
+const componentRating = await import(`${packageJson.name}/components/Rating`)
+const wholeRating = renderToStaticMarkup(createElement(componentRating.Rating, { value: 2.5 }))
+const halfRating = renderToStaticMarkup(
+  createElement(componentRating.Rating, { value: 2.5, allowHalf: true }),
+)
+const readonlyHalfRating = renderToStaticMarkup(
+  createElement(componentRating.Rating, { value: 2.5, allowHalf: true, readOnly: true }),
+)
+assert(wholeRating.includes('aria-label="3 of 5"'), 'Rating defaults to whole stars')
+assert(halfRating.includes('aria-label="2.5 of 5"'), 'Rating allowHalf preserves half stars')
+assert(
+  readonlyHalfRating.includes('aria-label="Rating: 2.5 of 5"') &&
+    !readonlyHalfRating.includes('<button'),
+  'Read-only half-star Rating must remain static and accessible',
+)
 assert(typeof componentButton.Button === 'function', 'Button subpath must expose Button')
 assert(!('Button' in weave), 'Package root must not expose Button')
 

@@ -15,8 +15,11 @@ const iconSizes: Record<ButtonSize, IconSize> = {
   large: 'xlarge',
 }
 
-function normalizedValue(value: number, max: number): number {
-  return Number.isFinite(value) ? Math.min(max, Math.max(0, Math.round(value * 2) / 2)) : 0
+function normalizedValue(value: number, max: number, allowHalf: boolean): number {
+  const divisor = allowHalf ? 2 : 1
+  return Number.isFinite(value)
+    ? Math.min(max, Math.max(0, Math.round(value * divisor) / divisor))
+    : 0
 }
 
 function RatingStar({
@@ -32,6 +35,8 @@ function RatingStar({
     <Row position="relative" align="center" justify="center" pointerEvents="none">
       <Icon icon={IconStar} size={size} viewProps={{ color: 'secondary' }} />
       <View
+        layout="flex"
+        align="start"
         position="absolute"
         top={0}
         left={0}
@@ -53,6 +58,7 @@ export function Rating({
   onChange,
   max = 5,
   size = 'large',
+  allowHalf = false,
   readOnly = false,
   label = 'Rating',
   viewProps = {},
@@ -60,7 +66,7 @@ export function Rating({
   const { theme, reducedMotion } = useTheme()
   const count = Number.isFinite(max) ? Math.max(1, Math.floor(max)) : 5
   const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue)
-  const current = normalizedValue(value ?? uncontrolledValue, count)
+  const current = normalizedValue(value ?? uncontrolledValue, count, allowHalf)
   const dimension = theme.components.Button?.sizes?.[size]?.minHeight ?? 'fit'
 
   const select = (next: number) => {
@@ -71,18 +77,24 @@ export function Rating({
 
   const onClick = (event: MouseEvent<HTMLButtonElement>, star: number) => {
     const bounds = event.currentTarget.getBoundingClientRect()
-    select(star - (event.detail !== 0 && event.clientX - bounds.left < bounds.width / 2 ? 0.5 : 0))
+    select(
+      star -
+        (allowHalf && event.detail !== 0 && event.clientX - bounds.left < bounds.width / 2
+          ? 0.5
+          : 0),
+    )
   }
 
   const onKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
     if (event.defaultPrevented) return
+    const step = allowHalf ? 0.5 : 1
     const next =
       event.key === 'ArrowRight' || event.key === 'ArrowUp'
-        ? Math.min(count, current + 0.5)
+        ? Math.min(count, current + step)
         : event.key === 'ArrowLeft' || event.key === 'ArrowDown'
-          ? Math.max(0.5, current - 0.5)
+          ? Math.max(step, current - step)
           : event.key === 'Home'
-            ? 0.5
+            ? step
             : event.key === 'End'
               ? count
               : null
@@ -136,7 +148,9 @@ export function Rating({
               label:
                 star === Math.ceil(current)
                   ? `${current} of ${count}`
-                  : `${star - 0.5} or ${star} of ${count}`,
+                  : allowHalf
+                    ? `${star - 0.5} or ${star} of ${count}`
+                    : `${star} of ${count}`,
               tabIndex: star === Math.ceil(current || 0.5) ? 0 : -1,
               onClick: (event) => onClick(event, star),
               onKeyDown,

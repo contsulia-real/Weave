@@ -3303,6 +3303,12 @@
       "examples": ["Rating/basic-usage"],
       "props": [
         {
+          "name": "allowHalf",
+          "description": "Allow half-star selection; defaults to false.",
+          "type": "boolean | undefined",
+          "optional": true
+        },
+        {
           "name": "defaultValue",
           "description": "",
           "type": "number | undefined",

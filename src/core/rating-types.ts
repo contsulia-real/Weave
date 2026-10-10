@@ -9,6 +9,8 @@ export interface RatingProps {
   max?: number
   /** Star and interaction target size; defaults to large. */
   size?: ButtonSize
+  /** Allow half-star selection; defaults to false. */
+  allowHalf?: boolean
   /** Display the selected stars without interactive controls. */
   readOnly?: boolean
   /** Accessible name. */
