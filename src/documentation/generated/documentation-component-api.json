@@ -505,6 +505,13 @@
       "usesViewProps": false,
       "props": "r6771c4bfe859"
     },
+    "TreeView": {
+      "importPath": "@contsulia/weave/components/TreeView",
+      "nativeProps": false,
+      "hasViewProps": true,
+      "usesViewProps": false,
+      "props": "r3c6b379f3fad"
+    },
     "View": {
       "importPath": "@contsulia/weave/components/View",
       "nativeProps": true,
@@ -1034,6 +1041,16 @@
       "p1c3ab120d1f6",
       "p441e4141f0f1",
       "pf3af2d5a521c"
+    ],
+    "r3c6b379f3fad": [
+      "paad72c26f942",
+      "p5201bd01501a",
+      "p0979bb4db67d",
+      "p660f6b7e5337",
+      "p07765e512843",
+      "p85d3c753c771",
+      "p73d8183d882e",
+      "p2d68a4f5ed95"
     ],
     "ree4bf2004894": [
       "pd5229cb7ca12",
@@ -4030,6 +4047,54 @@
       "name": "placement",
       "description": "Preferred side of the target: top, bottom, left, or right.",
       "type": "ToolTipPlacement | undefined",
+      "optional": true
+    },
+    "paad72c26f942": {
+      "name": "defaultExpanded",
+      "description": "Initially expanded nodes when uncontrolled.",
+      "type": "readonly string[] | undefined",
+      "optional": true
+    },
+    "p5201bd01501a": {
+      "name": "defaultSelected",
+      "description": "Initially selected node when uncontrolled.",
+      "type": "string | null | undefined",
+      "optional": true
+    },
+    "p0979bb4db67d": {
+      "name": "expanded",
+      "description": "Controlled expanded node identifiers.",
+      "type": "readonly string[] | undefined",
+      "optional": true
+    },
+    "p660f6b7e5337": {
+      "name": "items",
+      "description": "",
+      "type": "readonly TreeViewItem[]",
+      "optional": false
+    },
+    "p07765e512843": {
+      "name": "label",
+      "description": "Accessible name of the tree.",
+      "type": "string",
+      "optional": false
+    },
+    "p85d3c753c771": {
+      "name": "onExpandedChange",
+      "description": "",
+      "type": "((expanded: string[]) => void) | undefined",
+      "optional": true
+    },
+    "p73d8183d882e": {
+      "name": "onSelect",
+      "description": "",
+      "type": "((selected: string) => void) | undefined",
+      "optional": true
+    },
+    "p2d68a4f5ed95": {
+      "name": "selected",
+      "description": "Controlled selected node identifier.",
+      "type": "string | null | undefined",
       "optional": true
     },
     "pd5229cb7ca12": {

@@ -2278,5 +2278,35 @@
     "zh-CN": "请求已获批准。",
     "zh-TW": "請求已獲核准。",
     "fr": "La demande a été approuvée."
+  },
+  "An expandable hierarchy of items with single selection and keyboard navigation.": {
+    "zh-CN": "可展开的层级视图，支持单选节点和键盘导航。",
+    "zh-TW": "可展開的階層檢視，支援單選節點與鍵盤導覽。",
+    "fr": "Une hiérarchie extensible avec sélection unique et navigation au clavier."
+  },
+  "Project files": {
+    "zh-CN": "项目文件",
+    "zh-TW": "專案檔案",
+    "fr": "Fichiers du projet"
+  },
+  "Source files": {
+    "zh-CN": "源文件",
+    "zh-TW": "原始碼檔案",
+    "fr": "Fichiers source"
+  },
+  "Components folder": {
+    "zh-CN": "组件文件夹",
+    "zh-TW": "元件資料夾",
+    "fr": "Dossier des composants"
+  },
+  "No file selected": {
+    "zh-CN": "未选择文件",
+    "zh-TW": "尚未選取檔案",
+    "fr": "Aucun fichier sélectionné"
+  },
+  "Selected: {{file}}": {
+    "zh-CN": "已选择：{{file}}",
+    "zh-TW": "已選取：{{file}}",
+    "fr": "Sélectionné : {{file}}"
   }
 }

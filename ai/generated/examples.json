@@ -4267,6 +4267,15 @@
       "source": "import { IconStar } from '@tabler/icons-react'\nimport { Button, ToolTip } from '../../../index'\n\nexport default function ToolTipTooltipPlacementDemo() {\n  return (\n    <ToolTip content=\"Saved items\" placement=\"right\" offset={16} delay={0} defaultOpen>\n      <Button icon={IconStar} viewProps={{ label: 'Saved items' }} />\n    </ToolTip>\n  )\n}"
     },
     {
+      "id": "TreeView/basic-usage",
+      "component": "TreeView",
+      "title": "Basic usage",
+      "components": ["Column", "Text", "TreeView"],
+      "concepts": ["basic", "column", "text", "tree", "usage", "view"],
+      "documentationRoute": "/docs/components/TreeView",
+      "source": "import { useState } from 'react'\nimport { useTranslation } from 'react-i18next'\nimport { Column, Text, TreeView } from '../../../index'\n\nexport default function TreeViewBasicUsageDemo() {\n  const { t } = useTranslation('copy')\n  const [selected, setSelected] = useState<string | null>(null)\n\n  return (\n    <Column gap={12} width=\"fill\">\n      <TreeView\n        label={t('Project files')}\n        defaultExpanded={['src']}\n        selected={selected}\n        onSelect={setSelected}\n        items={[\n          {\n            id: 'src',\n            label: t('Source files'),\n            children: [\n              {\n                id: 'components',\n                label: t('Components folder'),\n                children: [\n                  { id: 'button', label: 'Button.tsx' },\n                  { id: 'tree', label: 'TreeView.tsx' },\n                ],\n              },\n              { id: 'index', label: 'index.ts' },\n            ],\n          },\n          { id: 'readme', label: 'README.md' },\n        ]}\n      />\n      <Text typo=\"body-small\" color=\"secondary\">\n        {selected === null ? t('No file selected') : t('Selected: {{file}}', { file: selected })}\n      </Text>\n    </Column>\n  )\n}"
+    },
+    {
       "id": "Typo/body",
       "component": "Typo",
       "title": "Body",

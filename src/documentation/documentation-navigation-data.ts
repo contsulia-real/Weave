@@ -73,6 +73,7 @@ export const componentNavigationSections: readonly DocumentationNavigationSectio
     'Tabs',
     'Snack',
     'List',
+    'TreeView',
   ]),
   componentSection('theme-application', 'docs.nav.themeApplication', ['ThemeProvider']),
 ]

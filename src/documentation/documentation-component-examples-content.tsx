@@ -79,6 +79,10 @@ export const contentComponentExamples: Record<
     description: 'An ordered timeline of events with optional times and supporting descriptions.',
     examples: [basicExample('Timeline/basic-usage')],
   },
+  TreeView: {
+    description: 'An expandable hierarchy of items with single selection and keyboard navigation.',
+    examples: [basicExample('TreeView/basic-usage')],
+  },
   Divider: {
     description: 'A horizontal or vertical separator with configurable gap and line thickness.',
     examples: [basicExample('Divider/basic-usage')],

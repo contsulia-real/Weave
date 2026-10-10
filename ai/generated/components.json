@@ -893,6 +893,7 @@
         "Text/text-emphasis",
         "Text/truncated-copy",
         "ToolTip/rich-content",
+        "TreeView/basic-usage",
         "Typo/body",
         "Typo/display",
         "Typo/headline",
@@ -4704,6 +4705,7 @@
         "Text/text-emphasis",
         "Text/truncated-copy",
         "ToolTip/rich-content",
+        "TreeView/basic-usage",
         "Typo/body",
         "Typo/display",
         "Typo/headline",
@@ -4994,6 +4996,75 @@
           "name": "placement",
           "description": "Preferred side of the target: top, bottom, left, or right.",
           "type": "ToolTipPlacement | undefined",
+          "optional": true
+        }
+      ]
+    },
+    "TreeView": {
+      "name": "TreeView",
+      "import": "import { TreeView } from '@contsulia/weave/components/TreeView'",
+      "importPath": "@contsulia/weave/components/TreeView",
+      "category": "composite-ui",
+      "intent": "An expandable hierarchy of items with single selection and keyboard navigation.",
+      "preferWhen": [],
+      "avoidWhen": [],
+      "alternatives": [],
+      "relationship": {
+        "demoParent": null,
+        "standaloneDocumentationPage": true
+      },
+      "viewPropsMode": "nested",
+      "nativeProps": false,
+      "documentationRoute": "/docs/components/TreeView",
+      "apiRoute": "/docs/components-api/TreeView",
+      "examples": ["TreeView/basic-usage"],
+      "props": [
+        {
+          "name": "defaultExpanded",
+          "description": "Initially expanded nodes when uncontrolled.",
+          "type": "readonly string[] | undefined",
+          "optional": true
+        },
+        {
+          "name": "defaultSelected",
+          "description": "Initially selected node when uncontrolled.",
+          "type": "string | null | undefined",
+          "optional": true
+        },
+        {
+          "name": "expanded",
+          "description": "Controlled expanded node identifiers.",
+          "type": "readonly string[] | undefined",
+          "optional": true
+        },
+        {
+          "name": "items",
+          "description": "",
+          "type": "readonly TreeViewItem[]",
+          "optional": false
+        },
+        {
+          "name": "label",
+          "description": "Accessible name of the tree.",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "onExpandedChange",
+          "description": "",
+          "type": "((expanded: string[]) => void) | undefined",
+          "optional": true
+        },
+        {
+          "name": "onSelect",
+          "description": "",
+          "type": "((selected: string) => void) | undefined",
+          "optional": true
+        },
+        {
+          "name": "selected",
+          "description": "Controlled selected node identifier.",
+          "type": "string | null | undefined",
           "optional": true
         }
       ]
