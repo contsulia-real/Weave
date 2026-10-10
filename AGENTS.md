@@ -2,6 +2,8 @@
 
 These rules are mandatory for every change in the Weave repository.
 
+**Mandatory companion constraint document:** Every agent MUST read and comply with [`IMPLEMENTATION_CONSTRAINTS.md`](./IMPLEMENTATION_CONSTRAINTS.md) before any repository task and throughout implementation, correction, verification, and reporting. All 20 numbered constraints MUST be considered independently and every applicable one MUST be followed. Passing typecheck, lint, build, or `pnpm verify:task` does not waive these requirements. `Weave UI.md` remains the authoritative design specification.
+
 ## 0. Literal Execution Protocol — highest priority
 
 For every user-requested implementation task:
