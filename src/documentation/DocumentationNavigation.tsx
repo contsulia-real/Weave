@@ -7,6 +7,7 @@ import {
   AccordionPanel,
   AccordionTrigger,
   Column,
+  EmptyState,
   Flex,
   Input,
   List,
@@ -123,59 +124,63 @@ export function DocumentationNavigation({ pathname, onNavigate }: DocumentationN
           viewProps={{ label: t('docs.drawer.search'), width: 'fill', minWidth: 'auto' }}
         />
 
-        <Accordion
-          multiple
-          noDividers
-          value={openValues}
-          onValueChange={handleAccordionChange}
-          viewProps={{ width: 'fill' }}
-        >
-          {visibleSections.map((section) => {
-            const sectionSelected = section.items.some((item) => item.path === pathname)
-            const listItemTheme = theme.components.ListItem?.base
+        {visibleSections.length === 0 ? (
+          <EmptyState title={t('docs.drawer.noResults')} />
+        ) : (
+          <Accordion
+            multiple
+            noDividers
+            value={openValues}
+            onValueChange={handleAccordionChange}
+            viewProps={{ width: 'fill' }}
+          >
+            {visibleSections.map((section) => {
+              const sectionSelected = section.items.some((item) => item.path === pathname)
+              const listItemTheme = theme.components.ListItem?.base
 
-            return (
-              <AccordionItem key={section.value} value={section.value}>
-                <AccordionTrigger
-                  singleLine
-                  viewProps={{
-                    radius: 'full',
-                    background: sectionSelected ? listItemTheme?.selectedBackground : undefined,
-                    color: sectionSelected ? listItemTheme?.selectedColor : undefined,
-                    hover: sectionSelected
-                      ? { background: listItemTheme?.selectedHoverBackground }
-                      : undefined,
-                    active: sectionSelected
-                      ? { background: listItemTheme?.activeBackground }
-                      : undefined,
-                  }}
-                >
-                  <DocumentationSearchHighlight text={section.label} query={search} />
-                </AccordionTrigger>
+              return (
+                <AccordionItem key={section.value} value={section.value}>
+                  <AccordionTrigger
+                    singleLine
+                    viewProps={{
+                      radius: 'full',
+                      background: sectionSelected ? listItemTheme?.selectedBackground : undefined,
+                      color: sectionSelected ? listItemTheme?.selectedColor : undefined,
+                      hover: sectionSelected
+                        ? { background: listItemTheme?.selectedHoverBackground }
+                        : undefined,
+                      active: sectionSelected
+                        ? { background: listItemTheme?.activeBackground }
+                        : undefined,
+                    }}
+                  >
+                    <DocumentationSearchHighlight text={section.label} query={search} />
+                  </AccordionTrigger>
 
-                <AccordionPanel>
-                  {section.items.length === 0 ? null : (
-                    <List noDividers singleLine selection="single" selected={pathname}>
-                      {section.items.map((item) => (
-                        <ListItem
-                          key={item.path}
-                          id={item.path}
-                          viewProps={{
-                            clickable: true,
-                            onClick: () => onNavigate(item.path),
-                            radius: 'full',
-                          }}
-                        >
-                          <DocumentationSearchHighlight text={item.label} query={search} />
-                        </ListItem>
-                      ))}
-                    </List>
-                  )}
-                </AccordionPanel>
-              </AccordionItem>
-            )
-          })}
-        </Accordion>
+                  <AccordionPanel>
+                    {section.items.length === 0 ? null : (
+                      <List noDividers singleLine selection="single" selected={pathname}>
+                        {section.items.map((item) => (
+                          <ListItem
+                            key={item.path}
+                            id={item.path}
+                            viewProps={{
+                              clickable: true,
+                              onClick: () => onNavigate(item.path),
+                              radius: 'full',
+                            }}
+                          >
+                            <DocumentationSearchHighlight text={item.label} query={search} />
+                          </ListItem>
+                        ))}
+                      </List>
+                    )}
+                  </AccordionPanel>
+                </AccordionItem>
+              )
+            })}
+          </Accordion>
+        )}
       </Column>
     </Flex>
   )
