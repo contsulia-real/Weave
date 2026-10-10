@@ -3075,10 +3075,60 @@
       "id": "Rating/basic-usage",
       "component": "Rating",
       "title": "Basic usage",
-      "components": ["Column", "Rating", "Text"],
-      "concepts": ["basic", "column", "rating", "text", "usage"],
+      "components": ["Rating"],
+      "concepts": ["basic", "rating", "usage"],
       "documentationRoute": "/docs/components/Rating",
-      "source": "import { useState } from 'react'\nimport { Column, Rating, Text } from '../../../index'\n\nexport default function RatingBasicUsageDemo() {\n  const [rating, setRating] = useState(3.5)\n\n  return (\n    <Column gap={16} align=\"start\">\n      <Text typo=\"label-medium\">Whole stars (default)</Text>\n      <Rating defaultValue={3} label=\"Whole-star rating\" />\n      <Text typo=\"label-medium\">Half stars (allowHalf)</Text>\n      <Rating value={rating} onChange={setRating} allowHalf label=\"Your rating\" />\n      <Text typo=\"body-small\">Selected: {rating} of 5</Text>\n      <Text typo=\"label-medium\">Read-only rating</Text>\n      <Rating value={rating} readOnly allowHalf label=\"Read-only rating\" />\n      <Text typo=\"label-medium\">Sizes</Text>\n      <Rating size=\"small\" defaultValue={2.5} allowHalf label=\"Small rating\" />\n      <Rating size=\"medium\" defaultValue={2.5} allowHalf label=\"Medium rating\" />\n      <Rating size=\"large\" defaultValue={2.5} allowHalf label=\"Large rating\" />\n    </Column>\n  )\n}"
+      "source": "import { useTranslation } from 'react-i18next'\nimport { Rating } from '../../../index'\n\nexport default function RatingBasicUsageDemo() {\n  const { t } = useTranslation('copy')\n\n  return <Rating defaultValue={3} label={t('Whole-star rating')} />\n}"
+    },
+    {
+      "id": "Rating/half-star-selection",
+      "component": "Rating",
+      "title": "Half-star selection",
+      "description": "Allow half-star selection and control the rating with value and onChange.",
+      "components": ["Column", "Rating", "Text"],
+      "concepts": [
+        "allow",
+        "change",
+        "column",
+        "control",
+        "half",
+        "rating",
+        "selection",
+        "star",
+        "text",
+        "value"
+      ],
+      "documentationRoute": "/docs/components/Rating",
+      "source": "import { useState } from 'react'\nimport { useTranslation } from 'react-i18next'\nimport { Column, Rating, Text } from '../../../index'\n\nexport default function RatingHalfStarSelectionDemo() {\n  const { t } = useTranslation('copy')\n  const [rating, setRating] = useState(3.5)\n\n  return (\n    <Column gap={12} align=\"start\">\n      <Rating value={rating} onChange={setRating} allowHalf label={t('Your rating')} />\n      <Text typo=\"body-small\">\n        {t('Selected: {{value}} of {{max}}', { value: rating, max: 5 })}\n      </Text>\n    </Column>\n  )\n}"
+    },
+    {
+      "id": "Rating/read-only",
+      "component": "Rating",
+      "title": "Read-only rating",
+      "description": "Display a fractional rating without interactive controls.",
+      "components": ["Rating"],
+      "concepts": [
+        "controls",
+        "display",
+        "fractional",
+        "interactive",
+        "only",
+        "rating",
+        "read",
+        "without"
+      ],
+      "documentationRoute": "/docs/components/Rating",
+      "source": "import { useTranslation } from 'react-i18next'\nimport { Rating } from '../../../index'\n\nexport default function RatingReadOnlyDemo() {\n  const { t } = useTranslation('copy')\n\n  return <Rating value={3.5} allowHalf readOnly label={t('Read-only rating')} />\n}"
+    },
+    {
+      "id": "Rating/sizes",
+      "component": "Rating",
+      "title": "Rating sizes",
+      "description": "Compare small, medium, and large star sizes.",
+      "components": ["Column", "Rating"],
+      "concepts": ["column", "compare", "large", "medium", "rating", "sizes", "small", "star"],
+      "documentationRoute": "/docs/components/Rating",
+      "source": "import { useTranslation } from 'react-i18next'\nimport { Column, Rating } from '../../../index'\n\nexport default function RatingSizesDemo() {\n  const { t } = useTranslation('copy')\n\n  return (\n    <Column gap={12} align=\"start\">\n      <Rating size=\"small\" defaultValue={2.5} allowHalf label={t('Small rating')} />\n      <Rating size=\"medium\" defaultValue={2.5} allowHalf label={t('Medium rating')} />\n      <Rating size=\"large\" defaultValue={2.5} allowHalf label={t('Large rating')} />\n    </Column>\n  )\n}"
     },
     {
       "id": "SegmentedButton/action-group",

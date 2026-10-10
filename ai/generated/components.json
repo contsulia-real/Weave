@@ -946,7 +946,8 @@
         "Radio/compact-choice-group",
         "Radio/unavailable-choice",
         "RangeSlider/controlled-range",
-        "Rating/basic-usage",
+        "Rating/half-star-selection",
+        "Rating/sizes",
         "SegmentedButton/action-group",
         "SegmentedButton/controlled-selection",
         "Select/controlled-select",
@@ -3300,7 +3301,12 @@
       "nativeProps": false,
       "documentationRoute": "/docs/components/Rating",
       "apiRoute": "/docs/components-api/Rating",
-      "examples": ["Rating/basic-usage"],
+      "examples": [
+        "Rating/basic-usage",
+        "Rating/half-star-selection",
+        "Rating/read-only",
+        "Rating/sizes"
+      ],
       "props": [
         {
           "name": "allowHalf",
@@ -4836,7 +4842,7 @@
         "Progress/compact-spinner",
         "Radio/compact-choice-group",
         "RangeSlider/controlled-range",
-        "Rating/basic-usage",
+        "Rating/half-star-selection",
         "SegmentedButton/action-group",
         "SegmentedButton/controlled-selection",
         "Select/controlled-select",

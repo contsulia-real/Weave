@@ -358,7 +358,27 @@ export const formsComponentExamples: Record<string, DocumentationComponentDocume
     },
     Rating: {
       description: 'An interactive star rating with the same display available through readOnly.',
-      examples: [basicExample('Rating/basic-usage')],
+      examples: [
+        basicExample('Rating/basic-usage'),
+        {
+          id: 'half-star-selection',
+          title: 'Half-star selection',
+          description: 'Allow half-star selection and control the rating with value and onChange.',
+          demo: 'Rating/half-star-selection',
+        },
+        {
+          id: 'read-only',
+          title: 'Read-only rating',
+          description: 'Display a fractional rating without interactive controls.',
+          demo: 'Rating/read-only',
+        },
+        {
+          id: 'sizes',
+          title: 'Rating sizes',
+          description: 'Compare small, medium, and large star sizes.',
+          demo: 'Rating/sizes',
+        },
+      ],
     },
     Checkbox: {
       description:

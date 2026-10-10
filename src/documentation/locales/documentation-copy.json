@@ -2314,6 +2314,71 @@
     "zh-TW": "資料夾",
     "fr": "Dossier"
   },
+  "An interactive star rating with the same display available through readOnly.": {
+    "zh-CN": "可交互的星级评分组件，支持通过 readOnly 切换为只读展示。",
+    "zh-TW": "可互動的星級評分元件，可透過 readOnly 切換為唯讀顯示。",
+    "fr": "Une notation par étoiles interactive, également affichable en lecture seule avec readOnly."
+  },
+  "Half-star selection": {
+    "zh-CN": "半星选择",
+    "zh-TW": "半星選擇",
+    "fr": "Sélection par demi-étoile"
+  },
+  "Allow half-star selection and control the rating with value and onChange.": {
+    "zh-CN": "启用半星选择，并通过 value 和 onChange 控制评分。",
+    "zh-TW": "啟用半星選擇，並透過 value 與 onChange 控制評分。",
+    "fr": "Activez la sélection par demi-étoile et contrôlez la note avec value et onChange."
+  },
+  "Read-only rating": {
+    "zh-CN": "只读评分",
+    "zh-TW": "唯讀評分",
+    "fr": "Note en lecture seule"
+  },
+  "Display a fractional rating without interactive controls.": {
+    "zh-CN": "展示含半星的评分，不提供交互操作。",
+    "zh-TW": "顯示含半星的評分，不提供互動操作。",
+    "fr": "Affichez une note avec demi-étoile sans commandes interactives."
+  },
+  "Rating sizes": {
+    "zh-CN": "评分尺寸",
+    "zh-TW": "評分尺寸",
+    "fr": "Tailles des étoiles"
+  },
+  "Compare small, medium, and large star sizes.": {
+    "zh-CN": "对比 small、medium 和 large 三种星形尺寸。",
+    "zh-TW": "比較 small、medium 和 large 三種星形尺寸。",
+    "fr": "Comparez les tailles d'étoiles small, medium et large."
+  },
+  "Whole-star rating": {
+    "zh-CN": "整星评分",
+    "zh-TW": "整星評分",
+    "fr": "Note par étoiles entières"
+  },
+  "Your rating": {
+    "zh-CN": "你的评分",
+    "zh-TW": "你的評分",
+    "fr": "Votre note"
+  },
+  "Selected: {{value}} of {{max}}": {
+    "zh-CN": "已选：{{value}} / {{max}}",
+    "zh-TW": "已選：{{value}} / {{max}}",
+    "fr": "Sélection : {{value}} sur {{max}}"
+  },
+  "Small rating": {
+    "zh-CN": "小号评分",
+    "zh-TW": "小尺寸評分",
+    "fr": "Petite notation"
+  },
+  "Medium rating": {
+    "zh-CN": "中号评分",
+    "zh-TW": "中尺寸評分",
+    "fr": "Notation moyenne"
+  },
+  "Large rating": {
+    "zh-CN": "大号评分",
+    "zh-TW": "大尺寸評分",
+    "fr": "Grande notation"
+  },
   "File": {
     "zh-CN": "文件",
     "zh-TW": "檔案",
