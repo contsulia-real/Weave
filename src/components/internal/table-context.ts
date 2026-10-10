@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react'
+import { createContext, type RefObject, useContext } from 'react'
 
 export type TableSection = 'head' | 'body'
 
@@ -30,6 +30,8 @@ interface TableRowContextValue {
   rowId?: string
 }
 
+export const TableBodyScrollContext =
+  createContext<RefObject<HTMLTableSectionElement | null> | null>(null)
 export const TableDeclaredCellsContext = createContext<TableDeclaredCells | null>(null)
 export const TableContext = createContext<TableContextValue | null>(null)
 export const TableSectionContext = createContext<TableSection | null>(null)

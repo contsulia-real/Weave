@@ -1039,10 +1039,10 @@
     "zh-TW": "黏性表頭",
     "fr": "En-tête fixe"
   },
-  "stickyHeader keeps header cells pinned inside the Table scroll container when vertical overflow is present.": {
-    "zh-CN": "存在纵向溢出时，stickyHeader 会让表头单元格固定在 Table 的滚动容器内。",
-    "zh-TW": "存在縱向溢位時，stickyHeader 會讓表頭儲存格固定在 Table 的捲動容器內。",
-    "fr": "stickyHeader maintient les cellules d’en-tête épinglées dans le conteneur de défilement de Table en présence d’un dépassement vertical."
+  "stickyHeader keeps the header outside the vertical scroll area while tbody scrolls independently.": {
+    "zh-CN": "stickyHeader 将表头保留在纵向滚动区域外，由 tbody 独立滚动。",
+    "zh-TW": "stickyHeader 將表頭保留在垂直捲動區域外，由 tbody 獨立捲動。",
+    "fr": "stickyHeader conserve l’en-tête hors de la zone de défilement vertical, tandis que tbody défile indépendamment."
   },
   "Dense data table": {
     "zh-CN": "紧凑数据表",

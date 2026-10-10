@@ -350,7 +350,7 @@ export const documentationComponentExampleAdditions: Record<
       id: 'sticky-header',
       title: 'Sticky header',
       description:
-        'stickyHeader keeps header cells pinned inside the Table scroll container when vertical overflow is present.',
+        'stickyHeader keeps the header outside the vertical scroll area while tbody scrolls independently.',
       demo: 'Table/sticky-header',
     },
     {

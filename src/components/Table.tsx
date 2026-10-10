@@ -1,11 +1,16 @@
-import { useContext, useMemo } from 'react'
+import { useContext, useLayoutEffect, useMemo, useRef } from 'react'
 import type { TableProps } from '../core/table-types'
 import { resolveTableTheme } from '../renderers/dom/resolve-component-theme'
 import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { useStaticStylesheet } from '../renderers/dom/static-stylesheet'
 import { ensureTableStylesheet } from '../renderers/dom/table-stylesheet'
 import { useTheme } from '../theme/theme-context'
-import { TableContext, TableDeclaredCellsContext } from './internal/table-context'
+import { AutoScrollbar } from './internal/AutoScrollbar'
+import {
+  TableBodyScrollContext,
+  TableContext,
+  TableDeclaredCellsContext,
+} from './internal/table-context'
 import { useTableSelection } from './internal/use-table-selection'
 import { View } from './View'
 
@@ -24,6 +29,35 @@ export function Table(props: TableProps): import('react').JSX.Element {
   const declaredCells = useContext(TableDeclaredCellsContext)
 
   useStaticStylesheet(ensureTableStylesheet)
+  const tableRef = useRef<HTMLTableElement>(null)
+  const bodyRef = useRef<HTMLTableSectionElement>(null)
+
+  useLayoutEffect(() => {
+    if (!stickyHeader) return
+    const table = tableRef.current
+    if (table === null) return
+    const root = table.parentElement
+    if (
+      root?.hasAttribute('data-weave-data-grid') &&
+      root.hasAttribute('data-weave-table-grid-ready')
+    )
+      return
+    root?.removeAttribute('data-weave-table-grid-ready')
+    const cells = Array.from(table.tHead?.rows[0]?.cells ?? [])
+    if (cells.length === 0) return
+    const widths = cells.map((cell) => cell.getBoundingClientRect().width)
+    table.style.setProperty('--weave-table-column-count', String(cells.length))
+    table.style.setProperty(
+      '--weave-table-initial-track-template',
+      widths
+        .map((width, index) =>
+          index === widths.length - 1 ? `minmax(${width}px, 1fr)` : `${width}px`,
+        )
+        .join(' '),
+    )
+    table.dataset.weaveTableGridReady = 'true'
+    table.parentElement?.setAttribute('data-weave-table-grid-ready', 'true')
+  }, [stickyHeader, children])
 
   const className = [
     'weave-table',
@@ -47,18 +81,34 @@ export function Table(props: TableProps): import('react').JSX.Element {
 
   return (
     <TableContext.Provider value={contextValue}>
-      <View {...viewProps} width={viewProps.width ?? 'fill'} overflowX="auto" className={className}>
-        <table
-          className="weave-table__table"
-          aria-rowcount={
-            viewProps.data?.['weave-data-grid-virtualized'] === 'true'
-              ? declaredCells?.rowCount
-              : undefined
-          }
+      <TableBodyScrollContext.Provider value={stickyHeader ? bodyRef : null}>
+        <View
+          {...viewProps}
+          width={viewProps.width ?? 'fill'}
+          overflowX="auto"
+          overflowY={stickyHeader ? 'hidden' : viewProps.overflowY}
+          className={className}
         >
-          {children}
-        </table>
-      </View>
+          <table
+            ref={tableRef}
+            className="weave-table__table"
+            aria-rowcount={
+              viewProps.data?.['weave-data-grid-virtualized'] === 'true'
+                ? declaredCells?.rowCount
+                : undefined
+            }
+          >
+            {children}
+          </table>
+        </View>
+        {stickyHeader ? (
+          <AutoScrollbar
+            targetRef={bodyRef}
+            config={viewProps.scrollbar}
+            overflowIntent={{ styleOverflowY: 'auto', styleOverflowX: 'hidden' }}
+          />
+        ) : null}
+      </TableBodyScrollContext.Provider>
     </TableContext.Provider>
   )
 }

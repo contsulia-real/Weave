@@ -4426,7 +4426,7 @@ onSelect?
 viewProps
 ```
 
-默认宽度为 `fill`。Table 自己提供横向滚动，并继续复用 Weave 的 View / Scrollbar 基础设施；内容宽度超过容器时不要求调用方额外包 scroll View。 内部原生 `<table>` 使用 `width: max-content; min-width: 100%`：内容较少时至少铺满容器，单列也可以占满整张 Table；内容或显式列宽超过容器时才产生横向 overflow。
+默认宽度为 `fill`。Table 自己提供横向滚动，并继续复用 Weave 的 View / Scrollbar 基础设施；固定表头模式下横向仍由外层 View 统一滚动，纵向滚动宿主改为 tbody，纵向 Scrollbar 轨道仅覆盖表体；内容宽度超过容器时不要求调用方额外包 scroll View。 内部原生 `<table>` 使用 `width: max-content; min-width: 100%`：内容较少时至少铺满容器，单列也可以占满整张 Table；内容或显式列宽超过容器时才产生横向 overflow。
 
 ## 18.12B.1 Density
 
@@ -4488,7 +4488,7 @@ onSelect?: (selected: readonly TableSelectedCell[]) => void
 
 ## 18.12B.5 stickyHeader
 
-`stickyHeader` 让 header cell 使用原生 `position: sticky; top: 0`。当 Table 通过 `viewProps` 形成纵向 scroll container 时，header 固定在该 scroll container 顶部；没有纵向滚动时不会创建额外 observer 或滚动状态。
+`stickyHeader` 保留原生 table / thead / tbody / tr / th / td 元素与表格语义；此模式下表头位于纵向滚动区域之外，独立 `tbody` 成为真正的纵向 scroll host，滚动条从表头下方开始且仅覆盖表体。header 与 body 使用共享 CSS grid/subgrid 列轨道，确保列宽、边界、选择列和排序／拖拽保持一致；外层 View 仍统一负责横向滚动。`viewProps.height` / `maxHeight` 限制整个 Table 高度，tbody 占用剩余空间；无高度约束时内容自然撑开，不额外制造纵向滚动。scroll host 复用原有 Weave AutoScrollbar，禁止通过移动视觉滚动条伪装表体滚动。
 
 ## 18.12B.6 Theme
 
@@ -4590,7 +4590,7 @@ DataGrid 的 cellId 等于 column.id；rowId 等于 row.id。整行 checkbox 与
 
 `virtualized=true` 使用真正的 row windowing，并直接复用 List 的 `virtual-list-layout` 计算、measurement cache、overscan 与可见索引算法。DataGrid 保留原生 `<table> / <thead> / <tbody> / <tr> / <td>` 结构，仅在 tbody 前后放置无语义、不可见且不绘制背景或边框的 spacer row 来维持总滚动高度；spacer 不得在 sticky header 下方暴露为空白行或主题色带。不可再实现第二套 virtualization 算法。可视 row 通过 ResizeObserver 回写真实高度，因此列宽调整造成换行时 layout 会重新测量。
 
-virtualized DataGrid 的 scroll viewport 继续是 Table 外层 View；调用方用 `viewProps.height / maxHeight` 等普通 View 尺寸能力决定 viewport 高度。
+virtualized DataGrid 在 `stickyHeader=true` 时以 Table 的 `tbody` 为 scroll viewport，直接用 tbody 的 `scrollTop` / `clientHeight` 计算 List 虚拟窗口；禁止继续观察外层 View 的纵向滚动。`stickyHeader=false` 时保留原有外层 View viewport。调用方仍用 `viewProps.height / maxHeight` 等普通 View 尺寸能力决定整个表格高度；tbody 禁用浏览器滚动锚定，避免虚拟 spacer 重排时滚动位置漂移。
 
 ## 18.12C.5 Theme
 

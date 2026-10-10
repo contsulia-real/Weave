@@ -135,6 +135,66 @@ const stylesheet = `
   z-index: 1;
   background: var(--weave-table-header-background);
 }
+
+/* A sticky table has one horizontal viewport and an independent tbody vertical viewport.
+   Subgrid keeps every header/body cell on the same column tracks. */
+.weave-table.weave-table--sticky-header[data-weave-table-grid-ready="true"] {
+  display: flex;
+  flex-direction: column;
+  overflow-y: hidden;
+}
+
+.weave-table--sticky-header[data-weave-table-grid-ready="true"] > .weave-table__table {
+  display: grid;
+  flex: 1 1 auto;
+  min-height: 0;
+  grid-template-columns:
+    var(--weave-table-track-template, var(--weave-table-initial-track-template, 1fr));
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+.weave-table--sticky-header[data-weave-table-grid-ready="true"] .weave-table__table > colgroup {
+  display: none;
+}
+
+.weave-table--sticky-header[data-weave-table-grid-ready="true"] .weave-table__head,
+.weave-table--sticky-header[data-weave-table-grid-ready="true"] .weave-table__body,
+.weave-table--sticky-header[data-weave-table-grid-ready="true"] .weave-table__row {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
+}
+
+.weave-table--sticky-header[data-weave-table-grid-ready="true"] .weave-table__head {
+  grid-row: 1;
+}
+
+.weave-table--sticky-header[data-weave-table-grid-ready="true"] .weave-table__body {
+  grid-row: 2;
+  overflow-x: hidden;
+  overflow-y: auto;
+  min-height: 0;
+  align-content: start;
+  overflow-anchor: none;
+}
+
+.weave-table--sticky-header[data-weave-table-grid-ready="true"] .weave-table__head-cell,
+.weave-table--sticky-header[data-weave-table-grid-ready="true"] .weave-table__cell {
+  display: block;
+  box-sizing: border-box;
+  min-width: 100%;
+  max-width: 100%;
+  position: relative;
+}
+
+.weave-table--sticky-header[data-weave-table-grid-ready="true"] .weave-table__head-cell {
+  position: relative;
+}
+
+.weave-table--sticky-header[data-weave-table-grid-ready="true"] .weave-table__cell[colspan] {
+  grid-column: 1 / -1;
+}
+
 `
 
 export function ensureTableStylesheet(): void {

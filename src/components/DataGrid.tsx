@@ -53,6 +53,7 @@ interface ResizeDrag {
 
 type DataGridStyle = CSSProperties & {
   '--weave-data-grid-table-width'?: string
+  '--weave-table-track-template'?: string
 }
 
 function clampWidth(value: number, minWidth = 0, maxWidth = Number.POSITIVE_INFINITY): number {
@@ -188,7 +189,12 @@ function DataGridMeasuredRow<TRow extends DataGridRow>({
   )
 }
 
-function virtualViewport(root: HTMLDivElement, body: HTMLTableSectionElement): VirtualViewport {
+function virtualViewport(
+  root: HTMLDivElement,
+  body: HTMLTableSectionElement,
+  stickyHeader: boolean,
+): VirtualViewport {
+  if (stickyHeader) return { offset: body.scrollTop, size: body.clientHeight, gap: 0 }
   const rootRect = root.getBoundingClientRect()
   const bodyRect = body.getBoundingClientRect()
   const bodyTop = bodyRect.top - rootRect.top + root.scrollTop
@@ -206,12 +212,14 @@ function DataGridVirtualBody<TRow extends DataGridRow>({
   columnWidths,
   rootRef,
   selectable,
+  stickyHeader,
 }: {
   rows: readonly TRow[]
   columns: readonly DataGridColumn<TRow>[]
   columnWidths: DataGridColumnWidths
   rootRef: React.RefObject<HTMLDivElement | null>
   selectable: boolean
+  stickyHeader: boolean
 }) {
   const bodyRef = useRef<HTMLTableSectionElement>(null)
   const [measurements, setMeasurements] = useState<ReadonlyMap<string, VirtualMeasurement>>(
@@ -249,7 +257,7 @@ function DataGridVirtualBody<TRow extends DataGridRow>({
     let frame: number | undefined
 
     const read = () => {
-      const next = virtualViewport(root, body)
+      const next = virtualViewport(root, body, stickyHeader)
       setViewport((current) => (sameVirtualViewport(current, next) ? current : next))
     }
 
@@ -266,7 +274,8 @@ function DataGridVirtualBody<TRow extends DataGridRow>({
     }
 
     scheduleRead()
-    root.addEventListener('scroll', scheduleRead, { passive: true })
+    const scrollHost = stickyHeader ? body : root
+    scrollHost.addEventListener('scroll', scheduleRead, { passive: true })
 
     const ResizeObserverConstructor = view?.ResizeObserver
     const observer =
@@ -277,11 +286,11 @@ function DataGridVirtualBody<TRow extends DataGridRow>({
     observer?.observe(body)
 
     return () => {
-      root.removeEventListener('scroll', scheduleRead)
+      scrollHost.removeEventListener('scroll', scheduleRead)
       if (frame !== undefined) view?.cancelAnimationFrame(frame)
       observer?.disconnect()
     }
-  }, [rootRef])
+  }, [rootRef, stickyHeader])
 
   const layout = useMemo(
     () => createVirtualLayout(rows, measurements, 'vertical', 0),
@@ -574,6 +583,17 @@ export function DataGrid<TRow extends DataGridRow = DataGridRow>(
   const dataGridStyle: DataGridStyle = {
     ...viewProps.style,
     '--weave-data-grid-table-width': tableWidth === undefined ? undefined : `${tableWidth}px`,
+    '--weave-table-track-template':
+      stickyHeader && tracksReady
+        ? [
+            ...(selectable ? [`${effectiveSelectionColumnWidth}px`] : []),
+            ...columns.map((column, index) =>
+              index === columns.length - 1
+                ? `minmax(${trackColumnWidths[column.id]}px, 1fr)`
+                : `${trackColumnWidths[column.id]}px`,
+            ),
+          ].join(' ')
+        : undefined,
   }
   const tableViewProps: TableViewProps = {
     ...viewProps,
@@ -743,6 +763,7 @@ export function DataGrid<TRow extends DataGridRow = DataGridRow>(
             columnWidths={trackColumnWidths}
             rootRef={rootRef}
             selectable={selectable}
+            stickyHeader={stickyHeader}
           />
         ) : (
           <TableBody>
