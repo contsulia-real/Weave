@@ -946,6 +946,7 @@
         "Radio/compact-choice-group",
         "Radio/unavailable-choice",
         "RangeSlider/controlled-range",
+        "Rating/basic-usage",
         "SegmentedButton/action-group",
         "SegmentedButton/controlled-selection",
         "Select/controlled-select",
@@ -3282,6 +3283,63 @@
         }
       ]
     },
+    "Rating": {
+      "name": "Rating",
+      "import": "import { Rating } from '@contsulia/weave/components/Rating'",
+      "importPath": "@contsulia/weave/components/Rating",
+      "category": "forms-status",
+      "intent": "An interactive star rating with the same display available through readOnly.",
+      "preferWhen": [],
+      "avoidWhen": [],
+      "alternatives": [],
+      "relationship": {
+        "demoParent": null,
+        "standaloneDocumentationPage": true
+      },
+      "viewPropsMode": "nested",
+      "nativeProps": false,
+      "documentationRoute": "/docs/components/Rating",
+      "apiRoute": "/docs/components-api/Rating",
+      "examples": ["Rating/basic-usage"],
+      "props": [
+        {
+          "name": "defaultValue",
+          "description": "",
+          "type": "number | undefined",
+          "optional": true
+        },
+        {
+          "name": "label",
+          "description": "Accessible name.",
+          "type": "string | undefined",
+          "optional": true
+        },
+        {
+          "name": "max",
+          "description": "Number of stars; defaults to five.",
+          "type": "number | undefined",
+          "optional": true
+        },
+        {
+          "name": "onChange",
+          "description": "",
+          "type": "((value: number) => void) | undefined",
+          "optional": true
+        },
+        {
+          "name": "readOnly",
+          "description": "Display the selected stars without interactive controls.",
+          "type": "boolean | undefined",
+          "optional": true
+        },
+        {
+          "name": "value",
+          "description": "",
+          "type": "number | undefined",
+          "optional": true
+        }
+      ]
+    },
     "Row": {
       "name": "Row",
       "import": "import { Row } from '@contsulia/weave/components/Row'",
@@ -4766,6 +4824,7 @@
         "Progress/compact-spinner",
         "Radio/compact-choice-group",
         "RangeSlider/controlled-range",
+        "Rating/basic-usage",
         "SegmentedButton/action-group",
         "SegmentedButton/controlled-selection",
         "Select/controlled-select",

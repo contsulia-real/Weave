@@ -51,6 +51,7 @@
     "./components/Presence": "./dist/components/Presence.js",
     "./components/Progress": "./dist/components/Progress.js",
     "./components/Radio": "./dist/components/Radio.js",
+    "./components/Rating": "./dist/components/Rating.js",
     "./components/RangeSlider": "./dist/components/RangeSlider.js",
     "./components/Row": "./dist/components/Row.js",
     "./components/SegmentedButton": "./dist/components/SegmentedButton.js",

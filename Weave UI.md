@@ -3031,6 +3031,13 @@ viewProps
 - 使用原生有序列表展示层级顺序、`nav` 作为导航 landmark，当前步骤使用 `aria-current="step"`；交互仍由公开 Button 负责原生键盘与禁用语义，但 Button 尺寸紧贴实际步骤内容，不得通过整行幽灵按钮生成悬停底色；消除整块 hover/press 背景与整体位移，所有垂直圆点同轴，不引入路由或表单提交。
 - Documentation 必须演示默认可点击、垂直受控外部操作和只读展示，覆盖英／简中／繁中／法文。
 
+## 15.5 Rating
+
+`Rating` 是同一个星级组件，通过 `readOnly?: boolean` 在交互评分与只读展示之间切换，不维护两个独立组件。它直接复用 Weave `Button`、`Icon`、`Row`、Theme 颜色和 Tabler outline / filled Star，不创建独立图标绘制、私有按钮外观或第二套主题。
+
+- `value?: number`、`defaultValue?: number`、`onChange?: (value: number) => void` 沿用受控与非受控模型；`max?: number` 默认 5，取整数星级，不自行增加半星交互。`label` 和 `viewProps` 遵循现有命名与布局能力。
+- 可交互时使用语义评分组与有标签的单个星级按钮，支持点击和方向键/Home/End；只读时保留相同星级状态、图标、尺寸和颜色，只呈现静态可访问结果，不产生按钮或焦点目标。
+
 ---
 
 # 16. `Progress`

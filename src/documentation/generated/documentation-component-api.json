@@ -323,6 +323,13 @@
       "usesViewProps": false,
       "props": "r915ba36d90ca"
     },
+    "Rating": {
+      "importPath": "@contsulia/weave/components/Rating",
+      "nativeProps": false,
+      "hasViewProps": true,
+      "usesViewProps": false,
+      "props": "r65b3e0e7fe92"
+    },
     "Row": {
       "importPath": "@contsulia/weave/components/Row",
       "nativeProps": false,
@@ -873,6 +880,14 @@
       "p73048adcda2c",
       "p1ad3915fa0ed",
       "paf9fe5b5b9a8"
+    ],
+    "r65b3e0e7fe92": [
+      "p9b28bd5b4ba3",
+      "p3493285481fc",
+      "p9fd20c358444",
+      "pd1501741eb01",
+      "p656c1adbe6ba",
+      "p3909ebac808e"
     ],
     "rfe7560fcc01c": ["p49dd32229dd9", "pfe2101a6cdae"],
     "r9de115c48252": [
@@ -3147,6 +3162,42 @@
       "name": "value",
       "description": "Controlled [start, end] range. Values are clamped and normalized so start is always less than or equal to end.",
       "type": "RangeSliderValue | undefined",
+      "optional": true
+    },
+    "p9b28bd5b4ba3": {
+      "name": "defaultValue",
+      "description": "",
+      "type": "number | undefined",
+      "optional": true
+    },
+    "p3493285481fc": {
+      "name": "label",
+      "description": "Accessible name.",
+      "type": "string | undefined",
+      "optional": true
+    },
+    "p9fd20c358444": {
+      "name": "max",
+      "description": "Number of stars; defaults to five.",
+      "type": "number | undefined",
+      "optional": true
+    },
+    "pd1501741eb01": {
+      "name": "onChange",
+      "description": "",
+      "type": "((value: number) => void) | undefined",
+      "optional": true
+    },
+    "p656c1adbe6ba": {
+      "name": "readOnly",
+      "description": "Display the selected stars without interactive controls.",
+      "type": "boolean | undefined",
+      "optional": true
+    },
+    "p3909ebac808e": {
+      "name": "value",
+      "description": "",
+      "type": "number | undefined",
       "optional": true
     },
     "p49dd32229dd9": {

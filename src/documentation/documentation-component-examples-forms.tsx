@@ -356,6 +356,10 @@ export const formsComponentExamples: Record<string, DocumentationComponentDocume
         },
       ],
     },
+    Rating: {
+      description: 'An interactive star rating with the same display available through readOnly.',
+      examples: [basicExample('Rating/basic-usage')],
+    },
     Checkbox: {
       description:
         'A checkbox control with checked, indeterminate, disabled, label, and size states.',

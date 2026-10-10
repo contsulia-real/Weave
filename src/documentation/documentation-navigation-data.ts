@@ -55,6 +55,7 @@ export const componentNavigationSections: readonly DocumentationNavigationSectio
     'RangeSlider',
     'Switch',
     'Radio',
+    'Rating',
     'Checkbox',
     'Progress',
     'Pagination',

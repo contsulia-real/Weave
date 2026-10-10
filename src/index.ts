@@ -45,6 +45,7 @@ export { Presence } from './components/Presence'
 export { Progress } from './components/Progress'
 export { Radio } from './components/Radio'
 export { RangeSlider } from './components/RangeSlider'
+export { Rating } from './components/Rating'
 export { Row } from './components/Row'
 export { SegmentedButton } from './components/SegmentedButton'
 export { Select } from './components/Select'
@@ -285,6 +286,7 @@ export type {
   ProgressSpeed,
   ProgressViewProps,
 } from './core/progress-types'
+export type { RatingProps } from './core/rating-types'
 export type {
   BreakpointRegistry,
   ColorTokenRegistry,

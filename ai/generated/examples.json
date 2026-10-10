@@ -3072,6 +3072,15 @@
       "source": "import { RangeSlider } from '../../../index'\n\nexport default function RangeSliderVerticalIntervalDemo() {\n  return (\n    <RangeSlider\n      defaultValue={[20, 80]}\n      min={0}\n      max={100}\n      step={10}\n      direction=\"vertical\"\n      viewProps={{ height: 192 }}\n    />\n  )\n}"
     },
     {
+      "id": "Rating/basic-usage",
+      "component": "Rating",
+      "title": "Basic usage",
+      "components": ["Column", "Rating", "Text"],
+      "concepts": ["basic", "column", "rating", "text", "usage"],
+      "documentationRoute": "/docs/components/Rating",
+      "source": "import { useState } from 'react'\nimport { Column, Rating, Text } from '../../../index'\n\nexport default function RatingBasicUsageDemo() {\n  const [rating, setRating] = useState(3)\n\n  return (\n    <Column gap={16} align=\"start\">\n      <Text typo=\"label-medium\">Your rating</Text>\n      <Rating value={rating} onChange={setRating} label=\"Your rating\" />\n      <Text typo=\"body-small\">Selected: {rating} of 5</Text>\n      <Text typo=\"label-medium\">Read-only rating</Text>\n      <Rating value={rating} readOnly label=\"Read-only rating\" />\n    </Column>\n  )\n}"
+    },
+    {
       "id": "SegmentedButton/action-group",
       "component": "SegmentedButton",
       "title": "Action group",
