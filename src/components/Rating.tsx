@@ -32,12 +32,14 @@ function RatingStar({
   fraction,
   size,
   pixels,
+  duration,
   delay,
   reducedMotion,
 }: {
   fraction: number
   size: IconSize
   pixels: number
+  duration: string
   delay: string
   reducedMotion: boolean
 }) {
@@ -58,9 +60,7 @@ function RatingStar({
         width={`${fraction * 100}%`}
         overflow="hidden"
         pointerEvents="none"
-        transition={
-          reducedMotion ? undefined : { properties: ['width'], duration: 'normal', delay }
-        }
+        transition={reducedMotion ? undefined : { properties: ['width'], duration, delay }}
       >
         <Icon
           icon={IconStarFilled}
@@ -92,6 +92,9 @@ export function Rating({
     setTransitionValues({ from: transitionValues.to, to: current })
   }
   const from = transitionValues.from
+  const changedStars = Math.ceil(Math.max(current, from)) - Math.floor(Math.min(current, from))
+  const duration =
+    changedStars > 0 ? `calc(var(--weave-motion-duration-normal) / ${changedStars})` : 'normal'
   const baseDimension = theme.components.Button?.sizes?.[size]?.minHeight
   const dimension =
     typeof baseDimension === 'number'
@@ -153,12 +156,13 @@ export function Rating({
         const delay =
           reducedMotion || fraction === previousFraction || stage <= 0
             ? '0ms'
-            : `calc(var(--weave-motion-duration-normal) * ${stage})`
+            : `calc(var(--weave-motion-duration-normal) * ${stage} / ${changedStars})`
         const visual = (
           <RatingStar
             fraction={fraction}
             size={iconSizes[size]}
             pixels={starSizes[size]}
+            duration={duration}
             delay={delay}
             reducedMotion={reducedMotion}
           />
