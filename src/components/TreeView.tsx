@@ -1,5 +1,4 @@
-import { IconChevronDown, IconChevronRight } from '@tabler/icons-react'
-import { useRef, useState } from 'react'
+import { useId, useRef, useState } from 'react'
 import type { TreeViewItem, TreeViewProps } from '../core/tree-view-types'
 import { ensureListStylesheet } from '../renderers/dom/list-stylesheet'
 import { resolveListItemTheme } from '../renderers/dom/resolve-component-theme'
@@ -7,8 +6,12 @@ import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
 import { useStaticStylesheet } from '../renderers/dom/static-stylesheet'
 import { useTheme } from '../theme/theme-context'
 import { Column } from './Column'
+import { Grid } from './Grid'
 import { Icon } from './Icon'
 import { assignRef } from './internal/assign-ref'
+import { chevronRightIcon } from './internal/control-icons'
+import { fromInteractiveDescendant } from './internal/interactive-descendant'
+import { Presence } from './Presence'
 import { Row } from './Row'
 import { Text } from './Text'
 import { View } from './View'
@@ -28,9 +31,6 @@ function assertUniqueIds(items: readonly TreeViewItem[]): void {
 interface VisibleNode {
   node: TreeViewItem
   parentId: string | null
-  depth: number
-  position: number
-  setSize: number
 }
 
 function visibleNodes(
@@ -38,15 +38,15 @@ function visibleNodes(
   expanded: ReadonlySet<string>,
 ): VisibleNode[] {
   const result: VisibleNode[] = []
-  const visit = (nodes: readonly TreeViewItem[], parentId: string | null, depth: number) => {
-    nodes.forEach((node, index) => {
-      result.push({ node, parentId, depth, position: index + 1, setSize: nodes.length })
+  const visit = (nodes: readonly TreeViewItem[], parentId: string | null) => {
+    for (const node of nodes) {
+      result.push({ node, parentId })
       if (expanded.has(node.id) && node.children !== undefined) {
-        visit(node.children, node.id, depth + 1)
+        visit(node.children, node.id)
       }
-    })
+    }
   }
-  visit(items, null, 0)
+  visit(items, null)
   return result
 }
 
@@ -67,6 +67,7 @@ export function TreeView({
   const [uncontrolledSelected, setUncontrolledSelected] = useState<string | null>(defaultSelected)
   const [storedFocusId, setStoredFocusId] = useState<string | null>(null)
   const rootRef = useRef<HTMLDivElement>(null)
+  const baseId = useId().replace(/:/g, '')
   const { theme } = useTheme()
   useStaticStylesheet(ensureListStylesheet)
   const listItemClassName = useRuntimeStyleClass('list-item-theme', resolveListItemTheme(theme))
@@ -163,29 +164,21 @@ export function TreeView({
     if (nextId !== undefined) focusNode(nextId)
   }
 
-  return (
-    <Column
-      {...viewProps}
-      ref={(node) => {
-        rootRef.current = node
-        assignRef(viewProps.ref, node)
-      }}
-      role="tree"
-      label={label}
-      data={{ ...viewProps.data, 'weave-tree-view': '' }}
-    >
-      {visible.map(({ node, depth, position, setSize }) => {
-        const hasChildren = (node.children?.length ?? 0) > 0
-        const open = hasChildren && expandedSet.has(node.id)
-        const active = currentSelected === node.id
+  const renderItems = (nodes: readonly TreeViewItem[], depth: number): React.ReactNode =>
+    nodes.map((node, index) => {
+      const hasChildren = (node.children?.length ?? 0) > 0
+      const open = hasChildren && expandedSet.has(node.id)
+      const active = currentSelected === node.id
+      const groupId = `weave-tree-${baseId}-group-${encodeURIComponent(node.id)}`
 
-        return (
+      return (
+        <Column key={node.id} role="presentation" minWidth={0} width="fill">
           <Row
-            key={node.id}
             role="treeitem"
             level={depth + 1}
-            aria-posinset={position}
-            aria-setsize={setSize}
+            aria-posinset={index + 1}
+            aria-setsize={nodes.length}
+            owns={hasChildren ? groupId : undefined}
             expanded={hasChildren ? open : undefined}
             selected={active}
             disabled={node.disabled || undefined}
@@ -194,7 +187,9 @@ export function TreeView({
               if (event.target === event.currentTarget) setStoredFocusId(node.id)
             }}
             onKeyDown={(event) => handleKeyDown(event, node)}
-            onClick={() => activate(node)}
+            onClick={(event) => {
+              if (!fromInteractiveDescendant(event.target, event.currentTarget)) activate(node)
+            }}
             className={['weave-list-item', listItemClassName].filter(Boolean).join(' ')}
             data={{
               'weave-tree-item-id': node.id,
@@ -206,15 +201,31 @@ export function TreeView({
               <View
                 role="presentation"
                 aria-hidden="true"
-                width={'calc(var(--weave-list-item-icon-size) * ' + depth + ')'}
+                width={`calc(var(--weave-list-item-icon-size) * ${depth})`}
                 shrink={0}
               />
             ) : null}
             <View className="weave-list-item__icon" aria-hidden="true">
               {hasChildren ? (
-                <Icon icon={open ? IconChevronDown : IconChevronRight} size="small" />
+                <View
+                  width="fill"
+                  height="fill"
+                  rotate={open ? 90 : 0}
+                  transition={{ properties: ['transform'], spring: 'gentle' }}
+                >
+                  <Icon
+                    svg={chevronRightIcon}
+                    size="medium"
+                    viewProps={{ width: '100%', height: '100%' }}
+                  />
+                </View>
               ) : null}
             </View>
+            {node.leading === undefined ? null : (
+              <View className="weave-list-item__icon" aria-hidden="true">
+                {node.leading}
+              </View>
+            )}
             <Text
               singleLine
               color="inherit"
@@ -223,9 +234,50 @@ export function TreeView({
             >
               {node.label}
             </Text>
+            {node.trailing === undefined ? null : (
+              <View className="weave-list-item__trailing">{node.trailing}</View>
+            )}
           </Row>
-        )
-      })}
+          {hasChildren ? (
+            <Grid
+              rows={open ? 'minmax(0, 1fr)' : 'minmax(0, 0fr)'}
+              transition={{ properties: ['gridTemplateRows'], spring: 'gentle' }}
+              minWidth={0}
+              role="presentation"
+            >
+              <View
+                id={groupId}
+                role="group"
+                minWidth={0}
+                minHeight={0}
+                overflow="hidden"
+                inert={!open}
+                aria-hidden={open ? undefined : true}
+              >
+                <Presence present={open}>
+                  <Column exit={{ animation: 'fade-up', spring: 'gentle' }}>
+                    {renderItems(node.children ?? [], depth + 1)}
+                  </Column>
+                </Presence>
+              </View>
+            </Grid>
+          ) : null}
+        </Column>
+      )
+    })
+
+  return (
+    <Column
+      {...viewProps}
+      ref={(node) => {
+        rootRef.current = node
+        assignRef(viewProps.ref, node)
+      }}
+      role="tree"
+      label={label}
+      data={{ ...viewProps.data, 'weave-tree-view': '' }}
+    >
+      {renderItems(items, 0)}
     </Column>
   )
 }

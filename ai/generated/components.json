@@ -1957,7 +1957,8 @@
         "Icon/custom-svg",
         "Icon/semantic-icon-color",
         "Icon/stroke-emphasis",
-        "SegmentedButton/default-selection"
+        "SegmentedButton/default-selection",
+        "TreeView/basic-usage"
       ],
       "props": [
         {

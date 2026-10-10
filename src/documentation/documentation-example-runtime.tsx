@@ -1,4 +1,4 @@
-import { IconDots, IconSearch, IconStar } from '@tabler/icons-react'
+import { IconDots, IconFile, IconFolder, IconSearch, IconStar } from '@tabler/icons-react'
 import type { ComponentType } from 'react'
 import * as React from 'react'
 import * as ReactJsxRuntime from 'react/jsx-runtime'
@@ -16,6 +16,8 @@ import { useDocsRoute } from './router'
 const runtimeModules: Readonly<Record<string, unknown>> = {
   '@tabler/icons-react': {
     IconDots,
+    IconFile,
+    IconFolder,
     IconSearch,
     IconStar,
   },

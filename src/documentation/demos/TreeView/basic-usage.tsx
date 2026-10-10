@@ -1,6 +1,7 @@
+import { IconFile, IconFolder } from '@tabler/icons-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Column, Text, TreeView } from '../../../index'
+import { Column, Icon, Text, TreeView } from '../../../index'
 
 export default function TreeViewBasicUsageDemo() {
   const { t } = useTranslation('copy')
@@ -17,19 +18,75 @@ export default function TreeViewBasicUsageDemo() {
           {
             id: 'src',
             label: t('Source files'),
+            leading: (
+              <Icon icon={IconFolder} size="medium" viewProps={{ width: '100%', height: '100%' }} />
+            ),
+            trailing: (
+              <Text typo="body-small" color="secondary">
+                {t('Folder')}
+              </Text>
+            ),
             children: [
               {
                 id: 'components',
                 label: t('Components folder'),
+                leading: (
+                  <Icon
+                    icon={IconFolder}
+                    size="medium"
+                    viewProps={{ width: '100%', height: '100%' }}
+                  />
+                ),
                 children: [
-                  { id: 'button', label: 'Button.tsx' },
-                  { id: 'tree', label: 'TreeView.tsx' },
+                  {
+                    id: 'button',
+                    label: 'Button.tsx',
+                    leading: (
+                      <Icon
+                        icon={IconFile}
+                        size="medium"
+                        viewProps={{ width: '100%', height: '100%' }}
+                      />
+                    ),
+                  },
+                  {
+                    id: 'tree',
+                    label: 'TreeView.tsx',
+                    leading: (
+                      <Icon
+                        icon={IconFile}
+                        size="medium"
+                        viewProps={{ width: '100%', height: '100%' }}
+                      />
+                    ),
+                  },
                 ],
               },
-              { id: 'index', label: 'index.ts' },
+              {
+                id: 'index',
+                label: 'index.ts',
+                leading: (
+                  <Icon
+                    icon={IconFile}
+                    size="medium"
+                    viewProps={{ width: '100%', height: '100%' }}
+                  />
+                ),
+              },
             ],
           },
-          { id: 'readme', label: 'README.md' },
+          {
+            id: 'readme',
+            label: 'README.md',
+            leading: (
+              <Icon icon={IconFile} size="medium" viewProps={{ width: '100%', height: '100%' }} />
+            ),
+            trailing: (
+              <Text typo="body-small" color="secondary">
+                {t('File')}
+              </Text>
+            ),
+          },
         ]}
       />
       <Text typo="body-small" color="secondary">

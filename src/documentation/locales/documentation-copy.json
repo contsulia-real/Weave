@@ -2308,5 +2308,15 @@
     "zh-CN": "已选择：{{file}}",
     "zh-TW": "已選取：{{file}}",
     "fr": "Sélectionné : {{file}}"
+  },
+  "Folder": {
+    "zh-CN": "文件夹",
+    "zh-TW": "資料夾",
+    "fr": "Dossier"
+  },
+  "File": {
+    "zh-CN": "文件",
+    "zh-TW": "檔案",
+    "fr": "Fichier"
   }
 }

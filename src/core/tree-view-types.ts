@@ -5,6 +5,10 @@ export interface TreeViewItem {
   /** Unique identifier across the entire tree. */
   id: string
   label: ReactNode
+  /** Optional icon or content before the label, separate from the expand indicator. */
+  leading?: ReactNode
+  /** Optional trailing content or action. */
+  trailing?: ReactNode
   children?: readonly TreeViewItem[]
   disabled?: boolean
 }
