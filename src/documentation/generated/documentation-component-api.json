@@ -141,6 +141,13 @@
       "usesViewProps": false,
       "props": "rf60e0d0f4d72"
     },
+    "EmptyState": {
+      "importPath": "@contsulia/weave/components/EmptyState",
+      "nativeProps": false,
+      "hasViewProps": true,
+      "usesViewProps": false,
+      "props": "r61cf15743659"
+    },
     "Flex": {
       "importPath": "@contsulia/weave/components/Flex",
       "nativeProps": false,
@@ -659,6 +666,7 @@
       "p533e8c02f00e",
       "p2f4dcdcfa193"
     ],
+    "r61cf15743659": ["p9cbfc5123977", "p1065ae7c9f68", "pd13cc93ceddc", "p33939ef32f20"],
     "r248bf8ddc5e3": ["pbcbade84b0f2"],
     "rfb012b5947af": ["pf1b1f6c80ce7", "pc7e2c2f00a81", "pe499dd25633a"],
     "rd930339d9fce": ["p93a72d49d262"],
@@ -2082,6 +2090,30 @@
       "name": "size",
       "description": "Controlled Drawer size along its side axis. It is mutually exclusive with defaultSize.",
       "type": "Length | undefined",
+      "optional": true
+    },
+    "p9cbfc5123977": {
+      "name": "action",
+      "description": "",
+      "type": "ReactNode",
+      "optional": true
+    },
+    "p1065ae7c9f68": {
+      "name": "description",
+      "description": "",
+      "type": "ReactNode",
+      "optional": true
+    },
+    "pd13cc93ceddc": {
+      "name": "icon",
+      "description": "",
+      "type": "ReactNode",
+      "optional": true
+    },
+    "p33939ef32f20": {
+      "name": "title",
+      "description": "",
+      "type": "ReactNode",
       "optional": true
     },
     "pbcbade84b0f2": {

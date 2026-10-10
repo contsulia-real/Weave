@@ -493,6 +493,7 @@
         "Dialog/non-modal-dialog",
         "Drawer/controlled-drawer",
         "Drawer/modal-drawer",
+        "EmptyState/basic-usage",
         "Form/basic-usage",
         "Form/native-validation",
         "Form/submit-and-reset",
@@ -1563,6 +1564,51 @@
         }
       ]
     },
+    "EmptyState": {
+      "name": "EmptyState",
+      "import": "import { EmptyState } from '@contsulia/weave/components/EmptyState'",
+      "importPath": "@contsulia/weave/components/EmptyState",
+      "category": "content-actions",
+      "intent": "A centered empty-content message with a title, optional description, decorative icon, and action.",
+      "preferWhen": [],
+      "avoidWhen": [],
+      "alternatives": [],
+      "relationship": {
+        "demoParent": null,
+        "standaloneDocumentationPage": true
+      },
+      "viewPropsMode": "nested",
+      "nativeProps": false,
+      "documentationRoute": "/docs/components/EmptyState",
+      "apiRoute": "/docs/components-api/EmptyState",
+      "examples": ["EmptyState/basic-usage"],
+      "props": [
+        {
+          "name": "action",
+          "description": "",
+          "type": "ReactNode",
+          "optional": true
+        },
+        {
+          "name": "description",
+          "description": "",
+          "type": "ReactNode",
+          "optional": true
+        },
+        {
+          "name": "icon",
+          "description": "",
+          "type": "ReactNode",
+          "optional": true
+        },
+        {
+          "name": "title",
+          "description": "",
+          "type": "ReactNode",
+          "optional": true
+        }
+      ]
+    },
     "Flex": {
       "name": "Flex",
       "import": "import { Flex } from '@contsulia/weave/components/Flex'",
@@ -1905,6 +1951,7 @@
       "apiRoute": "/docs/components-api/Icon",
       "examples": [
         "Button/custom-content",
+        "EmptyState/basic-usage",
         "Icon/basic-usage",
         "Icon/custom-svg",
         "Icon/semantic-icon-color",

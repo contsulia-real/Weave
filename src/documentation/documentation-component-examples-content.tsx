@@ -70,6 +70,11 @@ export const contentComponentExamples: Record<
     description: 'Displays a person or entity image with a semantic name and fallback content.',
     examples: [basicExample('Avatar/basic-usage')],
   },
+  EmptyState: {
+    description:
+      'A centered empty-content message with a title, optional description, decorative icon, and action.',
+    examples: [basicExample('EmptyState/basic-usage')],
+  },
   Divider: {
     description: 'A horizontal or vertical separator with configurable gap and line thickness.',
     examples: [basicExample('Divider/basic-usage')],

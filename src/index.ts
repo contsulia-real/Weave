@@ -18,6 +18,7 @@ export { DataGrid } from './components/DataGrid'
 export { Dialog } from './components/Dialog'
 export { Divider } from './components/Divider'
 export { Drawer } from './components/Drawer'
+export { EmptyState } from './components/EmptyState'
 export { Flex } from './components/Flex'
 export { Form } from './components/Form'
 export { FormDescription } from './components/FormDescription'
@@ -170,6 +171,7 @@ export type {
   DrawerSurfaceViewProps,
   DrawerViewProps,
 } from './core/drawer-types'
+export type { EmptyStateProps, EmptyStateViewProps } from './core/empty-state-types'
 export type {
   FormDescriptionProps,
   FormErrorProps,

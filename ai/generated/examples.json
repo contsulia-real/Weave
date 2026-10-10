@@ -1359,6 +1359,15 @@
       "source": "import { Column, Drawer, Text } from '../../../index'\n\nexport default function DrawerRightDrawerDemo() {\n  return (\n    <Drawer\n      side=\"right\"\n      mode=\"non-modal\"\n      defaultSize={256}\n      resizable={false}\n      defaultOpen\n      drawer={<Text>Fixed inspector</Text>}\n      viewProps={{ width: 'fill', height: 160 }}\n    >\n      <Column padding={16}>Canvas</Column>\n    </Drawer>\n  )\n}"
     },
     {
+      "id": "EmptyState/basic-usage",
+      "component": "EmptyState",
+      "title": "Basic usage",
+      "components": ["Button", "EmptyState", "Icon"],
+      "concepts": ["basic", "button", "empty", "icon", "state", "usage"],
+      "documentationRoute": "/docs/components/EmptyState",
+      "source": "import { IconSearch } from '@tabler/icons-react'\nimport { useState } from 'react'\nimport { Button, EmptyState, Icon } from '../../../index'\n\nexport default function EmptyStateBasicUsageDemo() {\n  const [filtersCleared, setFiltersCleared] = useState(false)\n\n  return (\n    <EmptyState\n      title=\"No results found\"\n      description={\n        filtersCleared\n          ? 'Filters cleared. There are no items to display yet.'\n          : 'Try changing your filters or search terms.'\n      }\n      icon={<Icon icon={IconSearch} size=\"large\" viewProps={{ color: 'secondary' }} />}\n      action={\n        <Button\n          text={filtersCleared ? 'Filters cleared' : 'Clear filters'}\n          variant=\"secondary\"\n          disabled={filtersCleared}\n          viewProps={{ onClick: () => setFiltersCleared(true) }}\n        />\n      }\n      viewProps={{ minHeight: 240 }}\n    />\n  )\n}"
+    },
+    {
       "id": "Form/basic-usage",
       "component": "Form",
       "title": "Basic usage",

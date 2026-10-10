@@ -26,6 +26,7 @@
     "./components/Dialog": "./dist/components/Dialog.js",
     "./components/Divider": "./dist/components/Divider.js",
     "./components/Drawer": "./dist/components/Drawer.js",
+    "./components/EmptyState": "./dist/components/EmptyState.js",
     "./components/Flex": "./dist/components/Flex.js",
     "./components/Form": "./dist/components/Form.js",
     "./components/FormDescription": "./dist/components/FormDescription.js",
