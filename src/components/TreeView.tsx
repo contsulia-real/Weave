@@ -1,6 +1,11 @@
 import { IconChevronDown, IconChevronRight } from '@tabler/icons-react'
 import { useRef, useState } from 'react'
 import type { TreeViewItem, TreeViewProps } from '../core/tree-view-types'
+import { ensureListStylesheet } from '../renderers/dom/list-stylesheet'
+import { resolveListItemTheme } from '../renderers/dom/resolve-component-theme'
+import { useRuntimeStyleClass } from '../renderers/dom/runtime-class'
+import { useStaticStylesheet } from '../renderers/dom/static-stylesheet'
+import { useTheme } from '../theme/theme-context'
 import { Column } from './Column'
 import { Icon } from './Icon'
 import { assignRef } from './internal/assign-ref'
@@ -23,6 +28,9 @@ function assertUniqueIds(items: readonly TreeViewItem[]): void {
 interface VisibleNode {
   node: TreeViewItem
   parentId: string | null
+  depth: number
+  position: number
+  setSize: number
 }
 
 function visibleNodes(
@@ -30,15 +38,15 @@ function visibleNodes(
   expanded: ReadonlySet<string>,
 ): VisibleNode[] {
   const result: VisibleNode[] = []
-  const visit = (nodes: readonly TreeViewItem[], parentId: string | null) => {
-    for (const node of nodes) {
-      result.push({ node, parentId })
+  const visit = (nodes: readonly TreeViewItem[], parentId: string | null, depth: number) => {
+    nodes.forEach((node, index) => {
+      result.push({ node, parentId, depth, position: index + 1, setSize: nodes.length })
       if (expanded.has(node.id) && node.children !== undefined) {
-        visit(node.children, node.id)
+        visit(node.children, node.id, depth + 1)
       }
-    }
+    })
   }
-  visit(items, null)
+  visit(items, null, 0)
   return result
 }
 
@@ -59,12 +67,16 @@ export function TreeView({
   const [uncontrolledSelected, setUncontrolledSelected] = useState<string | null>(defaultSelected)
   const [storedFocusId, setStoredFocusId] = useState<string | null>(null)
   const rootRef = useRef<HTMLDivElement>(null)
+  const { theme } = useTheme()
+  useStaticStylesheet(ensureListStylesheet)
+  const listItemClassName = useRuntimeStyleClass('list-item-theme', resolveListItemTheme(theme))
+  const primaryTypo = theme.components.ListItem?.base?.primaryTypo ?? 'body-medium'
+
   const expandedIds = expanded ?? uncontrolledExpanded
   const expandedSet = new Set(expandedIds)
   const currentSelected = selected === undefined ? uncontrolledSelected : selected
   const visible = visibleNodes(items, expandedSet)
-  const enabled = visible.filter(({ node }) => !node.disabled)
-  const enabledIds = enabled.map(({ node }) => node.id)
+  const enabledIds = visible.filter(({ node }) => !node.disabled).map(({ node }) => node.id)
   const focusId =
     storedFocusId !== null && enabledIds.includes(storedFocusId)
       ? storedFocusId
@@ -151,59 +163,6 @@ export function TreeView({
     if (nextId !== undefined) focusNode(nextId)
   }
 
-  const renderItems = (nodes: readonly TreeViewItem[], depth: number): React.ReactNode =>
-    nodes.map((node) => {
-      const hasChildren = (node.children?.length ?? 0) > 0
-      const open = hasChildren && expandedSet.has(node.id)
-      const active = currentSelected === node.id
-
-      return (
-        <Column
-          key={node.id}
-          role="treeitem"
-          level={depth + 1}
-          expanded={hasChildren ? open : undefined}
-          selected={active}
-          disabled={node.disabled || undefined}
-          tabIndex={!node.disabled && focusId === node.id ? 0 : -1}
-          onFocus={(event) => {
-            if (event.target === event.currentTarget) setStoredFocusId(node.id)
-          }}
-          onKeyDown={(event) => handleKeyDown(event, node)}
-          data={{ 'weave-tree-item-id': node.id }}
-          minWidth={0}
-        >
-          <Row
-            minWidth={0}
-            gap={8}
-            align="center"
-            radius="medium"
-            paddingX={8}
-            paddingY={6}
-            cursor={node.disabled ? 'default' : 'pointer'}
-            color={node.disabled ? 'secondary' : undefined}
-            background={active ? 'surfaceHover' : undefined}
-            hover={node.disabled ? undefined : { background: 'surfaceHover' }}
-            onClick={() => activate(node)}
-          >
-            <View width={16} minWidth={16} aria-hidden="true">
-              {hasChildren ? (
-                <Icon icon={open ? IconChevronDown : IconChevronRight} size="small" />
-              ) : null}
-            </View>
-            <Text singleLine viewProps={{ minWidth: 0, grow: 1 }}>
-              {node.label}
-            </Text>
-          </Row>
-          {open ? (
-            <Column role="group" paddingLeft={16} width="fill">
-              {renderItems(node.children ?? [], depth + 1)}
-            </Column>
-          ) : null}
-        </Column>
-      )
-    })
-
   return (
     <Column
       {...viewProps}
@@ -215,7 +174,58 @@ export function TreeView({
       label={label}
       data={{ ...viewProps.data, 'weave-tree-view': '' }}
     >
-      {renderItems(items, 0)}
+      {visible.map(({ node, depth, position, setSize }) => {
+        const hasChildren = (node.children?.length ?? 0) > 0
+        const open = hasChildren && expandedSet.has(node.id)
+        const active = currentSelected === node.id
+
+        return (
+          <Row
+            key={node.id}
+            role="treeitem"
+            level={depth + 1}
+            aria-posinset={position}
+            aria-setsize={setSize}
+            expanded={hasChildren ? open : undefined}
+            selected={active}
+            disabled={node.disabled || undefined}
+            tabIndex={!node.disabled && focusId === node.id ? 0 : -1}
+            onFocus={(event) => {
+              if (event.target === event.currentTarget) setStoredFocusId(node.id)
+            }}
+            onKeyDown={(event) => handleKeyDown(event, node)}
+            onClick={() => activate(node)}
+            className={['weave-list-item', listItemClassName].filter(Boolean).join(' ')}
+            data={{
+              'weave-tree-item-id': node.id,
+              'weave-list-item-selectable': node.disabled ? 'false' : 'true',
+              'weave-list-item-selected': active ? 'true' : 'false',
+            }}
+          >
+            {depth > 0 ? (
+              <View
+                role="presentation"
+                aria-hidden="true"
+                width={'calc(var(--weave-list-item-icon-size) * ' + depth + ')'}
+                shrink={0}
+              />
+            ) : null}
+            <View className="weave-list-item__icon" aria-hidden="true">
+              {hasChildren ? (
+                <Icon icon={open ? IconChevronDown : IconChevronRight} size="small" />
+              ) : null}
+            </View>
+            <Text
+              singleLine
+              color="inherit"
+              typo={primaryTypo}
+              viewProps={{ grow: 1, minWidth: 0 }}
+            >
+              {node.label}
+            </Text>
+          </Row>
+        )
+      })}
     </Column>
   )
 }
