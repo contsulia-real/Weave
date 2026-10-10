@@ -4138,6 +4138,15 @@
       "source": "import { Button, Row, ThemeProvider } from '../../../index'\n\nexport default function ThemeProviderScopedColorModeDemo() {\n  return (\n    <Row gap={16}>\n      <ThemeProvider mode=\"light\">\n        <Button text=\"Light scope\" />\n      </ThemeProvider>\n      <ThemeProvider mode=\"dark\">\n        <Button text=\"Dark scope\" />\n      </ThemeProvider>\n    </Row>\n  )\n}"
     },
     {
+      "id": "Timeline/basic-usage",
+      "component": "Timeline",
+      "title": "Basic usage",
+      "components": ["Timeline"],
+      "concepts": ["basic", "timeline", "usage"],
+      "documentationRoute": "/docs/components/Timeline",
+      "source": "import { useTranslation } from 'react-i18next'\nimport { Timeline } from '../../../index'\n\nexport default function TimelineBasicUsageDemo() {\n  const { t } = useTranslation('copy')\n\n  return (\n    <Timeline\n      items={[\n        {\n          id: 'created',\n          time: '09:00',\n          title: t('Request created'),\n          description: t('The request was submitted.'),\n        },\n        {\n          id: 'review',\n          time: '10:30',\n          title: t('Review started'),\n          description: t('The request is being reviewed.'),\n        },\n        {\n          id: 'approved',\n          time: '11:45',\n          title: t('Request approved'),\n          description: t('The request was approved.'),\n        },\n      ]}\n      viewProps={{ width: 'fill' }}\n    />\n  )\n}"
+    },
+    {
       "id": "ToolTip/basic-usage",
       "component": "ToolTip",
       "title": "Basic usage",

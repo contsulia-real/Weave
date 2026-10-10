@@ -2243,5 +2243,40 @@
     "zh-CN": "清除筛选条件",
     "zh-TW": "清除篩選條件",
     "fr": "Effacer les filtres"
+  },
+  "An ordered timeline of events with optional times and supporting descriptions.": {
+    "zh-CN": "按顺序展示事件的时间线，可包含时间和补充说明。",
+    "zh-TW": "依序展示事件的時間軸，可包含時間與補充說明。",
+    "fr": "Une chronologie d’événements ordonnés avec des horaires et des descriptions facultatifs."
+  },
+  "Request created": {
+    "zh-CN": "请求已创建",
+    "zh-TW": "請求已建立",
+    "fr": "Demande créée"
+  },
+  "The request was submitted.": {
+    "zh-CN": "请求已提交。",
+    "zh-TW": "請求已提交。",
+    "fr": "La demande a été envoyée."
+  },
+  "Review started": {
+    "zh-CN": "开始审核",
+    "zh-TW": "開始審核",
+    "fr": "Examen commencé"
+  },
+  "The request is being reviewed.": {
+    "zh-CN": "正在审核请求。",
+    "zh-TW": "正在審核請求。",
+    "fr": "La demande est en cours d’examen."
+  },
+  "Request approved": {
+    "zh-CN": "请求已批准",
+    "zh-TW": "請求已核准",
+    "fr": "Demande approuvée"
+  },
+  "The request was approved.": {
+    "zh-CN": "请求已获批准。",
+    "zh-TW": "請求已獲核准。",
+    "fr": "La demande a été approuvée."
   }
 }

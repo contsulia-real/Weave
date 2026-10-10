@@ -75,6 +75,7 @@
     "./components/TabPanel": "./dist/components/TabPanel.js",
     "./components/Tabs": "./dist/components/Tabs.js",
     "./components/Text": "./dist/components/Text.js",
+    "./components/Timeline": "./dist/components/Timeline.js",
     "./components/ToolTip": "./dist/components/ToolTip.js",
     "./components/useSnack": "./dist/components/useSnack.js",
     "./components/View": "./dist/components/View.js"

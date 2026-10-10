@@ -35,6 +35,7 @@ export const componentNavigationSections: readonly DocumentationNavigationSectio
     'Icon',
     'Avatar',
     'EmptyState',
+    'Timeline',
     'Divider',
     'Link',
     'Badge',

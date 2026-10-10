@@ -69,6 +69,7 @@ export { TableRow } from './components/TableRow'
 export { TabPanel } from './components/TabPanel'
 export { Tabs } from './components/Tabs'
 export { Text } from './components/Text'
+export { Timeline } from './components/Timeline'
 export { ToolTip } from './components/ToolTip'
 export { useSnack } from './components/useSnack'
 export { View } from './components/View'
@@ -390,6 +391,7 @@ export type {
   TextWeight,
   TextWrap,
 } from './core/text-types'
+export type { TimelineItem, TimelineProps } from './core/timeline-types'
 export type {
   ToolTipPlacement,
   ToolTipProps,

@@ -75,6 +75,10 @@ export const contentComponentExamples: Record<
       'A centered empty-content message with a title, optional description, decorative icon, and action.',
     examples: [basicExample('EmptyState/basic-usage')],
   },
+  Timeline: {
+    description: 'An ordered timeline of events with optional times and supporting descriptions.',
+    examples: [basicExample('Timeline/basic-usage')],
+  },
   Divider: {
     description: 'A horizontal or vertical separator with configurable gap and line thickness.',
     examples: [basicExample('Divider/basic-usage')],

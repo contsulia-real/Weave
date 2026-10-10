@@ -4896,6 +4896,33 @@
         }
       ]
     },
+    "Timeline": {
+      "name": "Timeline",
+      "import": "import { Timeline } from '@contsulia/weave/components/Timeline'",
+      "importPath": "@contsulia/weave/components/Timeline",
+      "category": "content-actions",
+      "intent": "An ordered timeline of events with optional times and supporting descriptions.",
+      "preferWhen": [],
+      "avoidWhen": [],
+      "alternatives": [],
+      "relationship": {
+        "demoParent": null,
+        "standaloneDocumentationPage": true
+      },
+      "viewPropsMode": "nested",
+      "nativeProps": false,
+      "documentationRoute": "/docs/components/Timeline",
+      "apiRoute": "/docs/components-api/Timeline",
+      "examples": ["Timeline/basic-usage"],
+      "props": [
+        {
+          "name": "items",
+          "description": "Events displayed in the order provided.",
+          "type": "readonly TimelineItem[]",
+          "optional": false
+        }
+      ]
+    },
     "ToolTip": {
       "name": "ToolTip",
       "import": "import { ToolTip } from '@contsulia/weave/components/ToolTip'",

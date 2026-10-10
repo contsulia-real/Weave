@@ -491,6 +491,13 @@
       "usesViewProps": false,
       "props": "r8633864103c3"
     },
+    "Timeline": {
+      "importPath": "@contsulia/weave/components/Timeline",
+      "nativeProps": false,
+      "hasViewProps": true,
+      "usesViewProps": false,
+      "props": "r24828e4f1042"
+    },
     "ToolTip": {
       "importPath": "@contsulia/weave/components/ToolTip",
       "nativeProps": false,
@@ -1017,6 +1024,7 @@
       "p7a24c04006a8"
     ],
     "r8633864103c3": ["pabaa702ce04e", "pa501f445433a", "p5019e72d4f44", "p74bd4e1f08fb"],
+    "r24828e4f1042": ["pf9362a0e1564"],
     "r6771c4bfe859": [
       "pb34f4ba161c1",
       "pe6d24dbb7cab",
@@ -3969,6 +3977,12 @@
       "description": "Partial theme definition merged over the inherited theme for this subtree; unspecified values continue to inherit.",
       "type": "ThemeDefinition | undefined",
       "optional": true
+    },
+    "pf9362a0e1564": {
+      "name": "items",
+      "description": "Events displayed in the order provided.",
+      "type": "readonly TimelineItem[]",
+      "optional": false
     },
     "pb34f4ba161c1": {
       "name": "children",
