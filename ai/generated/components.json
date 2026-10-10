@@ -3333,6 +3333,12 @@
           "optional": true
         },
         {
+          "name": "size",
+          "description": "Star and interaction target size; defaults to large.",
+          "type": "ButtonSize | undefined",
+          "optional": true
+        },
+        {
           "name": "value",
           "description": "",
           "type": "number | undefined",

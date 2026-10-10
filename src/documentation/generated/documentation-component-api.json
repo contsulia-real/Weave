@@ -328,7 +328,7 @@
       "nativeProps": false,
       "hasViewProps": true,
       "usesViewProps": false,
-      "props": "r65b3e0e7fe92"
+      "props": "r905371b8a44f"
     },
     "Row": {
       "importPath": "@contsulia/weave/components/Row",
@@ -881,12 +881,13 @@
       "p1ad3915fa0ed",
       "paf9fe5b5b9a8"
     ],
-    "r65b3e0e7fe92": [
+    "r905371b8a44f": [
       "p9b28bd5b4ba3",
       "p3493285481fc",
       "p9fd20c358444",
       "pd1501741eb01",
       "p656c1adbe6ba",
+      "p1bf52d8dd46a",
       "p3909ebac808e"
     ],
     "rfe7560fcc01c": ["p49dd32229dd9", "pfe2101a6cdae"],
@@ -3192,6 +3193,12 @@
       "name": "readOnly",
       "description": "Display the selected stars without interactive controls.",
       "type": "boolean | undefined",
+      "optional": true
+    },
+    "p1bf52d8dd46a": {
+      "name": "size",
+      "description": "Star and interaction target size; defaults to large.",
+      "type": "ButtonSize | undefined",
       "optional": true
     },
     "p3909ebac808e": {

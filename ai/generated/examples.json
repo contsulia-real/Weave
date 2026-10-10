@@ -3078,7 +3078,7 @@
       "components": ["Column", "Rating", "Text"],
       "concepts": ["basic", "column", "rating", "text", "usage"],
       "documentationRoute": "/docs/components/Rating",
-      "source": "import { useState } from 'react'\nimport { Column, Rating, Text } from '../../../index'\n\nexport default function RatingBasicUsageDemo() {\n  const [rating, setRating] = useState(3)\n\n  return (\n    <Column gap={16} align=\"start\">\n      <Text typo=\"label-medium\">Your rating</Text>\n      <Rating value={rating} onChange={setRating} label=\"Your rating\" />\n      <Text typo=\"body-small\">Selected: {rating} of 5</Text>\n      <Text typo=\"label-medium\">Read-only rating</Text>\n      <Rating value={rating} readOnly label=\"Read-only rating\" />\n    </Column>\n  )\n}"
+      "source": "import { useState } from 'react'\nimport { Column, Rating, Text } from '../../../index'\n\nexport default function RatingBasicUsageDemo() {\n  const [rating, setRating] = useState(3.5)\n\n  return (\n    <Column gap={16} align=\"start\">\n      <Text typo=\"label-medium\">Your rating</Text>\n      <Rating value={rating} onChange={setRating} label=\"Your rating\" />\n      <Text typo=\"body-small\">Selected: {rating} of 5</Text>\n      <Text typo=\"label-medium\">Read-only rating</Text>\n      <Rating value={rating} readOnly label=\"Read-only rating\" />\n      <Text typo=\"label-medium\">Sizes</Text>\n      <Rating size=\"small\" defaultValue={2.5} label=\"Small rating\" />\n      <Rating size=\"medium\" defaultValue={2.5} label=\"Medium rating\" />\n      <Rating size=\"large\" defaultValue={2.5} label=\"Large rating\" />\n    </Column>\n  )\n}"
     },
     {
       "id": "SegmentedButton/action-group",

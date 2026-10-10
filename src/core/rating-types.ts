@@ -1,3 +1,4 @@
+import type { ButtonSize } from './button-types'
 import type { RowProps } from './layout-types'
 
 export interface RatingProps {
@@ -6,6 +7,8 @@ export interface RatingProps {
   onChange?: (value: number) => void
   /** Number of stars; defaults to five. */
   max?: number
+  /** Star and interaction target size; defaults to large. */
+  size?: ButtonSize
   /** Display the selected stars without interactive controls. */
   readOnly?: boolean
   /** Accessible name. */
