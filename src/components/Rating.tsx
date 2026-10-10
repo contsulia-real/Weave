@@ -32,11 +32,13 @@ function RatingStar({
   fraction,
   size,
   pixels,
+  delay,
   reducedMotion,
 }: {
   fraction: number
   size: IconSize
   pixels: number
+  delay: string
   reducedMotion: boolean
 }) {
   return (
@@ -56,7 +58,9 @@ function RatingStar({
         width={`${fraction * 100}%`}
         overflow="hidden"
         pointerEvents="none"
-        transition={reducedMotion ? undefined : { properties: ['width'], duration: 'normal' }}
+        transition={
+          reducedMotion ? undefined : { properties: ['width'], duration: 'normal', delay }
+        }
       >
         <Icon
           icon={IconStarFilled}
@@ -83,6 +87,11 @@ export function Rating({
   const count = Number.isFinite(max) ? Math.max(1, Math.floor(max)) : 5
   const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue)
   const current = normalizedValue(value ?? uncontrolledValue, count, allowHalf)
+  const [transitionValues, setTransitionValues] = useState({ from: current, to: current })
+  if (transitionValues.to !== current) {
+    setTransitionValues({ from: transitionValues.to, to: current })
+  }
+  const from = transitionValues.from
   const baseDimension = theme.components.Button?.sizes?.[size]?.minHeight
   const dimension =
     typeof baseDimension === 'number'
@@ -139,11 +148,18 @@ export function Rating({
       {Array.from({ length: count }, (_, index) => {
         const star = index + 1
         const fraction = Math.max(0, Math.min(1, current - index))
+        const previousFraction = Math.max(0, Math.min(1, from - index))
+        const stage = current > from ? index - Math.floor(from) : Math.ceil(from) - 1 - index
+        const delay =
+          reducedMotion || fraction === previousFraction || stage <= 0
+            ? '0ms'
+            : `calc(var(--weave-motion-duration-normal) * ${stage})`
         const visual = (
           <RatingStar
             fraction={fraction}
             size={iconSizes[size]}
             pixels={starSizes[size]}
+            delay={delay}
             reducedMotion={reducedMotion}
           />
         )

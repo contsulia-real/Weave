@@ -3037,7 +3037,7 @@ viewProps
 
 - `value?: number`、`defaultValue?: number`、`onChange?: (value: number) => void` 沿用受控与非受控模型；`max?: number` 默认 5，`allowHalf?: boolean` 默认 `false`，仅开启后才以 0.5 为步长选择和展示半星，默认保持整数评分；`size?: ButtonSize` 支持 small / medium / large，默认 large，星形本体尺寸严格为 20px / 24px / 28px，复用 Weave Icon，通过 Icon.viewProps 仅调整 Rating 内的星形尺寸；保持现有 Button 图标周围的留白，三档交互命中格和只读格分别为 32px / 38px / 44px（使用对应 Button 的主题 minHeight 加 4px）。星级命中区域和只读格子使用同一尺寸，禁止继续固定使用 12px 小星形。`label` 和 `viewProps` 遵循现有命名与布局能力。
 - 可交互时使用语义评分组与有标签的单个星级按钮，`allowHalf` 开启时点击星形左右半区分别选半星或整星、方向键每次改变 0.5；关闭时选择整星、方向键每次改变 1；Home/End 到边界；只读时保留相同星级状态、图标、尺寸和颜色，只呈现静态可访问结果，不产生按钮或焦点目标。
-- 星形轮廓和完整填充图标始终复用 Tabler 对应组件；通过填充层宽度 0%/50%/100% 的连续变化展示星级，使用 View 的 Theme motion.duration.normal 过渡并遵守 reduced-motion，不新增专用图标或私有动画时钟。
+- 星形轮廓和完整填充图标始终复用 Tabler 对应组件；通过填充层宽度 0%/50%/100% 的连续变化展示星级，使用 View 的 Theme motion.duration.normal 作为单颗星的过渡时长，改变评分时按同一时长逐颗延迟：增大从左至右点亮，减小从右至左熄灭（包括半星），遵守 reduced-motion，不新增专用图标或私有动画时钟。
 
 ---
 
