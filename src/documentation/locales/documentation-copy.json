@@ -2213,5 +2213,35 @@
     "zh-CN": "支持受控和非受控状态、水平或垂直布局及只读进度的步骤导航。",
     "zh-TW": "支援受控與非受控狀態、水平或垂直布局及唯讀進度的步驟導覽。",
     "fr": "Navigation par étapes avec état contrôlé ou non, disposition horizontale ou verticale et progression en lecture seule."
+  },
+  "A centered empty-content message with a title, optional description, decorative icon, and action.": {
+    "zh-CN": "居中显示空内容提示，包含标题，并可选提供说明、装饰图标和操作。",
+    "zh-TW": "置中顯示空內容提示，包含標題，並可選擇提供說明、裝飾圖示與操作。",
+    "fr": "Un message d’état vide centré avec un titre, une description facultative, une icône décorative et une action."
+  },
+  "No results found": {
+    "zh-CN": "未找到结果",
+    "zh-TW": "找不到結果",
+    "fr": "Aucun résultat trouvé"
+  },
+  "Filters cleared. There are no items to display yet.": {
+    "zh-CN": "已清除筛选条件。目前还没有可显示的项目。",
+    "zh-TW": "已清除篩選條件。目前還沒有可顯示的項目。",
+    "fr": "Les filtres ont été effacés. Aucun élément à afficher pour le moment."
+  },
+  "Try changing your filters or search terms.": {
+    "zh-CN": "试着调整筛选条件或搜索关键词。",
+    "zh-TW": "試著調整篩選條件或搜尋關鍵字。",
+    "fr": "Essayez de modifier vos filtres ou vos termes de recherche."
+  },
+  "Filters cleared": {
+    "zh-CN": "已清除筛选条件",
+    "zh-TW": "已清除篩選條件",
+    "fr": "Filtres effacés"
+  },
+  "Clear filters": {
+    "zh-CN": "清除筛选条件",
+    "zh-TW": "清除篩選條件",
+    "fr": "Effacer les filtres"
   }
 }
