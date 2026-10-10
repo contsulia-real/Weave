@@ -66,12 +66,6 @@ export const formsComponentExamples: Record<string, DocumentationComponentDocume
           demo: 'Input/date-input',
         },
         {
-          id: 'controlled-date',
-          title: 'Controlled date',
-          description: 'Use value and onChange to own the selected YYYY-MM-DD date.',
-          demo: 'Input/controlled-date',
-        },
-        {
           id: 'forced-locale',
           title: 'Forced locale',
           description:
@@ -112,12 +106,6 @@ export const formsComponentExamples: Record<string, DocumentationComponentDocume
           demo: 'Input/week-input',
         },
         {
-          id: 'controlled-time',
-          title: 'Controlled time',
-          description: 'Use value and onChange with the Weave time picker and native time input.',
-          demo: 'Input/controlled-time',
-        },
-        {
           id: 'color-input',
           title: 'Color input',
           description:
@@ -125,24 +113,32 @@ export const formsComponentExamples: Record<string, DocumentationComponentDocume
           demo: 'Input/color-input',
         },
         {
-          id: 'controlled-color',
-          title: 'Controlled color',
-          description: 'Control the selected #rrggbb color with value and onChange.',
-          demo: 'Input/controlled-color',
-        },
-        {
-          id: 'controlled-input',
-          title: 'Controlled input',
-          description:
-            'Use value and onChange when the parent owns the current text while native input attributes remain available.',
-          demo: 'Input/controlled-input',
-        },
-        {
           id: 'multiline-input',
           title: 'Multiline input',
           description:
             'Use multiline input for notes and other free-form content while keeping native text-area behavior.',
           demo: 'Input/multiline-input',
+        },
+        {
+          id: 'controlled-input',
+          title: 'Controlled input',
+          description:
+            'Share a controlled project name with a derived read-only slug and an external preset action.',
+          demo: 'Input/controlled-input',
+        },
+        {
+          id: 'controlled-date',
+          title: 'Controlled date',
+          description:
+            'Keep a controlled date range valid when the start date changes, including through an external action.',
+          demo: 'Input/controlled-date',
+        },
+        {
+          id: 'controlled-color',
+          title: 'Controlled color',
+          description:
+            'Update a live color preview from a controlled input or an external preset action.',
+          demo: 'Input/controlled-color',
         },
         {
           id: 'form-states',
@@ -385,6 +381,25 @@ export const formsComponentExamples: Record<string, DocumentationComponentDocume
           title: 'Controlled pagination',
           description: 'Use page and onPageChange to control the current page.',
           demo: 'Pagination/controlled-pagination',
+        },
+      ],
+    },
+    Stepper: {
+      description:
+        'Step-by-step navigation with controlled or uncontrolled state, horizontal and vertical layouts, and read-only progress.',
+      examples: [
+        basicExample('Stepper/basic-usage'),
+        {
+          id: 'controlled-vertical',
+          title: 'Controlled vertical steps',
+          description: 'Drive a vertical stepper from external Previous and Next actions.',
+          demo: 'Stepper/controlled-vertical',
+        },
+        {
+          id: 'read-only',
+          title: 'Read-only steps',
+          description: 'Show completed, current, and upcoming steps without interactive buttons.',
+          demo: 'Stepper/read-only',
         },
       ],
     },

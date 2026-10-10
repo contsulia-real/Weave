@@ -55,6 +55,7 @@ export { SnackProvider } from './components/SnackProvider'
 export { SplitBox } from './components/SplitBox'
 export { SplitBoxPane } from './components/SplitBoxPane'
 export { Stack } from './components/Stack'
+export { Stepper } from './components/Stepper'
 export { Switch } from './components/Switch'
 export { Tab } from './components/Tab'
 export { TabList } from './components/TabList'
@@ -337,6 +338,7 @@ export type {
   SplitBoxUncontrolledProps,
   SplitBoxViewProps,
 } from './core/splitbox-types'
+export type { StepperItem, StepperProps } from './core/stepper-types'
 export type {
   SwitchProps,
   SwitchSize,

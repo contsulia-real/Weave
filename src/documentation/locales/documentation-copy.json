@@ -99,10 +99,10 @@
     "zh-TW": "受控日期",
     "fr": "Date contrôlée"
   },
-  "Use value and onChange to own the selected YYYY-MM-DD date.": {
-    "zh-CN": "使用 value 和 onChange 管理所选的 YYYY-MM-DD 日期。",
-    "zh-TW": "使用 value 和 onChange 管理選取的 YYYY-MM-DD 日期。",
-    "fr": "Utilisez value et onChange pour gérer la date sélectionnée au format YYYY-MM-DD."
+  "Keep a controlled date range valid when the start date changes, including through an external action.": {
+    "zh-CN": "起始日期变化时（包括通过外部按钮修改），让受控日期区间保持有效。",
+    "zh-TW": "起始日期變更時（包括透過外部按鈕修改），讓受控日期區間保持有效。",
+    "fr": "Conservez une plage de dates contrôlée valide lorsque la date de début change, y compris via une action externe."
   },
   "Forced locale": {
     "zh-CN": "指定语言",
@@ -1654,10 +1654,10 @@
     "zh-TW": "受控輸入",
     "fr": "Saisie contrôlée"
   },
-  "Use value and onChange when the parent owns the current text while native input attributes remain available.": {
-    "zh-CN": "当父级持有当前文本时使用 value 和 onChange，同时仍可使用原生 input 属性。",
-    "zh-TW": "當父層持有目前文字時使用 value 與 onChange，同時仍可使用原生 input 屬性。",
-    "fr": "Utilisez value et onChange lorsque le parent possède le texte courant, tout en conservant les attributs input natifs."
+  "Share a controlled project name with a derived read-only slug and an external preset action.": {
+    "zh-CN": "受控项目名称同步生成只读标识，并支持通过外部按钮填入预设值。",
+    "zh-TW": "受控專案名稱同步產生唯讀識別碼，並支援透過外部按鈕填入預設值。",
+    "fr": "Synchronisez le nom de projet contrôlé avec un identifiant dérivé en lecture seule et un bouton de présélection."
   },
   "Controlled select": {
     "zh-CN": "受控选择器",
@@ -1789,16 +1789,6 @@
     "zh-TW": "透過 Weave 日曆彈窗選擇 ISO 週，表單值仍為 YYYY-Www。",
     "fr": "Sélectionnez une semaine ISO dans le calendrier Weave ; valeur YYYY-Www."
   },
-  "Controlled time": {
-    "zh-CN": "受控时间",
-    "zh-TW": "受控時間",
-    "fr": "Heure contrôlée"
-  },
-  "Use value and onChange with the Weave time picker and native time input.": {
-    "zh-CN": "通过 value 和 onChange 控制带 Weave 自定义时间选择器的原生时间输入。",
-    "zh-TW": "透過 value 和 onChange 控制附帶 Weave 自訂時間選擇器的原生時間輸入。",
-    "fr": "Utilisez value et onChange avec la sélection horaire Weave et le champ natif."
-  },
   "Time with seconds": {
     "zh-CN": "精确到秒的时间",
     "zh-TW": "精確到秒的時間",
@@ -1819,10 +1809,10 @@
     "zh-TW": "受控顏色",
     "fr": "Couleur contrôlée"
   },
-  "Control the selected #rrggbb color with value and onChange.": {
-    "zh-CN": "使用 value 和 onChange 控制 #rrggbb 颜色值。",
-    "zh-TW": "使用 value 和 onChange 控制 #rrggbb 顏色值。",
-    "fr": "Contrôlez la couleur #rrggbb avec value et onChange."
+  "Update a live color preview from a controlled input or an external preset action.": {
+    "zh-CN": "受控颜色输入与外部预设按钮共同驱动实时颜色预览。",
+    "zh-TW": "受控顏色輸入與外部預設按鈕共同驅動即時顏色預覽。",
+    "fr": "Actualisez un aperçu couleur en direct depuis le champ contrôlé ou un bouton de couleur prédéfinie."
   },
   "Adjust saturation and brightness on the color field, use the hue slider, or enter a HEX color.": {
     "zh-CN": "在颜色平面中调整饱和度和亮度，使用色相滑块，或输入 HEX 颜色。",
@@ -2078,5 +2068,150 @@
     "zh-CN": "无",
     "zh-TW": "無",
     "fr": "Aucune"
+  },
+  "Project slug": {
+    "zh-CN": "项目标识",
+    "zh-TW": "專案識別碼",
+    "fr": "Identifiant du projet"
+  },
+  "Use sample project": {
+    "zh-CN": "填入示例项目",
+    "zh-TW": "填入範例專案",
+    "fr": "Utiliser un projet d’exemple"
+  },
+  "Start date": {
+    "zh-CN": "开始日期",
+    "zh-TW": "開始日期",
+    "fr": "Date de début"
+  },
+  "End date": {
+    "zh-CN": "结束日期",
+    "zh-TW": "結束日期",
+    "fr": "Date de fin"
+  },
+  "Move start to October 20": {
+    "zh-CN": "将开始日期移至 10 月 20 日",
+    "zh-TW": "將開始日期移至 10 月 20 日",
+    "fr": "Déplacer le début au 20 octobre"
+  },
+  "Selected color preview": {
+    "zh-CN": "当前颜色预览",
+    "zh-TW": "目前顏色預覽",
+    "fr": "Aperçu de la couleur sélectionnée"
+  },
+  "Use preset color": {
+    "zh-CN": "使用预设颜色",
+    "zh-TW": "使用預設顏色",
+    "fr": "Utiliser une couleur prédéfinie"
+  },
+  "Steps": {
+    "zh-CN": "步骤",
+    "zh-TW": "步驟",
+    "fr": "Étapes"
+  },
+  "Account": {
+    "zh-CN": "账户",
+    "zh-TW": "帳戶",
+    "fr": "Compte"
+  },
+  "Create your profile": {
+    "zh-CN": "创建个人资料",
+    "zh-TW": "建立個人資料",
+    "fr": "Créez votre profil"
+  },
+  "Details": {
+    "zh-CN": "详细信息",
+    "zh-TW": "詳細資訊",
+    "fr": "Détails"
+  },
+  "Add your information": {
+    "zh-CN": "填写资料",
+    "zh-TW": "填寫資料",
+    "fr": "Ajoutez vos informations"
+  },
+  "Review": {
+    "zh-CN": "核对",
+    "zh-TW": "確認",
+    "fr": "Vérification"
+  },
+  "Check your entries": {
+    "zh-CN": "检查填写内容",
+    "zh-TW": "檢查填寫內容",
+    "fr": "Vérifiez vos informations"
+  },
+  "Submit": {
+    "zh-CN": "提交",
+    "zh-TW": "提交",
+    "fr": "Envoyer"
+  },
+  "Current step: {{step}}": {
+    "zh-CN": "当前步骤：{{step}}",
+    "zh-TW": "目前步驟：{{step}}",
+    "fr": "Étape actuelle : {{step}}"
+  },
+  "Profile": {
+    "zh-CN": "个人资料",
+    "zh-TW": "個人資料",
+    "fr": "Profil"
+  },
+  "Personal information": {
+    "zh-CN": "个人信息",
+    "zh-TW": "個人資訊",
+    "fr": "Informations personnelles"
+  },
+  "Preferences": {
+    "zh-CN": "偏好设置",
+    "zh-TW": "偏好設定",
+    "fr": "Préférences"
+  },
+  "Customize your choices": {
+    "zh-CN": "调整你的选项",
+    "zh-TW": "調整你的選項",
+    "fr": "Personnalisez vos choix"
+  },
+  "Confirmation": {
+    "zh-CN": "确认",
+    "zh-TW": "確認",
+    "fr": "Confirmation"
+  },
+  "Finish setup": {
+    "zh-CN": "完成设置",
+    "zh-TW": "完成設定",
+    "fr": "Terminez la configuration"
+  },
+  "Previous": {
+    "zh-CN": "上一步",
+    "zh-TW": "上一步",
+    "fr": "Précédent"
+  },
+  "Next": {
+    "zh-CN": "下一步",
+    "zh-TW": "下一步",
+    "fr": "Suivant"
+  },
+  "Controlled vertical steps": {
+    "zh-CN": "受控垂直步骤",
+    "zh-TW": "受控垂直步驟",
+    "fr": "Étapes verticales contrôlées"
+  },
+  "Drive a vertical stepper from external Previous and Next actions.": {
+    "zh-CN": "通过外部“上一步”和“下一步”按钮控制垂直步骤。",
+    "zh-TW": "透過外部「上一步」與「下一步」按鈕控制垂直步驟。",
+    "fr": "Contrôlez les étapes verticales avec les boutons Précédent et Suivant."
+  },
+  "Read-only steps": {
+    "zh-CN": "只读步骤",
+    "zh-TW": "唯讀步驟",
+    "fr": "Étapes en lecture seule"
+  },
+  "Show completed, current, and upcoming steps without interactive buttons.": {
+    "zh-CN": "只显示已完成、当前和待进行步骤，不提供交互按钮。",
+    "zh-TW": "僅顯示已完成、目前與待進行步驟，不提供互動按鈕。",
+    "fr": "Affichez les étapes terminées, actuelle et suivantes sans boutons interactifs."
+  },
+  "Step-by-step navigation with controlled or uncontrolled state, horizontal and vertical layouts, and read-only progress.": {
+    "zh-CN": "支持受控和非受控状态、水平或垂直布局及只读进度的步骤导航。",
+    "zh-TW": "支援受控與非受控狀態、水平或垂直布局及唯讀進度的步驟導覽。",
+    "fr": "Navigation par étapes avec état contrôlé ou non, disposition horizontale ou verticale et progression en lecture seule."
   }
 }

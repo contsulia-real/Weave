@@ -496,6 +496,9 @@
         "Form/basic-usage",
         "Form/native-validation",
         "Form/submit-and-reset",
+        "Input/controlled-color",
+        "Input/controlled-date",
+        "Input/controlled-input",
         "Layout/absolute",
         "Layout/column",
         "Layout/flex",
@@ -516,6 +519,7 @@
         "Presence/toggle-presence",
         "Snack/lifetime-progress",
         "Snack/provider-queue",
+        "Stepper/controlled-vertical",
         "ThemeProvider/basic-usage",
         "ThemeProvider/nested-theme-override",
         "ThemeProvider/reduced-motion-scope",
@@ -841,7 +845,6 @@
         "Input/controlled-color",
         "Input/controlled-date",
         "Input/controlled-input",
-        "Input/controlled-time",
         "Input/forced-locale",
         "Input/form-states",
         "Input/number-input",
@@ -880,6 +883,9 @@
         "Snack/provider-queue",
         "Snack/snack-action",
         "Snack/snack-variant",
+        "Stepper/basic-usage",
+        "Stepper/controlled-vertical",
+        "Stepper/read-only",
         "Switch/basic-usage",
         "Switch/compact-settings",
         "Switch/controlled-switch",
@@ -2029,7 +2035,6 @@
         "Input/controlled-color",
         "Input/controlled-date",
         "Input/controlled-input",
-        "Input/controlled-time",
         "Input/date-input",
         "Input/datetime-local-input",
         "Input/email-input",
@@ -3194,6 +3199,7 @@
         "Progress/compact-spinner",
         "Skeleton/profile-placeholder",
         "Snack/provider-queue",
+        "Stepper/controlled-vertical",
         "ThemeProvider/scoped-color-mode",
         "View/motion",
         "View/state-styles"
@@ -3925,6 +3931,75 @@
         }
       ]
     },
+    "Stepper": {
+      "name": "Stepper",
+      "import": "import { Stepper } from '@contsulia/weave/components/Stepper'",
+      "importPath": "@contsulia/weave/components/Stepper",
+      "category": "forms-status",
+      "intent": "Step-by-step navigation with controlled or uncontrolled state, horizontal and vertical layouts, and read-only progress.",
+      "preferWhen": [],
+      "avoidWhen": [],
+      "alternatives": [],
+      "relationship": {
+        "demoParent": null,
+        "standaloneDocumentationPage": true
+      },
+      "viewPropsMode": "nested",
+      "nativeProps": false,
+      "documentationRoute": "/docs/components/Stepper",
+      "apiRoute": "/docs/components-api/Stepper",
+      "examples": ["Stepper/basic-usage", "Stepper/controlled-vertical", "Stepper/read-only"],
+      "props": [
+        {
+          "name": "defaultStep",
+          "description": "Initial step when uncontrolled; defaults to 1.",
+          "type": "number | undefined",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "description": "Disable all step controls.",
+          "type": "boolean | undefined",
+          "optional": true
+        },
+        {
+          "name": "label",
+          "description": "Accessible navigation landmark name.",
+          "type": "string | undefined",
+          "optional": true
+        },
+        {
+          "name": "onStepChange",
+          "description": "Called when an enabled, different step is selected.",
+          "type": "((step: number) => void) | undefined",
+          "optional": true
+        },
+        {
+          "name": "orientation",
+          "description": "Visual arrangement; defaults to horizontal.",
+          "type": "\"horizontal\" | \"vertical\" | undefined",
+          "optional": true
+        },
+        {
+          "name": "readOnly",
+          "description": "Show progress without clickable controls.",
+          "type": "boolean | undefined",
+          "optional": true
+        },
+        {
+          "name": "step",
+          "description": "Controlled current step, numbered from 1.",
+          "type": "number | undefined",
+          "optional": true
+        },
+        {
+          "name": "steps",
+          "description": "Ordered steps; indices start at 1.",
+          "type": "readonly StepperItem[]",
+          "optional": false
+        }
+      ]
+    },
     "Switch": {
       "name": "Switch",
       "import": "import { Switch } from '@contsulia/weave/components/Switch'",
@@ -4545,10 +4620,6 @@
         "Icon/custom-svg",
         "Image/blob-events",
         "Input/color-input",
-        "Input/controlled-color",
-        "Input/controlled-date",
-        "Input/controlled-input",
-        "Input/controlled-time",
         "Input/number-input",
         "Input/search-input",
         "Layout/absolute",
@@ -4578,6 +4649,7 @@
         "Snack/custom-content",
         "Snack/lifetime-progress",
         "Snack/provider-queue",
+        "Stepper/basic-usage",
         "Switch/controlled-switch",
         "Tabs/controlled-tabs",
         "Text/basic-usage",
@@ -4874,6 +4946,7 @@
       "documentationRoute": "/docs/components/View",
       "apiRoute": "/docs/components-api/View",
       "examples": [
+        "Input/controlled-color",
         "View/basic-usage",
         "View/container-responsive",
         "View/layout-animation",

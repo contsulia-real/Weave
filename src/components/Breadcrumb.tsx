@@ -23,7 +23,14 @@ function BreadcrumbMenuTrigger({
 }): import('react').JSX.Element {
   const { theme } = useTheme()
   const themeClassName = useRuntimeStyleClass('link-theme', resolveLinkTheme(theme))
-  const { elementRef, className, inlineStyle, resolved } = useViewHost<HTMLButtonElement>({})
+  const { elementRef, className, inlineStyle, resolved } = useViewHost<HTMLButtonElement>({
+    background: 'transparent',
+    paddingX: 12,
+    paddingY: 8,
+    radius: 'medium',
+    clickable: true,
+    transition: { properties: ['background-color'], duration: 'normal' },
+  })
 
   useStaticStylesheet(ensureLinkStylesheet)
 
@@ -40,9 +47,7 @@ function BreadcrumbMenuTrigger({
       style={{
         ...inlineStyle,
         appearance: 'none',
-        background: 'transparent',
         border: 0,
-        padding: 0,
         font: 'inherit',
       }}
     >
@@ -89,7 +94,20 @@ export function Breadcrumb({
             ) : index === items.length - 1 ? (
               <Text viewProps={{ 'aria-current': 'page' }}>{item.text}</Text>
             ) : item.href !== undefined ? (
-              <Link href={item.href} text={item.text} hideIcon hideUnderline />
+              <Link
+                href={item.href}
+                text={item.text}
+                hideIcon
+                hideUnderline
+                viewProps={{
+                  background: 'transparent',
+                  paddingX: 12,
+                  paddingY: 8,
+                  radius: 'medium',
+                  clickable: true,
+                  transition: { properties: ['background-color'], duration: 'normal' },
+                }}
+              />
             ) : (
               <Text>{item.text}</Text>
             )}

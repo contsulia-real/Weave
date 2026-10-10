@@ -64,7 +64,7 @@ export function Pagination({
           ) : null}
           <Button
             text={String(item)}
-            variant={item === currentPage ? 'secondary' : 'ghost'}
+            variant={item === currentPage ? 'primary' : 'ghost'}
             size={size}
             disabled={unavailable}
             viewProps={{

@@ -1,22 +1,32 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Column, Input, Text } from '../../../index'
+import { Button, Column, Input, View } from '../../../index'
 
 export default function ControlledColorDemo() {
   const { t } = useTranslation('copy')
-  const [value, setValue] = useState('#3b82f6')
+  const [color, setColor] = useState('#3b82f6')
 
   return (
-    <Column width={352} gap={12}>
+    <Column width={352} gap={12} align="start">
       <Input
         type="color"
-        value={value}
-        onChange={setValue}
+        value={color}
+        onChange={setColor}
         viewProps={{ label: t('Selected color') }}
       />
-      <Text typo="body-small" color="secondary">
-        {t('Value: {{value}}', { value })}
-      </Text>
+      <View
+        width="fill"
+        height={80}
+        radius="medium"
+        background={color}
+        role="img"
+        label={t('Selected color preview')}
+      />
+      <Button
+        text={t('Use preset color')}
+        variant="secondary"
+        viewProps={{ onClick: () => setColor('#e76b94') }}
+      />
     </Column>
   )
 }

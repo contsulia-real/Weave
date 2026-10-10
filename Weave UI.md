@@ -3016,8 +3016,18 @@ viewProps
 - `pageCount: number` 指定总页数，页码从 1 开始；`page?: number`、`defaultPage?: number`、`onPageChange?: (page: number) => void` 延续 Weave 的受控／非受控模型。
 - `disabled?: boolean`、`size?: ButtonSize` 与 `viewProps` 透传既有 Button / Row 能力；页数为 0 时所有导航按钮禁用。
 - 默认展示首页、末页、当前页及相邻页，间隔以不可交互省略号表示；上一页和下一页在边界禁用，不产生越界页码。
-- 分页外层使用 navigation 语义，选中页使用 `aria-current="page"`，所有按钮提供随 document.lang 更新的英／简中／繁中／法文无障碍标签。
+- 分页当前页复用 `Button variant="primary"` 显示主色（其余页保持 ghost），并使用 `aria-current="page"` 标识选中页；分页外层使用 navigation 语义，所有按钮提供随 document.lang 更新的英／简中／繁中／法文无障碍标签。
 - 组件只通知页码变化，不处理数据切片、路由或表格状态。
+
+## 15.4 Stepper
+
+`Stepper` 用于多步骤表单和配置向导中的进度提示及步骤导航，与 Pagination 的页码导航相互独立。复用公开 `Button`、`View`、`Row`、`Column`、`Text`、`Progress` 和现有主题色，不建立第二套按钮或主题系统。
+
+- `steps: readonly StepperItem[]` 按序传入步骤；每项有 `label`、可选 `description`、`disabled`。步骤序号从 1 开始；小于当前序号显示为 completed，当前显示 current，其余显示 upcoming；禁用项显示 disabled，且不可选择。
+- `step?: number`、`defaultStep?: number`、`onStepChange?: (step: number) => void` 使用既有受控／非受控模式；受控模式仅发送回调，外部状态决定实际当前步骤；忽略点击当前或禁用步骤。
+- `orientation?: 'horizontal' | 'vertical'` 默认为 horizontal；`readOnly?: boolean` 仅取消步骤交互，保留普通步骤相同的字体、布局、状态和连接线外观，将步骤显示为静态内容，`disabled?: boolean` 禁用所有交互。步骤连接线不响应指针，使用公开 `Progress mode="linear" tracked` 对相邻圆点之间的线段以 `progress=0/1` 动画填充，延续 Progress 的 Theme 轨道、primary 进度色、`motion.duration.normal`、`motion.curve.standard` 和 reduced-motion 规则；水平线段在相邻圆点两端各留 8px，垂直线段在相邻圆点上下各留 8px，绝不直接贴合圆点。跨步切换的颜色和标记不允许同时跳到终态：每段 Progress 按行进方向以 `motion.duration.normal` 间隔依次过渡；圆点背景、数字淡入淡出和完成标记按对应到达节点依序延迟，反向切换时顺序反转。完成对号复用 Checkbox 的原有 SVG path、`pathLength`、`stroke-dashoffset` 和 320ms 描画／擦除过渡，不使用瞬间替换的 Icon；进入完成态时序号先以 motion.duration.fast 淡出，淡出完毕再开始描画对号；退出完成态时先擦除对号，描画时长结束后才以 motion.duration.fast 淡入序号，跨步时继续服从对应节点的顺序延迟；readOnly 和 Button 包裹模式的圆点数字均显式使用 `Text typo="label-small"`，字号与行高完全一致。reduced-motion 时去掉所有延迟和过渡。圆点自身的颜色切换通过 View 的原有 `transition` 通道过渡。 垂直布局在 `viewProps.height` 指定高度时，`nav`、有序列表和除末项外的步骤段共同占满该高度，最后一步落在底部，连接线随步骤间距离伸长；未指定高度时维持内容驱动的紧凑排列，横向布局不受影响。
+- 使用原生有序列表展示层级顺序、`nav` 作为导航 landmark，当前步骤使用 `aria-current="step"`；交互仍由公开 Button 负责原生键盘与禁用语义，但 Button 尺寸紧贴实际步骤内容，不得通过整行幽灵按钮生成悬停底色；消除整块 hover/press 背景与整体位移，所有垂直圆点同轴，不引入路由或表单提交。
+- Documentation 必须演示默认可点击、垂直受控外部操作和只读展示，覆盖英／简中／繁中／法文。
 
 ---
 
@@ -3780,6 +3790,7 @@ active  80%
 - `items: readonly BreadcrumbItem[]` 按父级到当前页的顺序提供带 `text: ReactNode` 的项。普通项可设置 `href?: string`：非末级的 href 使用真实 `Link`，默认 `hideIcon` 与 `hideUnderline`，不显示装饰性尾部 link icon 或底边线；独立 Link 的默认值不变。
 - 可选 `menu: ReactNode` 表示菜单型项，传入已有 `MenuItem` 内容，由 `Menu` 处理浮层定位、关闭与键盘行为，使用原生 `<button>` 并沿用 `Link` 的视觉样式作为触发器，默认同样隐藏底边线；`href` 与 `menu` 在同一个项上互斥。菜单型项可处于任意层级（包括末级），下拉选项只表示该层级的同级页面，不表示下一层级。菜单项选择行为由提供的 `MenuItem.onSelect` 决定；需要更新后续层级时，调用方更新传入的 `items`。Documentation 的 Breadcrumb 中间一级显示现有五组 Accordion 导航分类中的当前分组，点击后可选择其余分组（切换到该分组第一个组件页面）；最后一级仅包含当前分组内的组件列表，各级都使用已有 `MenuItem`，不把整组 Accordion 放进最后一级下拉；沿用 `useDocsRoute().navigate`，前进/后退同步更新。只有 Docs 的实例用现有 `Column maxHeight={320} overflow="auto"` 限制长列表，不修改 Breadcrumb/Menu 默认值或公开 API。公开组件不隐式管理路由。
 - 最末项始终代表当前页面：普通末项用 `Text` 和 `aria-current="page"`，不生成链接，即使传了 href 也不跳转；菜单型末项则在触发按钮上设置 `aria-current="page"`，点击打开菜单而不是跳转。单项时没有分隔符，空项不生成链接和当前项。
+- Breadcrumb 中实际可操作的祖先链接和菜单触发器统一复用 Weave View 的 `clickable` 默认 hover/active surface 混色与 `motion.duration.normal` 背景过渡，同时保留 Link 的焦点轮廓；为使反馈区域可清楚感知，链接与菜单触发器统一采用左右 12px、上下 8px 的内容内边距及现有 medium 圆角；反馈随实际可操作项扩展，不为整行添加 Button 背景。非交互 Text 不产生反馈；隐藏下划线的默认设置和独立 Link 的默认行为均不变。
 - `separator?: ReactNode` 可选，决定所有相邻层级之间的装饰性分隔元素；缺省仍使用现有右箭头 `Icon`。每个分隔元素的外层设置 `aria-hidden` 并用 inline-flex 居中对齐图标，布局与换行由 `Row` 负责。
 - 外层使用真实 `<nav>` 及随 `document.lang` 切换的四语言 `aria-label`；`label?: string` 可覆盖默认可访问名称，`viewProps` 作用于内部 Row。
 - 不处理应用路由状态、历史记录、截断菜单或动态数据加载。

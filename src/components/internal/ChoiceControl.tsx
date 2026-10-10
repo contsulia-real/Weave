@@ -7,6 +7,7 @@ import { resolveChoiceControlTheme } from '../../renderers/dom/resolve-component
 import { useRuntimeStyleClass } from '../../renderers/dom/runtime-class'
 import { useStaticStylesheet } from '../../renderers/dom/static-stylesheet'
 import { useTheme } from '../../theme/theme-context'
+import { CheckboxCheckMark } from './CheckboxCheckMark'
 import { formFieldAssociationOverrides, useFormFieldContext } from './form-field-context'
 import { useFormReset } from './use-form-reset'
 import { useViewHost } from './use-view-host'
@@ -131,24 +132,7 @@ export function ChoiceControl(props: ChoiceControlProps) {
         <span className="weave-choice-state-layer" aria-hidden="true" />
 
         <span className="weave-choice-visual" aria-hidden="true">
-          {kind === 'radio' ? (
-            <span className="weave-radio__dot" />
-          ) : (
-            <svg className="weave-checkbox__mark" viewBox="0 0 24 24" aria-hidden="true">
-              <path
-                className="weave-checkbox__mark-path weave-checkbox__check-path"
-                data-weave-checkbox-check=""
-                pathLength="1"
-                d="M4.5 12.5 9.5 17.5 19.5 6.5"
-              />
-              <path
-                className="weave-checkbox__mark-path weave-checkbox__indeterminate-path"
-                data-weave-checkbox-indeterminate-mark=""
-                pathLength="1"
-                d="M6 12 H18"
-              />
-            </svg>
-          )}
+          {kind === 'radio' ? <span className="weave-radio__dot" /> : <CheckboxCheckMark />}
         </span>
       </span>
 

@@ -386,6 +386,13 @@
       "usesViewProps": true,
       "props": "r90a92601392c"
     },
+    "Stepper": {
+      "importPath": "@contsulia/weave/components/Stepper",
+      "nativeProps": false,
+      "hasViewProps": true,
+      "usesViewProps": false,
+      "props": "r1afc81eb9708"
+    },
     "Switch": {
       "importPath": "@contsulia/weave/components/Switch",
       "nativeProps": false,
@@ -916,6 +923,16 @@
     ],
     "rdbe4da19d01a": ["pfe1d5169094c"],
     "r90a92601392c": ["p9b0fd994586d"],
+    "r1afc81eb9708": [
+      "p5a8743be309e",
+      "pdd6eb50a9548",
+      "p632d8a2636dd",
+      "pff8adabb6a27",
+      "p317113c5d551",
+      "p2f6a4e268a7f",
+      "pcd30c51075cd",
+      "p2f35eb0ff033"
+    ],
     "rec8b08d0f1cc": [
       "p2bf92f6507bd",
       "p8da68ee5815c",
@@ -3446,6 +3463,54 @@
       "description": "Fixed to stack by Stack and cannot be changed.",
       "type": "undefined",
       "optional": true
+    },
+    "p5a8743be309e": {
+      "name": "defaultStep",
+      "description": "Initial step when uncontrolled; defaults to 1.",
+      "type": "number | undefined",
+      "optional": true
+    },
+    "pdd6eb50a9548": {
+      "name": "disabled",
+      "description": "Disable all step controls.",
+      "type": "boolean | undefined",
+      "optional": true
+    },
+    "p632d8a2636dd": {
+      "name": "label",
+      "description": "Accessible navigation landmark name.",
+      "type": "string | undefined",
+      "optional": true
+    },
+    "pff8adabb6a27": {
+      "name": "onStepChange",
+      "description": "Called when an enabled, different step is selected.",
+      "type": "((step: number) => void) | undefined",
+      "optional": true
+    },
+    "p317113c5d551": {
+      "name": "orientation",
+      "description": "Visual arrangement; defaults to horizontal.",
+      "type": "\"horizontal\" | \"vertical\" | undefined",
+      "optional": true
+    },
+    "p2f6a4e268a7f": {
+      "name": "readOnly",
+      "description": "Show progress without clickable controls.",
+      "type": "boolean | undefined",
+      "optional": true
+    },
+    "pcd30c51075cd": {
+      "name": "step",
+      "description": "Controlled current step, numbered from 1.",
+      "type": "number | undefined",
+      "optional": true
+    },
+    "p2f35eb0ff033": {
+      "name": "steps",
+      "description": "Ordered steps; indices start at 1.",
+      "type": "readonly StepperItem[]",
+      "optional": false
     },
     "p2bf92f6507bd": {
       "name": "checked",

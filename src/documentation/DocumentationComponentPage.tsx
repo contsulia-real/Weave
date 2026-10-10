@@ -1,5 +1,5 @@
 import { IconArrowLeft, IconArrowRight } from '@tabler/icons-react'
-import { Suspense, useRef } from 'react'
+import { Fragment, Suspense, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Breadcrumb, Card, Column, Flex, Icon, MenuItem, Row, Text } from '../index'
 import { DocumentationComponentApiLink } from './DocumentationComponentApiLink'
@@ -84,25 +84,52 @@ export function DocumentationComponentPage({ componentName }: DocumentationCompo
             typeof example.description === 'string'
               ? documentationCopy(t, example.description)
               : example.description
+          const inputSection =
+            componentName === 'Input' && example.id === 'email-input'
+              ? { id: 'input-types', label: t('docs.input.types') }
+              : componentName === 'Input' && example.id === 'controlled-input'
+                ? { id: 'controlled-and-linked', label: t('docs.input.controlled') }
+                : null
+          const showInContents =
+            componentName !== 'Input' ||
+            example.id === 'basic-usage' ||
+            example.id === 'form-states'
 
           return (
-            <Column
-              key={example.demo}
-              id={example.id}
-              data={{
-                'weave-doc-section': '',
-                'weave-doc-section-label': title,
-              }}
-              width="fill"
-              minWidth={0}
-              gap={16}
-            >
-              <Text typo="headline-small">{title}</Text>
-              {description === undefined ? null : <Text typo="body-medium">{description}</Text>}
-              <Suspense fallback={null}>
-                <DocumentationComponentExample demo={demo} />
-              </Suspense>
-            </Column>
+            <Fragment key={example.demo}>
+              {inputSection === null ? null : (
+                <Column
+                  id={inputSection.id}
+                  data={{
+                    'weave-doc-section': '',
+                    'weave-doc-section-label': inputSection.label,
+                  }}
+                  width="fill"
+                >
+                  <Text typo="headline-medium">{inputSection.label}</Text>
+                </Column>
+              )}
+              <Column
+                id={example.id}
+                data={
+                  showInContents
+                    ? {
+                        'weave-doc-section': '',
+                        'weave-doc-section-label': title,
+                      }
+                    : undefined
+                }
+                width="fill"
+                minWidth={0}
+                gap={16}
+              >
+                <Text typo="headline-small">{title}</Text>
+                {description === undefined ? null : <Text typo="body-medium">{description}</Text>}
+                <Suspense fallback={null}>
+                  <DocumentationComponentExample demo={demo} />
+                </Suspense>
+              </Column>
+            </Fragment>
           )
         })}
 

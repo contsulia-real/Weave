@@ -56,6 +56,7 @@ export const componentNavigationSections: readonly DocumentationNavigationSectio
     'Progress',
     'Pagination',
     'Skeleton',
+    'Stepper',
   ]),
   componentSection('composite-ui', 'docs.nav.compositeUI', [
     'Form',

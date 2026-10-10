@@ -56,6 +56,7 @@
     "./components/SelectOption": "./dist/components/SelectOption.js",
     "./components/Skeleton": "./dist/components/Skeleton.js",
     "./components/Slider": "./dist/components/Slider.js",
+    "./components/Stepper": "./dist/components/Stepper.js",
     "./components/Snack": "./dist/components/Snack.js",
     "./components/SnackProvider": "./dist/components/SnackProvider.js",
     "./components/SplitBox": "./dist/components/SplitBox.js",
