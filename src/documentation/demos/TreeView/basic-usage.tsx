@@ -10,7 +10,6 @@ export default function TreeViewBasicUsageDemo() {
   return (
     <Column gap={12} width="fill">
       <TreeView
-        viewProps={{ width: 'fit' }}
         label={t('Project files')}
         defaultExpanded={['src']}
         selected={selected}
