@@ -71,6 +71,13 @@
       "usesViewProps": false,
       "props": "rd49985a43be6"
     },
+    "Calendar": {
+      "importPath": "@contsulia/weave/components/Calendar",
+      "nativeProps": false,
+      "hasViewProps": false,
+      "usesViewProps": false,
+      "props": "ref0be443839e"
+    },
     "Card": {
       "importPath": "@contsulia/weave/components/Card",
       "nativeProps": false,
@@ -568,6 +575,17 @@
       "p1bd82e09cde6",
       "p1e720744749d",
       "p81fbbc6a767d"
+    ],
+    "ref0be443839e": [
+      "p01e005679053",
+      "p531a9289d2ce",
+      "p0d725969a39d",
+      "pb46172d05e83",
+      "pa9feaccb5db3",
+      "p13d7c982554e",
+      "pf627c6537a40",
+      "pc39e854836fb",
+      "pbfe9b0ea33d0"
     ],
     "r1b8e26479950": [
       "pd5754de8702d",
@@ -1503,6 +1521,60 @@
       "name": "xl",
       "description": "Overrides supported props at the xl viewport breakpoint.",
       "type": "ButtonResponsiveProps | undefined",
+      "optional": true
+    },
+    "p01e005679053": {
+      "name": "defaultValue",
+      "description": "",
+      "type": "InputValue | undefined",
+      "optional": true
+    },
+    "p531a9289d2ce": {
+      "name": "disabled",
+      "description": "",
+      "type": "boolean | undefined",
+      "optional": true
+    },
+    "p0d725969a39d": {
+      "name": "locale",
+      "description": "BCP 47 language tag for custom color, calendar and clock pickers.",
+      "type": "string | undefined",
+      "optional": true
+    },
+    "pb46172d05e83": {
+      "name": "max",
+      "description": "",
+      "type": "string | number | undefined",
+      "optional": true
+    },
+    "pa9feaccb5db3": {
+      "name": "min",
+      "description": "",
+      "type": "string | number | undefined",
+      "optional": true
+    },
+    "p13d7c982554e": {
+      "name": "onChange",
+      "description": "",
+      "type": "((value: string) => void) | undefined",
+      "optional": true
+    },
+    "pf627c6537a40": {
+      "name": "readOnly",
+      "description": "",
+      "type": "boolean | undefined",
+      "optional": true
+    },
+    "pc39e854836fb": {
+      "name": "step",
+      "description": "",
+      "type": "number | \"any\" | undefined",
+      "optional": true
+    },
+    "pbfe9b0ea33d0": {
+      "name": "value",
+      "description": "",
+      "type": "InputValue | undefined",
       "optional": true
     },
     "pd5754de8702d": {
@@ -2787,12 +2859,6 @@
       "name": "defaultPage",
       "description": "Initial page when uncontrolled; defaults to 1.",
       "type": "number | undefined",
-      "optional": true
-    },
-    "p531a9289d2ce": {
-      "name": "disabled",
-      "description": "",
-      "type": "boolean | undefined",
       "optional": true
     },
     "p47d5f97af079": {

@@ -697,6 +697,15 @@
       "source": "import { Button } from '../../../index'\n\nexport default function ButtonResponsiveButtonDemo() {\n  return (\n    <Button\n      text=\"Responsive action\"\n      size=\"small\"\n      variant=\"ghost\"\n      md={{ size: 'medium', variant: 'secondary' }}\n      lg={{ size: 'large', variant: 'primary' }}\n    />\n  )\n}"
     },
     {
+      "id": "Calendar/basic-usage",
+      "component": "Calendar",
+      "title": "Basic usage",
+      "components": ["Calendar", "Column", "Text"],
+      "concepts": ["basic", "calendar", "column", "text", "usage"],
+      "documentationRoute": "/docs/components/Calendar",
+      "source": "import { useState } from 'react'\nimport { Calendar, Column, Text } from '../../../index'\n\nexport default function CalendarBasicUsageDemo() {\n  const [date, setDate] = useState('2026-10-15')\n\n  return (\n    <Column gap={12} align=\"start\">\n      <Calendar value={date} onChange={setDate} min=\"2026-09-10\" max=\"2026-11-20\" />\n      <Text typo=\"body-small\">{date}</Text>\n    </Column>\n  )\n}"
+    },
+    {
       "id": "Card/basic-usage",
       "component": "Card",
       "title": "Basic usage",

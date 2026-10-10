@@ -614,6 +614,81 @@
         }
       ]
     },
+    "Calendar": {
+      "name": "Calendar",
+      "import": "import { Calendar } from '@contsulia/weave/components/Calendar'",
+      "importPath": "@contsulia/weave/components/Calendar",
+      "category": "forms-status",
+      "intent": "Displays the existing Input date calendar directly, without an input or popover.",
+      "preferWhen": [],
+      "avoidWhen": [],
+      "alternatives": [],
+      "relationship": {
+        "demoParent": null,
+        "standaloneDocumentationPage": true
+      },
+      "viewPropsMode": "none",
+      "nativeProps": false,
+      "documentationRoute": "/docs/components/Calendar",
+      "apiRoute": "/docs/components-api/Calendar",
+      "examples": ["Calendar/basic-usage"],
+      "props": [
+        {
+          "name": "defaultValue",
+          "description": "",
+          "type": "InputValue | undefined",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "description": "",
+          "type": "boolean | undefined",
+          "optional": true
+        },
+        {
+          "name": "locale",
+          "description": "BCP 47 language tag for custom color, calendar and clock pickers.",
+          "type": "string | undefined",
+          "optional": true
+        },
+        {
+          "name": "max",
+          "description": "",
+          "type": "string | number | undefined",
+          "optional": true
+        },
+        {
+          "name": "min",
+          "description": "",
+          "type": "string | number | undefined",
+          "optional": true
+        },
+        {
+          "name": "onChange",
+          "description": "",
+          "type": "((value: string) => void) | undefined",
+          "optional": true
+        },
+        {
+          "name": "readOnly",
+          "description": "",
+          "type": "boolean | undefined",
+          "optional": true
+        },
+        {
+          "name": "step",
+          "description": "",
+          "type": "number | \"any\" | undefined",
+          "optional": true
+        },
+        {
+          "name": "value",
+          "description": "",
+          "type": "InputValue | undefined",
+          "optional": true
+        }
+      ]
+    },
     "Card": {
       "name": "Card",
       "import": "import { Card } from '@contsulia/weave/components/Card'",
@@ -825,6 +900,7 @@
         "Button/basic-button",
         "Button/custom-content",
         "Button/form-actions",
+        "Calendar/basic-usage",
         "Card/clickable-card",
         "Card/combined-interaction",
         "Checkbox/basic-usage",
@@ -4647,6 +4723,7 @@
         "Button/custom-content",
         "Button/form-actions",
         "Button/handling-clicks",
+        "Calendar/basic-usage",
         "Card/clickable-card",
         "Card/combined-interaction",
         "Card/selectable-card",

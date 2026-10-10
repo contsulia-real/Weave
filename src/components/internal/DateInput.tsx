@@ -19,8 +19,10 @@ type SingleLineProps = SingleLineInputProps
 type TemporalType = Extract<InputType, 'date' | 'time' | 'datetime-local' | 'month' | 'week'>
 type TemporalInputProps = SingleLineProps & {
   type: TemporalType
-  InputHost: (props: SingleLineProps) => import('react').JSX.Element
-}
+} & (
+    | { inline: true; InputHost?: never }
+    | { inline?: false; InputHost: (props: SingleLineProps) => import('react').JSX.Element }
+  )
 type Panel = 'days' | 'months' | 'years' | 'hours' | 'minutes' | 'seconds'
 
 function calendarDate(month: number, day: number): globalThis.Date {
@@ -152,6 +154,7 @@ function optionAllowed(
 
 export function DateInput({
   InputHost,
+  inline = false,
   type,
   value,
   defaultValue = '',
@@ -258,9 +261,11 @@ export function DateInput({
   }
 
   const completeSelection = (next: string) => {
+    if (disabled || readOnly) return
+    if (inline && next !== '' && !optionIsAllowed(next)) return
     if (!checkNativeValue(next)) return
     commit(next)
-    setOpen(false)
+    if (!inline) setOpen(false)
   }
 
   const selectedTime = (hours: number, minutes: number, seconds: number): string => {
@@ -378,7 +383,7 @@ export function DateInput({
   }
 
   const pickerContent = (
-    <Column gap={16} width={304}>
+    <Column gap={16} width={304} inert={inline && (disabled || readOnly)}>
       {includesTime || type === 'week' ? (
         <Tabs
           value={panel}
@@ -614,6 +619,9 @@ export function DateInput({
       ) : null}
     </Column>
   )
+
+  if (inline) return pickerContent
+  if (InputHost === undefined) throw new Error('DateInput requires InputHost')
 
   return (
     <InputHost

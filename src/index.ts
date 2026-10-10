@@ -8,6 +8,7 @@ export { Avatar } from './components/Avatar'
 export { Badge } from './components/Badge'
 export { Breadcrumb } from './components/Breadcrumb'
 export { Button } from './components/Button'
+export { Calendar } from './components/Calendar'
 export { Card } from './components/Card'
 export { Checkbox } from './components/Checkbox'
 export { Code } from './components/Code'
@@ -116,6 +117,7 @@ export type {
   ButtonVariant,
   ButtonViewProps,
 } from './core/button-types'
+export type { CalendarProps } from './core/calendar-types'
 export type {
   CardProps,
   CardViewProps,
