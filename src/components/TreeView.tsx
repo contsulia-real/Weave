@@ -205,9 +205,16 @@ export function TreeView({
                 shrink={0}
               />
             ) : null}
-            <View className="weave-list-item__icon" aria-hidden="true">
+            <Row
+              className="weave-list-item__icon"
+              align="center"
+              justify="center"
+              aria-hidden="true"
+            >
               {hasChildren ? (
-                <View
+                <Row
+                  align="center"
+                  justify="center"
                   width="fill"
                   height="fill"
                   rotate={open ? 90 : 0}
@@ -218,13 +225,18 @@ export function TreeView({
                     size="medium"
                     viewProps={{ width: '100%', height: '100%' }}
                   />
-                </View>
+                </Row>
               ) : null}
-            </View>
+            </Row>
             {node.leading === undefined ? null : (
-              <View className="weave-list-item__icon" aria-hidden="true">
+              <Row
+                className="weave-list-item__icon"
+                align="center"
+                justify="center"
+                aria-hidden="true"
+              >
                 {node.leading}
-              </View>
+              </Row>
             )}
             <Text
               singleLine
