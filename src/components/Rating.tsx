@@ -10,9 +10,15 @@ import { Row } from './Row'
 import { View } from './View'
 
 const iconSizes: Record<ButtonSize, IconSize> = {
-  small: 'medium',
-  medium: 'large',
+  small: 'large',
+  medium: 'xlarge',
   large: 'xlarge',
+}
+
+const starSizes: Record<ButtonSize, number> = {
+  small: 20,
+  medium: 24,
+  large: 28,
 }
 
 function normalizedValue(value: number, max: number, allowHalf: boolean): number {
@@ -25,15 +31,21 @@ function normalizedValue(value: number, max: number, allowHalf: boolean): number
 function RatingStar({
   fraction,
   size,
+  pixels,
   reducedMotion,
 }: {
   fraction: number
   size: IconSize
+  pixels: number
   reducedMotion: boolean
 }) {
   return (
     <Row position="relative" align="center" justify="center" pointerEvents="none">
-      <Icon icon={IconStar} size={size} viewProps={{ color: 'secondary' }} />
+      <Icon
+        icon={IconStar}
+        size={size}
+        viewProps={{ color: 'secondary', width: pixels, height: pixels }}
+      />
       <View
         layout="flex"
         align="start"
@@ -46,7 +58,11 @@ function RatingStar({
         pointerEvents="none"
         transition={reducedMotion ? undefined : { properties: ['width'], duration: 'normal' }}
       >
-        <Icon icon={IconStarFilled} size={size} viewProps={{ color: 'primary' }} />
+        <Icon
+          icon={IconStarFilled}
+          size={size}
+          viewProps={{ color: 'primary', width: pixels, height: pixels }}
+        />
       </View>
     </Row>
   )
@@ -67,7 +83,13 @@ export function Rating({
   const count = Number.isFinite(max) ? Math.max(1, Math.floor(max)) : 5
   const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue)
   const current = normalizedValue(value ?? uncontrolledValue, count, allowHalf)
-  const dimension = theme.components.Button?.sizes?.[size]?.minHeight ?? 'fit'
+  const baseDimension = theme.components.Button?.sizes?.[size]?.minHeight
+  const dimension =
+    typeof baseDimension === 'number'
+      ? baseDimension + 4
+      : typeof baseDimension === 'string'
+        ? `calc(${baseDimension} + 4px)`
+        : 'fit'
 
   const select = (next: number) => {
     if (readOnly || next === current) return
@@ -118,7 +140,12 @@ export function Rating({
         const star = index + 1
         const fraction = Math.max(0, Math.min(1, current - index))
         const visual = (
-          <RatingStar fraction={fraction} size={iconSizes[size]} reducedMotion={reducedMotion} />
+          <RatingStar
+            fraction={fraction}
+            size={iconSizes[size]}
+            pixels={starSizes[size]}
+            reducedMotion={reducedMotion}
+          />
         )
 
         return readOnly ? (
