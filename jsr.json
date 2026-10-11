@@ -21,6 +21,7 @@
     "./components/Carousel": "./dist/components/Carousel.js",
     "./components/Card": "./dist/components/Card.js",
     "./components/Checkbox": "./dist/components/Checkbox.js",
+    "./components/Chip": "./dist/components/Chip.js",
     "./components/Code": "./dist/components/Code.js",
     "./components/Column": "./dist/components/Column.js",
     "./components/Combobox": "./dist/components/Combobox.js",

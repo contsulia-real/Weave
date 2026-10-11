@@ -218,6 +218,22 @@ assert(infoAlert.includes('Update available'), 'Alert must render title')
 assert(infoAlert.includes('Read the notes'), 'Alert must render description')
 assert(errorAlert.includes('role="alert"'), 'Error Alert must use alert semantics')
 assert(errorAlert.includes('Retry'), 'Alert must render optional action')
+const componentChip = await import(`${packageJson.name}/components/Chip`)
+const selectedChip = renderToStaticMarkup(
+  createElement(componentChip.Chip, {
+    text: 'Design',
+    selected: true,
+    onRemove: () => undefined,
+    removeLabel: 'Remove Design',
+  }),
+)
+assert(selectedChip.includes('data-weave-chip'), 'Chip must expose its root')
+assert(
+  (selectedChip.match(/data-weave-button="/g) ?? []).length === 2,
+  'Removable Chip must expose separate buttons',
+)
+assert(selectedChip.includes('aria-pressed="true"'), 'Selected Chip must expose pressed semantics')
+assert(selectedChip.includes('aria-label="Remove Design"'), 'Chip remove button must be named')
 const componentOTPInput = await import(`${packageJson.name}/components/OTPInput`)
 const otpMarkup = renderToStaticMarkup(
   createElement(componentOTPInput.OTPInput, {

@@ -40,6 +40,7 @@ export const componentNavigationSections: readonly DocumentationNavigationSectio
     'Divider',
     'Link',
     'Badge',
+    'Chip',
     'Breadcrumb',
     'Button',
     'SegmentedButton',

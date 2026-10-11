@@ -106,6 +106,13 @@
       "usesViewProps": false,
       "props": "r0dbe159e94c1"
     },
+    "Chip": {
+      "importPath": "@contsulia/weave/components/Chip",
+      "nativeProps": false,
+      "hasViewProps": true,
+      "usesViewProps": false,
+      "props": "r2f572e378410"
+    },
     "Code": {
       "importPath": "@contsulia/weave/components/Code",
       "nativeProps": false,
@@ -641,6 +648,15 @@
       "p31d64e616ed1",
       "p9da1c2666046",
       "pe3eac4000286"
+    ],
+    "r2f572e378410": [
+      "p6575014e58f0",
+      "p531a9289d2ce",
+      "pd1c31d73924f",
+      "p6d24f99f912f",
+      "pd761e66b27c0",
+      "p742506c8a7af",
+      "p4fb743db4911"
     ],
     "r6f1291621d84": ["p03ee0c84b6f1", "p0cd91f8a6c94", "p459e278c94c5"],
     "r6f416c524edf": ["pecd54eba2c88", "pf503c92ebe33"],
@@ -1777,6 +1793,42 @@
       "description": "Native checkbox value submitted when this option is checked.",
       "type": "ChoiceControlValue | undefined",
       "optional": true
+    },
+    "p6575014e58f0": {
+      "name": "defaultSelected",
+      "description": "",
+      "type": "boolean | undefined",
+      "optional": true
+    },
+    "pd1c31d73924f": {
+      "name": "onRemove",
+      "description": "",
+      "type": "(() => void) | undefined",
+      "optional": true
+    },
+    "p6d24f99f912f": {
+      "name": "onSelectedChange",
+      "description": "",
+      "type": "((selected: boolean) => void) | undefined",
+      "optional": true
+    },
+    "pd761e66b27c0": {
+      "name": "removeLabel",
+      "description": "",
+      "type": "string | undefined",
+      "optional": true
+    },
+    "p742506c8a7af": {
+      "name": "selected",
+      "description": "",
+      "type": "boolean | undefined",
+      "optional": true
+    },
+    "p4fb743db4911": {
+      "name": "text",
+      "description": "",
+      "type": "string",
+      "optional": false
     },
     "p03ee0c84b6f1": {
       "name": "children",

@@ -931,6 +931,69 @@
         }
       ]
     },
+    "Chip": {
+      "name": "Chip",
+      "import": "import { Chip } from '@contsulia/weave/components/Chip'",
+      "importPath": "@contsulia/weave/components/Chip",
+      "category": "content-actions",
+      "intent": "A compact, selectable and removable pill using Button styling without depth.",
+      "preferWhen": [],
+      "avoidWhen": [],
+      "alternatives": [],
+      "relationship": {
+        "demoParent": null,
+        "standaloneDocumentationPage": true
+      },
+      "viewPropsMode": "nested",
+      "nativeProps": false,
+      "documentationRoute": "/docs/components/Chip",
+      "apiRoute": "/docs/components-api/Chip",
+      "examples": ["Chip/basic-usage", "Chip/removable"],
+      "props": [
+        {
+          "name": "defaultSelected",
+          "description": "",
+          "type": "boolean | undefined",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "description": "",
+          "type": "boolean | undefined",
+          "optional": true
+        },
+        {
+          "name": "onRemove",
+          "description": "",
+          "type": "(() => void) | undefined",
+          "optional": true
+        },
+        {
+          "name": "onSelectedChange",
+          "description": "",
+          "type": "((selected: boolean) => void) | undefined",
+          "optional": true
+        },
+        {
+          "name": "removeLabel",
+          "description": "",
+          "type": "string | undefined",
+          "optional": true
+        },
+        {
+          "name": "selected",
+          "description": "",
+          "type": "boolean | undefined",
+          "optional": true
+        },
+        {
+          "name": "text",
+          "description": "",
+          "type": "string",
+          "optional": false
+        }
+      ]
+    },
     "Code": {
       "name": "Code",
       "import": "import { Code } from '@contsulia/weave/components/Code'",
@@ -1006,6 +1069,8 @@
         "Card/combined-interaction",
         "Checkbox/basic-usage",
         "Checkbox/indeterminate-parent",
+        "Chip/basic-usage",
+        "Chip/removable",
         "Combobox/controlled-values",
         "Dialog/modal-dialog",
         "Dialog/non-modal-dialog",
@@ -3572,6 +3637,8 @@
         "Button/icon-only-actions",
         "Button/icons-and-labels",
         "Card/selectable-card",
+        "Chip/basic-usage",
+        "Chip/removable",
         "Dialog/modal-dialog",
         "Divider/vertical-divider",
         "Drawer/controlled-drawer",
@@ -4991,6 +5058,8 @@
         "Card/selectable-card",
         "Carousel/basic-usage",
         "Carousel/variable-width",
+        "Chip/basic-usage",
+        "Chip/removable",
         "Combobox/controlled-values",
         "Combobox/empty-search-state",
         "Combobox/searchable-rich-options",

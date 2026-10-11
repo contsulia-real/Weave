@@ -3065,6 +3065,16 @@ viewProps
 - 使用公开 `Column / Row / Text / Icon` 组合：外层 Column 纵向排列标题行、说明和操作；第一行 Row 直接包含 Icon 与 `title-small` Text，设置 `align="center"` 并保持两者 12px 间距。说明和操作以 Icon.medium 的 Theme 宽度加 12px 缩进，与标题左缘对齐，不创建单独图标槽、Grid 或固定垂直偏移。状态图标使用现有 Tabler icon 且 `aria-hidden`。`info/success` 使用 `role="status"`，`warning/error` 使用 `role="alert"`，容器不创建键盘焦点。
 - 默认标题排版为 `title-small`，说明为 `body-medium`；`viewProps` 可覆盖通用视觉属性。Documentation 提供四种状态、可交互操作示例和英／简中／繁中／法文翻译。
 
+## 15.9 Chip
+
+`Chip` 是紧凑的可选择、可删除胶囊项目，区别于挂靠其他内容的角标 `Badge`。Chip **复用实际 `Button` 组件、其主题令牌、键盘/焦点行为与选中状态**，不重建另一套按钮渲染器或 Theme。
+
+- `text: string` 为可见名称；`selected?: boolean`、`defaultSelected?: boolean`、`onSelectedChange?: (value: boolean) => void` 复用受控／非受控布尔状态约定。选中主按钮带 `aria-pressed`，用 Button 的 primary 状态；未选中使用 tertiary 状态。点击及 Space/Enter 只触发选中切换。
+- `onRemove?: () => void` 添加单独的删除按钮，不在选择按钮内部嵌套交互控件；`removeLabel?: string` 设置其无障碍名称，默认 `Remove ${text}`，项目使用其他语言时应显式提供对应翻译；删除按钮单独键盘聚焦并调用 `onRemove`，不切换主按钮选中状态。`disabled?: boolean` 同时禁止选择和删除。
+- `viewProps?: Omit<RowProps, 'children' | 'role'>` 作用于胶囊整体的 Row。两个 Button 都沿用 small 尺寸及原生 theme、hover、active、focus-visible 等反馈；整体 `gap=0`，胶囊两端使用既有 `full` radius token，中间共享一条分隔边。
+- **无 depth**：仅在 Chip 内覆盖两个 Button 的 box-shadow 和 transform 为 `none`，包括 hover、active、pressed；保留现有 Button 的背景、边框、颜色、焦点和禁用视觉，不新增 Theme 参数或改变全局 Button。
+- Documentation 提供受控／非受控选择、禁用以及可删除交互示例，覆盖英文、简中、繁中和法文。
+
 ---
 
 # 16. `Progress`

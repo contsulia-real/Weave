@@ -134,6 +134,18 @@ export const contentComponentExamples: Record<
     description: 'Anchors a compact text or dot indicator to another piece of content.',
     examples: [basicExample('Badge/basic-usage')],
   },
+  Chip: {
+    description: 'A compact, selectable and removable pill using Button styling without depth.',
+    examples: [
+      basicExample('Chip/basic-usage'),
+      {
+        id: 'removable',
+        title: 'Removable chips',
+        description: 'Remove chips with a separate button without changing selection.',
+        demo: 'Chip/removable',
+      },
+    ],
+  },
   Button: {
     description: 'A semantic action control with themed variants, sizes, pressed state, and icons.',
     examples: [

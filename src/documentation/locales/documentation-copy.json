@@ -1,4 +1,69 @@
 {
+  "A compact, selectable and removable pill using Button styling without depth.": {
+    "zh-CN": "可选择、可删除的紧凑胶囊项目，复用无深度效果的 Button 样式。",
+    "zh-TW": "可選擇、可刪除的緊湊膠囊項目，沿用無深度效果的 Button 樣式。",
+    "fr": "Une pastille compacte, sélectionnable et supprimable, utilisant le style de Button sans relief."
+  },
+  "Removable chips": {
+    "zh-CN": "可删除的 Chip",
+    "zh-TW": "可刪除的 Chip",
+    "fr": "Chips supprimables"
+  },
+  "Remove chips with a separate button without changing selection.": {
+    "zh-CN": "用单独的按钮删除 Chip，不改变选择状态。",
+    "zh-TW": "使用獨立按鈕刪除 Chip，不變更選擇狀態。",
+    "fr": "Supprimer des chips avec un bouton distinct, sans modifier la sélection."
+  },
+  "Design chip": {
+    "zh-CN": "设计",
+    "zh-TW": "設計",
+    "fr": "Design"
+  },
+  "Development chip": {
+    "zh-CN": "开发",
+    "zh-TW": "開發",
+    "fr": "Développement"
+  },
+  "Disabled chip": {
+    "zh-CN": "已禁用",
+    "zh-TW": "已停用",
+    "fr": "Désactivé"
+  },
+  "Design": {
+    "zh-CN": "设计",
+    "zh-TW": "設計",
+    "fr": "Design"
+  },
+  "Development": {
+    "zh-CN": "开发",
+    "zh-TW": "開發",
+    "fr": "Développement"
+  },
+  "Design selected: {{value}}": {
+    "zh-CN": "设计已选中：{{value}}",
+    "zh-TW": "設計已選取：{{value}}",
+    "fr": "Design sélectionné : {{value}}"
+  },
+  "Remaining chips: {{count}}": {
+    "zh-CN": "剩余 Chip：{{count}}",
+    "zh-TW": "剩餘 Chip：{{count}}",
+    "fr": "Chips restants : {{count}}"
+  },
+  "Remove {{name}}": {
+    "zh-CN": "删除{{name}}",
+    "zh-TW": "刪除{{name}}",
+    "fr": "Supprimer {{name}}"
+  },
+  "Yes": {
+    "zh-CN": "是",
+    "zh-TW": "是",
+    "fr": "Oui"
+  },
+  "No": {
+    "zh-CN": "否",
+    "zh-TW": "否",
+    "fr": "Non"
+  },
   "Accent color": {
     "zh-CN": "强调色",
     "zh-TW": "強調色",

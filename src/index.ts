@@ -13,6 +13,7 @@ export { Calendar } from './components/Calendar'
 export { Card } from './components/Card'
 export { Carousel } from './components/Carousel'
 export { Checkbox } from './components/Checkbox'
+export { Chip } from './components/Chip'
 export { Code } from './components/Code'
 export { Column } from './components/Column'
 export { Combobox } from './components/Combobox'
@@ -128,6 +129,7 @@ export type {
   CardViewProps,
 } from './core/card-types'
 export type { CarouselProps } from './core/carousel-types'
+export type { ChipProps } from './core/chip-types'
 export type {
   CheckboxProps,
   CheckboxViewProps,
