@@ -259,6 +259,86 @@
     "zh-TW": "水平或垂直分隔線，間距與線條粗細皆可設定。",
     "fr": "Séparateur horizontal ou vertical avec espacement et épaisseur de ligne configurables."
   },
+  "A persistent inline notice for information, success, warning, or error with an optional description and action.": {
+    "zh-CN": "持续显示的信息、成功、警告或错误提示，可包含说明与操作。",
+    "zh-TW": "持續顯示的資訊、成功、警告或錯誤提示，可包含說明與操作。",
+    "fr": "Avis intégré persistant pour une information, un succès, un avertissement ou une erreur, avec description et action facultatives."
+  },
+  "Alert with action": {
+    "zh-CN": "带操作的提示",
+    "zh-TW": "帶操作的提示",
+    "fr": "Alerte avec action"
+  },
+  "Use a button to respond to an alert without dismissing it automatically.": {
+    "zh-CN": "通过按钮处理提示内容，不自动关闭提示。",
+    "zh-TW": "透過按鈕處理提示內容，不自動關閉提示。",
+    "fr": "Utilisez un bouton pour réagir à une alerte sans la fermer automatiquement."
+  },
+  "Update available": {
+    "zh-CN": "有可用更新",
+    "zh-TW": "有可用更新",
+    "fr": "Mise à jour disponible"
+  },
+  "You can install this update later.": {
+    "zh-CN": "可以稍后安装此更新。",
+    "zh-TW": "可以稍後安裝此更新。",
+    "fr": "Vous pouvez installer cette mise à jour plus tard."
+  },
+  "Settings saved": {
+    "zh-CN": "设置已保存",
+    "zh-TW": "設定已儲存",
+    "fr": "Paramètres enregistrés"
+  },
+  "Your changes are now active.": {
+    "zh-CN": "更改现已生效。",
+    "zh-TW": "變更現已生效。",
+    "fr": "Vos modifications sont maintenant actives."
+  },
+  "Review required": {
+    "zh-CN": "需要检查",
+    "zh-TW": "需要檢查",
+    "fr": "Vérification nécessaire"
+  },
+  "Check the details before continuing.": {
+    "zh-CN": "请检查详情后继续。",
+    "zh-TW": "請檢查詳細資訊後繼續。",
+    "fr": "Vérifiez les détails avant de continuer."
+  },
+  "Unable to save": {
+    "zh-CN": "无法保存",
+    "zh-TW": "無法儲存",
+    "fr": "Enregistrement impossible"
+  },
+  "Check your connection and try again.": {
+    "zh-CN": "请检查网络连接后重试。",
+    "zh-TW": "請檢查網路連線後重試。",
+    "fr": "Vérifiez votre connexion et réessayez."
+  },
+  "Upload failed": {
+    "zh-CN": "上传失败",
+    "zh-TW": "上傳失敗",
+    "fr": "Échec du téléversement"
+  },
+  "Upload complete": {
+    "zh-CN": "上传完成",
+    "zh-TW": "上傳完成",
+    "fr": "Téléversement terminé"
+  },
+  "Try uploading the file again.": {
+    "zh-CN": "请重新上传文件。",
+    "zh-TW": "請重新上傳檔案。",
+    "fr": "Essayez de téléverser le fichier de nouveau."
+  },
+  "The file is ready.": {
+    "zh-CN": "文件已就绪。",
+    "zh-TW": "檔案已準備就緒。",
+    "fr": "Le fichier est prêt."
+  },
+  "Retry upload": {
+    "zh-CN": "重试上传",
+    "zh-TW": "重試上傳",
+    "fr": "Réessayer le téléversement"
+  },
   "A semantic anchor with Weave link styling and optional external-link affordances.": {
     "zh-CN": "带有 Weave 链接样式和可选外部链接提示的语义锚点。",
     "zh-TW": "具有 Weave 連結樣式與可選外部連結提示的語意錨點。",

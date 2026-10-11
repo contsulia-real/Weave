@@ -153,6 +153,33 @@
       "source": "import { Accordion, AccordionItem, AccordionPanel, AccordionTrigger } from '../../../index'\n\nconst expandIcon = (\n  <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\">\n    <path d=\"M6 12h12M12 6v12\" />\n  </svg>\n)\n\nconst collapseIcon = (\n  <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\">\n    <path d=\"M6 12h12\" />\n  </svg>\n)\n\nexport default function AccordionTriggerOptionsDemo() {\n  return (\n    <Accordion defaultValue=\"details\" viewProps={{ width: 320 }}>\n      <AccordionItem value=\"details\">\n        <AccordionTrigger singleLine expandIcon={expandIcon} collapseIcon={collapseIcon}>\n          A deliberately long trigger label that truncates within the available width\n        </AccordionTrigger>\n        <AccordionPanel>Custom trigger options keep the same accordion semantics.</AccordionPanel>\n      </AccordionItem>\n    </Accordion>\n  )\n}"
     },
     {
+      "id": "Alert/basic-usage",
+      "component": "Alert",
+      "title": "Basic usage",
+      "components": ["Alert", "Column"],
+      "concepts": ["alert", "basic", "column", "usage"],
+      "documentationRoute": "/docs/components/Alert",
+      "source": "import { useTranslation } from 'react-i18next'\nimport { Alert, Column } from '../../../index'\n\nexport default function AlertBasicUsageDemo() {\n  const { t } = useTranslation('copy')\n\n  return (\n    <Column gap={12}>\n      <Alert title={t('Update available')} description={t('You can install this update later.')} />\n      <Alert\n        variant=\"success\"\n        title={t('Settings saved')}\n        description={t('Your changes are now active.')}\n      />\n      <Alert\n        variant=\"warning\"\n        title={t('Review required')}\n        description={t('Check the details before continuing.')}\n      />\n      <Alert\n        variant=\"error\"\n        title={t('Unable to save')}\n        description={t('Check your connection and try again.')}\n      />\n    </Column>\n  )\n}"
+    },
+    {
+      "id": "Alert/with-action",
+      "component": "Alert",
+      "title": "Alert with action",
+      "description": "Use a button to respond to an alert without dismissing it automatically.",
+      "components": ["Alert", "Button"],
+      "concepts": [
+        "action",
+        "alert",
+        "automatically",
+        "button",
+        "dismissing",
+        "respond",
+        "without"
+      ],
+      "documentationRoute": "/docs/components/Alert",
+      "source": "import { useState } from 'react'\nimport { useTranslation } from 'react-i18next'\nimport { Alert, Button } from '../../../index'\n\nexport default function AlertWithActionDemo() {\n  const { t } = useTranslation('copy')\n  const [retried, setRetried] = useState(false)\n\n  return (\n    <Alert\n      variant={retried ? 'success' : 'error'}\n      title={t(retried ? 'Upload complete' : 'Upload failed')}\n      description={t(retried ? 'The file is ready.' : 'Try uploading the file again.')}\n      action={\n        retried ? undefined : (\n          <Button\n            text={t('Retry upload')}\n            variant=\"secondary\"\n            viewProps={{ onClick: () => setRetried(true) }}\n          />\n        )\n      }\n    />\n  )\n}"
+    },
+    {
       "id": "AppBar/basic-usage",
       "component": "AppBar",
       "title": "Basic usage",

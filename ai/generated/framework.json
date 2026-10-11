@@ -23,8 +23,8 @@
   "componentImportPattern": "@contsulia/weave/components/<ComponentName>",
   "internalImportPattern": "@contsulia/weave/components/internal/*",
   "internalImportsPublic": false,
-  "publicComponentCount": 78,
-  "realExampleCount": 222,
+  "publicComponentCount": 79,
+  "realExampleCount": 224,
   "rules": [
     {
       "id": "action-vs-navigation",

@@ -75,6 +75,19 @@ export const contentComponentExamples: Record<
       'A centered empty-content message with a title, optional description, decorative icon, and action.',
     examples: [basicExample('EmptyState/basic-usage')],
   },
+  Alert: {
+    description:
+      'A persistent inline notice for information, success, warning, or error with an optional description and action.',
+    examples: [
+      basicExample('Alert/basic-usage'),
+      {
+        id: 'with-action',
+        title: 'Alert with action',
+        description: 'Use a button to respond to an alert without dismissing it automatically.',
+        demo: 'Alert/with-action',
+      },
+    ],
+  },
   Timeline: {
     description: 'An ordered timeline of events with optional times and supporting descriptions.',
     examples: [basicExample('Timeline/basic-usage')],

@@ -236,6 +236,51 @@
         }
       ]
     },
+    "Alert": {
+      "name": "Alert",
+      "import": "import { Alert } from '@contsulia/weave/components/Alert'",
+      "importPath": "@contsulia/weave/components/Alert",
+      "category": "content-actions",
+      "intent": "A persistent inline notice for information, success, warning, or error with an optional description and action.",
+      "preferWhen": [],
+      "avoidWhen": [],
+      "alternatives": [],
+      "relationship": {
+        "demoParent": null,
+        "standaloneDocumentationPage": true
+      },
+      "viewPropsMode": "nested",
+      "nativeProps": false,
+      "documentationRoute": "/docs/components/Alert",
+      "apiRoute": "/docs/components-api/Alert",
+      "examples": ["Alert/basic-usage", "Alert/with-action"],
+      "props": [
+        {
+          "name": "action",
+          "description": "",
+          "type": "ReactNode",
+          "optional": true
+        },
+        {
+          "name": "description",
+          "description": "",
+          "type": "ReactNode",
+          "optional": true
+        },
+        {
+          "name": "title",
+          "description": "",
+          "type": "ReactNode",
+          "optional": true
+        },
+        {
+          "name": "variant",
+          "description": "",
+          "type": "AlertVariant | undefined",
+          "optional": true
+        }
+      ]
+    },
     "AppBar": {
       "name": "AppBar",
       "import": "import { AppBar } from '@contsulia/weave/components/AppBar'",
@@ -472,6 +517,7 @@
       "documentationRoute": "/docs/components/Button",
       "apiRoute": "/docs/components-api/Button",
       "examples": [
+        "Alert/with-action",
         "AppBar/basic-usage",
         "AppBar/centered-title",
         "AppBar/floating-app-bar",
@@ -948,6 +994,7 @@
       "apiRoute": "/docs/components-api/Column",
       "examples": [
         "Accordion/disabled-states",
+        "Alert/basic-usage",
         "AppBar/sticky-app-bar",
         "Badge/visibility",
         "Breadcrumb/dropdown-items",

@@ -3056,6 +3056,15 @@ viewProps
 - 输入一位后自动聚焦下一格；在任意格粘贴连续字符时按剩余位置分配，不符合当前 mode 的字符不写入。方向键左右移动焦点；Backspace 清除当前位，当前格为空时删除最后一个已输入字符并返回该格；Delete 清除当前位。支持首格 `autocomplete="one-time-code"`；数字模式使用手机数字键盘，含字母模式使用文本键盘，不额外实施自定义键盘或网络校验。
 - 表单通过同名的原生隐藏字段提交指定长度的拼接值；每个可见输入格保留 required 校验，原生 Form reset 恢复默认值。Documentation 提供受控输入、原生表单提交、字符模式及不同验证码位数示例，并完成英／简中／繁中／法文翻译。
 
+## 15.8 Alert
+
+`Alert` 是页面文档流中持续存在的状态提示，与临时通知 `Snack`、模态 `Dialog` 和字段级 `FormError` 分工明确。不自动关闭、不设定计时器，不使用 Portal 或独立 overlay。
+
+- `variant?: 'info' | 'success' | 'warning' | 'error'` 默认为 `info`。语义颜色分别复用 Theme 的 `primary / success / warning / danger`；背景和边框通过 CSS `color-mix` 与 `surface` 混合，支持 light/dark mode 和 Theme 令牌覆盖。
+- `title: ReactNode` 必需；`description?: ReactNode`、`action?: ReactNode` 可选；`viewProps?: Omit<RowProps, 'children' | 'role'>` 用于通用布局、响应式和样式能力。操作内容由调用方组合公开 Button、Link 等组件，不由 Alert 代管回调。
+- 使用公开 `Row / Column / Text / Icon` 组合；状态图标使用现有 Tabler icon 且 `aria-hidden`。`info/success` 使用 `role="status"`，`warning/error` 使用 `role="alert"`，容器不创建键盘焦点。
+- 默认标题排版为 `title-small`，说明为 `body-medium`；`viewProps` 可覆盖通用视觉属性。Documentation 提供四种状态、可交互操作示例和英／简中／繁中／法文翻译。
+
 ---
 
 # 16. `Progress`

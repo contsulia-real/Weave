@@ -11,6 +11,7 @@
     "./components/AccordionItem": "./dist/components/AccordionItem.js",
     "./components/AccordionPanel": "./dist/components/AccordionPanel.js",
     "./components/AccordionTrigger": "./dist/components/AccordionTrigger.js",
+    "./components/Alert": "./dist/components/Alert.js",
     "./components/AppBar": "./dist/components/AppBar.js",
     "./components/Avatar": "./dist/components/Avatar.js",
     "./components/Badge": "./dist/components/Badge.js",

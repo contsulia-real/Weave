@@ -202,6 +202,22 @@ assert(
   (carouselMarkup.match(/data-weave-button="/g) ?? []).length === 2,
   'Carousel must have two navigation buttons',
 )
+const componentAlert = await import(`${packageJson.name}/components/Alert`)
+const infoAlert = renderToStaticMarkup(
+  createElement(componentAlert.Alert, { title: 'Update available', description: 'Read the notes' }),
+)
+const errorAlert = renderToStaticMarkup(
+  createElement(componentAlert.Alert, {
+    title: 'Unable to save',
+    variant: 'error',
+    action: createElement('button', null, 'Retry'),
+  }),
+)
+assert(infoAlert.includes('role="status"'), 'Informational Alert must use status semantics')
+assert(infoAlert.includes('Update available'), 'Alert must render title')
+assert(infoAlert.includes('Read the notes'), 'Alert must render description')
+assert(errorAlert.includes('role="alert"'), 'Error Alert must use alert semantics')
+assert(errorAlert.includes('Retry'), 'Alert must render optional action')
 const componentOTPInput = await import(`${packageJson.name}/components/OTPInput`)
 const otpMarkup = renderToStaticMarkup(
   createElement(componentOTPInput.OTPInput, {

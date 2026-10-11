@@ -3,6 +3,7 @@ export { Accordion } from './components/Accordion'
 export { AccordionItem } from './components/AccordionItem'
 export { AccordionPanel } from './components/AccordionPanel'
 export { AccordionTrigger } from './components/AccordionTrigger'
+export { Alert } from './components/Alert'
 export { AppBar } from './components/AppBar'
 export { Avatar } from './components/Avatar'
 export { Badge } from './components/Badge'
@@ -91,6 +92,7 @@ export type {
   AccordionTriggerViewProps,
   AccordionViewProps,
 } from './core/accordion-types'
+export type { AlertProps, AlertVariant } from './core/alert-types'
 export type {
   AppBarMode,
   AppBarProps,
