@@ -183,6 +183,25 @@ assert(
 const weave = await import(runtimeEntry.href)
 const componentButton = await import(`${packageJson.name}/components/Button`)
 const componentInput = await import(`${packageJson.name}/components/Input`)
+const componentView = await import(`${packageJson.name}/components/View`)
+const responsiveMarkup = (minWidth) =>
+  renderToStaticMarkup(
+    createElement(
+      weave.ThemeProvider,
+      { theme: { breakpoints: { sm: minWidth } } },
+      createElement(componentView.View, { width: 200, sm: { width: 140 } }, 'Responsive'),
+    ),
+  )
+const responsiveA = responsiveMarkup(480)
+const responsiveB = responsiveMarkup(720)
+const responsiveClassA = /weave-breakpoints-[a-z0-9-]+/.exec(responsiveA)?.[0]
+const responsiveClassB = /weave-breakpoints-[a-z0-9-]+/.exec(responsiveB)?.[0]
+assert(
+  responsiveClassA !== undefined &&
+    responsiveClassB !== undefined &&
+    responsiveClassA !== responsiveClassB,
+  'Distinct breakpoint configurations must not reuse responsive styles',
+)
 const originalDateTimeFormat = Intl.DateTimeFormat
 let inputDateFormatterCreations = 0
 try {

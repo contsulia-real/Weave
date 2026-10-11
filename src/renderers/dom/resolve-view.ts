@@ -21,6 +21,21 @@ import { variableName } from './view-stylesheet'
 
 type CSSVariableStyle = CSSProperties & Record<`--weave-${string}`, string | number | undefined>
 
+const responsivePropKeyCache = new WeakMap<object, ReadonlySet<string>>()
+
+function responsivePropKeys(breakpoints: Readonly<Record<string, number>>): ReadonlySet<string> {
+  const cached = responsivePropKeyCache.get(breakpoints)
+  if (cached !== undefined) return cached
+
+  const keys = new Set<string>()
+  for (const { name } of breakpointEntries(breakpoints)) {
+    keys.add(name)
+    keys.add(containerBreakpointProp(name))
+  }
+  responsivePropKeyCache.set(breakpoints, keys)
+  return keys
+}
+
 const NATIVE_OBJECT_PROP_KEYS = new Set<string>(['dangerouslySetInnerHTML'])
 const NATIVE_FORWARD_PROP_KEYS = new Set<string>([
   'accessKey',
@@ -341,9 +356,7 @@ export function resolveDOMView<TElement extends HTMLElement>(
   const domProps: HTMLAttributes<TElement> = {}
   const writableDOMProps = domProps as Record<string, unknown>
   const breakpointList = breakpointEntries(breakpoints)
-  const responsivePropKeys = new Set(
-    breakpointList.flatMap(({ name }) => [name, containerBreakpointProp(name)]),
-  )
+  const activeResponsiveKeys = responsivePropKeys(breakpoints)
 
   for (const [key, value] of Object.entries(props)) {
     const inactiveBreakpointLikeProp =
@@ -351,7 +364,7 @@ export function resolveDOMView<TElement extends HTMLElement>(
 
     if (
       !VIEW_INTERNAL_PROP_KEYS.has(key) &&
-      !responsivePropKeys.has(key) &&
+      !activeResponsiveKeys.has(key) &&
       !inactiveBreakpointLikeProp &&
       isNativePassThroughProp(key)
     ) {
