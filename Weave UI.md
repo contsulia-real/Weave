@@ -3062,7 +3062,7 @@ viewProps
 
 - `variant?: 'info' | 'success' | 'warning' | 'error'` 默认为 `info`。语义颜色分别复用 Theme 的 `primary / success / warning / danger`；背景和边框通过 CSS `color-mix` 与 `surface` 混合，支持 light/dark mode 和 Theme 令牌覆盖。
 - `title: ReactNode` 必需；`description?: ReactNode`、`action?: ReactNode` 可选；`viewProps?: Omit<GridProps, 'children' | 'role'>` 用于通用布局、响应式和样式能力。操作内容由调用方组合公开 Button、Link 等组件，不由 Alert 代管回调。
-- 使用公开 `Grid / Row / Text / Icon` 组合；Icon 与标题置于同一 Grid 行并按该行高度垂直居中，说明和操作内容保持在标题列，不以整个内容块高度定位图标，也不使用偏移量补偿。状态图标使用现有 Tabler icon 且 `aria-hidden`。`info/success` 使用 `role="status"`，`warning/error` 使用 `role="alert"`，容器不创建键盘焦点。
+- 使用公开 `Grid / Row / Text / Icon` 组合；图标置于标题首行高度为 `1lh` 的 Row 内，以 `title-small` 字号及行高令牌确定该行的中心，不以图标顶边或整个标题块高度定位。说明和操作内容保持在标题列，不使用固定像素偏移量补偿。状态图标使用现有 Tabler icon 且 `aria-hidden`。`info/success` 使用 `role="status"`，`warning/error` 使用 `role="alert"`，容器不创建键盘焦点。
 - 默认标题排版为 `title-small`，说明为 `body-medium`；`viewProps` 可覆盖通用视觉属性。Documentation 提供四种状态、可交互操作示例和英／简中／繁中／法文翻译。
 
 ---

@@ -47,10 +47,19 @@ export function Alert({
         'weave-alert-variant': variant,
       }}
     >
-      <Icon
-        icon={icon}
-        viewProps={{ color, 'aria-hidden': true, column: 1, row: 1, alignSelf: 'center' }}
-      />
+      <Row
+        column={1}
+        row={1}
+        align="center"
+        alignSelf="start"
+        height="1lh"
+        style={{
+          fontSize: 'var(--weave-typography-style-title-small-font-size)',
+          lineHeight: 'var(--weave-typography-style-title-small-line-height)',
+        }}
+      >
+        <Icon icon={icon} viewProps={{ color, 'aria-hidden': true }} />
+      </Row>
       <Text typo="title-small" viewProps={{ column: 2, row: 1 }}>
         {title}
       </Text>
