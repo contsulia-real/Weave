@@ -3093,7 +3093,7 @@ viewProps
 
 ## 15.11 MusicVisualization
 
-`MusicVisualization` 是基于真实音频的实时可视化。默认 `mode='bars'`，可选 `mode='waveform'`。柱状频谱提供 `direction='horizontal'|'vertical'`（默认 vertical）、`align='start'|'center'|'end'`（默认 center）、`barCount?: number`（正整数；未设置时沿用自动柱数）；显式设置 `barCount` 时精确绘制指定数量的柱子。方向表示频谱柱沿哪个轴伸长，对齐控制振幅轴上的起点/居中/末端。波形模式不应用方向与对齐。
+`MusicVisualization` 是基于真实音频的实时可视化。默认 `mode='bars'`，可选 `mode='waveform'`。柱状频谱提供 `direction='horizontal'|'vertical'`（默认 vertical）、`align='start'|'center'|'end'`（默认 center）、`barCount?: number`（正整数；未设置时沿用自动柱数）；显式设置 `barCount` 时精确绘制指定数量的柱子。频谱柱沿长轴两端采用圆头胶囊形状，较短柱也保持圆角，水平、垂直方向一致。方向表示频谱柱沿哪个轴伸长，对齐控制振幅轴上的起点/居中/末端。波形模式不应用方向与对齐。
 
 - `source` 接受 `HTMLMediaElement | MediaStream | AnalyserNode | null`。使用浏览器原生 `AnalyserNode.getByteFrequencyData` 绘制频谱，`getByteTimeDomainData` 读取真实时域样本，结合实时频谱估计主频、截取单个振荡周期并以一条连续路径绘制波形；不压缩绘制完整 FFT 窗口中的数十周期，不复制波形，以 `requestAnimationFrame` 随真实音频刷新；无数据时透明，不生成模拟随机柱。
 - `HTMLMediaElement` 来源复用与该媒体元素绑定的 `MediaElementAudioSourceNode`，同一元素重挂载不重复创建；保持 `analyser -> audioContext.destination` 链路，避免可视化吞掉播放器声音。播放由调用方启动，浏览器自动播放策略与跨域媒体安全限制仍适用；若调用方已创建媒体元素音频源，应直接传其 `AnalyserNode`。

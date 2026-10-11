@@ -41,8 +41,12 @@ function drawBars(
     const position = index * slot + (slot - barWidth) / 2
     const offset =
       align === 'center' ? (amplitude - extent) / 2 : align === 'end' ? amplitude - extent : 0
-    if (vertical) context.fillRect(position, offset, barWidth, extent)
-    else context.fillRect(offset, position, extent, barWidth)
+    if (extent <= 0) continue
+    const radius = Math.min(barWidth, extent) / 2
+    context.beginPath()
+    if (vertical) context.roundRect(position, offset, barWidth, extent, radius)
+    else context.roundRect(offset, position, extent, barWidth, radius)
+    context.fill()
   }
 }
 
