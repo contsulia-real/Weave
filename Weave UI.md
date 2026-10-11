@@ -3048,6 +3048,14 @@ viewProps
 - 前后按钮每次滚动到相邻一个元素的起始位置（不同宽度项目按实际 DOM 位置计算，末尾位置按可滚动边界截断），滚动位置到达首尾时禁用相应按钮；没有相邻元素（空列表或只有一项）时两个箭头均禁用，即使唯一项目宽于视口；用户仍可使用鼠标、触摸板和键盘原生滚动。动画复用浏览器 smooth scroll，系统 reduced-motion 下禁用平滑动画；不自动播放、不无限循环。
 - Documentation 展示基础滚动和不同宽度项目两个独立场景，章节与示例文案覆盖英、简中、繁中、法文。
 
+## 15.7 OTPInput
+
+`OTPInput` 是六位数字验证码输入，复用公开 `Input` 的现有边框、焦点和主题样式，使用 `Row` 排列六个宽 44px、高 52px、间距 8px 的原生输入格，不另建输入框主题。
+
+- `label: string` 为必需的可访问组名；每格以该名称和序号标注。 `value?: string`、`defaultValue?: string`、`onChange?: (value: string) => void` 沿用受控／非受控约定，输入仅保留六位 ASCII 数字；`disabled`、`required`、`name` 与 `viewProps` 沿用现有命名。
+- 输入一位后自动聚焦下一格；在任意格粘贴连续数字时按剩余位置分配，非数字字符不写入。方向键左右移动焦点；Backspace 清除当前位，当前格为空时删除最后一个已输入数字并返回该格；Delete 清除当前位。支持首格 `autocomplete="one-time-code"` 和手机数字键盘，不额外实施自定义键盘或网络校验。
+- 表单通过同名的原生隐藏字段提交六位拼接值；每个可见输入格保留 required 校验，原生 Form reset 恢复默认值。Documentation 分别提供受控输入、原生表单提交示例，并完成英／简中／繁中／法文翻译。
+
 ---
 
 # 16. `Progress`

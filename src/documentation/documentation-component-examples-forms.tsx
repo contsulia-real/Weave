@@ -401,6 +401,20 @@ export const formsComponentExamples: Record<string, DocumentationComponentDocume
         },
       ],
     },
+    OTPInput: {
+      description:
+        'A six-digit verification code field with automatic focus, paste, keyboard navigation, and native form submission.',
+      examples: [
+        basicExample('OTPInput/basic-usage'),
+        {
+          id: 'form-submission',
+          title: 'Form submission',
+          description:
+            'Submit the complete six-digit code through native FormData and reset the field.',
+          demo: 'OTPInput/form-submission',
+        },
+      ],
+    },
     Pagination: {
       description: 'Page navigation with numbered buttons, ellipses, and previous/next controls.',
       examples: [

@@ -202,6 +202,19 @@ assert(
   (carouselMarkup.match(/data-weave-button="/g) ?? []).length === 2,
   'Carousel must have two navigation buttons',
 )
+const componentOTPInput = await import(`${packageJson.name}/components/OTPInput`)
+const otpMarkup = renderToStaticMarkup(
+  createElement(componentOTPInput.OTPInput, {
+    label: 'Verification code',
+    name: 'verification',
+    defaultValue: '123',
+    required: true,
+  }),
+)
+assert(otpMarkup.includes('aria-label="Verification code"'), 'OTPInput must label its group')
+assert((otpMarkup.match(/type="text"/g) ?? []).length === 6, 'OTPInput must show six input cells')
+assert(otpMarkup.includes('name="verification"'), 'OTPInput must submit a named field')
+assert(otpMarkup.includes('value="123"'), 'OTPInput must preserve its default value')
 const componentRating = await import(`${packageJson.name}/components/Rating`)
 const wholeRating = renderToStaticMarkup(createElement(componentRating.Rating, { value: 2.5 }))
 const halfRating = renderToStaticMarkup(

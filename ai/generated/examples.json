@@ -2694,6 +2694,42 @@
       "source": "import { Button, Menu, MenuItem } from '../../../index'\n\nexport default function MenuSubmenuDemo() {\n  return (\n    <Menu trigger={<Button text=\"Export\" />} defaultOpen submenuOffset={8} viewportPadding={16}>\n      <MenuItem text=\"Quick export\" />\n      <MenuItem\n        text=\"Export as\"\n        submenu={\n          <>\n            <MenuItem text=\"PDF\" />\n            <MenuItem text=\"PNG\" />\n            <MenuItem text=\"CSV\" />\n          </>\n        }\n      />\n    </Menu>\n  )\n}"
     },
     {
+      "id": "OTPInput/basic-usage",
+      "component": "OTPInput",
+      "title": "Basic usage",
+      "components": ["Column", "OTPInput", "Text"],
+      "concepts": ["basic", "column", "otpinput", "text", "usage"],
+      "documentationRoute": "/docs/components/OTPInput",
+      "source": "import { useState } from 'react'\nimport { useTranslation } from 'react-i18next'\nimport { Column, OTPInput, Text } from '../../../index'\n\nexport default function OTPInputBasicUsageDemo() {\n  const { t } = useTranslation('copy')\n  const [code, setCode] = useState('')\n\n  return (\n    <Column gap={12} align=\"start\">\n      <OTPInput label={t('Verification code')} value={code} onChange={setCode} />\n      <Text typo=\"body-small\" color=\"secondary\">\n        {t('Entered code: {{code}}', { code: code || '—' })}\n      </Text>\n    </Column>\n  )\n}"
+    },
+    {
+      "id": "OTPInput/form-submission",
+      "component": "OTPInput",
+      "title": "Form submission",
+      "description": "Submit the complete six-digit code through native FormData and reset the field.",
+      "components": ["Button", "Column", "Form", "OTPInput", "Text"],
+      "concepts": [
+        "button",
+        "code",
+        "column",
+        "complete",
+        "data",
+        "digit",
+        "field",
+        "form",
+        "native",
+        "otpinput",
+        "reset",
+        "six",
+        "submission",
+        "submit",
+        "text",
+        "through"
+      ],
+      "documentationRoute": "/docs/components/OTPInput",
+      "source": "import { useState } from 'react'\nimport { useTranslation } from 'react-i18next'\nimport { Button, Column, Form, OTPInput, Text } from '../../../index'\n\nexport default function OTPInputFormSubmissionDemo() {\n  const { t } = useTranslation('copy')\n  const [submitted, setSubmitted] = useState('')\n\n  return (\n    <Column gap={12} align=\"start\">\n      <Form\n        onSubmit={(event) => {\n          event.preventDefault()\n          setSubmitted(String(new FormData(event.currentTarget).get('verification') ?? ''))\n        }}\n      >\n        <OTPInput label={t('Verification code')} name=\"verification\" required />\n        <Button text={t('Verify')} type=\"submit\" />\n        <Button text={t('Reset')} type=\"reset\" variant=\"secondary\" />\n      </Form>\n      <Text typo=\"body-small\" color=\"secondary\">\n        {t('Submitted code: {{code}}', { code: submitted || '—' })}\n      </Text>\n    </Column>\n  )\n}"
+    },
+    {
       "id": "Pagination/basic-usage",
       "component": "Pagination",
       "title": "Basic usage",

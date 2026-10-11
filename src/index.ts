@@ -39,6 +39,7 @@ export { ListItem } from './components/ListItem'
 export { MarkSlider } from './components/MarkSlider'
 export { Menu } from './components/Menu'
 export { MenuItem } from './components/MenuItem'
+export { OTPInput } from './components/OTPInput'
 export { Pagination } from './components/Pagination'
 export { Popover } from './components/Popover'
 export type { PresenceProps } from './components/Presence'
@@ -273,6 +274,7 @@ export type {
   ViewTransition,
   ViewTransitionConfig,
 } from './core/motion-types'
+export type { OTPInputProps } from './core/otp-input-types'
 export type { PaginationProps } from './core/pagination-types'
 export type {
   PopoverPlacement,

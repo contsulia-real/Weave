@@ -2419,6 +2419,46 @@
     "zh-TW": "項目 {{number}}",
     "fr": "Élément {{number}}"
   },
+  "A six-digit verification code field with automatic focus, paste, keyboard navigation, and native form submission.": {
+    "zh-CN": "六位验证码输入框，支持自动聚焦、粘贴、键盘导航和原生表单提交。",
+    "zh-TW": "六位驗證碼輸入框，支援自動聚焦、貼上、鍵盤導覽與原生表單提交。",
+    "fr": "Champ de code de vérification à six chiffres avec focus automatique, collage, navigation au clavier et envoi natif du formulaire."
+  },
+  "Form submission": {
+    "zh-CN": "表单提交",
+    "zh-TW": "表單提交",
+    "fr": "Envoi du formulaire"
+  },
+  "Submit the complete six-digit code through native FormData and reset the field.": {
+    "zh-CN": "通过原生 FormData 提交完整六位验证码，并重置输入框。",
+    "zh-TW": "透過原生 FormData 提交完整六位驗證碼，並重設輸入框。",
+    "fr": "Envoyer les six chiffres via FormData natif et réinitialiser le champ."
+  },
+  "Verification code": {
+    "zh-CN": "验证码",
+    "zh-TW": "驗證碼",
+    "fr": "Code de vérification"
+  },
+  "Entered code: {{code}}": {
+    "zh-CN": "已输入：{{code}}",
+    "zh-TW": "已輸入：{{code}}",
+    "fr": "Code saisi : {{code}}"
+  },
+  "Submitted code: {{code}}": {
+    "zh-CN": "已提交：{{code}}",
+    "zh-TW": "已提交：{{code}}",
+    "fr": "Code envoyé : {{code}}"
+  },
+  "Verify": {
+    "zh-CN": "验证",
+    "zh-TW": "驗證",
+    "fr": "Vérifier"
+  },
+  "Reset": {
+    "zh-CN": "重置",
+    "zh-TW": "重設",
+    "fr": "Réinitialiser"
+  },
   "File": {
     "zh-CN": "文件",
     "zh-TW": "檔案",

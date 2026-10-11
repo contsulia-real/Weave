@@ -288,6 +288,13 @@
       "usesViewProps": false,
       "props": "r67710e7390f2"
     },
+    "OTPInput": {
+      "importPath": "@contsulia/weave/components/OTPInput",
+      "nativeProps": false,
+      "hasViewProps": true,
+      "usesViewProps": false,
+      "props": "r43e9dacdfa31"
+    },
     "Pagination": {
       "importPath": "@contsulia/weave/components/Pagination",
       "nativeProps": false,
@@ -835,6 +842,15 @@
       "p74ed009369fe",
       "p7d209b798d28",
       "p63ec3621ff0a"
+    ],
+    "r43e9dacdfa31": [
+      "p0f2bd87f8a7c",
+      "p531a9289d2ce",
+      "pce155f33fffd",
+      "p787fdeeaf18c",
+      "p13d7c982554e",
+      "pe7277831d031",
+      "p6b733c9e4005"
     ],
     "ra386e6e235b8": [
       "p3e62b2390827",
@@ -2914,6 +2930,36 @@
       "name": "text",
       "description": "Primary visible command label for the menu item.",
       "type": "ReactNode",
+      "optional": true
+    },
+    "p0f2bd87f8a7c": {
+      "name": "defaultValue",
+      "description": "",
+      "type": "string | undefined",
+      "optional": true
+    },
+    "pce155f33fffd": {
+      "name": "label",
+      "description": "",
+      "type": "string",
+      "optional": false
+    },
+    "p787fdeeaf18c": {
+      "name": "name",
+      "description": "",
+      "type": "string | undefined",
+      "optional": true
+    },
+    "pe7277831d031": {
+      "name": "required",
+      "description": "",
+      "type": "boolean | undefined",
+      "optional": true
+    },
+    "p6b733c9e4005": {
+      "name": "value",
+      "description": "",
+      "type": "string | undefined",
       "optional": true
     },
     "p3e62b2390827": {

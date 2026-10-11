@@ -512,6 +512,7 @@
         "Menu/menu-with-icons",
         "Menu/selection-dismissal",
         "Menu/submenu",
+        "OTPInput/form-submission",
         "Popover/basic-usage",
         "Popover/contextual-actions",
         "Popover/controlled-popover",
@@ -987,6 +988,8 @@
         "Layout/stack",
         "MarkSlider/controlled-restricted-inverse",
         "Menu/selection-dismissal",
+        "OTPInput/basic-usage",
+        "OTPInput/form-submission",
         "Pagination/basic-usage",
         "Pagination/controlled-pagination",
         "Popover/contextual-actions",
@@ -1809,7 +1812,8 @@
         "Input/time-input",
         "Input/time-seconds",
         "Input/url-input",
-        "Input/week-input"
+        "Input/week-input",
+        "OTPInput/form-submission"
       ],
       "props": [
         {
@@ -2876,6 +2880,69 @@
           "name": "text",
           "description": "Primary visible command label for the menu item.",
           "type": "ReactNode",
+          "optional": true
+        }
+      ]
+    },
+    "OTPInput": {
+      "name": "OTPInput",
+      "import": "import { OTPInput } from '@contsulia/weave/components/OTPInput'",
+      "importPath": "@contsulia/weave/components/OTPInput",
+      "category": "forms-status",
+      "intent": "A six-digit verification code field with automatic focus, paste, keyboard navigation, and native form submission.",
+      "preferWhen": [],
+      "avoidWhen": [],
+      "alternatives": [],
+      "relationship": {
+        "demoParent": null,
+        "standaloneDocumentationPage": true
+      },
+      "viewPropsMode": "nested",
+      "nativeProps": false,
+      "documentationRoute": "/docs/components/OTPInput",
+      "apiRoute": "/docs/components-api/OTPInput",
+      "examples": ["OTPInput/basic-usage", "OTPInput/form-submission"],
+      "props": [
+        {
+          "name": "defaultValue",
+          "description": "",
+          "type": "string | undefined",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "description": "",
+          "type": "boolean | undefined",
+          "optional": true
+        },
+        {
+          "name": "label",
+          "description": "",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "name",
+          "description": "",
+          "type": "string | undefined",
+          "optional": true
+        },
+        {
+          "name": "onChange",
+          "description": "",
+          "type": "((value: string) => void) | undefined",
+          "optional": true
+        },
+        {
+          "name": "required",
+          "description": "",
+          "type": "boolean | undefined",
+          "optional": true
+        },
+        {
+          "name": "value",
+          "description": "",
+          "type": "string | undefined",
           "optional": true
         }
       ]
@@ -4886,6 +4953,8 @@
         "List/controlled-multiple-selection",
         "MarkSlider/controlled-restricted-inverse",
         "Menu/selection-dismissal",
+        "OTPInput/basic-usage",
+        "OTPInput/form-submission",
         "Pagination/basic-usage",
         "Pagination/controlled-pagination",
         "Popover/basic-usage",

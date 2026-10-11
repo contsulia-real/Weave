@@ -47,6 +47,7 @@
     "./components/MarkSlider": "./dist/components/MarkSlider.js",
     "./components/Menu": "./dist/components/Menu.js",
     "./components/MenuItem": "./dist/components/MenuItem.js",
+    "./components/OTPInput": "./dist/components/OTPInput.js",
     "./components/Pagination": "./dist/components/Pagination.js",
     "./components/Popover": "./dist/components/Popover.js",
     "./components/Presence": "./dist/components/Presence.js",

@@ -53,6 +53,7 @@ export const componentNavigationSections: readonly DocumentationNavigationSectio
     'Combobox',
     'Slider',
     'MarkSlider',
+    'OTPInput',
     'RangeSlider',
     'Switch',
     'Radio',
