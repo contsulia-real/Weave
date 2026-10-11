@@ -12,10 +12,15 @@ function breakpointCSSName(name: string): string {
     .join('-')}`
 }
 
+const breakpointEntryCache = new WeakMap<object, readonly BreakpointEntry[]>()
+
 export function breakpointEntries(
   breakpoints: Readonly<Record<string, number>>,
 ): readonly BreakpointEntry[] {
-  return Object.entries(breakpoints)
+  const cached = breakpointEntryCache.get(breakpoints)
+  if (cached !== undefined) return cached
+
+  const entries = Object.entries(breakpoints)
     .filter(([name, minWidth]) => name.length > 0 && Number.isFinite(minWidth) && minWidth >= 0)
     .map(([name, minWidth]) => ({
       name,
@@ -23,6 +28,9 @@ export function breakpointEntries(
       minWidth,
     }))
     .sort((left, right) => left.minWidth - right.minWidth || left.name.localeCompare(right.name))
+
+  breakpointEntryCache.set(breakpoints, entries)
+  return entries
 }
 
 export function containerBreakpointProp(name: string): string {
