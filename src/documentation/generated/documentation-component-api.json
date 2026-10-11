@@ -316,13 +316,6 @@
       "usesViewProps": false,
       "props": "r67710e7390f2"
     },
-    "MusicPlayer": {
-      "importPath": "@contsulia/weave/components/MusicPlayer",
-      "nativeProps": false,
-      "hasViewProps": false,
-      "usesViewProps": false,
-      "props": "r0dcbce5df9d7"
-    },
     "MusicVisualization": {
       "importPath": "@contsulia/weave/components/MusicVisualization",
       "nativeProps": false,
@@ -918,7 +911,6 @@
       "p7d209b798d28",
       "p63ec3621ff0a"
     ],
-    "r0dcbce5df9d7": ["p092c95098089"],
     "ra72d9fb0b09b": [
       "pfc946ff144c0",
       "pd0c1ea84ed86",
@@ -3166,12 +3158,6 @@
       "description": "Primary visible command label for the menu item.",
       "type": "ReactNode",
       "optional": true
-    },
-    "p092c95098089": {
-      "name": "src",
-      "description": "",
-      "type": "string",
-      "optional": false
     },
     "pfc946ff144c0": {
       "name": "align",

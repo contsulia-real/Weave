@@ -2865,15 +2865,6 @@
       "source": "import { Button, Menu, MenuItem } from '../../../index'\n\nexport default function MenuSubmenuDemo() {\n  return (\n    <Menu trigger={<Button text=\"Export\" />} defaultOpen submenuOffset={8} viewportPadding={16}>\n      <MenuItem text=\"Quick export\" />\n      <MenuItem\n        text=\"Export as\"\n        submenu={\n          <>\n            <MenuItem text=\"PDF\" />\n            <MenuItem text=\"PNG\" />\n            <MenuItem text=\"CSV\" />\n          </>\n        }\n      />\n    </Menu>\n  )\n}"
     },
     {
-      "id": "MusicPlayer/basic-usage",
-      "component": "MusicPlayer",
-      "title": "Basic usage",
-      "components": ["Column", "FormField", "Input", "MusicPlayer", "Text"],
-      "concepts": ["basic", "column", "field", "form", "input", "music", "player", "text", "usage"],
-      "documentationRoute": "/docs/components/MusicPlayer",
-      "source": "import { useEffect, useRef, useState } from 'react'\nimport { useTranslation } from 'react-i18next'\nimport { Column, FormField, Input, MusicPlayer, Text } from '../../../index'\n\nexport default function MusicPlayerBasicUsageDemo() {\n  const { t } = useTranslation('copy')\n  const fileRef = useRef<HTMLInputElement>(null)\n  const urlRef = useRef<string | null>(null)\n  const [source, setSource] = useState('')\n\n  useEffect(\n    () => () => {\n      if (urlRef.current !== null) URL.revokeObjectURL(urlRef.current)\n    },\n    [],\n  )\n\n  return (\n    <Column gap={12}>\n      <FormField label={t('Choose an audio file')}>\n        <Input\n          type=\"file\"\n          accept=\"audio/*\"\n          viewProps={{ ref: fileRef, width: 'fill' }}\n          onChange={() => {\n            const file = fileRef.current?.files?.[0]\n            if (file === undefined) return\n            const next = URL.createObjectURL(file)\n            const previous = urlRef.current\n            urlRef.current = next\n            setSource(next)\n            if (previous !== null) URL.revokeObjectURL(previous)\n          }}\n        />\n      </FormField>\n      <MusicPlayer src={source} />\n      <Text typo=\"body-small\" color=\"secondary\">\n        {t(\n          'MusicPlayer owns playback and uses Weave controls for progress, volume, and visualization.',\n        )}\n      </Text>\n    </Column>\n  )\n}"
-    },
-    {
       "id": "MusicVisualization/basic-usage",
       "component": "MusicVisualization",
       "title": "Basic usage",

@@ -241,18 +241,6 @@ assert(
   musicWave.includes('data-weave-music-visualization-mode="waveform"'),
   'MusicVisualization must render waveform mode',
 )
-const musicPlayerModule = await import(`${packageJson.name}/components/MusicPlayer`)
-const musicPlayerMarkup = renderToStaticMarkup(
-  createElement(musicPlayerModule.MusicPlayer, { src: 'example.mp3' }),
-)
-assert(musicPlayerMarkup.includes('data-weave-music-player'), 'MusicPlayer must expose its root')
-assert(musicPlayerMarkup.includes('<audio'), 'MusicPlayer must own a native audio element')
-assert(
-  musicPlayerMarkup.includes('data-weave-music-visualization'),
-  'MusicPlayer must reuse MusicVisualization',
-)
-assert(musicPlayerMarkup.includes('data-weave-slider'), 'MusicPlayer must reuse Weave Slider')
-assert(musicPlayerMarkup.includes('data-weave-button'), 'MusicPlayer must reuse Weave Button')
 const rangePickerModule = await import(`${packageJson.name}/components/DateRangePicker`)
 const rangePicker = renderToStaticMarkup(
   createElement(rangePickerModule.DateRangePicker, {

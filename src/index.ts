@@ -43,7 +43,6 @@ export { ListItem } from './components/ListItem'
 export { MarkSlider } from './components/MarkSlider'
 export { Menu } from './components/Menu'
 export { MenuItem } from './components/MenuItem'
-export { MusicPlayer } from './components/MusicPlayer'
 export { MusicVisualization } from './components/MusicVisualization'
 export { OTPInput } from './components/OTPInput'
 export { Pagination } from './components/Pagination'
@@ -288,7 +287,6 @@ export type {
   ViewTransition,
   ViewTransitionConfig,
 } from './core/motion-types'
-export type { MusicPlayerProps } from './core/music-player-types'
 export type {
   MusicVisualizationAlign,
   MusicVisualizationDirection,

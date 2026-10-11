@@ -85,11 +85,6 @@ export const contentComponentExamples: Record<
       },
     ],
   },
-  MusicPlayer: {
-    description:
-      'A self-contained audio player built from Weave buttons, sliders, text, and live music visualization.',
-    examples: [basicExample('MusicPlayer/basic-usage')],
-  },
   Avatar: {
     description: 'Displays a person or entity image with a semantic name and fallback content.',
     examples: [basicExample('Avatar/basic-usage')],
