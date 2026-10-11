@@ -26,6 +26,7 @@
     "./components/Column": "./dist/components/Column.js",
     "./components/Combobox": "./dist/components/Combobox.js",
     "./components/ComboboxOption": "./dist/components/ComboboxOption.js",
+    "./components/CommandPalette": "./dist/components/CommandPalette.js",
     "./components/DataGrid": "./dist/components/DataGrid.js",
     "./components/Dialog": "./dist/components/Dialog.js",
     "./components/Divider": "./dist/components/Divider.js",

@@ -74,6 +74,7 @@ export const componentNavigationSections: readonly DocumentationNavigationSectio
     'ToolTip',
     'Popover',
     'Dialog',
+    'CommandPalette',
     'Drawer',
     'Menu',
     'Tabs',

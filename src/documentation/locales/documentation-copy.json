@@ -1,4 +1,179 @@
 {
+  "A searchable, grouped command dialog with keyboard navigation and an optional Ctrl/Cmd + K shortcut.": {
+    "zh-CN": "支持搜索、分组和键盘导航的命令对话框，可选用 Ctrl/Cmd + K 打开。",
+    "zh-TW": "支援搜尋、分組和鍵盤導覽的命令對話框，可選用 Ctrl/Cmd + K 開啟。",
+    "fr": "Une boîte de commandes groupées avec recherche, navigation au clavier et raccourci Ctrl/Cmd + K facultatif."
+  },
+  "Grouped command search": {
+    "zh-CN": "分组命令搜索",
+    "zh-TW": "分組命令搜尋",
+    "fr": "Recherche de commandes groupées"
+  },
+  "Filter across groups by title or keywords; disabled commands are skipped.": {
+    "zh-CN": "按标题或关键词跨组筛选，并跳过禁用命令。",
+    "zh-TW": "依標題或關鍵字跨組篩選，並略過停用的命令。",
+    "fr": "Filtrez les groupes par titre ou mots-clés ; les commandes désactivées sont ignorées."
+  },
+  "Keyboard shortcut": {
+    "zh-CN": "键盘快捷键",
+    "zh-TW": "鍵盤快速鍵",
+    "fr": "Raccourci clavier"
+  },
+  "Opt in to Ctrl/Cmd + K with an uncontrolled palette.": {
+    "zh-CN": "通过非受控命令面板启用 Ctrl/Cmd + K。",
+    "zh-TW": "透過非受控命令面板啟用 Ctrl/Cmd + K。",
+    "fr": "Activez Ctrl/Cmd + K avec une palette non contrôlée."
+  },
+  "Open command palette": {
+    "zh-CN": "打开命令面板",
+    "zh-TW": "開啟命令面板",
+    "fr": "Ouvrir la palette de commandes"
+  },
+  "Search commands": {
+    "zh-CN": "搜索命令",
+    "zh-TW": "搜尋命令",
+    "fr": "Rechercher des commandes"
+  },
+  "No matching commands": {
+    "zh-CN": "没有匹配的命令",
+    "zh-TW": "沒有符合的命令",
+    "fr": "Aucune commande correspondante"
+  },
+  "Command palette": {
+    "zh-CN": "命令面板",
+    "zh-TW": "命令面板",
+    "fr": "Palette de commandes"
+  },
+  "Actions": {
+    "zh-CN": "操作",
+    "zh-TW": "操作",
+    "fr": "Actions"
+  },
+  "Open project": {
+    "zh-CN": "打开项目",
+    "zh-TW": "開啟專案",
+    "fr": "Ouvrir un projet"
+  },
+  "Browse recent workspaces": {
+    "zh-CN": "浏览最近的工作区",
+    "zh-TW": "瀏覽最近的工作區",
+    "fr": "Parcourir les espaces de travail récents"
+  },
+  "Opened project": {
+    "zh-CN": "已打开项目",
+    "zh-TW": "已開啟專案",
+    "fr": "Projet ouvert"
+  },
+  "Open settings": {
+    "zh-CN": "打开设置",
+    "zh-TW": "開啟設定",
+    "fr": "Ouvrir les paramètres"
+  },
+  "Edit application preferences": {
+    "zh-CN": "编辑应用偏好设置",
+    "zh-TW": "編輯應用程式偏好設定",
+    "fr": "Modifier les préférences de l’application"
+  },
+  "Opened settings": {
+    "zh-CN": "已打开设置",
+    "zh-TW": "已開啟設定",
+    "fr": "Paramètres ouverts"
+  },
+  "Browse commands": {
+    "zh-CN": "浏览命令",
+    "zh-TW": "瀏覽命令",
+    "fr": "Parcourir les commandes"
+  },
+  "Search by name or keyword, then press Enter.": {
+    "zh-CN": "按名称或关键词搜索，然后按 Enter 执行。",
+    "zh-TW": "依名稱或關鍵字搜尋，然後按 Enter 執行。",
+    "fr": "Recherchez par nom ou mot-clé, puis appuyez sur Entrée."
+  },
+  "Files": {
+    "zh-CN": "文件",
+    "zh-TW": "檔案",
+    "fr": "Fichiers"
+  },
+  "New file": {
+    "zh-CN": "新建文件",
+    "zh-TW": "新增檔案",
+    "fr": "Nouveau fichier"
+  },
+  "Created file": {
+    "zh-CN": "已创建文件",
+    "zh-TW": "已建立檔案",
+    "fr": "Fichier créé"
+  },
+  "Export document": {
+    "zh-CN": "导出文档",
+    "zh-TW": "匯出文件",
+    "fr": "Exporter le document"
+  },
+  "Download the current file": {
+    "zh-CN": "下载当前文件",
+    "zh-TW": "下載目前檔案",
+    "fr": "Télécharger le fichier courant"
+  },
+  "Exported document": {
+    "zh-CN": "已导出文档",
+    "zh-TW": "已匯出文件",
+    "fr": "Document exporté"
+  },
+  "Workspace": {
+    "zh-CN": "工作区",
+    "zh-TW": "工作區",
+    "fr": "Espace de travail"
+  },
+  "Switch workspace": {
+    "zh-CN": "切换工作区",
+    "zh-TW": "切換工作區",
+    "fr": "Changer d’espace de travail"
+  },
+  "Switched workspace": {
+    "zh-CN": "已切换工作区",
+    "zh-TW": "已切換工作區",
+    "fr": "Espace de travail changé"
+  },
+  "Archive workspace": {
+    "zh-CN": "归档工作区",
+    "zh-TW": "封存工作區",
+    "fr": "Archiver l’espace de travail"
+  },
+  "Archived workspace": {
+    "zh-CN": "已归档工作区",
+    "zh-TW": "已封存工作區",
+    "fr": "Espace de travail archivé"
+  },
+  "Press Ctrl or Cmd + K to open the command palette.": {
+    "zh-CN": "按 Ctrl 或 Cmd + K 打开命令面板。",
+    "zh-TW": "按 Ctrl 或 Cmd + K 開啟命令面板。",
+    "fr": "Appuyez sur Ctrl ou Cmd + K pour ouvrir la palette de commandes."
+  },
+  "Quick actions": {
+    "zh-CN": "快捷操作",
+    "zh-TW": "快速操作",
+    "fr": "Actions rapides"
+  },
+  "Create note": {
+    "zh-CN": "创建笔记",
+    "zh-TW": "建立筆記",
+    "fr": "Créer une note"
+  },
+  "Created note": {
+    "zh-CN": "已创建笔记",
+    "zh-TW": "已建立筆記",
+    "fr": "Note créée"
+  },
+  "Show help": {
+    "zh-CN": "显示帮助",
+    "zh-TW": "顯示說明",
+    "fr": "Afficher l’aide"
+  },
+  "Opened help": {
+    "zh-CN": "已打开帮助",
+    "zh-TW": "已開啟說明",
+    "fr": "Aide ouverte"
+  },
   "A compact display, selectable, or removable chip in Button styles without depth, with configurable size and shape.": {
     "zh-CN": "可纯展示、可选中或可删除的 Chip，复用无深度效果的 Button 样式，支持尺寸与形状配置。",
     "zh-TW": "可純展示、可選取或可刪除的 Chip，沿用無深度效果的 Button 樣式，支援尺寸與形狀設定。",

@@ -141,6 +141,13 @@
       "usesViewProps": false,
       "props": "r6a48b690996d"
     },
+    "CommandPalette": {
+      "importPath": "@contsulia/weave/components/CommandPalette",
+      "nativeProps": false,
+      "hasViewProps": false,
+      "usesViewProps": false,
+      "props": "r025bfab89d57"
+    },
     "DataGrid": {
       "importPath": "@contsulia/weave/components/DataGrid",
       "nativeProps": false,
@@ -694,6 +701,16 @@
       "p05375878cfe4",
       "p1eb30c257280",
       "pcf37c34e617b"
+    ],
+    "r025bfab89d57": [
+      "pb5a5983da3ec",
+      "p5cdca2079616",
+      "p3486621b52a8",
+      "p2edff69286d0",
+      "p00d45be5023e",
+      "p9e49289b3a9f",
+      "pf44ee9f0fdd5",
+      "p019c50ad27dd"
     ],
     "r388c50238306": [
       "p302cfca4e71e",
@@ -2048,6 +2065,54 @@
       "description": "Unique string value committed by this option within its Combobox.",
       "type": "string",
       "optional": false
+    },
+    "pb5a5983da3ec": {
+      "name": "defaultOpen",
+      "description": "",
+      "type": "boolean | undefined",
+      "optional": true
+    },
+    "p5cdca2079616": {
+      "name": "dialogLabel",
+      "description": "",
+      "type": "string | undefined",
+      "optional": true
+    },
+    "p3486621b52a8": {
+      "name": "emptyContent",
+      "description": "",
+      "type": "string | undefined",
+      "optional": true
+    },
+    "p2edff69286d0": {
+      "name": "groups",
+      "description": "",
+      "type": "readonly CommandPaletteGroup[]",
+      "optional": false
+    },
+    "p00d45be5023e": {
+      "name": "onOpenChange",
+      "description": "",
+      "type": "((open: boolean) => void) | undefined",
+      "optional": true
+    },
+    "p9e49289b3a9f": {
+      "name": "open",
+      "description": "",
+      "type": "boolean | undefined",
+      "optional": true
+    },
+    "pf44ee9f0fdd5": {
+      "name": "searchLabel",
+      "description": "",
+      "type": "string | undefined",
+      "optional": true
+    },
+    "p019c50ad27dd": {
+      "name": "shortcut",
+      "description": "",
+      "type": "boolean | undefined",
+      "optional": true
     },
     "p302cfca4e71e": {
       "name": "columns",

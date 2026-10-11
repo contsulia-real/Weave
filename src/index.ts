@@ -18,6 +18,7 @@ export { Code } from './components/Code'
 export { Column } from './components/Column'
 export { Combobox } from './components/Combobox'
 export { ComboboxOption } from './components/ComboboxOption'
+export { CommandPalette } from './components/CommandPalette'
 export { DataGrid } from './components/DataGrid'
 export { Dialog } from './components/Dialog'
 export { Divider } from './components/Divider'
@@ -156,6 +157,11 @@ export type {
   ComboboxProps,
   ComboboxValue,
 } from './core/combobox-types'
+export type {
+  CommandPaletteCommand,
+  CommandPaletteGroup,
+  CommandPaletteProps,
+} from './core/command-palette-types'
 export type {
   DataGridColumn,
   DataGridColumnWidths,

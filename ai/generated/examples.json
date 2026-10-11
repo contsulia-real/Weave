@@ -1165,6 +1165,63 @@
       "source": "import { IconSearch, IconStar } from '@tabler/icons-react'\nimport { Combobox, ComboboxOption, Text } from '../../../index'\n\nexport default function ComboboxSearchableRichOptionsDemo() {\n  return (\n    <Combobox placeholder=\"Find a command\" clearable defaultOpen>\n      <ComboboxOption\n        value=\"search\"\n        text={<Text>Search</Text>}\n        textValue=\"Search\"\n        secondaryText=\"Find content\"\n        icon={IconSearch}\n      />\n      <ComboboxOption\n        value=\"favorite\"\n        text=\"Favorite\"\n        secondaryText=\"Save for later\"\n        icon={IconStar}\n      />\n      <ComboboxOption value=\"archive\" text=\"Archive\" secondaryText=\"Unavailable\" disabled />\n    </Combobox>\n  )\n}"
     },
     {
+      "id": "CommandPalette/basic-usage",
+      "component": "CommandPalette",
+      "title": "Basic usage",
+      "components": ["Button", "Column", "CommandPalette", "Text"],
+      "concepts": ["basic", "button", "column", "command", "palette", "text", "usage"],
+      "documentationRoute": "/docs/components/CommandPalette",
+      "source": "import { IconFile, IconSettings } from '@tabler/icons-react'\nimport { useState } from 'react'\nimport { useTranslation } from 'react-i18next'\nimport { Button, Column, CommandPalette, Text } from '../../../index'\n\nexport default function CommandPaletteBasicUsageDemo() {\n  const { t } = useTranslation('copy')\n  const [open, setOpen] = useState(false)\n  const [lastAction, setLastAction] = useState('')\n\n  return (\n    <Column gap={12} align=\"start\">\n      <Button text={t('Open command palette')} viewProps={{ onClick: () => setOpen(true) }} />\n      {lastAction ? <Text typo=\"body-small\">{lastAction}</Text> : null}\n      <CommandPalette\n        open={open}\n        onOpenChange={setOpen}\n        searchLabel={t('Search commands')}\n        emptyContent={t('No matching commands')}\n        dialogLabel={t('Command palette')}\n        groups={[\n          {\n            id: 'actions',\n            label: t('Actions'),\n            commands: [\n              {\n                id: 'project',\n                title: t('Open project'),\n                description: t('Browse recent workspaces'),\n                icon: IconFile,\n                shortcut: 'Ctrl+1',\n                onSelect: () => setLastAction(t('Opened project')),\n              },\n              {\n                id: 'settings',\n                title: t('Open settings'),\n                description: t('Edit application preferences'),\n                icon: IconSettings,\n                onSelect: () => setLastAction(t('Opened settings')),\n              },\n            ],\n          },\n        ]}\n      />\n    </Column>\n  )\n}"
+    },
+    {
+      "id": "CommandPalette/grouped-search",
+      "component": "CommandPalette",
+      "title": "Grouped command search",
+      "description": "Filter across groups by title or keywords; disabled commands are skipped.",
+      "components": ["Button", "Column", "CommandPalette", "Text"],
+      "concepts": [
+        "across",
+        "are",
+        "button",
+        "column",
+        "command",
+        "commands",
+        "disabled",
+        "filter",
+        "grouped",
+        "groups",
+        "keywords",
+        "palette",
+        "search",
+        "skipped",
+        "text",
+        "title"
+      ],
+      "documentationRoute": "/docs/components/CommandPalette",
+      "source": "import { useState } from 'react'\nimport { useTranslation } from 'react-i18next'\nimport { Button, Column, CommandPalette, Text } from '../../../index'\n\nexport default function CommandPaletteGroupedSearchDemo() {\n  const { t } = useTranslation('copy')\n  const [open, setOpen] = useState(false)\n  const [lastAction, setLastAction] = useState('')\n\n  return (\n    <Column gap={12} align=\"start\">\n      <Button\n        text={t('Browse commands')}\n        variant=\"secondary\"\n        viewProps={{ onClick: () => setOpen(true) }}\n      />\n      <Text typo=\"body-small\" color=\"secondary\">\n        {lastAction || t('Search by name or keyword, then press Enter.')}\n      </Text>\n      <CommandPalette\n        open={open}\n        onOpenChange={setOpen}\n        searchLabel={t('Search commands')}\n        emptyContent={t('No matching commands')}\n        dialogLabel={t('Command palette')}\n        groups={[\n          {\n            id: 'files',\n            label: t('Files'),\n            commands: [\n              {\n                id: 'new',\n                title: t('New file'),\n                keywords: ['create', 'document', 'write'],\n                onSelect: () => setLastAction(t('Created file')),\n              },\n              {\n                id: 'export',\n                title: t('Export document'),\n                description: t('Download the current file'),\n                keywords: ['download', 'save'],\n                onSelect: () => setLastAction(t('Exported document')),\n              },\n            ],\n          },\n          {\n            id: 'workspace',\n            label: t('Workspace'),\n            commands: [\n              {\n                id: 'switch',\n                title: t('Switch workspace'),\n                keywords: ['change', 'project'],\n                onSelect: () => setLastAction(t('Switched workspace')),\n              },\n              {\n                id: 'archive',\n                title: t('Archive workspace'),\n                disabled: true,\n                onSelect: () => setLastAction(t('Archived workspace')),\n              },\n            ],\n          },\n        ]}\n      />\n    </Column>\n  )\n}"
+    },
+    {
+      "id": "CommandPalette/keyboard-shortcut",
+      "component": "CommandPalette",
+      "title": "Keyboard shortcut",
+      "description": "Opt in to Ctrl/Cmd + K with an uncontrolled palette.",
+      "components": ["Column", "CommandPalette", "Text"],
+      "concepts": [
+        "cmd",
+        "column",
+        "command",
+        "ctrl",
+        "keyboard",
+        "opt",
+        "palette",
+        "shortcut",
+        "text",
+        "uncontrolled"
+      ],
+      "documentationRoute": "/docs/components/CommandPalette",
+      "source": "import { useState } from 'react'\nimport { useTranslation } from 'react-i18next'\nimport { Column, CommandPalette, Text } from '../../../index'\n\nexport default function CommandPaletteKeyboardShortcutDemo() {\n  const { t } = useTranslation('copy')\n  const [lastAction, setLastAction] = useState('')\n\n  return (\n    <Column gap={12} align=\"start\">\n      <Text typo=\"body-medium\">{t('Press Ctrl or Cmd + K to open the command palette.')}</Text>\n      {lastAction ? <Text typo=\"body-small\">{lastAction}</Text> : null}\n      <CommandPalette\n        shortcut\n        searchLabel={t('Search commands')}\n        emptyContent={t('No matching commands')}\n        dialogLabel={t('Command palette')}\n        groups={[\n          {\n            id: 'quick',\n            label: t('Quick actions'),\n            commands: [\n              {\n                id: 'note',\n                title: t('Create note'),\n                shortcut: 'N',\n                onSelect: () => setLastAction(t('Created note')),\n              },\n              {\n                id: 'help',\n                title: t('Show help'),\n                shortcut: '?',\n                onSelect: () => setLastAction(t('Opened help')),\n              },\n            ],\n          },\n        ]}\n      />\n    </Column>\n  )\n}"
+    },
+    {
       "id": "DataGrid/basic-usage",
       "component": "DataGrid",
       "title": "Basic usage",

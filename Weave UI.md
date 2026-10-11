@@ -3077,6 +3077,18 @@ viewProps
 
 ---
 
+## 15.10 CommandPalette
+
+`CommandPalette` 是可搜索、可分组的命令模态面板，复用原生 `Dialog` 的顶层模态、Esc 关闭、焦点管理及恢复；`Input` 管理查询文字，单一 `List` / `ListItem` 管理选项的焦点、ArrowUp / ArrowDown / Enter 导航与执行。不另造浮层或列表键盘引擎；`Combobox` 自有锚定 Popover，因此不嵌套于 Dialog。
+
+- `groups: readonly CommandPaletteGroup[]` 定义分组，含 `id`、`label`、`commands`。命令含 `id`、`title`、`description?`、`keywords?`、`icon?`、`shortcut?`、`disabled?`、`onSelect: () => void`。分组标题作为不可选择的 List 项，列表导航跳过标题和禁用命令，在所有分组间连续移动。
+- 查询匹配命令标题、说明及关键字，不区分大小写；搜索结果为空时展示 `emptyContent` 文本；`searchLabel` 提供输入框的可访问名称及占位符，`dialogLabel` 提供 Dialog 名称。
+- `open?`、`defaultOpen?`、`onOpenChange?` 沿用受控布尔状态模式，命令执行后关闭并清空查询；`shortcut?: boolean` 默认 false，启用后以 Ctrl/Cmd + K 打开，不拦截其他组合键。
+- 搜索框初始聚焦；搜索框内 ArrowDown / ArrowUp 将焦点交给第一个 / 最后一个启用项，其余上下导航及 Enter 选择均由 List 处理；Esc 经 Dialog 关闭并恢复原焦点。显示快捷键只是提示，不自动为每个命令注册全局快捷键。
+- Documentation 分别提供基本受控命令、跨分组关键词搜索（含禁用与空结果）以及未受控的 Ctrl/Cmd + K 示例，示例文字覆盖英文、简中、繁中和法文。
+
+---
+
 # 16. `Progress`
 
 `Progress` 是进度组件。

@@ -534,6 +534,8 @@
         "Button/pressed-state",
         "Button/responsive-button",
         "Card/combined-interaction",
+        "CommandPalette/basic-usage",
+        "CommandPalette/grouped-search",
         "Dialog/basic-usage",
         "Dialog/modal-dialog",
         "Dialog/non-modal-dialog",
@@ -1091,6 +1093,9 @@
         "Chip/removable",
         "Chip/sizes-and-shapes",
         "Combobox/controlled-values",
+        "CommandPalette/basic-usage",
+        "CommandPalette/grouped-search",
+        "CommandPalette/keyboard-shortcut",
         "Dialog/modal-dialog",
         "Dialog/non-modal-dialog",
         "Divider/spaced-divider",
@@ -1404,6 +1409,79 @@
           "description": "Unique string value committed by this option within its Combobox.",
           "type": "string",
           "optional": false
+        }
+      ]
+    },
+    "CommandPalette": {
+      "name": "CommandPalette",
+      "import": "import { CommandPalette } from '@contsulia/weave/components/CommandPalette'",
+      "importPath": "@contsulia/weave/components/CommandPalette",
+      "category": "composite-ui",
+      "intent": "A searchable, grouped command dialog with keyboard navigation and an optional Ctrl/Cmd + K shortcut.",
+      "preferWhen": [],
+      "avoidWhen": [],
+      "alternatives": [],
+      "relationship": {
+        "demoParent": null,
+        "standaloneDocumentationPage": true
+      },
+      "viewPropsMode": "none",
+      "nativeProps": false,
+      "documentationRoute": "/docs/components/CommandPalette",
+      "apiRoute": "/docs/components-api/CommandPalette",
+      "examples": [
+        "CommandPalette/basic-usage",
+        "CommandPalette/grouped-search",
+        "CommandPalette/keyboard-shortcut"
+      ],
+      "props": [
+        {
+          "name": "defaultOpen",
+          "description": "",
+          "type": "boolean | undefined",
+          "optional": true
+        },
+        {
+          "name": "dialogLabel",
+          "description": "",
+          "type": "string | undefined",
+          "optional": true
+        },
+        {
+          "name": "emptyContent",
+          "description": "",
+          "type": "string | undefined",
+          "optional": true
+        },
+        {
+          "name": "groups",
+          "description": "",
+          "type": "readonly CommandPaletteGroup[]",
+          "optional": false
+        },
+        {
+          "name": "onOpenChange",
+          "description": "",
+          "type": "((open: boolean) => void) | undefined",
+          "optional": true
+        },
+        {
+          "name": "open",
+          "description": "",
+          "type": "boolean | undefined",
+          "optional": true
+        },
+        {
+          "name": "searchLabel",
+          "description": "",
+          "type": "string | undefined",
+          "optional": true
+        },
+        {
+          "name": "shortcut",
+          "description": "",
+          "type": "boolean | undefined",
+          "optional": true
         }
       ]
     },
@@ -5083,6 +5161,9 @@
         "Combobox/controlled-values",
         "Combobox/empty-search-state",
         "Combobox/searchable-rich-options",
+        "CommandPalette/basic-usage",
+        "CommandPalette/grouped-search",
+        "CommandPalette/keyboard-shortcut",
         "Dialog/basic-usage",
         "Dialog/modal-dialog",
         "Dialog/non-modal-dialog",

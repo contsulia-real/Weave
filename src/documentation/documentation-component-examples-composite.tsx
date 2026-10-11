@@ -52,6 +52,25 @@ export const compositeComponentExamples: Record<
       'A dialog surface that supports non-modal anchored and native modal top-layer modes.',
     examples: [basicExample('Dialog/basic-usage')],
   },
+  CommandPalette: {
+    description:
+      'A searchable, grouped command dialog with keyboard navigation and an optional Ctrl/Cmd + K shortcut.',
+    examples: [
+      basicExample('CommandPalette/basic-usage'),
+      {
+        id: 'grouped-search',
+        title: 'Grouped command search',
+        description: 'Filter across groups by title or keywords; disabled commands are skipped.',
+        demo: 'CommandPalette/grouped-search',
+      },
+      {
+        id: 'keyboard-shortcut',
+        title: 'Keyboard shortcut',
+        description: 'Opt in to Ctrl/Cmd + K with an uncontrolled palette.',
+        demo: 'CommandPalette/keyboard-shortcut',
+      },
+    ],
+  },
   Drawer: {
     description:
       'A side surface that reuses modal Dialog on narrow layouts and SplitBox for non-modal layouts.',
