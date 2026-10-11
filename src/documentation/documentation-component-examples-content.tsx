@@ -66,6 +66,25 @@ export const contentComponentExamples: Record<
       'Renders an icon source through Weave size, stroke, color, and ViewHost semantics.',
     examples: [basicExample('Icon/basic-usage')],
   },
+  MusicVisualization: {
+    description:
+      'Visualize real audio as configurable frequency bars or a waveform from media, a live stream, or an analyser.',
+    examples: [
+      basicExample('MusicVisualization/basic-usage'),
+      {
+        id: 'media-player',
+        title: 'Media player waveform',
+        description: 'Analyze a local audio file while native playback remains audible.',
+        demo: 'MusicVisualization/media-player',
+      },
+      {
+        id: 'microphone-recording',
+        title: 'Microphone recording',
+        description: 'Visualize a microphone stream while MediaRecorder saves the recording.',
+        demo: 'MusicVisualization/microphone-recording',
+      },
+    ],
+  },
   Avatar: {
     description: 'Displays a person or entity image with a semantic name and fallback content.',
     examples: [basicExample('Avatar/basic-usage')],

@@ -1,4 +1,134 @@
 {
+  "Use external analyser": {
+    "zh-CN": "使用外部分析器",
+    "zh-TW": "使用外部分析器",
+    "fr": "Utiliser un analyseur externe"
+  },
+  "Use audio stream": {
+    "zh-CN": "使用音频流",
+    "zh-TW": "使用音訊串流",
+    "fr": "Utiliser le flux audio"
+  },
+  "Visualize real audio as configurable frequency bars or a waveform from media, a live stream, or an analyser.": {
+    "zh-CN": "将播放器、实时音频流或分析器的真实音频显示为可配置的频谱柱或波形。",
+    "zh-TW": "將播放器、即時音訊串流或分析器的真實音訊顯示為可設定的頻譜柱或波形。",
+    "fr": "Visualisez un signal audio réel en barres de fréquence ou en forme d’onde à partir d’un lecteur, d’un flux ou d’un analyseur."
+  },
+  "Media player waveform": {
+    "zh-CN": "播放器波形",
+    "zh-TW": "播放器波形",
+    "fr": "Forme d’onde du lecteur"
+  },
+  "Analyze a local audio file while native playback remains audible.": {
+    "zh-CN": "分析本地音频文件，同时保持播放器正常发声。",
+    "zh-TW": "分析本機音訊檔案，同時保持播放器正常發聲。",
+    "fr": "Analysez un fichier audio local tout en conservant sa lecture audible."
+  },
+  "Microphone recording": {
+    "zh-CN": "麦克风录音",
+    "zh-TW": "麥克風錄音",
+    "fr": "Enregistrement au microphone"
+  },
+  "Visualize a microphone stream while MediaRecorder saves the recording.": {
+    "zh-CN": "在 MediaRecorder 保存录音的同时可视化麦克风音频。",
+    "zh-TW": "在 MediaRecorder 儲存錄音的同時視覺化麥克風音訊。",
+    "fr": "Visualisez le microphone pendant que MediaRecorder enregistre."
+  },
+  "Start test signal": {
+    "zh-CN": "启动测试音频",
+    "zh-TW": "啟動測試音訊",
+    "fr": "Démarrer le signal de test"
+  },
+  "Stop test signal": {
+    "zh-CN": "停止测试音频",
+    "zh-TW": "停止測試音訊",
+    "fr": "Arrêter le signal de test"
+  },
+  "Bars": {
+    "zh-CN": "频谱柱",
+    "zh-TW": "頻譜柱",
+    "fr": "Barres"
+  },
+  "Waveform": {
+    "zh-CN": "波形",
+    "zh-TW": "波形",
+    "fr": "Forme d’onde"
+  },
+  "Vertical": {
+    "zh-CN": "垂直",
+    "zh-TW": "垂直",
+    "fr": "Vertical"
+  },
+  "Horizontal": {
+    "zh-CN": "水平",
+    "zh-TW": "水平",
+    "fr": "Horizontal"
+  },
+  "Start alignment": {
+    "zh-CN": "起始对齐",
+    "zh-TW": "起始對齊",
+    "fr": "Aligner au début"
+  },
+  "Center alignment": {
+    "zh-CN": "居中对齐",
+    "zh-TW": "置中對齊",
+    "fr": "Centrer"
+  },
+  "End alignment": {
+    "zh-CN": "末端对齐",
+    "zh-TW": "末端對齊",
+    "fr": "Aligner à la fin"
+  },
+  "Live audio visualization": {
+    "zh-CN": "实时音频可视化",
+    "zh-TW": "即時音訊視覺化",
+    "fr": "Visualisation audio en direct"
+  },
+  "The test tone is analysed but is not played through your speakers.": {
+    "zh-CN": "测试音频只用于分析，不会通过扬声器播放。",
+    "zh-TW": "測試音訊僅用於分析，不會透過喇叭播放。",
+    "fr": "Le signal de test est analysé sans être diffusé par les haut-parleurs."
+  },
+  "Choose an audio file": {
+    "zh-CN": "选择音频文件",
+    "zh-TW": "選擇音訊檔案",
+    "fr": "Choisir un fichier audio"
+  },
+  "Playback remains audible while its waveform is analysed.": {
+    "zh-CN": "分析波形时仍可正常听到播放器的声音。",
+    "zh-TW": "分析波形時仍可正常聽到播放器的聲音。",
+    "fr": "La lecture reste audible pendant l’analyse de la forme d’onde."
+  },
+  "Start recording": {
+    "zh-CN": "开始录音",
+    "zh-TW": "開始錄音",
+    "fr": "Démarrer l’enregistrement"
+  },
+  "Stop recording": {
+    "zh-CN": "停止录音",
+    "zh-TW": "停止錄音",
+    "fr": "Arrêter l’enregistrement"
+  },
+  "Recording in progress": {
+    "zh-CN": "正在录音",
+    "zh-TW": "正在錄音",
+    "fr": "Enregistrement en cours"
+  },
+  "Microphone access is unavailable": {
+    "zh-CN": "无法访问麦克风",
+    "zh-TW": "無法存取麥克風",
+    "fr": "Accès au microphone indisponible"
+  },
+  "Recording stopped": {
+    "zh-CN": "录音已停止",
+    "zh-TW": "錄音已停止",
+    "fr": "Enregistrement arrêté"
+  },
+  "Microphone permission is requested only when you start recording.": {
+    "zh-CN": "仅在点击开始录音后请求麦克风权限。",
+    "zh-TW": "僅在點選開始錄音後要求麥克風權限。",
+    "fr": "L’autorisation du microphone n’est demandée qu’au démarrage de l’enregistrement."
+  },
   "Choose start and end dates in one calendar, highlighting the included days.": {
     "zh-CN": "在同一个日历中选择开始和结束日期，并高亮区间内日期。",
     "zh-TW": "在同一個日曆中選擇開始和結束日期，並醒目顯示區間內日期。",

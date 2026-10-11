@@ -316,6 +316,13 @@
       "usesViewProps": false,
       "props": "r67710e7390f2"
     },
+    "MusicVisualization": {
+      "importPath": "@contsulia/weave/components/MusicVisualization",
+      "nativeProps": false,
+      "hasViewProps": true,
+      "usesViewProps": false,
+      "props": "r81406d828160"
+    },
     "OTPInput": {
       "importPath": "@contsulia/weave/components/OTPInput",
       "nativeProps": false,
@@ -904,6 +911,7 @@
       "p7d209b798d28",
       "p63ec3621ff0a"
     ],
+    "r81406d828160": ["pfc946ff144c0", "p6d7d72f17004", "pf0b7e67de191", "p8314617d6fb8"],
     "r92766bf7544b": [
       "p0f2bd87f8a7c",
       "p531a9289d2ce",
@@ -3144,6 +3152,30 @@
       "description": "Primary visible command label for the menu item.",
       "type": "ReactNode",
       "optional": true
+    },
+    "pfc946ff144c0": {
+      "name": "align",
+      "description": "Position of the bars along their amplitude axis; not used for waveform.",
+      "type": "MusicVisualizationAlign | undefined",
+      "optional": true
+    },
+    "p6d7d72f17004": {
+      "name": "direction",
+      "description": "Direction of the frequency bars; not used for waveform.",
+      "type": "MusicVisualizationDirection | undefined",
+      "optional": true
+    },
+    "pf0b7e67de191": {
+      "name": "mode",
+      "description": "",
+      "type": "MusicVisualizationMode | undefined",
+      "optional": true
+    },
+    "p8314617d6fb8": {
+      "name": "source",
+      "description": "A media player, a live recording stream, or an existing Web Audio analyser.",
+      "type": "MusicVisualizationSource",
+      "optional": false
     },
     "p0f2bd87f8a7c": {
       "name": "defaultValue",

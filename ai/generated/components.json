@@ -560,6 +560,8 @@
         "Menu/menu-with-icons",
         "Menu/selection-dismissal",
         "Menu/submenu",
+        "MusicVisualization/basic-usage",
+        "MusicVisualization/microphone-recording",
         "OTPInput/form-submission",
         "Popover/basic-usage",
         "Popover/contextual-actions",
@@ -1126,6 +1128,9 @@
         "Layout/stack",
         "MarkSlider/controlled-restricted-inverse",
         "Menu/selection-dismissal",
+        "MusicVisualization/basic-usage",
+        "MusicVisualization/media-player",
+        "MusicVisualization/microphone-recording",
         "OTPInput/basic-usage",
         "OTPInput/character-modes",
         "OTPInput/custom-length",
@@ -3166,6 +3171,55 @@
         }
       ]
     },
+    "MusicVisualization": {
+      "name": "MusicVisualization",
+      "import": "import { MusicVisualization } from '@contsulia/weave/components/MusicVisualization'",
+      "importPath": "@contsulia/weave/components/MusicVisualization",
+      "category": "content-actions",
+      "intent": "Visualize real audio as configurable frequency bars or a waveform from media, a live stream, or an analyser.",
+      "preferWhen": [],
+      "avoidWhen": [],
+      "alternatives": [],
+      "relationship": {
+        "demoParent": null,
+        "standaloneDocumentationPage": true
+      },
+      "viewPropsMode": "nested",
+      "nativeProps": false,
+      "documentationRoute": "/docs/components/MusicVisualization",
+      "apiRoute": "/docs/components-api/MusicVisualization",
+      "examples": [
+        "MusicVisualization/basic-usage",
+        "MusicVisualization/media-player",
+        "MusicVisualization/microphone-recording"
+      ],
+      "props": [
+        {
+          "name": "align",
+          "description": "Position of the bars along their amplitude axis; not used for waveform.",
+          "type": "MusicVisualizationAlign | undefined",
+          "optional": true
+        },
+        {
+          "name": "direction",
+          "description": "Direction of the frequency bars; not used for waveform.",
+          "type": "MusicVisualizationDirection | undefined",
+          "optional": true
+        },
+        {
+          "name": "mode",
+          "description": "",
+          "type": "MusicVisualizationMode | undefined",
+          "optional": true
+        },
+        {
+          "name": "source",
+          "description": "A media player, a live recording stream, or an existing Web Audio analyser.",
+          "type": "MusicVisualizationSource",
+          "optional": false
+        }
+      ]
+    },
     "OTPInput": {
       "name": "OTPInput",
       "import": "import { OTPInput } from '@contsulia/weave/components/OTPInput'",
@@ -3818,6 +3872,8 @@
         "Image/blob-events",
         "Layout/row",
         "Layout/splitbox",
+        "MusicVisualization/basic-usage",
+        "MusicVisualization/microphone-recording",
         "Presence/presence-layout",
         "Progress/compact-spinner",
         "Skeleton/profile-placeholder",
@@ -5262,6 +5318,9 @@
         "List/controlled-multiple-selection",
         "MarkSlider/controlled-restricted-inverse",
         "Menu/selection-dismissal",
+        "MusicVisualization/basic-usage",
+        "MusicVisualization/media-player",
+        "MusicVisualization/microphone-recording",
         "OTPInput/basic-usage",
         "OTPInput/character-modes",
         "OTPInput/form-submission",

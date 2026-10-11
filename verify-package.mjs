@@ -218,6 +218,22 @@ assert(infoAlert.includes('Update available'), 'Alert must render title')
 assert(infoAlert.includes('Read the notes'), 'Alert must render description')
 assert(errorAlert.includes('role="alert"'), 'Error Alert must use alert semantics')
 assert(errorAlert.includes('Retry'), 'Alert must render optional action')
+const musicVisualizationModule = await import(`${packageJson.name}/components/MusicVisualization`)
+const musicMarkup = renderToStaticMarkup(
+  createElement(musicVisualizationModule.MusicVisualization, { source: null }),
+)
+assert(
+  musicMarkup.includes('data-weave-music-visualization-mode="bars"'),
+  'MusicVisualization must default to bars',
+)
+assert(musicMarkup.includes('<canvas'), 'MusicVisualization must render a canvas')
+const musicWave = renderToStaticMarkup(
+  createElement(musicVisualizationModule.MusicVisualization, { source: null, mode: 'waveform' }),
+)
+assert(
+  musicWave.includes('data-weave-music-visualization-mode="waveform"'),
+  'MusicVisualization must render waveform mode',
+)
 const rangePickerModule = await import(`${packageJson.name}/components/DateRangePicker`)
 const rangePicker = renderToStaticMarkup(
   createElement(rangePickerModule.DateRangePicker, {
