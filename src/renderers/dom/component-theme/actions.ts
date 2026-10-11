@@ -113,7 +113,12 @@ export function resolveCardTheme(theme: ResolvedTheme): RuntimeStyleDeclarations
   }
 }
 
+const buttonThemeCache = new WeakMap<ResolvedTheme, RuntimeStyleDeclarations>()
+
 export function resolveButtonTheme(theme: ResolvedTheme): RuntimeStyleDeclarations {
+  const cached = buttonThemeCache.get(theme)
+  if (cached !== undefined) return cached
+
   const component = theme.components.Button
   const base = component?.base
   const disabled = component?.states?.disabled
@@ -162,5 +167,6 @@ export function resolveButtonTheme(theme: ResolvedTheme): RuntimeStyleDeclaratio
     output[`--weave-button-theme-${variant}-active-background`] = color(value?.activeBackground)
   }
 
+  buttonThemeCache.set(theme, output)
   return output
 }

@@ -48,12 +48,17 @@ function resolveOptionCollectionTheme(
   }
 }
 
+const inputThemeCache = new WeakMap<ResolvedTheme, RuntimeStyleDeclarations>()
+
 export function resolveInputTheme(theme: ResolvedTheme): RuntimeStyleDeclarations {
+  const cached = inputThemeCache.get(theme)
+  if (cached !== undefined) return cached
+
   const component = theme.components.Input
   const base = component?.base
   const disabled = component?.states?.disabled
 
-  return {
+  const declarations = {
     '--weave-input-background': color(base?.background),
     '--weave-input-shadow': base?.shadow,
     '--weave-input-color': color(base?.color),
@@ -75,6 +80,9 @@ export function resolveInputTheme(theme: ResolvedTheme): RuntimeStyleDeclaration
     '--weave-input-focus-outline-offset': length(base?.focusOutlineOffset),
     '--weave-input-disabled-opacity': disabled?.opacity,
   }
+
+  inputThemeCache.set(theme, declarations)
+  return declarations
 }
 
 export function resolveSelectTheme(theme: ResolvedTheme): RuntimeStyleDeclarations {
