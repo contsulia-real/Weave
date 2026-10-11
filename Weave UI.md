@@ -3096,10 +3096,10 @@ viewProps
 `MusicVisualization` 是基于真实音频的实时可视化。默认 `mode='bars'`，可选 `mode='waveform'`。柱状频谱提供 `direction='horizontal'|'vertical'`（默认 vertical）、`align='start'|'center'|'end'`（默认 center）、`barCount?: number`（正整数；未设置时沿用自动柱数）；显式设置 `barCount` 时精确绘制指定数量的柱子。频谱柱沿长轴两端采用圆头胶囊形状，较短柱也保持圆角，水平、垂直方向一致。方向表示频谱柱沿哪个轴伸长，对齐控制振幅轴上的起点/居中/末端。波形模式不应用方向与对齐。
 
 - `source` 接受 `HTMLMediaElement | MediaStream | AnalyserNode | null`。使用浏览器原生 `AnalyserNode.getByteFrequencyData` 绘制频谱，`getByteTimeDomainData` 读取真实时域样本，结合实时频谱估计主频、截取单个振荡周期并以一条连续路径绘制波形；不压缩绘制完整 FFT 窗口中的数十周期，不复制波形，以 `requestAnimationFrame` 随真实音频刷新；无数据时透明，不生成模拟随机柱。
-- `HTMLMediaElement` 来源复用与该媒体元素绑定的 `MediaElementAudioSourceNode`，同一元素重挂载不重复创建；保持 `analyser -> audioContext.destination` 链路，避免可视化吞掉播放器声音。播放由调用方启动，浏览器自动播放策略与跨域媒体安全限制仍适用；若调用方已创建媒体元素音频源，应直接传其 `AnalyserNode`。
-- `MediaStream` 来源使用独立 Web Audio 上下文，流输入仅连接分析节点，**绝不连接扬声器**；不申请麦克风权限、不创建或控制 MediaRecorder、不 stop 流中的 tracks。调用方可同时将同一流交给 MediaRecorder 保存录音；可视化卸载时仅清理自己创建的连接和上下文。
+- `HTMLMediaElement` 来源复用与该媒体元素绑定的 `MediaElementAudioSourceNode`，同一元素重挂载不重复创建；可视化挂载期间使用 `source -> analyser -> destination`，最后一个可视化卸载后恢复 `source -> destination`，停止无用的 FFT 处理并确保播放器不断声；同一媒体元素重新挂载继续复用缓存节点；缓存首次创建时注册媒体播放恢复监听，保证可视化卸载后才启动播放也能正常发声。不能在卸载时关闭该音频上下文，否则浏览器禁止重新创建源节点而导致静音。播放由调用方启动，浏览器自动播放策略与跨域媒体安全限制仍适用；若调用方已创建媒体元素音频源，应直接传其 `AnalyserNode`。
+- `MediaStream` 来源使用独立 Web Audio 上下文，流输入仅连接分析节点，**绝不连接扬声器**；不申请麦克风权限、不创建或控制 MediaRecorder、不 stop 流中的 tracks。调用方可同时将同一流交给 MediaRecorder 保存录音；只有流来源改变或卸载时才清理自己创建的连接和上下文，修改柱数、方向或波形不会重建；音轨停止或静音时暂停绘制。
 - 外部 `AnalyserNode` 由调用方管理，组件不连接、关闭或修改音频图；组件遵循已配置的 `fftSize`。`source=null` 渲染无信号的可视化容器，不偷偷启动演示动画。
-- 使用 Canvas 在现有 `View` 主题和尺寸语义下绘制。`viewProps` 允许以既有 View 属性指定色彩、宽高和无障碍名称，不增加专用 Theme 项；Canvas 本身不进入键盘顺序，主容器以 `role='img'` 和标签暴露语义。组件不包含音频播放、麦克风权限或录音控件。
+- 音频图连接仅由 `source` 身份驱动，绘制设置更新不重新连接音频；播放器暂停/结束、全部流音轨结束/静音、分析器上下文暂停、页面隐藏或画布尺寸为零时停止 `requestAnimationFrame` 并清空画布，相应事件恢复后重启。使用 Canvas 在现有 `View` 主题和尺寸语义下绘制。`viewProps` 允许以既有 View 属性指定色彩、宽高和无障碍名称，不增加专用 Theme 项；Canvas 本身不进入键盘顺序，主容器以 `role='img'` 和标签暴露语义。组件不包含音频播放、麦克风权限或录音控件。
 - Documentation 提供真实 Web Audio 测试信号的方向/对齐/模式切换及公开 `Input type="number"` 驱动的柱数设置、复用公开 Weave `FormField + Input type="file"` 的音频播放器波形、同一麦克风流同时录音和可视化三个示例；显示文字覆盖英语、简中、繁中、法语。
 
 ---

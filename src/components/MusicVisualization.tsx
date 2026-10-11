@@ -110,6 +110,27 @@ export function MusicVisualization({
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const { mode: themeMode } = useTheme()
 
+  const analysisRef = useRef<ReturnType<typeof connectMusicVisualizationSource> | undefined>(
+    undefined,
+  )
+
+  // Own the audio graph only while the source identity changes, not on visual updates.
+  useEffect(() => {
+    let analysis: ReturnType<typeof connectMusicVisualizationSource> | undefined
+    if (source !== null) {
+      try {
+        analysis = connectMusicVisualizationSource(source)
+      } catch {
+        // A media element already connected elsewhere must provide its AnalyserNode.
+      }
+    }
+    analysisRef.current = analysis
+    return () => {
+      analysisRef.current = undefined
+      analysis?.cleanup()
+    }
+  }, [source])
+
   useEffect(() => {
     const canvas = canvasRef.current
     const view = canvas?.ownerDocument.defaultView
@@ -124,27 +145,23 @@ export function MusicVisualization({
     )
       return
 
-    let analysis: ReturnType<typeof connectMusicVisualizationSource> | undefined
-    if (source !== null) {
-      try {
-        analysis = connectMusicVisualizationSource(source)
-      } catch {
-        // Unsupported or already-bound media sources can instead supply an AnalyserNode.
-      }
-    }
-
-    const analyser = analysis?.analyser
+    const analyser = analysisRef.current?.analyser
     const frequency =
       analyser === undefined
         ? undefined
         : new Uint8Array(new ArrayBuffer(analyser.frequencyBinCount))
     const time =
       analyser === undefined ? undefined : new Uint8Array(new ArrayBuffer(analyser.fftSize))
-    let frame = 0
+    let frame: number | undefined
     let width = 0
     let height = 0
     let density = view.devicePixelRatio || 1
     const ink = view.getComputedStyle(canvas).color
+
+    const clear = () => {
+      context.setTransform(density, 0, 0, density, 0, 0)
+      context.clearRect(0, 0, width, height)
+    }
 
     const measure = () => {
       const rect = canvas.getBoundingClientRect()
@@ -157,34 +174,114 @@ export function MusicVisualization({
       if (canvas.height !== pixelHeight) canvas.height = pixelHeight
     }
 
-    measure()
-    const Observer = view.ResizeObserver
-    const observer = Observer === undefined ? null : new Observer(measure)
-    observer?.observe(canvas)
-    view.addEventListener('resize', measure)
+    const active = () => {
+      if (
+        width <= 0 ||
+        height <= 0 ||
+        view.document.hidden ||
+        analyser === undefined ||
+        analyser.context.state !== 'running'
+      ) {
+        return false
+      }
+      if (source instanceof HTMLMediaElement) return !source.paused && !source.ended
+      if (source instanceof MediaStream) {
+        return source.getAudioTracks().some((track) => track.readyState === 'live' && !track.muted)
+      }
+      return true
+    }
 
     const paint = () => {
-      context.setTransform(density, 0, 0, density, 0, 0)
-      context.clearRect(0, 0, width, height)
+      frame = undefined
+      if (!active()) {
+        clear()
+        return
+      }
+      clear()
       context.fillStyle = ink
       context.strokeStyle = ink
       context.lineWidth = 2
-      if (analyser !== undefined && width > 0 && height > 0) {
+      if (width > 0 && height > 0 && analyser !== undefined) {
         if (mode === 'bars' && frequency !== undefined) {
           drawBars(context, frequency, analyser, width, height, direction, align, barCount)
         } else if (mode === 'waveform' && time !== undefined && frequency !== undefined) {
           drawWaveform(context, time, frequency, analyser, width, height)
         }
       }
-      if (analyser !== undefined) frame = view.requestAnimationFrame(paint)
+      frame = view.requestAnimationFrame(paint)
     }
 
-    frame = view.requestAnimationFrame(paint)
+    const sync = () => {
+      if (active()) {
+        if (frame === undefined) frame = view.requestAnimationFrame(paint)
+      } else {
+        if (frame !== undefined) view.cancelAnimationFrame(frame)
+        frame = undefined
+        clear()
+      }
+    }
+
+    const onResize = () => {
+      measure()
+      sync()
+    }
+
+    measure()
+    const Observer = view.ResizeObserver
+    const observer = Observer === undefined ? null : new Observer(onResize)
+    observer?.observe(canvas)
+    view.addEventListener('resize', onResize)
+    view.document.addEventListener('visibilitychange', sync)
+    analyser?.context.addEventListener('statechange', sync)
+
+    if (source instanceof HTMLMediaElement) {
+      for (const event of ['play', 'playing', 'pause', 'ended', 'emptied']) {
+        source.addEventListener(event, sync)
+      }
+    }
+
+    const tracked = new Set<MediaStreamTrack>()
+    const syncTracks = () => {
+      if (!(source instanceof MediaStream)) return
+      const current = new Set(source.getAudioTracks())
+      for (const track of tracked) {
+        if (current.has(track)) continue
+        for (const event of ['ended', 'mute', 'unmute']) track.removeEventListener(event, sync)
+        tracked.delete(track)
+      }
+      for (const track of current) {
+        if (tracked.has(track)) continue
+        for (const event of ['ended', 'mute', 'unmute']) track.addEventListener(event, sync)
+        tracked.add(track)
+      }
+      sync()
+    }
+
+    if (source instanceof MediaStream) {
+      syncTracks()
+      source.addEventListener('addtrack', syncTracks)
+      source.addEventListener('removetrack', syncTracks)
+    }
+
+    sync()
     return () => {
-      view.cancelAnimationFrame(frame)
+      if (frame !== undefined) view.cancelAnimationFrame(frame)
       observer?.disconnect()
-      view.removeEventListener('resize', measure)
-      analysis?.cleanup()
+      view.removeEventListener('resize', onResize)
+      view.document.removeEventListener('visibilitychange', sync)
+      analyser?.context.removeEventListener('statechange', sync)
+      if (source instanceof HTMLMediaElement) {
+        for (const event of ['play', 'playing', 'pause', 'ended', 'emptied']) {
+          source.removeEventListener(event, sync)
+        }
+      }
+      if (source instanceof MediaStream) {
+        for (const track of tracked) {
+          for (const event of ['ended', 'mute', 'unmute']) track.removeEventListener(event, sync)
+        }
+        source.removeEventListener('addtrack', syncTracks)
+        source.removeEventListener('removetrack', syncTracks)
+      }
     }
   }, [source, mode, direction, align, barCount, themeMode, viewProps.color])
 

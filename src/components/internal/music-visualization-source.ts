@@ -1,7 +1,13 @@
 /** MediaElementAudioSourceNode can only be constructed once per media element. */
 const mediaElements = new WeakMap<
   HTMLMediaElement,
-  { context: AudioContext; analyser: AnalyserNode }
+  {
+    context: AudioContext
+    analyser: AnalyserNode
+    node: MediaElementAudioSourceNode
+    listeners: number
+    resume: () => void
+  }
 >()
 
 interface AudioAnalysis {
@@ -25,9 +31,17 @@ export function connectMusicVisualizationSource(
       try {
         const node = context.createMediaElementSource(source)
         const analyser = context.createAnalyser()
-        node.connect(analyser)
+        // Keep the media element audible even when no visualization is mounted.
+        node.connect(context.destination)
         analyser.connect(context.destination)
-        existing = { context, analyser }
+        const resume = () => {
+          if (context.state === 'suspended') void context.resume().catch(() => {})
+        }
+        // The source node keeps routing this element even after the last
+        // visualization unmounts, so later playback must still resume it.
+        source.addEventListener('play', resume)
+        source.addEventListener('playing', resume)
+        existing = { context, analyser, node, listeners: 0, resume }
         mediaElements.set(source, existing)
       } catch (error) {
         void context.close()
@@ -35,18 +49,24 @@ export function connectMusicVisualizationSource(
       }
     }
 
-    const { context, analyser } = existing
-    const resume = () => {
-      if (context.state === 'suspended') void context.resume().catch(() => {})
+    const { context, analyser, node } = existing
+    if (existing.listeners === 0) {
+      // A media element can only have one source node for its lifetime.
+      // Reuse it, switching off FFT processing between visualization mounts.
+      node.connect(analyser)
+      node.disconnect(context.destination)
     }
-    source.addEventListener('play', resume)
-    source.addEventListener('playing', resume)
-    if (!source.paused) resume()
+    existing.listeners += 1
+    if (!source.paused) existing.resume()
     return {
       analyser,
       cleanup: () => {
-        source.removeEventListener('play', resume)
-        source.removeEventListener('playing', resume)
+        if (--existing.listeners === 0) {
+          node.connect(context.destination)
+          node.disconnect(analyser)
+          // Do not close context: doing so would permanently silence this
+          // HTMLMediaElement because its source node cannot be recreated.
+        }
       },
     }
   }
