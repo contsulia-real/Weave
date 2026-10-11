@@ -5,7 +5,7 @@ import {
   IconInfoCircle,
 } from '@tabler/icons-react'
 import type { AlertProps, AlertVariant } from '../core/alert-types'
-import { Column } from './Column'
+import { Grid } from './Grid'
 import { Icon } from './Icon'
 import { Row } from './Row'
 import { Text } from './Text'
@@ -28,16 +28,18 @@ export function Alert({
   const tint = `var(--weave-color-${color})`
 
   return (
-    <Row
+    <Grid
       width="fill"
+      columns="auto minmax(0, 1fr)"
       align="start"
-      gap={12}
+      gap={4}
       padding={16}
       border={1}
       radius="medium"
       background={`color-mix(in srgb, ${tint} 10%, var(--weave-color-surface))`}
       borderColor={`color-mix(in srgb, ${tint} 32%, var(--weave-color-surface))`}
       {...viewProps}
+      style={{ columnGap: 12, ...viewProps.style }}
       role={variant === 'warning' || variant === 'error' ? 'alert' : 'status'}
       data={{
         ...viewProps.data,
@@ -45,16 +47,23 @@ export function Alert({
         'weave-alert-variant': variant,
       }}
     >
-      <Icon icon={icon} viewProps={{ color, 'aria-hidden': true }} />
-      <Column gap={4} grow={1} minWidth={0}>
-        <Text typo="title-small">{title}</Text>
-        {description === undefined ? null : (
-          <Text typo="body-medium" color="secondary">
-            {description}
-          </Text>
-        )}
-        {action === undefined ? null : <Row marginTop={8}>{action}</Row>}
-      </Column>
-    </Row>
+      <Icon
+        icon={icon}
+        viewProps={{ color, 'aria-hidden': true, column: 1, row: 1, alignSelf: 'center' }}
+      />
+      <Text typo="title-small" viewProps={{ column: 2, row: 1 }}>
+        {title}
+      </Text>
+      {description === undefined ? null : (
+        <Text typo="body-medium" color="secondary" viewProps={{ column: 2 }}>
+          {description}
+        </Text>
+      )}
+      {action === undefined ? null : (
+        <Row column={2} marginTop={8}>
+          {action}
+        </Row>
+      )}
+    </Grid>
   )
 }
