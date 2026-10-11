@@ -3102,6 +3102,16 @@ viewProps
 - 使用 Canvas 在现有 `View` 主题和尺寸语义下绘制。`viewProps` 允许以既有 View 属性指定色彩、宽高和无障碍名称，不增加专用 Theme 项；Canvas 本身不进入键盘顺序，主容器以 `role='img'` 和标签暴露语义。组件不包含音频播放、麦克风权限或录音控件。
 - Documentation 提供真实 Web Audio 测试信号的方向/对齐/模式切换及公开 `Input type="number"` 驱动的柱数设置、复用公开 Weave `FormField + Input type="file"` 的音频播放器波形、同一麦克风流同时录音和可视化三个示例；显示文字覆盖英语、简中、繁中、法语。
 
+## 15.12 MusicPlayer
+
+`MusicPlayer` 是单文件音乐播放器。接受 `src: string`，内部持有一个原生 `HTMLAudioElement` 管理播放状态，不要求外部传播放器实例。操作表面全部组合已有公开 Weave `Column`、`Row`、`Button`、`Slider`、`Text` 和 `MusicVisualization`；不使用浏览器原生音频 controls，不新建播放器专用按钮、滑块、主题或样式系统。
+
+- Weave Button 负责播放/暂停，状态由媒体 `play`/`pause`/`ended` 事件同步；默认不自动播放，遵守浏览器的用户手势限制。
+- Weave Slider 绑定有限时长的 `currentTime`/`duration`，用于显示和拖动播放进度，前后 Weave Text 显示 `m:ss`；时长未知时禁用进度拖动。
+- 第二个 Weave Slider 负责音量，0–100 映射到 HTMLAudioElement.volume 的 0–1，并由 `volumechange` 事件同步。
+- 音频元素交给现有 MusicVisualization 显示实时圆端频谱柱，播放器声音保持正常输出；更换 src、播放结束或卸载遵循原生媒体生命周期。不添加曲目列表、上一首/下一首、循环或自动播放。
+- Documentation 通过 Weave FormField 和 Input type=file 选本地音频并产生临时 URL，传入 MusicPlayer src；示例卸载时撤销临时 URL。
+
 ---
 
 # 16. `Progress`

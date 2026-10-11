@@ -1128,6 +1128,7 @@
         "Layout/stack",
         "MarkSlider/controlled-restricted-inverse",
         "Menu/selection-dismissal",
+        "MusicPlayer/basic-usage",
         "MusicVisualization/basic-usage",
         "MusicVisualization/media-player",
         "MusicVisualization/microphone-recording",
@@ -2213,6 +2214,7 @@
         "Input/time-seconds",
         "Input/url-input",
         "Input/week-input",
+        "MusicPlayer/basic-usage",
         "MusicVisualization/basic-usage",
         "MusicVisualization/media-player"
       ],
@@ -2524,6 +2526,7 @@
         "Input/time-seconds",
         "Input/url-input",
         "Input/week-input",
+        "MusicPlayer/basic-usage",
         "MusicVisualization/basic-usage",
         "MusicVisualization/media-player",
         "Popover/focused-popover"
@@ -3172,6 +3175,33 @@
           "description": "Primary visible command label for the menu item.",
           "type": "ReactNode",
           "optional": true
+        }
+      ]
+    },
+    "MusicPlayer": {
+      "name": "MusicPlayer",
+      "import": "import { MusicPlayer } from '@contsulia/weave/components/MusicPlayer'",
+      "importPath": "@contsulia/weave/components/MusicPlayer",
+      "category": "content-actions",
+      "intent": "A self-contained audio player built from Weave buttons, sliders, text, and live music visualization.",
+      "preferWhen": [],
+      "avoidWhen": [],
+      "alternatives": [],
+      "relationship": {
+        "demoParent": null,
+        "standaloneDocumentationPage": true
+      },
+      "viewPropsMode": "none",
+      "nativeProps": false,
+      "documentationRoute": "/docs/components/MusicPlayer",
+      "apiRoute": "/docs/components-api/MusicPlayer",
+      "examples": ["MusicPlayer/basic-usage"],
+      "props": [
+        {
+          "name": "src",
+          "description": "",
+          "type": "string",
+          "optional": false
         }
       ]
     },
@@ -5328,6 +5358,7 @@
         "List/controlled-multiple-selection",
         "MarkSlider/controlled-restricted-inverse",
         "Menu/selection-dismissal",
+        "MusicPlayer/basic-usage",
         "MusicVisualization/basic-usage",
         "MusicVisualization/media-player",
         "MusicVisualization/microphone-recording",

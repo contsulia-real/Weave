@@ -49,6 +49,7 @@
     "./components/List": "./dist/components/List.js",
     "./components/ListItem": "./dist/components/ListItem.js",
     "./components/MarkSlider": "./dist/components/MarkSlider.js",
+    "./components/MusicPlayer": "./dist/components/MusicPlayer.js",
     "./components/MusicVisualization": "./dist/components/MusicVisualization.js",
     "./components/Menu": "./dist/components/Menu.js",
     "./components/MenuItem": "./dist/components/MenuItem.js",

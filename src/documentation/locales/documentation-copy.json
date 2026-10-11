@@ -1,4 +1,14 @@
 {
+  "A self-contained audio player built from Weave buttons, sliders, text, and live music visualization.": {
+    "zh-CN": "使用 Weave 按钮、滑块、文字及实时音乐可视化构建的独立音频播放器。",
+    "zh-TW": "使用 Weave 按鈕、滑桿、文字及即時音樂視覺化建構的獨立音訊播放器。",
+    "fr": "Lecteur audio autonome composé de boutons, de curseurs, de texte et d’une visualisation musicale Weave en direct."
+  },
+  "MusicPlayer owns playback and uses Weave controls for progress, volume, and visualization.": {
+    "zh-CN": "MusicPlayer 自行控制播放，使用 Weave 控件显示进度、音量和实时频谱。",
+    "zh-TW": "MusicPlayer 自行控制播放，使用 Weave 控制項顯示進度、音量和即時頻譜。",
+    "fr": "MusicPlayer gère la lecture avec les contrôles Weave pour la progression, le volume et la visualisation."
+  },
   "Frequency bar count": {
     "zh-CN": "频谱柱数量",
     "zh-TW": "頻譜柱數量",

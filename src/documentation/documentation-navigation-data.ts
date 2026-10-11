@@ -33,6 +33,7 @@ export const componentNavigationSections: readonly DocumentationNavigationSectio
     'Code',
     'Image',
     'MusicVisualization',
+    'MusicPlayer',
     'Icon',
     'Avatar',
     'EmptyState',
