@@ -3067,13 +3067,13 @@ viewProps
 
 ## 15.9 Chip
 
-`Chip` 是紧凑的可选择、可删除胶囊项目，区别于挂靠其他内容的角标 `Badge`。Chip **复用实际 `Button` 组件、其主题令牌、键盘/焦点行为与选中状态**，不重建另一套按钮渲染器或 Theme。
+`Chip` 是可纯展示、可选择、可删除的紧凑标签，区别于挂靠其他内容的角标 `Badge`。交互状态复用实际 `Button`、其主题令牌及键盘/焦点行为；纯展示采用非交互 span 复用 Button 基础样式，不伪装成按钮。
 
-- `text: string` 为可见名称；`selected?: boolean`、`defaultSelected?: boolean`、`onSelectedChange?: (value: boolean) => void` 复用受控／非受控布尔状态约定。选中主按钮带 `aria-pressed`，用 Button 的 primary 状态；未选中使用 tertiary 状态。点击及 Space/Enter 只触发选中切换。
-- `onRemove?: () => void` 添加单独的删除按钮，不在选择按钮内部嵌套交互控件；`removeLabel?: string` 设置其无障碍名称，默认 `Remove ${text}`，项目使用其他语言时应显式提供对应翻译；删除按钮单独键盘聚焦并调用 `onRemove`，不切换主按钮选中状态。`disabled?: boolean` 同时禁止选择和删除。
-- `viewProps?: Omit<RowProps, 'children' | 'role'>` 作用于胶囊整体的 Row。两个 Button 都沿用 small 尺寸及原生 theme、hover、active、focus-visible 等反馈；整体 `gap=0`，胶囊两端使用既有 `full` radius token，中间共享一条分隔边。
-- **无 depth**：仅在 Chip 内覆盖两个 Button 的 box-shadow 和 transform 为 `none`，包括 hover、active、pressed；保留现有 Button 的背景、边框、颜色、焦点和禁用视觉，不新增 Theme 参数或改变全局 Button。
-- Documentation 提供受控／非受控选择、禁用以及可删除交互示例，覆盖英文、简中、繁中和法文。
+- `text: string` 为可见名称。默认纯展示且没有按钮、点击、Tab 焦点或 `aria-pressed`；只有 `selectable?: boolean` 为 true，或提供 `selected`、`defaultSelected`、`onSelectedChange` 中任一选择属性时才启用选择 Button。选中使用 Button primary 状态及 `aria-pressed`，未选中或纯展示使用 tertiary 状态；交互模式沿用受控／非受控布尔约定，点击与 Space/Enter 只切换选择。
+- `onRemove?: () => void` 添加单独删除 Button，也可以与纯展示标签组合，不嵌套按钮；`removeLabel?: string` 设置无障碍名称，默认 `Remove ${text}`，其他语言应显式提供翻译。删除只触发 `onRemove`，不切换选择；`disabled?: boolean` 禁止已有的选择和删除操作。
+- `size?: 'small' | 'medium' | 'large'` 默认为 small，使用 Button 相应的尺寸、排版令牌。`pill?: boolean` 默认为 false，使用 Button 的常规圆角矩形（Theme radius），true 才采用已有 `full` radius 胶囊形。`viewProps?: Omit<RowProps, 'children' | 'role'>` 用于整体 Row，`gap=0`；有删除操作时主标签与删除按钮内侧圆角为零，共享分隔边。
+- **无 depth**：仅在 Chip 内覆盖 Button 视觉表面（含纯展示 span）的 box-shadow 和 transform 为 `none`，包括 hover、active、pressed；保留交互 Button 的背景、边框、颜色、焦点和禁用视觉，纯展示不响应 hover/active，不改变全局 Button。
+- Documentation 提供纯展示、受控／非受控选择、禁用、三种尺寸、两种形状以及可删除交互示例，覆盖英文、简中、繁中和法文。
 
 ---
 

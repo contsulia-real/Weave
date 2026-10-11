@@ -219,6 +219,22 @@ assert(infoAlert.includes('Read the notes'), 'Alert must render description')
 assert(errorAlert.includes('role="alert"'), 'Error Alert must use alert semantics')
 assert(errorAlert.includes('Retry'), 'Alert must render optional action')
 const componentChip = await import(`${packageJson.name}/components/Chip`)
+const passiveChip = renderToStaticMarkup(createElement(componentChip.Chip, { text: 'Passive' }))
+assert(passiveChip.includes('data-weave-chip-label'), 'Default Chip must render a static label')
+assert(!passiveChip.includes('<button'), 'Default Chip must not expose a clickable button')
+assert(!passiveChip.includes('aria-pressed'), 'Default Chip must not expose selection state')
+const largePillChip = renderToStaticMarkup(
+  createElement(componentChip.Chip, { text: 'Large', size: 'large', pill: true }),
+)
+assert(largePillChip.includes('weave-button--large'), 'Chip must use Button size classes')
+assert(largePillChip.includes('data-weave-chip-pill="true"'), 'Chip must expose pill mode')
+const removeOnlyChip = renderToStaticMarkup(
+  createElement(componentChip.Chip, { text: 'Removable', onRemove: () => undefined }),
+)
+assert(
+  (removeOnlyChip.match(/data-weave-button="/g) ?? []).length === 1,
+  'Removal-only Chip must keep its label noninteractive',
+)
 const selectedChip = renderToStaticMarkup(
   createElement(componentChip.Chip, {
     text: 'Design',

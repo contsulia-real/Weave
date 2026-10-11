@@ -916,7 +916,7 @@
       "components": ["Chip", "Column", "Row", "Text"],
       "concepts": ["basic", "chip", "column", "row", "text", "usage"],
       "documentationRoute": "/docs/components/Chip",
-      "source": "import { useState } from 'react'\nimport { useTranslation } from 'react-i18next'\nimport { Chip, Column, Row, Text } from '../../../index'\n\nexport default function ChipBasicUsageDemo() {\n  const { t } = useTranslation('copy')\n  const [selected, setSelected] = useState(false)\n\n  return (\n    <Column gap={12}>\n      <Row gap={8} wrap>\n        <Chip text={t('Design chip')} selected={selected} onSelectedChange={setSelected} />\n        <Chip text={t('Development chip')} defaultSelected />\n        <Chip text={t('Disabled chip')} disabled />\n      </Row>\n      <Text typo=\"body-small\" color=\"secondary\">\n        {t('Design selected: {{value}}', { value: selected ? t('Yes') : t('No') })}\n      </Text>\n    </Column>\n  )\n}"
+      "source": "import { useState } from 'react'\nimport { useTranslation } from 'react-i18next'\nimport { Chip, Column, Row, Text } from '../../../index'\n\nexport default function ChipBasicUsageDemo() {\n  const { t } = useTranslation('copy')\n  const [selected, setSelected] = useState(false)\n\n  return (\n    <Column gap={12}>\n      <Row gap={8} wrap>\n        <Chip text={t('Display only chip')} />\n        <Chip text={t('Design chip')} selected={selected} onSelectedChange={setSelected} />\n        <Chip text={t('Development chip')} defaultSelected />\n        <Chip text={t('Disabled chip')} selectable disabled />\n      </Row>\n      <Text typo=\"body-small\" color=\"secondary\">\n        {t('Design selected: {{value}}', { value: selected ? t('Yes') : t('No') })}\n      </Text>\n    </Column>\n  )\n}"
     },
     {
       "id": "Chip/removable",
@@ -940,6 +940,30 @@
       ],
       "documentationRoute": "/docs/components/Chip",
       "source": "import { useState } from 'react'\nimport { useTranslation } from 'react-i18next'\nimport { Chip, Column, Row, Text } from '../../../index'\n\nexport default function ChipRemovableDemo() {\n  const { t } = useTranslation('copy')\n  const [chips, setChips] = useState(['Design', 'Development', 'Review'])\n  const [selected, setSelected] = useState(false)\n\n  return (\n    <Column gap={12}>\n      <Row gap={8} wrap>\n        {chips.map((name) => (\n          <Chip\n            key={name}\n            text={t(name)}\n            selected={name === 'Design' ? selected : undefined}\n            onSelectedChange={name === 'Design' ? setSelected : undefined}\n            onRemove={() => setChips((items) => items.filter((item) => item !== name))}\n            removeLabel={t('Remove {{name}}', { name: t(name) })}\n          />\n        ))}\n      </Row>\n      <Text typo=\"body-small\" color=\"secondary\">\n        {t('Remaining chips: {{count}}', { count: chips.length })}\n      </Text>\n      <Text typo=\"body-small\" color=\"secondary\">\n        {t('Design selected: {{value}}', { value: selected ? t('Yes') : t('No') })}\n      </Text>\n    </Column>\n  )\n}"
+    },
+    {
+      "id": "Chip/sizes-and-shapes",
+      "component": "Chip",
+      "title": "Sizes and shapes",
+      "description": "Choose small, medium, or large; use pill for fully rounded chips.",
+      "components": ["Chip", "Column", "Row"],
+      "concepts": [
+        "chip",
+        "chips",
+        "choose",
+        "column",
+        "fully",
+        "large",
+        "medium",
+        "pill",
+        "rounded",
+        "row",
+        "shapes",
+        "sizes",
+        "small"
+      ],
+      "documentationRoute": "/docs/components/Chip",
+      "source": "import { useTranslation } from 'react-i18next'\nimport { Chip, Column, Row } from '../../../index'\n\nexport default function ChipSizesAndShapesDemo() {\n  const { t } = useTranslation('copy')\n\n  return (\n    <Column gap={12}>\n      <Row gap={8} align=\"center\" wrap>\n        <Chip text={t('Small chip')} size=\"small\" />\n        <Chip text={t('Medium chip')} size=\"medium\" />\n        <Chip text={t('Large chip')} size=\"large\" />\n      </Row>\n      <Row gap={8} align=\"center\" wrap>\n        <Chip text={t('Rounded rectangle')} />\n        <Chip text={t('Pill shape')} pill />\n        <Chip text={t('Selectable pill')} pill selectable />\n      </Row>\n    </Column>\n  )\n}"
     },
     {
       "id": "Code/basic-usage",

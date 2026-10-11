@@ -4,6 +4,15 @@ const stylesheet = `
 .weave-chip > :where(.weave-button) {
   --weave-component-box-shadow: none;
   --weave-component-transform: none;
+}
+
+.weave-chip > :where(.weave-chip__label) {
+  --weave-component-cursor: default;
+  --weave-button-hover-background: var(--weave-button-background);
+  --weave-button-active-background: var(--weave-button-background);
+}
+
+.weave-chip[data-weave-chip-pill="true"] > :where(.weave-button) {
   --weave-component-border-top-left-radius: var(--weave-radius-full);
   --weave-component-border-top-right-radius: var(--weave-radius-full);
   --weave-component-border-bottom-left-radius: var(--weave-radius-full);

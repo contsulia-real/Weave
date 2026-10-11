@@ -111,7 +111,7 @@
       "nativeProps": false,
       "hasViewProps": true,
       "usesViewProps": false,
-      "props": "r2f572e378410"
+      "props": "r73934ba8b0ea"
     },
     "Code": {
       "importPath": "@contsulia/weave/components/Code",
@@ -649,13 +649,16 @@
       "p9da1c2666046",
       "pe3eac4000286"
     ],
-    "r2f572e378410": [
+    "r73934ba8b0ea": [
       "p6575014e58f0",
       "p531a9289d2ce",
       "pd1c31d73924f",
       "p6d24f99f912f",
+      "p1d4803e6814b",
       "pd761e66b27c0",
+      "p902d7e706c17",
       "p742506c8a7af",
+      "p04c720e7ab97",
       "p4fb743db4911"
     ],
     "r6f1291621d84": ["p03ee0c84b6f1", "p0cd91f8a6c94", "p459e278c94c5"],
@@ -1812,16 +1815,34 @@
       "type": "((selected: boolean) => void) | undefined",
       "optional": true
     },
+    "p1d4803e6814b": {
+      "name": "pill",
+      "description": "",
+      "type": "boolean | undefined",
+      "optional": true
+    },
     "pd761e66b27c0": {
       "name": "removeLabel",
       "description": "",
       "type": "string | undefined",
       "optional": true
     },
+    "p902d7e706c17": {
+      "name": "selectable",
+      "description": "",
+      "type": "boolean | undefined",
+      "optional": true
+    },
     "p742506c8a7af": {
       "name": "selected",
       "description": "",
       "type": "boolean | undefined",
+      "optional": true
+    },
+    "p04c720e7ab97": {
+      "name": "size",
+      "description": "",
+      "type": "ButtonSize | undefined",
       "optional": true
     },
     "p4fb743db4911": {
@@ -3065,12 +3086,6 @@
       "description": "Number of available pages. Zero disables page navigation.",
       "type": "number",
       "optional": false
-    },
-    "p04c720e7ab97": {
-      "name": "size",
-      "description": "",
-      "type": "ButtonSize | undefined",
-      "optional": true
     },
     "p50b8339d71de": {
       "name": "autoFocus",

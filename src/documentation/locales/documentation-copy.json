@@ -1,8 +1,53 @@
 {
-  "A compact, selectable and removable pill using Button styling without depth.": {
-    "zh-CN": "可选择、可删除的紧凑胶囊项目，复用无深度效果的 Button 样式。",
-    "zh-TW": "可選擇、可刪除的緊湊膠囊項目，沿用無深度效果的 Button 樣式。",
-    "fr": "Une pastille compacte, sélectionnable et supprimable, utilisant le style de Button sans relief."
+  "A compact display, selectable, or removable chip in Button styles without depth, with configurable size and shape.": {
+    "zh-CN": "可纯展示、可选中或可删除的 Chip，复用无深度效果的 Button 样式，支持尺寸与形状配置。",
+    "zh-TW": "可純展示、可選取或可刪除的 Chip，沿用無深度效果的 Button 樣式，支援尺寸與形狀設定。",
+    "fr": "Chip statique, sélectionnable ou supprimable, au style Button sans relief, avec taille et forme configurables."
+  },
+  "Sizes and shapes": {
+    "zh-CN": "尺寸与形状",
+    "zh-TW": "尺寸與形狀",
+    "fr": "Tailles et formes"
+  },
+  "Choose small, medium, or large; use pill for fully rounded chips.": {
+    "zh-CN": "选择小、中、大尺寸；通过 pill 使用全圆角胶囊形。",
+    "zh-TW": "選擇小、中、大尺寸；透過 pill 使用全圓角膠囊形。",
+    "fr": "Choisissez petit, moyen ou grand ; utilisez pill pour une forme de capsule."
+  },
+  "Display only chip": {
+    "zh-CN": "纯展示",
+    "zh-TW": "純展示",
+    "fr": "Affichage seul"
+  },
+  "Small chip": {
+    "zh-CN": "小尺寸",
+    "zh-TW": "小尺寸",
+    "fr": "Petit"
+  },
+  "Medium chip": {
+    "zh-CN": "中尺寸",
+    "zh-TW": "中尺寸",
+    "fr": "Moyen"
+  },
+  "Large chip": {
+    "zh-CN": "大尺寸",
+    "zh-TW": "大尺寸",
+    "fr": "Grand"
+  },
+  "Rounded rectangle": {
+    "zh-CN": "圆角矩形",
+    "zh-TW": "圓角矩形",
+    "fr": "Rectangle arrondi"
+  },
+  "Pill shape": {
+    "zh-CN": "胶囊形",
+    "zh-TW": "膠囊形",
+    "fr": "Forme capsule"
+  },
+  "Selectable pill": {
+    "zh-CN": "可选胶囊",
+    "zh-TW": "可選膠囊",
+    "fr": "Capsule sélectionnable"
   },
   "Removable chips": {
     "zh-CN": "可删除的 Chip",

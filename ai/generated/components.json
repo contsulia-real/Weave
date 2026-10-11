@@ -936,7 +936,7 @@
       "import": "import { Chip } from '@contsulia/weave/components/Chip'",
       "importPath": "@contsulia/weave/components/Chip",
       "category": "content-actions",
-      "intent": "A compact, selectable and removable pill using Button styling without depth.",
+      "intent": "A compact display, selectable, or removable chip in Button styles without depth, with configurable size and shape.",
       "preferWhen": [],
       "avoidWhen": [],
       "alternatives": [],
@@ -948,7 +948,7 @@
       "nativeProps": false,
       "documentationRoute": "/docs/components/Chip",
       "apiRoute": "/docs/components-api/Chip",
-      "examples": ["Chip/basic-usage", "Chip/removable"],
+      "examples": ["Chip/basic-usage", "Chip/removable", "Chip/sizes-and-shapes"],
       "props": [
         {
           "name": "defaultSelected",
@@ -975,15 +975,33 @@
           "optional": true
         },
         {
+          "name": "pill",
+          "description": "",
+          "type": "boolean | undefined",
+          "optional": true
+        },
+        {
           "name": "removeLabel",
           "description": "",
           "type": "string | undefined",
           "optional": true
         },
         {
+          "name": "selectable",
+          "description": "",
+          "type": "boolean | undefined",
+          "optional": true
+        },
+        {
           "name": "selected",
           "description": "",
           "type": "boolean | undefined",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "description": "",
+          "type": "ButtonSize | undefined",
           "optional": true
         },
         {
@@ -1071,6 +1089,7 @@
         "Checkbox/indeterminate-parent",
         "Chip/basic-usage",
         "Chip/removable",
+        "Chip/sizes-and-shapes",
         "Combobox/controlled-values",
         "Dialog/modal-dialog",
         "Dialog/non-modal-dialog",
@@ -3639,6 +3658,7 @@
         "Card/selectable-card",
         "Chip/basic-usage",
         "Chip/removable",
+        "Chip/sizes-and-shapes",
         "Dialog/modal-dialog",
         "Divider/vertical-divider",
         "Drawer/controlled-drawer",

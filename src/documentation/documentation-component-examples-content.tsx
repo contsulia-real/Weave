@@ -135,9 +135,16 @@ export const contentComponentExamples: Record<
     examples: [basicExample('Badge/basic-usage')],
   },
   Chip: {
-    description: 'A compact, selectable and removable pill using Button styling without depth.',
+    description:
+      'A compact display, selectable, or removable chip in Button styles without depth, with configurable size and shape.',
     examples: [
       basicExample('Chip/basic-usage'),
+      {
+        id: 'sizes-and-shapes',
+        title: 'Sizes and shapes',
+        description: 'Choose small, medium, or large; use pill for fully rounded chips.',
+        demo: 'Chip/sizes-and-shapes',
+      },
       {
         id: 'removable',
         title: 'Removable chips',
