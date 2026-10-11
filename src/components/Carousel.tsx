@@ -39,10 +39,24 @@ export function Carousel({
 
   const scroll = (direction: -1 | 1) => {
     const viewport = viewportRef.current
-    if (viewport === null) return
+    const items = contentRef.current?.children
+    if (viewport === null || items === undefined || items.length === 0) return
+
+    const firstLeft = items[0].getBoundingClientRect().left
+    const max = Math.max(0, viewport.scrollWidth - viewport.clientWidth)
+    const current = Math.abs(viewport.scrollLeft)
+    const positions = Array.from(items, (item) =>
+      Math.min(max, Math.abs(item.getBoundingClientRect().left - firstLeft)),
+    )
+    const next =
+      direction === 1
+        ? positions.find((position) => position > current + 1)
+        : positions.reverse().find((position) => position < current - 1)
+    if (next === undefined) return
+
     const sign = getComputedStyle(viewport).direction === 'rtl' ? -1 : 1
-    viewport.scrollBy({
-      left: viewport.clientWidth * direction * sign,
+    viewport.scrollTo({
+      left: next * sign,
       behavior: reducedMotion ? 'auto' : 'smooth',
     })
   }

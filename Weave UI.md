@@ -3045,7 +3045,7 @@ viewProps
 
 - 复用真实 `View` 横向滚动宿主与 `Row` 水平排列，使用浏览器原生滚动、横向 CSS scroll snap，以及 `Button` 配合共享左右 Chevron 的前后导航；不创建第二套滚动器或导航图标。
 - `children` 提供项目，`gap` 复用 Row 间距，`label`、`previousLabel`、`nextLabel` 提供可访问名称，`viewProps` 复用通用布局能力。项目大小不由 Carousel 固定。
-- 前后按钮按视口宽度横向滚动，滚动位置到达首尾时禁用相应按钮；用户仍可使用鼠标、触摸板和键盘原生滚动。动画复用浏览器 smooth scroll，系统 reduced-motion 下禁用平滑动画；不自动播放、不无限循环。
+- 前后按钮每次滚动到相邻一个元素的起始位置（不同宽度项目按实际 DOM 位置计算，末尾位置按可滚动边界截断），滚动位置到达首尾时禁用相应按钮；用户仍可使用鼠标、触摸板和键盘原生滚动。动画复用浏览器 smooth scroll，系统 reduced-motion 下禁用平滑动画；不自动播放、不无限循环。
 - Documentation 展示基础滚动和不同宽度项目两个独立场景，章节与示例文案覆盖英、简中、繁中、法文。
 
 ---
