@@ -51,6 +51,7 @@ export const componentNavigationSections: readonly DocumentationNavigationSectio
   componentSection('forms-status', 'docs.nav.formsStatus', [
     'Input',
     'Calendar',
+    'DateRangePicker',
     'Select',
     'Combobox',
     'Slider',

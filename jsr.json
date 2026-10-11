@@ -28,6 +28,7 @@
     "./components/ComboboxOption": "./dist/components/ComboboxOption.js",
     "./components/CommandPalette": "./dist/components/CommandPalette.js",
     "./components/DataGrid": "./dist/components/DataGrid.js",
+    "./components/DateRangePicker": "./dist/components/DateRangePicker.js",
     "./components/Dialog": "./dist/components/Dialog.js",
     "./components/Divider": "./dist/components/Divider.js",
     "./components/Drawer": "./dist/components/Drawer.js",

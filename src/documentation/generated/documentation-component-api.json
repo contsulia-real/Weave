@@ -155,6 +155,13 @@
       "usesViewProps": false,
       "props": "r388c50238306"
     },
+    "DateRangePicker": {
+      "importPath": "@contsulia/weave/components/DateRangePicker",
+      "nativeProps": false,
+      "hasViewProps": false,
+      "usesViewProps": false,
+      "props": "r7588938b0a0a"
+    },
     "Dialog": {
       "importPath": "@contsulia/weave/components/Dialog",
       "nativeProps": false,
@@ -729,6 +736,16 @@
       "p3de8bc1d2b0d",
       "p0e219698bb16",
       "pc70c374b423f"
+    ],
+    "r7588938b0a0a": [
+      "p9ea7d7449f9c",
+      "p531a9289d2ce",
+      "p830c395dfbb1",
+      "p514c1cecf405",
+      "pc896bbbdbdb1",
+      "pc054a9daf67a",
+      "p7ac4ecc240fd",
+      "paf4c1cd4aa99"
     ],
     "r656bb76abd36": [
       "p9228bbb6f974",
@@ -2208,6 +2225,48 @@
       "name": "virtualized",
       "description": "Enables row windowing while preserving native table structure and selection knowledge for the complete row set.",
       "type": "boolean | undefined",
+      "optional": true
+    },
+    "p9ea7d7449f9c": {
+      "name": "defaultValue",
+      "description": "",
+      "type": "DateRangeValue | null | undefined",
+      "optional": true
+    },
+    "p830c395dfbb1": {
+      "name": "locale",
+      "description": "",
+      "type": "string | undefined",
+      "optional": true
+    },
+    "p514c1cecf405": {
+      "name": "max",
+      "description": "",
+      "type": "string | undefined",
+      "optional": true
+    },
+    "pc896bbbdbdb1": {
+      "name": "min",
+      "description": "",
+      "type": "string | undefined",
+      "optional": true
+    },
+    "pc054a9daf67a": {
+      "name": "onChange",
+      "description": "",
+      "type": "((value: DateRangeValue) => void) | undefined",
+      "optional": true
+    },
+    "p7ac4ecc240fd": {
+      "name": "placeholder",
+      "description": "",
+      "type": "string | undefined",
+      "optional": true
+    },
+    "paf4c1cd4aa99": {
+      "name": "value",
+      "description": "",
+      "type": "DateRangeValue | null | undefined",
       "optional": true
     },
     "p9228bbb6f974": {

@@ -1,4 +1,29 @@
 {
+  "Choose start and end dates in one calendar, highlighting the included days.": {
+    "zh-CN": "在同一个日历中选择开始和结束日期，并高亮区间内日期。",
+    "zh-TW": "在同一個日曆中選擇開始和結束日期，並醒目顯示區間內日期。",
+    "fr": "Choisissez les dates de début et de fin dans un même calendrier et surlignez les jours intermédiaires."
+  },
+  "Uncontrolled range": {
+    "zh-CN": "非受控日期范围",
+    "zh-TW": "非受控日期範圍",
+    "fr": "Plage non contrôlée"
+  },
+  "Reuse the same calendar for a range crossing months.": {
+    "zh-CN": "使用同一个日历选择跨月日期范围。",
+    "zh-TW": "使用同一個日曆選擇跨月日期範圍。",
+    "fr": "Réutilisez le même calendrier pour sélectionner une plage sur plusieurs mois."
+  },
+  "Selected range": {
+    "zh-CN": "已选日期范围",
+    "zh-TW": "已選日期範圍",
+    "fr": "Plage sélectionnée"
+  },
+  "Choose the start and end dates in the same calendar.": {
+    "zh-CN": "在同一个日历中依次选择开始和结束日期。",
+    "zh-TW": "在同一個日曆中依序選擇開始和結束日期。",
+    "fr": "Choisissez les dates de début et de fin dans le même calendrier."
+  },
   "A searchable, grouped command dialog with keyboard navigation and an optional Ctrl/Cmd + K shortcut.": {
     "zh-CN": "支持搜索、分组和键盘导航的命令对话框，可选用 Ctrl/Cmd + K 打开。",
     "zh-TW": "支援搜尋、分組和鍵盤導覽的命令對話框，可選用 Ctrl/Cmd + K 開啟。",

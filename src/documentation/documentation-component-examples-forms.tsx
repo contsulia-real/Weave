@@ -154,6 +154,18 @@ export const formsComponentExamples: Record<string, DocumentationComponentDocume
         'Displays the existing Input date calendar directly, without an input or popover.',
       examples: [basicExample('Calendar/basic-usage')],
     },
+    DateRangePicker: {
+      description: 'Choose start and end dates in one calendar, highlighting the included days.',
+      examples: [
+        basicExample('DateRangePicker/basic-usage'),
+        {
+          id: 'uncontrolled-range',
+          title: 'Uncontrolled range',
+          description: 'Reuse the same calendar for a range crossing months.',
+          demo: 'DateRangePicker/uncontrolled-range',
+        },
+      ],
+    },
     Select: {
       description:
         'A single-value listbox select with keyboard navigation, placement, and native form value.',

@@ -20,6 +20,7 @@ export { Combobox } from './components/Combobox'
 export { ComboboxOption } from './components/ComboboxOption'
 export { CommandPalette } from './components/CommandPalette'
 export { DataGrid } from './components/DataGrid'
+export { DateRangePicker } from './components/DateRangePicker'
 export { Dialog } from './components/Dialog'
 export { Divider } from './components/Divider'
 export { Drawer } from './components/Drawer'
@@ -170,6 +171,7 @@ export type {
   DataGridSort,
   DataGridSortDirection,
 } from './core/data-grid-types'
+export type { DateRangePickerProps, DateRangeValue } from './core/date-range-picker-types'
 export type {
   DialogProps,
   DialogViewProps,

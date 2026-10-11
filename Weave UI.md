@@ -2393,6 +2393,8 @@ color
 
 `Calendar` 是公开的常驻日历面板，直接复用上述 `Input type="date"` 的同一日期网格、年月切换、Theme、`locale`、`min/max/step` 限制与 `YYYY-MM-DD` 选择逻辑，不增加第二套日历实现、样式或主题。它不渲染 Input 或 Popover，使用与 Input 日期选择器一致的 `value/defaultValue/onChange` 日期值语义；独立面板不替代真实 Input 的原生表单字段。
 
+`DateRangePicker` 是一个只读单行 Weave `Input` 加一个 Weave `Popover` 范围日历。日历 **直接复用现有 `DateInput` 的同一日期 Grid/Button、年月选择、`min/max`、Theme 与 locale**，仅在私有 inline 日期网格中增加范围态；不创建第二套日期网格。点击第一个日期确定开始点，第二个日期确定结束点；起止日期以既有 Button primary 状态显示，中间日期以 secondary 状态高亮。完整范围值使用 `readonly [start, end]` 的 `YYYY-MM-DD` 元组；`value/defaultValue/onChange` 沿用受控和非受控约定，首次点击只产生未提交的起点，第二次点击后通知 `onChange` 并关闭浮层。输入框显示范围文字，点击输入框或日历按钮可打开同一个 Popover；禁用项遵循现有 Calendar 的日期限制。不得改变既有 `Calendar`、`Input type="date"` 或其他时间类型的单值行为。
+
 `Input.type` 同时支持标准 HTML 时间类型 `time`、`datetime-local`、`month`、`week`，继续使用公开 `Input`，不增加独立 Time/DateTime/Month/Week 组件。它们与 `date` 一样全部使用 Weave 自定义 `Popover` 选择器，复用现有月份/年份网格、`Grid`、`Button`、`Icon`、`Popover`、定位、主题和本地化：`time` 提供小时、分钟及必要时秒的选择；`datetime-local` 组合日期与时间；`month` 直接选择年月；`week` 选择 ISO 周。输入宿主仍是真实的原生 `<input type=...>`，保留分段手动编辑、`value/defaultValue/onChange`、`name/FormData`、`min/max/required/step` 等浏览器表单语义；不使用浏览器自带 picker 作为弹窗，不另造文本输入或主题。 时间（含 datetime-local）用真正的 Weave `Tabs variant="pill"` 切换日期/小时/分钟/秒；周次用 pill Tabs 切换周次/月份/年份，而非一排独立 Button。原生 `step` 时间类型按秒，月份按月，周次按周。标准值为 `HH:mm[:ss]`、`YYYY-MM-DDTHH:mm[:ss]`（无时区）、`YYYY-MM`、ISO `YYYY-Www`。`locale` 影响 Popover 文案和日期标签，不改变标准化字段值。
 
 仅 Input 的 time / datetime-local / week Popover 内使用的 Pill Tabs 将 Tab 上下 padding 收紧至 Weave 小号 Button 的垂直 padding token；选中 pill 指示器仍跟随 Tab 尺寸。独立 Pill Tabs 的默认 padding、主题及交互均不改变。

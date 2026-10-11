@@ -1258,6 +1258,37 @@
       "source": "import { useState } from 'react'\nimport {\n  DataGrid,\n  type DataGridColumn,\n  type DataGridColumnWidths,\n  type DataGridSort,\n  type TableSelectedCell,\n} from '../../../index'\n\ninterface ProjectRow {\n  id: string\n  name: string\n  owner: string\n  score: number\n}\n\nconst rows: readonly ProjectRow[] = [\n  { id: 'atlas', name: 'Atlas', owner: 'Mina', score: 92 },\n  { id: 'borealis', name: 'Borealis', owner: 'Noah', score: 84 },\n  { id: 'cirrus', name: 'Cirrus', owner: 'Iris', score: 88 },\n]\n\nconst columns: readonly DataGridColumn<ProjectRow>[] = [\n  {\n    id: 'name',\n    header: 'Project',\n    cell: (row) => row.name,\n    sort: (left, right) => left.name.localeCompare(right.name),\n    minWidth: 120,\n    maxWidth: 240,\n    resizable: true,\n  },\n  {\n    id: 'owner',\n    header: 'Owner',\n    cell: (row) => row.owner,\n    sort: (left, right) => left.owner.localeCompare(right.owner),\n    minWidth: 120,\n    maxWidth: 220,\n    resizable: true,\n  },\n  {\n    id: 'score',\n    header: 'Score',\n    cell: (row) => row.score,\n    sort: (left, right) => left.score - right.score,\n    minWidth: 88,\n    maxWidth: 140,\n    resizable: true,\n  },\n]\n\nexport default function DataGridControlledStateDemo() {\n  const [sort, setSort] = useState<DataGridSort | null>({\n    columnId: 'score',\n    direction: 'desc',\n  })\n  const [columnWidths, setColumnWidths] = useState<DataGridColumnWidths>({\n    name: 160,\n    owner: 140,\n    score: 96,\n  })\n  const [selected, setSelected] = useState<readonly TableSelectedCell[]>([\n    { rowId: 'atlas', cellId: 'name' },\n  ])\n\n  return (\n    <DataGrid\n      columns={columns}\n      rows={rows}\n      dense\n      selectable\n      sort={sort}\n      onSortChange={setSort}\n      columnWidths={columnWidths}\n      onColumnWidthsChange={setColumnWidths}\n      selected={selected}\n      onSelect={setSelected}\n    />\n  )\n}"
     },
     {
+      "id": "DateRangePicker/basic-usage",
+      "component": "DateRangePicker",
+      "title": "Basic usage",
+      "components": ["Column", "DateRangePicker", "Text"],
+      "concepts": ["basic", "column", "date", "picker", "range", "text", "usage"],
+      "documentationRoute": "/docs/components/DateRangePicker",
+      "source": "import { useState } from 'react'\nimport { useTranslation } from 'react-i18next'\nimport type { DateRangeValue } from '../../../index'\nimport { Column, DateRangePicker, Text } from '../../../index'\n\nexport default function DateRangePickerBasicUsageDemo() {\n  const { t } = useTranslation('copy')\n  const [range, setRange] = useState<DateRangeValue>(['2026-10-12', '2026-10-16'])\n\n  return (\n    <Column align=\"start\" gap={12}>\n      <DateRangePicker value={range} onChange={setRange} min=\"2026-10-01\" max=\"2026-11-30\" />\n      <Text typo=\"body-small\" color=\"secondary\">\n        {t('Selected range')}: {range[0]} – {range[1]}\n      </Text>\n    </Column>\n  )\n}"
+    },
+    {
+      "id": "DateRangePicker/uncontrolled-range",
+      "component": "DateRangePicker",
+      "title": "Uncontrolled range",
+      "description": "Reuse the same calendar for a range crossing months.",
+      "components": ["Column", "DateRangePicker", "Text"],
+      "concepts": [
+        "calendar",
+        "column",
+        "crossing",
+        "date",
+        "months",
+        "picker",
+        "range",
+        "reuse",
+        "same",
+        "text",
+        "uncontrolled"
+      ],
+      "documentationRoute": "/docs/components/DateRangePicker",
+      "source": "import { useTranslation } from 'react-i18next'\nimport { Column, DateRangePicker, Text } from '../../../index'\n\nexport default function DateRangePickerUncontrolledDemo() {\n  const { t } = useTranslation('copy')\n  return (\n    <Column align=\"start\" gap={12}>\n      <DateRangePicker defaultValue={['2026-10-30', '2026-11-03']} />\n      <Text typo=\"body-small\" color=\"secondary\">\n        {t('Choose the start and end dates in the same calendar.')}\n      </Text>\n    </Column>\n  )\n}"
+    },
+    {
       "id": "Dialog/basic-usage",
       "component": "Dialog",
       "title": "Basic usage",

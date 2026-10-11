@@ -218,6 +218,14 @@ assert(infoAlert.includes('Update available'), 'Alert must render title')
 assert(infoAlert.includes('Read the notes'), 'Alert must render description')
 assert(errorAlert.includes('role="alert"'), 'Error Alert must use alert semantics')
 assert(errorAlert.includes('Retry'), 'Alert must render optional action')
+const rangePickerModule = await import(`${packageJson.name}/components/DateRangePicker`)
+const rangePicker = renderToStaticMarkup(
+  createElement(rangePickerModule.DateRangePicker, {
+    value: ['2026-10-12', '2026-10-16'],
+  }),
+)
+assert(rangePicker.includes('weave-date-range-picker'), 'DateRangePicker must expose an input')
+assert(rangePicker.includes('2026-10-12'), 'DateRangePicker must display selected dates')
 const commandPaletteModule = await import(`${packageJson.name}/components/CommandPalette`)
 assert(typeof commandPaletteModule.CommandPalette === 'function', 'CommandPalette must be exported')
 const componentChip = await import(`${packageJson.name}/components/Chip`)

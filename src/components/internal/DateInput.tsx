@@ -20,8 +20,18 @@ type TemporalType = Extract<InputType, 'date' | 'time' | 'datetime-local' | 'mon
 type TemporalInputProps = SingleLineProps & {
   type: TemporalType
 } & (
-    | { inline: true; InputHost?: never }
-    | { inline?: false; InputHost: (props: SingleLineProps) => import('react').JSX.Element }
+    | {
+        inline: true
+        InputHost?: never
+        range?: { start: string; end?: string }
+        onRangeSelect?: (day: string) => void
+      }
+    | {
+        inline?: false
+        InputHost: (props: SingleLineProps) => import('react').JSX.Element
+        range?: never
+        onRangeSelect?: never
+      }
   )
 type Panel = 'days' | 'months' | 'years' | 'hours' | 'minutes' | 'seconds'
 
@@ -156,6 +166,8 @@ export function DateInput({
   InputHost,
   inline = false,
   type,
+  range,
+  onRangeSelect,
   value,
   defaultValue = '',
   onChange,
@@ -363,7 +375,9 @@ export function DateInput({
 
   const selectDay = (day: globalThis.Date) => {
     const picked = dateString(day)
-    if (type === 'week') {
+    if (range !== undefined && onRangeSelect !== undefined) {
+      onRangeSelect(picked)
+    } else if (type === 'week') {
       completeSelection(isoWeek(day))
     } else if (type === 'datetime-local') {
       setChosenDay(picked)
@@ -496,18 +510,40 @@ export function DateInput({
                 const picked = dateString(day)
                 const outOfRange =
                   (lower !== undefined && picked < lower) || (upper !== undefined && picked > upper)
+                const rangeEdge =
+                  range !== undefined && (range.start === picked || range.end === picked)
+                const rangeMiddle =
+                  range !== undefined &&
+                  range.end !== undefined &&
+                  range.start < picked &&
+                  picked < range.end
+                const active =
+                  range === undefined ? currentValue.slice(0, 10) === picked : rangeEdge
                 return (
                   <Button
                     key={picked}
                     text={index + 1}
                     size="small"
-                    variant={currentValue.slice(0, 10) === picked ? 'primary' : 'ghost'}
-                    pressed={currentValue.slice(0, 10) === picked}
+                    variant={active ? 'primary' : rangeMiddle ? 'secondary' : 'ghost'}
+                    pressed={active || rangeMiddle}
                     disabled={outOfRange || (type === 'date' && !optionIsAllowed(picked))}
                     viewProps={{
                       width: 'fill',
                       minWidth: 0,
                       label: dayFormatter.format(day),
+                      data:
+                        range === undefined
+                          ? undefined
+                          : {
+                              'weave-date-range-day': picked,
+                              'weave-date-range-position': rangeEdge
+                                ? range.start === picked
+                                  ? 'start'
+                                  : 'end'
+                                : rangeMiddle
+                                  ? 'middle'
+                                  : 'outside',
+                            },
                       onClick: () => selectDay(day),
                     }}
                   />
@@ -607,7 +643,7 @@ export function DateInput({
           })}
         </Grid>
       )}
-      {!fieldRequired && currentValue !== '' ? (
+      {range === undefined && !fieldRequired && currentValue !== '' ? (
         <Row justify="end">
           <Button
             text={messages.clear}

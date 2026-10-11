@@ -1096,6 +1096,8 @@
         "CommandPalette/basic-usage",
         "CommandPalette/grouped-search",
         "CommandPalette/keyboard-shortcut",
+        "DateRangePicker/basic-usage",
+        "DateRangePicker/uncontrolled-range",
         "Dialog/modal-dialog",
         "Dialog/non-modal-dialog",
         "Divider/spaced-divider",
@@ -1603,6 +1605,75 @@
           "name": "virtualized",
           "description": "Enables row windowing while preserving native table structure and selection knowledge for the complete row set.",
           "type": "boolean | undefined",
+          "optional": true
+        }
+      ]
+    },
+    "DateRangePicker": {
+      "name": "DateRangePicker",
+      "import": "import { DateRangePicker } from '@contsulia/weave/components/DateRangePicker'",
+      "importPath": "@contsulia/weave/components/DateRangePicker",
+      "category": "forms-status",
+      "intent": "Choose start and end dates in one calendar, highlighting the included days.",
+      "preferWhen": [],
+      "avoidWhen": [],
+      "alternatives": [],
+      "relationship": {
+        "demoParent": null,
+        "standaloneDocumentationPage": true
+      },
+      "viewPropsMode": "none",
+      "nativeProps": false,
+      "documentationRoute": "/docs/components/DateRangePicker",
+      "apiRoute": "/docs/components-api/DateRangePicker",
+      "examples": ["DateRangePicker/basic-usage", "DateRangePicker/uncontrolled-range"],
+      "props": [
+        {
+          "name": "defaultValue",
+          "description": "",
+          "type": "DateRangeValue | null | undefined",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "description": "",
+          "type": "boolean | undefined",
+          "optional": true
+        },
+        {
+          "name": "locale",
+          "description": "",
+          "type": "string | undefined",
+          "optional": true
+        },
+        {
+          "name": "max",
+          "description": "",
+          "type": "string | undefined",
+          "optional": true
+        },
+        {
+          "name": "min",
+          "description": "",
+          "type": "string | undefined",
+          "optional": true
+        },
+        {
+          "name": "onChange",
+          "description": "",
+          "type": "((value: DateRangeValue) => void) | undefined",
+          "optional": true
+        },
+        {
+          "name": "placeholder",
+          "description": "",
+          "type": "string | undefined",
+          "optional": true
+        },
+        {
+          "name": "value",
+          "description": "",
+          "type": "DateRangeValue | null | undefined",
           "optional": true
         }
       ]
@@ -5164,6 +5235,8 @@
         "CommandPalette/basic-usage",
         "CommandPalette/grouped-search",
         "CommandPalette/keyboard-shortcut",
+        "DateRangePicker/basic-usage",
+        "DateRangePicker/uncontrolled-range",
         "Dialog/basic-usage",
         "Dialog/modal-dialog",
         "Dialog/non-modal-dialog",

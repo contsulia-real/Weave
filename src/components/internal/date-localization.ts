@@ -4,6 +4,7 @@ import { useWeaveDocument } from '../../renderers/dom/document-context'
 const messages = {
   en: {
     chooseDate: 'Choose date',
+    chooseDateRange: 'Choose date range',
     chooseColor: 'Choose color',
     chooseFiles: 'Choose files',
     dropFiles: 'Choose files or drag them here',
@@ -51,6 +52,7 @@ const messages = {
   },
   'zh-CN': {
     chooseDate: '选择日期',
+    chooseDateRange: '选择日期范围',
     chooseColor: '选择颜色',
     chooseFiles: '选择文件',
     dropFiles: '选择文件或拖拽至此',
@@ -98,6 +100,7 @@ const messages = {
   },
   'zh-TW': {
     chooseDate: '選擇日期',
+    chooseDateRange: '選擇日期範圍',
     chooseColor: '選擇顏色',
     chooseFiles: '選擇檔案',
     dropFiles: '選擇檔案或拖曳至此',
@@ -145,6 +148,7 @@ const messages = {
   },
   fr: {
     chooseDate: 'Choisir une date',
+    chooseDateRange: 'Choisir une plage de dates',
     chooseColor: 'Choisir une couleur',
     chooseFiles: 'Choisir des fichiers',
     dropFiles: 'Choisir des fichiers ou les glisser ici',
