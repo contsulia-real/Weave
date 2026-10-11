@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import type { GridProps } from './layout-types'
+import type { ColumnProps } from './layout-types'
 
 export type AlertVariant = 'info' | 'success' | 'warning' | 'error'
 
@@ -8,5 +8,5 @@ export interface AlertProps {
   title: ReactNode
   description?: ReactNode
   action?: ReactNode
-  viewProps?: Omit<GridProps, 'children' | 'role'>
+  viewProps?: Omit<ColumnProps, 'children' | 'role'>
 }

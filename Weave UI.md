@@ -3061,8 +3061,8 @@ viewProps
 `Alert` 是页面文档流中持续存在的状态提示，与临时通知 `Snack`、模态 `Dialog` 和字段级 `FormError` 分工明确。不自动关闭、不设定计时器，不使用 Portal 或独立 overlay。
 
 - `variant?: 'info' | 'success' | 'warning' | 'error'` 默认为 `info`。语义颜色分别复用 Theme 的 `primary / success / warning / danger`；背景和边框通过 CSS `color-mix` 与 `surface` 混合，支持 light/dark mode 和 Theme 令牌覆盖。
-- `title: ReactNode` 必需；`description?: ReactNode`、`action?: ReactNode` 可选；`viewProps?: Omit<GridProps, 'children' | 'role'>` 用于通用布局、响应式和样式能力。操作内容由调用方组合公开 Button、Link 等组件，不由 Alert 代管回调。
-- 使用公开 `Grid / Row / Text / Icon` 组合；图标置于标题首行高度为 `1lh` 的 Row 内，以 `title-small` 字号及行高令牌确定该行的中心，不以图标顶边或整个标题块高度定位。说明和操作内容保持在标题列，不使用固定像素偏移量补偿。状态图标使用现有 Tabler icon 且 `aria-hidden`。`info/success` 使用 `role="status"`，`warning/error` 使用 `role="alert"`，容器不创建键盘焦点。
+- `title: ReactNode` 必需；`description?: ReactNode`、`action?: ReactNode` 可选；`viewProps?: Omit<ColumnProps, 'children' | 'role'>` 用于通用布局、响应式和样式能力。操作内容由调用方组合公开 Button、Link 等组件，不由 Alert 代管回调。
+- 使用公开 `Column / Row / Text / Icon` 组合：外层 Column 纵向排列标题行、说明和操作；第一行 Row 直接包含 Icon 与 `title-small` Text，设置 `align="center"` 并保持两者 12px 间距。说明和操作以 Icon.medium 的 Theme 宽度加 12px 缩进，与标题左缘对齐，不创建单独图标槽、Grid 或固定垂直偏移。状态图标使用现有 Tabler icon 且 `aria-hidden`。`info/success` 使用 `role="status"`，`warning/error` 使用 `role="alert"`，容器不创建键盘焦点。
 - 默认标题排版为 `title-small`，说明为 `body-medium`；`viewProps` 可覆盖通用视觉属性。Documentation 提供四种状态、可交互操作示例和英／简中／繁中／法文翻译。
 
 ---
