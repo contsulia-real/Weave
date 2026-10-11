@@ -221,14 +221,22 @@ function languageMessages(locale: string) {
   return messages.en
 }
 
-export function useDateLocalization(override?: string) {
+function useLocale(override?: string): string {
   const ownerDocument = useWeaveDocument()
   const inheritedLocale = useSyncExternalStore(
     useCallback((onChange) => subscribeToDocumentLocale(ownerDocument, onChange), [ownerDocument]),
     useCallback(() => documentLocale(ownerDocument), [ownerDocument]),
     () => 'en',
   )
-  const locale = override ?? inheritedLocale
+  return override ?? inheritedLocale
+}
+
+export function useLocalizedMessages(override?: string) {
+  return languageMessages(useLocale(override))
+}
+
+export function useDateLocalization(override?: string) {
+  const locale = useLocale(override)
 
   return useMemo(() => {
     const weekdayFormatter = new Intl.DateTimeFormat(locale, {

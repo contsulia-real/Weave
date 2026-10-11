@@ -182,6 +182,27 @@ assert(
 )
 const weave = await import(runtimeEntry.href)
 const componentButton = await import(`${packageJson.name}/components/Button`)
+const componentInput = await import(`${packageJson.name}/components/Input`)
+const originalDateTimeFormat = Intl.DateTimeFormat
+let inputDateFormatterCreations = 0
+try {
+  Intl.DateTimeFormat = new Proxy(originalDateTimeFormat, {
+    construct(target, argumentsList, newTarget) {
+      inputDateFormatterCreations += 1
+      return Reflect.construct(target, argumentsList, newTarget)
+    },
+  })
+  const inputMarkup = renderToStaticMarkup(
+    createElement(componentInput.Input, { defaultValue: 'sample' }),
+  )
+  assert(inputMarkup.includes('aria-label="Clear input"'), 'Input must localize its clear action')
+} finally {
+  Intl.DateTimeFormat = originalDateTimeFormat
+}
+assert(
+  inputDateFormatterCreations === 0,
+  'Plain Input must not initialize calendar date formatters',
+)
 const componentDataGrid = await import(`${packageJson.name}/components/DataGrid`)
 const componentCarousel = await import(`${packageJson.name}/components/Carousel`)
 const carouselMarkup = renderToStaticMarkup(

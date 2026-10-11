@@ -19,7 +19,7 @@ import { AutoScrollbar } from './internal/AutoScrollbar'
 import { ColorInput } from './internal/ColorInput'
 import { closeIcon } from './internal/control-icons'
 import { DateInput } from './internal/DateInput'
-import { useDateLocalization } from './internal/date-localization'
+import { useLocalizedMessages } from './internal/date-localization'
 import { FileInput } from './internal/FileInput'
 import { formFieldAssociationOverrides, useFormFieldContext } from './internal/form-field-context'
 import { NumberInput } from './internal/NumberInput'
@@ -115,7 +115,7 @@ function SingleLineInput({
   trailingAction,
   viewProps = {},
 }: SingleLineInputHostProps) {
-  const { messages } = useDateLocalization()
+  const messages = useLocalizedMessages()
   const field = useFormFieldContext()
   const fieldRequired = field?.required === true
   const nativeRequired = required === true || (fieldRequired && viewProps.role !== 'combobox')
