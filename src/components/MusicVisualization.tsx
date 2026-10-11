@@ -16,11 +16,15 @@ function drawBars(
   height: number,
   direction: MusicVisualizationDirection,
   align: MusicVisualizationAlign,
+  barCount: number | undefined,
 ): void {
   const vertical = direction === 'vertical'
   const length = vertical ? width : height
   const amplitude = vertical ? height : width
-  const count = Math.min(64, Math.max(1, Math.floor(length / 6)))
+  const count =
+    barCount === undefined || !Number.isFinite(barCount)
+      ? Math.min(64, Math.max(1, Math.floor(length / 6)))
+      : Math.max(1, Math.floor(barCount))
   const slot = length / count
   const barWidth = slot * 0.7
 
@@ -45,16 +49,46 @@ function drawBars(
 function drawWaveform(
   context: CanvasRenderingContext2D,
   time: Uint8Array<ArrayBuffer>,
+  frequency: Uint8Array<ArrayBuffer>,
   analyser: AnalyserNode,
   width: number,
   height: number,
 ): void {
   analyser.getByteTimeDomainData(time)
+  analyser.getByteFrequencyData(frequency)
+
+  // The entire fftSize window often contains dozens of audio cycles.
+  // Draw one ACTUALLY sampled dominant cycle rather than squeezing those
+  // cycles into the same narrow waveform or synthesizing repeated periods.
+  let dominantBin = 0
+  let dominantLevel = 8
+  for (let bin = 1; bin < frequency.length; bin += 1) {
+    if (frequency[bin] > dominantLevel) {
+      dominantBin = bin
+      dominantLevel = frequency[bin]
+    }
+  }
+
+  const windowSize =
+    dominantBin === 0
+      ? Math.min(128, time.length - 1)
+      : Math.min(time.length - 1, Math.max(4, Math.round(analyser.fftSize / dominantBin)))
+  if (windowSize < 1) return
+
+  // Start on a rising zero crossing so a steady tone remains visually stable.
+  const lastStart = time.length - windowSize - 1
+  let start = 0
+  for (let index = 1; index <= lastStart; index += 1) {
+    if (time[index - 1] < 128 && time[index] >= 128) {
+      start = index
+      break
+    }
+  }
+
   context.beginPath()
-  const last = time.length - 1
-  for (let index = 0; index < time.length; index += 1) {
-    const x = last === 0 ? 0 : (index / last) * width
-    const y = (1 - (time[index] ?? 128) / 255) * height
+  for (let index = 0; index <= windowSize; index += 1) {
+    const x = (index / windowSize) * width
+    const y = (1 - (time[start + index] ?? 128) / 255) * height
     if (index === 0) context.moveTo(x, y)
     else context.lineTo(x, y)
   }
@@ -66,6 +100,7 @@ export function MusicVisualization({
   mode = 'bars',
   direction = 'vertical',
   align = 'center',
+  barCount,
   viewProps = {},
 }: MusicVisualizationProps): import('react').JSX.Element {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -132,9 +167,9 @@ export function MusicVisualization({
       context.lineWidth = 2
       if (analyser !== undefined && width > 0 && height > 0) {
         if (mode === 'bars' && frequency !== undefined) {
-          drawBars(context, frequency, analyser, width, height, direction, align)
-        } else if (mode === 'waveform' && time !== undefined) {
-          drawWaveform(context, time, analyser, width, height)
+          drawBars(context, frequency, analyser, width, height, direction, align, barCount)
+        } else if (mode === 'waveform' && time !== undefined && frequency !== undefined) {
+          drawWaveform(context, time, frequency, analyser, width, height)
         }
       }
       if (analyser !== undefined) frame = view.requestAnimationFrame(paint)
@@ -147,7 +182,7 @@ export function MusicVisualization({
       view.removeEventListener('resize', measure)
       analysis?.cleanup()
     }
-  }, [source, mode, direction, align, themeMode, viewProps.color])
+  }, [source, mode, direction, align, barCount, themeMode, viewProps.color])
 
   return (
     <View
@@ -162,6 +197,7 @@ export function MusicVisualization({
         'weave-music-visualization-mode': mode,
         'weave-music-visualization-direction': mode === 'bars' ? direction : undefined,
         'weave-music-visualization-align': mode === 'bars' ? align : undefined,
+        'weave-music-visualization-bar-count': mode === 'bars' ? barCount : undefined,
       }}
     >
       <canvas

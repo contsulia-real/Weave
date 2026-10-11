@@ -2212,7 +2212,9 @@
         "Input/time-input",
         "Input/time-seconds",
         "Input/url-input",
-        "Input/week-input"
+        "Input/week-input",
+        "MusicVisualization/basic-usage",
+        "MusicVisualization/media-player"
       ],
       "props": [
         {
@@ -2522,6 +2524,8 @@
         "Input/time-seconds",
         "Input/url-input",
         "Input/week-input",
+        "MusicVisualization/basic-usage",
+        "MusicVisualization/media-player",
         "Popover/focused-popover"
       ],
       "props": [
@@ -3198,6 +3202,12 @@
           "name": "align",
           "description": "Position of the bars along their amplitude axis; not used for waveform.",
           "type": "MusicVisualizationAlign | undefined",
+          "optional": true
+        },
+        {
+          "name": "barCount",
+          "description": "Exact frequency bar count; omit to use the responsive automatic count. Positive integer.",
+          "type": "number | undefined",
           "optional": true
         },
         {

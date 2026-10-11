@@ -227,6 +227,13 @@ assert(
   'MusicVisualization must default to bars',
 )
 assert(musicMarkup.includes('<canvas'), 'MusicVisualization must render a canvas')
+const musicWithEightBars = renderToStaticMarkup(
+  createElement(musicVisualizationModule.MusicVisualization, { source: null, barCount: 8 }),
+)
+assert(
+  musicWithEightBars.includes('data-weave-music-visualization-bar-count="8"'),
+  'MusicVisualization must expose an explicitly requested frequency bar count',
+)
 const musicWave = renderToStaticMarkup(
   createElement(musicVisualizationModule.MusicVisualization, { source: null, mode: 'waveform' }),
 )

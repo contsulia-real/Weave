@@ -1,4 +1,9 @@
 {
+  "Frequency bar count": {
+    "zh-CN": "频谱柱数量",
+    "zh-TW": "頻譜柱數量",
+    "fr": "Nombre de barres de fréquence"
+  },
   "Use external analyser": {
     "zh-CN": "使用外部分析器",
     "zh-TW": "使用外部分析器",

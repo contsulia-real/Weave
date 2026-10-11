@@ -321,7 +321,7 @@
       "nativeProps": false,
       "hasViewProps": true,
       "usesViewProps": false,
-      "props": "r81406d828160"
+      "props": "ra72d9fb0b09b"
     },
     "OTPInput": {
       "importPath": "@contsulia/weave/components/OTPInput",
@@ -911,7 +911,13 @@
       "p7d209b798d28",
       "p63ec3621ff0a"
     ],
-    "r81406d828160": ["pfc946ff144c0", "p6d7d72f17004", "pf0b7e67de191", "p8314617d6fb8"],
+    "ra72d9fb0b09b": [
+      "pfc946ff144c0",
+      "pd0c1ea84ed86",
+      "p6d7d72f17004",
+      "pf0b7e67de191",
+      "p8314617d6fb8"
+    ],
     "r92766bf7544b": [
       "p0f2bd87f8a7c",
       "p531a9289d2ce",
@@ -3157,6 +3163,12 @@
       "name": "align",
       "description": "Position of the bars along their amplitude axis; not used for waveform.",
       "type": "MusicVisualizationAlign | undefined",
+      "optional": true
+    },
+    "pd0c1ea84ed86": {
+      "name": "barCount",
+      "description": "Exact frequency bar count; omit to use the responsive automatic count. Positive integer.",
+      "type": "number | undefined",
       "optional": true
     },
     "p6d7d72f17004": {

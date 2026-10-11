@@ -5,7 +5,7 @@ import type {
   MusicVisualizationDirection,
   MusicVisualizationMode,
 } from '../../../index'
-import { Button, Column, MusicVisualization, Row, Text } from '../../../index'
+import { Button, Column, FormField, Input, MusicVisualization, Row, Text } from '../../../index'
 
 export default function MusicVisualizationBasicUsageDemo() {
   const { t } = useTranslation('copy')
@@ -15,6 +15,7 @@ export default function MusicVisualizationBasicUsageDemo() {
   const [mode, setMode] = useState<MusicVisualizationMode>('bars')
   const [direction, setDirection] = useState<MusicVisualizationDirection>('vertical')
   const [align, setAlign] = useState<MusicVisualizationAlign>('center')
+  const [barCount, setBarCount] = useState('24')
   const audioRef = useRef<{
     context: AudioContext
     oscillator: OscillatorNode
@@ -50,7 +51,7 @@ export default function MusicVisualizationBasicUsageDemo() {
     const destination = context.createMediaStreamDestination()
     const node = context.createAnalyser()
     const gain = context.createGain()
-    gain.gain.value = 0.08
+    gain.gain.value = 0.6
     oscillator.frequency.value = 440
     oscillator.connect(gain)
     gain.connect(node)
@@ -114,11 +115,22 @@ export default function MusicVisualizationBasicUsageDemo() {
           />
         ))}
       </Row>
+      <FormField label={t('Frequency bar count')}>
+        <Input
+          type="number"
+          min={1}
+          step={1}
+          value={barCount}
+          onChange={setBarCount}
+          disabled={mode !== 'bars'}
+        />
+      </FormField>
       <MusicVisualization
         source={useAnalyser ? analyser : stream}
         mode={mode}
         direction={direction}
         align={align}
+        barCount={Number(barCount) > 0 ? Math.floor(Number(barCount)) : undefined}
         viewProps={{ height: 160, label: t('Live audio visualization') }}
       />
       <Text color="secondary" typo="body-small">

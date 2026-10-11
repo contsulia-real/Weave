@@ -12,6 +12,8 @@ export interface MusicVisualizationProps {
   /** A media player, a live recording stream, or an existing Web Audio analyser. */
   source: MusicVisualizationSource
   mode?: MusicVisualizationMode
+  /** Exact frequency bar count; omit to use the responsive automatic count. Positive integer. */
+  barCount?: number
   /** Direction of the frequency bars; not used for waveform. */
   direction?: MusicVisualizationDirection
   /** Position of the bars along their amplitude axis; not used for waveform. */
