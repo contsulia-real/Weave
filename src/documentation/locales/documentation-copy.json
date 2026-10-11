@@ -2419,10 +2419,10 @@
     "zh-TW": "項目 {{number}}",
     "fr": "Élément {{number}}"
   },
-  "A six-digit verification code field with automatic focus, paste, keyboard navigation, and native form submission.": {
-    "zh-CN": "六位验证码输入框，支持自动聚焦、粘贴、键盘导航和原生表单提交。",
-    "zh-TW": "六位驗證碼輸入框，支援自動聚焦、貼上、鍵盤導覽與原生表單提交。",
-    "fr": "Champ de code de vérification à six chiffres avec focus automatique, collage, navigation au clavier et envoi natif du formulaire."
+  "A verification code field with configurable length, digit/letter modes, automatic focus, paste, keyboard navigation, and native form submission.": {
+    "zh-CN": "验证码输入框支持自定义位数、数字与字母模式、自动聚焦、粘贴、键盘导航和原生表单提交。",
+    "zh-TW": "驗證碼輸入框支援自訂位數、數字與字母模式、自動聚焦、貼上、鍵盤導覽與原生表單提交。",
+    "fr": "Champ de code de vérification à longueur configurable, acceptant chiffres et lettres, avec focus automatique, collage, navigation au clavier et envoi natif du formulaire."
   },
   "Form submission": {
     "zh-CN": "表单提交",
@@ -2448,6 +2448,46 @@
     "zh-CN": "已提交：{{code}}",
     "zh-TW": "已提交：{{code}}",
     "fr": "Code envoyé : {{code}}"
+  },
+  "Character modes": {
+    "zh-CN": "字符模式",
+    "zh-TW": "字元模式",
+    "fr": "Modes de caractères"
+  },
+  "Allow letters and digits, or automatically convert letters to uppercase.": {
+    "zh-CN": "允许输入字母与数字，或自动将字母转换为大写。",
+    "zh-TW": "允許輸入字母與數字，或自動將字母轉換為大寫。",
+    "fr": "Accepter lettres et chiffres, ou convertir automatiquement les lettres en majuscules."
+  },
+  "Custom length": {
+    "zh-CN": "自定义位数",
+    "zh-TW": "自訂位數",
+    "fr": "Longueur personnalisée"
+  },
+  "Display four-digit and eight-digit codes by setting length.": {
+    "zh-CN": "通过 length 属性展示四位和八位验证码。",
+    "zh-TW": "透過 length 屬性展示四位與八位驗證碼。",
+    "fr": "Afficher des codes à quatre ou huit chiffres avec la propriété length."
+  },
+  "Alphanumeric code": {
+    "zh-CN": "字母数字验证码",
+    "zh-TW": "英數驗證碼",
+    "fr": "Code alphanumérique"
+  },
+  "Uppercase code": {
+    "zh-CN": "大写字母验证码",
+    "zh-TW": "大寫字母驗證碼",
+    "fr": "Code en majuscules"
+  },
+  "Four-digit code": {
+    "zh-CN": "四位验证码",
+    "zh-TW": "四位驗證碼",
+    "fr": "Code à quatre chiffres"
+  },
+  "Eight-digit code": {
+    "zh-CN": "八位验证码",
+    "zh-TW": "八位驗證碼",
+    "fr": "Code à huit chiffres"
   },
   "Verify": {
     "zh-CN": "验证",

@@ -403,9 +403,21 @@ export const formsComponentExamples: Record<string, DocumentationComponentDocume
     },
     OTPInput: {
       description:
-        'A six-digit verification code field with automatic focus, paste, keyboard navigation, and native form submission.',
+        'A verification code field with configurable length, digit/letter modes, automatic focus, paste, keyboard navigation, and native form submission.',
       examples: [
         basicExample('OTPInput/basic-usage'),
+        {
+          id: 'character-modes',
+          title: 'Character modes',
+          description: 'Allow letters and digits, or automatically convert letters to uppercase.',
+          demo: 'OTPInput/character-modes',
+        },
+        {
+          id: 'custom-length',
+          title: 'Custom length',
+          description: 'Display four-digit and eight-digit codes by setting length.',
+          demo: 'OTPInput/custom-length',
+        },
         {
           id: 'form-submission',
           title: 'Form submission',

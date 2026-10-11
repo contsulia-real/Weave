@@ -29,7 +29,9 @@ export function OTPInput({
   viewProps = {},
 }: OTPInputProps): import('react').JSX.Element {
   const controlled = value !== undefined
-  const [internalValue, setInternalValue] = useState(() => normalizeCode(defaultValue, mode, length))
+  const [internalValue, setInternalValue] = useState(() =>
+    normalizeCode(defaultValue, mode, length),
+  )
   const current = normalizeCode(value ?? internalValue, mode, length)
   const inputs = useRef<(HTMLInputElement | null)[]>([])
 

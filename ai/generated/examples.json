@@ -2703,6 +2703,49 @@
       "source": "import { useState } from 'react'\nimport { useTranslation } from 'react-i18next'\nimport { Column, OTPInput, Text } from '../../../index'\n\nexport default function OTPInputBasicUsageDemo() {\n  const { t } = useTranslation('copy')\n  const [code, setCode] = useState('')\n\n  return (\n    <Column gap={12} align=\"start\">\n      <OTPInput label={t('Verification code')} value={code} onChange={setCode} />\n      <Text typo=\"body-small\" color=\"secondary\">\n        {t('Entered code: {{code}}', { code: code || '—' })}\n      </Text>\n    </Column>\n  )\n}"
     },
     {
+      "id": "OTPInput/character-modes",
+      "component": "OTPInput",
+      "title": "Character modes",
+      "description": "Allow letters and digits, or automatically convert letters to uppercase.",
+      "components": ["Column", "OTPInput", "Text"],
+      "concepts": [
+        "allow",
+        "automatically",
+        "character",
+        "column",
+        "convert",
+        "digits",
+        "letters",
+        "modes",
+        "otpinput",
+        "text",
+        "uppercase"
+      ],
+      "documentationRoute": "/docs/components/OTPInput",
+      "source": "import { useState } from 'react'\nimport { useTranslation } from 'react-i18next'\nimport { Column, OTPInput, Text } from '../../../index'\n\nexport default function OTPInputCharacterModesDemo() {\n  const { t } = useTranslation('copy')\n  const [mixed, setMixed] = useState('')\n  const [upper, setUpper] = useState('')\n\n  return (\n    <Column gap={12} align=\"start\">\n      <OTPInput\n        label={t('Alphanumeric code')}\n        mode=\"alphanumeric\"\n        value={mixed}\n        onChange={setMixed}\n      />\n      <Text typo=\"body-small\" color=\"secondary\">\n        {t('Entered code: {{code}}', { code: mixed || '—' })}\n      </Text>\n      <OTPInput label={t('Uppercase code')} mode=\"uppercase\" value={upper} onChange={setUpper} />\n      <Text typo=\"body-small\" color=\"secondary\">\n        {t('Entered code: {{code}}', { code: upper || '—' })}\n      </Text>\n    </Column>\n  )\n}"
+    },
+    {
+      "id": "OTPInput/custom-length",
+      "component": "OTPInput",
+      "title": "Custom length",
+      "description": "Display four-digit and eight-digit codes by setting length.",
+      "components": ["Column", "OTPInput"],
+      "concepts": [
+        "codes",
+        "column",
+        "custom",
+        "digit",
+        "display",
+        "eight",
+        "four",
+        "length",
+        "otpinput",
+        "setting"
+      ],
+      "documentationRoute": "/docs/components/OTPInput",
+      "source": "import { useTranslation } from 'react-i18next'\nimport { Column, OTPInput } from '../../../index'\n\nexport default function OTPInputCustomLengthDemo() {\n  const { t } = useTranslation('copy')\n\n  return (\n    <Column gap={12} align=\"start\">\n      <OTPInput label={t('Four-digit code')} length={4} />\n      <OTPInput label={t('Eight-digit code')} length={8} />\n    </Column>\n  )\n}"
+    },
+    {
       "id": "OTPInput/form-submission",
       "component": "OTPInput",
       "title": "Form submission",

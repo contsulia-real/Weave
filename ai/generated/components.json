@@ -989,6 +989,8 @@
         "MarkSlider/controlled-restricted-inverse",
         "Menu/selection-dismissal",
         "OTPInput/basic-usage",
+        "OTPInput/character-modes",
+        "OTPInput/custom-length",
         "OTPInput/form-submission",
         "Pagination/basic-usage",
         "Pagination/controlled-pagination",
@@ -2889,7 +2891,7 @@
       "import": "import { OTPInput } from '@contsulia/weave/components/OTPInput'",
       "importPath": "@contsulia/weave/components/OTPInput",
       "category": "forms-status",
-      "intent": "A six-digit verification code field with automatic focus, paste, keyboard navigation, and native form submission.",
+      "intent": "A verification code field with configurable length, digit/letter modes, automatic focus, paste, keyboard navigation, and native form submission.",
       "preferWhen": [],
       "avoidWhen": [],
       "alternatives": [],
@@ -2901,7 +2903,12 @@
       "nativeProps": false,
       "documentationRoute": "/docs/components/OTPInput",
       "apiRoute": "/docs/components-api/OTPInput",
-      "examples": ["OTPInput/basic-usage", "OTPInput/form-submission"],
+      "examples": [
+        "OTPInput/basic-usage",
+        "OTPInput/character-modes",
+        "OTPInput/custom-length",
+        "OTPInput/form-submission"
+      ],
       "props": [
         {
           "name": "defaultValue",
@@ -4966,6 +4973,7 @@
         "MarkSlider/controlled-restricted-inverse",
         "Menu/selection-dismissal",
         "OTPInput/basic-usage",
+        "OTPInput/character-modes",
         "OTPInput/form-submission",
         "Pagination/basic-usage",
         "Pagination/controlled-pagination",
