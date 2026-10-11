@@ -200,16 +200,47 @@ function documentLocale(ownerDocument: Document | null): string {
   return ownerDocument?.documentElement.lang || Intl.DateTimeFormat().resolvedOptions().locale
 }
 
+interface LocaleSubscriberStore {
+  listeners: Set<() => void>
+  observer: MutationObserver | null
+}
+
+const localeSubscriberStores = new WeakMap<Document, LocaleSubscriberStore>()
+
 function subscribeToDocumentLocale(
   ownerDocument: Document | null,
   onChange: () => void,
 ): () => void {
-  const Observer = ownerDocument?.defaultView?.MutationObserver
-  if (ownerDocument === null || Observer === undefined) return () => {}
+  if (ownerDocument === null) return () => {}
 
-  const observer = new Observer(onChange)
-  observer.observe(ownerDocument.documentElement, { attributes: true, attributeFilter: ['lang'] })
-  return () => observer.disconnect()
+  let store = localeSubscriberStores.get(ownerDocument)
+  if (store === undefined) {
+    store = { listeners: new Set(), observer: null }
+    localeSubscriberStores.set(ownerDocument, store)
+  }
+
+  const current = store
+  current.listeners.add(onChange)
+  if (current.observer === null) {
+    const Observer = ownerDocument.defaultView?.MutationObserver
+    if (Observer !== undefined) {
+      current.observer = new Observer(() => {
+        for (const listener of current.listeners) listener()
+      })
+      current.observer.observe(ownerDocument.documentElement, {
+        attributes: true,
+        attributeFilter: ['lang'],
+      })
+    }
+  }
+
+  return () => {
+    current.listeners.delete(onChange)
+    if (current.listeners.size === 0) {
+      current.observer?.disconnect()
+      current.observer = null
+    }
+  }
 }
 
 function languageMessages(locale: string) {
