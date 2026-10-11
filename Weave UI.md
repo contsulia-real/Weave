@@ -3050,11 +3050,11 @@ viewProps
 
 ## 15.7 OTPInput
 
-`OTPInput` 是六位数字验证码输入，复用公开 `Input` 的现有边框、焦点和主题样式，使用 `Row` 排列六个宽 44px、高 52px、间距 8px 的原生输入格，不另建输入框主题。
+`OTPInput` 是可配置位数的验证码输入，默认六位数字，复用公开 `Input` 的现有边框、焦点和主题样式，使用 `Row` 排列输入格（每格宽 44px、高 52px、间距 8px），不另建输入框主题。
 
-- `label: string` 为必需的可访问组名；每格以该名称和序号标注。 `value?: string`、`defaultValue?: string`、`onChange?: (value: string) => void` 沿用受控／非受控约定，输入仅保留六位 ASCII 数字；`disabled`、`required`、`name` 与 `viewProps` 沿用现有命名。
-- 输入一位后自动聚焦下一格；在任意格粘贴连续数字时按剩余位置分配，非数字字符不写入。方向键左右移动焦点；Backspace 清除当前位，当前格为空时删除最后一个已输入数字并返回该格；Delete 清除当前位。支持首格 `autocomplete="one-time-code"` 和手机数字键盘，不额外实施自定义键盘或网络校验。
-- 表单通过同名的原生隐藏字段提交六位拼接值；每个可见输入格保留 required 校验，原生 Form reset 恢复默认值。Documentation 分别提供受控输入、原生表单提交示例，并完成英／简中／繁中／法文翻译。
+- `label: string` 为必需的可访问组名；每格以该名称和序号标注。`length?: number` 为验证码位数（正整数，默认 6）；`mode?: 'numeric' | 'alphanumeric' | 'uppercase'` 默认为 `numeric`，只接受 ASCII 数字；`alphanumeric` 接受 ASCII 数字及大小写字母并保留输入大小写；`uppercase` 接受数字及字母，自动将小写字母转换为大写。`value?: string`、`defaultValue?: string`、`onChange?: (value: string) => void` 沿用受控／非受控约定，值按 mode 和 length 统一规范化；`disabled`、`required`、`name` 与 `viewProps` 沿用现有命名。
+- 输入一位后自动聚焦下一格；在任意格粘贴连续字符时按剩余位置分配，不符合当前 mode 的字符不写入。方向键左右移动焦点；Backspace 清除当前位，当前格为空时删除最后一个已输入字符并返回该格；Delete 清除当前位。支持首格 `autocomplete="one-time-code"`；数字模式使用手机数字键盘，含字母模式使用文本键盘，不额外实施自定义键盘或网络校验。
+- 表单通过同名的原生隐藏字段提交指定长度的拼接值；每个可见输入格保留 required 校验，原生 Form reset 恢复默认值。Documentation 分别提供受控输入、原生表单提交示例，并完成英／简中／繁中／法文翻译。
 
 ---
 

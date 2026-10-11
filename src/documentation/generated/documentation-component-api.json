@@ -293,7 +293,7 @@
       "nativeProps": false,
       "hasViewProps": true,
       "usesViewProps": false,
-      "props": "r43e9dacdfa31"
+      "props": "r92766bf7544b"
     },
     "Pagination": {
       "importPath": "@contsulia/weave/components/Pagination",
@@ -843,10 +843,12 @@
       "p7d209b798d28",
       "p63ec3621ff0a"
     ],
-    "r43e9dacdfa31": [
+    "r92766bf7544b": [
       "p0f2bd87f8a7c",
       "p531a9289d2ce",
       "pce155f33fffd",
+      "p60e05f83af99",
+      "p3cb00a54cbc0",
       "p787fdeeaf18c",
       "p13d7c982554e",
       "pe7277831d031",
@@ -2943,6 +2945,18 @@
       "description": "",
       "type": "string",
       "optional": false
+    },
+    "p60e05f83af99": {
+      "name": "length",
+      "description": "",
+      "type": "number | undefined",
+      "optional": true
+    },
+    "p3cb00a54cbc0": {
+      "name": "mode",
+      "description": "",
+      "type": "\"numeric\" | \"alphanumeric\" | \"uppercase\" | undefined",
+      "optional": true
     },
     "p787fdeeaf18c": {
       "name": "name",

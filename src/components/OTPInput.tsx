@@ -5,14 +5,21 @@ import { Input } from './Input'
 import { useFormReset } from './internal/use-form-reset'
 import { Row } from './Row'
 
-const CODE_LENGTH = 6
-
-function digits(value: string): string {
-  return value.replace(/[^0-9]/g, '').slice(0, CODE_LENGTH)
+function normalizeCode(
+  value: string,
+  mode: NonNullable<OTPInputProps['mode']>,
+  length: number,
+): string {
+  const filtered = value
+    .replace(mode === 'numeric' ? /[^0-9]/g : /[^a-z0-9]/gi, '')
+    .slice(0, length)
+  return mode === 'uppercase' ? filtered.toUpperCase() : filtered
 }
 
 export function OTPInput({
   label,
+  mode = 'numeric',
+  length = 6,
   value,
   defaultValue = '',
   onChange,
@@ -22,36 +29,36 @@ export function OTPInput({
   viewProps = {},
 }: OTPInputProps): import('react').JSX.Element {
   const controlled = value !== undefined
-  const [internalValue, setInternalValue] = useState(() => digits(defaultValue))
-  const current = digits(value ?? internalValue)
+  const [internalValue, setInternalValue] = useState(() => normalizeCode(defaultValue, mode, length))
+  const current = normalizeCode(value ?? internalValue, mode, length)
   const inputs = useRef<(HTMLInputElement | null)[]>([])
 
   const reset = useCallback(() => {
-    if (!controlled) setInternalValue(digits(defaultValue))
-  }, [controlled, defaultValue])
+    if (!controlled) setInternalValue(normalizeCode(defaultValue, mode, length))
+  }, [controlled, defaultValue, length, mode])
   const firstInputRef = useRef<HTMLInputElement | null>(null)
   useFormReset(firstInputRef, reset)
 
   const request = (next: string) => {
-    const normalized = digits(next)
+    const normalized = normalizeCode(next, mode, length)
     if (normalized === current) return
     if (!controlled) setInternalValue(normalized)
     onChange?.(normalized)
   }
 
   const focus = (index: number) => {
-    const input = inputs.current[Math.max(0, Math.min(CODE_LENGTH - 1, index))]
+    const input = inputs.current[Math.max(0, Math.min(length - 1, index))]
     input?.focus()
     input?.select()
   }
 
   const insert = (index: number, raw: string) => {
-    const added = digits(raw)
+    const added = normalizeCode(raw, mode, length)
     if (added.length === 0) return
     const start = Math.min(index, current.length)
     const next = (current.slice(0, start) + added + current.slice(start + added.length)).slice(
       0,
-      CODE_LENGTH,
+      length,
     )
     request(next)
     focus(start + added.length)
@@ -82,7 +89,7 @@ export function OTPInput({
 
   return (
     <Row {...viewProps} role="group" label={viewProps.label ?? label} gap={8}>
-      {Array.from({ length: CODE_LENGTH }, (_, index) => (
+      {Array.from({ length }, (_, index) => (
         <Input
           key={index}
           type="text"
@@ -97,8 +104,8 @@ export function OTPInput({
             width: 44,
             minWidth: 0,
             height: 52,
-            inputMode: 'numeric',
-            label: `${label} ${index + 1}/${CODE_LENGTH}`,
+            inputMode: mode === 'numeric' ? 'numeric' : 'text',
+            label: `${label} ${index + 1}/${length}`,
             style: { textAlign: 'center' },
             ref: (node) => {
               inputs.current[index] = node

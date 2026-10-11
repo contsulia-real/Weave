@@ -2922,6 +2922,18 @@
           "optional": false
         },
         {
+          "name": "length",
+          "description": "",
+          "type": "number | undefined",
+          "optional": true
+        },
+        {
+          "name": "mode",
+          "description": "",
+          "type": "\"numeric\" | \"alphanumeric\" | \"uppercase\" | undefined",
+          "optional": true
+        },
+        {
           "name": "name",
           "description": "",
           "type": "string | undefined",
