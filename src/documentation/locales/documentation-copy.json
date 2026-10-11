@@ -2379,6 +2379,46 @@
     "zh-TW": "大尺寸評分",
     "fr": "Grande notation"
   },
+  "A horizontally scrolling row that keeps native scrolling and offers previous/next navigation.": {
+    "zh-CN": "保留原生滚动行为的横向轮播，支持前后导航。",
+    "zh-TW": "保留原生捲動行為的橫向輪播，支援前後導覽。",
+    "fr": "Une rangée défilante horizontale avec défilement natif et navigation précédente/suivante."
+  },
+  "Variable-width items": {
+    "zh-CN": "不同宽度的项目",
+    "zh-TW": "不同寬度的項目",
+    "fr": "Éléments de largeurs variables"
+  },
+  "Item widths remain under the caller’s control while the carousel scrolls natively.": {
+    "zh-CN": "项目宽度由使用方决定，轮播保持原生滚动。",
+    "zh-TW": "項目寬度由使用方決定，輪播維持原生捲動。",
+    "fr": "La largeur des éléments est définie par l’appelant et le défilement reste natif."
+  },
+  "Featured carousel": {
+    "zh-CN": "精选轮播",
+    "zh-TW": "精選輪播",
+    "fr": "Carrousel à la une"
+  },
+  "Variable-width carousel": {
+    "zh-CN": "不同宽度轮播",
+    "zh-TW": "不同寬度輪播",
+    "fr": "Carrousel de largeurs variables"
+  },
+  "Previous items": {
+    "zh-CN": "上一组",
+    "zh-TW": "上一組",
+    "fr": "Éléments précédents"
+  },
+  "Next items": {
+    "zh-CN": "下一组",
+    "zh-TW": "下一組",
+    "fr": "Éléments suivants"
+  },
+  "Item {{number}}": {
+    "zh-CN": "项目 {{number}}",
+    "zh-TW": "項目 {{number}}",
+    "fr": "Élément {{number}}"
+  },
   "File": {
     "zh-CN": "文件",
     "zh-TW": "檔案",

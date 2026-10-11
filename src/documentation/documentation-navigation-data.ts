@@ -43,6 +43,7 @@ export const componentNavigationSections: readonly DocumentationNavigationSectio
     'Button',
     'SegmentedButton',
     'Card',
+    'Carousel',
     'AppBar',
   ]),
   componentSection('forms-status', 'docs.nav.formsStatus', [

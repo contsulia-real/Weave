@@ -213,6 +213,20 @@ export const contentComponentExamples: Record<
     description: 'A themed surface that can optionally expose click and selection states.',
     examples: [basicExample('Card/basic-usage')],
   },
+  Carousel: {
+    description:
+      'A horizontally scrolling row that keeps native scrolling and offers previous/next navigation.',
+    examples: [
+      basicExample('Carousel/basic-usage'),
+      {
+        id: 'variable-width',
+        title: 'Variable-width items',
+        description:
+          'Item widths remain under the caller’s control while the carousel scrolls natively.',
+        demo: 'Carousel/variable-width',
+      },
+    ],
+  },
   AppBar: {
     description:
       'A top application bar with leading, title, trailing, size, mode, and elevation slots.',

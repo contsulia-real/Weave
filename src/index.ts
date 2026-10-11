@@ -10,6 +10,7 @@ export { Breadcrumb } from './components/Breadcrumb'
 export { Button } from './components/Button'
 export { Calendar } from './components/Calendar'
 export { Card } from './components/Card'
+export { Carousel } from './components/Carousel'
 export { Checkbox } from './components/Checkbox'
 export { Code } from './components/Code'
 export { Column } from './components/Column'
@@ -123,6 +124,7 @@ export type {
   CardProps,
   CardViewProps,
 } from './core/card-types'
+export type { CarouselProps } from './core/carousel-types'
 export type {
   CheckboxProps,
   CheckboxViewProps,

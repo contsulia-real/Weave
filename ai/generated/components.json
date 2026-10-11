@@ -711,7 +711,9 @@
         "Card/basic-usage",
         "Card/clickable-card",
         "Card/combined-interaction",
-        "Card/selectable-card"
+        "Card/selectable-card",
+        "Carousel/basic-usage",
+        "Carousel/variable-width"
       ],
       "props": [
         {
@@ -748,6 +750,57 @@
           "name": "selected",
           "description": "Controlled selected state for a selectable Card. When provided, the parent owns the current selection value.",
           "type": "boolean | undefined",
+          "optional": true
+        }
+      ]
+    },
+    "Carousel": {
+      "name": "Carousel",
+      "import": "import { Carousel } from '@contsulia/weave/components/Carousel'",
+      "importPath": "@contsulia/weave/components/Carousel",
+      "category": "content-actions",
+      "intent": "A horizontally scrolling row that keeps native scrolling and offers previous/next navigation.",
+      "preferWhen": [],
+      "avoidWhen": [],
+      "alternatives": [],
+      "relationship": {
+        "demoParent": null,
+        "standaloneDocumentationPage": true
+      },
+      "viewPropsMode": "nested",
+      "nativeProps": false,
+      "documentationRoute": "/docs/components/Carousel",
+      "apiRoute": "/docs/components-api/Carousel",
+      "examples": ["Carousel/basic-usage", "Carousel/variable-width"],
+      "props": [
+        {
+          "name": "children",
+          "description": "",
+          "type": "ReactNode",
+          "optional": true
+        },
+        {
+          "name": "gap",
+          "description": "",
+          "type": "Length | undefined",
+          "optional": true
+        },
+        {
+          "name": "label",
+          "description": "",
+          "type": "string | undefined",
+          "optional": true
+        },
+        {
+          "name": "nextLabel",
+          "description": "",
+          "type": "string | undefined",
+          "optional": true
+        },
+        {
+          "name": "previousLabel",
+          "description": "",
+          "type": "string | undefined",
           "optional": true
         }
       ]
@@ -4803,6 +4856,8 @@
         "Card/clickable-card",
         "Card/combined-interaction",
         "Card/selectable-card",
+        "Carousel/basic-usage",
+        "Carousel/variable-width",
         "Combobox/controlled-values",
         "Combobox/empty-search-state",
         "Combobox/searchable-rich-options",

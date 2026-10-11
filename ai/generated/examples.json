@@ -792,6 +792,41 @@
       "source": "import { Card, Row, Text } from '../../../index'\n\nexport default function CardSelectableCardDemo() {\n  return (\n    <Row gap={16}>\n      <Card selectable defaultSelected viewProps={{ width: 160, padding: 24 }}>\n        <Text>Selected</Text>\n      </Card>\n      <Card selectable viewProps={{ width: 160, padding: 24 }}>\n        <Text>Available</Text>\n      </Card>\n    </Row>\n  )\n}"
     },
     {
+      "id": "Carousel/basic-usage",
+      "component": "Carousel",
+      "title": "Basic usage",
+      "components": ["Card", "Carousel", "Text"],
+      "concepts": ["basic", "card", "carousel", "text", "usage"],
+      "documentationRoute": "/docs/components/Carousel",
+      "source": "import { useTranslation } from 'react-i18next'\nimport { Card, Carousel, Text } from '../../../index'\n\nexport default function CarouselBasicUsageDemo() {\n  const { t } = useTranslation('copy')\n\n  return (\n    <Carousel\n      gap={12}\n      label={t('Featured carousel')}\n      previousLabel={t('Previous items')}\n      nextLabel={t('Next items')}\n    >\n      {Array.from({ length: 6 }, (_, index) => (\n        <Card key={index} viewProps={{ width: 200, height: 128, padding: 16 }}>\n          <Text>{t('Item {{number}}', { number: index + 1 })}</Text>\n        </Card>\n      ))}\n    </Carousel>\n  )\n}"
+    },
+    {
+      "id": "Carousel/variable-width",
+      "component": "Carousel",
+      "title": "Variable-width items",
+      "description": "Item widths remain under the caller’s control while the carousel scrolls natively.",
+      "components": ["Card", "Carousel", "Text"],
+      "concepts": [
+        "caller",
+        "card",
+        "carousel",
+        "control",
+        "item",
+        "items",
+        "natively",
+        "remain",
+        "scrolls",
+        "text",
+        "under",
+        "variable",
+        "while",
+        "width",
+        "widths"
+      ],
+      "documentationRoute": "/docs/components/Carousel",
+      "source": "import { useTranslation } from 'react-i18next'\nimport { Card, Carousel, Text } from '../../../index'\n\nexport default function CarouselVariableWidthDemo() {\n  const { t } = useTranslation('copy')\n\n  return (\n    <Carousel\n      gap={16}\n      label={t('Variable-width carousel')}\n      previousLabel={t('Previous items')}\n      nextLabel={t('Next items')}\n    >\n      {[160, 240, 180, 280, 200].map((width, index) => (\n        <Card key={index} viewProps={{ width, height: 128, padding: 16 }}>\n          <Text>{t('Item {{number}}', { number: index + 1 })}</Text>\n        </Card>\n      ))}\n    </Carousel>\n  )\n}"
+    },
+    {
       "id": "Checkbox/basic-usage",
       "component": "Checkbox",
       "title": "Basic usage",

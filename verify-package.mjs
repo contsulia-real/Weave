@@ -183,6 +183,25 @@ assert(
 const weave = await import(runtimeEntry.href)
 const componentButton = await import(`${packageJson.name}/components/Button`)
 const componentDataGrid = await import(`${packageJson.name}/components/DataGrid`)
+const componentCarousel = await import(`${packageJson.name}/components/Carousel`)
+const carouselMarkup = renderToStaticMarkup(
+  createElement(
+    componentCarousel.Carousel,
+    { label: 'Gallery', gap: 12 },
+    createElement('div', null, 'First'),
+    createElement('div', null, 'Second'),
+  ),
+)
+assert(carouselMarkup.includes('data-weave-carousel'), 'Carousel must expose its scroll region')
+assert(carouselMarkup.includes('aria-label="Gallery"'), 'Carousel must name its region')
+assert(
+  carouselMarkup.includes('scroll-snap-type:x mandatory'),
+  'Carousel must use native scroll snap',
+)
+assert(
+  (carouselMarkup.match(/data-weave-button="/g) ?? []).length === 2,
+  'Carousel must have two navigation buttons',
+)
 const componentRating = await import(`${packageJson.name}/components/Rating`)
 const wholeRating = renderToStaticMarkup(createElement(componentRating.Rating, { value: 2.5 }))
 const halfRating = renderToStaticMarkup(

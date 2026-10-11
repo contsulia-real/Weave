@@ -17,6 +17,7 @@
     "./components/Button": "./dist/components/Button.js",
     "./components/Breadcrumb": "./dist/components/Breadcrumb.js",
     "./components/Calendar": "./dist/components/Calendar.js",
+    "./components/Carousel": "./dist/components/Carousel.js",
     "./components/Card": "./dist/components/Card.js",
     "./components/Checkbox": "./dist/components/Checkbox.js",
     "./components/Code": "./dist/components/Code.js",

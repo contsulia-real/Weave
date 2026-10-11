@@ -85,6 +85,13 @@
       "usesViewProps": false,
       "props": "r1b8e26479950"
     },
+    "Carousel": {
+      "importPath": "@contsulia/weave/components/Carousel",
+      "nativeProps": false,
+      "hasViewProps": true,
+      "usesViewProps": false,
+      "props": "rbf6e7f4f45e2"
+    },
     "Checkbox": {
       "importPath": "@contsulia/weave/components/Checkbox",
       "nativeProps": false,
@@ -601,6 +608,13 @@
       "p28dcccaffe24",
       "p061f269c03fa",
       "pa155751acb60"
+    ],
+    "rbf6e7f4f45e2": [
+      "pdef9fdcdf63a",
+      "p8dfe926c7652",
+      "p2faf3e707b61",
+      "p3e6d123b354c",
+      "pb25d3f2db55d"
     ],
     "r0dbe159e94c1": [
       "p5f2d12d9ecb6",
@@ -1628,6 +1642,36 @@
       "name": "selected",
       "description": "Controlled selected state for a selectable Card. When provided, the parent owns the current selection value.",
       "type": "boolean | undefined",
+      "optional": true
+    },
+    "pdef9fdcdf63a": {
+      "name": "children",
+      "description": "",
+      "type": "ReactNode",
+      "optional": true
+    },
+    "p8dfe926c7652": {
+      "name": "gap",
+      "description": "",
+      "type": "Length | undefined",
+      "optional": true
+    },
+    "p2faf3e707b61": {
+      "name": "label",
+      "description": "",
+      "type": "string | undefined",
+      "optional": true
+    },
+    "p3e6d123b354c": {
+      "name": "nextLabel",
+      "description": "",
+      "type": "string | undefined",
+      "optional": true
+    },
+    "pb25d3f2db55d": {
+      "name": "previousLabel",
+      "description": "",
+      "type": "string | undefined",
       "optional": true
     },
     "p5f2d12d9ecb6": {
