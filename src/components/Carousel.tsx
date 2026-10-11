@@ -26,7 +26,11 @@ export function Carousel({
     const updateEdges = () => {
       const max = Math.max(0, viewport.scrollWidth - viewport.clientWidth)
       const position = Math.abs(viewport.scrollLeft)
-      setEdges({ start: position <= 1, end: position >= max - 1 })
+      const hasAdjacentItem = (contentRef.current?.children.length ?? 0) > 1
+      setEdges({
+        start: !hasAdjacentItem || position <= 1,
+        end: !hasAdjacentItem || position >= max - 1,
+      })
     }
 
     updateEdges()
@@ -88,7 +92,11 @@ export function Carousel({
           if (viewport === null) return
           const max = Math.max(0, viewport.scrollWidth - viewport.clientWidth)
           const position = Math.abs(viewport.scrollLeft)
-          setEdges({ start: position <= 1, end: position >= max - 1 })
+          const hasAdjacentItem = (contentRef.current?.children.length ?? 0) > 1
+          setEdges({
+            start: !hasAdjacentItem || position <= 1,
+            end: !hasAdjacentItem || position >= max - 1,
+          })
         }}
         style={{ scrollSnapType: 'x mandatory' }}
       >
