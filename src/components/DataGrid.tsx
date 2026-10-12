@@ -2,6 +2,7 @@ import {
   type CSSProperties,
   type KeyboardEvent,
   type MouseEvent,
+  memo,
   type PointerEvent,
   useCallback,
   useEffect,
@@ -189,6 +190,8 @@ function DataGridMeasuredRow<TRow extends DataGridRow>({
   )
 }
 
+const MemoizedDataGridMeasuredRow = memo(DataGridMeasuredRow) as typeof DataGridMeasuredRow
+
 function virtualViewport(
   root: HTMLDivElement,
   body: HTMLTableSectionElement,
@@ -319,7 +322,7 @@ function DataGridVirtualBody<TRow extends DataGridRow>({
       {visibleIndices.map((index) => {
         const row = rows[index]
         return row === undefined ? null : (
-          <DataGridMeasuredRow
+          <MemoizedDataGridMeasuredRow
             key={row.id}
             row={row}
             columns={columns}
