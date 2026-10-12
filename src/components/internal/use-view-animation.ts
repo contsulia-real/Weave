@@ -71,7 +71,8 @@ export function useViewAnimation<TElement extends HTMLElement>(
     if (element === null) return
 
     const config = resolveViewAnimation(value, theme)
-    const key = animationKey(config, theme, reducedMotion)
+    // No animation remains the same target across theme and motion changes.
+    const key = config === undefined ? 'none' : animationKey(config, theme, reducedMotion)
 
     // A finish interruption may already have a queued target. If the newest
     // render returns to the animation that is currently active, that active

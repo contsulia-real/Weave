@@ -74,6 +74,17 @@ export function useViewHost<TElement extends HTMLElement>(
   useLayoutEffect(() => {
     const host = elementRef.current
     if (host === null) return
+    // The majority of views have no semantic references to synchronize.
+    // Avoid building and traversing association maps on their mount/update.
+    if (
+      labelledBy === undefined &&
+      describedBy === undefined &&
+      controls === undefined &&
+      owns === undefined &&
+      semanticOverrides === undefined
+    ) {
+      return
+    }
 
     const baseReferences = {
       labelledBy,
