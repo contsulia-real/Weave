@@ -56,8 +56,8 @@ export function createVirtualLayout(
   gap: number,
 ): VirtualLayout {
   const estimate = orientation === 'vertical' ? VERTICAL_ESTIMATE : HORIZONTAL_ESTIMATE
-  const offsets: number[] = []
-  const sizes: number[] = []
+  const offsets: number[] = new Array(entries.length)
+  const sizes: number[] = new Array(entries.length)
   let cursor = 0
   let maxCross = orientation === 'horizontal' ? VERTICAL_ESTIMATE : 0
 
@@ -66,8 +66,8 @@ export function createVirtualLayout(
     const measurement = measurements.get(entry.id)
     const size = measurement?.main ?? estimate
 
-    offsets.push(cursor)
-    sizes.push(size)
+    offsets[index] = cursor
+    sizes[index] = size
     maxCross = Math.max(maxCross, measurement?.cross ?? 0)
 
     cursor += size
