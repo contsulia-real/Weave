@@ -234,11 +234,7 @@ function DataGridVirtualBody<TRow extends DataGridRow>({
   const onMeasure = useCallback((id: string, measurement: VirtualMeasurement) => {
     setMeasurements((current) => {
       const previous = current.get(id)
-      if (
-        previous !== undefined &&
-        Math.abs(previous.main - measurement.main) < 0.5 &&
-        Math.abs(previous.cross - measurement.cross) < 0.5
-      ) {
+      if (previous !== undefined && Math.abs(previous.main - measurement.main) < 0.5) {
         return current
       }
 
