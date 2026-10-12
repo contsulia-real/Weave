@@ -74,6 +74,7 @@ export function useViewLayoutAnimation<TElement extends HTMLElement>(
   reducedMotion: boolean,
 ): void {
   const targetRect = useRef<LayoutRect | undefined>(undefined)
+  const enabled = value !== undefined && value !== false
   const visualRect = useRef<LayoutRect | undefined>(undefined)
   const animation = useRef<Animation | undefined>(undefined)
   const cancelSample = useRef<(() => void) | undefined>(undefined)
@@ -93,10 +94,20 @@ export function useViewLayoutAnimation<TElement extends HTMLElement>(
   useLayoutEffect(() => {
     const element = elementRef.current
     if (element === null) return
+    if (!enabled) {
+      // Inactive views should not read layout or retain an animated baseline.
+      if (animation.current !== undefined) {
+        cancelAnimation()
+        delete element.dataset.weaveLayoutAnimating
+      }
+      targetRect.current = undefined
+      visualRect.current = undefined
+      return
+    }
 
     const running = animation.current
-    const resolved = value === undefined || value === false ? undefined : config(value)
-    const interruption: MotionInterruption = resolved?.interruption ?? 'continue'
+    const resolved = config(value)
+    const interruption: MotionInterruption = resolved.interruption ?? 'continue'
     const logicalPrevious = targetRect.current
     const previous =
       running === undefined
@@ -121,7 +132,6 @@ export function useViewLayoutAnimation<TElement extends HTMLElement>(
     targetRect.current = next
 
     if (
-      resolved === undefined ||
       reducedMotion ||
       previous === undefined ||
       nearlyEqual(previous, next) ||
@@ -162,6 +172,8 @@ export function useViewLayoutAnimation<TElement extends HTMLElement>(
   })
 
   useEffect(() => {
+    if (!enabled) return
+
     const element = elementRef.current
     if (element === null) return
 
@@ -203,5 +215,5 @@ export function useViewLayoutAnimation<TElement extends HTMLElement>(
       cancelBaselineSync?.()
       cancelAnimation()
     }
-  }, [elementRef])
+  }, [elementRef, enabled])
 }
