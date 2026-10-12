@@ -14,8 +14,10 @@ export interface ThemeProviderProps {
   children?: ReactNode
 }
 
+const EMPTY_THEME: ThemeDefinition = {}
+
 export function ThemeProvider({
-  theme = {},
+  theme = EMPTY_THEME,
   mode,
   reducedMotion,
   children,

@@ -1,9 +1,10 @@
 import type { CSSProperties } from 'react'
 import type { ViewProps, ViewStyleProps } from '../core/view-types'
 import { breakpointEntries, containerBreakpointProp } from '../renderers/dom/breakpoint-utils'
-import { useTheme } from '../theme/theme-context'
 import { AutoScrollbar } from './internal/AutoScrollbar'
 import { useViewHost } from './internal/use-view-host'
+
+const VIEW_COMPONENT_STYLE = { '--weave-component-display': 'block' } as CSSProperties
 
 function scrollableOverflow(value: string | undefined): boolean {
   return value === 'auto' || value === 'scroll'
@@ -71,14 +72,13 @@ function viewMayScroll(
 
 export function View(props: ViewProps<HTMLDivElement>): import('react').JSX.Element {
   const { children } = props
-  const { theme } = useTheme()
-  const { elementRef, className, inlineStyle, resolved } = useViewHost(
+  const { elementRef, className, inlineStyle, resolved, breakpoints } = useViewHost(
     props,
-    { '--weave-component-display': 'block' } as CSSProperties,
+    VIEW_COMPONENT_STYLE,
     'view',
   )
 
-  const mountsScrollbar = viewMayScroll(props, theme.breakpoints)
+  const mountsScrollbar = viewMayScroll(props, breakpoints)
   const resolvedClassName =
     [
       mountsScrollbar ? 'weave-scroll-host' : undefined,

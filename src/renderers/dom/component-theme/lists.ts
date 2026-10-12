@@ -10,10 +10,15 @@ export function resolveListTheme(theme: ResolvedTheme): RuntimeStyleDeclarations
   }
 }
 
+const listItemThemeCache = new WeakMap<ResolvedTheme, RuntimeStyleDeclarations>()
+
 export function resolveListItemTheme(theme: ResolvedTheme): RuntimeStyleDeclarations {
+  const cached = listItemThemeCache.get(theme)
+  if (cached !== undefined) return cached
+
   const base = theme.components.ListItem?.base
 
-  return {
+  const declarations = {
     '--weave-list-item-background': color(base?.background),
     '--weave-list-item-hover-background': color(base?.hoverBackground),
     '--weave-list-item-active-background': color(base?.activeBackground),
@@ -34,4 +39,7 @@ export function resolveListItemTheme(theme: ResolvedTheme): RuntimeStyleDeclarat
     '--weave-list-item-focus-outline-offset': length(base?.focusOutlineOffset),
     '--weave-list-item-disabled-opacity': base?.disabledOpacity,
   }
+
+  listItemThemeCache.set(theme, declarations)
+  return declarations
 }

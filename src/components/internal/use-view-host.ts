@@ -47,6 +47,7 @@ interface ViewHostResult<TElement extends HTMLElement> {
   className: string | undefined
   inlineStyle: CSSProperties | undefined
   resolved: ResolvedDOMView<TElement>
+  breakpoints: Readonly<Record<string, number>>
 }
 
 export function useViewHost<TElement extends HTMLElement>(
@@ -173,5 +174,6 @@ export function useViewHost<TElement extends HTMLElement>(
     className: resolvedClassName,
     inlineStyle: style,
     resolved,
+    breakpoints: theme.breakpoints,
   }
 }
