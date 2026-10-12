@@ -114,13 +114,22 @@ export function visibleVirtualIndices(
   const overscan = Math.max(layout.estimate * 3, viewport.size * 0.5)
   const windowStart = Math.max(0, viewport.offset - overscan)
   const windowEnd = viewport.offset + viewport.size + overscan
+  // Offsets and item ends are ordered, so skip everything before the viewport.
+  let low = 0
+  let high = entries.length
+  while (low < high) {
+    const middle = Math.floor((low + high) / 2)
+    const end = layout.offsets[middle]! + layout.sizes[middle]!
+    if (end < windowStart) low = middle + 1
+    else high = middle
+  }
+
   const indices: number[] = []
-
-  for (let index = 0; index < entries.length; index += 1) {
+  for (let index = low; index < entries.length; index += 1) {
     const start = layout.offsets[index]!
-    const end = start + layout.sizes[index]!
+    if (start > windowEnd) break
 
-    if (end >= windowStart && start <= windowEnd) {
+    if (start + layout.sizes[index]! >= windowStart) {
       indices.push(index)
     }
   }
