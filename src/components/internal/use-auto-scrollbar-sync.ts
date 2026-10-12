@@ -196,7 +196,9 @@ export function useAutoScrollbarSync<TTarget extends HTMLElement>({
               return
             }
 
-            observeTargetAndChildren()
+            if (records.some((record) => record.type === 'childList' && record.target === target)) {
+              observeTargetAndChildren()
+            }
             updateGeometry()
           })
 
