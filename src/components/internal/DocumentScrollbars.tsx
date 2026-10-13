@@ -36,6 +36,63 @@ function isOwnMutation(record: MutationRecord): boolean {
   return nodes.length > 0 && nodes.every(isScrollbarElement)
 }
 
+function isVirtualGridLayoutMutation(
+  record: MutationRecord,
+  active: ReadonlyMap<HTMLElement, ManagedScrollHost>,
+): boolean {
+  if (record.target.nodeType !== 1) return false
+  const element = record.target as Element
+  const body = element.closest('tbody.weave-scroll-host')
+  if (body === null || body.closest('[data-weave-data-grid-virtualized="true"]') === null) {
+    return false
+  }
+  // Leave shadow-root discovery to the full scan.
+  if (body.getRootNode() !== body.ownerDocument) return false
+
+  if (record.type === 'attributes') {
+    if (record.attributeName !== 'style' || !element.matches('td.weave-data-grid__spacer-cell')) {
+      return false
+    }
+  } else if (record.type === 'childList' && element === body) {
+    for (const node of record.removedNodes) {
+      if (node.nodeType !== 1) return false
+      const row = node as Element
+      if (!row.matches('tr[data-weave-table-row], tr.weave-data-grid__spacer-row')) return false
+      for (const host of active.keys()) {
+        if (row === host || row.contains(host)) return false
+      }
+      if (
+        [row, ...row.querySelectorAll('*')].some(
+          (child) => child.shadowRoot !== null || child.tagName === 'IFRAME',
+        )
+      ) {
+        return false
+      }
+    }
+    for (const node of record.addedNodes) {
+      if (node.nodeType !== 1) return false
+      const row = node as Element
+      if (!row.matches('tr[data-weave-table-row], tr.weave-data-grid__spacer-row')) return false
+      for (const child of [row, ...row.querySelectorAll('*')]) {
+        if (child.shadowRoot !== null || child.tagName === 'IFRAME') return false
+        const view = child.ownerDocument.defaultView
+        if (view !== null && child instanceof view.HTMLElement && usesCustomScrollbar(child)) {
+          return false
+        }
+      }
+    }
+  } else return false
+
+  // Content changes may make an existing ancestor start or stop overflowing.
+  for (let ancestor = body.parentElement; ancestor !== null; ancestor = ancestor.parentElement) {
+    const view = ancestor.ownerDocument.defaultView
+    if (view !== null && ancestor instanceof view.HTMLElement) {
+      if (usesCustomScrollbar(ancestor) !== active.has(ancestor)) return false
+    }
+  }
+  return true
+}
+
 function childRoots(
   document: Document,
   onShadowRoot: (root: ShadowRoot) => void,
@@ -158,7 +215,12 @@ export function DocumentScrollbars(): import('react').JSX.Element | null {
           ?.defaultView?.MutationObserver
         if (constructor === undefined) continue
         const observer = new constructor((records) => {
-          if (!records.every(isOwnMutation)) schedule()
+          if (
+            !records.every(
+              (record) => isOwnMutation(record) || isVirtualGridLayoutMutation(record, active),
+            )
+          )
+            schedule()
         })
         observer.observe(root, {
           attributes: true,

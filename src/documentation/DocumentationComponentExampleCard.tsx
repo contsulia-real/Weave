@@ -58,14 +58,21 @@ class PreviewBoundary extends Component<{ children: ReactNode }, PreviewBoundary
   }
 }
 
+let lastPreview:
+  | { source: string; result: { component?: ComponentType; error?: string } }
+  | undefined
+
 function compilePreview(source: string): { component?: ComponentType; error?: string } {
+  if (lastPreview?.source === source) return lastPreview.result
+
+  let result: { component?: ComponentType; error?: string }
   try {
-    return { component: compileDocumentationExample(source) }
+    result = { component: compileDocumentationExample(source) }
   } catch (error) {
-    return {
-      error: error instanceof Error ? error.message : String(error),
-    }
+    result = { error: error instanceof Error ? error.message : String(error) }
   }
+  lastPreview = { source, result }
+  return result
 }
 
 export function DocumentationComponentExample({ demo }: DocumentationComponentExampleProps) {

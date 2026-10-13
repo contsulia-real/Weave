@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { LanguageRegistration } from 'shiki'
 import type { CodeLanguage, CodeProps } from '../core/code-types'
 import { ensureCodeStylesheet } from '../renderers/dom/code-stylesheet'
@@ -88,6 +88,7 @@ export function Code(props: CodeProps): import('react').JSX.Element {
   const language = props.language
   const syntax = language === 'custom' ? props.syntax : undefined
   const [highlighted, setHighlighted] = useState<HighlightResult | null>(null)
+  const lastSourceRef = useRef(children)
   const { elementRef, className, inlineStyle, resolved } = useViewHost(viewProps)
 
   useStaticStylesheet(ensureCodeStylesheet)
@@ -95,31 +96,38 @@ export function Code(props: CodeProps): import('react').JSX.Element {
   useEffect(() => {
     let active = true
 
-    void highlightCode(children, language, syntax).then(
-      (html) => {
-        if (!active) return
+    const startHighlight = () =>
+      void highlightCode(children, language, syntax).then(
+        (html) => {
+          if (!active) return
 
-        setHighlighted({
-          code: children,
-          language,
-          syntax,
-          html,
-        })
-      },
-      (error: unknown) => {
-        if (!active) return
+          setHighlighted({
+            code: children,
+            language,
+            syntax,
+            html,
+          })
+        },
+        (error: unknown) => {
+          if (!active) return
 
-        setHighlighted({
-          code: children,
-          language,
-          syntax,
-          error,
-        })
-      },
-    )
+          setHighlighted({
+            code: children,
+            language,
+            syntax,
+            error,
+          })
+        },
+      )
+
+    const sourceChanged = lastSourceRef.current !== children
+    lastSourceRef.current = children
+    const timer = sourceChanged ? setTimeout(startHighlight, 80) : undefined
+    if (!sourceChanged) startHighlight()
 
     return () => {
       active = false
+      if (timer !== undefined) clearTimeout(timer)
     }
   }, [children, language, syntax])
 

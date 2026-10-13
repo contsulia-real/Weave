@@ -62,31 +62,39 @@ export function useTableSelection(props: TableProps) {
     [controlledSelected, onSelect, selectable],
   )
 
-  const registerCell = useCallback((rowId: string, cellId: string) => {
-    setRegistry((current) => {
-      const row = new Set(current.get(rowId) ?? [])
-      if (row.has(cellId)) return current
-
-      row.add(cellId)
-      const next = new Map(current)
-      next.set(rowId, row)
-      return next
-    })
-
-    return () => {
+  const registerCell = useCallback(
+    (rowId: string, cellId: string) => {
+      // DataGrid already declares these cells, including virtualized rows that
+      // are currently offscreen. Mounting them must not rebuild Table selection.
+      if (declaredRowIds.has(rowId) && declaredCells?.cellIds.includes(cellId)) {
+        return () => {}
+      }
       setRegistry((current) => {
-        const currentRow = current.get(rowId)
-        if (currentRow === undefined || !currentRow.has(cellId)) return current
+        const row = new Set(current.get(rowId) ?? [])
+        if (row.has(cellId)) return current
 
-        const row = new Set(currentRow)
-        row.delete(cellId)
+        row.add(cellId)
         const next = new Map(current)
-        if (row.size === 0) next.delete(rowId)
-        else next.set(rowId, row)
+        next.set(rowId, row)
         return next
       })
-    }
-  }, [])
+
+      return () => {
+        setRegistry((current) => {
+          const currentRow = current.get(rowId)
+          if (currentRow === undefined || !currentRow.has(cellId)) return current
+
+          const row = new Set(currentRow)
+          row.delete(cellId)
+          const next = new Map(current)
+          if (row.size === 0) next.delete(rowId)
+          else next.set(rowId, row)
+          return next
+        })
+      }
+    },
+    [declaredCells, declaredRowIds],
+  )
 
   const rowKeys = useCallback(
     (rowId: string): string[] => {

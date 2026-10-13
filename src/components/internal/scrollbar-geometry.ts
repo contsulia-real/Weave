@@ -61,6 +61,11 @@ function clippingRectForTarget(target: HTMLElement): ClipRect {
     ancestor !== ownerDocument.documentElement
   ) {
     const computed = computedStyle(ancestor)
+    if (!clipsOverflow(computed.overflowX) && !clipsOverflow(computed.overflowY)) {
+      ancestor = ancestor.parentElement
+      continue
+    }
+
     const rect = ancestor.getBoundingClientRect()
     const left = rect.left + ancestor.clientLeft
     const top = rect.top + ancestor.clientTop
@@ -236,12 +241,52 @@ export function updateScrollbarGeometry(
 
   const computed = computedStyle(target)
   const viewport = target.ownerDocument.scrollingElement === target
+  const verticalOverflow =
+    (overflowIntent.styleOverflowY ?? overflowIntent.styleOverflow) ||
+    computed.overflowY ||
+    computed.overflow ||
+    'visible'
+  const horizontalOverflow =
+    (overflowIntent.styleOverflowX ?? overflowIntent.styleOverflow) ||
+    computed.overflowX ||
+    computed.overflow ||
+    'visible'
+  const verticalScrollable = scrollbarVisible(
+    verticalOverflow,
+    target.scrollHeight,
+    target.clientHeight,
+  )
+  const horizontalScrollable = scrollbarVisible(
+    horizontalOverflow,
+    target.scrollWidth,
+    target.clientWidth,
+  )
   const window = target.ownerDocument.defaultView
   const rect =
-    viewport && window !== null
-      ? DOMRect.fromRect({ x: 0, y: 0, width: window.innerWidth, height: window.innerHeight })
-      : target.getBoundingClientRect()
+    !verticalScrollable && !horizontalScrollable
+      ? DOMRect.fromRect()
+      : viewport && window !== null
+        ? DOMRect.fromRect({ x: 0, y: 0, width: window.innerWidth, height: window.innerHeight })
+        : target.getBoundingClientRect()
   const borderTop = parseFloat(computed.borderTopWidth) || 0
+  const verticalVisible = verticalScrollable && rect.height > 0
+  const horizontalVisible = horizontalScrollable && rect.width > 0
+
+  if (!verticalVisible && !horizontalVisible) {
+    if (verticalHitRegion.dataset.weaveScrollbarVisible !== 'false') {
+      verticalHitRegion.dataset.weaveScrollbarVisible = 'false'
+    }
+    if (horizontalHitRegion.dataset.weaveScrollbarVisible !== 'false') {
+      horizontalHitRegion.dataset.weaveScrollbarVisible = 'false'
+    }
+    return {
+      verticalAvailable: 0,
+      verticalMaxScroll: 0,
+      horizontalAvailable: 0,
+      horizontalMaxScroll: 0,
+    }
+  }
+
   const borderRight = parseFloat(computed.borderRightWidth) || 0
   const borderBottom = parseFloat(computed.borderBottomWidth) || 0
   const borderLeft = parseFloat(computed.borderLeftWidth) || 0
@@ -254,26 +299,14 @@ export function updateScrollbarGeometry(
   syncScrollbarVisualOpacity(verticalHitRegion, target)
   syncScrollbarVisualOpacity(horizontalHitRegion, target)
 
-  const verticalOverflow =
-    (overflowIntent.styleOverflowY ?? overflowIntent.styleOverflow) ||
-    computed.overflowY ||
-    computed.overflow ||
-    'visible'
-
-  const horizontalOverflow =
-    (overflowIntent.styleOverflowX ?? overflowIntent.styleOverflow) ||
-    computed.overflowX ||
-    computed.overflow ||
-    'visible'
-
-  const verticalVisible =
-    scrollbarVisible(verticalOverflow, target.scrollHeight, target.clientHeight) && rect.height > 0
-
-  const horizontalVisible =
-    scrollbarVisible(horizontalOverflow, target.scrollWidth, target.clientWidth) && rect.width > 0
-
-  verticalHitRegion.dataset.weaveScrollbarVisible = String(verticalVisible)
-  horizontalHitRegion.dataset.weaveScrollbarVisible = String(horizontalVisible)
+  const verticalVisibility = String(verticalVisible)
+  const horizontalVisibility = String(horizontalVisible)
+  if (verticalHitRegion.dataset.weaveScrollbarVisible !== verticalVisibility) {
+    verticalHitRegion.dataset.weaveScrollbarVisible = verticalVisibility
+  }
+  if (horizontalHitRegion.dataset.weaveScrollbarVisible !== horizontalVisibility) {
+    horizontalHitRegion.dataset.weaveScrollbarVisible = horizontalVisibility
+  }
 
   const verticalThickness = verticalVisible
     ? parseFloat(computedStyle(verticalThumb).width) || 0

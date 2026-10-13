@@ -12,6 +12,7 @@ interface VisualAnchorTrackerOptions {
   additionalTargets?: readonly HTMLElement[]
   trackScroll?: boolean
   trackMutations?: boolean
+  ignoreMutation?: (record: MutationRecord) => boolean
   interactionEvents?: readonly string[]
   continuousAnimations?: boolean
 }
@@ -115,7 +116,10 @@ export function trackVisualAnchor(
   const mutationObserver =
     options.trackMutations !== true || MutationObserverConstructor === undefined
       ? null
-      : new MutationObserverConstructor(schedule)
+      : new MutationObserverConstructor((records) => {
+          if (options.ignoreMutation !== undefined && records.every(options.ignoreMutation)) return
+          schedule()
+        })
 
   mutationObserver?.observe(target, {
     attributes: true,

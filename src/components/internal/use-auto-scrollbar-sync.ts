@@ -138,13 +138,30 @@ export function useAutoScrollbarSync<TTarget extends HTMLElement>({
       }, view)
     }
 
+    // Offscreen hosts cannot display a clipped scrollbar. Resume geometry
+    // updates when the browser observes them entering the viewport.
+    let isNearViewport = true
+    const IntersectionObserverConstructor = view?.IntersectionObserver
+    const intersectionObserver =
+      target === ownerDocument.scrollingElement || IntersectionObserverConstructor === undefined
+        ? null
+        : new IntersectionObserverConstructor(
+            ([entry]) => {
+              if (entry === undefined) return
+              isNearViewport = entry.isIntersecting
+              updateGeometry()
+            },
+            { rootMargin: '64px' },
+          )
+    intersectionObserver?.observe(target)
+
     // Native scroll state remains the source of truth. Scroll listeners only
     // schedule main-thread projection work for the next animation frame so
     // Firefox APZ never observes positioning/style mutation inside the scroll callback.
     const onScroll = () => scheduleThumbSync()
     const onWindowResize = () => updateGeometry()
     const onDocumentScroll = (event: Event) => {
-      if (event.target === target) return
+      if (event.target === target || !isNearViewport) return
       scheduleGeometrySync()
     }
 
@@ -153,9 +170,14 @@ export function useAutoScrollbarSync<TTarget extends HTMLElement>({
     view?.addEventListener('resize', onWindowResize)
     ownerDocument.addEventListener('scroll', onDocumentScroll, true)
 
+    const isOwnScrollbarMutation = (record: MutationRecord) =>
+      verticalHitRegionRef.current?.contains(record.target) === true ||
+      horizontalHitRegionRef.current?.contains(record.target) === true
+
     const stopVisualTracking = trackVisualAnchor(target, updateGeometry, {
       additionalTargets: visualAncestors(target),
       trackMutations: true,
+      ignoreMutation: isOwnScrollbarMutation,
       continuousAnimations: true,
     })
 
@@ -192,7 +214,12 @@ export function useAutoScrollbarSync<TTarget extends HTMLElement>({
       MutationObserverConstructor === undefined
         ? null
         : new MutationObserverConstructor((records) => {
-            if (records.every((record) => isIgnoredPortalMutation(record.target))) {
+            if (
+              records.every(
+                (record) =>
+                  isOwnScrollbarMutation(record) || isIgnoredPortalMutation(record.target),
+              )
+            ) {
               return
             }
 
@@ -209,6 +236,7 @@ export function useAutoScrollbarSync<TTarget extends HTMLElement>({
     })
 
     return () => {
+      intersectionObserver?.disconnect()
       target.removeEventListener('scroll', onScroll)
       target.removeEventListener('input', scheduleGeometrySync)
       view?.removeEventListener('resize', onWindowResize)

@@ -1,9 +1,8 @@
 import { IconArrowLeft, IconArrowRight } from '@tabler/icons-react'
-import { Fragment, Suspense, useRef } from 'react'
+import { Fragment, lazy, Suspense, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Breadcrumb, Card, Column, Flex, Icon, MenuItem, Row, Text } from '../index'
 import { DocumentationComponentApiLink } from './DocumentationComponentApiLink'
-import { DocumentationComponentExample } from './DocumentationComponentExampleCard'
 import { DocumentationReadingStatus } from './DocumentationReadingStatus'
 import { documentationComponentDocumentation } from './documentation-component-examples'
 import { documentationCopy } from './documentation-copy'
@@ -14,6 +13,12 @@ import {
   documentationNavigationSectionForPath,
 } from './documentation-navigation-data'
 import { useDocsRoute } from './router'
+
+const DocumentationComponentExample = lazy(() =>
+  import('./DocumentationComponentExampleCard').then(({ DocumentationComponentExample }) => ({
+    default: DocumentationComponentExample,
+  })),
+)
 
 export interface DocumentationComponentPageProps {
   componentName: string
