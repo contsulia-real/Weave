@@ -54,14 +54,14 @@ export function WebsiteHome({
             <Row align="center" gap={16} wrap>
               <Link
                 href="https://github.com/contsulia-real/Weave"
-                text={<Icon icon={IconBrandGithubFilled} size="medium" />}
+                text={<Icon icon={IconBrandGithubFilled} size="xlarge" />}
                 hideIcon
                 hideUnderline
                 viewProps={{ label: 'GitHub' }}
               />
               <Link
                 href="https://jsr.io/@contsulia/weave"
-                text={<Icon svg={jsrLogo} size="medium" />}
+                text={<Icon svg={jsrLogo} size="xlarge" />}
                 hideIcon
                 hideUnderline
                 viewProps={{ label: 'JSR' }}
