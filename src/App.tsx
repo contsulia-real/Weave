@@ -20,7 +20,12 @@ function App() {
   return (
     <ThemeProvider theme={theme} mode={themeMode}>
       {window.location.pathname === '/' ? (
-        <WebsiteHome />
+        <WebsiteHome
+          themeMode={themeMode}
+          onThemeModeChange={setThemeMode}
+          themeColorId={themeColor.id}
+          onThemeColorChange={setThemeColorId}
+        />
       ) : (
         <DocumentationPage
           themeMode={themeMode}

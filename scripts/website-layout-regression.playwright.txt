@@ -1,0 +1,82 @@
+async (page) => {
+  const origin = page.url().split('/').slice(0, 3).join('/')
+  const errors = []
+  page.on('pageerror', (error) => errors.push(error.message))
+  const layouts = []
+
+  for (const width of [1600, 1280, 1024, 768, 390, 320]) {
+    await page.setViewportSize({ width, height: 950 })
+    await page.goto(origin + '/')
+    await page.waitForFunction(() => document.querySelectorAll('[data-weave-card]').length === 8)
+
+    const layout = await page.evaluate(() => {
+      const grids = [...document.querySelectorAll('[data-weave-layout="grid"]')]
+      const split = (element) => getComputedStyle(element).gridTemplateColumns.split(' ').length
+      const main = grids[0]
+      const hero = main.children[0].getBoundingClientRect()
+      const showcase = main.children[1].getBoundingClientRect()
+      const github = [...document.querySelectorAll('a')].find((link) => link.textContent === 'GitHub')
+      return {
+        width: innerWidth,
+        mainColumns: split(main),
+        showcaseColumns: split(grids[1]),
+        heroX: Math.round(hero.x),
+        heroWidth: Math.round(hero.width),
+        showcaseX: Math.round(showcase.x),
+        showcaseWidth: Math.round(showcase.width),
+        githubX: Math.round(github.getBoundingClientRect().x),
+        scrollWidth: document.documentElement.scrollWidth,
+        cards: document.querySelectorAll('[data-weave-card]').length,
+      }
+    })
+    if (layout.scrollWidth !== width || layout.cards !== 8) {
+      throw new Error('Website overflows or has missing component cards: ' + JSON.stringify(layout))
+    }
+    if (width >= 1280) {
+      if (layout.mainColumns !== 2 || layout.heroWidth !== width / 2 ||
+          layout.showcaseX !== width / 2) {
+        throw new Error('Wide homepage does not have equal left/right columns: ' + JSON.stringify(layout))
+      }
+    } else if (layout.mainColumns !== 1) {
+      throw new Error('Narrow homepage must stack intro and showcase: ' + JSON.stringify(layout))
+    }
+    if (layout.showcaseColumns !== (width === 1280 || width < 640 ? 1 : 2)) {
+      throw new Error('Showcase card columns must follow their own available width: ' +
+        JSON.stringify(layout))
+    }
+    if (width === 1600 && layout.githubX < width / 2) {
+      throw new Error('Website header utilities must be aligned on the right')
+    }
+    layouts.push(layout)
+  }
+
+  await page.setViewportSize({ width: 1600, height: 950 })
+  await page.goto(origin + '/')
+  await page.waitForFunction(() => document.querySelectorAll('[data-weave-card]').length === 8)
+
+  const calendar = page.locator('[data-weave-card]').nth(2)
+  await calendar.locator('button').filter({ hasText: /^20$/ }).click()
+  if (!(await calendar.innerText()).includes('2026-10-20')) {
+    throw new Error('Homepage Calendar does not respond to user selection')
+  }
+
+  const tabs = page.locator('[data-weave-card]').nth(5)
+  await tabs.getByRole('tab', { name: 'Details' }).click()
+  if (await tabs.getByRole('tabpanel').innerText() !== 'Details panel.') {
+    throw new Error('Homepage Tabs are not interactive')
+  }
+
+  const slider = page.locator('[data-weave-card]').nth(6).locator('input[type="range"]')
+  await slider.focus()
+  await slider.press('ArrowRight')
+  if (await slider.inputValue() !== '40') {
+    throw new Error('Homepage slider does not respond to keyboard interaction')
+  }
+
+  await page.getByRole('button', { name: 'Explore documentation' }).click()
+  await page.waitForURL(origin + '/docs')
+  await page.waitForFunction(() => !!document.querySelector('[data-weave-appbar]'))
+  if (errors.length) throw new Error('Homepage browser errors: ' + JSON.stringify(errors))
+
+  return { layouts, calendar: '2026-10-20', tabs: 'Details', slider: '40', docs: true, errors }
+}
