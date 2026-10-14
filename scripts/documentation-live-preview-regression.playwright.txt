@@ -1,0 +1,147 @@
+async (page) => {
+  const errors = []
+  page.on('pageerror', (error) => errors.push(error.message))
+  const origin = page.url().split('/').slice(0, 3).join('/')
+
+  async function readyEditor(route) {
+    await page.goto(origin + '/docs/components/' + route, { waitUntil: 'domcontentloaded' })
+    await page.waitForFunction(() => {
+      const input = document.querySelector('textarea')
+      return input !== null && !input.disabled
+    })
+    return page.locator('textarea').first()
+  }
+
+  async function startHeightTrace() {
+    return page.evaluate(() => {
+      const editor = document.querySelector('textarea')
+      const card = editor.closest('[data-weave-card]')
+      const preview = card.firstElementChild.firstElementChild
+      const trace = {
+        preview,
+        samples: [],
+        timer: null,
+      }
+      trace.timer = setInterval(() => {
+        trace.samples.push({
+          height: preview.getBoundingClientRect().height,
+          visibility: getComputedStyle(preview).visibility,
+          children: preview.children.length,
+          scrollTop: editor.scrollTop,
+        })
+      }, 20)
+      window.__docsLivePreviewTrace = trace
+      return preview.getBoundingClientRect().height
+    })
+  }
+
+  async function finishHeightTrace(expectedHeight, name) {
+    return page.evaluate(({ expectedHeight, name }) => {
+      const trace = window.__docsLivePreviewTrace
+      clearInterval(trace.timer)
+      const heights = trace.samples.map((entry) => entry.height)
+      const low = Math.min(...heights)
+      const high = Math.max(...heights)
+      if (low < expectedHeight - 12) {
+        throw new Error(name + ' preview collapsed while typing: ' + JSON.stringify({
+          expectedHeight, low, high,
+        }))
+      }
+      if (trace.samples.some((entry) => entry.children === 0)) {
+        throw new Error(name + ' preview host became empty while compiling')
+      }
+      if (trace.samples.some((entry) => entry.visibility !== 'visible')) {
+        throw new Error(name + ' preview flashed while compiling')
+      }
+      return {
+        initialHeight: expectedHeight,
+        minimumHeight: low,
+        maximumHeight: high,
+        samples: trace.samples.length,
+        hiddenSamples: trace.samples.filter((entry) => entry.visibility === 'hidden').length,
+      }
+    }, { expectedHeight, name })
+  }
+
+  const buttonEditor = await readyEditor('Button')
+  const buttonSource = await buttonEditor.inputValue()
+  const buttonHeight = await startHeightTrace()
+  for (let index = 1; index <= 8; index += 1) {
+    await buttonEditor.fill(buttonSource + '\n// ' + 'typing'.slice(0, index))
+    await page.waitForTimeout(75)
+  }
+  await page.waitForTimeout(450)
+  const button = await finishHeightTrace(buttonHeight, 'Button')
+  const buttonResult = await page.evaluate(() => {
+    const editor = document.querySelector('textarea')
+    const preview = editor.closest('[data-weave-card]').firstElementChild.firstElementChild
+    return {
+      visible: getComputedStyle(preview).visibility === 'visible',
+      buttons: preview.querySelectorAll('button').length,
+      editable: !editor.disabled,
+    }
+  })
+  if (!buttonResult.visible || buttonResult.buttons !== 6 || !buttonResult.editable) {
+    throw new Error('Live Button preview did not recover after editing: ' +
+      JSON.stringify(buttonResult))
+  }
+
+  await buttonEditor.fill(buttonSource.replace('text="Primary"', 'text="Edited primary"'))
+  await page.waitForFunction(() => {
+    const editor = document.querySelector('textarea')
+    const preview = editor.closest('[data-weave-card]').firstElementChild.firstElementChild
+    return preview.textContent.includes('Edited primary') &&
+      getComputedStyle(preview).visibility === 'visible'
+  })
+
+  await buttonEditor.fill(buttonSource + '\nconst =')
+  await page.waitForFunction(() => {
+    const editor = document.querySelector('textarea')
+    const preview = editor.closest('[data-weave-card]').firstElementChild.firstElementChild
+    return getComputedStyle(preview).visibility === 'visible' &&
+      preview.textContent.includes('Variable declaration expected.')
+  })
+  const invalid = await page.evaluate(() => {
+    const editor = document.querySelector('textarea')
+    const preview = editor.closest('[data-weave-card]').firstElementChild.firstElementChild
+    return { message: preview.textContent, staleButtons: preview.querySelectorAll('button').length }
+  })
+  if (invalid.staleButtons !== 0) throw new Error('Old preview stayed visible on compile error')
+
+  // Use the actual Reset action rather than only replacing textarea input.
+  await page.evaluate(() => {
+    const editor = document.querySelector('textarea')
+    const controls = editor.closest('[data-weave-card]').firstElementChild.children[1]
+    const reset = controls.querySelectorAll('button')[2]
+    if (!reset) throw new Error('Reset code button not found')
+    reset.click()
+  })
+  await page.waitForFunction((original) => {
+    const editor = document.querySelector('textarea')
+    const preview = editor.closest('[data-weave-card]').firstElementChild.firstElementChild
+    return editor.value === original && preview.querySelectorAll('button').length === 6
+  }, buttonSource)
+
+  const typewriterEditor = await readyEditor('Typewriter')
+  const typewriterSource = await typewriterEditor.inputValue()
+  const typewriterHeight = await startHeightTrace()
+  for (let index = 1; index <= 8; index += 1) {
+    await typewriterEditor.fill(typewriterSource + '\n// ' + 'editing'.slice(0, index))
+    await page.waitForTimeout(75)
+  }
+  await page.waitForTimeout(450)
+  const typewriter = await finishHeightTrace(typewriterHeight, 'Typewriter')
+  const typewriterResult = await page.evaluate(() => {
+    const preview = document.querySelector('textarea').closest('[data-weave-card]')
+      .firstElementChild.firstElementChild
+    return {
+      visible: getComputedStyle(preview).visibility === 'visible',
+      hasTypewriter: !!preview.querySelector('[data-weave-typewriter]'),
+    }
+  })
+  if (!typewriterResult.visible || !typewriterResult.hasTypewriter) {
+    throw new Error('Live Typewriter preview did not recover from editing')
+  }
+  if (errors.length) throw new Error('Browser errors: ' + JSON.stringify(errors))
+  return { button, buttonResult, invalid, typewriter, typewriterResult, errors }
+}

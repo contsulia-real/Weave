@@ -575,6 +575,13 @@
       "usesViewProps": false,
       "props": "r3c6b379f3fad"
     },
+    "Typewriter": {
+      "importPath": "@contsulia/weave/components/Typewriter",
+      "nativeProps": false,
+      "hasViewProps": true,
+      "usesViewProps": false,
+      "props": "r15315c687b30"
+    },
     "View": {
       "importPath": "@contsulia/weave/components/View",
       "nativeProps": true,
@@ -1193,6 +1200,36 @@
       "p85d3c753c771",
       "p73d8183d882e",
       "p2d68a4f5ed95"
+    ],
+    "r15315c687b30": [
+      "p291977ce43aa",
+      "p114a469d390e",
+      "pca43f06f1df7",
+      "pd90941ee8e3f",
+      "pf7f876361948",
+      "p21fde3a6ff71",
+      "pf06d9ffa3bee",
+      "pe2575d913037",
+      "p3b1f2a0fd4cb",
+      "p68377e590b15",
+      "pbeb3a0ecce9f",
+      "p2b50fd491243",
+      "p6b761d766f9b",
+      "pec3287c00448",
+      "p679aaa42a934",
+      "pc54868722336",
+      "p11891cb00a34",
+      "p2c6e5bfcde04",
+      "pd82314e93326",
+      "p26c552bada50",
+      "p8ba512b384ee",
+      "p1d67b6d3315c",
+      "pe92841287bd4",
+      "p6e0e3d05990e",
+      "p5b7a59ab6e94",
+      "p698eae1af47c",
+      "p6813c80bc71f",
+      "p7a24c04006a8"
     ],
     "ree4bf2004894": [
       "pd5229cb7ca12",
@@ -4579,6 +4616,150 @@
       "name": "selected",
       "description": "Controlled selected node identifier.",
       "type": "string | null | undefined",
+      "optional": true
+    },
+    "p291977ce43aa": {
+      "name": "align",
+      "description": "",
+      "type": "TextAlign | undefined",
+      "optional": true
+    },
+    "p114a469d390e": {
+      "name": "bold",
+      "description": "",
+      "type": "boolean | undefined",
+      "optional": true
+    },
+    "pca43f06f1df7": {
+      "name": "case",
+      "description": "",
+      "type": "TextCase | undefined",
+      "optional": true
+    },
+    "pd90941ee8e3f": {
+      "name": "color",
+      "description": "",
+      "type": "TextColor | undefined",
+      "optional": true
+    },
+    "pf7f876361948": {
+      "name": "cursor",
+      "description": "Preset blinking cursor or a custom React node. Default: 'bar'.",
+      "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined",
+      "optional": true
+    },
+    "p21fde3a6ff71": {
+      "name": "deleteInterval",
+      "description": "Milliseconds per removed grapheme. Default: 60.",
+      "type": "number | undefined",
+      "optional": true
+    },
+    "pf06d9ffa3bee": {
+      "name": "italic",
+      "description": "",
+      "type": "boolean | undefined",
+      "optional": true
+    },
+    "pe2575d913037": {
+      "name": "letterSpacing",
+      "description": "",
+      "type": "Length | undefined",
+      "optional": true
+    },
+    "p68377e590b15": {
+      "name": "lineHeight",
+      "description": "",
+      "type": "Length | undefined",
+      "optional": true
+    },
+    "pbeb3a0ecce9f": {
+      "name": "loop",
+      "description": "Repeat the sequence indefinitely. Default: true.",
+      "type": "boolean | undefined",
+      "optional": true
+    },
+    "p2b50fd491243": {
+      "name": "maxLines",
+      "description": "",
+      "type": "number | undefined",
+      "optional": true
+    },
+    "pec3287c00448": {
+      "name": "overflow",
+      "description": "",
+      "type": "TextOverflow | undefined",
+      "optional": true
+    },
+    "p679aaa42a934": {
+      "name": "overline",
+      "description": "",
+      "type": "boolean | undefined",
+      "optional": true
+    },
+    "pc54868722336": {
+      "name": "pauseDuration",
+      "description": "Milliseconds to hold a complete phrase before deleting or finishing. Default: 1000.",
+      "type": "number | undefined",
+      "optional": true
+    },
+    "p11891cb00a34": {
+      "name": "showCursor",
+      "description": "Show or hide the cursor. Default: true.",
+      "type": "boolean | undefined",
+      "optional": true
+    },
+    "p2c6e5bfcde04": {
+      "name": "singleLine",
+      "description": "",
+      "type": "boolean | undefined",
+      "optional": true
+    },
+    "pd82314e93326": {
+      "name": "size",
+      "description": "",
+      "type": "TextSize | undefined",
+      "optional": true
+    },
+    "p8ba512b384ee": {
+      "name": "strikethrough",
+      "description": "",
+      "type": "boolean | undefined",
+      "optional": true
+    },
+    "p1d67b6d3315c": {
+      "name": "texts",
+      "description": "Plain text phrases shown in order. Empty phrases are skipped.",
+      "type": "readonly string[]",
+      "optional": false
+    },
+    "pe92841287bd4": {
+      "name": "typeInterval",
+      "description": "Milliseconds per visible grapheme while typing. Default: 100.",
+      "type": "number | undefined",
+      "optional": true
+    },
+    "p6e0e3d05990e": {
+      "name": "typo",
+      "description": "",
+      "type": "TextTypo | undefined",
+      "optional": true
+    },
+    "p5b7a59ab6e94": {
+      "name": "underline",
+      "description": "",
+      "type": "boolean | undefined",
+      "optional": true
+    },
+    "p698eae1af47c": {
+      "name": "weight",
+      "description": "",
+      "type": "TextWeight | undefined",
+      "optional": true
+    },
+    "p6813c80bc71f": {
+      "name": "wrap",
+      "description": "",
+      "type": "TextWrap | undefined",
       "optional": true
     },
     "pd5229cb7ca12": {

@@ -1,6 +1,7 @@
 import { type KeyboardEvent, useEffect, useId, useMemo, useRef, useState } from 'react'
 import type { CommandPaletteCommand, CommandPaletteProps } from '../core/command-palette-types'
 import type { ListDataItem } from '../core/list-types'
+import { useWeaveDocument } from '../renderers/dom/document-context'
 import { Column } from './Column'
 import { Dialog } from './Dialog'
 import { Input } from './Input'
@@ -27,9 +28,10 @@ export function CommandPalette({
   const inputRef = useRef<HTMLInputElement>(null)
   const listRef = useRef<HTMLDivElement>(null)
   const listId = 'weave-command-palette-list-' + useId()
+  const ownerDocument = useWeaveDocument()
 
   useEffect(() => {
-    if (!shortcut) return
+    if (!shortcut || ownerDocument === null) return
 
     const handleShortcut = (event: globalThis.KeyboardEvent) => {
       if (
@@ -45,9 +47,9 @@ export function CommandPalette({
       requestOpen(true)
     }
 
-    document.addEventListener('keydown', handleShortcut)
-    return () => document.removeEventListener('keydown', handleShortcut)
-  }, [requestOpen, shortcut])
+    ownerDocument.addEventListener('keydown', handleShortcut)
+    return () => ownerDocument.removeEventListener('keydown', handleShortcut)
+  }, [ownerDocument, requestOpen, shortcut])
 
   const close = () => {
     setQuery('')

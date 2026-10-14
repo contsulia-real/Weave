@@ -1,0 +1,99 @@
+async (page) => {
+  const origin = page.url().split('/').slice(0, 3).join('/')
+  const errors = []
+  page.on('pageerror', (error) => errors.push(error.message))
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await page.goto(origin + '/docs/components/Typewriter', { waitUntil: 'domcontentloaded' })
+  await page.waitForFunction(() => document.querySelectorAll('[data-weave-typewriter]').length >= 2)
+
+  const playback = await page.evaluate(async () => {
+    const nodes = [...document.querySelectorAll('[data-weave-typewriter]')]
+    const first = []
+    const second = []
+    for (let index = 0; index < 32; index += 1) {
+      first.push(nodes[0].textContent)
+      second.push(nodes[1].textContent)
+      await new Promise((resolve) => setTimeout(resolve, 100))
+    }
+    if (new Set(first).size < 4) throw new Error('Looping text does not advance through characters')
+    if (second.at(-1) !== 'Final phrase stays') {
+      throw new Error('Non-looping text did not finish on the final phrase')
+    }
+    if (!nodes[0].querySelector('[aria-hidden="true"]')) {
+      throw new Error('Visual caret must be excluded from accessibility output')
+    }
+    if (nodes[1].querySelector('[aria-hidden="true"]')) {
+      throw new Error('showCursor=false must not render a caret')
+    }
+    return { uniqueFrames: new Set(first).size, finalNonLoopText: second.at(-1) }
+  })
+
+  const graphemes = await page.evaluate(async () => {
+    const React = (await import('/node_modules/.vite/deps/react.js')).default
+    const { createRoot } = await import('/src/root.ts')
+    const { Typewriter } = await import('/src/index.ts')
+    const host = document.createElement('div')
+    document.body.append(host)
+    const root = createRoot(host)
+    const render = (texts) =>
+      root.render(
+        React.createElement(Typewriter, {
+          texts,
+          loop: false,
+          showCursor: false,
+          typeInterval: 45,
+          deleteInterval: 30,
+          pauseDuration: 120,
+        }),
+      )
+    try {
+      render(['👨‍👩‍👧‍👦e\u0301'])
+      const samples = []
+      for (let index = 0; index < 35; index += 1) {
+        samples.push(host.textContent ?? '')
+        await new Promise((resolve) => setTimeout(resolve, 35))
+      }
+      const seen = [...new Set(samples)]
+      if (seen.some((value) => !['', '👨‍👩‍👧‍👦', '👨‍👩‍👧‍👦é'].includes(value))) {
+        throw new Error('Unicode grapheme cluster was divided: ' + JSON.stringify(seen))
+      }
+      if (samples.at(-1) !== '👨‍👩‍👧‍👦é') {
+        throw new Error('Non-looping Unicode string did not remain visible')
+      }
+
+      render(['XYZ'])
+      await new Promise((resolve) => setTimeout(resolve, 350))
+      if (host.textContent !== 'XYZ') throw new Error('Changed texts did not reset playback')
+
+      render([])
+      await new Promise((resolve) => setTimeout(resolve, 60))
+      if (host.textContent !== '') throw new Error('Empty texts should be empty')
+      return { graphemeStates: seen, sourceUpdate: true, emptyInput: true }
+    } finally {
+      root.unmount()
+      host.remove()
+    }
+  })
+
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.reload()
+  await page.waitForFunction(() => document.querySelectorAll('[data-weave-typewriter]').length >= 2)
+  const reducedMotion = await page.evaluate(async () => {
+    const nodes = [...document.querySelectorAll('[data-weave-typewriter]')]
+    const before = nodes.map((node) => node.textContent)
+    await new Promise((resolve) => setTimeout(resolve, 950))
+    const after = nodes.map((node) => node.textContent)
+    if (before.join('|') !== after.join('|')) throw new Error('Reduced motion should stay static')
+    if (before[0] !== 'Hello, Weave!' || before[1] !== 'Final phrase stays') {
+      throw new Error('Wrong reduced-motion stable phrase ' + JSON.stringify(before))
+    }
+    if (nodes.some((node) => node.getAttribute('data-weave-reduced-motion') !== 'reduce')) {
+      throw new Error('Theme reduced-motion policy was not reused')
+    }
+    return { staticTexts: before }
+  })
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+
+  if (errors.length) throw new Error('Unhandled browser exceptions: ' + JSON.stringify(errors))
+  return { playback, graphemes, reducedMotion, errors }
+}

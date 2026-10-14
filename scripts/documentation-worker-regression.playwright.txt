@@ -1,0 +1,95 @@
+async (page) => {
+  const context = page.context()
+  const origin = page.url().split('/').slice(0, 3).join('/')
+  const workerPattern = '**/*documentation-example-worker*'
+  const tab = await context.newPage()
+  let workerRequests = 0
+
+  await context.route(workerPattern, async (route) => {
+    workerRequests += 1
+    await page.waitForTimeout(2200)
+    await route.continue()
+  })
+
+  try {
+    await tab.goto(`${origin}/docs/components/Button`, { waitUntil: 'domcontentloaded' })
+    await tab.waitForFunction(() => document.querySelectorAll('textarea').length === 9)
+    const disabledDuringInitialization = await tab.locator('textarea:disabled').count()
+    if (disabledDuringInitialization !== 9) {
+      throw new Error(`Expected 9 disabled editors while initializing, got ${disabledDuringInitialization}`)
+    }
+
+    await tab.waitForFunction(
+      () => [...document.querySelectorAll('textarea')].every((editor) => !editor.disabled),
+      null,
+      { timeout: 20000 },
+    )
+    if (workerRequests !== 1 || tab.workers().length !== 1) {
+      throw new Error('Component examples did not share exactly one compiler Worker')
+    }
+
+    await context.unroute(workerPattern)
+    const field = tab.locator('textarea').first()
+    const original = await field.inputValue()
+    if (!original.includes('text="Primary"')) throw new Error('Unexpected Button demo source')
+    const first = original.replace('text="Primary"', 'text="WeaveOldResult"')
+    const latest = original.replace('text="Primary"', 'text="WeaveLatestResult"')
+    const card = field.locator('xpath=ancestor::*[@data-weave-card][1]')
+
+    await field.fill(first)
+    await field.fill(latest)
+    await card.getByRole('button', { name: 'WeaveLatestResult', exact: true }).waitFor({
+      state: 'visible',
+      timeout: 14000,
+    })
+    await tab.waitForTimeout(250)
+    if (await card.getByRole('button', { name: 'WeaveOldResult', exact: true }).count()) {
+      throw new Error('Stale compile result replaced the latest preview')
+    }
+
+    await field.fill(latest + '\nfunction invalid(')
+    await tab.waitForFunction(
+      () => document.querySelector('textarea')?.closest('[data-weave-card]')?.textContent?.includes("')' expected.") === true,
+      null,
+      { timeout: 12000 },
+    )
+    await field.fill(latest + '\n' + '/* comment */ '.repeat(25000))
+    await tab.locator('button[aria-label="重置代码"]').first().click()
+    await tab.waitForTimeout(1600)
+
+    if (await field.inputValue() !== original) throw new Error('Reset did not restore source')
+    if (!(await card.getByRole('button', { name: 'Primary', exact: true }).isVisible())) {
+      throw new Error('Reset did not restore the original preview')
+    }
+    if (await card.getByRole('button', { name: 'WeaveLatestResult', exact: true }).count()) {
+      throw new Error('Reset was overwritten by a stale Worker response')
+    }
+
+    // A Worker that cannot load must never make its editors writable.
+    await context.route(workerPattern, (route) => route.abort('failed'))
+    const broken = await context.newPage()
+    try {
+      await broken.goto(`${origin}/docs/components/Button`, { waitUntil: 'domcontentloaded' })
+      await broken.waitForFunction(() => document.querySelectorAll('textarea').length === 9)
+      await broken.waitForTimeout(700)
+      if (await broken.locator('textarea:disabled').count() !== 9) {
+        throw new Error('Unavailable compiler enabled an editor')
+      }
+    } finally {
+      await context.unroute(workerPattern)
+      await broken.close()
+    }
+
+    return {
+      workerRequests,
+      disabledDuringInitialization,
+      enabledAfterInitialization: await tab.locator('textarea:not(:disabled)').count(),
+      latestPreview: true,
+      syntaxError: true,
+      resetAfterPendingCompile: true,
+    }
+  } finally {
+    await context.unroute(workerPattern)
+    await tab.close()
+  }
+}

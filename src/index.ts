@@ -81,6 +81,7 @@ export { Text } from './components/Text'
 export { Timeline } from './components/Timeline'
 export { ToolTip } from './components/ToolTip'
 export { TreeView } from './components/TreeView'
+export { Typewriter } from './components/Typewriter'
 export { useSnack } from './components/useSnack'
 export { View } from './components/View'
 export type {
@@ -428,6 +429,7 @@ export type {
   ToolTipViewProps,
 } from './core/tooltip-types'
 export type { TreeViewItem, TreeViewProps } from './core/tree-view-types'
+export type { TypewriterCursorPreset, TypewriterProps } from './core/typewriter-types'
 export type {
   BackgroundValue,
   BlendMode,

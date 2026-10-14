@@ -1,0 +1,106 @@
+async (page) => {
+  const origin = page.url().split('/').slice(0, 3).join('/')
+  const pageErrors = []
+  page.on('pageerror', (error) => pageErrors.push(error.message))
+
+  await page.goto(origin + '/docs/components/DataGrid', { waitUntil: 'domcontentloaded' })
+  await page.waitForFunction(() => document.querySelectorAll('[data-weave-code] .shiki').length >= 2)
+
+  const result = await page.evaluate(async () => {
+    const host = [...document.querySelectorAll('tbody.weave-scroll-host')].find(
+      (element) => element.scrollHeight > element.clientHeight + 350 && element.clientHeight > 200,
+    )
+    if (!host) throw new Error('Missing virtualized DataGrid scroll host')
+
+    const frame = () => new Promise((resolve) => requestAnimationFrame(resolve))
+    const visibleRows = () => {
+      const rect = host.getBoundingClientRect()
+      return [...host.querySelectorAll('tr[data-weave-table-row]')].filter((row) => {
+        const bounds = row.getBoundingClientRect()
+        return bounds.bottom > rect.top + 8 && bounds.top < rect.bottom - 8
+      }).length
+    }
+
+    const jumps = []
+    for (const target of [0, 1600, 4400, 6500, 9000, 0, 9000, 480]) {
+      host.scrollTop = target
+      await frame()
+      await frame()
+      await frame()
+      await new Promise((resolve) => setTimeout(resolve, 50))
+      const visible = visibleRows()
+      if (visible === 0) throw new Error('Blank virtual window after jump to ' + target)
+      jumps.push({ target, visible })
+    }
+
+    host.scrollTop = 0
+    await new Promise((resolve) => setTimeout(resolve, 160))
+    let rapidBlankFrames = 0
+    for (let index = 0; index < 65; index += 1) {
+      await frame()
+      host.scrollTop += 240
+      await frame()
+      if (visibleRows() === 0) rapidBlankFrames += 1
+    }
+    if (rapidBlankFrames > 0) {
+      throw new Error('Blank virtual window during rapid scrolling: ' + rapidBlankFrames)
+    }
+
+    host.scrollTop = 0
+    await new Promise((resolve) => setTimeout(resolve, 220))
+    const row = host.querySelector('tr[data-weave-table-row]')
+    if (!row) throw new Error('Missing measured row')
+    const normalHeight = host.scrollHeight
+    try {
+      row.style.height = '131px'
+      await new Promise((resolve) => setTimeout(resolve, 240))
+      if (host.scrollHeight - normalHeight < 25) {
+        throw new Error('ResizeObserver did not update variable row height')
+      }
+    } finally {
+      row.style.removeProperty('height')
+    }
+    await new Promise((resolve) => setTimeout(resolve, 240))
+    if (Math.abs(host.scrollHeight - normalHeight) > 4) {
+      throw new Error('Row height did not return to its original measurement')
+    }
+
+    host.scrollTop = 4200
+    await new Promise((resolve) => setTimeout(resolve, 240))
+    const checkbox = host.querySelector('input[type="checkbox"][aria-label^="Select row "]')
+    const selectedLabel = checkbox?.getAttribute('aria-label')
+    if (!selectedLabel) throw new Error('Missing selectable virtual row')
+
+    return { jumpCount: jumps.length, rapidBlankFrames, rowHeightRestored: true, selectedLabel }
+  })
+
+  const checkbox = page.getByRole('checkbox', { name: result.selectedLabel, exact: true })
+  await checkbox.check()
+  if (!await checkbox.isChecked()) throw new Error('Row selection was not applied')
+  await page.evaluate(() => {
+    const host = [...document.querySelectorAll('tbody.weave-scroll-host')].find(
+      (element) => element.scrollHeight > element.clientHeight + 350 && element.clientHeight > 200,
+    )
+    host.scrollTop = 0
+  })
+  await page.waitForTimeout(220)
+  await page.evaluate(() => {
+    const host = [...document.querySelectorAll('tbody.weave-scroll-host')].find(
+      (element) => element.scrollHeight > element.clientHeight + 350 && element.clientHeight > 200,
+    )
+    host.scrollTop = 4200
+  })
+  await page.waitForTimeout(250)
+  if (!await page.getByRole('checkbox', { name: result.selectedLabel, exact: true }).isChecked()) {
+    throw new Error('Virtual row selection was lost after unmount and remount')
+  }
+  if (pageErrors.length) throw new Error('Uncaught page errors: ' + JSON.stringify(pageErrors))
+
+  return {
+    jumpsPassed: result.jumpCount,
+    rapidBlankFrames: result.rapidBlankFrames,
+    rowHeightRestored: result.rowHeightRestored,
+    selectionPersisted: true,
+    pageErrors,
+  }
+}

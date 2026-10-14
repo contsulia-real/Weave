@@ -177,8 +177,10 @@ export function useAutoScrollbarSync<TTarget extends HTMLElement>({
     const stopVisualTracking = trackVisualAnchor(target, updateGeometry, {
       additionalTargets: visualAncestors(target),
       trackMutations: true,
+      observeTargetMutations: false,
       ignoreMutation: isOwnScrollbarMutation,
       continuousAnimations: true,
+      shouldPollAnimations: () => isNearViewport,
     })
 
     const ResizeObserverConstructor = view?.ResizeObserver
@@ -226,7 +228,7 @@ export function useAutoScrollbarSync<TTarget extends HTMLElement>({
             if (records.some((record) => record.type === 'childList' && record.target === target)) {
               observeTargetAndChildren()
             }
-            updateGeometry()
+            scheduleGeometrySync()
           })
 
     mutationObserver?.observe(target, {

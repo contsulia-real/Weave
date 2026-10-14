@@ -51,6 +51,31 @@ export const contentComponentExamples: Record<
       'Theme-driven text with typography, emphasis, alignment, wrapping, and case controls.',
     examples: [basicExample('Text/basic-usage')],
   },
+  Typewriter: {
+    description:
+      'Automatically type, pause, erase, and cycle through plain-text phrases using Weave Text typography.',
+    examples: [
+      basicExample('Typewriter/basic-usage'),
+      {
+        id: 'once',
+        title: 'Finish on the last phrase',
+        description: 'Disable looping to leave the last phrase visible after its typing cycle.',
+        demo: 'Typewriter/once',
+      },
+      {
+        id: 'cursor-presets',
+        title: 'Blinking cursor presets',
+        description: 'Choose a bar, underline, solid block, or outlined block cursor.',
+        demo: 'Typewriter/cursor-presets',
+      },
+      {
+        id: 'custom-cursor',
+        title: 'Custom cursor content',
+        description: 'Use a React node as the cursor while preserving Weave text styling.',
+        demo: 'Typewriter/custom-cursor',
+      },
+    ],
+  },
   Code: {
     description:
       'A syntax-highlighted code block backed by Weave typography and scrolling behavior.',

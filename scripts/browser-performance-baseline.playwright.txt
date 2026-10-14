@@ -1,0 +1,154 @@
+async (page) => {
+  // Run with the authorized Playwright CLI against a running Weave docs dev server:
+  //   playwright-cli open http://127.0.0.1:5173/docs/components/Button --browser chrome
+  //   playwright-cli run-code --filename scripts/browser-performance-baseline.playwright.txt
+  // Run multiple times on the same machine; these are measured baselines, not CI thresholds.
+  const origin = page.url().split('/').slice(0, 3).join('/')
+  const errors = []
+  page.on('pageerror', (error) => errors.push(error.message))
+  const wait = (ms) => page.waitForTimeout(ms)
+  const bench = async (path, highlightCount, hostKind, frameCount) => {
+    await page.goto(`${origin}${path}`, { waitUntil: 'domcontentloaded' })
+    await page.waitForFunction(
+      (count) => document.querySelectorAll('[data-weave-code] .shiki').length >= count,
+      highlightCount,
+      { timeout: 20000 },
+    )
+    await wait(350)
+    return page.evaluate(async ({ kind, frames }) => {
+      const candidates =
+        kind === 'virtual'
+          ? [...document.querySelectorAll('tbody.weave-scroll-host')]
+          : [...document.querySelectorAll('.weave-scroll-host')]
+      const host = candidates
+        .filter((element) => element.scrollHeight > element.clientHeight + 350 && element.clientHeight > 200)
+        .sort((a, b) => b.scrollHeight - b.clientHeight - (a.scrollHeight - a.clientHeight))[0]
+      if (!host) throw new Error(`Missing ${kind} scroll host`)
+      host.scrollTop = 0
+      await new Promise((resolve) => setTimeout(resolve, 140))
+      const intervals = []
+      let previous = performance.now()
+      for (let i = 0; i < frames; i += 1) {
+        await new Promise((resolve) => requestAnimationFrame((now) => {
+          intervals.push(now - previous)
+          previous = now
+          host.scrollTop += 24
+          resolve()
+        }))
+      }
+      const samples = intervals.slice(8).sort((a, b) => a - b)
+      const percentile = (percent) => Number(samples[Math.floor(samples.length * percent)].toFixed(2))
+      return {
+        frames: samples.length,
+        p50Ms: percentile(0.5),
+        p95Ms: percentile(0.95),
+        over25Ms: samples.filter((value) => value > 25).length,
+        scrollTop: host.scrollTop,
+        renderedRows: kind === 'virtual' ? host.querySelectorAll('tr[data-weave-table-row]').length : null,
+      }
+    }, { kind: hostKind, frames: frameCount })
+  }
+  const button = await bench('/docs/components/Button', 9, 'document', 110)
+  const field = page.locator('textarea').first()
+  const source = await field.inputValue()
+  // A single paste-like edit exercises TypeScript compilation and the live React preview.
+  const originalLabel = 'text="Primary"'
+  const changedLabel = 'text="WeaveBenchmarkPreview"'
+  if (!source.includes(originalLabel)) throw new Error('Button demo source changed')
+  const updatedSource = source.replace(originalLabel, changedLabel)
+  const card = field.locator('xpath=ancestor::*[@data-weave-card][1]')
+  const start = Date.now()
+  await field.fill(updatedSource)
+  const edit = { inputActionMs: Date.now() - start, sourceChanged: (await field.inputValue()) === updatedSource }
+  await card.getByRole('button', { name: 'WeaveBenchmarkPreview', exact: true }).waitFor({
+    state: 'visible',
+    timeout: 12000,
+  })
+  edit.previewUpdateMs = Date.now() - start
+  await page.waitForFunction(
+    () => document.querySelector('[data-weave-code] .shiki')?.textContent?.includes('WeaveBenchmarkPreview') === true,
+    null,
+    { timeout: 12000 },
+  )
+  edit.highlightUpdateMs = Date.now() - start
+  await field.fill(updatedSource + '\nfunction weaveInvalid(')
+  await page.waitForFunction(
+    () => document.querySelector('textarea')?.closest('[data-weave-card]')?.textContent?.includes("')' expected.") === true,
+    null,
+    { timeout: 12000 },
+  )
+  edit.syntaxErrorVisible = true
+  await page.locator('button[aria-label="重置代码"]').first().click()
+  edit.resetRestored = (await field.inputValue()) === source
+  await card.getByRole('button', { name: 'Primary', exact: true }).waitFor({
+    state: 'visible',
+    timeout: 12000,
+  })
+  edit.previewRestored = (await card.getByRole('button', { name: 'WeaveBenchmarkPreview', exact: true }).count()) === 0
+  await page.waitForFunction(
+    () => document.querySelector('[data-weave-code] .shiki')?.textContent?.includes('WeaveBenchmarkPreview') === false,
+    null,
+    { timeout: 12000 },
+  )
+  if (!edit.sourceChanged || !edit.resetRestored || !edit.previewRestored) {
+    throw new Error('Documentation example editing or reset did not update the preview')
+  }
+  const dataGrid = await bench('/docs/components/DataGrid', 2, 'virtual', 95)
+  const compatibility = await page.evaluate(async () => {
+    const pause = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+    const wrapper = document.createElement('div')
+    const host = document.createElement('div')
+    const content = document.createElement('div')
+    wrapper.style.cssText = 'position:fixed;left:20px;top:20px;width:160px;height:110px;overflow:hidden'
+    host.style.cssText = 'width:120px;height:80px;overflow:auto'
+    content.style.cssText = 'width:70px;height:950px'
+    host.append(content)
+    wrapper.append(host)
+    document.body.append(wrapper)
+    await pause(400)
+    const inserted = host.hasAttribute('data-weave-global-scroll-host')
+    host.scrollTop = 120
+    await pause(150)
+    const scrolled = host.scrollTop === 120
+    content.style.height = '20px'
+    await pause(400)
+    const shrunk = !host.hasAttribute('data-weave-global-scroll-host')
+    content.style.height = '950px'
+    await pause(400)
+    const restored = host.hasAttribute('data-weave-global-scroll-host')
+    wrapper.remove()
+    await pause(250)
+    const removed = !host.hasAttribute('data-weave-global-scroll-host')
+    const shadowParent = document.createElement('div')
+    document.body.append(shadowParent)
+    const shadowRoot = shadowParent.attachShadow({ mode: 'open' })
+    const shadowHost = document.createElement('div')
+    const shadowContent = document.createElement('div')
+    shadowHost.style.cssText = 'width:120px;height:80px;overflow:auto'
+    shadowContent.style.cssText = 'height:950px'
+    shadowHost.append(shadowContent)
+    shadowRoot.append(shadowHost)
+    await pause(450)
+    const shadowAdded = shadowHost.hasAttribute('data-weave-global-scroll-host')
+    shadowParent.remove()
+    await pause(250)
+    const shadowRemoved = !shadowHost.hasAttribute('data-weave-global-scroll-host')
+    return { inserted, scrolled, shrunk, restored, removed, shadowAdded, shadowRemoved }
+  })
+  const failedCompatibility = Object.entries(compatibility)
+    .filter(([, passed]) => !passed)
+    .map(([name]) => name)
+  if (failedCompatibility.length > 0 || errors.length > 0 || dataGrid.renderedRows === 0) {
+    throw new Error('Browser regression failed: ' + JSON.stringify({ failedCompatibility, errors, dataGrid }))
+  }
+  return {
+    userAgent: await page.evaluate(() => navigator.userAgent),
+    devicePixelRatio: await page.evaluate(() => devicePixelRatio),
+    viewport: await page.evaluate(() => ({ width: innerWidth, height: innerHeight })),
+    button,
+    firstEdit: edit,
+    dataGrid,
+    compatibility,
+    errors,
+  }
+}

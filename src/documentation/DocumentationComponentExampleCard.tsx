@@ -4,7 +4,7 @@ import {
   type ComponentType,
   type ReactNode,
   use,
-  useMemo,
+  useEffect,
   useRef,
   useState,
 } from 'react'
@@ -25,7 +25,12 @@ import {
   ToolTip,
 } from '../index'
 import type { DocumentationDemo } from './documentation-demo-registry'
-import { compileDocumentationExample } from './documentation-example-runtime'
+import {
+  compileDocumentationSource,
+  type DocumentationCompilation,
+  subscribeDocumentationCompiler,
+} from './documentation-example-compiler'
+import { evaluateDocumentationExample } from './documentation-example-runtime'
 
 export interface DocumentationComponentExampleCardProps {
   component: ComponentType
@@ -58,21 +63,16 @@ class PreviewBoundary extends Component<{ children: ReactNode }, PreviewBoundary
   }
 }
 
-let lastPreview:
-  | { source: string; result: { component?: ComponentType; error?: string } }
-  | undefined
-
-function compilePreview(source: string): { component?: ComponentType; error?: string } {
-  if (lastPreview?.source === source) return lastPreview.result
-
-  let result: { component?: ComponentType; error?: string }
+function evaluatePreview(compilation: DocumentationCompilation): {
+  component?: ComponentType
+  error?: string
+} {
+  if (compilation.error !== undefined) return { error: compilation.error }
   try {
-    result = { component: compileDocumentationExample(source) }
+    return { component: evaluateDocumentationExample(compilation.outputText ?? '') }
   } catch (error) {
-    result = { error: error instanceof Error ? error.message : String(error) }
+    return { error: error instanceof Error ? error.message : String(error) }
   }
-  lastPreview = { source, result }
-  return result
 }
 
 export function DocumentationComponentExample({ demo }: DocumentationComponentExampleProps) {
@@ -91,10 +91,21 @@ export function DocumentationComponentExampleCard({
   const [source, setSource] = useState(initialSource)
   const [expanded, setExpanded] = useState(true)
   const codeRef = useRef<HTMLDivElement>(null)
-  const preview = useMemo(
-    () => (source === initialSource ? { component } : compilePreview(source)),
-    [component, initialSource, source],
-  )
+  const owner = useRef(Symbol('documentation-example'))
+  const [compilerStatus, setCompilerStatus] = useState<'loading' | 'ready' | 'failed'>('loading')
+  const [compiled, setCompiled] = useState<
+    { source: string; result: { component?: ComponentType; error?: string } } | undefined
+  >()
+  useEffect(() => subscribeDocumentationCompiler(setCompilerStatus), [])
+  useEffect(() => {
+    if (compilerStatus !== 'ready' || source === initialSource) return
+    return compileDocumentationSource(owner.current, source, (result) => {
+      setCompiled({ source, result: evaluatePreview(result) })
+    })
+  }, [compilerStatus, initialSource, source])
+  // Keep the previous compiled preview visible until the current edit finishes compiling.
+  const preview = source === initialSource ? { component } : (compiled?.result ?? { component })
+  const previewKey = source === initialSource ? initialSource : (compiled?.source ?? initialSource)
   const LivePreview = preview.component
   const codeRows = Math.max(1, source.split('\n').length)
 
@@ -109,9 +120,11 @@ export function DocumentationComponentExampleCard({
       <Column width="fill">
         <Flex width="fill" padding={32} align="center" justify="center">
           {LivePreview === undefined ? (
-            <Text color="danger">{preview.error}</Text>
+            preview.error === undefined ? null : (
+              <Text color="danger">{preview.error}</Text>
+            )
           ) : (
-            <PreviewBoundary key={source}>
+            <PreviewBoundary key={previewKey}>
               <LivePreview />
             </PreviewBoundary>
           )}
@@ -194,6 +207,7 @@ export function DocumentationComponentExampleCard({
               <Input
                 multiline
                 rows={codeRows}
+                disabled={compilerStatus !== 'ready'}
                 value={source}
                 onChange={setSource}
                 viewProps={{

@@ -1,0 +1,143 @@
+async (page) => {
+  const errors = []
+  page.on('pageerror', (error) => errors.push(error.message))
+  const origin = page.url().split('/').slice(0, 3).join('/')
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await page.goto(origin + '/docs/components/Typewriter', { waitUntil: 'domcontentloaded' })
+  await page.waitForFunction(() => document.querySelectorAll('[data-weave-typewriter]').length === 7)
+
+  const active = await page.evaluate(async () => {
+    const hosts = [...document.querySelectorAll('[data-weave-typewriter]')]
+    const presets = ['bar', 'underline', 'block', 'outline']
+    const measured = hosts.slice(2, 6).map((host, index) => {
+      const caret = host.querySelector('[data-weave-typewriter-cursor]')
+      const text = host.querySelector('[data-weave-text]')
+      if (!(caret instanceof HTMLDivElement) || !(text instanceof HTMLElement)) {
+        throw Error('Preset cursor must be an actual Weave View beside a Text')
+      }
+      if (!caret.hasAttribute('data-weave-view') || !host.hasAttribute('data-weave-view')) {
+        throw Error('Preset cursor and parent must use Weave ViewHost')
+      }
+      if (caret.dataset.weaveTypewriterPreset !== presets[index]) {
+        throw Error('Wrong preset: ' + index)
+      }
+      if (text.contains(caret)) throw Error('View cursor cannot be nested inside Text/p')
+      const style = getComputedStyle(caret)
+      const rect = caret.getBoundingClientRect()
+      if (style.animationName !== 'weave-typewriter-cursor-blink') {
+        throw Error('Preset must blink: ' + presets[index])
+      }
+      if (style.animationDuration !== '1s') {
+        throw Error('Preset cursor must blink every 1000ms: ' + presets[index])
+      }
+      if (style.color !== getComputedStyle(text).color) {
+        throw Error('Caret must inherit text color: ' + presets[index])
+      }
+      if (style.fontSize !== getComputedStyle(text).fontSize) {
+        throw Error('Caret must match Text font size: ' + presets[index])
+      }
+      if (style.boxSizing !== 'border-box') throw Error('Cursor should use border-box')
+      if (rect.width <= 0 || rect.height <= 0) throw Error('Cursor is not visible')
+      const spacing = rect.left - text.getBoundingClientRect().right
+      if (Math.abs(spacing - 2) > 0.1 || getComputedStyle(host).columnGap !== '2px') {
+        throw Error('Fixed View gap must produce 2px between text and preset: ' + spacing)
+      }
+      return {
+        preset: presets[index],
+        tag: caret.tagName,
+        width: rect.width,
+        height: rect.height,
+        border: style.borderWidth,
+        background: style.backgroundColor,
+        animation: style.animationName,
+      }
+    })
+
+    const [bar, underline, block, outline] = measured
+    if (Math.abs(underline.width - block.width) > 0.1 ||
+        Math.abs(block.width - outline.width) > 0.1 ||
+        Math.abs(block.height - outline.height) > 0.1 ||
+        Math.abs(underline.height - outline.height) > 0.1) {
+      throw Error('Underline and block cursors must share the same geometry')
+    }
+    if (underline.width <= 10 || underline.width <= bar.width) {
+      throw Error('Underline must be visibly longer than prior glyph and bar width')
+    }
+    if (block.background === outline.background || block.background.includes('(0, 0, 0, 0)')) {
+      throw Error('Solid and outline blocks must have different fill')
+    }
+    if (outline.border !== '1px' || !underline.border.endsWith('2px')) {
+      throw Error('Outline border and underline thickness must be defined')
+    }
+
+    const custom = hosts[6].querySelector('[data-weave-typewriter-cursor]')
+    if (!custom || custom.textContent !== '✦' || !custom.querySelector('[data-weave-text]')) {
+      throw Error('Custom ReactNode cursor was altered')
+    }
+    if (custom.hasAttribute('data-weave-view')) throw Error('Custom ReactNode cursor should remain custom')
+    const customSpacing = custom.getBoundingClientRect().left -
+      hosts[6].querySelector('[data-weave-text]').getBoundingClientRect().right
+    if (Math.abs(customSpacing - 2) > 0.1 || getComputedStyle(hosts[6]).columnGap !== '2px') {
+      throw Error('Custom ReactNode cursor must have fixed 2px View gap: ' + customSpacing)
+    }
+    const firstText = hosts[0].querySelector('[data-weave-text]')
+    const firstCaret = hosts[0].querySelector('[data-weave-typewriter-cursor]')
+    const defaultSpacing = firstCaret.getBoundingClientRect().left -
+      firstText.getBoundingClientRect().right
+    if (Math.abs(defaultSpacing - 2) > 0.1) {
+      throw Error('Default cursor must have fixed 2px gap')
+    }
+    if (getComputedStyle(custom).animationName !== 'weave-typewriter-cursor-blink' ||
+        getComputedStyle(custom).animationDuration !== '1s') {
+      throw Error('Custom ReactNode cursor must blink with a 1000ms cycle')
+    }
+    if (hosts[1].querySelector('[data-weave-typewriter-cursor]')) {
+      throw Error('showCursor=false should not render a cursor')
+    }
+    const caret = hosts[2].querySelector('[data-weave-typewriter-cursor]')
+    const samples = []
+    for (let index = 0; index < 12; index += 1) {
+      samples.push(getComputedStyle(caret).opacity)
+      await new Promise((resolve) => setTimeout(resolve, 90))
+    }
+    if (!samples.includes('0') || !samples.includes('1')) throw Error('Opacity does not blink')
+
+    if (getComputedStyle(firstText).fontSize !== getComputedStyle(firstCaret).fontSize) {
+      throw Error('Title typography and caret are mismatched')
+    }
+    return {
+      measured,
+      customCursor: custom.textContent,
+      titleCaretFont: getComputedStyle(firstCaret).fontSize,
+      opacityStates: [...new Set(samples)],
+      gap: { preset: 2, custom: customSpacing, default: defaultSpacing },
+    }
+  })
+
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.reload()
+  await page.waitForFunction(() => document.querySelectorAll('[data-weave-typewriter]').length === 7)
+  const reduced = await page.evaluate(async () => {
+    const hosts = [...document.querySelectorAll('[data-weave-typewriter]')]
+    const carets = [...document.querySelectorAll('[data-weave-typewriter-cursor]')]
+    if (carets.length !== 6) throw Error('Incorrect cursor count')
+    if (carets.some((caret) =>
+      getComputedStyle(caret).animationName !== 'none' ||
+      getComputedStyle(caret).opacity !== '1'
+    )) {
+      throw Error('Reduced motion cursors should stay visible without blinking')
+    }
+    const before = hosts.map((host) => host.textContent)
+    await new Promise((resolve) => setTimeout(resolve, 800))
+    const after = hosts.map((host) => host.textContent)
+    if (JSON.stringify(before) !== JSON.stringify(after)) throw Error('Reduced motion text should remain static')
+    if (before[0] !== 'Hello, Weave!' || before[1] !== 'Final phrase stays') {
+      throw Error('Reduced motion should display full phrases')
+    }
+    return { caretCount: carets.length, static: true, firstTwo: before.slice(0, 2) }
+  })
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+
+  if (errors.length) throw Error('Uncaught browser errors: ' + JSON.stringify(errors))
+  return { active, reduced, errors }
+}

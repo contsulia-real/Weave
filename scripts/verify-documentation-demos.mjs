@@ -23,6 +23,13 @@ const liveRuntimeImports = new Set([
   '../../documentation-navigation-data',
 ])
 const forbiddenMetadataFields = new Set(['preview', 'code', 'codeMode'])
+const liveRuntimeSource = fs.readFileSync(
+  path.join(documentationDirectory, 'documentation-example-runtime.tsx'),
+  'utf8',
+)
+const liveRuntimeIcons = new Set(
+  liveRuntimeSource.match(/'@tabler\/icons-react':\s*\{([^}]*)\}/)?.[1].match(/\bIcon\w+\b/g) ?? [],
+)
 
 function propertyName(name) {
   return ts.isIdentifier(name) || ts.isStringLiteral(name) ? name.text : null
@@ -148,6 +155,20 @@ function verifyDemoFile(filePath) {
         throw new Error(
           `${path.relative(root, filePath)} imports "${specifier}", which the live demo runtime does not support.`,
         )
+      }
+
+      if (specifier === '@tabler/icons-react') {
+        const bindings = statement.importClause?.namedBindings
+        if (bindings !== undefined && ts.isNamedImports(bindings)) {
+          for (const icon of bindings.elements) {
+            const name = icon.propertyName?.text ?? icon.name.text
+            if (!liveRuntimeIcons.has(name)) {
+              throw new Error(
+                `${path.relative(root, filePath)} imports "${name}", which the live demo runtime does not export.`,
+              )
+            }
+          }
+        }
       }
     }
   }

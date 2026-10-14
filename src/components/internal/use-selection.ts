@@ -38,7 +38,11 @@ export function useSelection(props: SelectionProps, enabledIds: readonly string[
   )
 
   const currentSingle =
-    selection === 'single' ? (singleProps?.selected ?? uncontrolledSingle) : null
+    selection === 'single'
+      ? singleProps?.selected === undefined
+        ? uncontrolledSingle
+        : singleProps.selected
+      : null
   const currentMultiple =
     selection === 'multiple'
       ? (multipleProps?.selected ?? uncontrolledMultiple)

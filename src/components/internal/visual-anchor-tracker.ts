@@ -12,9 +12,11 @@ interface VisualAnchorTrackerOptions {
   additionalTargets?: readonly HTMLElement[]
   trackScroll?: boolean
   trackMutations?: boolean
+  observeTargetMutations?: boolean
   ignoreMutation?: (record: MutationRecord) => boolean
   interactionEvents?: readonly string[]
   continuousAnimations?: boolean
+  shouldPollAnimations?: () => boolean
 }
 
 function animationRunning(animation: Animation): boolean {
@@ -32,6 +34,7 @@ export function trackVisualAnchor(
   )
   const resizeTargets = [target, ...additionalTargets]
   let frame: number | undefined
+  let animationWatchFrame: number | undefined
   let settleFrames = 0
   let visualEffects = 0
 
@@ -69,6 +72,14 @@ export function trackVisualAnchor(
         queueFrame()
       }
     })
+  }
+
+  // Web Animations API animations do not dispatch CSS animationstart events.
+  // Check for active animations without recalculating geometry on idle frames.
+  const watchAnimations = () => {
+    if (view === null) return
+    if (options.shouldPollAnimations?.() !== false && hasRunningAnimation()) queueFrame()
+    animationWatchFrame = view.requestAnimationFrame(watchAnimations)
   }
 
   const schedule = () => {
@@ -121,11 +132,13 @@ export function trackVisualAnchor(
           schedule()
         })
 
-  mutationObserver?.observe(target, {
-    attributes: true,
-    childList: true,
-    subtree: true,
-  })
+  if (options.observeTargetMutations !== false) {
+    mutationObserver?.observe(target, {
+      attributes: true,
+      childList: true,
+      subtree: true,
+    })
+  }
 
   for (const element of additionalTargets) {
     mutationObserver?.observe(element, {
@@ -162,6 +175,9 @@ export function trackVisualAnchor(
   }
 
   schedule()
+  if (options.continuousAnimations === true && view !== null) {
+    animationWatchFrame = view.requestAnimationFrame(watchAnimations)
+  }
 
   return () => {
     resizeObserver?.disconnect()
@@ -198,5 +214,6 @@ export function trackVisualAnchor(
     if (frame !== undefined && view !== null && typeof view.cancelAnimationFrame === 'function') {
       view.cancelAnimationFrame(frame)
     }
+    if (animationWatchFrame !== undefined) view?.cancelAnimationFrame(animationWatchFrame)
   }
 }

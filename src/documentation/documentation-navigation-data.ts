@@ -30,6 +30,7 @@ export const componentNavigationSections: readonly DocumentationNavigationSectio
   componentSection('content-actions', 'docs.nav.contentActions', [
     'Typo',
     'Text',
+    'Typewriter',
     'Code',
     'Image',
     'MusicVisualization',

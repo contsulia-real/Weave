@@ -167,6 +167,12 @@ export function DocumentationNavigation({ pathname, onNavigate }: DocumentationN
                             viewProps={{
                               clickable: true,
                               onClick: () => onNavigate(item.path),
+                              onKeyDown: (event) => {
+                                if (event.key === 'Enter' || event.key === ' ') {
+                                  event.preventDefault()
+                                  onNavigate(item.path)
+                                }
+                              },
                               radius: 'full',
                             }}
                           >

@@ -86,6 +86,7 @@
     "./components/Text": "./dist/components/Text.js",
     "./components/Timeline": "./dist/components/Timeline.js",
     "./components/TreeView": "./dist/components/TreeView.js",
+    "./components/Typewriter": "./dist/components/Typewriter.js",
     "./components/ToolTip": "./dist/components/ToolTip.js",
     "./components/useSnack": "./dist/components/useSnack.js",
     "./components/View": "./dist/components/View.js"

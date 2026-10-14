@@ -1173,6 +1173,8 @@
         "Text/truncated-copy",
         "ToolTip/rich-content",
         "TreeView/basic-usage",
+        "Typewriter/basic-usage",
+        "Typewriter/cursor-presets",
         "Typo/body",
         "Typo/display",
         "Typo/headline",
@@ -3890,6 +3892,7 @@
         "Snack/provider-queue",
         "Stepper/controlled-vertical",
         "ThemeProvider/scoped-color-mode",
+        "Typewriter/cursor-presets",
         "View/motion",
         "View/state-styles"
       ],
@@ -5364,6 +5367,9 @@
         "Text/truncated-copy",
         "ToolTip/rich-content",
         "TreeView/basic-usage",
+        "Typewriter/basic-usage",
+        "Typewriter/cursor-presets",
+        "Typewriter/custom-cursor",
         "Typo/body",
         "Typo/display",
         "Typo/headline",
@@ -5723,6 +5729,200 @@
           "name": "selected",
           "description": "Controlled selected node identifier.",
           "type": "string | null | undefined",
+          "optional": true
+        }
+      ]
+    },
+    "Typewriter": {
+      "name": "Typewriter",
+      "import": "import { Typewriter } from '@contsulia/weave/components/Typewriter'",
+      "importPath": "@contsulia/weave/components/Typewriter",
+      "category": "content-actions",
+      "intent": "Automatically type, pause, erase, and cycle through plain-text phrases using Weave Text typography.",
+      "preferWhen": [],
+      "avoidWhen": [],
+      "alternatives": [],
+      "relationship": {
+        "demoParent": null,
+        "standaloneDocumentationPage": true
+      },
+      "viewPropsMode": "nested",
+      "nativeProps": false,
+      "documentationRoute": "/docs/components/Typewriter",
+      "apiRoute": "/docs/components-api/Typewriter",
+      "examples": [
+        "Typewriter/basic-usage",
+        "Typewriter/cursor-presets",
+        "Typewriter/custom-cursor",
+        "Typewriter/once"
+      ],
+      "props": [
+        {
+          "name": "align",
+          "description": "",
+          "type": "TextAlign | undefined",
+          "optional": true
+        },
+        {
+          "name": "bold",
+          "description": "",
+          "type": "boolean | undefined",
+          "optional": true
+        },
+        {
+          "name": "case",
+          "description": "",
+          "type": "TextCase | undefined",
+          "optional": true
+        },
+        {
+          "name": "color",
+          "description": "",
+          "type": "TextColor | undefined",
+          "optional": true
+        },
+        {
+          "name": "cursor",
+          "description": "Preset blinking cursor or a custom React node. Default: 'bar'.",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined",
+          "optional": true
+        },
+        {
+          "name": "deleteInterval",
+          "description": "Milliseconds per removed grapheme. Default: 60.",
+          "type": "number | undefined",
+          "optional": true
+        },
+        {
+          "name": "italic",
+          "description": "",
+          "type": "boolean | undefined",
+          "optional": true
+        },
+        {
+          "name": "letterSpacing",
+          "description": "",
+          "type": "Length | undefined",
+          "optional": true
+        },
+        {
+          "name": "lg",
+          "description": "Overrides supported props at the lg viewport breakpoint.",
+          "type": "Partial<TextStyleProps> | undefined",
+          "optional": true
+        },
+        {
+          "name": "lineHeight",
+          "description": "",
+          "type": "Length | undefined",
+          "optional": true
+        },
+        {
+          "name": "loop",
+          "description": "Repeat the sequence indefinitely. Default: true.",
+          "type": "boolean | undefined",
+          "optional": true
+        },
+        {
+          "name": "maxLines",
+          "description": "",
+          "type": "number | undefined",
+          "optional": true
+        },
+        {
+          "name": "md",
+          "description": "Overrides supported props at the md viewport breakpoint.",
+          "type": "Partial<TextStyleProps> | undefined",
+          "optional": true
+        },
+        {
+          "name": "overflow",
+          "description": "",
+          "type": "TextOverflow | undefined",
+          "optional": true
+        },
+        {
+          "name": "overline",
+          "description": "",
+          "type": "boolean | undefined",
+          "optional": true
+        },
+        {
+          "name": "pauseDuration",
+          "description": "Milliseconds to hold a complete phrase before deleting or finishing. Default: 1000.",
+          "type": "number | undefined",
+          "optional": true
+        },
+        {
+          "name": "showCursor",
+          "description": "Show or hide the cursor. Default: true.",
+          "type": "boolean | undefined",
+          "optional": true
+        },
+        {
+          "name": "singleLine",
+          "description": "",
+          "type": "boolean | undefined",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "description": "",
+          "type": "TextSize | undefined",
+          "optional": true
+        },
+        {
+          "name": "sm",
+          "description": "Overrides supported props at the sm viewport breakpoint.",
+          "type": "Partial<TextStyleProps> | undefined",
+          "optional": true
+        },
+        {
+          "name": "strikethrough",
+          "description": "",
+          "type": "boolean | undefined",
+          "optional": true
+        },
+        {
+          "name": "texts",
+          "description": "Plain text phrases shown in order. Empty phrases are skipped.",
+          "type": "readonly string[]",
+          "optional": false
+        },
+        {
+          "name": "typeInterval",
+          "description": "Milliseconds per visible grapheme while typing. Default: 100.",
+          "type": "number | undefined",
+          "optional": true
+        },
+        {
+          "name": "typo",
+          "description": "",
+          "type": "TextTypo | undefined",
+          "optional": true
+        },
+        {
+          "name": "underline",
+          "description": "",
+          "type": "boolean | undefined",
+          "optional": true
+        },
+        {
+          "name": "weight",
+          "description": "",
+          "type": "TextWeight | undefined",
+          "optional": true
+        },
+        {
+          "name": "wrap",
+          "description": "",
+          "type": "TextWrap | undefined",
+          "optional": true
+        },
+        {
+          "name": "xl",
+          "description": "Overrides supported props at the xl viewport breakpoint.",
+          "type": "Partial<TextStyleProps> | undefined",
           "optional": true
         }
       ]

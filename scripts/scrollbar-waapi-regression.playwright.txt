@@ -1,0 +1,67 @@
+async (page) => {
+  const errors = []
+  page.on('pageerror', (error) => errors.push(error.message))
+
+  const result = await page.evaluate(async () => {
+    const pause = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+    const wrapper = document.createElement('div')
+    const host = document.createElement('div')
+    const content = document.createElement('div')
+
+    wrapper.style.cssText =
+      'position:fixed;left:245px;top:195px;width:150px;height:105px;overflow:hidden;z-index:200'
+    host.style.cssText = 'width:150px;height:145px;overflow:auto'
+    content.style.cssText = 'height:960px'
+    host.append(content)
+    wrapper.append(host)
+    document.body.append(wrapper)
+
+    try {
+      await pause(480)
+      if (!host.hasAttribute('data-weave-global-scroll-host')) {
+        throw new Error('New scroll host was not discovered')
+      }
+
+      const rect = host.getBoundingClientRect()
+      const bar = [...document.querySelectorAll('.weave-scrollbar--vertical[data-weave-scrollbar-visible="true"]')]
+        .sort((a, b) =>
+          Math.abs(a.getBoundingClientRect().right - rect.right) -
+          Math.abs(b.getBoundingClientRect().right - rect.right),
+        )[0]
+      if (!bar || Math.abs(bar.getBoundingClientRect().right - rect.right) > 25) {
+        throw new Error('Missing target portal scrollbar')
+      }
+
+      const offset = bar.getBoundingClientRect().right - rect.right
+      const animation = wrapper.animate(
+        [{ transform: 'translateX(0)' }, { transform: 'translateX(100px)' }],
+        { duration: 460, fill: 'forwards', easing: 'linear' },
+      )
+      const errors = []
+      for (let index = 0; index < 13; index += 1) {
+        await pause(35)
+        errors.push(
+          bar.getBoundingClientRect().right -
+            host.getBoundingClientRect().right -
+            offset,
+        )
+      }
+      await animation.finished
+      await pause(35)
+      errors.push(bar.getBoundingClientRect().right - host.getBoundingClientRect().right - offset)
+
+      const maxErrorPx = Math.max(...errors.map((value) => Math.abs(value)))
+      if (maxErrorPx > 10) {
+        throw new Error('WAAPI ancestor transform lost scrollbar alignment: ' + maxErrorPx)
+      }
+      return { maxErrorPx: Number(maxErrorPx.toFixed(2)), samples: errors.length }
+    } finally {
+      wrapper.remove()
+    }
+  })
+
+  if (errors.length > 0) {
+    throw new Error('Unhandled browser errors: ' + JSON.stringify(errors))
+  }
+  return { ...result, pageErrors: errors }
+}

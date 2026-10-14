@@ -4,6 +4,7 @@ import {
   type MouseEvent,
   memo,
   type PointerEvent,
+  startTransition,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -233,6 +234,11 @@ function DataGridVirtualBody<TRow extends DataGridRow>({
     size: 0,
     gap: 0,
   })
+  const committedViewport = useRef(viewport)
+
+  useLayoutEffect(() => {
+    committedViewport.current = viewport
+  }, [viewport])
 
   const onMeasure = useCallback((id: string, measurement: VirtualMeasurement) => {
     setMeasurements((current) => {
@@ -257,7 +263,15 @@ function DataGridVirtualBody<TRow extends DataGridRow>({
 
     const read = () => {
       const next = virtualViewport(root, body, stickyHeader)
-      setViewport((current) => (sameVirtualViewport(current, next) ? current : next))
+      const current = committedViewport.current
+      const update = () => setViewport((value) => (sameVirtualViewport(value, next) ? value : next))
+      // Defer ordinary scrolling to protect paint time, but render large jumps
+      // immediately before they outrun the half-viewport overscan buffer.
+      if (next.size !== current.size || Math.abs(next.offset - current.offset) > next.size / 2) {
+        update()
+      } else {
+        startTransition(update)
+      }
     }
 
     const scheduleRead = () => {
