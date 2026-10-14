@@ -1,7 +1,8 @@
+import { IconBrandGithubFilled } from '@tabler/icons-react'
 import { DocumentationControls } from '../documentation/DocumentationControls'
 import type { DocumentationThemeColorId } from '../documentation/documentation-theme'
 import type { ThemeMode } from '../index'
-import { AppBar, Button, Column, Grid, Link, Row, Text, Typewriter } from '../index'
+import { AppBar, Button, Column, Grid, Icon, Link, Row, Text, Typewriter } from '../index'
 import {
   LaunchFlow,
   ProjectOverview,
@@ -10,6 +11,13 @@ import {
   TeamInbox,
   WorkspacePreferences,
 } from './WebsiteShowcase'
+
+const jsrLogo = (
+  <svg viewBox="0 0 13 7" xmlns="http://www.w3.org/2000/svg">
+    <path fill="#083344" d="M0 6h4v1h7V5h2V1H9V0H2v2H0" />
+    <path fill="#f7df1e" d="M4 5V1H3v3H2V3H1v2h6V4H5V1h3v1h4v2h-1V3h-1v3H9V2H6v1h2v3H5V5" />
+  </svg>
+)
 
 interface WebsiteHomeProps {
   themeMode: ThemeMode
@@ -44,8 +52,20 @@ export function WebsiteHome({
               <Link href="/docs/getting-started" text="Get started" hideIcon />
             </Row>
             <Row align="center" gap={16} wrap>
-              <Link href="https://github.com/contsulia-real/Weave" text="GitHub" />
-              <Link href="https://jsr.io/@contsulia/weave" text="JSR" />
+              <Link
+                href="https://github.com/contsulia-real/Weave"
+                text={<Icon icon={IconBrandGithubFilled} size="medium" />}
+                hideIcon
+                hideUnderline
+                viewProps={{ label: 'GitHub' }}
+              />
+              <Link
+                href="https://jsr.io/@contsulia/weave"
+                text={<Icon svg={jsrLogo} size="medium" />}
+                hideIcon
+                hideUnderline
+                viewProps={{ label: 'JSR' }}
+              />
               <DocumentationControls
                 themeMode={themeMode}
                 onThemeModeChange={onThemeModeChange}

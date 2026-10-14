@@ -17,7 +17,22 @@ async (page) => {
       const showcase = main.children[1].getBoundingClientRect()
       const title = document.querySelector('[data-weave-typewriter]')
       const titleY = title.getBoundingClientRect().y
-      const github = [...document.querySelectorAll('a')].find((link) => link.textContent === 'GitHub')
+      const github = document.querySelector('a[aria-label="GitHub"]')
+      const jsr = document.querySelector('a[aria-label="JSR"]')
+      const brands = [github, jsr].map((link) => ({
+        label: link?.getAttribute('aria-label'),
+        href: link?.getAttribute('href'),
+        text: link?.textContent,
+        iconCount: link?.querySelectorAll('[data-weave-icon]').length,
+        svgCount: link?.querySelectorAll('svg').length,
+        isGithubIcon: link?.querySelector('svg')?.classList.contains('tabler-icon-brand-github-filled'),
+        jsrFills: [...(link?.querySelectorAll('svg path') ?? [])]
+          .map((path) => path.getAttribute('fill')),
+        width: link?.getBoundingClientRect().width,
+        height: link?.getBoundingClientRect().height,
+        iconWidth: link?.querySelector('svg')?.getBoundingClientRect().width,
+        iconHeight: link?.querySelector('svg')?.getBoundingClientRect().height,
+      }))
       const appbar = document.querySelector('[data-weave-appbar]')
       const appbarBeforeScroll = appbar.getBoundingClientRect()
       const computedAppbar = getComputedStyle(appbar)
@@ -52,6 +67,7 @@ async (page) => {
         showcaseX: Math.round(showcase.x),
         titleY: Math.round(titleY),
         githubX: Math.round(github.getBoundingClientRect().x),
+        brands,
         scrollWidth: document.documentElement.scrollWidth,
         cards: document.querySelectorAll('[data-weave-card]').length,
         typewriterCount: document.querySelectorAll('[data-weave-typewriter]').length,
@@ -67,6 +83,20 @@ async (page) => {
         layout.appbar.shadow === 'none') {
       throw new Error('Floating elevated app bar must stay above content during scrolling: ' +
         JSON.stringify(layout.appbar))
+    }
+    if (layout.brands.some((brand, index) =>
+      brand.label !== ['GitHub', 'JSR'][index] ||
+      brand.href !== [
+        'https://github.com/contsulia-real/Weave',
+        'https://jsr.io/@contsulia/weave',
+      ][index] ||
+      brand.text !== '' || brand.iconCount !== 1 || brand.svgCount !== 1 ||
+      (index === 0 && !brand.isGithubIcon) ||
+      (index === 1 && brand.jsrFills.join(',') !== '#083344,#f7df1e') ||
+      brand.iconWidth < 12 || brand.iconHeight < 12 ||
+      brand.width <= 0 || brand.height <= 0)) {
+      throw new Error('GitHub and JSR must be accessible branded icon links: ' +
+        JSON.stringify(layout.brands))
     }
     if (layout.scrollWidth !== width || layout.cards !== 6 || layout.typewriterCount !== 1) {
       throw new Error('Website overflows or is missing composite demos/hero Typewriter: ' +
