@@ -19,6 +19,9 @@ export function DocumentationGettingStarted() {
   return (
     <Column width="fill" padding={32} gap={48}>
       <Text typo="display-small">{t('docs.nav.gettingStarted')}</Text>
+      <Text typo="body-large" color="secondary">
+        {t('docs.gettingStarted.positioning')}
+      </Text>
 
       <Column gap={24}>
         <Text typo="headline-small">{t('docs.gettingStarted.sliderHorizontal')}</Text>

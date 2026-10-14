@@ -129,7 +129,7 @@ async (page) => {
   await page.getByRole('button', { name: '语言' }).click()
   await page.getByRole('button', { name: 'English' }).click()
   await page.waitForFunction(() =>
-    document.querySelector('[data-weave-typewriter]').textContent === 'Browser-native React UI',
+    document.querySelector('[data-weave-typewriter]').textContent === 'Interaction is built in.',
     { timeout: 10000 })
 
   const cards = page.locator('[data-weave-card]')
@@ -194,7 +194,7 @@ async (page) => {
   await page.getByRole('button', { name: '语言' }).click()
   await page.getByRole('button', { name: 'English' }).click()
   await page.waitForFunction(() =>
-    document.querySelector('[data-weave-typewriter]')?.textContent === 'Browser-native React UI')
+    document.querySelector('[data-weave-typewriter]')?.textContent === 'Interaction is built in.')
   await page.emulateMedia({ reducedMotion: 'no-preference' })
   await page.getByRole('button', { name: 'Explore documentation' }).click()
   await page.waitForURL(origin + '/docs')
@@ -203,7 +203,7 @@ async (page) => {
 
   return {
     layouts,
-    typewriter: 'Browser-native React UI',
+    typewriter: 'Interaction is built in.',
     scenarios: ['project', 'agenda', 'launch', 'inbox', 'insights', 'preferences'],
     docs: true,
     errors,

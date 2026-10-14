@@ -14,25 +14,25 @@
     "zh-TW": "開始使用",
     "fr": "Commencer"
   },
-  "Browser-native React UI": {
-    "zh-CN": "基于浏览器的 React UI",
-    "zh-TW": "原生瀏覽器的 React UI",
-    "fr": "UI React native au navigateur"
+  "Interaction is built in.": {
+    "zh-CN": "交互，内建于组件之中。",
+    "zh-TW": "互動，內建於元件之中。",
+    "fr": "L’interaction est intégrée."
   },
-  "Interfaces that work together": {
-    "zh-CN": "协同工作的界面",
-    "zh-TW": "相互協作的介面",
-    "fr": "Des interfaces qui fonctionnent ensemble"
+  "Built for developers. Ready for AI.": {
+    "zh-CN": "为开发者构建，为 AI 做好准备。",
+    "zh-TW": "為開發者打造，為 AI 做好準備。",
+    "fr": "Conçu pour les développeurs. Prêt pour l’IA."
   },
   "Built for real products": {
     "zh-CN": "为真实产品而构建",
     "zh-TW": "為真實產品而打造",
     "fr": "Pensé pour de vrais produits"
   },
-  "A browser-native React UI framework built on semantic components, DOM and CSS.": {
-    "zh-CN": "基于语义化组件、DOM 与 CSS 构建的浏览器原生 React UI 框架。",
-    "zh-TW": "以語義化元件、DOM 與 CSS 打造的瀏覽器原生 React UI 框架。",
-    "fr": "Un framework React UI natif au navigateur, fondé sur des composants sémantiques, le DOM et le CSS."
+  "An interaction-first React UI framework with visual feedback, direct manipulation and motion built into every component.": {
+    "zh-CN": "以交互完成度为核心的 React UI 框架。视觉反馈、直接操作与动效默认融入组件。",
+    "zh-TW": "以互動完成度為核心的 React UI 框架。視覺回饋、直接操作與動效預設融入元件。",
+    "fr": "Un framework React UI centré sur l’interaction, où les retours visuels, la manipulation directe et les animations font partie des composants."
   },
   "Explore documentation": {
     "zh-CN": "浏览文档",
@@ -44,15 +44,15 @@
     "zh-TW": "為什麼選擇 Weave？",
     "fr": "Pourquoi Weave ?"
   },
-  "Browser-native by design": {
-    "zh-CN": "天生适配浏览器",
-    "zh-TW": "天生適配瀏覽器",
-    "fr": "Natif au navigateur"
+  "Interaction-first components": {
+    "zh-CN": "交互优先的组件",
+    "zh-TW": "互動優先的元件",
+    "fr": "Des composants pensés pour l’interaction"
   },
-  "Semantic React components render directly to the DOM and CSS.": {
-    "zh-CN": "语义化 React 组件直接使用浏览器的 DOM 和 CSS 渲染。",
-    "zh-TW": "語義化 React 元件直接使用瀏覽器的 DOM 與 CSS 渲染。",
-    "fr": "Les composants React sémantiques utilisent directement le DOM et le CSS."
+  "Press, drag and state feedback are built into the component experience.": {
+    "zh-CN": "按压、拖动和状态反馈是组件体验的一部分。",
+    "zh-TW": "按壓、拖動與狀態回饋是元件體驗的一部分。",
+    "fr": "Les retours d’appui, de glisser et de changement d’état font partie des composants."
   },
   "One theme, cohesive interfaces": {
     "zh-CN": "一套主题，统一体验",
@@ -84,15 +84,10 @@
     "zh-TW": "內建動效會配合減少動態效果的偏好設定。",
     "fr": "Les animations intégrées respectent les préférences de réduction du mouvement."
   },
-  "Composable for real apps": {
-    "zh-CN": "为真实应用自由组合",
-    "zh-TW": "為真實應用自由組合",
-    "fr": "Composables pour de vraies applications"
-  },
-  "Combine controls, forms, data displays and navigation into working interfaces.": {
-    "zh-CN": "组合控件、表单、数据展示和导航，构建真正可用的界面。",
-    "zh-TW": "組合控制項、表單、資料展示與導覽，打造真正可用的介面。",
-    "fr": "Combinez contrôles, formulaires, données et navigation dans des interfaces fonctionnelles."
+  "Semantic APIs, real examples and source-derived metadata support both developers and AI tools.": {
+    "zh-CN": "语义化 API、真实示例和源码派生元数据同时服务开发者与 AI 工具。",
+    "zh-TW": "語義化 API、真實範例與原始碼衍生中繼資料同時支援開發者與 AI 工具。",
+    "fr": "API sémantiques, exemples réels et métadonnées issues du code source accompagnent développeurs et outils d’IA."
   },
   "Atlas workspace": {
     "zh-CN": "Atlas 工作区",

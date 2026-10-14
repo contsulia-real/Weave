@@ -36,13 +36,16 @@ export function WebsiteHome({
 }: WebsiteHomeProps) {
   const { t } = useTranslation('website')
   const whyWeave = [
-    ['Browser-native by design', 'Semantic React components render directly to the DOM and CSS.'],
+    [
+      'Interaction-first components',
+      'Press, drag and state feedback are built into the component experience.',
+    ],
     ['One theme, cohesive interfaces', 'Theme tokens and color seeds keep components consistent.'],
     ['Responsive without reinvention', 'Breakpoint-aware props adapt layouts to every screen.'],
     ['Motion that respects preferences', 'Built-in motion responds to reduced-motion preferences.'],
     [
-      'Composable for real apps',
-      'Combine controls, forms, data displays and navigation into working interfaces.',
+      'Built for developers. Ready for AI.',
+      'Semantic APIs, real examples and source-derived metadata support both developers and AI tools.',
     ],
   ] as const
 
@@ -107,8 +110,8 @@ export function WebsiteHome({
             <Row background="primary" color="onPrimary" radius="medium" padding={12}>
               <Typewriter
                 texts={[
-                  t('Browser-native React UI'),
-                  t('Interfaces that work together'),
+                  t('Interaction is built in.'),
+                  t('Built for developers. Ready for AI.'),
                   t('Built for real products'),
                 ]}
                 typo="headline-large"
@@ -116,7 +119,9 @@ export function WebsiteHome({
               />
             </Row>
             <Text typo="body-large" color="secondary">
-              {t('A browser-native React UI framework built on semantic components, DOM and CSS.')}
+              {t(
+                'An interaction-first React UI framework with visual feedback, direct manipulation and motion built into every component.',
+              )}
             </Text>
             <Button
               text={t('Explore documentation')}

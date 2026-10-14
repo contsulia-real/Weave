@@ -1,6 +1,6 @@
 # Weave
 
-> Browser-native React UI framework with semantic components, real DOM, and CSS.
+> Interaction-first React UI framework. Built-in feedback and motion, semantic components, and source-derived AI tooling.
 
 ## Imports
 - Root application/theme runtime: `@contsulia/weave`.

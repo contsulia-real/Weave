@@ -1,6 +1,10 @@
 # Weave
 
-Weave is a browser-native React UI framework for the Web. It provides semantic React components, theme tokens, responsive props and motion orchestration while keeping DOM and CSS as the single rendering path.
+**Weave — An interaction-first React UI framework.**
+
+Interaction is built in. Weave makes visual feedback, direct manipulation, continuous state transitions, and motion part of its default components, rather than details every application must add. Its semantic components, shared View props, and theme keep the experience coherent across Web products.
+
+**Built for developers. Ready for AI.** Source-derived component contracts, real Documentation examples, theme data, and MCP tools help both developers and AI coding tools work with the same public API. React DOM and CSS remain the single rendering path; this is an architectural constraint, not the product positioning.
 
 The authoritative framework design specification is [Weave UI.md](./Weave%20UI.md).
 

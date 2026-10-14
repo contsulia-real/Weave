@@ -64,6 +64,8 @@ export const documentationTranslationResources = {
     'docs.example.collapseCode': 'Collapse code',
     'docs.example.copyCode': 'Copy code',
     'docs.example.resetCode': 'Reset code',
+    'docs.gettingStarted.positioning':
+      'Interaction is built in. Weave is an interaction-first React UI framework: visual feedback, direct manipulation, and motion are part of its components, with semantic APIs for developers and source-derived guidance for AI tools.',
     'docs.gettingStarted.sliderHorizontal': 'Slider family · horizontal',
     'docs.gettingStarted.sliderHorizontalInverse': 'Slider family · horizontal · inverse',
     'docs.gettingStarted.sliderVertical': 'Slider family · vertical',
@@ -136,6 +138,8 @@ export const documentationTranslationResources = {
     'docs.example.collapseCode': '收起代码',
     'docs.example.copyCode': '复制代码',
     'docs.example.resetCode': '重置代码',
+    'docs.gettingStarted.positioning':
+      '交互，内建于组件之中。Weave 是以交互完成度为核心的 React UI 框架：视觉反馈、直接操作和动效属于组件本身，同时提供面向开发者的语义化 API 与供 AI 工具使用的源码派生规范。',
     'docs.gettingStarted.sliderHorizontal': 'Slider 系列 · 横向',
     'docs.gettingStarted.sliderHorizontalInverse': 'Slider 系列 · 横向 · 反向',
     'docs.gettingStarted.sliderVertical': 'Slider 系列 · 纵向',
@@ -208,6 +212,8 @@ export const documentationTranslationResources = {
     'docs.example.collapseCode': '收合程式碼',
     'docs.example.copyCode': '複製程式碼',
     'docs.example.resetCode': '重設程式碼',
+    'docs.gettingStarted.positioning':
+      '互動，內建於元件之中。Weave 是以互動完成度為核心的 React UI 框架：視覺回饋、直接操作與動效屬於元件本身，並提供面向開發者的語義化 API 與供 AI 工具使用的原始碼衍生規範。',
     'docs.gettingStarted.sliderHorizontal': 'Slider 系列 · 橫向',
     'docs.gettingStarted.sliderHorizontalInverse': 'Slider 系列 · 橫向 · 反向',
     'docs.gettingStarted.sliderVertical': 'Slider 系列 · 縱向',
@@ -284,6 +290,8 @@ export const documentationTranslationResources = {
     'docs.example.collapseCode': 'Réduire le code',
     'docs.example.copyCode': 'Copier le code',
     'docs.example.resetCode': 'Réinitialiser le code',
+    'docs.gettingStarted.positioning':
+      'L’interaction est intégrée. Weave est un framework React UI centré sur l’interaction : retours visuels, manipulation directe et animations font partie des composants, avec des API sémantiques pour les développeurs et des références issues du code pour les outils d’IA.',
     'docs.gettingStarted.sliderHorizontal': 'Famille Slider · horizontal',
     'docs.gettingStarted.sliderHorizontalInverse': 'Famille Slider · horizontal · inversé',
     'docs.gettingStarted.sliderVertical': 'Famille Slider · vertical',

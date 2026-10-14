@@ -2,7 +2,7 @@
   "name": "@contsulia/weave",
   "private": true,
   "version": "0.1.0-alpha.5",
-  "description": "A browser-native React UI framework built on semantic components, DOM and CSS.",
+  "description": "An interaction-first React UI framework with built-in feedback, motion, and semantic components.",
   "license": "MIT",
   "repository": {
     "type": "git",
