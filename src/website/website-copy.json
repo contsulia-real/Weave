@@ -14,15 +14,15 @@
     "zh-TW": "開始使用",
     "fr": "Commencer"
   },
-  "Interaction is built in.": {
-    "zh-CN": "交互，内建于组件之中。",
-    "zh-TW": "互動，內建於元件之中。",
-    "fr": "L’interaction est intégrée."
+  "Interaction is built in": {
+    "zh-CN": "交互，内建于组件之中",
+    "zh-TW": "互動，內建於元件之中",
+    "fr": "L’interaction est intégrée"
   },
-  "Built for developers. Ready for AI.": {
-    "zh-CN": "为开发者构建，为 AI 做好准备。",
-    "zh-TW": "為開發者打造，為 AI 做好準備。",
-    "fr": "Conçu pour les développeurs. Prêt pour l’IA."
+  "Built for developers, ready for AI": {
+    "zh-CN": "为开发者构建，为 AI 做好准备",
+    "zh-TW": "為開發者打造，為 AI 做好準備",
+    "fr": "Pour les développeurs, prêt pour l’IA"
   },
   "Built for real products": {
     "zh-CN": "为真实产品而构建",

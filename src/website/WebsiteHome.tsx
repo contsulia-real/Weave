@@ -44,7 +44,7 @@ export function WebsiteHome({
     ['Responsive without reinvention', 'Breakpoint-aware props adapt layouts to every screen.'],
     ['Motion that respects preferences', 'Built-in motion responds to reduced-motion preferences.'],
     [
-      'Built for developers. Ready for AI.',
+      'Built for developers, ready for AI',
       'Semantic APIs, real examples and source-derived metadata support both developers and AI tools.',
     ],
   ] as const
@@ -105,17 +105,19 @@ export function WebsiteHome({
           xl={{ position: 'sticky', top: 0, height: '100vh', alignSelf: 'start' }}
           data={{ 'weave-website-hero': '' }}
         >
-          <Column width="fill" maxWidth={480} gap={24} align="start">
+          <Column width="fill" maxWidth={720} gap={24} align="start">
             <Text typo="display-large">Weave</Text>
-            <Row background="primary" color="onPrimary" radius="medium" padding={12}>
+            <Row background="primary" color="onPrimary" radius="full" padding={12}>
               <Typewriter
                 texts={[
-                  t('Interaction is built in.'),
-                  t('Built for developers. Ready for AI.'),
+                  t('Interaction is built in'),
+                  t('Built for developers, ready for AI'),
                   t('Built for real products'),
                 ]}
                 typo="headline-large"
                 color="onPrimary"
+                wrap="nowrap"
+                viewProps={{ style: { fontSize: 'clamp(12px, 2.2vw, 36px)' } }}
               />
             </Row>
             <Text typo="body-large" color="secondary">
