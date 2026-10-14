@@ -61,7 +61,7 @@ export function WebsiteHome({
               />
               <Link
                 href="https://jsr.io/@contsulia/weave"
-                text={<Icon svg={jsrLogo} size="xlarge" />}
+                text={<Icon svg={jsrLogo} size="xlarge" viewProps={{ width: 42, height: 42 }} />}
                 hideIcon
                 hideUnderline
                 viewProps={{ label: 'JSR' }}

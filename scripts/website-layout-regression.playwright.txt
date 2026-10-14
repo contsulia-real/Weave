@@ -93,8 +93,8 @@ async (page) => {
       brand.text !== '' || brand.iconCount !== 1 || brand.svgCount !== 1 ||
       (index === 0 && !brand.isGithubIcon) ||
       (index === 1 && brand.jsrFills.join(',') !== '#083344,#f7df1e') ||
-      brand.iconWidth !== 24 || brand.iconHeight !== 24 ||
-      brand.width !== 24 || brand.height <= 0)) {
+      brand.iconWidth !== [24, 42][index] || brand.iconHeight !== [24, 42][index] ||
+      brand.width !== [24, 42][index] || brand.height <= 0)) {
       throw new Error('GitHub and JSR must be accessible branded icon links: ' +
         JSON.stringify(layout.brands))
     }
