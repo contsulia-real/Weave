@@ -6,6 +6,7 @@ import {
   documentationThemeColors,
 } from './documentation/documentation-theme'
 import { createThemeFromColorSeed, type ThemeMode, ThemeProvider } from './index'
+import { WebsiteHome } from './website/WebsiteHome'
 
 function App() {
   const [themeMode, setThemeMode] = useState<ThemeMode>('system')
@@ -18,12 +19,16 @@ function App() {
 
   return (
     <ThemeProvider theme={theme} mode={themeMode}>
-      <DocumentationPage
-        themeMode={themeMode}
-        onThemeModeChange={setThemeMode}
-        themeColorId={themeColor.id}
-        onThemeColorChange={setThemeColorId}
-      />
+      {window.location.pathname === '/' ? (
+        <WebsiteHome />
+      ) : (
+        <DocumentationPage
+          themeMode={themeMode}
+          onThemeModeChange={setThemeMode}
+          themeColorId={themeColor.id}
+          onThemeColorChange={setThemeColorId}
+        />
+      )}
     </ThemeProvider>
   )
 }

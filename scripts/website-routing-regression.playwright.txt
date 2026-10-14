@@ -1,0 +1,78 @@
+async (page) => {
+  const errors = []
+  page.on('pageerror', (error) => errors.push(error.message))
+  const origin = page.url().split('/').slice(0, 3).join('/')
+
+  await page.goto(origin + '/')
+  await page.waitForFunction(() => !!document.querySelector('a[href="/docs"]'))
+  const homepage = await page.evaluate(() => ({
+    pathname: location.pathname,
+    title: document.title,
+    text: document.body.textContent,
+    documentationLink: document.querySelector('a[href="/docs"]')?.getAttribute('href'),
+  }))
+  if (homepage.pathname !== '/' || homepage.title !== 'Weave' ||
+      !homepage.text.includes('A browser-native React UI framework') ||
+      homepage.documentationLink !== '/docs') {
+    throw new Error('The root URL must render the independent Weave website')
+  }
+
+  await page.locator('a[href="/docs"]').click()
+  await page.waitForURL(origin + '/docs')
+  await page.waitForFunction(() => !!document.querySelector('[data-weave-appbar]'))
+  const docs = await page.evaluate(() => ({
+    pathname: location.pathname,
+    title: document.title,
+    hasAppBar: !!document.querySelector('[data-weave-appbar]'),
+  }))
+  if (docs.pathname !== '/docs' || docs.title !== 'Weave Documentation' || !docs.hasAppBar) {
+    throw new Error('Existing documentation must remain accessible at /docs')
+  }
+
+  await page.goBack()
+  await page.waitForFunction(() => location.pathname === '/' && !!document.querySelector('a[href="/docs"]'))
+
+  await page.goto(origin + '/docs/components/Button')
+  await page.waitForFunction(() => {
+    const editor = document.querySelector('textarea')
+    return editor !== null && !editor.disabled
+  })
+  const component = await page.evaluate(() => ({
+    pathname: location.pathname,
+    title: document.title,
+    editorCount: document.querySelectorAll('textarea').length,
+    previewButtonCount: [...document.querySelectorAll('button')]
+      .filter((button) => button.textContent === 'Primary').length,
+  }))
+  if (component.pathname !== '/docs/components/Button' ||
+      component.title !== 'Weave Documentation' ||
+      component.editorCount === 0 || component.previewButtonCount === 0) {
+    throw new Error('Deep linked component documentation lost live examples')
+  }
+
+  await page.goto(origin + '/unexpected')
+  if (await page.evaluate(() => location.pathname) !== '/docs' || await page.title() !== 'Weave Documentation') {
+    throw new Error('Unknown routes should keep the existing /docs fallback')
+  }
+
+  await page.setViewportSize({ width: 320, height: 720 })
+  await page.goto(origin + '/')
+  await page.waitForFunction(() => !!document.querySelector('a[href="/docs"]'))
+  const narrow = await page.evaluate(() => ({
+    viewportWidth: innerWidth,
+    scrollWidth: document.documentElement.scrollWidth,
+    documentationLink: !!document.querySelector('a[href="/docs"]'),
+  }))
+  if (narrow.scrollWidth > narrow.viewportWidth || !narrow.documentationLink) {
+    throw new Error('Homepage overflows or loses docs navigation at 320px')
+  }
+  if (errors.length > 0) throw new Error('Uncaught browser errors: ' + JSON.stringify(errors))
+
+  return {
+    homepage: { pathname: homepage.pathname, title: homepage.title },
+    docs,
+    component,
+    narrow,
+    browserErrors: errors,
+  }
+}
