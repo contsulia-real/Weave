@@ -7,7 +7,7 @@ async (page) => {
   for (const width of [1600, 1280, 1024, 768, 390, 320]) {
     await page.setViewportSize({ width, height: 950 })
     await page.goto(origin + '/')
-    await page.waitForFunction(() => document.querySelectorAll('[data-weave-card]').length === 8)
+    await page.waitForFunction(() => document.querySelectorAll('[data-weave-card]').length === 6)
 
     const layout = await page.evaluate(() => {
       const grids = [...document.querySelectorAll('[data-weave-layout="grid"]')]
@@ -15,68 +15,163 @@ async (page) => {
       const main = grids[0]
       const hero = main.children[0].getBoundingClientRect()
       const showcase = main.children[1].getBoundingClientRect()
+      const title = document.querySelector('[data-weave-typewriter]')
+      const titleY = title.getBoundingClientRect().y
       const github = [...document.querySelectorAll('a')].find((link) => link.textContent === 'GitHub')
+      const appbar = document.querySelector('[data-weave-appbar]')
+      const appbarBeforeScroll = appbar.getBoundingClientRect()
+      const computedAppbar = getComputedStyle(appbar)
+      const scroller = appbar.parentElement
+      scroller.scrollTop = 700
+      const appbarAfterScroll = appbar.getBoundingClientRect()
+      const linksCovered = [...appbar.querySelectorAll('a')].some((link) => {
+        const bounds = link.getBoundingClientRect()
+        const target = document.elementFromPoint(bounds.left + bounds.width / 2, bounds.top + bounds.height / 2)
+        return !link.contains(target)
+      })
       return {
         width: innerWidth,
+        appbar: {
+          mode: appbar.dataset.weaveAppbarMode,
+          sticky: appbar.dataset.weaveAppbarSticky,
+          elevated: appbar.dataset.weaveAppbarElevated,
+          position: computedAppbar.position,
+          shadow: computedAppbar.boxShadow,
+          originalX: Math.round(appbarBeforeScroll.x),
+          originalY: Math.round(appbarBeforeScroll.y),
+          originalWidth: Math.round(appbarBeforeScroll.width),
+          scrolledY: Math.round(appbarAfterScroll.y),
+          navCovered: linksCovered,
+          scrolledBy: scroller.scrollTop,
+        },
         mainColumns: split(main),
         showcaseColumns: split(grids[1]),
         heroX: Math.round(hero.x),
         heroWidth: Math.round(hero.width),
+        heroHeight: Math.round(hero.height),
         showcaseX: Math.round(showcase.x),
-        showcaseWidth: Math.round(showcase.width),
+        titleY: Math.round(titleY),
         githubX: Math.round(github.getBoundingClientRect().x),
         scrollWidth: document.documentElement.scrollWidth,
         cards: document.querySelectorAll('[data-weave-card]').length,
+        typewriterCount: document.querySelectorAll('[data-weave-typewriter]').length,
+        scenarios: [...document.querySelectorAll('[data-weave-card]')]
+          .map((card) => card.textContent.slice(0, 27)),
       }
     })
-    if (layout.scrollWidth !== width || layout.cards !== 8) {
-      throw new Error('Website overflows or has missing component cards: ' + JSON.stringify(layout))
+    if (layout.appbar.mode !== 'floating' || layout.appbar.sticky !== 'true' ||
+        layout.appbar.elevated !== 'true' || layout.appbar.position !== 'sticky' ||
+        layout.appbar.originalX <= 0 || layout.appbar.originalY <= 0 ||
+        layout.appbar.originalWidth >= width || layout.appbar.scrolledY !== 0 ||
+        layout.appbar.scrolledBy === 0 || layout.appbar.navCovered ||
+        layout.appbar.shadow === 'none') {
+      throw new Error('Floating elevated app bar must stay above content during scrolling: ' +
+        JSON.stringify(layout.appbar))
+    }
+    if (layout.scrollWidth !== width || layout.cards !== 6 || layout.typewriterCount !== 1) {
+      throw new Error('Website overflows or is missing composite demos/hero Typewriter: ' +
+        JSON.stringify(layout))
+    }
+    if (layout.titleY >= 950 || layout.heroHeight > 950) {
+      throw new Error('Hero title dropped below the viewport: ' + JSON.stringify(layout))
     }
     if (width >= 1280) {
       if (layout.mainColumns !== 2 || layout.heroWidth !== width / 2 ||
           layout.showcaseX !== width / 2) {
-        throw new Error('Wide homepage does not have equal left/right columns: ' + JSON.stringify(layout))
+        throw new Error('Desktop intro and showcase columns changed: ' + JSON.stringify(layout))
       }
     } else if (layout.mainColumns !== 1) {
       throw new Error('Narrow homepage must stack intro and showcase: ' + JSON.stringify(layout))
     }
     if (layout.showcaseColumns !== (width === 1280 || width < 640 ? 1 : 2)) {
-      throw new Error('Showcase card columns must follow their own available width: ' +
+      throw new Error('Composite showcase should respond to its container width: ' +
         JSON.stringify(layout))
     }
     if (width === 1600 && layout.githubX < width / 2) {
-      throw new Error('Website header utilities must be aligned on the right')
+      throw new Error('Website header utilities must remain on the right')
     }
     layouts.push(layout)
   }
 
   await page.setViewportSize({ width: 1600, height: 950 })
   await page.goto(origin + '/')
-  await page.waitForFunction(() => document.querySelectorAll('[data-weave-card]').length === 8)
+  await page.waitForFunction(() => document.querySelectorAll('[data-weave-card]').length === 6)
+  await page.waitForFunction(() =>
+    document.querySelector('[data-weave-typewriter]').textContent === 'Browser-native React UI',
+    { timeout: 10000 })
 
-  const calendar = page.locator('[data-weave-card]').nth(2)
+  const cards = page.locator('[data-weave-card]')
+  const project = cards.nth(0)
+  const before = Number(await project.getByRole('progressbar').getAttribute('aria-valuenow'))
+  await project.locator('input[type="checkbox"]').nth(1).check()
+  const after = Number(await project.getByRole('progressbar').getAttribute('aria-valuenow'))
+  if (!(after > before) || !(await project.innerText()).includes('2 of 3')) {
+    throw new Error('Task selection must update the project progress and completion count')
+  }
+
+  const calendar = cards.nth(1)
   await calendar.locator('button').filter({ hasText: /^20$/ }).click()
-  if (!(await calendar.innerText()).includes('2026-10-20')) {
-    throw new Error('Homepage Calendar does not respond to user selection')
+  if (!(await calendar.innerText()).includes('Release planning')) {
+    throw new Error('Selecting a calendar date must update its agenda')
   }
 
-  const tabs = page.locator('[data-weave-card]').nth(5)
-  await tabs.getByRole('tab', { name: 'Details' }).click()
-  if (await tabs.getByRole('tabpanel').innerText() !== 'Details panel.') {
-    throw new Error('Homepage Tabs are not interactive')
+  const flow = cards.nth(2)
+  await flow.getByRole('button', { name: 'Continue' }).click()
+  await flow.getByRole('button', { name: 'Continue' }).click()
+  if (!(await flow.innerText()).includes('Ready to ship')) {
+    throw new Error('Launch workflow must reach the finished state')
   }
 
-  const slider = page.locator('[data-weave-card]').nth(6).locator('input[type="range"]')
-  await slider.focus()
-  await slider.press('ArrowRight')
-  if (await slider.inputValue() !== '40') {
-    throw new Error('Homepage slider does not respond to keyboard interaction')
+  const inbox = cards.nth(3)
+  await inbox.getByRole('tab', { name: 'Unread' }).click()
+  if (!(await inbox.innerText()).includes('2 unread')) {
+    throw new Error('Inbox should show two unread messages')
+  }
+  await inbox.getByRole('button', { name: 'Mark all as read' }).click()
+  if (!(await inbox.innerText()).includes('No unread messages.')) {
+    throw new Error('Inbox should clear its unread view when messages are marked read')
   }
 
+  const insights = cards.nth(4)
+  await insights.getByRole('button', { name: 'Month' }).click()
+  if (!(await insights.innerText()).includes('92%')) {
+    throw new Error('Insights period must update the dashboard metrics')
+  }
+  const goal = insights.locator('input[type="range"]')
+  await goal.focus()
+  await goal.press('ArrowRight')
+  if (await goal.inputValue() !== '85') {
+    throw new Error('Insights activity target does not respond to keyboard input')
+  }
+
+  const preferences = cards.nth(5)
+  await preferences.getByRole('switch').nth(0).click()
+  await preferences.getByRole('switch').nth(1).click()
+  if (!(await preferences.innerText()).includes('Focus mode is on. Daily summaries paused.')) {
+    throw new Error('Workspace preferences must reflect live switch state')
+  }
+  const volume = preferences.locator('input[type="range"]')
+  await volume.focus()
+  await volume.press('ArrowRight')
+  if (await volume.inputValue() !== '50') {
+    throw new Error('Workspace volume must respond to keyboard input')
+  }
+
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.reload()
+  await page.waitForFunction(() =>
+    document.querySelector('[data-weave-typewriter]')?.textContent === 'Browser-native React UI')
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
   await page.getByRole('button', { name: 'Explore documentation' }).click()
   await page.waitForURL(origin + '/docs')
   await page.waitForFunction(() => !!document.querySelector('[data-weave-appbar]'))
   if (errors.length) throw new Error('Homepage browser errors: ' + JSON.stringify(errors))
 
-  return { layouts, calendar: '2026-10-20', tabs: 'Details', slider: '40', docs: true, errors }
+  return {
+    layouts,
+    typewriter: 'Browser-native React UI',
+    scenarios: ['project', 'agenda', 'launch', 'inbox', 'insights', 'preferences'],
+    docs: true,
+    errors,
+  }
 }
