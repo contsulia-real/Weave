@@ -1,0 +1,136 @@
+async (page) => {
+  const origin = page.url().split('/').slice(0, 3).join('/')
+  const errors = []
+  page.on('pageerror', (error) => errors.push(error.message))
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await page.setViewportSize({ width: 1600, height: 900 })
+  await page.goto(origin + '/')
+  await page.waitForFunction(() =>
+    !!document.querySelector('[data-weave-website-why]') &&
+    document.querySelectorAll('[data-weave-card]').length === 6)
+
+  const measure = () => page.evaluate(() => {
+    const root = document.querySelector('[data-weave-scroll-host]')
+    const hero = document.querySelector('[data-weave-website-hero]')
+    const demo = document.querySelector('[data-weave-website-showcase]')
+    const why = document.querySelector('[data-weave-website-why]')
+    const tw = document.querySelector('[data-weave-typewriter]')
+    return {
+      scroll: root.scrollTop,
+      viewport: root.clientHeight,
+      heroX: Math.round(hero.getBoundingClientRect().x),
+      heroY: Math.round(hero.getBoundingClientRect().y),
+      heroHeight: Math.round(hero.getBoundingClientRect().height),
+      heroPosition: getComputedStyle(hero).position,
+      demoOpacity: Number(getComputedStyle(demo).opacity),
+      whyOpacity: Number(getComputedStyle(why).opacity),
+      whyHeading: why.textContent,
+      whyItemCount: why.querySelectorAll('[role="listitem"]').length,
+      background: getComputedStyle(tw.parentElement).backgroundColor,
+      foreground: getComputedStyle(tw).color,
+      pageWidth: document.documentElement.scrollWidth,
+    }
+  })
+  const scrollTo = async (fraction) => {
+    await page.evaluate((f) => {
+      const root = document.querySelector('[data-weave-scroll-host]')
+      const why = document.querySelector('[data-weave-website-why]')
+      const whyY = why.getBoundingClientRect().y + root.scrollTop
+      root.scrollTop = whyY - root.clientHeight + f * root.clientHeight
+    }, fraction)
+    await page.waitForTimeout(90)
+    return measure()
+  }
+
+  const start = await measure()
+  const early = await scrollTo(0.22)
+  const middle = await scrollTo(0.55)
+  const late = await scrollTo(0.78)
+  const end = await scrollTo(1)
+  const back = await scrollTo(0)
+  if (start.demoOpacity !== 1 || start.whyOpacity !== 0 ||
+      early.demoOpacity >= 1 || early.whyOpacity !== 0 ||
+      middle.demoOpacity !== 0 || middle.whyOpacity <= 0 ||
+      late.demoOpacity !== 0 || late.whyOpacity <= middle.whyOpacity ||
+      end.demoOpacity !== 0 || end.whyOpacity !== 1 ||
+      back.demoOpacity !== 1 || back.whyOpacity !== 0) {
+    throw new Error('The showcase must fade out before Why Weave fades in, reversibly: ' +
+      JSON.stringify({ start, early, middle, late, end, back }))
+  }
+  if (end.heroPosition !== 'sticky' || end.heroX !== 0 ||
+      end.heroY !== 0 || end.heroHeight !== 900 ||
+      start.background === 'rgba(0, 0, 0, 0)' ||
+      start.background === start.foreground || end.whyItemCount !== 5) {
+    throw new Error('The sticky centered hero, primary Typewriter or feature list is missing')
+  }
+
+  const languages = [
+    ['语言', 'English', 'en', 'Why Weave?', 'Explore documentation'],
+    ['Language', 'Français', 'fr', 'Pourquoi Weave ?', 'Explorer la documentation'],
+    ['Langue', '繁體中文', 'zh-TW', '為什麼選擇 Weave？', '瀏覽文件'],
+    ['語言', '简体中文', 'zh-CN', '为什么选择 Weave？', '浏览文档'],
+  ]
+  const translated = []
+  for (const [trigger, option, code, heading, action] of languages) {
+    await page.getByRole('button', { name: trigger, exact: true }).click()
+    await page.getByRole('button', { name: option, exact: true }).click()
+    await page.waitForFunction((value) =>
+      document.querySelector('[data-weave-website-why]').textContent.includes(value), heading)
+    if (await page.evaluate(() => document.documentElement.lang) !== code ||
+        !await page.getByRole('button', { name: action, exact: true }).count()) {
+      throw new Error('Website language did not update: ' + code)
+    }
+    translated.push(code)
+  }
+
+  for (const width of [1280, 1024, 768, 390, 320]) {
+    await page.setViewportSize({ width, height: 900 })
+    const layout = await measure()
+    if (layout.pageWidth !== width ||
+        (width >= 1280 && layout.heroPosition !== 'sticky') ||
+        (width < 1280 && layout.heroPosition !== 'static')) {
+      throw new Error('Responsive sticky hero or width regression: ' + JSON.stringify(layout))
+    }
+  }
+
+  const beforeThemeColor = (await measure()).background
+  await page.getByRole('button', { name: '主题' }).click()
+  await page.getByRole('button', { name: '蓝色', exact: true }).click()
+  const afterThemeColor = (await measure()).background
+  if (afterThemeColor === beforeThemeColor) {
+    throw new Error('Typewriter background must follow the active theme primary color')
+  }
+
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.reload()
+  await page.waitForFunction(() => !!document.querySelector('[data-weave-website-why]'))
+  const reduced = await page.evaluate(() => {
+    const demo = document.querySelector('[data-weave-website-showcase]')
+    const why = document.querySelector('[data-weave-website-why]')
+    const root = document.querySelector('[data-weave-scroll-host]')
+    root.scrollTop = root.scrollHeight
+    return {
+      demoAnimation: getComputedStyle(demo).animationName,
+      whyAnimation: getComputedStyle(why).animationName,
+      demoOpacity: getComputedStyle(demo).opacity,
+      whyOpacity: getComputedStyle(why).opacity,
+    }
+  })
+  if (reduced.demoAnimation !== 'none' || reduced.whyAnimation !== 'none' ||
+      reduced.demoOpacity !== '1' || reduced.whyOpacity !== '1') {
+    throw new Error('Reduced motion should disable scroll-driven fades: ' +
+      JSON.stringify(reduced))
+  }
+  if (errors.length) throw new Error('Browser errors: ' + JSON.stringify(errors))
+  return {
+    scroll: { start: start.demoOpacity, early: early.demoOpacity,
+      middle: middle.demoOpacity, whyMiddle: middle.whyOpacity,
+      end: end.whyOpacity, restored: back.demoOpacity },
+    hero: { position: end.heroPosition, y: end.heroY, height: end.heroHeight },
+    featureCount: end.whyItemCount,
+    themeBackgroundChanged: true,
+    languages: translated,
+    reducedMotion: reduced,
+    errors,
+  }
+}

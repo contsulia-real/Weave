@@ -126,6 +126,8 @@ async (page) => {
   await page.setViewportSize({ width: 1600, height: 950 })
   await page.goto(origin + '/')
   await page.waitForFunction(() => document.querySelectorAll('[data-weave-card]').length === 6)
+  await page.getByRole('button', { name: '语言' }).click()
+  await page.getByRole('button', { name: 'English' }).click()
   await page.waitForFunction(() =>
     document.querySelector('[data-weave-typewriter]').textContent === 'Browser-native React UI',
     { timeout: 10000 })
@@ -189,6 +191,8 @@ async (page) => {
 
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.reload()
+  await page.getByRole('button', { name: '语言' }).click()
+  await page.getByRole('button', { name: 'English' }).click()
   await page.waitForFunction(() =>
     document.querySelector('[data-weave-typewriter]')?.textContent === 'Browser-native React UI')
   await page.emulateMedia({ reducedMotion: 'no-preference' })

@@ -1,6 +1,7 @@
 import i18n from 'i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
 import { initReactI18next } from 'react-i18next'
+import websiteCopyTranslations from '../website/website-copy.json'
 import { documentationTranslationResources } from './documentation-translations'
 import copyTranslations from './locales/documentation-copy.json'
 
@@ -39,6 +40,19 @@ const copyResources = {
   ),
 }
 
+const websiteResources = {
+  en: Object.fromEntries(Object.keys(websiteCopyTranslations).map((key) => [key, key])),
+  'zh-CN': Object.fromEntries(
+    Object.entries(websiteCopyTranslations).map(([key, value]) => [key, value['zh-CN']]),
+  ),
+  'zh-TW': Object.fromEntries(
+    Object.entries(websiteCopyTranslations).map(([key, value]) => [key, value['zh-TW']]),
+  ),
+  fr: Object.fromEntries(
+    Object.entries(websiteCopyTranslations).map(([key, value]) => [key, value.fr]),
+  ),
+}
+
 const applyDocumentLanguage = (language: string | undefined) => {
   if (typeof document !== 'undefined' && language !== undefined) {
     document.documentElement.lang = language
@@ -53,7 +67,7 @@ void i18n
   .init({
     fallbackLng: 'en',
     supportedLngs: documentationLanguages.map(({ code }) => code),
-    ns: ['translation', 'copy'],
+    ns: ['translation', 'copy', 'website'],
     defaultNS: 'translation',
     interpolation: {
       escapeValue: false,
@@ -68,6 +82,7 @@ void i18n
         {
           translation: documentationTranslationResources[code],
           copy: copyResources[code],
+          website: websiteResources[code],
         },
       ]),
     ),

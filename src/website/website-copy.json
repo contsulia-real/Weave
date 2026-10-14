@@ -1,0 +1,407 @@
+{
+  "Docs": {
+    "zh-CN": "文档",
+    "zh-TW": "文件",
+    "fr": "Documentation"
+  },
+  "Components": {
+    "zh-CN": "组件",
+    "zh-TW": "元件",
+    "fr": "Composants"
+  },
+  "Get started": {
+    "zh-CN": "开始使用",
+    "zh-TW": "開始使用",
+    "fr": "Commencer"
+  },
+  "Browser-native React UI": {
+    "zh-CN": "基于浏览器的 React UI",
+    "zh-TW": "原生瀏覽器的 React UI",
+    "fr": "UI React native au navigateur"
+  },
+  "Interfaces that work together": {
+    "zh-CN": "协同工作的界面",
+    "zh-TW": "相互協作的介面",
+    "fr": "Des interfaces qui fonctionnent ensemble"
+  },
+  "Built for real products": {
+    "zh-CN": "为真实产品而构建",
+    "zh-TW": "為真實產品而打造",
+    "fr": "Pensé pour de vrais produits"
+  },
+  "A browser-native React UI framework built on semantic components, DOM and CSS.": {
+    "zh-CN": "基于语义化组件、DOM 与 CSS 构建的浏览器原生 React UI 框架。",
+    "zh-TW": "以語義化元件、DOM 與 CSS 打造的瀏覽器原生 React UI 框架。",
+    "fr": "Un framework React UI natif au navigateur, fondé sur des composants sémantiques, le DOM et le CSS."
+  },
+  "Explore documentation": {
+    "zh-CN": "浏览文档",
+    "zh-TW": "瀏覽文件",
+    "fr": "Explorer la documentation"
+  },
+  "Why Weave?": {
+    "zh-CN": "为什么选择 Weave？",
+    "zh-TW": "為什麼選擇 Weave？",
+    "fr": "Pourquoi Weave ?"
+  },
+  "Browser-native by design": {
+    "zh-CN": "天生适配浏览器",
+    "zh-TW": "天生適配瀏覽器",
+    "fr": "Natif au navigateur"
+  },
+  "Semantic React components render directly to the DOM and CSS.": {
+    "zh-CN": "语义化 React 组件直接使用浏览器的 DOM 和 CSS 渲染。",
+    "zh-TW": "語義化 React 元件直接使用瀏覽器的 DOM 與 CSS 渲染。",
+    "fr": "Les composants React sémantiques utilisent directement le DOM et le CSS."
+  },
+  "One theme, cohesive interfaces": {
+    "zh-CN": "一套主题，统一体验",
+    "zh-TW": "一套主題，一致體驗",
+    "fr": "Un thème, des interfaces cohérentes"
+  },
+  "Theme tokens and color seeds keep components consistent.": {
+    "zh-CN": "主题令牌与种子颜色让组件保持一致。",
+    "zh-TW": "主題權杖與種子色彩讓元件保持一致。",
+    "fr": "Les jetons de thème et les couleurs de base assurent la cohérence des composants."
+  },
+  "Responsive without reinvention": {
+    "zh-CN": "响应式设计，无须重复构建",
+    "zh-TW": "響應式設計，無須重複打造",
+    "fr": "Responsive sans tout reconstruire"
+  },
+  "Breakpoint-aware props adapt layouts to every screen.": {
+    "zh-CN": "断点感知属性让布局适应不同屏幕。",
+    "zh-TW": "斷點感知屬性讓版面適應不同螢幕。",
+    "fr": "Les propriétés adaptatives ajustent les mises en page à chaque écran."
+  },
+  "Motion that respects preferences": {
+    "zh-CN": "尊重用户偏好的动效",
+    "zh-TW": "尊重使用者偏好的動效",
+    "fr": "Des animations respectueuses"
+  },
+  "Built-in motion responds to reduced-motion preferences.": {
+    "zh-CN": "内置动效会响应减少动态效果的偏好设置。",
+    "zh-TW": "內建動效會配合減少動態效果的偏好設定。",
+    "fr": "Les animations intégrées respectent les préférences de réduction du mouvement."
+  },
+  "Composable for real apps": {
+    "zh-CN": "为真实应用自由组合",
+    "zh-TW": "為真實應用自由組合",
+    "fr": "Composables pour de vraies applications"
+  },
+  "Combine controls, forms, data displays and navigation into working interfaces.": {
+    "zh-CN": "组合控件、表单、数据展示和导航，构建真正可用的界面。",
+    "zh-TW": "組合控制項、表單、資料展示與導覽，打造真正可用的介面。",
+    "fr": "Combinez contrôles, formulaires, données et navigation dans des interfaces fonctionnelles."
+  },
+  "Atlas workspace": {
+    "zh-CN": "Atlas 工作区",
+    "zh-TW": "Atlas 工作區",
+    "fr": "Espace Atlas"
+  },
+  "Release checklist": {
+    "zh-CN": "发布检查清单",
+    "zh-TW": "發布檢查清單",
+    "fr": "Liste de contrôle de publication"
+  },
+  "Ready": {
+    "zh-CN": "已就绪",
+    "zh-TW": "已就緒",
+    "fr": "Prêt"
+  },
+  "In progress": {
+    "zh-CN": "进行中",
+    "zh-TW": "進行中",
+    "fr": "En cours"
+  },
+  "Sprint progress": {
+    "zh-CN": "迭代进度",
+    "zh-TW": "迭代進度",
+    "fr": "Progression du sprint"
+  },
+  "{{count}} of {{total}}": {
+    "zh-CN": "已完成 {{count}} / {{total}}",
+    "zh-TW": "已完成 {{count}} / {{total}}",
+    "fr": "{{count}} sur {{total}}"
+  },
+  "Finalize interactions": {
+    "zh-CN": "完善交互",
+    "zh-TW": "完成互動設計",
+    "fr": "Finaliser les interactions"
+  },
+  "Review accessibility": {
+    "zh-CN": "检查无障碍",
+    "zh-TW": "檢查無障礙",
+    "fr": "Vérifier l’accessibilité"
+  },
+  "Prepare release notes": {
+    "zh-CN": "准备发布说明",
+    "zh-TW": "準備發布說明",
+    "fr": "Préparer les notes de version"
+  },
+  "Design + engineering": {
+    "zh-CN": "设计与工程",
+    "zh-TW": "設計與工程",
+    "fr": "Design et ingénierie"
+  },
+  "Team calendar": {
+    "zh-CN": "团队日历",
+    "zh-TW": "團隊行事曆",
+    "fr": "Calendrier d’équipe"
+  },
+  "October 2026": {
+    "zh-CN": "2026 年 10 月",
+    "zh-TW": "2026 年 10 月",
+    "fr": "Octobre 2026"
+  },
+  "Agenda · {{date}}": {
+    "zh-CN": "日程 · {{date}}",
+    "zh-TW": "行程 · {{date}}",
+    "fr": "Agenda · {{date}}"
+  },
+  "Design review": {
+    "zh-CN": "设计评审",
+    "zh-TW": "設計審查",
+    "fr": "Revue de conception"
+  },
+  "Component QA": {
+    "zh-CN": "组件测试",
+    "zh-TW": "元件測試",
+    "fr": "QA des composants"
+  },
+  "Release planning": {
+    "zh-CN": "发布计划",
+    "zh-TW": "發布規劃",
+    "fr": "Planification de la sortie"
+  },
+  "Sprint review": {
+    "zh-CN": "迭代评审",
+    "zh-TW": "迭代檢視",
+    "fr": "Revue du sprint"
+  },
+  "Nothing scheduled. Enjoy the focus time.": {
+    "zh-CN": "暂无安排，专注手头工作吧。",
+    "zh-TW": "目前沒有行程，專心完成手邊工作吧。",
+    "fr": "Aucun événement prévu. Profitez de ce temps de concentration."
+  },
+  "Design": {
+    "zh-CN": "设计",
+    "zh-TW": "設計",
+    "fr": "Design"
+  },
+  "Quality": {
+    "zh-CN": "质量",
+    "zh-TW": "品質",
+    "fr": "Qualité"
+  },
+  "Launch": {
+    "zh-CN": "发布",
+    "zh-TW": "發布",
+    "fr": "Lancement"
+  },
+  "Launch workflow": {
+    "zh-CN": "发布流程",
+    "zh-TW": "發布流程",
+    "fr": "Processus de lancement"
+  },
+  "Launch stages": {
+    "zh-CN": "发布阶段",
+    "zh-TW": "發布階段",
+    "fr": "Étapes du lancement"
+  },
+  "Review screens and approve the visual system.": {
+    "zh-CN": "检查界面并确认视觉体系。",
+    "zh-TW": "檢查介面並確認視覺系統。",
+    "fr": "Vérifiez les écrans et validez le système visuel."
+  },
+  "Run accessibility and interaction checks.": {
+    "zh-CN": "执行无障碍与交互检查。",
+    "zh-TW": "執行無障礙與互動檢查。",
+    "fr": "Vérifiez l’accessibilité et les interactions."
+  },
+  "Everything is ready for the release.": {
+    "zh-CN": "所有环节都已准备就绪。",
+    "zh-TW": "所有環節都已準備就緒。",
+    "fr": "Tout est prêt pour la publication."
+  },
+  "Ready to ship": {
+    "zh-CN": "可以发布",
+    "zh-TW": "可以發布",
+    "fr": "Prêt à publier"
+  },
+  "All preview stages are complete.": {
+    "zh-CN": "所有演示阶段均已完成。",
+    "zh-TW": "所有預覽階段均已完成。",
+    "fr": "Toutes les étapes de prévisualisation sont terminées."
+  },
+  "Continue": {
+    "zh-CN": "继续",
+    "zh-TW": "繼續",
+    "fr": "Continuer"
+  },
+  "Team inbox": {
+    "zh-CN": "团队收件箱",
+    "zh-TW": "團隊收件匣",
+    "fr": "Messagerie de l’équipe"
+  },
+  "All caught up": {
+    "zh-CN": "全部已读",
+    "zh-TW": "全部已讀",
+    "fr": "Tout est lu"
+  },
+  "{{count}} unread": {
+    "zh-CN": "{{count}} 条未读",
+    "zh-TW": "{{count}} 則未讀",
+    "fr": "{{count}} non lus"
+  },
+  "All": {
+    "zh-CN": "全部",
+    "zh-TW": "全部",
+    "fr": "Tous"
+  },
+  "Unread": {
+    "zh-CN": "未读",
+    "zh-TW": "未讀",
+    "fr": "Non lus"
+  },
+  "Component review": {
+    "zh-CN": "组件评审",
+    "zh-TW": "元件審查",
+    "fr": "Revue des composants"
+  },
+  "Left a few notes on the new layout.": {
+    "zh-CN": "对新版布局提出了一些建议。",
+    "zh-TW": "針對新版配置提出一些建議。",
+    "fr": "Quelques remarques sur la nouvelle mise en page."
+  },
+  "Ready for preview": {
+    "zh-CN": "可以预览了",
+    "zh-TW": "可以預覽了",
+    "fr": "Prêt pour l’aperçu"
+  },
+  "The latest build looks good.": {
+    "zh-CN": "最新构建看起来不错。",
+    "zh-TW": "最新建置看起來不錯。",
+    "fr": "La dernière version semble réussie."
+  },
+  "Design system update": {
+    "zh-CN": "设计系统更新",
+    "zh-TW": "設計系統更新",
+    "fr": "Mise à jour du design system"
+  },
+  "Tokens are synced across the project.": {
+    "zh-CN": "设计令牌已在项目中同步。",
+    "zh-TW": "設計權杖已在專案中同步。",
+    "fr": "Les jetons sont synchronisés dans le projet."
+  },
+  "New": {
+    "zh-CN": "新消息",
+    "zh-TW": "新訊息",
+    "fr": "Nouveau"
+  },
+  "No unread messages.": {
+    "zh-CN": "没有未读消息。",
+    "zh-TW": "沒有未讀訊息。",
+    "fr": "Aucun message non lu."
+  },
+  "Mark all as read": {
+    "zh-CN": "全部标为已读",
+    "zh-TW": "全部標為已讀",
+    "fr": "Tout marquer comme lu"
+  },
+  "Studio insights": {
+    "zh-CN": "工作室概览",
+    "zh-TW": "工作室洞察",
+    "fr": "Indicateurs du studio"
+  },
+  "Sample data": {
+    "zh-CN": "示例数据",
+    "zh-TW": "範例資料",
+    "fr": "Données fictives"
+  },
+  "Week": {
+    "zh-CN": "本周",
+    "zh-TW": "本週",
+    "fr": "Semaine"
+  },
+  "Month": {
+    "zh-CN": "本月",
+    "zh-TW": "本月",
+    "fr": "Mois"
+  },
+  "Activity": {
+    "zh-CN": "活跃度",
+    "zh-TW": "活躍度",
+    "fr": "Activité"
+  },
+  "Reviews": {
+    "zh-CN": "评审数",
+    "zh-TW": "審查數",
+    "fr": "Revues"
+  },
+  "Activity goal": {
+    "zh-CN": "活跃度目标",
+    "zh-TW": "活躍度目標",
+    "fr": "Objectif d’activité"
+  },
+  "Goal reached for this period.": {
+    "zh-CN": "已达到本期目标。",
+    "zh-TW": "已達成本期目標。",
+    "fr": "Objectif atteint pour cette période."
+  },
+  "{{remaining}}% to reach your goal.": {
+    "zh-CN": "距离目标还有 {{remaining}}%。",
+    "zh-TW": "距離目標還有 {{remaining}}%。",
+    "fr": "Encore {{remaining}} % pour atteindre votre objectif."
+  },
+  "Workspace preferences": {
+    "zh-CN": "工作区偏好",
+    "zh-TW": "工作區偏好",
+    "fr": "Préférences de l’espace"
+  },
+  "Live preview": {
+    "zh-CN": "实时预览",
+    "zh-TW": "即時預覽",
+    "fr": "Aperçu en direct"
+  },
+  "Daily digest": {
+    "zh-CN": "每日摘要",
+    "zh-TW": "每日摘要",
+    "fr": "Résumé quotidien"
+  },
+  "Focus mode": {
+    "zh-CN": "专注模式",
+    "zh-TW": "專注模式",
+    "fr": "Mode concentration"
+  },
+  "Volume": {
+    "zh-CN": "音量",
+    "zh-TW": "音量",
+    "fr": "Volume"
+  },
+  "Notification volume": {
+    "zh-CN": "通知音量",
+    "zh-TW": "通知音量",
+    "fr": "Volume des notifications"
+  },
+  "Focus mode is on.": {
+    "zh-CN": "专注模式已开启。",
+    "zh-TW": "專注模式已開啟。",
+    "fr": "Mode concentration activé."
+  },
+  "Focus mode is off.": {
+    "zh-CN": "专注模式已关闭。",
+    "zh-TW": "專注模式已關閉。",
+    "fr": "Mode concentration désactivé."
+  },
+  "Daily summaries enabled.": {
+    "zh-CN": "每日摘要已启用。",
+    "zh-TW": "每日摘要已啟用。",
+    "fr": "Résumés quotidiens activés."
+  },
+  "Daily summaries paused.": {
+    "zh-CN": "每日摘要已暂停。",
+    "zh-TW": "每日摘要已暫停。",
+    "fr": "Résumés quotidiens suspendus."
+  }
+}

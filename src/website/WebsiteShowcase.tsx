@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Alert,
   Avatar,
@@ -21,9 +22,13 @@ import {
   Text,
 } from '../index'
 
-const releaseTasks = ['Finalize interactions', 'Review accessibility', 'Prepare release notes']
-
 export function ProjectOverview() {
+  const { t } = useTranslation('website')
+  const releaseTasks = [
+    t('Finalize interactions'),
+    t('Review accessibility'),
+    t('Prepare release notes'),
+  ]
   const [completed, setCompleted] = useState([true, false, false])
   const count = completed.filter(Boolean).length
 
@@ -32,17 +37,17 @@ export function ProjectOverview() {
       <Column width="fill" gap={16}>
         <Row width="fill" align="center" justify="space-between" gap={8} wrap>
           <Column gap={4}>
-            <Text typo="title-medium">Atlas workspace</Text>
+            <Text typo="title-medium">{t('Atlas workspace')}</Text>
             <Text typo="body-small" color="secondary">
-              Release checklist
+              {t('Release checklist')}
             </Text>
           </Column>
-          <Chip text={count === releaseTasks.length ? 'Ready' : 'In progress'} />
+          <Chip text={count === releaseTasks.length ? t('Ready') : t('In progress')} />
         </Row>
         <Row align="center" justify="space-between" gap={8}>
-          <Text typo="body-small">Sprint progress</Text>
+          <Text typo="body-small">{t('Sprint progress')}</Text>
           <Text typo="body-small" color="secondary">
-            {count} of {releaseTasks.length}
+            {t('{{count}} of {{total}}', { count, total: releaseTasks.length })}
           </Text>
         </Row>
         <Progress mode="linear" tracked progress={count / releaseTasks.length} />
@@ -63,7 +68,7 @@ export function ProjectOverview() {
           <Avatar name="Maya Chen" fallback="MC" viewProps={{ width: 32, height: 32 }} />
           <Avatar name="Alex Rivera" fallback="AR" viewProps={{ width: 32, height: 32 }} />
           <Text color="secondary" typo="body-small">
-            Design + engineering
+            {t('Design + engineering')}
           </Text>
         </Row>
       </Column>
@@ -72,24 +77,25 @@ export function ProjectOverview() {
 }
 
 export function TeamCalendar() {
+  const { t } = useTranslation('website')
   const [date, setDate] = useState('2026-10-15')
   const agenda =
     date === '2026-10-15'
-      ? ['10:00 · Design review', '14:30 · Component QA']
+      ? [`10:00 · ${t('Design review')}`, `14:30 · ${t('Component QA')}`]
       : date === '2026-10-20'
-        ? ['11:00 · Release planning', '15:00 · Sprint review']
+        ? [`11:00 · ${t('Release planning')}`, `15:00 · ${t('Sprint review')}`]
         : []
 
   return (
     <Card viewProps={{ width: 'fill', padding: 24 }}>
       <Column gap={16} width="fill">
         <Row align="center" justify="space-between" gap={8} wrap>
-          <Text typo="title-medium">Team calendar</Text>
-          <Chip text="October 2026" />
+          <Text typo="title-medium">{t('Team calendar')}</Text>
+          <Chip text={t('October 2026')} />
         </Row>
         <Calendar value={date} onChange={setDate} min="2026-10-01" max="2026-10-31" />
         <Column gap={8}>
-          <Text typo="label-large">Agenda · {date}</Text>
+          <Text typo="label-large">{t('Agenda · {{date}}', { date })}</Text>
           {agenda.length ? (
             agenda.map((item) => (
               <Text key={item} typo="body-small">
@@ -98,7 +104,7 @@ export function TeamCalendar() {
             ))
           ) : (
             <Text typo="body-small" color="secondary">
-              Nothing scheduled. Enjoy the focus time.
+              {t('Nothing scheduled. Enjoy the focus time.')}
             </Text>
           )}
         </Column>
@@ -107,33 +113,38 @@ export function TeamCalendar() {
   )
 }
 
-const launchSteps = [{ label: 'Design' }, { label: 'Quality' }, { label: 'Launch' }]
-
 export function LaunchFlow() {
+  const { t } = useTranslation('website')
+  const launchSteps = [{ label: t('Design') }, { label: t('Quality') }, { label: t('Launch') }]
   const [step, setStep] = useState(1)
   const descriptions = [
-    'Review screens and approve the visual system.',
-    'Run accessibility and interaction checks.',
-    'Everything is ready for the release.',
+    t('Review screens and approve the visual system.'),
+    t('Run accessibility and interaction checks.'),
+    t('Everything is ready for the release.'),
   ]
 
   return (
     <Card viewProps={{ width: 'fill', padding: 24 }}>
       <Column gap={16} width="fill">
-        <Text typo="title-medium">Launch workflow</Text>
-        <Stepper steps={launchSteps} step={step} onStepChange={setStep} label="Launch stages" />
+        <Text typo="title-medium">{t('Launch workflow')}</Text>
+        <Stepper
+          steps={launchSteps}
+          step={step}
+          onStepChange={setStep}
+          label={t('Launch stages')}
+        />
         <Text typo="body-small" color="secondary">
           {descriptions[step - 1]}
         </Text>
         {step === 3 ? (
           <Alert
             variant="success"
-            title="Ready to ship"
-            description="All preview stages are complete."
+            title={t('Ready to ship')}
+            description={t('All preview stages are complete.')}
           />
         ) : (
           <Button
-            text="Continue"
+            text={t('Continue')}
             variant="secondary"
             viewProps={{ onClick: () => setStep((s) => Math.min(3, s + 1)) }}
           />
@@ -143,28 +154,28 @@ export function LaunchFlow() {
   )
 }
 
-const inboxMessages = [
-  {
-    name: 'Morgan Lee',
-    initials: 'ML',
-    subject: 'Component review',
-    note: 'Left a few notes on the new layout.',
-  },
-  {
-    name: 'Taylor Kim',
-    initials: 'TK',
-    subject: 'Ready for preview',
-    note: 'The latest build looks good.',
-  },
-  {
-    name: 'Jordan Park',
-    initials: 'JP',
-    subject: 'Design system update',
-    note: 'Tokens are synced across the project.',
-  },
-]
-
 export function TeamInbox() {
+  const { t } = useTranslation('website')
+  const inboxMessages = [
+    {
+      name: 'Morgan Lee',
+      initials: 'ML',
+      subject: t('Component review'),
+      note: t('Left a few notes on the new layout.'),
+    },
+    {
+      name: 'Taylor Kim',
+      initials: 'TK',
+      subject: t('Ready for preview'),
+      note: t('The latest build looks good.'),
+    },
+    {
+      name: 'Jordan Park',
+      initials: 'JP',
+      subject: t('Design system update'),
+      note: t('Tokens are synced across the project.'),
+    },
+  ]
   const [read, setRead] = useState([false, false, true])
   const unread = read.filter((item) => !item).length
 
@@ -172,13 +183,15 @@ export function TeamInbox() {
     <Card viewProps={{ width: 'fill', padding: 24 }}>
       <Column gap={16} width="fill">
         <Row align="center" justify="space-between" gap={8} wrap>
-          <Text typo="title-medium">Team inbox</Text>
-          <Chip text={unread === 0 ? 'All caught up' : `${unread} unread`} />
+          <Text typo="title-medium">{t('Team inbox')}</Text>
+          <Chip
+            text={unread === 0 ? t('All caught up') : t('{{count}} unread', { count: unread })}
+          />
         </Row>
         <Tabs defaultValue="all">
           <TabList>
-            <Tab value="all">All</Tab>
-            <Tab value="unread">Unread</Tab>
+            <Tab value="all">{t('All')}</Tab>
+            <Tab value="unread">{t('Unread')}</Tab>
           </TabList>
           {(['all', 'unread'] as const).map((filter) => (
             <TabPanel key={filter} value={filter}>
@@ -196,7 +209,7 @@ export function TeamInbox() {
                       <Column grow={1} minWidth={0} gap={4}>
                         <Row align="center" gap={8} wrap>
                           <Text typo="label-medium">{name}</Text>
-                          {!read[index] ? <Chip size="small" text="New" /> : null}
+                          {!read[index] ? <Chip size="small" text={t('New')} /> : null}
                         </Row>
                         <Text typo="body-small">{subject}</Text>
                         <Text typo="body-small" color="secondary">
@@ -207,7 +220,7 @@ export function TeamInbox() {
                   ))}
                 {filter === 'unread' && unread === 0 ? (
                   <Text typo="body-small" color="secondary">
-                    No unread messages.
+                    {t('No unread messages.')}
                   </Text>
                 ) : null}
               </Column>
@@ -215,7 +228,7 @@ export function TeamInbox() {
           ))}
         </Tabs>
         <Button
-          text="Mark all as read"
+          text={t('Mark all as read')}
           variant="secondary"
           disabled={unread === 0}
           viewProps={{ onClick: () => setRead((old) => old.map(() => true)) }}
@@ -226,6 +239,7 @@ export function TeamInbox() {
 }
 
 export function StudioInsights() {
+  const { t } = useTranslation('website')
   const [period, setPeriod] = useState<string | null>('week')
   const [goal, setGoal] = useState(80)
   const activity = period === 'month' ? 92 : 64
@@ -235,8 +249,8 @@ export function StudioInsights() {
     <Card viewProps={{ width: 'fill', padding: 24 }}>
       <Column gap={16} width="fill">
         <Row align="center" justify="space-between" gap={8} wrap>
-          <Text typo="title-medium">Studio insights</Text>
-          <Chip text="Sample data" />
+          <Text typo="title-medium">{t('Studio insights')}</Text>
+          <Chip text={t('Sample data')} />
         </Row>
         <SegmentedButton
           selection="single"
@@ -244,27 +258,27 @@ export function StudioInsights() {
           selected={period}
           onSelect={(next) => setPeriod(next ?? 'week')}
           items={[
-            { id: 'week', children: 'Week' },
-            { id: 'month', children: 'Month' },
+            { id: 'week', children: t('Week') },
+            { id: 'month', children: t('Month') },
           ]}
         />
         <Row align="center" justify="space-between">
           <Column gap={4}>
             <Text typo="body-small" color="secondary">
-              Activity
+              {t('Activity')}
             </Text>
             <Text typo="headline-medium">{activity}%</Text>
           </Column>
           <Column gap={4}>
             <Text typo="body-small" color="secondary">
-              Reviews
+              {t('Reviews')}
             </Text>
             <Text typo="headline-medium">{reviews}</Text>
           </Column>
         </Row>
         <Progress mode="linear" tracked progress={activity / 100} />
         <Row align="center" justify="space-between">
-          <Text typo="body-small">Activity goal</Text>
+          <Text typo="body-small">{t('Activity goal')}</Text>
           <Text typo="body-small" color="secondary">
             {goal}%
           </Text>
@@ -275,12 +289,12 @@ export function StudioInsights() {
           min={0}
           max={100}
           step={5}
-          viewProps={{ label: 'Activity goal', width: 'fill' }}
+          viewProps={{ label: t('Activity goal'), width: 'fill' }}
         />
         <Text typo="body-small" color="secondary">
           {activity >= goal
-            ? 'Goal reached for this period.'
-            : `${goal - activity}% to reach your goal.`}
+            ? t('Goal reached for this period.')
+            : t('{{remaining}}% to reach your goal.', { remaining: goal - activity })}
         </Text>
       </Column>
     </Card>
@@ -288,6 +302,7 @@ export function StudioInsights() {
 }
 
 export function WorkspacePreferences() {
+  const { t } = useTranslation('website')
   const [digest, setDigest] = useState(true)
   const [focus, setFocus] = useState(false)
   const [volume, setVolume] = useState(40)
@@ -296,13 +311,13 @@ export function WorkspacePreferences() {
     <Card viewProps={{ width: 'fill', padding: 24 }}>
       <Column gap={16} width="fill">
         <Row align="center" justify="space-between" gap={8} wrap>
-          <Text typo="title-medium">Workspace preferences</Text>
-          <Chip text="Live preview" />
+          <Text typo="title-medium">{t('Workspace preferences')}</Text>
+          <Chip text={t('Live preview')} />
         </Row>
-        <Switch label="Daily digest" checked={digest} onChange={setDigest} size="small" />
-        <Switch label="Focus mode" checked={focus} onChange={setFocus} size="small" />
+        <Switch label={t('Daily digest')} checked={digest} onChange={setDigest} size="small" />
+        <Switch label={t('Focus mode')} checked={focus} onChange={setFocus} size="small" />
         <Row align="center" justify="space-between">
-          <Text typo="body-small">Volume</Text>
+          <Text typo="body-small">{t('Volume')}</Text>
           <Text typo="body-small" color="secondary">
             {volume}%
           </Text>
@@ -311,11 +326,11 @@ export function WorkspacePreferences() {
           value={volume}
           onChange={setVolume}
           step={10}
-          viewProps={{ label: 'Notification volume', width: 'fill' }}
+          viewProps={{ label: t('Notification volume'), width: 'fill' }}
         />
         <Text typo="body-small" color="secondary">
-          {focus ? 'Focus mode is on. ' : 'Focus mode is off. '}
-          {digest ? 'Daily summaries enabled.' : 'Daily summaries paused.'}
+          {focus ? `${t('Focus mode is on.')} ` : `${t('Focus mode is off.')} `}
+          {digest ? t('Daily summaries enabled.') : t('Daily summaries paused.')}
         </Text>
       </Column>
     </Card>
