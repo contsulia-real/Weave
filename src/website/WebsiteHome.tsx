@@ -4,7 +4,19 @@ import './website.css'
 import { DocumentationControls } from '../documentation/DocumentationControls'
 import type { DocumentationThemeColorId } from '../documentation/documentation-theme'
 import type { ThemeMode } from '../index'
-import { AppBar, Button, Column, Grid, Icon, Link, List, Row, Text, Typewriter } from '../index'
+import {
+  AppBar,
+  Button,
+  Column,
+  Grid,
+  Icon,
+  Link,
+  List,
+  ListItem,
+  Row,
+  Text,
+  Typewriter,
+} from '../index'
 import {
   LaunchFlow,
   ProjectOverview,
@@ -50,7 +62,7 @@ export function WebsiteHome({
   ] as const
 
   return (
-    <Column width="fill" height="100vh" overflow="auto" background="surface" color="tertiary">
+    <Column width="fill" height="100vh" background="surface" color="tertiary">
       <AppBar
         mode="floating"
         sticky
@@ -94,89 +106,94 @@ export function WebsiteHome({
         }
       />
 
-      <Grid width="fill" columns={1} xl={{ columns: 2 }}>
-        <Column
-          width="fill"
-          minWidth={0}
-          align="center"
-          justify="center"
-          padding={32}
-          height="85vh"
-          xl={{ position: 'sticky', top: 0, height: '100vh', alignSelf: 'start' }}
-          data={{ 'weave-website-hero': '' }}
-        >
-          <Column width="fill" maxWidth={720} gap={24} align="start">
-            <Text typo="display-large">Weave</Text>
-            <Row background="primary" color="onPrimary" radius="full" paddingX={24} paddingY={12}>
-              <Typewriter
-                texts={[
-                  t('Interaction is built in'),
-                  t('Built for developers, ready for AI'),
-                  t('Built for real products'),
-                ]}
-                typeInterval={50}
-                deleteInterval={30}
-                typo="headline-large"
-                color="onPrimary"
-                wrap="nowrap"
-                viewProps={{ style: { fontSize: 'clamp(11px, 2.2vw, 36px)' } }}
-              />
-            </Row>
-            <Text typo="body-large" color="secondary">
-              {t(
-                'An interaction-first React UI framework with visual feedback, direct manipulation and motion built into every component.',
-              )}
-            </Text>
-            <Button
-              text={t('Explore documentation')}
-              viewProps={{ onClick: () => window.location.assign('/docs') }}
-            />
-          </Column>
-        </Column>
-
-        <Column width="fill" minWidth={0}>
+      <Column width="fill" grow={1} minHeight={0} overflow="auto" align="center">
+        <Grid width="fill" maxWidth={1200} columns={1} xl={{ columns: 2 }}>
           <Column
             width="fill"
             minWidth={0}
-            padding={24}
-            container="website-showcase"
-            data={{ 'weave-website-showcase': '' }}
-          >
-            <Grid width="fill" columns={1} containerSm={{ columns: 2 }} gap={16}>
-              <Column width="fill" minWidth={0} gap={16}>
-                <ProjectOverview />
-                <TeamCalendar />
-                <LaunchFlow />
-              </Column>
-              <Column width="fill" minWidth={0} gap={16}>
-                <TeamInbox />
-                <StudioInsights />
-                <WorkspacePreferences />
-              </Column>
-            </Grid>
-          </Column>
-          <Column
-            width="fill"
-            minWidth={0}
-            minHeight="100vh"
-            padding={24}
+            align="center"
             justify="center"
-            gap={24}
-            data={{ 'weave-website-why': '' }}
+            padding={32}
+            height="85vh"
+            xl={{ position: 'sticky', top: 0, height: '100vh', alignSelf: 'start' }}
+            data={{ 'weave-website-hero': '' }}
           >
-            <Text typo="headline-large">{t('Why Weave?')}</Text>
-            <List
-              selection="none"
-              viewProps={{ width: 'fill' }}
-              items={whyWeave.map(([title, description]) => ({
-                id: title,
-                text: t(title),
-                secondaryText: t(description),
-              }))}
-            />
+            <Column width="fill" maxWidth={720} gap={24} align="start">
+              <Text typo="display-large">Weave</Text>
+              <Row background="primary" color="onPrimary" radius="full" paddingX={24} paddingY={12}>
+                <Typewriter
+                  texts={[
+                    t('Interaction is built in'),
+                    t('Built for developers, ready for AI'),
+                    t('Built for real products'),
+                  ]}
+                  typeInterval={50}
+                  deleteInterval={30}
+                  typo="headline-large"
+                  color="onPrimary"
+                  wrap="nowrap"
+                  viewProps={{ style: { fontSize: 'clamp(11px, 2.2vw, 26px)' } }}
+                />
+              </Row>
+              <Text typo="body-large" color="secondary">
+                {t(
+                  'An interaction-first React UI framework with visual feedback, direct manipulation and motion built into every component.',
+                )}
+              </Text>
+              <Button
+                text={t('Explore documentation')}
+                viewProps={{ onClick: () => window.location.assign('/docs') }}
+              />
+            </Column>
           </Column>
-        </Column>
-      </Grid>
+
+          <Column width="fill" minWidth={0}>
+            <Column
+              width="fill"
+              minWidth={0}
+              padding={24}
+              container="website-showcase"
+              data={{ 'weave-website-showcase': '' }}
+            >
+              <Grid width="fill" columns={1} containerSm={{ columns: 2 }} gap={16}>
+                <Column width="fill" minWidth={0} gap={16}>
+                  <ProjectOverview />
+                  <TeamCalendar />
+                  <LaunchFlow />
+                </Column>
+                <Column width="fill" minWidth={0} gap={16}>
+                  <TeamInbox />
+                  <StudioInsights />
+                  <WorkspacePreferences />
+                </Column>
+              </Grid>
+            </Column>
+            <Column
+              width="fill"
+              minWidth={0}
+              minHeight="100vh"
+              padding={24}
+              justify="center"
+              gap={24}
+              data={{ 'weave-website-why': '' }}
+            >
+              <Text typo="headline-large">{t('Why Weave?')}</Text>
+              <List selection="none" noDividers gap={8} viewProps={{ width: 'fill' }}>
+                {whyWeave.map(([title, description]) => (
+                  <ListItem key={title} id={title} viewProps={{ paddingX: 0, paddingY: 12 }}>
+                    <Column width="fill" gap={8}>
+                      <Text typo="title-medium">{t(title)}</Text>
+                      <Text typo="body-medium" color="secondary">
+                        {t(description)}
+                      </Text>
+                    </Column>
+                  </ListItem>
+                ))}
+              </List>
+            </Column>
+          </Column>
+        </Grid>
+      </Column>
     </Column>
   )
 }
