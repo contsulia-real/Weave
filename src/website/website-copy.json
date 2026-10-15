@@ -1,4 +1,34 @@
 {
+  "An interaction-first React UI framework.": {
+    "zh-CN": "以交互体验为核心的 React UI 框架。",
+    "zh-TW": "以互動體驗為核心的 React UI 框架。",
+    "fr": "Un framework UI React axé sur l’interaction."
+  },
+  "Product": {
+    "zh-CN": "产品",
+    "zh-TW": "產品",
+    "fr": "Produit"
+  },
+  "Resources": {
+    "zh-CN": "资源",
+    "zh-TW": "資源",
+    "fr": "Ressources"
+  },
+  "Community": {
+    "zh-CN": "社区",
+    "zh-TW": "社群",
+    "fr": "Communauté"
+  },
+  "Theming": {
+    "zh-CN": "主题定制",
+    "zh-TW": "主題客製",
+    "fr": "Personnalisation des thèmes"
+  },
+  "Code component": {
+    "zh-CN": "代码组件",
+    "zh-TW": "程式碼元件",
+    "fr": "Composant Code"
+  },
   "Explore the building blocks": {
     "zh-CN": "探索 Weave 的构建能力",
     "zh-TW": "探索 Weave 的建構能力",

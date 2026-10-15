@@ -359,19 +359,73 @@ export function WebsiteHome({
             </Grid>
           </Column>
 
-          <Column width="fill" gap={24} data={{ 'weave-website-footer': '' }}>
+          <Column width="fill" gap={32} role="contentinfo" data={{ 'weave-website-footer': '' }}>
             <Divider />
-            <Row width="fill" align="center" justify="space-between" gap={24} wrap>
-              <Text typo="body-medium" color="tertiary">
-                {t('Weave is open source under the MIT License.')}
-              </Text>
-              <Row align="center" gap={24} wrap>
-                <Link href="/docs" text={t('Docs')} hideIcon />
-                <Link href="/docs/components/Button" text={t('Components')} hideIcon />
-                <Link href="https://github.com/contsulia-real/Weave" text="GitHub" hideIcon />
-                <Link href="https://jsr.io/@contsulia/weave" text="JSR" hideIcon />
-              </Row>
-            </Row>
+            <Grid width="fill" columns={1} sm={{ columns: 2 }} xl={{ columns: 4 }} gap={40}>
+              <Column minWidth={0} gap={12}>
+                <Text typo="title-large">Weave</Text>
+                <Text typo="body-medium" color="tertiary">
+                  {t('An interaction-first React UI framework.')}
+                </Text>
+              </Column>
+              <Column minWidth={0} gap={16}>
+                <Text typo="title-medium">{t('Product')}</Text>
+                <Column gap={12} align="start">
+                  <Link
+                    href="/docs/getting-started"
+                    text={t('Get started')}
+                    hideIcon
+                    hideUnderline
+                  />
+                  <Link
+                    href="/docs/components/Button"
+                    text={t('Components')}
+                    hideIcon
+                    hideUnderline
+                  />
+                  <Link
+                    href="/docs/components/Layout"
+                    text={t('Explore layouts')}
+                    hideIcon
+                    hideUnderline
+                  />
+                </Column>
+              </Column>
+              <Column minWidth={0} gap={16}>
+                <Text typo="title-medium">{t('Resources')}</Text>
+                <Column gap={12} align="start">
+                  <Link href="/docs" text={t('Docs')} hideIcon hideUnderline />
+                  <Link
+                    href="/docs/components/ThemeProvider"
+                    text={t('Theming')}
+                    hideIcon
+                    hideUnderline
+                  />
+                  <Link
+                    href="/docs/components/Code"
+                    text={t('Code component')}
+                    hideIcon
+                    hideUnderline
+                  />
+                </Column>
+              </Column>
+              <Column minWidth={0} gap={16}>
+                <Text typo="title-medium">{t('Community')}</Text>
+                <Column gap={12} align="start">
+                  <Link
+                    href="https://github.com/contsulia-real/Weave"
+                    text="GitHub"
+                    hideIcon
+                    hideUnderline
+                  />
+                  <Link href="https://jsr.io/@contsulia/weave" text="JSR" hideIcon hideUnderline />
+                </Column>
+              </Column>
+            </Grid>
+            <Divider />
+            <Text typo="body-medium" color="tertiary">
+              {t('Weave is open source under the MIT License.')}
+            </Text>
           </Column>
         </Column>
       </Column>
