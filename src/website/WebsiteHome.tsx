@@ -18,6 +18,7 @@ import {
   ListItem,
   Row,
   Text,
+  ThemeProvider,
   ToolTip,
   Typewriter,
 } from '../index'
@@ -315,6 +316,13 @@ export function WebsiteHome({
               <Column width="fill" minWidth={0} gap={12}>
                 <Card viewProps={{ width: 'fill', padding: 0, overflow: 'hidden' }}>
                   <Column width="fill" minWidth={0}>
+                    <ThemeProvider mode="system">
+                      <Column gap={16} padding={24}>
+                        <Text typo="title-large">Hello from Weave</Text>
+                        <Button text="Continue" variant="primary" />
+                      </Column>
+                    </ThemeProvider>
+                    <Divider />
                     <Row
                       width="fill"
                       paddingX={16}
