@@ -3845,6 +3845,7 @@ viewProps
 ```
 
 - `text` 未提供时，直接显示 `href`；提供后只改变可见文字，不改变真实 `href`。可见文字内部复用公开 `Text`，不维护私有文本 span 的平行实现。
+- Link 默认宽度为 `content`，由内容自然决定；调用方可通过 `viewProps.width` 显式覆盖。
 - 默认在内容末尾追加一个装饰性 link icon；icon 不进入 accessible name。只有 `hideIcon` 才隐藏。
 - `hideUnderline` 为 `true` 时完全隐藏底部 link marker；它不影响文字、icon、focus outline 或原生 `<a>` 导航行为。
 - `target` 直接写到真实 `<a target>`，例如 `_self`、`_blank`；框架不重写浏览器原生导航行为，也不自动添加或修改 `rel`。

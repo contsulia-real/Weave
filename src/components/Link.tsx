@@ -26,7 +26,10 @@ export function Link(props: LinkProps): import('react').JSX.Element {
   const { href, text, hideIcon = false, hideUnderline = false, target, viewProps = {} } = props
   const { theme } = useTheme()
   const themeClassName = useRuntimeStyleClass('link-theme', resolveLinkTheme(theme))
-  const hostProps: ViewProps<HTMLAnchorElement> = viewProps
+  const hostProps: ViewProps<HTMLAnchorElement> = {
+    ...viewProps,
+    width: viewProps.width ?? 'content',
+  }
   const { elementRef, className, inlineStyle, resolved } = useViewHost(hostProps)
 
   useStaticStylesheet(ensureLinkStylesheet)
