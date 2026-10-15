@@ -259,7 +259,7 @@ export function WebsiteHome({
             </Grid>
           </Column>
 
-          <Column width="fill" gap={24} data={{ 'weave-website-quickstart': '' }}>
+          <Column width="fill" marginTop={32} gap={24} data={{ 'weave-website-quickstart': '' }}>
             <Grid width="fill" columns={1} xl={{ columns: 2 }} gap={24}>
               <Column width="fill" minWidth={0} gap={24}>
                 <Column gap={12}>
