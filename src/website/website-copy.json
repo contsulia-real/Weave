@@ -74,6 +74,11 @@
     "zh-TW": "呈現第一個介面",
     "fr": "Afficher votre première interface"
   },
+  "Copy code": {
+    "zh-CN": "复制代码",
+    "zh-TW": "複製程式碼",
+    "fr": "Copier le code"
+  },
   "Continue with documentation": {
     "zh-CN": "继续阅读文档",
     "zh-TW": "繼續閱讀文件",
