@@ -90,42 +90,42 @@ export function WebsiteHome({
         viewProps={{
           shrink: 0,
           zIndex: 1,
-          style: { gridTemplateColumns: '0 max-content minmax(0, 1fr)' },
+          columns: 'minmax(0, 1fr) 0',
+          sm: { columns: 'minmax(0, 1fr) 0 max-content' },
         }}
-        title={<Text>Weave</Text>}
+        leading={
+          <Row align="center" gap={24} wrap>
+            <Link href="/docs" text={t('Docs')} hideIcon hideUnderline />
+            <Link href="/docs/components/Button" text={t('Components')} hideIcon hideUnderline />
+            <Link href="/docs/getting-started" text={t('Get started')} hideIcon hideUnderline />
+          </Row>
+        }
+        title={<Text>{''}</Text>}
         trailing={
-          <Row width="fill" align="center" justify="end" gap={24} wrap>
-            <Row align="center" gap={24} wrap>
-              <Link href="/docs" text={t('Docs')} hideIcon />
-              <Link href="/docs/components/Button" text={t('Components')} hideIcon />
-              <Link href="/docs/getting-started" text={t('Get started')} hideIcon />
-            </Row>
-            <Row align="center" gap={16} wrap>
-              <Link
-                href="https://github.com/contsulia-real/Weave"
-                text={<Icon icon={IconBrandGithubFilled} size="xlarge" />}
-                hideIcon
-                hideUnderline
-                viewProps={{ label: 'GitHub' }}
-              />
-              <Link
-                href="https://jsr.io/@contsulia/weave"
-                text={<Icon svg={jsrLogo} size="xlarge" viewProps={{ width: 42, height: 42 }} />}
-                hideIcon
-                hideUnderline
-                viewProps={{ label: 'JSR' }}
-              />
-              <DocumentationControls
-                themeMode={themeMode}
-                onThemeModeChange={onThemeModeChange}
-                themeColorId={themeColorId}
-                onThemeColorChange={onThemeColorChange}
-              />
-            </Row>
+          <Row align="center" gap={16} wrap>
+            <Link
+              href="https://github.com/contsulia-real/Weave"
+              text={<Icon icon={IconBrandGithubFilled} size="xlarge" />}
+              hideIcon
+              hideUnderline
+              viewProps={{ label: 'GitHub' }}
+            />
+            <Link
+              href="https://jsr.io/@contsulia/weave"
+              text={<Icon svg={jsrLogo} size="xlarge" viewProps={{ width: 42, height: 42 }} />}
+              hideIcon
+              hideUnderline
+              viewProps={{ label: 'JSR' }}
+            />
+            <DocumentationControls
+              themeMode={themeMode}
+              onThemeModeChange={onThemeModeChange}
+              themeColorId={themeColorId}
+              onThemeColorChange={onThemeColorChange}
+            />
           </Row>
         }
       />
-
       <Column width="fill" grow={1} minHeight={0} overflow="auto" align="center">
         <Grid width="fill" maxWidth={1600} columns={1} xl={{ columns: 2 }}>
           <Column
@@ -259,95 +259,96 @@ export function WebsiteHome({
             </Grid>
           </Column>
 
-          <Column
-            width="fill"
-            maxWidth={832}
-            alignSelf="center"
-            gap={24}
-            data={{ 'weave-website-quickstart': '' }}
-          >
-            <Column gap={12}>
-              <Text typo="headline-large">{t('Start building with Weave')}</Text>
-              <Text typo="body-large" color="tertiary">
-                {t('Install from JSR, then render a Weave interface with React.')}
-              </Text>
-            </Column>
-            <Column width="fill" minWidth={0} gap={12}>
-              <Card viewProps={{ width: 'fill', padding: 0, overflow: 'hidden' }}>
-                <Column width="fill" minWidth={0}>
-                  <Row
-                    width="fill"
-                    paddingX={16}
-                    paddingY={8}
-                    align="center"
-                    justify="space-between"
-                    gap={16}
-                  >
-                    <Text typo="title-medium">{t('Install')}</Text>
-                    <ToolTip content={t('Copy code')}>
-                      <Button
-                        icon={IconCopy}
-                        variant="ghost"
-                        size="small"
-                        viewProps={{
-                          label: t('Copy code'),
-                          onClick: () => {
-                            void navigator.clipboard.writeText(websiteInstallCommand)
-                          },
-                        }}
-                      />
-                    </ToolTip>
-                  </Row>
-                  <Divider />
-                  <Code
-                    language="bash"
-                    viewProps={{ width: 'fill', overflow: 'auto', padding: 16 }}
-                  >
-                    {websiteInstallCommand}
-                  </Code>
+          <Column width="fill" gap={24} data={{ 'weave-website-quickstart': '' }}>
+            <Grid width="fill" columns={1} xl={{ columns: 2 }} gap={24}>
+              <Column width="fill" minWidth={0} gap={24}>
+                <Column gap={12}>
+                  <Text typo="headline-large">{t('Start building with Weave')}</Text>
+                  <Text typo="body-large" color="tertiary">
+                    {t('Install from JSR, then render a Weave interface with React.')}
+                  </Text>
                 </Column>
-              </Card>
-            </Column>
-            <Column width="fill" minWidth={0} gap={12}>
-              <Card viewProps={{ width: 'fill', padding: 0, overflow: 'hidden' }}>
-                <Column width="fill" minWidth={0}>
-                  <Row
-                    width="fill"
-                    paddingX={16}
-                    paddingY={8}
-                    align="center"
-                    justify="space-between"
-                    gap={16}
-                  >
-                    <Text typo="title-medium">{t('Render your first interface')}</Text>
-                    <ToolTip content={t('Copy code')}>
-                      <Button
-                        icon={IconCopy}
-                        variant="ghost"
-                        size="small"
-                        viewProps={{
-                          label: t('Copy code'),
-                          onClick: () => {
-                            void navigator.clipboard.writeText(websiteExampleSource)
-                          },
-                        }}
-                      />
-                    </ToolTip>
-                  </Row>
-                  <Divider />
-                  <Code language="tsx" viewProps={{ width: 'fill', overflow: 'auto', padding: 16 }}>
-                    {websiteExampleSource}
-                  </Code>
+                <Column width="fill" minWidth={0} gap={12}>
+                  <Card viewProps={{ width: 'fill', padding: 0, overflow: 'hidden' }}>
+                    <Column width="fill" minWidth={0}>
+                      <Row
+                        width="fill"
+                        paddingX={16}
+                        paddingY={8}
+                        align="center"
+                        justify="space-between"
+                        gap={16}
+                      >
+                        <Text typo="title-medium">{t('Install')}</Text>
+                        <ToolTip content={t('Copy code')}>
+                          <Button
+                            icon={IconCopy}
+                            variant="ghost"
+                            size="small"
+                            viewProps={{
+                              label: t('Copy code'),
+                              onClick: () => {
+                                void navigator.clipboard.writeText(websiteInstallCommand)
+                              },
+                            }}
+                          />
+                        </ToolTip>
+                      </Row>
+                      <Divider />
+                      <Code
+                        language="bash"
+                        viewProps={{ width: 'fill', overflow: 'auto', padding: 16 }}
+                      >
+                        {websiteInstallCommand}
+                      </Code>
+                    </Column>
+                  </Card>
                 </Column>
-              </Card>
-            </Column>
-            <Button
-              text={t('Continue with documentation')}
-              viewProps={{
-                width: 'content',
-                onClick: () => window.location.assign('/docs/getting-started'),
-              }}
-            />
+                <Button
+                  text={t('Continue with documentation')}
+                  viewProps={{
+                    width: 'content',
+                    onClick: () => window.location.assign('/docs/getting-started'),
+                  }}
+                />
+              </Column>
+              <Column width="fill" minWidth={0} gap={12}>
+                <Card viewProps={{ width: 'fill', padding: 0, overflow: 'hidden' }}>
+                  <Column width="fill" minWidth={0}>
+                    <Row
+                      width="fill"
+                      paddingX={16}
+                      paddingY={8}
+                      align="center"
+                      justify="space-between"
+                      gap={16}
+                    >
+                      <Text typo="title-medium">{t('Render your first interface')}</Text>
+                      <ToolTip content={t('Copy code')}>
+                        <Button
+                          icon={IconCopy}
+                          variant="ghost"
+                          size="small"
+                          viewProps={{
+                            label: t('Copy code'),
+                            onClick: () => {
+                              void navigator.clipboard.writeText(websiteExampleSource)
+                            },
+                          }}
+                        />
+                      </ToolTip>
+                    </Row>
+                    <Divider />
+                    <Code
+                      language="tsx"
+                      viewProps={{ width: 'fill', overflow: 'auto', padding: 16 }}
+                    >
+                      {websiteExampleSource}
+                    </Code>
+                  </Column>
+                </Card>
+              </Column>
+            </Grid>
           </Column>
 
           <Column width="fill" gap={24} data={{ 'weave-website-footer': '' }}>
