@@ -100,6 +100,7 @@ export function Typewriter({
   const displayed = reducedMotion
     ? ((loop ? phrases[0] : phrases[phrases.length - 1])?.join('') ?? '')
     : (phrases[current.index]?.slice(0, current.count).join('') ?? '')
+  const content = displayed || <span aria-hidden="true">{'\u200b'}</span>
 
   const preset = typeof cursor === 'string' && CURSOR_PRESETS.some((value) => value === cursor)
   const cursorFontSize =
@@ -122,7 +123,7 @@ export function Typewriter({
         }}
       >
         <Text {...textProps} viewProps={viewProps}>
-          {displayed}
+          {content}
         </Text>
         {preset ? (
           <View
@@ -155,7 +156,7 @@ export function Typewriter({
         data: { ...viewProps?.data, 'weave-typewriter': '' },
       }}
     >
-      {displayed}
+      {content}
       {showCursor && phrases.length > 0 && cursor != null ? (
         <span data-weave-typewriter-cursor="" aria-hidden="true">
           {cursor}

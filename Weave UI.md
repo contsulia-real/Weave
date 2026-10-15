@@ -8502,6 +8502,7 @@ system
 
 - `typeInterval?: number` 默认 100ms；`deleteInterval?: number` 默认 60ms；`pauseDuration?: number` 默认 1000ms。逐 Unicode grapheme 而非 UTF-16 单元更新；非有限或负数值回退到默认值，单步间隔至少 1ms。
 - `loop?: boolean` 默认 true；依次输入完整短语、停顿、逐字删除、切换下一个非空短语，然后无限重复。false 时删除中间短语，但将最后一条完整短语保留在屏幕上；空集合不运行计时器。
+- 文字被删除至空字符串时，以不向辅助技术播报的零宽占位符保留 Text 当前排版的行高；有无光标都不因暂时无字而改变组件高度，不设置固定高度。
 - 文字与光标之间固定保留 `2px` 间距，由现有 Weave `View` 的布局 `gap` 实现；全部四种预设及自定义 ReactNode 光标一致。Typewriter 不提供公开 `gap` 属性，隐藏光标时不保留间距。
 - `showCursor?: boolean` 默认 true，控制光标是否显示；`cursor?: TypewriterCursorPreset | ReactNode` 默认 `bar`。预设 `bar` / `underline` / `block` / `outline` 均由真实 `View` 宿主绘制（边线、底线、实心背景、空心边框）；下划线、实心框和空心框共享 `0.7em` 宽、`1em` 高的几何盒（border-box），竖线宽 `2px`、高 `1em`；边线使用 `View` 原生 border，背景和边框继承文字当前色。自定义 ReactNode 继续独立渲染，不替换为预设 View。所有光标均使用 `aria-hidden`，通过 opacity 进行 step-end 闪烁，完整闪烁周期固定为 `1000ms`（明灭各半），不建立新的尺寸/颜色 token。
 - 状态机单一计时器，在源文本改变或卸载时取消；StrictMode 不留下重复计时器。服务端首帧与 hydration 一致，不默认使用 `aria-live` 连续播报。
