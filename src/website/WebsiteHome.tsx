@@ -54,6 +54,41 @@ createRoot(document.getElementById('app')!).render(
   </ThemeProvider>,
 )`
 
+const footerNavigation = [
+  {
+    title: 'Product',
+    links: [
+      { label: 'Overview', href: '/' },
+      { label: 'Components', href: '/docs/components/Button' },
+      { label: 'Explore layouts', href: '/docs/components/Layout' },
+      { label: 'Theming', href: '/docs/components/ThemeProvider' },
+    ],
+  },
+  {
+    title: 'Developers',
+    links: [
+      { label: 'Docs', href: '/docs' },
+      { label: 'Get started', href: '/docs/getting-started' },
+      { label: 'API reference', href: '/docs/components-api/Button' },
+      { label: 'Examples', href: '/docs/components/Button' },
+      { label: 'Changelog' },
+    ],
+  },
+  {
+    title: 'Community',
+    links: [
+      { label: 'GitHub', href: 'https://github.com/contsulia-real/Weave' },
+      { label: 'JSR', href: 'https://jsr.io/@contsulia/weave' },
+      { label: 'Report an issue', href: 'https://github.com/contsulia-real/Weave/issues' },
+      { label: 'Discussions' },
+    ],
+  },
+  {
+    title: 'Company',
+    links: [{ label: 'About' }, { label: 'Blog' }, { label: 'Roadmap' }, { label: 'Contact' }],
+  },
+] as const
+
 interface WebsiteHomeProps {
   themeMode: ThemeMode
   onThemeModeChange: (mode: ThemeMode) => void
@@ -359,73 +394,102 @@ export function WebsiteHome({
             </Grid>
           </Column>
 
-          <Column width="fill" gap={32} role="contentinfo" data={{ 'weave-website-footer': '' }}>
+          <Column width="fill" gap={40} role="contentinfo" data={{ 'weave-website-footer': '' }}>
             <Divider />
-            <Grid width="fill" columns={1} sm={{ columns: 2 }} xl={{ columns: 4 }} gap={40}>
-              <Column minWidth={0} gap={12}>
-                <Text typo="title-large">Weave</Text>
-                <Text typo="body-medium" color="tertiary">
+            <Row width="fill" align="center" justify="space-between" gap={32} wrap>
+              <Column minWidth={0} maxWidth={720} gap={12}>
+                <Text typo="headline-large">Weave</Text>
+                <Text typo="title-large">{t('Built for developers, ready for AI')}</Text>
+                <Text typo="body-large" color="tertiary">
                   {t('An interaction-first React UI framework.')}
                 </Text>
               </Column>
-              <Column minWidth={0} gap={16}>
-                <Text typo="title-medium">{t('Product')}</Text>
-                <Column gap={12} align="start">
-                  <Link
-                    href="/docs/getting-started"
-                    text={t('Get started')}
-                    hideIcon
-                    hideUnderline
-                  />
-                  <Link
-                    href="/docs/components/Button"
-                    text={t('Components')}
-                    hideIcon
-                    hideUnderline
-                  />
-                  <Link
-                    href="/docs/components/Layout"
-                    text={t('Explore layouts')}
-                    hideIcon
-                    hideUnderline
-                  />
+              <Button
+                text={t('Get started')}
+                viewProps={{
+                  width: 'content',
+                  onClick: () => window.location.assign('/docs/getting-started'),
+                }}
+              />
+            </Row>
+            <Divider />
+            <Grid width="fill" columns={1} sm={{ columns: 2 }} xl={{ columns: 4 }} gap={40}>
+              {footerNavigation.map((group) => (
+                <Column key={group.title} minWidth={0} gap={16}>
+                  <Text typo="title-medium">{t(group.title)}</Text>
+                  <Column gap={12} align="start">
+                    {group.links.map((link) => {
+                      const isPlaceholder = !('href' in link)
+                      return (
+                        <Link
+                          key={link.label}
+                          href={isPlaceholder ? '#' : link.href}
+                          text={t(link.label)}
+                          hideIcon
+                          hideUnderline
+                          viewProps={
+                            isPlaceholder
+                              ? {
+                                  disabled: true,
+                                  style: { opacity: 0.6 },
+                                  label: `${t(link.label)} — ${t('Coming soon')}`,
+                                  onClick: (event) => event.preventDefault(),
+                                  data: { 'weave-website-footer-placeholder': '' },
+                                }
+                              : undefined
+                          }
+                        />
+                      )
+                    })}
+                  </Column>
                 </Column>
-              </Column>
-              <Column minWidth={0} gap={16}>
-                <Text typo="title-medium">{t('Resources')}</Text>
-                <Column gap={12} align="start">
-                  <Link href="/docs" text={t('Docs')} hideIcon hideUnderline />
-                  <Link
-                    href="/docs/components/ThemeProvider"
-                    text={t('Theming')}
-                    hideIcon
-                    hideUnderline
-                  />
-                  <Link
-                    href="/docs/components/Code"
-                    text={t('Code component')}
-                    hideIcon
-                    hideUnderline
-                  />
-                </Column>
-              </Column>
-              <Column minWidth={0} gap={16}>
-                <Text typo="title-medium">{t('Community')}</Text>
-                <Column gap={12} align="start">
-                  <Link
-                    href="https://github.com/contsulia-real/Weave"
-                    text="GitHub"
-                    hideIcon
-                    hideUnderline
-                  />
-                  <Link href="https://jsr.io/@contsulia/weave" text="JSR" hideIcon hideUnderline />
-                </Column>
-              </Column>
+              ))}
             </Grid>
             <Divider />
-            <Text typo="body-medium" color="tertiary">
-              {t('Weave is open source under the MIT License.')}
-            </Text>
+            <Row width="fill" align="center" justify="space-between" gap={24} wrap>
+              <Column gap={8}>
+                <Text typo="body-medium" color="tertiary">
+                  © {new Date().getFullYear()} Weave.
+                </Text>
+                <Text typo="body-medium" color="tertiary">
+                  {t('Weave is open source under the MIT License.')}
+                </Text>
+              </Column>
+              <Row align="center" gap={24} wrap>
+                <Link
+                  href="https://github.com/contsulia-real/Weave/blob/main/LICENSE"
+                  text={t('License')}
+                  hideIcon
+                  hideUnderline
+                />
+                <Link
+                  href="#"
+                  text={t('Privacy policy')}
+                  hideIcon
+                  hideUnderline
+                  viewProps={{
+                    disabled: true,
+                    style: { opacity: 0.6 },
+                    label: `${t('Privacy policy')} — ${t('Coming soon')}`,
+                    onClick: (event) => event.preventDefault(),
+                    data: { 'weave-website-footer-placeholder': '' },
+                  }}
+                />
+                <Link
+                  href="#"
+                  text={t('Terms of service')}
+                  hideIcon
+                  hideUnderline
+                  viewProps={{
+                    disabled: true,
+                    style: { opacity: 0.6 },
+                    label: `${t('Terms of service')} — ${t('Coming soon')}`,
+                    onClick: (event) => event.preventDefault(),
+                    data: { 'weave-website-footer-placeholder': '' },
+                  }}
+                />
+              </Row>
+            </Row>
           </Column>
         </Column>
       </Column>

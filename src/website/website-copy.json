@@ -1,4 +1,84 @@
 {
+  "Overview": {
+    "zh-CN": "概览",
+    "zh-TW": "概覽",
+    "fr": "Présentation"
+  },
+  "Developers": {
+    "zh-CN": "开发者",
+    "zh-TW": "開發者",
+    "fr": "Développeurs"
+  },
+  "API reference": {
+    "zh-CN": "API 参考",
+    "zh-TW": "API 參考",
+    "fr": "Référence API"
+  },
+  "Examples": {
+    "zh-CN": "示例",
+    "zh-TW": "範例",
+    "fr": "Exemples"
+  },
+  "Changelog": {
+    "zh-CN": "更新日志",
+    "zh-TW": "更新日誌",
+    "fr": "Journal des modifications"
+  },
+  "Report an issue": {
+    "zh-CN": "反馈问题",
+    "zh-TW": "回報問題",
+    "fr": "Signaler un problème"
+  },
+  "Discussions": {
+    "zh-CN": "讨论区",
+    "zh-TW": "討論區",
+    "fr": "Discussions"
+  },
+  "Company": {
+    "zh-CN": "公司",
+    "zh-TW": "公司",
+    "fr": "Entreprise"
+  },
+  "About": {
+    "zh-CN": "关于我们",
+    "zh-TW": "關於我們",
+    "fr": "À propos"
+  },
+  "Blog": {
+    "zh-CN": "博客",
+    "zh-TW": "部落格",
+    "fr": "Blog"
+  },
+  "Roadmap": {
+    "zh-CN": "路线图",
+    "zh-TW": "路線圖",
+    "fr": "Feuille de route"
+  },
+  "Contact": {
+    "zh-CN": "联系我们",
+    "zh-TW": "聯絡我們",
+    "fr": "Contact"
+  },
+  "License": {
+    "zh-CN": "许可证",
+    "zh-TW": "授權條款",
+    "fr": "Licence"
+  },
+  "Privacy policy": {
+    "zh-CN": "隐私政策",
+    "zh-TW": "隱私權政策",
+    "fr": "Politique de confidentialité"
+  },
+  "Terms of service": {
+    "zh-CN": "服务条款",
+    "zh-TW": "服務條款",
+    "fr": "Conditions d’utilisation"
+  },
+  "Coming soon": {
+    "zh-CN": "即将开放",
+    "zh-TW": "即將開放",
+    "fr": "Bientôt disponible"
+  },
   "An interaction-first React UI framework.": {
     "zh-CN": "以交互体验为核心的 React UI 框架。",
     "zh-TW": "以互動體驗為核心的 React UI 框架。",
