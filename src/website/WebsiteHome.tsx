@@ -107,17 +107,19 @@ export function WebsiteHome({
         >
           <Column width="fill" maxWidth={720} gap={24} align="start">
             <Text typo="display-large">Weave</Text>
-            <Row background="primary" color="onPrimary" radius="full" padding={12}>
+            <Row background="primary" color="onPrimary" radius="full" paddingX={24} paddingY={12}>
               <Typewriter
                 texts={[
                   t('Interaction is built in'),
                   t('Built for developers, ready for AI'),
                   t('Built for real products'),
                 ]}
+                typeInterval={50}
+                deleteInterval={30}
                 typo="headline-large"
                 color="onPrimary"
                 wrap="nowrap"
-                viewProps={{ style: { fontSize: 'clamp(12px, 2.2vw, 36px)' } }}
+                viewProps={{ style: { fontSize: 'clamp(11px, 2.2vw, 36px)' } }}
               />
             </Row>
             <Text typo="body-large" color="secondary">
