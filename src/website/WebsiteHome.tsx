@@ -155,7 +155,7 @@ export function WebsiteHome({
               container="website-showcase"
               data={{ 'weave-website-showcase': '' }}
             >
-              <Grid width="fill" columns={1} containerSm={{ columns: 2 }} gap={16}>
+              <Grid width="fill" columns={1} sm={{ columns: 2 }} gap={16}>
                 <Column width="fill" minWidth={0} gap={16}>
                   <ProjectOverview />
                   <TeamCalendar />
