@@ -7,7 +7,9 @@ import type { ThemeMode } from '../index'
 import {
   AppBar,
   Button,
+  Code,
   Column,
+  Divider,
   Grid,
   Icon,
   Link,
@@ -32,6 +34,20 @@ const jsrLogo = (
     <path fill="#f7df1e" d="M4 5V1H3v3H2V3H1v2h6V4H5V1h3v1h4v2h-1V3h-1v3H9V2H6v1h2v3H5V5" />
   </svg>
 )
+
+const websiteExampleSource = `import { ThemeProvider, createRoot } from '@contsulia/weave'
+import { Button } from '@contsulia/weave/components/Button'
+import { Column } from '@contsulia/weave/components/Column'
+import { Text } from '@contsulia/weave/components/Text'
+
+createRoot(document.getElementById('app')!).render(
+  <ThemeProvider mode="system">
+    <Column gap={16} padding={24}>
+      <Text typo="title-large">Hello from Weave</Text>
+      <Button text="Continue" variant="primary" />
+    </Column>
+  </ThemeProvider>,
+)`
 
 interface WebsiteHomeProps {
   themeMode: ThemeMode
@@ -193,6 +209,91 @@ export function WebsiteHome({
             </Column>
           </Column>
         </Grid>
+        <Column
+          width="fill"
+          maxWidth={1600}
+          paddingX={32}
+          paddingY={64}
+          gap={64}
+          data={{ 'weave-website-more': '' }}
+        >
+          <Column width="fill" gap={24} data={{ 'weave-website-capabilities': '' }}>
+            <Column gap={12}>
+              <Text typo="headline-large">{t('Explore the building blocks')}</Text>
+              <Text typo="body-large" color="secondary">
+                {t(
+                  'From interactive controls to layout and tooling, Weave keeps the same component language throughout.',
+                )}
+              </Text>
+            </Column>
+            <Grid width="fill" columns={1} md={{ columns: 3 }} gap={24}>
+              <Column width="fill" minWidth={0} gap={12}>
+                <Text typo="title-large">{t('Interactive components')}</Text>
+                <Text typo="body-medium" color="secondary">
+                  {t(
+                    'Buttons, forms and data displays with feedback designed into their default behavior.',
+                  )}
+                </Text>
+                <Link href="/docs/components/Button" text={t('Explore components')} />
+              </Column>
+              <Column width="fill" minWidth={0} gap={12}>
+                <Text typo="title-large">{t('Layout and theme')}</Text>
+                <Text typo="body-medium" color="secondary">
+                  {t('Build responsive views with semantic layouts and shared theme tokens.')}
+                </Text>
+                <Link href="/docs/components/Column" text={t('Explore layouts')} />
+              </Column>
+              <Column width="fill" minWidth={0} gap={12}>
+                <Text typo="title-large">{t('Examples for developers and AI')}</Text>
+                <Text typo="body-medium" color="secondary">
+                  {t(
+                    'Real component demos and source-derived metadata help humans and AI tools use the same APIs.',
+                  )}
+                </Text>
+                <Link href="/docs" text={t('Browse examples')} />
+              </Column>
+            </Grid>
+          </Column>
+
+          <Column width="fill" gap={24} data={{ 'weave-website-quickstart': '' }}>
+            <Column gap={12}>
+              <Text typo="headline-large">{t('Start building with Weave')}</Text>
+              <Text typo="body-large" color="secondary">
+                {t('Install from JSR, then render a Weave interface with React.')}
+              </Text>
+            </Column>
+            <Grid width="fill" columns={1} lg={{ columns: 2 }} gap={24}>
+              <Column width="fill" minWidth={0} gap={12}>
+                <Text typo="title-medium">{t('Install')}</Text>
+                <Code language="bash" viewProps={{ width: 'fill', overflow: 'auto', padding: 16 }}>
+                  {'pnpm add jsr:@contsulia/weave'}
+                </Code>
+              </Column>
+              <Column width="fill" minWidth={0} gap={12}>
+                <Text typo="title-medium">{t('Render your first interface')}</Text>
+                <Code language="tsx" viewProps={{ width: 'fill', overflow: 'auto', padding: 16 }}>
+                  {websiteExampleSource}
+                </Code>
+              </Column>
+            </Grid>
+            <Link href="/docs/getting-started" text={t('Continue with documentation')} />
+          </Column>
+
+          <Column width="fill" gap={24} data={{ 'weave-website-footer': '' }}>
+            <Divider />
+            <Row width="fill" align="center" justify="space-between" gap={24} wrap>
+              <Text typo="body-medium" color="secondary">
+                {t('Weave is open source under the MIT License.')}
+              </Text>
+              <Row align="center" gap={24} wrap>
+                <Link href="/docs" text={t('Docs')} hideIcon />
+                <Link href="/docs/components/Button" text={t('Components')} hideIcon />
+                <Link href="https://github.com/contsulia-real/Weave" text="GitHub" hideIcon />
+                <Link href="https://jsr.io/@contsulia/weave" text="JSR" hideIcon />
+              </Row>
+            </Row>
+          </Column>
+        </Column>
       </Column>
     </Column>
   )

@@ -1,4 +1,89 @@
 {
+  "Explore the building blocks": {
+    "zh-CN": "探索 Weave 的构建能力",
+    "zh-TW": "探索 Weave 的建構能力",
+    "fr": "Explorez les fondamentaux de Weave"
+  },
+  "From interactive controls to layout and tooling, Weave keeps the same component language throughout.": {
+    "zh-CN": "从交互控件到布局与工具链，Weave 始终使用统一的组件语言。",
+    "zh-TW": "從互動控制項到佈局與工具鏈，Weave 始終使用一致的元件語言。",
+    "fr": "Des contrôles interactifs à la mise en page et aux outils, Weave conserve un langage de composants cohérent."
+  },
+  "Interactive components": {
+    "zh-CN": "交互组件",
+    "zh-TW": "互動元件",
+    "fr": "Composants interactifs"
+  },
+  "Buttons, forms and data displays with feedback designed into their default behavior.": {
+    "zh-CN": "按钮、表单和数据展示组件，默认就包含交互反馈。",
+    "zh-TW": "按鈕、表單與資料呈現元件，預設即包含互動回饋。",
+    "fr": "Boutons, formulaires et affichages de données avec des retours intégrés par défaut."
+  },
+  "Explore components": {
+    "zh-CN": "浏览组件",
+    "zh-TW": "瀏覽元件",
+    "fr": "Explorer les composants"
+  },
+  "Layout and theme": {
+    "zh-CN": "布局与主题",
+    "zh-TW": "佈局與主題",
+    "fr": "Mise en page et thème"
+  },
+  "Build responsive views with semantic layouts and shared theme tokens.": {
+    "zh-CN": "使用语义化布局组件和统一主题令牌构建响应式界面。",
+    "zh-TW": "使用語義化佈局元件與共用主題權杖打造響應式介面。",
+    "fr": "Créez des interfaces adaptatives avec des composants de mise en page sémantiques et des jetons de thème partagés."
+  },
+  "Explore layouts": {
+    "zh-CN": "浏览布局组件",
+    "zh-TW": "瀏覽佈局元件",
+    "fr": "Explorer les mises en page"
+  },
+  "Examples for developers and AI": {
+    "zh-CN": "面向开发者与 AI 的示例",
+    "zh-TW": "面向開發者與 AI 的範例",
+    "fr": "Exemples pour développeurs et IA"
+  },
+  "Real component demos and source-derived metadata help humans and AI tools use the same APIs.": {
+    "zh-CN": "真实组件示例与源码生成的元数据，让开发者和 AI 工具使用同一套 API。",
+    "zh-TW": "真實元件範例與由原始碼產生的中繼資料，讓開發者與 AI 工具使用同一套 API。",
+    "fr": "Des démonstrations réelles et des métadonnées issues du code source permettent aux développeurs et aux outils d’IA d’utiliser les mêmes API."
+  },
+  "Browse examples": {
+    "zh-CN": "浏览示例",
+    "zh-TW": "瀏覽範例",
+    "fr": "Parcourir les exemples"
+  },
+  "Start building with Weave": {
+    "zh-CN": "开始使用 Weave 开发",
+    "zh-TW": "開始使用 Weave 開發",
+    "fr": "Commencez avec Weave"
+  },
+  "Install from JSR, then render a Weave interface with React.": {
+    "zh-CN": "通过 JSR 安装，然后使用 React 渲染 Weave 界面。",
+    "zh-TW": "透過 JSR 安裝，再使用 React 呈現 Weave 介面。",
+    "fr": "Installez depuis JSR, puis affichez une interface Weave avec React."
+  },
+  "Install": {
+    "zh-CN": "安装",
+    "zh-TW": "安裝",
+    "fr": "Installer"
+  },
+  "Render your first interface": {
+    "zh-CN": "渲染第一个界面",
+    "zh-TW": "呈現第一個介面",
+    "fr": "Afficher votre première interface"
+  },
+  "Continue with documentation": {
+    "zh-CN": "继续阅读文档",
+    "zh-TW": "繼續閱讀文件",
+    "fr": "Poursuivre avec la documentation"
+  },
+  "Weave is open source under the MIT License.": {
+    "zh-CN": "Weave 采用 MIT 许可证开源。",
+    "zh-TW": "Weave 以 MIT 授權條款開源。",
+    "fr": "Weave est open source sous licence MIT."
+  },
   "Docs": {
     "zh-CN": "文档",
     "zh-TW": "文件",
