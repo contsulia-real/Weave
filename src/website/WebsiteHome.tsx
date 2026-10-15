@@ -259,7 +259,13 @@ export function WebsiteHome({
             </Grid>
           </Column>
 
-          <Column width="fill" gap={24} data={{ 'weave-website-quickstart': '' }}>
+          <Column
+            width="fill"
+            maxWidth={832}
+            alignSelf="center"
+            gap={24}
+            data={{ 'weave-website-quickstart': '' }}
+          >
             <Column gap={12}>
               <Text typo="headline-large">{t('Start building with Weave')}</Text>
               <Text typo="body-large" color="tertiary">
