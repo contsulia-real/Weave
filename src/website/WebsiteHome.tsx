@@ -107,7 +107,7 @@ export function WebsiteHome({
       />
 
       <Column width="fill" grow={1} minHeight={0} overflow="auto" align="center">
-        <Grid width="fill" maxWidth={1200} columns={1} xl={{ columns: 2 }}>
+        <Grid width="fill" maxWidth={1600} columns={1} xl={{ columns: 2 }}>
           <Column
             width="fill"
             minWidth={0}
