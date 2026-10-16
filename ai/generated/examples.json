@@ -3209,7 +3209,7 @@
       "components": ["Column", "Progress", "Text"],
       "concepts": ["basic", "column", "progress", "text", "usage"],
       "documentationRoute": "/docs/components/Progress",
-      "source": "import { Column, Progress, Text } from '../../../index'\n\nexport default function ProgressBasicUsageDemo() {\n  return (\n    <Column gap={12} width={320}>\n      <Text typo=\"body-small\">Uploading 65%</Text>\n      <Progress mode=\"linear\" progress={0.65} tracked />\n    </Column>\n  )\n}"
+      "source": "import { Column, Progress, Text } from '../../../index'\n\nexport default function ProgressBasicUsageDemo() {\n  return (\n    <Column gap={12} width={320}>\n      <Text typo=\"body-small\">Uploading 65%</Text>\n      <Progress\n        mode=\"linear\"\n        progress={0.65}\n        tracked\n        viewProps={{ width: 'content', minWidth: 'var(--weave-progress-width)' }}\n      />\n    </Column>\n  )\n}"
     },
     {
       "id": "Progress/compact-spinner",
@@ -3257,7 +3257,7 @@
         "work"
       ],
       "documentationRoute": "/docs/components/Progress",
-      "source": "import { Progress } from '../../../index'\n\nexport default function ProgressIndeterminateLoadingDemo() {\n  return <Progress mode=\"linear\" indeterminate tracked viewProps={{ width: 320 }} />\n}"
+      "source": "import { Progress } from '../../../index'\n\nexport default function ProgressIndeterminateLoadingDemo() {\n  return (\n    <Progress\n      mode=\"linear\"\n      indeterminate\n      tracked\n      viewProps={{ width: 'content', minWidth: 'var(--weave-progress-width)' }}\n    />\n  )\n}"
     },
     {
       "id": "Progress/vertical-inverse",
@@ -3280,7 +3280,7 @@
         "while"
       ],
       "documentationRoute": "/docs/components/Progress",
-      "source": "import { Progress } from '../../../index'\n\nexport default function ProgressVerticalInverseDemo() {\n  return (\n    <Progress\n      mode=\"linear\"\n      progress={0.6}\n      direction=\"vertical\"\n      inverse\n      tracked\n      size=\"large\"\n      speed=\"fast\"\n      viewProps={{ height: 192 }}\n    />\n  )\n}"
+      "source": "import { Progress } from '../../../index'\n\nexport default function ProgressVerticalInverseDemo() {\n  return (\n    <Progress\n      mode=\"linear\"\n      progress={0.6}\n      direction=\"vertical\"\n      inverse\n      tracked\n      size=\"large\"\n      speed=\"fast\"\n      viewProps={{ width: 'content', minWidth: 'var(--weave-progress-height)', height: 192 }}\n    />\n  )\n}"
     },
     {
       "id": "Radio/basic-usage",
