@@ -98,7 +98,9 @@ export function TeamCalendar() {
           <Text typo="title-medium">{t('Team calendar')}</Text>
           <Chip text={t('October 2026')} />
         </Row>
-        <Calendar value={date} onChange={setDate} min="2026-10-01" max="2026-10-31" />
+        <Column width="fill" overflow="auto">
+          <Calendar value={date} onChange={setDate} min="2026-10-01" max="2026-10-31" />
+        </Column>
         <Column gap={8}>
           <Text typo="label-large">{t('Agenda · {{date}}', { date })}</Text>
           {agenda.length ? (
