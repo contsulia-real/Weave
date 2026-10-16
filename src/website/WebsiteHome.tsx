@@ -264,7 +264,13 @@ export function WebsiteHome({
           gap={64}
           data={{ 'weave-website-more': '' }}
         >
-          <Column width="fill" gap={24} data={{ 'weave-website-capabilities': '' }}>
+          <Column
+            width="fill"
+            maxWidth={1120}
+            alignSelf="center"
+            gap={24}
+            data={{ 'weave-website-capabilities': '' }}
+          >
             <Column gap={12}>
               <Text typo="headline-large">{t('Explore the building blocks')}</Text>
               <Text typo="body-large" color="tertiary">
@@ -302,7 +308,14 @@ export function WebsiteHome({
             </Grid>
           </Column>
 
-          <Column width="fill" marginTop={224} gap={24} data={{ 'weave-website-quickstart': '' }}>
+          <Column
+            width="fill"
+            maxWidth={1120}
+            alignSelf="center"
+            marginTop={224}
+            gap={24}
+            data={{ 'weave-website-quickstart': '' }}
+          >
             <Grid width="fill" columns={1} xl={{ columns: 2 }} gap={24}>
               <Column width="fill" minWidth={0} gap={24}>
                 <Column gap={12}>
