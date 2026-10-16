@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Breadcrumb, Card, Code, Column, Flex, Link, MenuItem, Text } from '../index'
+import { DocumentationPageNavigation } from './DocumentationPageNavigation'
 import { DocumentationReadingStatus } from './DocumentationReadingStatus'
 import { documentationCopy } from './documentation-copy'
 import {
@@ -8,6 +9,9 @@ import {
   documentationNavigationSections,
 } from './documentation-navigation-data'
 import { useDocsRoute } from './router'
+
+const overviewItems =
+  documentationNavigationSections.find((section) => section.value === 'overview')?.items ?? []
 
 const apiItems =
   documentationNavigationSections.find((section) => section.value === 'components-api')?.items ?? []
@@ -31,9 +35,6 @@ const alphabet = [...alphabetGroups].sort(([left], [right]) => left.localeCompar
 export function DocumentationGuideBreadcrumb({ title }: { title: string }) {
   const { t } = useTranslation(['translation', 'copy'])
   const { navigate } = useDocsRoute()
-  const overviewItems = documentationNavigationSections.find(
-    (section) => section.value === 'overview',
-  )?.items ?? []
 
   return (
     <Breadcrumb
@@ -51,6 +52,24 @@ export function DocumentationGuideBreadcrumb({ title }: { title: string }) {
           )),
         },
       ]}
+    />
+  )
+}
+
+export function DocumentationGuideNavigation({ pathname }: { pathname: string }) {
+  const { t } = useTranslation(['translation', 'copy'])
+  const index = overviewItems.findIndex((item) => item.path === pathname)
+  const previous = overviewItems[index - 1]
+  const next = overviewItems[index + 1]
+
+  return (
+    <DocumentationPageNavigation
+      previous={
+        previous === undefined ? null : { path: previous.path, label: t(previous.labelKey ?? '') }
+      }
+      next={next === undefined ? null : { path: next.path, label: t(next.labelKey ?? '') }}
+      previousLabel={documentationCopy(t, 'Previous')}
+      nextLabel={documentationCopy(t, 'Next')}
     />
   )
 }
@@ -228,7 +247,7 @@ export function DocumentationInstallation() {
             </Code>
           </Card>
         </Column>
-        <Link href="/docs/getting-started" text={t('docs.nav.gettingStarted')} hideUnderline />
+        <DocumentationGuideNavigation pathname="/docs/installation" />
       </Column>
       <DocumentationReadingStatus contentRef={contentRef} />
     </Flex>
@@ -275,6 +294,7 @@ export function DocumentationAZ() {
             ))}
           </Column>
         ))}
+        <DocumentationGuideNavigation pathname="/docs/a-z" />
       </Column>
       <DocumentationReadingStatus contentRef={contentRef} />
     </Flex>

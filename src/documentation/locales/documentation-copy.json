@@ -94,15 +94,15 @@
     "zh-TW": "使用 React 建立第一個 Weave 介面。本指南使用公開的 JSR 套件與標準 React DOM 渲染。",
     "fr": "Créez votre première interface Weave avec React, à partir du paquet JSR public et de React DOM."
   },
-  "1. Install Weave": {
-    "zh-CN": "1. 安装 Weave",
-    "zh-TW": "1. 安裝 Weave",
-    "fr": "1. Installer Weave"
+  "Install Weave": {
+    "zh-CN": "安装 Weave",
+    "zh-TW": "安裝 Weave",
+    "fr": "Installer Weave"
   },
-  "2. Mount your interface": {
-    "zh-CN": "2. 挂载界面",
-    "zh-TW": "2. 掛載介面",
-    "fr": "2. Monter votre interface"
+  "Mount your interface": {
+    "zh-CN": "挂载界面",
+    "zh-TW": "掛載介面",
+    "fr": "Monter votre interface"
   },
   "Use an element with id=\"app\" in your HTML, then render Weave components through createRoot.": {
     "zh-CN": "在 HTML 中添加 id=\"app\" 的元素，然后通过 createRoot 渲染 Weave 组件。",

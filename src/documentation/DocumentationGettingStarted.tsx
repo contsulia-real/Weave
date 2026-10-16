@@ -1,8 +1,8 @@
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Card, Code, Column, Flex, Link, Text } from '../index'
+import { DocumentationGuideBreadcrumb, DocumentationGuideNavigation } from './DocumentationGuides'
 import { DocumentationReadingStatus } from './DocumentationReadingStatus'
-import { DocumentationGuideBreadcrumb } from './DocumentationGuides'
 import { documentationCopy } from './documentation-copy'
 
 const firstScreenSource = `import { createRoot, ThemeProvider } from '@contsulia/weave'
@@ -50,11 +50,11 @@ export function DocumentationGettingStarted() {
 
         <Column
           id="install"
-          data={{ 'weave-doc-section': '', 'weave-doc-section-label': copy('1. Install Weave') }}
+          data={{ 'weave-doc-section': '', 'weave-doc-section-label': copy('Install Weave') }}
           width="fill"
           gap={16}
         >
-          <Text typo="headline-small">{copy('1. Install Weave')}</Text>
+          <Text typo="headline-small">{copy('Install Weave')}</Text>
           <Card viewProps={{ overflow: 'auto', align: 'center' }}>
             <Code language="bash" viewProps={{ width: 'fill' }}>
               {'pnpm add jsr:@contsulia/weave'}
@@ -67,12 +67,12 @@ export function DocumentationGettingStarted() {
           id="mount"
           data={{
             'weave-doc-section': '',
-            'weave-doc-section-label': copy('2. Mount your interface'),
+            'weave-doc-section-label': copy('Mount your interface'),
           }}
           width="fill"
           gap={16}
         >
-          <Text typo="headline-small">{copy('2. Mount your interface')}</Text>
+          <Text typo="headline-small">{copy('Mount your interface')}</Text>
           <Text typo="body-medium">
             {copy(
               'Use an element with id="app" in your HTML, then render Weave components through createRoot.',
@@ -106,6 +106,7 @@ export function DocumentationGettingStarted() {
           <Link href="/docs/components/ThemeProvider" text="ThemeProvider" hideUnderline />
           <Link href="/docs/components/Button" text="Button" hideUnderline />
         </Column>
+        <DocumentationGuideNavigation pathname="/docs/getting-started" />
       </Column>
       <DocumentationReadingStatus contentRef={contentRef} />
     </Flex>

@@ -1,8 +1,8 @@
-import { IconArrowLeft, IconArrowRight } from '@tabler/icons-react'
 import { Fragment, lazy, Suspense, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Breadcrumb, Card, Column, Flex, Icon, MenuItem, Row, Text } from '../index'
+import { Breadcrumb, Column, Flex, MenuItem, Text } from '../index'
 import { DocumentationComponentApiLink } from './DocumentationComponentApiLink'
+import { DocumentationPageNavigation } from './DocumentationPageNavigation'
 import { DocumentationReadingStatus } from './DocumentationReadingStatus'
 import { documentationComponentDocumentation } from './documentation-component-examples'
 import { documentationCopy } from './documentation-copy'
@@ -142,59 +142,18 @@ export function DocumentationComponentPage({ componentName }: DocumentationCompo
           <DocumentationComponentApiLink componentNames={apiComponents} />
         ) : null}
 
-        <Flex width="fill" gap={16} direction="column" containerMd={{ direction: 'row' }}>
-          <Card
-            clickable={adjacent.previous !== null}
-            viewProps={{
-              grow: 1,
-              width: 'fill',
-              padding: 24,
-              disabled: adjacent.previous === null,
-              onClick:
-                adjacent.previous === null
-                  ? undefined
-                  : () => {
-                      navigate(`/docs/components/${adjacent.previous}`)
-                    },
-            }}
-          >
-            <Row gap={16} align="center" justify="start">
-              <Icon icon={IconArrowLeft} size="large" />
-              <Column gap={4}>
-                <Text typo="label-medium" color="secondary">
-                  {t('docs.component.previous')}
-                </Text>
-                <Text typo="title-medium">{adjacent.previous ?? '—'}</Text>
-              </Column>
-            </Row>
-          </Card>
-
-          <Card
-            clickable={adjacent.next !== null}
-            viewProps={{
-              grow: 1,
-              width: 'fill',
-              padding: 24,
-              disabled: adjacent.next === null,
-              onClick:
-                adjacent.next === null
-                  ? undefined
-                  : () => {
-                      navigate(`/docs/components/${adjacent.next}`)
-                    },
-            }}
-          >
-            <Row gap={16} align="center" justify="end">
-              <Column gap={4} align="end">
-                <Text typo="label-medium" color="secondary">
-                  {t('docs.component.next')}
-                </Text>
-                <Text typo="title-medium">{adjacent.next ?? '—'}</Text>
-              </Column>
-              <Icon icon={IconArrowRight} size="large" />
-            </Row>
-          </Card>
-        </Flex>
+        <DocumentationPageNavigation
+          previous={
+            adjacent.previous === null
+              ? null
+              : { path: `/docs/components/${adjacent.previous}`, label: adjacent.previous }
+          }
+          next={
+            adjacent.next === null
+              ? null
+              : { path: `/docs/components/${adjacent.next}`, label: adjacent.next }
+          }
+        />
       </Column>
 
       <DocumentationReadingStatus contentRef={contentRef} />
