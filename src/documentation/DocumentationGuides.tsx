@@ -61,13 +61,21 @@ export function DocumentationGuideNavigation({ pathname }: { pathname: string })
   const index = overviewItems.findIndex((item) => item.path === pathname)
   const previous = overviewItems[index - 1]
   const next = overviewItems[index + 1]
+  const firstComponent =
+    pathname === '/docs/a-z' ? documentationComponentNavigationItems[0] : undefined
 
   return (
     <DocumentationPageNavigation
       previous={
         previous === undefined ? null : { path: previous.path, label: t(previous.labelKey ?? '') }
       }
-      next={next === undefined ? null : { path: next.path, label: t(next.labelKey ?? '') }}
+      next={
+        next !== undefined
+          ? { path: next.path, label: t(next.labelKey ?? '') }
+          : firstComponent !== undefined
+            ? { path: firstComponent.path, label: firstComponent.name }
+            : null
+      }
       previousLabel={documentationCopy(t, 'Previous')}
       nextLabel={documentationCopy(t, 'Next')}
     />

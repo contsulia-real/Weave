@@ -112,7 +112,7 @@ export function DocumentationNavigation({ pathname, onNavigate }: DocumentationN
   }
 
   return (
-    <Flex maxHeight="fill" marginRight="12px" scrollbar={{ outside: true }}>
+    <Flex maxHeight="fill" marginRight="12px" scrollbar={{}}>
       <Column gap={16} width="fill" align="center">
         <Input
           type="search"
