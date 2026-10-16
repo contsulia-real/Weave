@@ -1,5 +1,7 @@
+import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Card, Code, Column, Flex, Link, Text } from '../index'
+import { DocumentationReadingStatus } from './DocumentationReadingStatus'
 import { documentationCopy } from './documentation-copy'
 import {
   documentationComponentNavigationItems,
@@ -28,24 +30,29 @@ const alphabet = [...alphabetGroups].sort(([left], [right]) => left.localeCompar
 export function DocumentationOverview() {
   const { t } = useTranslation(['translation', 'copy'])
   const copy = (value: string) => documentationCopy(t, value)
+  const contentRef = useRef<HTMLDivElement>(null)
 
   const links = [
     {
+      id: 'installation',
       href: '/docs/installation',
       title: t('docs.nav.installation'),
       description: copy('Install Weave from JSR and check the React requirements.'),
     },
     {
+      id: 'getting-started',
       href: '/docs/getting-started',
       title: t('docs.nav.gettingStarted'),
       description: copy('Render a working Weave interface with React.'),
     },
     {
+      id: 'a-z',
       href: '/docs/a-z',
       title: t('docs.nav.weaveAZ'),
       description: copy('Browse public components and API references alphabetically.'),
     },
     {
+      id: 'layout',
       href: '/docs/components/Layout',
       title: copy('Layout primitives'),
       description: copy(
@@ -64,20 +71,27 @@ export function DocumentationOverview() {
       containerMd={{ padding: 32 }}
       containerLg={{ direction: 'row', justify: 'center' }}
     >
-      <Column width="fill" maxWidth={832} minWidth={0} grow={1} gap={48}>
+      <Column ref={contentRef} grow={1} minWidth={0} width="fill" maxWidth={832} gap={48}>
         <Column width="fill" gap={12}>
           <Text typo="display-medium">{t('docs.route.overview')}</Text>
           <Text typo="body-large">{t('docs.gettingStarted.positioning')}</Text>
         </Column>
 
         {links.map((item) => (
-          <Column key={item.href} width="fill" gap={16}>
+          <Column
+            key={item.href}
+            id={item.id}
+            data={{ 'weave-doc-section': '', 'weave-doc-section-label': item.title }}
+            width="fill"
+            gap={16}
+          >
             <Text typo="headline-small">{item.title}</Text>
             <Text typo="body-medium">{item.description}</Text>
             <Link href={item.href} text={item.title} hideUnderline />
           </Column>
         ))}
       </Column>
+      <DocumentationReadingStatus contentRef={contentRef} />
     </Flex>
   )
 }
@@ -85,6 +99,7 @@ export function DocumentationOverview() {
 export function DocumentationInstallation() {
   const { t } = useTranslation(['translation', 'copy'])
   const copy = (value: string) => documentationCopy(t, value)
+  const contentRef = useRef<HTMLDivElement>(null)
 
   return (
     <Flex
@@ -96,7 +111,7 @@ export function DocumentationInstallation() {
       containerMd={{ padding: 32 }}
       containerLg={{ direction: 'row', justify: 'center' }}
     >
-      <Column width="fill" maxWidth={832} minWidth={0} grow={1} gap={48}>
+      <Column ref={contentRef} grow={1} minWidth={0} width="fill" maxWidth={832} gap={48}>
         <Column width="fill" gap={12}>
           <Text typo="display-medium">{t('docs.nav.installation')}</Text>
           <Text typo="body-large">
@@ -106,7 +121,12 @@ export function DocumentationInstallation() {
           </Text>
         </Column>
 
-        <Column width="fill" gap={16}>
+        <Column
+          id="requirements"
+          data={{ 'weave-doc-section': '', 'weave-doc-section-label': copy('Requirements') }}
+          width="fill"
+          gap={16}
+        >
           <Text typo="headline-small">{copy('Requirements')}</Text>
           <Text typo="body-medium">
             {copy(
@@ -120,7 +140,12 @@ export function DocumentationInstallation() {
           </Text>
         </Column>
 
-        <Column width="fill" gap={16}>
+        <Column
+          id="install"
+          data={{ 'weave-doc-section': '', 'weave-doc-section-label': copy('Install the package') }}
+          width="fill"
+          gap={16}
+        >
           <Text typo="headline-small">{copy('Install the package')}</Text>
           <Card viewProps={{ overflow: 'auto', align: 'center' }}>
             <Code language="bash" viewProps={{ width: 'fill' }}>
@@ -132,7 +157,12 @@ export function DocumentationInstallation() {
           </Text>
         </Column>
 
-        <Column width="fill" gap={16}>
+        <Column
+          id="imports"
+          data={{ 'weave-doc-section': '', 'weave-doc-section-label': copy('Imports') }}
+          width="fill"
+          gap={16}
+        >
           <Text typo="headline-small">{copy('Imports')}</Text>
           <Text typo="body-medium">
             {copy(
@@ -148,7 +178,15 @@ export function DocumentationInstallation() {
           </Card>
         </Column>
 
-        <Column width="fill" gap={16}>
+        <Column
+          id="optional-integrations"
+          data={{
+            'weave-doc-section': '',
+            'weave-doc-section-label': copy('Optional integrations'),
+          }}
+          width="fill"
+          gap={16}
+        >
           <Text typo="headline-small">{copy('Optional integrations')}</Text>
           <Text typo="body-medium">
             {copy(
@@ -163,6 +201,7 @@ export function DocumentationInstallation() {
         </Column>
         <Link href="/docs/getting-started" text={t('docs.nav.gettingStarted')} hideUnderline />
       </Column>
+      <DocumentationReadingStatus contentRef={contentRef} />
     </Flex>
   )
 }
