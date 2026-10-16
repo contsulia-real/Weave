@@ -89,10 +89,25 @@
     "zh-TW": "API",
     "fr": "API"
   },
-  "Build your first Weave interface with React. This guide uses the public JSR package and ordinary React DOM rendering.": {
-    "zh-CN": "使用 React 构建第一个 Weave 界面。本指南使用公开的 JSR 包和标准 React DOM 渲染。",
-    "zh-TW": "使用 React 建立第一個 Weave 介面。本指南使用公開的 JSR 套件與標準 React DOM 渲染。",
-    "fr": "Créez votre première interface Weave avec React, à partir du paquet JSR public et de React DOM."
+  "Build a working React interface with Weave: install the package, mount a root, respond to clicks, and set a theme.": {
+    "zh-CN": "通过安装 Weave、挂载根节点、处理点击和配置主题，构建可运行的 React 界面。",
+    "zh-TW": "透過安裝 Weave、掛載根節點、處理點擊和設定主題，建立可運作的 React 介面。",
+    "fr": "Créez une interface React fonctionnelle avec Weave : installez le paquet, montez la racine, gérez les clics et configurez un thème."
+  },
+  "Start with a React project": {
+    "zh-CN": "准备 React 项目",
+    "zh-TW": "準備 React 專案",
+    "fr": "Préparer un projet React"
+  },
+  "Use an existing React 19 and React DOM 19 application. Weave targets the browser; React handles your application state and rendering.": {
+    "zh-CN": "从现有的 React 19 和 React DOM 19 应用开始。Weave 面向浏览器，应用状态和渲染仍由 React 负责。",
+    "zh-TW": "從現有的 React 19 和 React DOM 19 應用開始。Weave 面向瀏覽器，應用狀態與渲染仍由 React 負責。",
+    "fr": "Partez d’une application React 19 et React DOM 19 existante. Weave cible le navigateur ; React gère l’état et le rendu de votre application."
+  },
+  "Run this in your React project. Weave is installed from JSR rather than the npm registry.": {
+    "zh-CN": "在 React 项目中运行此命令。Weave 从 JSR 安装，而不是从 npm 注册表安装。",
+    "zh-TW": "在 React 專案中執行此指令。Weave 從 JSR 安裝，而非從 npm 登錄檔安裝。",
+    "fr": "Exécutez cette commande dans votre projet React. Weave s’installe depuis JSR, et non depuis le registre npm."
   },
   "Install Weave": {
     "zh-CN": "安装 Weave",
@@ -104,10 +119,55 @@
     "zh-TW": "掛載介面",
     "fr": "Monter votre interface"
   },
-  "Use an element with id=\"app\" in your HTML, then render Weave components through createRoot.": {
-    "zh-CN": "在 HTML 中添加 id=\"app\" 的元素，然后通过 createRoot 渲染 Weave 组件。",
-    "zh-TW": "在 HTML 中加入 id=\"app\" 的元素，然後透過 createRoot 渲染 Weave 元件。",
-    "fr": "Ajoutez un élément avec id=\"app\" dans votre HTML, puis affichez les composants Weave via createRoot."
+  "Add this container to your HTML. The application entry below passes it to Weave createRoot, which uses React DOM.": {
+    "zh-CN": "在 HTML 中添加此容器。下方应用入口会将其传给 Weave 的 createRoot，底层使用 React DOM。",
+    "zh-TW": "在 HTML 中加入此容器。下方應用程式入口會將其傳給 Weave 的 createRoot，底層使用 React DOM。",
+    "fr": "Ajoutez ce conteneur à votre HTML. Le point d’entrée de l’application le transmet à createRoot de Weave, qui utilise React DOM."
+  },
+  "Build an interactive screen": {
+    "zh-CN": "构建可交互界面",
+    "zh-TW": "建立可互動介面",
+    "fr": "Créer une interface interactive"
+  },
+  "Put this TSX code in your application entry. Click Add one to update the count; Reset clears it. Both buttons use ordinary React state.": {
+    "zh-CN": "将这段 TSX 代码放入应用入口。点击 Add one 可以增加计数，Reset 可以清零；两个按钮都使用标准 React 状态。",
+    "zh-TW": "將這段 TSX 程式碼放入應用程式入口。點擊 Add one 可增加計數，Reset 可歸零；兩個按鈕都使用標準 React 狀態。",
+    "fr": "Placez ce code TSX dans le point d’entrée de votre application. Add one incrémente le compteur et Reset le remet à zéro, avec l’état React habituel."
+  },
+  "Understand the component model": {
+    "zh-CN": "理解组件模型",
+    "zh-TW": "理解元件模型",
+    "fr": "Comprendre le modèle de composants"
+  },
+  "Import createRoot, ThemeProvider, and theme helpers from the package root. Import Button, Column, Row, and Text from their individual component subpaths.": {
+    "zh-CN": "从包根入口导入 createRoot、ThemeProvider 和主题工具；从独立组件子路径导入 Button、Column、Row、Text。",
+    "zh-TW": "從套件根入口匯入 createRoot、ThemeProvider 和主題工具；從獨立元件子路徑匯入 Button、Column、Row、Text。",
+    "fr": "Importez createRoot, ThemeProvider et les utilitaires de thème depuis la racine du paquet. Importez Button, Column, Row et Text depuis leurs sous-chemins respectifs."
+  },
+  "Use Column for vertical layout and Row for horizontal layout. Numeric gap and padding values are pixels. Button text and variant are component props; its click handler belongs in viewProps.": {
+    "zh-CN": "使用 Column 纵向排列、Row 横向排列。数字形式的 gap 和 padding 单位为像素。Button 的 text、variant 是组件属性；点击事件通过 viewProps 传递。",
+    "zh-TW": "使用 Column 垂直排列、Row 水平排列。數字形式的 gap 與 padding 單位為像素。Button 的 text、variant 是元件屬性；點擊事件透過 viewProps 傳遞。",
+    "fr": "Utilisez Column pour la disposition verticale et Row pour l’horizontale. Les valeurs numériques de gap et padding sont en pixels. text et variant sont des propriétés de Button ; le clic passe par viewProps."
+  },
+  "Configure the theme": {
+    "zh-CN": "配置主题",
+    "zh-TW": "設定主題",
+    "fr": "Configurer le thème"
+  },
+  "The example creates a theme from a CSS color seed. ThemeProvider applies it to the component tree, while mode=\"system\" follows the device light or dark preference.": {
+    "zh-CN": "示例通过 CSS 颜色种子创建主题。ThemeProvider 将其应用于组件树，mode=\"system\" 则跟随设备的浅色或深色偏好。",
+    "zh-TW": "範例透過 CSS 色彩種子建立主題。ThemeProvider 將其套用至元件樹，mode=\"system\" 則跟隨裝置的淺色或深色偏好。",
+    "fr": "L’exemple crée un thème à partir d’une couleur CSS. ThemeProvider l’applique à l’arbre de composants et mode=\"system\" suit la préférence claire ou sombre de l’appareil."
+  },
+  "Explore further": {
+    "zh-CN": "继续探索",
+    "zh-TW": "繼續探索",
+    "fr": "Pour aller plus loin"
+  },
+  "Use the component guides for live examples and the API reference for supported properties and import paths.": {
+    "zh-CN": "在组件指南中查看实际示例，在 API 参考页中查看支持的属性与导入路径。",
+    "zh-TW": "在元件指南中查看實際範例，在 API 參考頁中查看支援的屬性與匯入路徑。",
+    "fr": "Consultez les guides de composants pour des exemples interactifs et les références API pour les propriétés et chemins d’importation pris en charge."
   },
   "Next steps": {
     "zh-CN": "下一步",
