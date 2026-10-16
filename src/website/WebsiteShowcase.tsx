@@ -299,7 +299,7 @@ export function StudioInsights() {
           min={0}
           max={100}
           step={5}
-          viewProps={{ label: t('Activity goal'), width: 'fill' }}
+          viewProps={{ label: t('Activity goal'), width: 'content', minWidth: '100%' }}
         />
         <Text typo="body-small" color="secondary">
           {activity >= goal
@@ -336,7 +336,7 @@ export function WorkspacePreferences() {
           value={volume}
           onChange={setVolume}
           step={10}
-          viewProps={{ label: t('Notification volume'), width: 'fill' }}
+          viewProps={{ label: t('Notification volume'), width: 'content', minWidth: '100%' }}
         />
         <Text typo="body-small" color="secondary">
           {focus ? `${t('Focus mode is on.')} ` : `${t('Focus mode is off.')} `}

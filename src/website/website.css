@@ -22,6 +22,11 @@
   animation-range: exit 0% exit 50%;
 }
 
+[data-weave-website-showcase] .weave-slider-control {
+  grid-template-columns: minmax(0, 1fr);
+  justify-content: stretch;
+}
+
 [data-weave-website-why] {
   animation: weave-website-why-fade-in linear both;
   animation-timeline: view(block);
