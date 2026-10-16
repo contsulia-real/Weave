@@ -1,4 +1,149 @@
 {
+  "Install Weave from JSR and check the React requirements.": {
+    "zh-CN": "通过 JSR 安装 Weave，并了解 React 环境要求。",
+    "zh-TW": "透過 JSR 安裝 Weave，並確認 React 環境需求。",
+    "fr": "Installez Weave depuis JSR et vérifiez les prérequis React."
+  },
+  "Render a working Weave interface with React.": {
+    "zh-CN": "使用 React 渲染一个可以运行的 Weave 界面。",
+    "zh-TW": "使用 React 渲染可執行的 Weave 介面。",
+    "fr": "Créez une interface Weave fonctionnelle avec React."
+  },
+  "Browse public components and API references alphabetically.": {
+    "zh-CN": "按字母顺序浏览公开组件及 API 参考。",
+    "zh-TW": "依字母順序瀏覽公開元件與 API 參考。",
+    "fr": "Parcourez les composants publics et leurs références API par ordre alphabétique."
+  },
+  "Layout primitives": {
+    "zh-CN": "布局组件",
+    "zh-TW": "版面配置元件",
+    "fr": "Composants de mise en page"
+  },
+  "Compose responsive screens with Row, Column, Grid, and the other layout primitives.": {
+    "zh-CN": "使用 Row、Column、Grid 等布局组件构建响应式界面。",
+    "zh-TW": "使用 Row、Column、Grid 等版面配置元件建立響應式介面。",
+    "fr": "Créez des interfaces adaptatives avec Row, Column, Grid et les autres composants de mise en page."
+  },
+  "Read documentation": {
+    "zh-CN": "阅读文档",
+    "zh-TW": "閱讀文件",
+    "fr": "Lire la documentation"
+  },
+  "Component categories": {
+    "zh-CN": "组件分类",
+    "zh-TW": "元件分類",
+    "fr": "Catégories de composants"
+  },
+  "Browse components": {
+    "zh-CN": "浏览组件",
+    "zh-TW": "瀏覽元件",
+    "fr": "Parcourir les composants"
+  },
+  "Weave is distributed through JSR. Install it in a React 19 application using a JSR-compatible package manager.": {
+    "zh-CN": "Weave 通过 JSR 发布。请使用支持 JSR 的包管理器，在 React 19 应用中安装。",
+    "zh-TW": "Weave 透過 JSR 發布。請使用支援 JSR 的套件管理工具，在 React 19 應用中安裝。",
+    "fr": "Weave est distribué via JSR. Installez-le dans une application React 19 avec un gestionnaire de paquets compatible JSR."
+  },
+  "Requirements": {
+    "zh-CN": "环境要求",
+    "zh-TW": "環境需求",
+    "fr": "Prérequis"
+  },
+  "React 19 and React DOM 19 are peer dependencies. Weave renders through React DOM and browser-native elements.": {
+    "zh-CN": "React 19 和 React DOM 19 是对等依赖。Weave 通过 React DOM 和浏览器原生元素渲染。",
+    "zh-TW": "React 19 與 React DOM 19 是對等依賴。Weave 透過 React DOM 與瀏覽器原生元素渲染。",
+    "fr": "React 19 et React DOM 19 sont des dépendances pair. Weave utilise React DOM et des éléments natifs du navigateur."
+  },
+  "The package is currently in alpha. npm registry publication is disabled; use the JSR package instead.": {
+    "zh-CN": "目前发布版本为 Alpha。npm 注册表发布已关闭，请使用 JSR 包。",
+    "zh-TW": "目前為 Alpha 版本。npm 登錄庫發布已停用，請使用 JSR 套件。",
+    "fr": "Le paquet est en version alpha. La publication sur le registre npm est désactivée : utilisez JSR."
+  },
+  "Install the package": {
+    "zh-CN": "安装包",
+    "zh-TW": "安裝套件",
+    "fr": "Installer le paquet"
+  },
+  "Run this command inside an existing React project.": {
+    "zh-CN": "请在已有的 React 项目中执行该命令。",
+    "zh-TW": "請在既有 React 專案中執行此指令。",
+    "fr": "Exécutez cette commande dans un projet React existant."
+  },
+  "Imports": {
+    "zh-CN": "导入方式",
+    "zh-TW": "匯入方式",
+    "fr": "Importations"
+  },
+  "Import root and theme APIs from the package root; import components through their individual public subpaths.": {
+    "zh-CN": "根 API 与主题 API 从包根路径导入；组件从各自的公开子路径导入。",
+    "zh-TW": "根 API 與主題 API 從套件根路徑匯入；元件從各自的公開子路徑匯入。",
+    "fr": "Importez les API racines et de thème depuis la racine du paquet, et les composants depuis leurs sous-chemins publics."
+  },
+  "Optional integrations": {
+    "zh-CN": "可选集成",
+    "zh-TW": "選用整合",
+    "fr": "Intégrations facultatives"
+  },
+  "Install Tabler Icons only if you use its icon set, and Shiki if you use the Code component for syntax highlighting.": {
+    "zh-CN": "仅在使用 Tabler 图标时安装 Tabler Icons；使用 Code 组件进行语法高亮时安装 Shiki。",
+    "zh-TW": "僅在使用 Tabler 圖示時安裝 Tabler Icons；使用 Code 元件進行語法醒目提示時安裝 Shiki。",
+    "fr": "Installez Tabler Icons si vous utilisez ses icônes, et Shiki si vous utilisez le composant Code pour la coloration syntaxique."
+  },
+  "Alphabetical index of component guides and public API references. Guides open example pages; API entries open their prop references.": {
+    "zh-CN": "组件指南和公开 API 的字母索引。指南入口打开示例页，API 入口打开属性参考页。",
+    "zh-TW": "元件指南與公開 API 的字母索引。指南入口開啟範例頁，API 入口開啟屬性參考頁。",
+    "fr": "Index alphabétique des guides et API publics. Les guides ouvrent les exemples et les entrées API leurs références de propriétés."
+  },
+  "Examples": {
+    "zh-CN": "示例",
+    "zh-TW": "範例",
+    "fr": "Exemples"
+  },
+  "API": {
+    "zh-CN": "API",
+    "zh-TW": "API",
+    "fr": "API"
+  },
+  "Build your first Weave interface with React. This guide uses the public JSR package and ordinary React DOM rendering.": {
+    "zh-CN": "使用 React 构建第一个 Weave 界面。本指南使用公开的 JSR 包和标准 React DOM 渲染。",
+    "zh-TW": "使用 React 建立第一個 Weave 介面。本指南使用公開的 JSR 套件與標準 React DOM 渲染。",
+    "fr": "Créez votre première interface Weave avec React, à partir du paquet JSR public et de React DOM."
+  },
+  "1. Install Weave": {
+    "zh-CN": "1. 安装 Weave",
+    "zh-TW": "1. 安裝 Weave",
+    "fr": "1. Installer Weave"
+  },
+  "2. Mount your interface": {
+    "zh-CN": "2. 挂载界面",
+    "zh-TW": "2. 掛載介面",
+    "fr": "2. Monter votre interface"
+  },
+  "Use an element with id=\"app\" in your HTML, then render Weave components through createRoot.": {
+    "zh-CN": "在 HTML 中添加 id=\"app\" 的元素，然后通过 createRoot 渲染 Weave 组件。",
+    "zh-TW": "在 HTML 中加入 id=\"app\" 的元素，然後透過 createRoot 渲染 Weave 元件。",
+    "fr": "Ajoutez un élément avec id=\"app\" dans votre HTML, puis affichez les composants Weave via createRoot."
+  },
+  "3. Preview the result": {
+    "zh-CN": "3. 预览结果",
+    "zh-TW": "3. 預覽結果",
+    "fr": "3. Aperçu du résultat"
+  },
+  "The interface below uses the same public ThemeProvider, Column, Text, and Button components as the example.": {
+    "zh-CN": "下方界面使用与代码示例相同的公开 ThemeProvider、Column、Text 和 Button 组件。",
+    "zh-TW": "下方介面使用與程式碼範例相同的公開 ThemeProvider、Column、Text 和 Button 元件。",
+    "fr": "L'interface ci-dessous utilise les mêmes composants publics ThemeProvider, Column, Text et Button que l'exemple."
+  },
+  "Next steps": {
+    "zh-CN": "下一步",
+    "zh-TW": "下一步",
+    "fr": "Étapes suivantes"
+  },
+  "Explore layout primitives, theme configuration, and component examples to build a complete interface.": {
+    "zh-CN": "继续了解布局组件、主题配置和组件示例，构建完整界面。",
+    "zh-TW": "繼續了解版面配置元件、主題設定與元件範例，以建立完整介面。",
+    "fr": "Explorez les composants de mise en page, les thèmes et les exemples pour construire une interface complète."
+  },
   "Frequency bar count": {
     "zh-CN": "频谱柱数量",
     "zh-TW": "頻譜柱數量",

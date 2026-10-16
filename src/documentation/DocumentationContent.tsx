@@ -6,6 +6,11 @@ import { DocumentationComponentApiPage } from './DocumentationComponentApiPage'
 import { DocumentationComponentPage } from './DocumentationComponentPage'
 import { DocumentationGettingStarted } from './DocumentationGettingStarted'
 import {
+  DocumentationAZ,
+  DocumentationInstallation,
+  DocumentationOverview,
+} from './DocumentationGuides'
+import {
   documentationComponentApiNameForPath,
   documentationComponentNameForPath,
 } from './documentation-navigation-data'
@@ -26,47 +31,26 @@ export function DocumentationContent({ section, pathname }: DocumentationContent
   const componentApiName = documentationComponentApiNameForPath(pathname)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
 
-  if (pathname === '/docs/getting-started') {
-    return (
-      <Column
-        ref={scrollContainerRef}
-        width="fill"
-        height="fill"
-        overflow="auto"
-        container="documentation-content"
-      >
-        <DocumentationGettingStarted />
+  const content =
+    pathname === '/docs' ? (
+      <DocumentationOverview />
+    ) : pathname === '/docs/installation' ? (
+      <DocumentationInstallation />
+    ) : pathname === '/docs/a-z' || pathname === '/docs/components' ? (
+      <DocumentationAZ />
+    ) : pathname === '/docs/getting-started' ? (
+      <DocumentationGettingStarted />
+    ) : componentName !== null ? (
+      <DocumentationComponentPage key={componentName} componentName={componentName} />
+    ) : componentApiName !== null ? (
+      <DocumentationComponentApiPage key={componentApiName} componentName={componentApiName} />
+    ) : (
+      <Column grow={1} width="fill">
+        <Column width="fill" padding={32} gap={12}>
+          <Text typo="display-small">{routeTitle(section, t)}</Text>
+        </Column>
       </Column>
     )
-  }
-
-  if (componentName !== null) {
-    return (
-      <Column
-        ref={scrollContainerRef}
-        width="fill"
-        height="fill"
-        overflow="auto"
-        container="documentation-content"
-      >
-        <DocumentationComponentPage key={componentName} componentName={componentName} />
-      </Column>
-    )
-  }
-
-  if (componentApiName !== null) {
-    return (
-      <Column
-        ref={scrollContainerRef}
-        width="fill"
-        height="fill"
-        overflow="auto"
-        container="documentation-content"
-      >
-        <DocumentationComponentApiPage key={componentApiName} componentName={componentApiName} />
-      </Column>
-    )
-  }
 
   return (
     <Column
@@ -76,11 +60,7 @@ export function DocumentationContent({ section, pathname }: DocumentationContent
       overflow="auto"
       container="documentation-content"
     >
-      <Column grow={1} width="fill">
-        <Column width="fill" padding={32} gap={12}>
-          <Text typo="display-small">{routeTitle(section, t)}</Text>
-        </Column>
-      </Column>
+      {content}
     </Column>
   )
 }

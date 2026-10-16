@@ -1,92 +1,95 @@
 import { useTranslation } from 'react-i18next'
-import { Column, MarkSlider, Progress, RangeSlider, Row, Slider, Text } from '../index'
+import { Button, Card, Code, Column, Link, Text, ThemeProvider } from '../index'
+import { documentationCopy } from './documentation-copy'
 
-const markSliderExampleMarks = [
-  { flag: 10, label: <Text typo="body-small">10</Text> },
-  { flag: 35, label: <Text typo="body-small">35</Text> },
-  { flag: 80, label: <Text typo="body-small">80</Text> },
-] as const
+const firstScreenSource = `import { createRoot, ThemeProvider } from '@contsulia/weave'
+import { Button } from '@contsulia/weave/components/Button'
+import { Column } from '@contsulia/weave/components/Column'
+import { Text } from '@contsulia/weave/components/Text'
+
+const container = document.getElementById('app')
+if (!container) throw new Error('Missing #app')
+
+createRoot(container).render(
+  <ThemeProvider mode="system">
+    <Column gap={16} padding={24}>
+      <Text typo="title-large">Hello from Weave</Text>
+      <Button text="Continue" variant="primary" />
+    </Column>
+  </ThemeProvider>,
+)`
 
 export function DocumentationGettingStarted() {
-  const { t } = useTranslation()
-  const overriddenEndpointMarks = [
-    { flag: 0, label: <Text typo="body-small">{t('docs.gettingStarted.min')}</Text> },
-    { flag: 25, label: <Text typo="body-small">25</Text> },
-    { flag: 70, label: <Text typo="body-small">70</Text> },
-    { flag: 100, label: <Text typo="body-small">{t('docs.gettingStarted.max')}</Text> },
-  ] as const
+  const { t } = useTranslation(['translation', 'copy'])
+  const copy = (value: string) => documentationCopy(t, value)
 
   return (
-    <Column width="fill" padding={32} gap={48}>
-      <Text typo="display-small">{t('docs.nav.gettingStarted')}</Text>
-      <Text typo="body-large" color="secondary">
-        {t('docs.gettingStarted.positioning')}
-      </Text>
-
-      <Column gap={24}>
-        <Text typo="headline-small">{t('docs.gettingStarted.sliderHorizontal')}</Text>
-        <Slider defaultValue={35} step={25} />
-        <MarkSlider
-          marks={markSliderExampleMarks}
-          defaultValue={35}
-          restricted
-          viewProps={{ width: '1600px' }}
-        />
-        <RangeSlider defaultValue={[25, 75]} step={25} />
+    <Column width="fill" maxWidth={832} padding={32} gap={36}>
+      <Column gap={12}>
+        <Text typo="display-medium">{t('docs.nav.gettingStarted')}</Text>
+        <Text typo="body-large" color="secondary">
+          {copy(
+            'Build your first Weave interface with React. This guide uses the public JSR package and ordinary React DOM rendering.',
+          )}
+        </Text>
       </Column>
 
-      <Column gap={24}>
-        <Text typo="headline-small">{t('docs.gettingStarted.sliderHorizontalInverse')}</Text>
-        <Slider defaultValue={35} step={25} inverse />
-        <MarkSlider marks={markSliderExampleMarks} defaultValue={35} restricted inverse />
-        <RangeSlider defaultValue={[25, 75]} step={25} inverse />
+      <Column gap={12}>
+        <Text typo="headline-small">{copy('1. Install Weave')}</Text>
+        <Card viewProps={{ width: 'fill', overflow: 'auto' }}>
+          <Code language="bash" viewProps={{ width: 'fill' }}>
+            {'pnpm add jsr:@contsulia/weave'}
+          </Code>
+        </Card>
+        <Link href="/docs/installation" text={t('docs.nav.installation')} hideUnderline />
       </Column>
 
-      <Column gap={24}>
-        <Text typo="headline-small">{t('docs.gettingStarted.sliderVertical')}</Text>
-        <Row gap={64} align="center">
-          <Slider defaultValue={35} step={25} direction="vertical" />
-          <MarkSlider
-            marks={overriddenEndpointMarks}
-            defaultValue={25}
-            restricted
-            direction="vertical"
-          />
-          <RangeSlider defaultValue={[25, 75]} step={25} direction="vertical" />
-        </Row>
+      <Column gap={12}>
+        <Text typo="headline-small">{copy('2. Mount your interface')}</Text>
+        <Text typo="body-medium">
+          {copy(
+            'Use an element with id="app" in your HTML, then render Weave components through createRoot.',
+          )}
+        </Text>
+        <Card viewProps={{ width: 'fill', overflow: 'auto' }}>
+          <Code language="html" viewProps={{ width: 'fill' }}>
+            {'<div id="app"></div>'}
+          </Code>
+        </Card>
+        <Card viewProps={{ width: 'fill', overflow: 'auto' }}>
+          <Code language="tsx" viewProps={{ width: 'fill' }}>
+            {firstScreenSource}
+          </Code>
+        </Card>
       </Column>
 
-      <Column gap={24}>
-        <Text typo="headline-small">{t('docs.gettingStarted.sliderVerticalInverse')}</Text>
-        <Row gap={64} align="center">
-          <Slider defaultValue={35} step={25} direction="vertical" inverse />
-          <MarkSlider
-            marks={overriddenEndpointMarks}
-            defaultValue={25}
-            restricted
-            direction="vertical"
-            inverse
-          />
-          <RangeSlider defaultValue={[25, 75]} step={25} direction="vertical" inverse />
-        </Row>
+      <Column gap={12}>
+        <Text typo="headline-small">{copy('3. Preview the result')}</Text>
+        <Text typo="body-medium">
+          {copy(
+            'The interface below uses the same public ThemeProvider, Column, Text, and Button components as the example.',
+          )}
+        </Text>
+        <Card viewProps={{ width: 'fill' }}>
+          <ThemeProvider mode="system">
+            <Column gap={16} padding={24}>
+              <Text typo="title-large">Hello from Weave</Text>
+              <Button text="Continue" variant="primary" />
+            </Column>
+          </ThemeProvider>
+        </Card>
       </Column>
 
-      <Column gap={24}>
-        <Text typo="headline-small">{t('docs.gettingStarted.progressHorizontal')}</Text>
-        <Progress mode="linear" progress={0.65} tracked direction="horizontal" />
-        <Progress mode="linear" indeterminate tracked direction="horizontal" />
-        <Progress mode="linear" progress={0.65} tracked direction="horizontal" inverse />
-        <Progress mode="linear" indeterminate tracked direction="horizontal" inverse />
-      </Column>
-
-      <Column gap={24}>
-        <Text typo="headline-small">{t('docs.gettingStarted.progressVertical')}</Text>
-        <Row gap={64} align="center">
-          <Progress mode="linear" progress={0.65} tracked direction="vertical" />
-          <Progress mode="linear" indeterminate tracked direction="vertical" />
-          <Progress mode="linear" progress={0.65} tracked direction="vertical" inverse />
-          <Progress mode="linear" indeterminate tracked direction="vertical" inverse />
-        </Row>
+      <Column gap={12}>
+        <Text typo="headline-small">{copy('Next steps')}</Text>
+        <Text typo="body-medium">
+          {copy(
+            'Explore layout primitives, theme configuration, and component examples to build a complete interface.',
+          )}
+        </Text>
+        <Link href="/docs/components/Layout" text={copy('Layout primitives')} hideUnderline />
+        <Link href="/docs/components/ThemeProvider" text="ThemeProvider" hideUnderline />
+        <Link href="/docs/components/Button" text="Button" hideUnderline />
       </Column>
     </Column>
   )
