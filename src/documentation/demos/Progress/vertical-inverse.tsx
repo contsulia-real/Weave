@@ -10,7 +10,7 @@ export default function ProgressVerticalInverseDemo() {
       tracked
       size="large"
       speed="fast"
-      viewProps={{ width: 'content', minWidth: 'var(--weave-progress-height)', height: 192 }}
+      viewProps={{ height: 192 }}
     />
   )
 }

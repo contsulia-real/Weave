@@ -50,7 +50,12 @@ export function ProjectOverview() {
             {t('{{count}} of {{total}}', { count, total: releaseTasks.length })}
           </Text>
         </Row>
-        <Progress mode="linear" tracked progress={count / releaseTasks.length} />
+        <Progress
+          mode="linear"
+          tracked
+          progress={count / releaseTasks.length}
+          viewProps={{ width: 'content', minWidth: '100%' }}
+        />
         <Column gap={12}>
           {releaseTasks.map((task, index) => (
             <Checkbox
@@ -276,7 +281,12 @@ export function StudioInsights() {
             <Text typo="headline-medium">{reviews}</Text>
           </Column>
         </Row>
-        <Progress mode="linear" tracked progress={activity / 100} />
+        <Progress
+          mode="linear"
+          tracked
+          progress={activity / 100}
+          viewProps={{ width: 'content', minWidth: '100%' }}
+        />
         <Row align="center" justify="space-between">
           <Text typo="body-small">{t('Activity goal')}</Text>
           <Text typo="body-small" color="secondary">
