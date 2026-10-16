@@ -24,21 +24,6 @@
     "zh-TW": "使用 Row、Column、Grid 等版面配置元件建立響應式介面。",
     "fr": "Créez des interfaces adaptatives avec Row, Column, Grid et les autres composants de mise en page."
   },
-  "Read documentation": {
-    "zh-CN": "阅读文档",
-    "zh-TW": "閱讀文件",
-    "fr": "Lire la documentation"
-  },
-  "Component categories": {
-    "zh-CN": "组件分类",
-    "zh-TW": "元件分類",
-    "fr": "Catégories de composants"
-  },
-  "Browse components": {
-    "zh-CN": "浏览组件",
-    "zh-TW": "瀏覽元件",
-    "fr": "Parcourir les composants"
-  },
   "Weave is distributed through JSR. Install it in a React 19 application using a JSR-compatible package manager.": {
     "zh-CN": "Weave 通过 JSR 发布。请使用支持 JSR 的包管理器，在 React 19 应用中安装。",
     "zh-TW": "Weave 透過 JSR 發布。請使用支援 JSR 的套件管理工具，在 React 19 應用中安裝。",
@@ -123,16 +108,6 @@
     "zh-CN": "在 HTML 中添加 id=\"app\" 的元素，然后通过 createRoot 渲染 Weave 组件。",
     "zh-TW": "在 HTML 中加入 id=\"app\" 的元素，然後透過 createRoot 渲染 Weave 元件。",
     "fr": "Ajoutez un élément avec id=\"app\" dans votre HTML, puis affichez les composants Weave via createRoot."
-  },
-  "3. Preview the result": {
-    "zh-CN": "3. 预览结果",
-    "zh-TW": "3. 預覽結果",
-    "fr": "3. Aperçu du résultat"
-  },
-  "The interface below uses the same public ThemeProvider, Column, Text, and Button components as the example.": {
-    "zh-CN": "下方界面使用与代码示例相同的公开 ThemeProvider、Column、Text 和 Button 组件。",
-    "zh-TW": "下方介面使用與程式碼範例相同的公開 ThemeProvider、Column、Text 和 Button 元件。",
-    "fr": "L'interface ci-dessous utilise les mêmes composants publics ThemeProvider, Column, Text et Button que l'exemple."
   },
   "Next steps": {
     "zh-CN": "下一步",

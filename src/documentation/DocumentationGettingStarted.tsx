@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { Button, Card, Code, Column, Link, Text, ThemeProvider } from '../index'
+import { Card, Code, Column, Flex, Link, Text } from '../index'
 import { documentationCopy } from './documentation-copy'
 
 const firstScreenSource = `import { createRoot, ThemeProvider } from '@contsulia/weave'
@@ -24,73 +24,66 @@ export function DocumentationGettingStarted() {
   const copy = (value: string) => documentationCopy(t, value)
 
   return (
-    <Column width="fill" maxWidth={832} padding={32} gap={36}>
-      <Column gap={12}>
-        <Text typo="display-medium">{t('docs.nav.gettingStarted')}</Text>
-        <Text typo="body-large" color="secondary">
-          {copy(
-            'Build your first Weave interface with React. This guide uses the public JSR package and ordinary React DOM rendering.',
-          )}
-        </Text>
-      </Column>
+    <Flex
+      width="fill"
+      padding={16}
+      gap={32}
+      align="start"
+      direction="column"
+      containerMd={{ padding: 32 }}
+      containerLg={{ direction: 'row', justify: 'center' }}
+    >
+      <Column width="fill" maxWidth={832} minWidth={0} grow={1} gap={48}>
+        <Column width="fill" gap={12}>
+          <Text typo="display-medium">{t('docs.nav.gettingStarted')}</Text>
+          <Text typo="body-large">
+            {copy(
+              'Build your first Weave interface with React. This guide uses the public JSR package and ordinary React DOM rendering.',
+            )}
+          </Text>
+        </Column>
 
-      <Column gap={12}>
-        <Text typo="headline-small">{copy('1. Install Weave')}</Text>
-        <Card viewProps={{ width: 'fill', overflow: 'auto' }}>
-          <Code language="bash" viewProps={{ width: 'fill' }}>
-            {'pnpm add jsr:@contsulia/weave'}
-          </Code>
-        </Card>
-        <Link href="/docs/installation" text={t('docs.nav.installation')} hideUnderline />
-      </Column>
+        <Column width="fill" gap={16}>
+          <Text typo="headline-small">{copy('1. Install Weave')}</Text>
+          <Card viewProps={{ overflow: 'auto', align: 'center' }}>
+            <Code language="bash" viewProps={{ width: 'fill' }}>
+              {'pnpm add jsr:@contsulia/weave'}
+            </Code>
+          </Card>
+          <Link href="/docs/installation" text={t('docs.nav.installation')} hideUnderline />
+        </Column>
 
-      <Column gap={12}>
-        <Text typo="headline-small">{copy('2. Mount your interface')}</Text>
-        <Text typo="body-medium">
-          {copy(
-            'Use an element with id="app" in your HTML, then render Weave components through createRoot.',
-          )}
-        </Text>
-        <Card viewProps={{ width: 'fill', overflow: 'auto' }}>
-          <Code language="html" viewProps={{ width: 'fill' }}>
-            {'<div id="app"></div>'}
-          </Code>
-        </Card>
-        <Card viewProps={{ width: 'fill', overflow: 'auto' }}>
-          <Code language="tsx" viewProps={{ width: 'fill' }}>
-            {firstScreenSource}
-          </Code>
-        </Card>
-      </Column>
+        <Column width="fill" gap={16}>
+          <Text typo="headline-small">{copy('2. Mount your interface')}</Text>
+          <Text typo="body-medium">
+            {copy(
+              'Use an element with id="app" in your HTML, then render Weave components through createRoot.',
+            )}
+          </Text>
+          <Card viewProps={{ overflow: 'auto', align: 'center' }}>
+            <Code language="html" viewProps={{ width: 'fill' }}>
+              {'<div id="app"></div>'}
+            </Code>
+          </Card>
+          <Card viewProps={{ overflow: 'auto', align: 'center' }}>
+            <Code language="tsx" viewProps={{ width: 'fill' }}>
+              {firstScreenSource}
+            </Code>
+          </Card>
+        </Column>
 
-      <Column gap={12}>
-        <Text typo="headline-small">{copy('3. Preview the result')}</Text>
-        <Text typo="body-medium">
-          {copy(
-            'The interface below uses the same public ThemeProvider, Column, Text, and Button components as the example.',
-          )}
-        </Text>
-        <Card viewProps={{ width: 'fill' }}>
-          <ThemeProvider mode="system">
-            <Column gap={16} padding={24}>
-              <Text typo="title-large">Hello from Weave</Text>
-              <Button text="Continue" variant="primary" />
-            </Column>
-          </ThemeProvider>
-        </Card>
+        <Column width="fill" gap={16}>
+          <Text typo="headline-small">{copy('Next steps')}</Text>
+          <Text typo="body-medium">
+            {copy(
+              'Explore layout primitives, theme configuration, and component examples to build a complete interface.',
+            )}
+          </Text>
+          <Link href="/docs/components/Layout" text={copy('Layout primitives')} hideUnderline />
+          <Link href="/docs/components/ThemeProvider" text="ThemeProvider" hideUnderline />
+          <Link href="/docs/components/Button" text="Button" hideUnderline />
+        </Column>
       </Column>
-
-      <Column gap={12}>
-        <Text typo="headline-small">{copy('Next steps')}</Text>
-        <Text typo="body-medium">
-          {copy(
-            'Explore layout primitives, theme configuration, and component examples to build a complete interface.',
-          )}
-        </Text>
-        <Link href="/docs/components/Layout" text={copy('Layout primitives')} hideUnderline />
-        <Link href="/docs/components/ThemeProvider" text="ThemeProvider" hideUnderline />
-        <Link href="/docs/components/Button" text="Button" hideUnderline />
-      </Column>
-    </Column>
+    </Flex>
   )
 }
