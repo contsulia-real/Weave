@@ -268,7 +268,7 @@ export function DocumentationAZ() {
       containerMd={{ padding: 32 }}
       containerLg={{ direction: 'row', justify: 'center' }}
     >
-      <Column width="fill" maxWidth={832} minWidth={0} grow={1} gap={48}>
+      <Column width="fill" maxWidth={1104} minWidth={0} grow={1} gap={48}>
         <Column width="fill" gap={12}>
           <DocumentationGuideBreadcrumb title={t('docs.nav.weaveAZ')} />
           <Text typo="display-medium">{t('docs.nav.weaveAZ')}</Text>
