@@ -2,6 +2,7 @@ import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Card, Code, Column, Flex, Link, Text } from '../index'
 import { DocumentationReadingStatus } from './DocumentationReadingStatus'
+import { DocumentationGuideBreadcrumb } from './DocumentationGuides'
 import { documentationCopy } from './documentation-copy'
 
 const firstScreenSource = `import { createRoot, ThemeProvider } from '@contsulia/weave'
@@ -38,6 +39,7 @@ export function DocumentationGettingStarted() {
     >
       <Column ref={contentRef} grow={1} minWidth={0} width="fill" maxWidth={832} gap={48}>
         <Column width="fill" gap={12}>
+          <DocumentationGuideBreadcrumb title={t('docs.nav.gettingStarted')} />
           <Text typo="display-medium">{t('docs.nav.gettingStarted')}</Text>
           <Text typo="body-large">
             {copy(

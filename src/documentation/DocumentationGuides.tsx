@@ -1,12 +1,13 @@
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Card, Code, Column, Flex, Link, Text } from '../index'
+import { Breadcrumb, Card, Code, Column, Flex, Link, MenuItem, Text } from '../index'
 import { DocumentationReadingStatus } from './DocumentationReadingStatus'
 import { documentationCopy } from './documentation-copy'
 import {
   documentationComponentNavigationItems,
   documentationNavigationSections,
 } from './documentation-navigation-data'
+import { useDocsRoute } from './router'
 
 const apiItems =
   documentationNavigationSections.find((section) => section.value === 'components-api')?.items ?? []
@@ -26,6 +27,33 @@ for (const item of indexedComponents.values()) {
   alphabetGroups.set(letter, [...(alphabetGroups.get(letter) ?? []), item])
 }
 const alphabet = [...alphabetGroups].sort(([left], [right]) => left.localeCompare(right))
+
+export function DocumentationGuideBreadcrumb({ title }: { title: string }) {
+  const { t } = useTranslation(['translation', 'copy'])
+  const { navigate } = useDocsRoute()
+  const overviewItems = documentationNavigationSections.find(
+    (section) => section.value === 'overview',
+  )?.items ?? []
+
+  return (
+    <Breadcrumb
+      items={[
+        { text: t('copy:Home'), href: '/docs' },
+        { text: t('docs.nav.overview'), href: '/docs' },
+        {
+          text: title,
+          menu: overviewItems.map((item) => (
+            <MenuItem
+              key={item.path}
+              text={t(item.labelKey ?? '')}
+              onSelect={() => navigate(item.path)}
+            />
+          )),
+        },
+      ]}
+    />
+  )
+}
 
 export function DocumentationOverview() {
   const { t } = useTranslation(['translation', 'copy'])
@@ -113,6 +141,7 @@ export function DocumentationInstallation() {
     >
       <Column ref={contentRef} grow={1} minWidth={0} width="fill" maxWidth={832} gap={48}>
         <Column width="fill" gap={12}>
+          <DocumentationGuideBreadcrumb title={t('docs.nav.installation')} />
           <Text typo="display-medium">{t('docs.nav.installation')}</Text>
           <Text typo="body-large">
             {copy(
@@ -209,6 +238,7 @@ export function DocumentationInstallation() {
 export function DocumentationAZ() {
   const { t } = useTranslation(['translation', 'copy'])
   const copy = (value: string) => documentationCopy(t, value)
+  const contentRef = useRef<HTMLDivElement>(null)
 
   return (
     <Flex
@@ -220,8 +250,9 @@ export function DocumentationAZ() {
       containerMd={{ padding: 32 }}
       containerLg={{ direction: 'row', justify: 'center' }}
     >
-      <Column width="fill" maxWidth={832} minWidth={0} grow={1} gap={48}>
+      <Column ref={contentRef} width="fill" maxWidth={832} minWidth={0} grow={1} gap={48}>
         <Column width="fill" gap={12}>
+          <DocumentationGuideBreadcrumb title={t('docs.nav.weaveAZ')} />
           <Text typo="display-medium">{t('docs.nav.weaveAZ')}</Text>
           <Text typo="body-large">
             {copy(
@@ -231,7 +262,13 @@ export function DocumentationAZ() {
         </Column>
 
         {alphabet.map(([letter, items]) => (
-          <Column key={letter} width="fill" gap={16}>
+          <Column
+            key={letter}
+            id={`letter-${letter.toLowerCase()}`}
+            data={{ 'weave-doc-section': '', 'weave-doc-section-label': letter }}
+            width="fill"
+            gap={16}
+          >
             <Text typo="headline-small">{letter}</Text>
             {items.map((item) => (
               <Link key={item.name} href={item.path} text={item.name} hideUnderline />
@@ -239,6 +276,7 @@ export function DocumentationAZ() {
           </Column>
         ))}
       </Column>
+      <DocumentationReadingStatus contentRef={contentRef} />
     </Flex>
   )
 }
