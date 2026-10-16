@@ -133,6 +133,8 @@ export function WebsiteHome({
         viewProps={{
           shrink: 0,
           zIndex: 1,
+          maxWidth: 1120,
+          alignSelf: 'center',
           columns: 'minmax(0, 1fr) 0',
           sm: { columns: 'minmax(0, 1fr) 0 max-content' },
         }}
@@ -261,6 +263,7 @@ export function WebsiteHome({
           maxWidth={1600}
           paddingX={32}
           paddingY={64}
+          paddingBottom={0}
           gap={64}
           data={{ 'weave-website-more': '' }}
         >
@@ -416,7 +419,14 @@ export function WebsiteHome({
 
           <Column width="fill" role="contentinfo" data={{ 'weave-website-footer': '' }}>
             <Divider />
-            <Column width="fill" maxWidth={1120} alignSelf="center" paddingY={64} gap={56}>
+            <Column
+              width="fill"
+              maxWidth={1120}
+              alignSelf="center"
+              paddingTop={64}
+              paddingBottom={32}
+              gap={56}
+            >
               <Grid width="fill" columns={1} xl={{ columns: 2 }} gap={48}>
                 <Column width="fill" minWidth={0} gap={12}>
                   <Text typo="title-large">Weave</Text>
@@ -472,7 +482,6 @@ export function WebsiteHome({
                   ))}
                 </Grid>
               </Grid>
-              <Divider />
               <Row width="fill" align="center" justify="space-between" gap={24} wrap>
                 <Column gap={4}>
                   <Text typo="body-small" color="tertiary">
