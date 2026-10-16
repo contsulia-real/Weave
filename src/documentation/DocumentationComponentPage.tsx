@@ -145,9 +145,10 @@ export function DocumentationComponentPage({ componentName }: DocumentationCompo
         <DocumentationPageNavigation
           previous={
             adjacent.previous === null
-              ? null
+              ? { path: '/docs/a-z', label: t('docs.nav.weaveAZ') }
               : { path: `/docs/components/${adjacent.previous}`, label: adjacent.previous }
           }
+          previousLabel={adjacent.previous === null ? documentationCopy(t, 'Previous') : undefined}
           next={
             adjacent.next === null
               ? null
