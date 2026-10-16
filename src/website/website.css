@@ -22,6 +22,15 @@
   animation-range: exit 0% exit 50%;
 }
 
+[data-weave-website-appbar] .weave-appbar__leading {
+  justify-self: stretch;
+  overflow: hidden;
+}
+
+[data-weave-website-appbar] .weave-appbar__leading > * {
+  white-space: nowrap;
+}
+
 [data-weave-website-showcase] .weave-slider-control {
   grid-template-columns: minmax(0, 1fr);
   justify-content: stretch;

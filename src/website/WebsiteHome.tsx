@@ -135,11 +135,11 @@ export function WebsiteHome({
           zIndex: 1,
           maxWidth: 1120,
           alignSelf: 'center',
-          columns: 'minmax(0, 1fr) 0',
-          sm: { columns: 'minmax(0, 1fr) 0 max-content' },
+          columns: 'minmax(0, 1fr) 0 max-content',
+          data: { 'weave-website-appbar': '' },
         }}
         leading={
-          <Row align="center" gap={24} wrap>
+          <Row width="fill" minWidth={0} align="center" gap={24} overflowX="auto">
             <Link href="/docs" text={t('Docs')} hideIcon hideUnderline />
             <Link href="/docs/components/Button" text={t('Components')} hideIcon hideUnderline />
             <Link href="/docs/getting-started" text={t('Get started')} hideIcon hideUnderline />
@@ -147,7 +147,7 @@ export function WebsiteHome({
         }
         title={<Text>{''}</Text>}
         trailing={
-          <Row align="center" gap={16} wrap>
+          <Row align="center" gap={16}>
             <Link
               href="https://github.com/contsulia-real/Weave"
               text={<Icon icon={IconBrandGithubFilled} size="xlarge" />}
@@ -221,12 +221,26 @@ export function WebsiteHome({
               data={{ 'weave-website-showcase': '' }}
             >
               <Grid width="fill" columns="repeat(auto-fit, minmax(min(100%, 350px), 1fr))" gap={16}>
-                <Column width="fill" minWidth={0} gap={16}>
+                <Column
+                  width="fill"
+                  maxWidth={400}
+                  alignSelf="start"
+                  justifySelf="center"
+                  minWidth={0}
+                  gap={16}
+                >
                   <ProjectOverview />
                   <TeamCalendar />
                   <LaunchFlow />
                 </Column>
-                <Column width="fill" minWidth={0} gap={16}>
+                <Column
+                  width="fill"
+                  maxWidth={400}
+                  alignSelf="start"
+                  justifySelf="center"
+                  minWidth={0}
+                  gap={16}
+                >
                   <TeamInbox />
                   <StudioInsights />
                   <WorkspacePreferences />
