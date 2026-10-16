@@ -4,7 +4,12 @@ export default function ProgressBasicUsageDemo() {
   return (
     <Column gap={12} width={320}>
       <Text typo="body-small">Uploading 65%</Text>
-      <Progress mode="linear" progress={0.65} tracked />
+      <Progress
+        mode="linear"
+        progress={0.65}
+        tracked
+        viewProps={{ width: 'content', minWidth: 'var(--weave-progress-width)' }}
+      />
     </Column>
   )
 }
