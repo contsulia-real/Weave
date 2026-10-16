@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Breadcrumb, Card, Code, Column, Flex, Link, MenuItem, Text } from '../index'
+import { Breadcrumb, Card, Code, Column, Flex, Grid, Link, MenuItem, Text } from '../index'
 import { DocumentationPageNavigation } from './DocumentationPageNavigation'
 import { DocumentationReadingStatus } from './DocumentationReadingStatus'
 import { documentationCopy } from './documentation-copy'
@@ -257,7 +257,6 @@ export function DocumentationInstallation() {
 export function DocumentationAZ() {
   const { t } = useTranslation(['translation', 'copy'])
   const copy = (value: string) => documentationCopy(t, value)
-  const contentRef = useRef<HTMLDivElement>(null)
 
   return (
     <Flex
@@ -269,7 +268,7 @@ export function DocumentationAZ() {
       containerMd={{ padding: 32 }}
       containerLg={{ direction: 'row', justify: 'center' }}
     >
-      <Column ref={contentRef} width="fill" maxWidth={832} minWidth={0} grow={1} gap={48}>
+      <Column width="fill" maxWidth={832} minWidth={0} grow={1} gap={48}>
         <Column width="fill" gap={12}>
           <DocumentationGuideBreadcrumb title={t('docs.nav.weaveAZ')} />
           <Text typo="display-medium">{t('docs.nav.weaveAZ')}</Text>
@@ -280,23 +279,18 @@ export function DocumentationAZ() {
           </Text>
         </Column>
 
-        {alphabet.map(([letter, items]) => (
-          <Column
-            key={letter}
-            id={`letter-${letter.toLowerCase()}`}
-            data={{ 'weave-doc-section': '', 'weave-doc-section-label': letter }}
-            width="fill"
-            gap={16}
-          >
-            <Text typo="headline-small">{letter}</Text>
-            {items.map((item) => (
-              <Link key={item.name} href={item.path} text={item.name} hideUnderline />
-            ))}
-          </Column>
-        ))}
+        <Grid columns="repeat(auto-fit, minmax(min(100%, 160px), 1fr))" gap={32} width="fill">
+          {alphabet.map(([letter, items]) => (
+            <Column key={letter} id={`letter-${letter.toLowerCase()}`} width="fill" gap={16}>
+              <Text typo="headline-small">{letter}</Text>
+              {items.map((item) => (
+                <Link key={item.name} href={item.path} text={item.name} hideUnderline />
+              ))}
+            </Column>
+          ))}
+        </Grid>
         <DocumentationGuideNavigation pathname="/docs/a-z" />
       </Column>
-      <DocumentationReadingStatus contentRef={contentRef} />
     </Flex>
   )
 }
