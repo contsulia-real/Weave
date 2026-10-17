@@ -235,7 +235,6 @@ export function WebsiteHome({
           maxWidth={1600}
           paddingX={32}
           paddingY={64}
-          paddingBottom={0}
           gap={64}
           data={{ 'weave-website-more': '' }}
         >
@@ -388,9 +387,8 @@ export function WebsiteHome({
               </Column>
             </Grid>
           </Column>
-
-          <WebsiteFooter />
         </Column>
+        <WebsiteFooter />
       </Column>
     </Column>
   )
