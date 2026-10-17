@@ -2,6 +2,7 @@ import type { TFunction } from 'i18next'
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Column, Text } from '../index'
+import { WebsiteFooter } from '../website/WebsiteFooter'
 import { DocumentationComponentApiPage } from './DocumentationComponentApiPage'
 import { DocumentationComponentPage } from './DocumentationComponentPage'
 import { DocumentationGettingStarted } from './DocumentationGettingStarted'
@@ -61,6 +62,7 @@ export function DocumentationContent({ section, pathname }: DocumentationContent
       container="documentation-content"
     >
       {content}
+      <WebsiteFooter />
     </Column>
   )
 }
